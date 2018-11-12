@@ -54,7 +54,7 @@ def main():
             var_name = var_name[:-5]
         tmpl = Template(filename=tmpl_path, lookup=lookup)
         rendered = tmpl.render(var=var_name, colors=colors, )
-        print rendered
+        # print rendered
 
         with open(os.path.join(func_dir, '%s.mcfunction' % func_name), "w") as out:
             out.write(rendered)
