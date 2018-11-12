@@ -7,11 +7,14 @@ from mako.template import Template
 
 mc_version = '1.13'
 
-
-class Color:
-    def __init__(self, name, id, rgb, dye_13):
+class Item:
+    def __init__(self, name, id):
         self.name = name
         self.id = id
+
+class Color(Item):
+    def __init__(self, name, id, rgb, dye_13):
+        Item.__init__(self, name, id)
         self.rgb = rgb
         self.dyes = {'1.13': dye_13, '1.14': '%s_dye' % id, 'default': dye_13}
 
@@ -41,6 +44,13 @@ def main():
         Color("Red", "red", 11546150, "rose_red"),
         Color("Black", "black", 1908001, "ink_sack"),
     )
+    structure_blocks = (
+        Item("Data", "DATA"),
+        Item("Save", "SAVE"),
+        Item("Load", "LOAD"),
+        Item("Corner", "CORNER"),
+    )
+
 
     dir = sys.argv[1] if len(sys.argv) > 1 else '.'
     tmpl_dir = os.path.join(dir, 'templates')
@@ -53,7 +63,11 @@ def main():
         if var_name.endswith('_init'):
             var_name = var_name[:-5]
         tmpl = Template(filename=tmpl_path, lookup=lookup)
-        rendered = tmpl.render(var=var_name, colors=colors, )
+        rendered = tmpl.render(
+            var=var_name,
+            colors=colors,
+            structure_blocks=structure_blocks,
+        )
         # print rendered
 
         with open(os.path.join(func_dir, '%s.mcfunction' % func_name), "w") as out:
