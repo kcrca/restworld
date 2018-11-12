@@ -7,16 +7,22 @@ from mako.template import Template
 
 mc_version = '1.13'
 
+
+def to_id(name):
+    return name.lower().replace(" ", "_")
+
 class Item:
-    def __init__(self, name, id):
+    def __init__(self, name, id=None):
+        if id is None:
+            id = to_id(name)
         self.name = name
         self.id = id
 
 class Color(Item):
-    def __init__(self, name, id, rgb, dye_13):
-        Item.__init__(self, name, id)
+    def __init__(self, name, rgb, dye_13):
+        Item.__init__(self, name)
         self.rgb = rgb
-        self.dyes = {'1.13': dye_13, '1.14': '%s_dye' % id, 'default': dye_13}
+        self.dyes = {'1.13': dye_13, '1.14': '%s_dye' % self.id, 'default': dye_13}
 
     def dye_name(self):
         try:
@@ -27,28 +33,32 @@ class Color(Item):
 
 def main():
     colors = (
-        Color("White", "white", 16383998, "bone_meal"),
-        Color("Orange", "orange", 16351261, "orange_dye"),
-        Color("Magenta", "magenta", 13061821, "magenta_dye"),
-        Color("Light Blue", "light_blue", 3847130, "light_blue_dye"),
-        Color("Yellow", "yellow", 16701501, "dandelion_yellow"),
-        Color("Lime", "lime", 8439583, "lime_dye"),
-        Color("Pink", "pink", 15961002, "pink_dye"),
-        Color("Gray", "gray", 4673362, "gray_dye"),
-        Color("Light Gray", "light_gray", 10329495, "light_gray_dye"),
-        Color("Cyan", "cyan", 1481884, "cyan_dye"),
-        Color("Purple", "purple", 8991416, "purple_dye"),
-        Color("Blue", "blue", 3949738, "lapis_lazuli"),
-        Color("Brown", "brown", 8606770, "cocoa_beans"),
-        Color("Green", "green", 6192150, "cactus_green"),
-        Color("Red", "red", 11546150, "rose_red"),
-        Color("Black", "black", 1908001, "ink_sack"),
+        Color("White", 16383998, "bone_meal"),
+        Color("Orange", 16351261, "orange_dye"),
+        Color("Magenta", 13061821, "magenta_dye"),
+        Color("Light Blue", 3847130, "light_blue_dye"),
+        Color("Yellow", 16701501, "dandelion_yellow"),
+        Color("Lime", 8439583, "lime_dye"),
+        Color("Pink", 15961002, "pink_dye"),
+        Color("Gray", 4673362, "gray_dye"),
+        Color("Light Gray", 10329495, "light_gray_dye"),
+        Color("Cyan", 1481884, "cyan_dye"),
+        Color("Purple", 8991416, "purple_dye"),
+        Color("Blue", 3949738, "lapis_lazuli"),
+        Color("Brown", 8606770, "cocoa_beans"),
+        Color("Green", 6192150, "cactus_green"),
+        Color("Red", 11546150, "rose_red"),
+        Color("Black", 1908001, "ink_sack"),
     )
     structure_blocks = (
         Item("Data", "DATA"),
         Item("Save", "SAVE"),
         Item("Load", "LOAD"),
         Item("Corner", "CORNER"),
+    )
+    stones = (
+        Item("Stone"),
+        Item("Smooth Stone"),
     )
 
 
