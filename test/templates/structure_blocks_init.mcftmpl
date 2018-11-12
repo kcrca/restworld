@@ -1,2 +1,1 @@
-scoreboard objectives add funcs dummy
-scoreboard players set ${var} funcs -1
+<%include file="base_init.mcftmpl" />

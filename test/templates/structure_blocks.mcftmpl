@@ -1,13 +1,10 @@
-scoreboard objectives add funcs dummy
-execute unless score ${var} funcs matches -1.. run function ${var}_init
-scoreboard players add ${var} funcs 1
-execute unless score ${var} funcs matches 0..${len(structure_blocks) - 1} run scoreboard players set ${var} funcs 0
+<%namespace name="base"  file="base.mcftmpl"/>
+${base.increment(len(structure_blocks))}
 
 % for sb in structure_blocks:
+<% i = loop.index %>
 
-<% i = loop.index %> <%def name="when()">execute if score ${var} funcs matches ${i} run</%def>
-
-${when()} data merge block ~ ~3 ~ {mode:${sb.id}}
-${when()} data merge block ~-1 ~2 ~ {Text2:"\"${sb.name}\""}
+${base.when(i)} data merge block ~ ~3 ~ {mode:${sb.id}}
+${base.when(i)} data merge block ~-1 ~2 ~ {Text2:"\"${sb.name}\""}
 
 % endfor

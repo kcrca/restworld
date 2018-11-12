@@ -65,7 +65,7 @@ def main():
     dir = sys.argv[1] if len(sys.argv) > 1 else '.'
     tmpl_dir = os.path.join(dir, 'templates')
     func_dir = os.path.join(dir, 'functions')
-    lookup = TemplateLookup(directories=[tmpl_dir])
+    lookup = TemplateLookup(directories=['.'])
     for tmpl_path in glob.glob(os.path.join(tmpl_dir, "*.mcftmpl")):
         func_name = os.path.splitext(os.path.basename(tmpl_path))[0]
         print '----- %s' % func_name
