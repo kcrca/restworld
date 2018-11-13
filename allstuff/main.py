@@ -8,15 +8,13 @@ from mako.template import Template
 mc_version = '1.13'
 
 
-def to_id(name):
-    return name.lower().replace(" ", "_")
-
 class Item:
     def __init__(self, name, id=None):
         if id is None:
             id = to_id(name)
         self.name = name
         self.id = id
+
 
 class Color(Item):
     def __init__(self, name, rgb, dye_13):
@@ -29,6 +27,14 @@ class Color(Item):
             return self.dyes[mc_version]
         except:
             return self.dyes['default']
+
+
+def text(txt):
+    return r'"\"%s\""' % txt
+
+
+def to_id(name):
+    return name.lower().replace(" ", "_")
 
 
 def main():
@@ -61,7 +67,6 @@ def main():
         Item("Smooth Stone"),
     )
 
-
     dir = sys.argv[1] if len(sys.argv) > 1 else '.'
     tmpl_dir = os.path.join(dir, 'templates')
     func_dir = os.path.join(dir, 'functions')
@@ -75,7 +80,9 @@ def main():
         tmpl = Template(filename=tmpl_path, lookup=lookup)
         rendered = tmpl.render(
             var=var_name,
+            Item=Item,
             colors=colors,
+            text=text,
             structure_blocks=structure_blocks,
         )
         # print rendered

@@ -1,0 +1,11 @@
+<% stones = (Item("Stone"), Item("Smooth Stone")) %>
+<%namespace name="base"  file="base.mcftmpl"/>
+${base.increment(len(stones))}
+
+% for sb in stones:
+<% i = loop.index %>
+
+${base.when(i)} data merge block ~ ~3 ~ {mode:${sb.id}}
+${base.when(i)} data merge block ~-1 ~2 ~ {Text2:"\"${sb.name}\""}
+
+% endfor
