@@ -1,10 +1,7 @@
 <%namespace name="base"  file="base.mcftmpl"/>
 ${base.increment(len(structure_blocks))}
 
-% for sb in structure_blocks:
-<% i = loop.index %>
-
-${base.when(i)} data merge block ~ ~3 ~ {mode:${sb.id}}
-${base.when(i)} data merge block ~-1 ~2 ~ {Text2:"\"${sb.name}\""}
-
-% endfor
+<%base:loop collection="${structure_blocks}" args="when,i,item">
+${when(i)} data merge block ~ ~3 ~ {mode:${item.id}}
+${when(i)} data merge block ~-1 ~2 ~ {Text2:"\"${item.name}\""}
+</%base:loop>

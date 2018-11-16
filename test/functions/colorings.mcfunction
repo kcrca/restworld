@@ -1,6 +1,7 @@
 
 
-scoreboard objectives add funcs dummy
+
+
 execute unless score colorings funcs matches -1.. run function colorings_init
 scoreboard players add colorings funcs 1
 execute unless score colorings funcs matches 0..15 run scoreboard players set colorings funcs 0
@@ -32,6 +33,7 @@ execute if score colorings funcs matches 0 run data merge entity @e[tag=coloring
 
 
 
+
 execute if score colorings funcs matches 1 run fill ~0 ~3 ~3 ~-1 ~3 ~3 minecraft:orange_stained_glass_pane
 execute if score colorings funcs matches 1 run setblock ~0 ~4 ~3 minecraft:orange_stained_glass_pane
 execute if score colorings funcs matches 1 run setblock ~-1 ~3 ~2 minecraft:orange_stained_glass
@@ -53,6 +55,7 @@ execute if score colorings funcs matches 1 run data merge entity @e[tag=coloring
 
 execute if score colorings funcs matches 1 run data merge entity @e[tag=colorings_armor_stand,limit=1] {CustomName:"\"Orange\"",CustomNameVisible:True,ArmorItems:[{id:leather_boots,Count:1,tag:{Variant:2,display:{color:16351261}}},{id:leather_leggings,Count:1,tag:{Variant:2,display:{color:16351261}}},{id:leather_chestplate,Count:1,tag:{Variant:2,display:{color:16351261}}},{id:leather_helmet,Count:1,tag:{Variant:2,display:{color:16351261}}}]}
 execute if score colorings funcs matches 1 run data merge entity @e[tag=colorings_llama,limit=1] {DecorItem:{id:orange_carpet,Count:1},CustomNameVisible:True,CustomName:"\"Orange\""}
+
 
 
 
@@ -80,6 +83,7 @@ execute if score colorings funcs matches 2 run data merge entity @e[tag=coloring
 
 
 
+
 execute if score colorings funcs matches 3 run fill ~0 ~3 ~3 ~-1 ~3 ~3 minecraft:light_blue_stained_glass_pane
 execute if score colorings funcs matches 3 run setblock ~0 ~4 ~3 minecraft:light_blue_stained_glass_pane
 execute if score colorings funcs matches 3 run setblock ~-1 ~3 ~2 minecraft:light_blue_stained_glass
@@ -101,6 +105,7 @@ execute if score colorings funcs matches 3 run data merge entity @e[tag=coloring
 
 execute if score colorings funcs matches 3 run data merge entity @e[tag=colorings_armor_stand,limit=1] {CustomName:"\"Light Blue\"",CustomNameVisible:True,ArmorItems:[{id:leather_boots,Count:1,tag:{Variant:2,display:{color:3847130}}},{id:leather_leggings,Count:1,tag:{Variant:2,display:{color:3847130}}},{id:leather_chestplate,Count:1,tag:{Variant:2,display:{color:3847130}}},{id:leather_helmet,Count:1,tag:{Variant:2,display:{color:3847130}}}]}
 execute if score colorings funcs matches 3 run data merge entity @e[tag=colorings_llama,limit=1] {DecorItem:{id:light_blue_carpet,Count:1},CustomNameVisible:True,CustomName:"\"Light Blue\""}
+
 
 
 
@@ -128,6 +133,7 @@ execute if score colorings funcs matches 4 run data merge entity @e[tag=coloring
 
 
 
+
 execute if score colorings funcs matches 5 run fill ~0 ~3 ~3 ~-1 ~3 ~3 minecraft:lime_stained_glass_pane
 execute if score colorings funcs matches 5 run setblock ~0 ~4 ~3 minecraft:lime_stained_glass_pane
 execute if score colorings funcs matches 5 run setblock ~-1 ~3 ~2 minecraft:lime_stained_glass
@@ -149,6 +155,7 @@ execute if score colorings funcs matches 5 run data merge entity @e[tag=coloring
 
 execute if score colorings funcs matches 5 run data merge entity @e[tag=colorings_armor_stand,limit=1] {CustomName:"\"Lime\"",CustomNameVisible:True,ArmorItems:[{id:leather_boots,Count:1,tag:{Variant:2,display:{color:8439583}}},{id:leather_leggings,Count:1,tag:{Variant:2,display:{color:8439583}}},{id:leather_chestplate,Count:1,tag:{Variant:2,display:{color:8439583}}},{id:leather_helmet,Count:1,tag:{Variant:2,display:{color:8439583}}}]}
 execute if score colorings funcs matches 5 run data merge entity @e[tag=colorings_llama,limit=1] {DecorItem:{id:lime_carpet,Count:1},CustomNameVisible:True,CustomName:"\"Lime\""}
+
 
 
 
@@ -176,6 +183,7 @@ execute if score colorings funcs matches 6 run data merge entity @e[tag=coloring
 
 
 
+
 execute if score colorings funcs matches 7 run fill ~0 ~3 ~3 ~-1 ~3 ~3 minecraft:gray_stained_glass_pane
 execute if score colorings funcs matches 7 run setblock ~0 ~4 ~3 minecraft:gray_stained_glass_pane
 execute if score colorings funcs matches 7 run setblock ~-1 ~3 ~2 minecraft:gray_stained_glass
@@ -197,6 +205,7 @@ execute if score colorings funcs matches 7 run data merge entity @e[tag=coloring
 
 execute if score colorings funcs matches 7 run data merge entity @e[tag=colorings_armor_stand,limit=1] {CustomName:"\"Gray\"",CustomNameVisible:True,ArmorItems:[{id:leather_boots,Count:1,tag:{Variant:2,display:{color:4673362}}},{id:leather_leggings,Count:1,tag:{Variant:2,display:{color:4673362}}},{id:leather_chestplate,Count:1,tag:{Variant:2,display:{color:4673362}}},{id:leather_helmet,Count:1,tag:{Variant:2,display:{color:4673362}}}]}
 execute if score colorings funcs matches 7 run data merge entity @e[tag=colorings_llama,limit=1] {DecorItem:{id:gray_carpet,Count:1},CustomNameVisible:True,CustomName:"\"Gray\""}
+
 
 
 
@@ -224,6 +233,7 @@ execute if score colorings funcs matches 8 run data merge entity @e[tag=coloring
 
 
 
+
 execute if score colorings funcs matches 9 run fill ~0 ~3 ~3 ~-1 ~3 ~3 minecraft:cyan_stained_glass_pane
 execute if score colorings funcs matches 9 run setblock ~0 ~4 ~3 minecraft:cyan_stained_glass_pane
 execute if score colorings funcs matches 9 run setblock ~-1 ~3 ~2 minecraft:cyan_stained_glass
@@ -245,6 +255,7 @@ execute if score colorings funcs matches 9 run data merge entity @e[tag=coloring
 
 execute if score colorings funcs matches 9 run data merge entity @e[tag=colorings_armor_stand,limit=1] {CustomName:"\"Cyan\"",CustomNameVisible:True,ArmorItems:[{id:leather_boots,Count:1,tag:{Variant:2,display:{color:1481884}}},{id:leather_leggings,Count:1,tag:{Variant:2,display:{color:1481884}}},{id:leather_chestplate,Count:1,tag:{Variant:2,display:{color:1481884}}},{id:leather_helmet,Count:1,tag:{Variant:2,display:{color:1481884}}}]}
 execute if score colorings funcs matches 9 run data merge entity @e[tag=colorings_llama,limit=1] {DecorItem:{id:cyan_carpet,Count:1},CustomNameVisible:True,CustomName:"\"Cyan\""}
+
 
 
 
@@ -272,6 +283,7 @@ execute if score colorings funcs matches 10 run data merge entity @e[tag=colorin
 
 
 
+
 execute if score colorings funcs matches 11 run fill ~0 ~3 ~3 ~-1 ~3 ~3 minecraft:blue_stained_glass_pane
 execute if score colorings funcs matches 11 run setblock ~0 ~4 ~3 minecraft:blue_stained_glass_pane
 execute if score colorings funcs matches 11 run setblock ~-1 ~3 ~2 minecraft:blue_stained_glass
@@ -293,6 +305,7 @@ execute if score colorings funcs matches 11 run data merge entity @e[tag=colorin
 
 execute if score colorings funcs matches 11 run data merge entity @e[tag=colorings_armor_stand,limit=1] {CustomName:"\"Blue\"",CustomNameVisible:True,ArmorItems:[{id:leather_boots,Count:1,tag:{Variant:2,display:{color:3949738}}},{id:leather_leggings,Count:1,tag:{Variant:2,display:{color:3949738}}},{id:leather_chestplate,Count:1,tag:{Variant:2,display:{color:3949738}}},{id:leather_helmet,Count:1,tag:{Variant:2,display:{color:3949738}}}]}
 execute if score colorings funcs matches 11 run data merge entity @e[tag=colorings_llama,limit=1] {DecorItem:{id:blue_carpet,Count:1},CustomNameVisible:True,CustomName:"\"Blue\""}
+
 
 
 
@@ -320,6 +333,7 @@ execute if score colorings funcs matches 12 run data merge entity @e[tag=colorin
 
 
 
+
 execute if score colorings funcs matches 13 run fill ~0 ~3 ~3 ~-1 ~3 ~3 minecraft:green_stained_glass_pane
 execute if score colorings funcs matches 13 run setblock ~0 ~4 ~3 minecraft:green_stained_glass_pane
 execute if score colorings funcs matches 13 run setblock ~-1 ~3 ~2 minecraft:green_stained_glass
@@ -341,6 +355,7 @@ execute if score colorings funcs matches 13 run data merge entity @e[tag=colorin
 
 execute if score colorings funcs matches 13 run data merge entity @e[tag=colorings_armor_stand,limit=1] {CustomName:"\"Green\"",CustomNameVisible:True,ArmorItems:[{id:leather_boots,Count:1,tag:{Variant:2,display:{color:6192150}}},{id:leather_leggings,Count:1,tag:{Variant:2,display:{color:6192150}}},{id:leather_chestplate,Count:1,tag:{Variant:2,display:{color:6192150}}},{id:leather_helmet,Count:1,tag:{Variant:2,display:{color:6192150}}}]}
 execute if score colorings funcs matches 13 run data merge entity @e[tag=colorings_llama,limit=1] {DecorItem:{id:green_carpet,Count:1},CustomNameVisible:True,CustomName:"\"Green\""}
+
 
 
 
@@ -368,6 +383,7 @@ execute if score colorings funcs matches 14 run data merge entity @e[tag=colorin
 
 
 
+
 execute if score colorings funcs matches 15 run fill ~0 ~3 ~3 ~-1 ~3 ~3 minecraft:black_stained_glass_pane
 execute if score colorings funcs matches 15 run setblock ~0 ~4 ~3 minecraft:black_stained_glass_pane
 execute if score colorings funcs matches 15 run setblock ~-1 ~3 ~2 minecraft:black_stained_glass
@@ -389,4 +405,6 @@ execute if score colorings funcs matches 15 run data merge entity @e[tag=colorin
 
 execute if score colorings funcs matches 15 run data merge entity @e[tag=colorings_armor_stand,limit=1] {CustomName:"\"Black\"",CustomNameVisible:True,ArmorItems:[{id:leather_boots,Count:1,tag:{Variant:2,display:{color:1908001}}},{id:leather_leggings,Count:1,tag:{Variant:2,display:{color:1908001}}},{id:leather_chestplate,Count:1,tag:{Variant:2,display:{color:1908001}}},{id:leather_helmet,Count:1,tag:{Variant:2,display:{color:1908001}}}]}
 execute if score colorings funcs matches 15 run data merge entity @e[tag=colorings_llama,limit=1] {DecorItem:{id:black_carpet,Count:1},CustomNameVisible:True,CustomName:"\"Black\""}
+
+
 
