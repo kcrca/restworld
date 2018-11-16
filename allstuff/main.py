@@ -31,12 +31,15 @@ class Color(Item):
 
 class CommandBlock(Item):
     def __init__(self, name, conditional):
-        """
-
-        :type conditional: bool
-        """
         Item.__init__(self, name)
         self.conditional = conditional
+
+
+class Stepable(Item):
+    def __init__(self, name, base_id, block=None):
+        Item.__init__(self, name)
+        self.block = to_id(block) if block else self.id
+        self.base_id = to_id(base_id)
 
 
 def text(txt):
@@ -86,6 +89,19 @@ def main():
         CommandBlock("Repeating Command Block", False),
         CommandBlock("Repeating Command Block", True),
     )
+    stepables = (
+        Stepable("Sandstone", "Sand"),
+        Stepable("Red Sandstone", "Red Sand"),
+        Stepable("Quartz", "Nether Quartz Ore", block="Quartz Block"),
+        Stepable("Cobblestone", "Stone"),
+        Stepable("Stone Brick", "Stone", block="Stone Bricks"),
+        Stepable("Nether Brick", "Netherrack", block="Nether Bricks"),
+        Stepable("Brick", "Terracotta", block="Bricks"),
+        Stepable("Purpur", "air", block="Purpur Block"),
+        Stepable("Prismarine", "air"),
+        Stepable("Prismarine Brick", "air", block="Prismarine Bricks"),
+        Stepable("Dark Prismarine", "air"),
+    )
 
     dir = sys.argv[1] if len(sys.argv) > 1 else '.'
     tmpl_dir = os.path.join(dir, 'templates')
@@ -105,6 +121,7 @@ def main():
             text=text,
             structure_blocks=structure_blocks,
             command_blocks=command_blocks,
+            steppables=stepables,
         )
         # print rendered
 
