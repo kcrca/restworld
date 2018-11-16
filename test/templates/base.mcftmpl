@@ -13,3 +13,16 @@ ${increment(len(collection))}
 ${caller.body(when, loop.index, item)}
 % endfor
 </%def>
+
+<%def name="bounce(collection)">
+<%
+    backwards = collection[1:-1]
+    backwards.reverse()
+    merged = collection + backwards 
+%>
+${increment(len(merged))}
+
+% for item in merged:
+${caller.body(when, loop.index, item)}
+% endfor
+</%def>

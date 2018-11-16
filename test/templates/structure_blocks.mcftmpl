@@ -1,5 +1,4 @@
 <%namespace name="base"  file="base.mcftmpl"/>
-${base.increment(len(structure_blocks))}
 
 <%base:loop collection="${structure_blocks}" args="when,i,item">
 ${when(i)} data merge block ~ ~3 ~ {mode:${item.id}}

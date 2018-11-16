@@ -29,6 +29,16 @@ class Color(Item):
             return self.dyes['default']
 
 
+class CommandBlock(Item):
+    def __init__(self, name, conditional):
+        """
+
+        :type conditional: bool
+        """
+        Item.__init__(self, name)
+        self.conditional = conditional
+
+
 def text(txt):
     return r'"\"%s\""' % txt
 
@@ -62,9 +72,19 @@ def main():
         Item("Load", "LOAD"),
         Item("Corner", "CORNER"),
     )
-    stones = (
-        Item("Stone"),
-        Item("Smooth Stone"),
+    command_blocks = (
+        CommandBlock("Command Block", True),
+        CommandBlock("Command Block", False),
+        CommandBlock("Chain Command Block", False),
+        CommandBlock("Chain Command Block", True),
+        CommandBlock("Repeating Command Block", True),
+        CommandBlock("Repeating Command Block", False),
+        CommandBlock("Command Block", False),
+        CommandBlock("Command Block", True),
+        CommandBlock("Chain Command Block", True),
+        CommandBlock("Chain Command Block", False),
+        CommandBlock("Repeating Command Block", False),
+        CommandBlock("Repeating Command Block", True),
     )
 
     dir = sys.argv[1] if len(sys.argv) > 1 else '.'
@@ -84,6 +104,7 @@ def main():
             colors=colors,
             text=text,
             structure_blocks=structure_blocks,
+            command_blocks=command_blocks,
         )
         # print rendered
 
