@@ -1,0 +1,10 @@
+<%namespace name="base"  file="base.mcftmpl"/>
+<%
+    blocks = [Item("Water"), ]
+    for i in range (0, 4):
+	blocks.append(Item("Frosted Ice", block_state="[age=%d]" % i))
+%>
+
+<%base:loop collection="${blocks}" args="when,i,item">
+${when(i)} setblock ~ ~3 ~ minecraft:${item.id + item.block_state}
+</%base:loop>

@@ -1,0 +1,20 @@
+<%namespace name="base"  file="base.mcftmpl"/>
+<% blocks = (
+       Item("Redstone"),
+       Item("Emerald"),
+       Item("Nether Quartz"),
+       Item("Gold"),
+       Item("Iron"),
+       Item("Coal"),
+       Item("Lapis"),
+       Item("Diamond"),
+   )
+%>
+
+<%base:loop collection="${blocks}" args="when,i,item">
+${when(i)} setblock ~ ~3 ~ minecraft:${"%s_ore" % item.id}
+${when(i)} data merge block ~1 ~2 ~ {Text2:${text("%s Ore" % item.name)}}
+<% block_item = Item("Quartz") if item.name.startswith("Nether") else item; %>
+${when(i)} setblock ~-3 ~3 ~ minecraft:${"%s_block" % block_item.id}
+${when(i)} data merge block ~-2 ~2 ~ {Text2:${text("%s Block" % block_item.name)}}
+</%base:loop>
