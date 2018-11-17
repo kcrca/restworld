@@ -1,0 +1,9 @@
+<%namespace name="base"  file="base.mcftmpl"/>
+<% blocks = (Item("Air"), Item("Stone Slab")) %>
+
+<%base:loop collection="${blocks}" args="when,i,item">
+${when(i)} fill ~0 ~2 ~0 ~3 ~2 ~3 ${item.full_id()}
+% if item.id.startswith("stone"):
+${when(i)} fill ~1 ~2 ~1 ~2 ~2 ~2 minecraft:air
+% endif
+</%base:loop>

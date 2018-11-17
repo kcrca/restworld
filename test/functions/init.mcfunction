@@ -2,6 +2,8 @@ scoreboard objectives add funcs dummy
 scoreboard players set dragon vars -1
 scoreboard players set command_blocks vars -1
 scoreboard players set conduit vars -1
+scoreboard players set fire vars -1
+scoreboard players set lava_level vars -1
 scoreboard players set base vars -1
 scoreboard players set steppable vars -1
 scoreboard players set columns vars -1
@@ -13,6 +15,7 @@ scoreboard players set topped_blocks vars -1
 scoreboard players set snow vars -1
 scoreboard players set pumpkin vars -1
 scoreboard players set ores vars -1
+scoreboard players set brewing vars -1
 scoreboard players set cake vars -1
 scoreboard players set structure_blocks vars -1
 scoreboard players set sponge vars -1
