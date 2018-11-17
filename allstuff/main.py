@@ -16,6 +16,12 @@ class Item:
         self.id = id
         self.block_state = block_state if block_state else ""
 
+    def full_id(self):
+        id = "minecraft:%s" % self.id
+        if self.block_state:
+            id += "[%s]" % self.block_state
+        return id
+
 
 class Color(Item):
     def __init__(self, name, rgb, dye_13):

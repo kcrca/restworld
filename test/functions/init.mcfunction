@@ -1,7 +1,9 @@
 scoreboard objectives add funcs dummy
 scoreboard players set command_blocks vars -1
+scoreboard players set conduit vars -1
 scoreboard players set base vars -1
 scoreboard players set steppable vars -1
+scoreboard players set columns vars -1
 scoreboard players set colorings vars -1
 scoreboard players set minerals vars -1
 scoreboard players set furnace vars -1

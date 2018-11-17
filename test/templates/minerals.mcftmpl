@@ -2,7 +2,7 @@
 <% minerals = (Item("Andesite"), Item("Diorite"), Item("Granite")) %>
 
 <%base:loop collection="${minerals}" args="when,i,item">
-${when(i)} setblock ~ ~3 ~ minecraft:${item.id}
+${when(i)} setblock ~ ~3 ~ ${item.full_id()}
 ${when(i)} data merge block ~-1 ~2 ~ {Text2:"\"${item.name}\""}
 ${when(i)} setblock ~ ~3 ~2 minecraft:polished_${item.id}
 ${when(i)} data merge block ~-1 ~2 ~2 {Text2:"\"Polished ${item.name}\""}
