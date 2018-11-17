@@ -1,6 +1,3 @@
-scoreboard objectives add funcs dummy
-scoreboard players set colorings funcs -1
-
 execute positioned ~ ~2 ~ run kill @e[dx=-15,dy=5,dz=5,type=!player]
 kill @e[tag=colorings_item]
 

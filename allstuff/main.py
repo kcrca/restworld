@@ -108,8 +108,11 @@ def main():
     tmpl_dir = os.path.join(dir, 'templates')
     func_dir = os.path.join(dir, 'functions')
     lookup = TemplateLookup(directories=['.'])
+    vars = []
     for tmpl_path in glob.glob(os.path.join(tmpl_dir, "*.mcftmpl")):
         func_name = os.path.splitext(os.path.basename(tmpl_path))[0]
+        if func_name == "init":
+            continue
         print '----- %s' % func_name
         var_name = func_name
         if var_name.endswith('_init'):
@@ -124,10 +127,16 @@ def main():
             command_blocks=command_blocks,
             steppables=stepables,
         )
-        # print rendered
+        write_function(func_dir, func_name, rendered)
+        vars.append(var_name)
 
-        with open(os.path.join(func_dir, '%s.mcfunction' % func_name), "w") as out:
-            out.write(rendered)
+    init_tmpl = Template(filename=os.path.join(tmpl_dir, "init.mcftmpl"), lookup=lookup)
+    write_function(func_dir, "init", init_tmpl.render(vars=vars))
+
+
+def write_function(func_dir, func_name, rendered):
+    with open(os.path.join(func_dir, '%s.mcfunction' % func_name), "w") as out:
+        out.write(rendered)
 
 
 if __name__ == '__main__':

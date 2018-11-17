@@ -1,4 +1,3 @@
-<%include file="base_init.mcftmpl" />
 execute positioned ~ ~2 ~ run kill @e[dx=-15,dy=5,dz=5,type=!player]
 kill @e[tag=${var}_item]
 
