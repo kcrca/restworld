@@ -1,0 +1,11 @@
+<%namespace name="base"  file="base.mcftmpl"/>
+<% blocks = (
+       Item("Sponge"),
+       Item("Wet Sponge"),
+   )
+%>
+
+<%base:loop collection="${blocks}" args="when,i,item">
+${when(i)} setblock ~ ~3 ~ minecraft:${item.id + item.block_state}
+${when(i)} data merge block ~1 ~2 ~ {Text2:${text(item.name)}}
+</%base:loop>

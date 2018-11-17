@@ -1,0 +1,17 @@
+<%namespace name="base"  file="base.mcftmpl"/>
+<% blocks = (
+	Item("Grass Path"), Item("Grass Block"),
+	Item("Grass Block", block_state="[snowy=true]"), Item("Mycelium"), Item("Podzol")
+   )
+%>
+
+<%! clear_next = False %>
+<%base:loop collection="${blocks}" args="when,i,item">
+${when(i)} setblock ~ ~3 ~ minecraft:${item.id}${item.block_state}
+%if item.block_state:
+${when(i)} data merge block ~1 ~2 ~ {Text1:${text("Snowy")},Text2:${text(item.name)}}
+%else:
+${when(i)} data merge block ~1 ~2 ~ {Text1:${text("")},Text2:${text(item.name)}}
+%endif
+
+</%base:loop>

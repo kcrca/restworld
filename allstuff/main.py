@@ -9,11 +9,12 @@ mc_version = '1.13'
 
 
 class Item:
-    def __init__(self, name, id=None):
+    def __init__(self, name, id=None, block_state=None):
         if id is None:
             id = to_id(name)
         self.name = name
         self.id = id
+        self.block_state = block_state if block_state else ""
 
 
 class Color(Item):
