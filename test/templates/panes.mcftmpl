@@ -1,14 +1,14 @@
 <%namespace name="base"  file="base.mcftmpl"/>
 <%
-    blocks = colors + (Item("Iron Bars"), Item("Glass Pane"))
+    blocks = colors + (Thing("Iron Bars"), Thing("Glass Pane"))
 %>
 
-<%base:loop collection="${blocks}" args="when,i,item">
-%if item in colors:
-${when(i)} fill ~ ~2 ~ ~5 ~3 ~7 minecraft:${item.id}_stained_glass_pane replace #allstuff:panes
-${when(i)} data merge block ~-1 ~2 ~5 {Text2:${text(item.name)},Text3:${text("Stained Glass")}}
+<%base:loop collection="${blocks}" args="when,i,thing">
+%if thing in colors:
+${when(i)} fill ~ ~2 ~ ~5 ~3 ~7 minecraft:${thing.id}_stained_glass_pane replace #allstuff:panes
+${when(i)} data merge block ~-1 ~2 ~5 {Text2:${text(thing.name)},Text3:${text("Stained Glass")}}
 %else:
-${when(i)} fill ~ ~2 ~ ~5 ~3 ~7 ${item.full_id()} replace #allstuff:panes
-${when(i)} data merge block ~-1 ~2 ~5 {Text2:${text(item.name)},Text3:${text("")}}
+${when(i)} fill ~ ~2 ~ ~5 ~3 ~7 ${thing.full_id()} replace #allstuff:panes
+${when(i)} data merge block ~-1 ~2 ~5 {Text2:${text(thing.name)},Text3:${text("")}}
 %endif
 </%base:loop>

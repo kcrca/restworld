@@ -17,7 +17,6 @@ scoreboard players set end_portal vars -1
 scoreboard players set topped_blocks vars -1
 scoreboard players set snow vars -1
 scoreboard players set pumpkin vars -1
-scoreboard players set fences vars -1
 scoreboard players set ores vars -1
 scoreboard players set brewing vars -1
 scoreboard players set cake vars -1

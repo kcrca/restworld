@@ -1,7 +1,7 @@
 <%namespace name="base"  file="base.mcftmpl"/>
-<% stones = (Item("Stone"), Item("Smooth Stone")) %>
+<% stones = (Thing("Stone"), Thing("Smooth Stone")) %>
 
-<%base:loop collection="${stones}" args="when,i,item">
-${when(i)} setblock ~ ~3 ~ ${item.full_id()}
-${when(i)} data merge block ~-1 ~2 ~ {Text2:${text(item.name)}}
+<%base:loop collection="${stones}" args="when,i,thing">
+${when(i)} setblock ~ ~3 ~ ${thing.full_id()}
+${when(i)} data merge block ~-1 ~2 ~ {Text2:${text(thing.name)}}
 </%base:loop>

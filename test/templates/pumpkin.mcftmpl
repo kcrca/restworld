@@ -1,12 +1,12 @@
 <%namespace name="base"  file="base.mcftmpl"/>
 <% blocks = (
-       Item("Pumpkin"),
-       Item("Carved Pumpkin", block_state="facing=east"),
-       Item(r"Jack O' Lantern", "jack_o_lantern", block_state="facing=east")
+       Thing("Pumpkin"),
+       Thing("Carved Pumpkin", block_state="facing=east"),
+       Thing(r"Jack O' Lantern", "jack_o_lantern", block_state="facing=east")
    )
 %>
 
-<%base:loop collection="${blocks}" args="when,i,item">
-${when(i)} setblock ~ ~3 ~ ${item.full_id()}
-${when(i)} data merge block ~1 ~2 ~ {Text2:${text(item.name)}}
+<%base:loop collection="${blocks}" args="when,i,thing">
+${when(i)} setblock ~ ~3 ~ ${thing.full_id()}
+${when(i)} data merge block ~1 ~2 ~ {Text2:${text(thing.name)}}
 </%base:loop>

@@ -3,7 +3,7 @@
 
 
 kill @e[type=minecraft:ender_dragon]
-<%base:loop collection="${r}" args="when,i,item">
+<%base:loop collection="${r}" args="when,i,thing">
 %if i:
 ${when(i)} summon minecraft:ender_dragon ~ ~5 ~ {NoAi:True,Silent:True,Rotation:[270f,0f]}
 ${when(i)} summon dragon_fireball ~-10 ~5 ~ {direction:[0.0,0.0,0.0],ExplosionPower:0}

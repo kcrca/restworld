@@ -1,11 +1,11 @@
 <%namespace name="base"  file="base.mcftmpl"/>
 <%
-    on = Item("Dark Prismarine")
-    off = Item("Dirt")
+    on = Thing("Dark Prismarine")
+    off = Thing("Dirt")
     on_off = (on, off)
     off_on = (off, on)
 %>
 
-<%base:loop collection="${on_off}" args="when,i,item">
-${when(i)} fill ~-2 ~4 ~0 ~2 ~6 ~-1 ${item.full_id()} replace minecraft:${off_on[i].id}
+<%base:loop collection="${on_off}" args="when,i,thing">
+${when(i)} fill ~-2 ~4 ~0 ~2 ~6 ~-1 ${thing.full_id()} replace minecraft:${off_on[i].id}
 </%base:loop>

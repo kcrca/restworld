@@ -1,6 +1,6 @@
 <%namespace name="base"  file="base.mcftmpl"/>
 <% bites = range(0, 7) %>
 
-<%base:bounce collection="${bites}" args="when,i,item">
-${when(i)} setblock ~ ~3 ~ cake[bites=${item}]
+<%base:bounce collection="${bites}" args="when,i,thing">
+${when(i)} setblock ~ ~3 ~ cake[bites=${thing}]
 </%base:bounce>

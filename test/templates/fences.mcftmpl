@@ -3,11 +3,11 @@
     blocks = to_nicknamed("Fence", woods + ("Nether Brick",)) + to_nicknamed("Cobblestone Wall", ("", "Mossy"))
 %>
 
-<%base:loop collection="${blocks}" args="when,i,item">
-${when(i)} fill ~ ~2 ~ ~5 ~3 ~7 ${item.full_id()} replace #allstuff:fences
+<%base:loop collection="${blocks}" args="when,i,thing">
+${when(i)} fill ~ ~2 ~ ~5 ~3 ~7 ${thing.full_id()} replace #allstuff:fences
 % try:
-${when(i)} data merge block ~5 ~2 ~5 {Text2:${text(item.nickname)},Text3:${text(item.kind)}}
+${when(i)} data merge block ~5 ~2 ~5 {Text2:${text(thing.nickname)},Text3:${text(thing.kind)}}
 % except:
-${when(i)} data merge block ~5 ~2 ~5 {Text2:${text(item.name)},Text3:${text("")}}
+${when(i)} data merge block ~5 ~2 ~5 {Text2:${text(thing.name)},Text3:${text("")}}
 % endtry
 </%base:loop>

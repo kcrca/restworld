@@ -1,12 +1,12 @@
 <%namespace name="base"  file="base.mcftmpl"/>
 <%
-    up = Item("Bubble Column", block_state="drag=false")
-    down = Item("Bubble Column", block_state="drag=true")
+    up = Thing("Bubble Column", block_state="drag=false")
+    down = Thing("Bubble Column", block_state="drag=true")
     columns = (up, down)
-    blocks = (Item("Soul Sand"), Item("Magma BlocK"))
+    blocks = (Thing("Soul Sand"), Thing("Magma BlocK"))
 %>
 
-<%base:loop collection="${columns}" args="when,i,item">
+<%base:loop collection="${columns}" args="when,i,thing">
 ${when(i)} setblock ~ ~2 ~ ${blocks[i].full_id()}
-${when(i)} fill ~ ~3 ~ ~ ~7 ~-1 ${item.full_id()}
+${when(i)} fill ~ ~3 ~ ~ ~7 ~-1 ${thing.full_id()}
 </%base:loop>

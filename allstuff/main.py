@@ -8,7 +8,7 @@ from mako.template import Template
 mc_version = '1.13'
 
 
-class Item:
+class Thing:
     def __init__(self, name, id=None, block_state=None):
         if id is None:
             id = to_id(name)
@@ -23,16 +23,16 @@ class Item:
         return id
 
 
-class Nicknamed(Item):
+class Nicknamed(Thing):
     def __init__(self, nickname, kind, id=None, block_state=None):
-        Item.__init__(self, ("%s %s" % (nickname, kind)).strip(), id, block_state)
+        Thing.__init__(self, ("%s %s" % (nickname, kind)).strip(), id, block_state)
         self.nickname = nickname
         self.kind = kind
 
 
-class Color(Item):
+class Color(Thing):
     def __init__(self, name, rgb, dye_13):
-        Item.__init__(self, name)
+        Thing.__init__(self, name)
         self.rgb = rgb
         self.dyes = {'1.13': dye_13, '1.14': '%s_dye' % self.id, 'default': dye_13}
 
@@ -43,15 +43,15 @@ class Color(Item):
             return self.dyes['default']
 
 
-class CommandBlock(Item):
+class CommandBlock(Thing):
     def __init__(self, name, conditional):
-        Item.__init__(self, name)
+        Thing.__init__(self, name)
         self.conditional = conditional
 
 
-class Stepable(Item):
+class Stepable(Thing):
     def __init__(self, name, base_id, block=None):
-        Item.__init__(self, name)
+        Thing.__init__(self, name)
         self.block = to_id(block) if block else self.id
         self.base_id = to_id(base_id)
 
@@ -89,10 +89,10 @@ def main():
         Color("Black", 1908001, "ink_sack"),
     )
     structure_blocks = (
-        Item("Data", "DATA"),
-        Item("Save", "SAVE"),
-        Item("Load", "LOAD"),
-        Item("Corner", "CORNER"),
+        Thing("Data", "DATA"),
+        Thing("Save", "SAVE"),
+        Thing("Load", "LOAD"),
+        Thing("Corner", "CORNER"),
     )
     command_blocks = (
         CommandBlock("Command Block", True),
@@ -139,7 +139,7 @@ def main():
         tmpl = Template(filename=tmpl_path, lookup=lookup)
         rendered = tmpl.render(
             var=var_name,
-            Item=Item,
+            Thing=Thing,
             colors=colors,
             structure_blocks=structure_blocks,
             command_blocks=command_blocks,

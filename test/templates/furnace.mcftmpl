@@ -1,9 +1,9 @@
 <%namespace name="base"  file="base.mcftmpl"/>
-<% furnace_states = (Item("(lit)", "true"), Item("", "false")) %>
+<% furnace_states = (Thing("(lit)", "true"), Thing("", "false")) %>
 
-<%base:loop collection="${furnace_states}" args="when,i,item">
+<%base:loop collection="${furnace_states}" args="when,i,thing">
 
-${base.when(i)} setblock ~ ~3 ~ minecraft:furnace[facing=west,lit=${item.id}]
-${base.when(i)} data merge block ~-1 ~2 ~-1 {Text3:${text(item.name)}}
+${base.when(i)} setblock ~ ~3 ~ minecraft:furnace[facing=west,lit=${thing.id}]
+${base.when(i)} data merge block ~-1 ~2 ~-1 {Text3:${text(thing.name)}}
 
 </%base:loop>

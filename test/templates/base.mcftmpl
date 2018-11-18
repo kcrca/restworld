@@ -9,8 +9,8 @@ execute unless score ${var} funcs matches 0..${count - 1} run scoreboard players
 <%def name="loop(collection)">
 ${increment(len(collection))}
 
-% for item in collection:
-${caller.body(when, loop.index, item)}
+% for thing in collection:
+${caller.body(when, loop.index, thing)}
 % endfor
 </%def>
 
@@ -22,7 +22,7 @@ ${caller.body(when, loop.index, item)}
 %>
 ${increment(len(merged))}
 
-% for item in merged:
-${caller.body(when, loop.index, item)}
+% for thing in merged:
+${caller.body(when, loop.index, thing)}
 % endfor
 </%def>
