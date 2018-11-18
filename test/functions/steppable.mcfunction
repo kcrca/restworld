@@ -4,7 +4,7 @@ fill ~3 ~2 ~0 ~4 ~4 ~4 minecraft:air
 
 
 
-execute unless score steppable funcs matches -1.. run function steppable_init
+execute unless score steppable funcs matches 0.. run function steppable_init
 scoreboard players add steppable funcs 1
 execute unless score steppable funcs matches 0..10 run scoreboard players set steppable funcs 0
 

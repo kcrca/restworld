@@ -3,7 +3,7 @@
 
 
 
-execute unless score weapons funcs matches -1.. run function weapons_init
+execute unless score weapons funcs matches 0.. run function weapons_init
 scoreboard players add weapons funcs 1
 execute unless score weapons funcs matches 0..4 run scoreboard players set weapons funcs 0
 

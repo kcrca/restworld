@@ -3,7 +3,7 @@
 
 
 
-execute unless score pumpkin funcs matches -1.. run function pumpkin_init
+execute unless score pumpkin funcs matches 0.. run function pumpkin_init
 scoreboard players add pumpkin funcs 1
 execute unless score pumpkin funcs matches 0..2 run scoreboard players set pumpkin funcs 0
 

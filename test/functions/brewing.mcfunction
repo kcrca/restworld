@@ -3,7 +3,7 @@
 
 
 
-execute unless score brewing funcs matches -1.. run function brewing_init
+execute unless score brewing funcs matches 0.. run function brewing_init
 scoreboard players add brewing funcs 1
 execute unless score brewing funcs matches 0..7 run scoreboard players set brewing funcs 0
 

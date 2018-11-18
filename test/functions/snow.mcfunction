@@ -4,7 +4,7 @@
 
 
 
-execute unless score snow funcs matches -1.. run function snow_init
+execute unless score snow funcs matches 0.. run function snow_init
 scoreboard players add snow funcs 1
 execute unless score snow funcs matches 0..13 run scoreboard players set snow funcs 0
 

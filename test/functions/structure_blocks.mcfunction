@@ -2,7 +2,7 @@
 
 
 
-execute unless score structure_blocks funcs matches -1.. run function structure_blocks_init
+execute unless score structure_blocks funcs matches 0.. run function structure_blocks_init
 scoreboard players add structure_blocks funcs 1
 execute unless score structure_blocks funcs matches 0..3 run scoreboard players set structure_blocks funcs 0
 

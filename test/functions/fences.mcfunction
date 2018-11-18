@@ -3,7 +3,7 @@
 
 
 
-execute unless score fences funcs matches -1.. run function fences_init
+execute unless score fences funcs matches 0.. run function fences_init
 scoreboard players add fences funcs 1
 execute unless score fences funcs matches 0..8 run scoreboard players set fences funcs 0
 

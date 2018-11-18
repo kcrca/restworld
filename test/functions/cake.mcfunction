@@ -4,7 +4,7 @@
 
 
 
-execute unless score cake funcs matches -1.. run function cake_init
+execute unless score cake funcs matches 0.. run function cake_init
 scoreboard players add cake funcs 1
 execute unless score cake funcs matches 0..11 run scoreboard players set cake funcs 0
 

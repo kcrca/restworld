@@ -3,7 +3,7 @@
 
 
 
-execute unless score furnace funcs matches -1.. run function furnace_init
+execute unless score furnace funcs matches 0.. run function furnace_init
 scoreboard players add furnace funcs 1
 execute unless score furnace funcs matches 0..1 run scoreboard players set furnace funcs 0
 

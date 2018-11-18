@@ -1,5 +1,5 @@
 <%def name="increment(count)">
-execute unless score ${var} funcs matches -1.. run function ${var}_init
+execute unless score ${var} funcs matches 0.. run function ${var}_init
 scoreboard players add ${var} funcs 1
 execute unless score ${var} funcs matches 0..${count - 1} run scoreboard players set ${var} funcs 0
 </%def>

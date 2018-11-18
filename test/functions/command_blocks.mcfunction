@@ -2,7 +2,7 @@
 
 
 
-execute unless score command_blocks funcs matches -1.. run function command_blocks_init
+execute unless score command_blocks funcs matches 0.. run function command_blocks_init
 scoreboard players add command_blocks funcs 1
 execute unless score command_blocks funcs matches 0..11 run scoreboard players set command_blocks funcs 0
 

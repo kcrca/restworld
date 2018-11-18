@@ -3,7 +3,7 @@
 
 
 
-execute unless score columns funcs matches -1.. run function columns_init
+execute unless score columns funcs matches 0.. run function columns_init
 scoreboard players add columns funcs 1
 execute unless score columns funcs matches 0..1 run scoreboard players set columns funcs 0
 

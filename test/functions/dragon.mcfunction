@@ -5,7 +5,7 @@
 kill @e[type=minecraft:ender_dragon]
 
 
-execute unless score dragon funcs matches -1.. run function dragon_init
+execute unless score dragon funcs matches 0.. run function dragon_init
 scoreboard players add dragon funcs 1
 execute unless score dragon funcs matches 0..1 run scoreboard players set dragon funcs 0
 

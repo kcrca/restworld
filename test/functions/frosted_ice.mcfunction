@@ -3,7 +3,7 @@
 
 
 
-execute unless score frosted_ice funcs matches -1.. run function frosted_ice_init
+execute unless score frosted_ice funcs matches 0.. run function frosted_ice_init
 scoreboard players add frosted_ice funcs 1
 execute unless score frosted_ice funcs matches 0..4 run scoreboard players set frosted_ice funcs 0
 

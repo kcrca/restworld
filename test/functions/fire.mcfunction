@@ -4,7 +4,7 @@
 
 
 
-execute unless score fire funcs matches -1.. run function fire_init
+execute unless score fire funcs matches 0.. run function fire_init
 scoreboard players add fire funcs 1
 execute unless score fire funcs matches 0..13 run scoreboard players set fire funcs 0
 

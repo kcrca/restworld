@@ -4,7 +4,7 @@
 
 
 
-execute unless score topped_blocks funcs matches -1.. run function topped_blocks_init
+execute unless score topped_blocks funcs matches 0.. run function topped_blocks_init
 scoreboard players add topped_blocks funcs 1
 execute unless score topped_blocks funcs matches 0..4 run scoreboard players set topped_blocks funcs 0
 

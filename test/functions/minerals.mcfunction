@@ -3,7 +3,7 @@
 
 
 
-execute unless score minerals funcs matches -1.. run function minerals_init
+execute unless score minerals funcs matches 0.. run function minerals_init
 scoreboard players add minerals funcs 1
 execute unless score minerals funcs matches 0..2 run scoreboard players set minerals funcs 0
 

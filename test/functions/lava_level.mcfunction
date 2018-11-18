@@ -3,7 +3,7 @@
 
 
 
-execute unless score lava_level funcs matches -1.. run function lava_level_init
+execute unless score lava_level funcs matches 0.. run function lava_level_init
 scoreboard players add lava_level funcs 1
 execute unless score lava_level funcs matches 0..1 run scoreboard players set lava_level funcs 0
 

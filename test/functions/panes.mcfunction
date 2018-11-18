@@ -3,7 +3,7 @@
 
 
 
-execute unless score panes funcs matches -1.. run function panes_init
+execute unless score panes funcs matches 0.. run function panes_init
 scoreboard players add panes funcs 1
 execute unless score panes funcs matches 0..17 run scoreboard players set panes funcs 0
 

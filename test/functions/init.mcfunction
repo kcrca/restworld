@@ -23,6 +23,7 @@ scoreboard players set brewing vars -1
 scoreboard players set cake vars -1
 scoreboard players set weapons vars -1
 scoreboard players set structure_blocks vars -1
+scoreboard players set anvil vars -1
 scoreboard players set sponge vars -1
 scoreboard players set colorings vars -1
 scoreboard players set stone vars -1

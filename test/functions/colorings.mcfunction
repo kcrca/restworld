@@ -2,7 +2,7 @@
 
 
 
-execute unless score colorings funcs matches -1.. run function colorings_init
+execute unless score colorings funcs matches 0.. run function colorings_init
 scoreboard players add colorings funcs 1
 execute unless score colorings funcs matches 0..15 run scoreboard players set colorings funcs 0
 

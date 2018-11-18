@@ -3,7 +3,7 @@
 
 
 
-execute unless score conduit funcs matches -1.. run function conduit_init
+execute unless score conduit funcs matches 0.. run function conduit_init
 scoreboard players add conduit funcs 1
 execute unless score conduit funcs matches 0..1 run scoreboard players set conduit funcs 0
 

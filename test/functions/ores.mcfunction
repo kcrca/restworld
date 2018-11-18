@@ -3,7 +3,7 @@
 
 
 
-execute unless score ores funcs matches -1.. run function ores_init
+execute unless score ores funcs matches 0.. run function ores_init
 scoreboard players add ores funcs 1
 execute unless score ores funcs matches 0..7 run scoreboard players set ores funcs 0
 

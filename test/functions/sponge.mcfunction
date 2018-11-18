@@ -3,7 +3,7 @@
 
 
 
-execute unless score sponge funcs matches -1.. run function sponge_init
+execute unless score sponge funcs matches 0.. run function sponge_init
 scoreboard players add sponge funcs 1
 execute unless score sponge funcs matches 0..1 run scoreboard players set sponge funcs 0
 

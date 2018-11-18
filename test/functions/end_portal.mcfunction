@@ -3,7 +3,7 @@
 
 
 
-execute unless score end_portal funcs matches -1.. run function end_portal_init
+execute unless score end_portal funcs matches 0.. run function end_portal_init
 scoreboard players add end_portal funcs 1
 execute unless score end_portal funcs matches 0..1 run scoreboard players set end_portal funcs 0
 
