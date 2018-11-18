@@ -8,6 +8,7 @@ scoreboard players set weapons vars -1
 scoreboard players set panes vars -1
 scoreboard players set base vars -1
 scoreboard players set panes vars -1
+scoreboard players set cauldron vars -1
 scoreboard players set steppable vars -1
 scoreboard players set columns vars -1
 scoreboard players set colorings vars -1

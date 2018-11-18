@@ -1,0 +1,6 @@
+<%namespace name="base"  file="base.mcftmpl"/>
+<% bites = range(0, 4) %>
+
+<%base:bounce collection="${bites}" args="when,i,thing">
+${when(i)} setblock ~ ~2 ~ cauldron[level=${thing}]
+</%base:bounce>
