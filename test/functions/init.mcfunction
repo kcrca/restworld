@@ -4,11 +4,14 @@ scoreboard players set command_blocks vars -1
 scoreboard players set conduit vars -1
 scoreboard players set fire vars -1
 scoreboard players set lava_level vars -1
+scoreboard players set panes vars -1
 scoreboard players set base vars -1
+scoreboard players set panes vars -1
 scoreboard players set steppable vars -1
 scoreboard players set columns vars -1
 scoreboard players set colorings vars -1
 scoreboard players set minerals vars -1
+scoreboard players set fences vars -1
 scoreboard players set furnace vars -1
 scoreboard players set end_portal vars -1
 scoreboard players set topped_blocks vars -1

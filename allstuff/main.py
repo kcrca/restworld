@@ -23,6 +23,13 @@ class Item:
         return id
 
 
+class Nicknamed(Item):
+    def __init__(self, nickname, kind, id=None, block_state=None):
+        Item.__init__(self, ("%s %s" % (nickname, kind)).strip(), id, block_state)
+        self.nickname = nickname
+        self.kind = kind
+
+
 class Color(Item):
     def __init__(self, name, rgb, dye_13):
         Item.__init__(self, name)
@@ -55,6 +62,11 @@ def text(txt):
 
 def to_id(name):
     return name.lower().replace(" ", "_")
+
+
+def to_nicknamed(kind, nicknames):
+    items = [Nicknamed(n, kind) for n in nicknames]
+    return items
 
 
 def main():
@@ -109,6 +121,7 @@ def main():
         Stepable("Prismarine Brick", "air", block="Prismarine Bricks"),
         Stepable("Dark Prismarine", "air"),
     )
+    woods = ("Acacia", "Birch", "Jungle", "Oak", "Dark Oak", "Spruce")
 
     dir = sys.argv[1] if len(sys.argv) > 1 else '.'
     tmpl_dir = os.path.join(dir, 'templates')
@@ -128,10 +141,12 @@ def main():
             var=var_name,
             Item=Item,
             colors=colors,
-            text=text,
             structure_blocks=structure_blocks,
             command_blocks=command_blocks,
             steppables=stepables,
+            woods=woods,
+            text=text,
+            to_nicknamed=to_nicknamed,
         )
         write_function(func_dir, func_name, rendered)
         vars.append(var_name)
