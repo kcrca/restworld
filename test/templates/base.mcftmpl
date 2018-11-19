@@ -4,7 +4,7 @@ scoreboard players add ${var} funcs 1
 execute unless score ${var} funcs matches 0..${count - 1} run scoreboard players set ${var} funcs 0
 </%def>
 
-<%def name="when(i)">execute if score ${var} funcs matches ${i} run</%def>
+<%def name="when(i, as_prefix=False)">execute if score ${var} funcs matches ${i}${"" if as_prefix else " run"}</%def>
 
 <%def name="loop(collection)">
 ${increment(len(collection))}

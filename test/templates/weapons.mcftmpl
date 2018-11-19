@@ -10,9 +10,6 @@
 %>
 
 <%base:loop collection="${materials}" args="when,i,thing">
-<%
-    prev = i - 1 if i > 0 else len(thing) - 1
-%>
 % if thing in horse_materials:
 ${when(i)} data merge entity @e[tag=armor_horse,limit=1] {ArmorItem:{id:"minecraft:${thing}_horse_armor",Count:1}}
 ${when(i)} data merge entity @e[tag=horse_armor_frame,limit=1] {Item:{id:${thing}_horse_armor},Count:1,ItemRotation:0}

@@ -9,7 +9,6 @@ execute unless score weapons funcs matches 0..4 run scoreboard players set weapo
 
 
 
-
 execute if score weapons funcs matches 0 run data merge entity @e[tag=armor_horse,limit=1] {ArmorItem:{id:"minecraft:iron_horse_armor",Count:0}}
 execute if score weapons funcs matches 0 run data merge entity @e[tag=horse_armor_frame,limit=1] {Item:{id:iron_horse_armor},Count:0}
 
@@ -29,7 +28,6 @@ execute if score weapons funcs matches 0 run setblock ~-4 ~3 ~1 minecraft:cobble
 execute if score weapons funcs matches 0 run setblock ~-4 ~3 ~-1 minecraft:cobblestone
 execute if score weapons funcs matches 0 run data merge entity @e[tag=source1_frame,limit=1] {Item:{id:cobblestone},Count:1,ItemRotation:0}
 execute if score weapons funcs matches 0 run data merge entity @e[tag=source2_frame,limit=1] {Item:{id:stone},Count:1,ItemRotation:0}
-
 
 
 execute if score weapons funcs matches 1 run data merge entity @e[tag=armor_horse,limit=1] {ArmorItem:{id:"minecraft:iron_horse_armor",Count:0}}
@@ -53,7 +51,6 @@ execute if score weapons funcs matches 1 run data merge entity @e[tag=source1_fr
 execute if score weapons funcs matches 1 run data merge entity @e[tag=source2_frame,limit=1] {Item:{id:oak_planks},Count:1,ItemRotation:0}
 
 
-
 execute if score weapons funcs matches 2 run data merge entity @e[tag=armor_horse,limit=1] {ArmorItem:{id:"minecraft:iron_horse_armor",Count:1}}
 execute if score weapons funcs matches 2 run data merge entity @e[tag=horse_armor_frame,limit=1] {Item:{id:iron_horse_armor},Count:1,ItemRotation:0}
 
@@ -75,7 +72,6 @@ execute if score weapons funcs matches 2 run data merge entity @e[tag=source1_fr
 execute if score weapons funcs matches 2 run data merge entity @e[tag=source2_frame,limit=1] {Item:{id:iron_ingot},Count:1,ItemRotation:0}
 
 
-
 execute if score weapons funcs matches 3 run data merge entity @e[tag=armor_horse,limit=1] {ArmorItem:{id:"minecraft:golden_horse_armor",Count:1}}
 execute if score weapons funcs matches 3 run data merge entity @e[tag=horse_armor_frame,limit=1] {Item:{id:golden_horse_armor},Count:1,ItemRotation:0}
 
@@ -95,7 +91,6 @@ execute if score weapons funcs matches 3 run setblock ~-4 ~3 ~1 minecraft:gold_o
 execute if score weapons funcs matches 3 run setblock ~-4 ~3 ~-1 minecraft:gold_ore
 execute if score weapons funcs matches 3 run data merge entity @e[tag=source1_frame,limit=1] {Item:{id:gold_nugget},Count:1,ItemRotation:0}
 execute if score weapons funcs matches 3 run data merge entity @e[tag=source2_frame,limit=1] {Item:{id:gold_ingot},Count:1,ItemRotation:0}
-
 
 
 execute if score weapons funcs matches 4 run data merge entity @e[tag=armor_horse,limit=1] {ArmorItem:{id:"minecraft:diamond_horse_armor",Count:1}}
