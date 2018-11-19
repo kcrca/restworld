@@ -17,11 +17,14 @@ scoreboard players set colorings vars -1
 scoreboard players set minerals vars -1
 scoreboard players set fences vars -1
 scoreboard players set furnace vars -1
+scoreboard players set wood vars -1
 scoreboard players set end_portal vars -1
 scoreboard players set topped_blocks vars -1
+scoreboard players set llama vars -1
 scoreboard players set snow vars -1
 scoreboard players set pumpkin vars -1
 scoreboard players set ores vars -1
+scoreboard players set beam_colors vars -1
 scoreboard players set brewing vars -1
 scoreboard players set cake vars -1
 scoreboard players set chest vars -1
@@ -33,4 +36,5 @@ scoreboard players set sponge vars -1
 scoreboard players set wood vars -1
 scoreboard players set colorings vars -1
 scoreboard players set stone vars -1
+scoreboard players set llama vars -1
 scoreboard players set frosted_ice vars -1

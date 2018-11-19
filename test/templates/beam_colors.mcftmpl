@@ -1,0 +1,15 @@
+<%namespace name="base"  file="base.mcftmpl"/>
+<%
+    color_ids = list([c.id for c in colors])
+    blocks = color_ids + ["glass_pane",]
+%>
+
+<%base:loop collection="${blocks}" args="when,i,thing">
+% if thing == "glass_pane":
+${when(i)} setblock ~ ~4 ~ minecraft:glass_pane
+${when(i)} data merge block ~ ~4 ~-1 {Text2:${text("Clear")}}
+% else:
+${when(i)} setblock ~ ~4 ~ minecraft:${thing}_stained_glass
+${when(i)} data merge block ~ ~4 ~-1 {Text2:${text(colors[i].name)}}
+% endif
+</%base:loop>
