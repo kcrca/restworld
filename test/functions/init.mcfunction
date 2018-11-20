@@ -1,5 +1,6 @@
 scoreboard objectives add funcs dummy
 scoreboard players set armors vars -1
+scoreboard players set holders vars -1
 scoreboard players set armors vars -1
 scoreboard players set dragon vars -1
 scoreboard players set command_blocks vars -1
@@ -23,7 +24,6 @@ scoreboard players set furnace vars -1
 scoreboard players set wood vars -1
 scoreboard players set end_portal vars -1
 scoreboard players set topped_blocks vars -1
-scoreboard players set llama vars -1
 scoreboard players set snow vars -1
 scoreboard players set horses vars -1
 scoreboard players set pumpkin vars -1
@@ -39,12 +39,12 @@ scoreboard players set tools vars -1
 scoreboard players set structure_blocks vars -1
 scoreboard players set mobs_3 vars -1
 scoreboard players set anvil vars -1
+scoreboard players set holders vars -1
 scoreboard players set sponge vars -1
 scoreboard players set 2_fish vars -1
 scoreboard players set wood vars -1
 scoreboard players set mobs_2 vars -1
 scoreboard players set colorings vars -1
 scoreboard players set stone vars -1
-scoreboard players set llama vars -1
 scoreboard players set end_mobs vars -1
 scoreboard players set frosted_ice vars -1

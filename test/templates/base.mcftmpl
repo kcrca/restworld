@@ -1,3 +1,7 @@
+<%def name="remove(who)">
+tp @e[${who}] @e[tag=death,limit=1]
+</%def>
+
 <%def name="increment(count)">\
 execute unless score ${var} funcs matches 0.. run function ${var}_init
 scoreboard players add ${var} funcs 1
