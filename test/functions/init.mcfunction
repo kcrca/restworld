@@ -40,6 +40,7 @@ scoreboard players set anvil vars -1
 scoreboard players set sponge vars -1
 scoreboard players set 2_fish vars -1
 scoreboard players set wood vars -1
+scoreboard players set mobs_2 vars -1
 scoreboard players set colorings vars -1
 scoreboard players set stone vars -1
 scoreboard players set llama vars -1
