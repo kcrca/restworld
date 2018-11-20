@@ -27,3 +27,12 @@ summon minecraft:tropical_fish ~1 ~2.2 ~2 {Tags:[white_gray_glitter],Variant:117
 summon minecraft:tropical_fish ~1 ~2.2 ~3 {Tags:[blockfish],Variant:67764993,CustomName:"\"Plum-Yellow Blockfish\"",NoAI:True,Silent:True,Rotation:[90f,0f]}
 summon minecraft:tropical_fish ~1 ~2.2 ~4 {Tags:[red_white_betty],Variant:918529,CustomName:"\"Red-White Betty\"",NoAI:True,Silent:True,Rotation:[90f,0f]}
 summon minecraft:tropical_fish ~1 ~2.2 ~5 {Tags:[clayfish],Variant:234882305,CustomName:"\"White-Red Clayfish\"",NoAI:True,Silent:True,Rotation:[90f,0f]}
+
+scoreboard objectives remove fish
+scoreboard objectives add fish dummy
+scoreboard players set NUM_COLORS fish 16
+scoreboard players set body fish 0
+scoreboard players set pattern fish 0
+scoreboard players set BODY_SCALE fish 65536
+scoreboard players set PATTERN_SCALE fish 16777216
+execute at @e[type=armor_stand,name=mob_anchor] as @e[type=!player,dx=-40,dy=10,dz=40] run data merge entity @s {PersistenceRequired:True}

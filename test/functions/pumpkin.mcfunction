@@ -2,12 +2,9 @@
 
 
 
-
 execute unless score pumpkin funcs matches 0.. run function pumpkin_init
 scoreboard players add pumpkin funcs 1
 execute unless score pumpkin funcs matches 0..2 run scoreboard players set pumpkin funcs 0
-
-
 
 execute if score pumpkin funcs matches 0 run setblock ~ ~3 ~ minecraft:pumpkin
 execute if score pumpkin funcs matches 0 run data merge block ~1 ~2 ~ {Text2:"\"Pumpkin\""}

@@ -6,9 +6,11 @@ scoreboard players set command_blocks vars -1
 scoreboard players set conduit vars -1
 scoreboard players set fire vars -1
 scoreboard players set lava_level vars -1
+scoreboard players set mobs_1 vars -1
 scoreboard players set weapons vars -1
 scoreboard players set panes vars -1
 scoreboard players set base vars -1
+scoreboard players set nether_mobs vars -1
 scoreboard players set panes vars -1
 scoreboard players set cauldron vars -1
 scoreboard players set steppable vars -1
@@ -29,6 +31,7 @@ scoreboard players set ores vars -1
 scoreboard players set beam_colors vars -1
 scoreboard players set brewing vars -1
 scoreboard players set cake vars -1
+scoreboard players set acquatic vars -1
 scoreboard players set chest vars -1
 scoreboard players set weapons vars -1
 scoreboard players set tools vars -1
@@ -40,4 +43,5 @@ scoreboard players set wood vars -1
 scoreboard players set colorings vars -1
 scoreboard players set stone vars -1
 scoreboard players set llama vars -1
+scoreboard players set end_mobs vars -1
 scoreboard players set frosted_ice vars -1

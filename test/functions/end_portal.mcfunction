@@ -2,12 +2,9 @@
 
 
 
-
 execute unless score end_portal funcs matches 0.. run function end_portal_init
 scoreboard players add end_portal funcs 1
 execute unless score end_portal funcs matches 0..1 run scoreboard players set end_portal funcs 0
-
-
 
 execute if score end_portal funcs matches 0 run fill ~2 ~2 ~2 ~2 ~2 ~-2 end_portal_frame[facing=west,eye=true]
 execute if score end_portal funcs matches 0 run fill ~2 ~2 ~2 ~-2 ~2 ~2 end_portal_frame[facing=north,eye=true]

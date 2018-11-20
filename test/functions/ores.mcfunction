@@ -2,12 +2,9 @@
 
 
 
-
 execute unless score ores funcs matches 0.. run function ores_init
 scoreboard players add ores funcs 1
 execute unless score ores funcs matches 0..7 run scoreboard players set ores funcs 0
-
-
 
 execute if score ores funcs matches 0 run setblock ~ ~3 ~ minecraft:redstone_ore
 execute if score ores funcs matches 0 run data merge block ~1 ~2 ~ {Text2:"\"Redstone Ore\""}

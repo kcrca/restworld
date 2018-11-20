@@ -2,12 +2,9 @@
 
 
 
-
 execute unless score beam_colors funcs matches 0.. run function beam_colors_init
 scoreboard players add beam_colors funcs 1
 execute unless score beam_colors funcs matches 0..16 run scoreboard players set beam_colors funcs 0
-
-
 
 execute if score beam_colors funcs matches 0 run setblock ~ ~4 ~ minecraft:white_stained_glass
 execute if score beam_colors funcs matches 0 run data merge block ~ ~4 ~-1 {Text2:"\"White\""}

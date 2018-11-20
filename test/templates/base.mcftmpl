@@ -1,4 +1,4 @@
-<%def name="increment(count)">
+<%def name="increment(count)">\
 execute unless score ${var} funcs matches 0.. run function ${var}_init
 scoreboard players add ${var} funcs 1
 execute unless score ${var} funcs matches 0..${count - 1} run scoreboard players set ${var} funcs 0
@@ -7,8 +7,7 @@ execute unless score ${var} funcs matches 0..${count - 1} run scoreboard players
 <%def name="when(i, as_prefix=False)">execute if score ${var} funcs matches ${i}${"" if as_prefix else " run"}</%def>
 
 <%def name="loop(collection)">
-${increment(len(collection))}
-
+${increment(len(collection))}\
 % for thing in collection:
 ${caller.body(when, loop.index, thing)}
 % endfor
@@ -19,10 +18,13 @@ ${caller.body(when, loop.index, thing)}
     backwards = collection[1:-1]
     backwards.reverse()
     merged = collection + backwards 
-%>
-${increment(len(merged))}
-
+%>\
+${increment(len(merged))}\
 % for thing in merged:
-${caller.body(when, loop.index, thing)}
+${caller.body(when, loop.index, thing)}\
 % endfor
 </%def>
+
+<%def name="on_stand(where, mob, nbt=None)">
+summon armor_stand ${where} {Small:True,Passengers:[{id:${to_id(mob)},CustomName:${text(mob)},${"%s," % nbt if nbt else ""}NoAI:True,Silent:True}]}
+</%def>"

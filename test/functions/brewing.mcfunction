@@ -2,12 +2,9 @@
 
 
 
-
 execute unless score brewing funcs matches 0.. run function brewing_init
 scoreboard players add brewing funcs 1
 execute unless score brewing funcs matches 0..7 run scoreboard players set brewing funcs 0
-
-
 
 execute if score brewing funcs matches 0 run data merge block ~ ~3 ~ {Items:[]}
 

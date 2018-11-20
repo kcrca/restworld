@@ -2,12 +2,9 @@
 
 
 
-
 execute unless score 2_fish funcs matches 0.. run function 2_fish_init
 scoreboard players add 2_fish funcs 1
 execute unless score 2_fish funcs matches 0..1 run scoreboard players set 2_fish funcs 0
-
-
 
 execute if score 2_fish funcs matches 0 run data merge entity @e[tag=kob,limit=1] {Variant:917504,CustomName:"\"Red-White Kob\""}
 execute if score 2_fish funcs matches 0 run data merge entity @e[tag=dasher,limit=1] {Variant:117441280,CustomName:"\"White-Gray Dasher\""}

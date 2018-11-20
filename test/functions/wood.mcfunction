@@ -7,12 +7,9 @@ fill ~4 ~2 ~1 ~4 ~3 ~2 air
 tp @e[tag=wood_boat] 10 0 0
 
 
-
 execute unless score wood funcs matches 0.. run function wood_init
 scoreboard players add wood funcs 1
 execute unless score wood funcs matches 0..5 run scoreboard players set wood funcs 0
-
-
 
 
 execute if score wood funcs matches 0 run setblock ~-3 ~2 ~3 minecraft:acacia_fence_gate[in_wall=true]

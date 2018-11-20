@@ -1,12 +1,9 @@
 
 
 
-
 execute unless score structure_blocks funcs matches 0.. run function structure_blocks_init
 scoreboard players add structure_blocks funcs 1
 execute unless score structure_blocks funcs matches 0..3 run scoreboard players set structure_blocks funcs 0
-
-
 
 execute if score structure_blocks funcs matches 0 run data merge block ~ ~3 ~ {mode:DATA}
 execute if score structure_blocks funcs matches 0 run data merge block ~-1 ~2 ~ {Text2:"\"Data\""}

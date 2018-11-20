@@ -1,12 +1,9 @@
 
 
 
-
 execute unless score command_blocks funcs matches 0.. run function command_blocks_init
 scoreboard players add command_blocks funcs 1
 execute unless score command_blocks funcs matches 0..11 run scoreboard players set command_blocks funcs 0
-
-
 
 execute if score command_blocks funcs matches 0 run setblock ~ ~3 ~ minecraft:command_block[facing=west,conditional=true]
 execute if score command_blocks funcs matches 0 run data merge block ~-1 ~2 ~ {Text2:"\"\"",Text4:"\"(Conditional)\""}

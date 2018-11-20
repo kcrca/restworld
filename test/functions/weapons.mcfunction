@@ -2,12 +2,9 @@
 
 
 
-
 execute unless score weapons funcs matches 0.. run function weapons_init
 scoreboard players add weapons funcs 1
 execute unless score weapons funcs matches 0..4 run scoreboard players set weapons funcs 0
-
-
 
 execute if score weapons funcs matches 0 run data merge entity @e[tag=armor_horse,limit=1] {ArmorItem:{id:"minecraft:iron_horse_armor",Count:0}}
 execute if score weapons funcs matches 0 run data merge entity @e[tag=horse_armor_frame,limit=1] {Item:{id:iron_horse_armor},Count:0}

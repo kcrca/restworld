@@ -2,12 +2,9 @@
 
 
 
-
 execute unless score minerals funcs matches 0.. run function minerals_init
 scoreboard players add minerals funcs 1
 execute unless score minerals funcs matches 0..2 run scoreboard players set minerals funcs 0
-
-
 
 execute if score minerals funcs matches 0 run setblock ~ ~3 ~ minecraft:andesite
 execute if score minerals funcs matches 0 run data merge block ~-1 ~2 ~ {Text2:"\"Andesite\""}

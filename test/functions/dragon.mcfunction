@@ -4,12 +4,9 @@
 
 kill @e[type=minecraft:ender_dragon]
 
-
 execute unless score dragon funcs matches 0.. run function dragon_init
 scoreboard players add dragon funcs 1
 execute unless score dragon funcs matches 0..1 run scoreboard players set dragon funcs 0
-
-
 
 execute if score dragon funcs matches 0 run kill @e[type=minecraft:dragon_fireball]
 execute if score dragon funcs matches 0 run setblock ~-5 ~4 ~ minecraft:air

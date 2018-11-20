@@ -3,12 +3,9 @@
 fill ~3 ~2 ~0 ~4 ~4 ~4 minecraft:air
 
 
-
 execute unless score steppable funcs matches 0.. run function steppable_init
 scoreboard players add steppable funcs 1
 execute unless score steppable funcs matches 0..10 run scoreboard players set steppable funcs 0
-
-
 
 execute if score steppable funcs matches 0 run setblock ~1 ~3 ~0 minecraft:sandstone
 execute if score steppable funcs matches 0 run data merge block ~0 ~2 ~1 {Text2:"\"Sandstone\""}

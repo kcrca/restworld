@@ -1,7 +1,6 @@
 <%namespace name="base"  file="base.mcftmpl"/>
 
 <%base:loop collection="${colors}" args="when,i,thing">
-
 ${when(i)} fill ~0 ~3 ~3 ~-1 ~3 ~3 ${thing.full_id()}_stained_glass_pane
 ${when(i)} setblock ~0 ~4 ~3 ${thing.full_id()}_stained_glass_pane
 ${when(i)} setblock ~-1 ~3 ~2 ${thing.full_id()}_stained_glass
@@ -23,5 +22,4 @@ ${when(i)} data merge entity @e[tag=colorings_armor_stand,limit=1] {Item:{id:coc
 
 ${when(i)} data merge entity @e[tag=colorings_armor_stand,limit=1] {CustomName:"\"${thing.name}\"",CustomNameVisible:True,ArmorItems:[{id:leather_boots,Count:1,tag:{Variant:2,display:{color:${thing.rgb}}}},{id:leather_leggings,Count:1,tag:{Variant:2,display:{color:${thing.rgb}}}},{id:leather_chestplate,Count:1,tag:{Variant:2,display:{color:${thing.rgb}}}},{id:leather_helmet,Count:1,tag:{Variant:2,display:{color:${thing.rgb}}}}]}
 ${when(i)} data merge entity @e[tag=colorings_llama,limit=1] {DecorItem:{id:${thing.id}_carpet,Count:1},CustomNameVisible:True,CustomName:"\"${thing.name}\""}
-
 </%base:loop>

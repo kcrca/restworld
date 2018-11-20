@@ -197,6 +197,7 @@ def main():
             fishes=fishes,
             text=text,
             to_nicknamed=to_nicknamed,
+            to_id=to_id,
         )
         write_function(func_dir, func_name, rendered)
         vars.append(var_name)

@@ -2,12 +2,9 @@
 
 
 
-
 execute unless score tools funcs matches 0.. run function tools_init
 scoreboard players add tools funcs 1
 execute unless score tools funcs matches 0..3 run scoreboard players set tools funcs 0
-
-
 
 execute if score tools funcs matches 0 run data merge entity @e[tag=armor_stand,limit=1] {HandItems:[{id:shears,Count:1},{id:fishing_rod,Count:1}]}
 
