@@ -1,5 +1,4 @@
 <%namespace name="base"  file="base.mcftmpl"/>
-tp @e[type=!player,distance=0..10] 10 -10 10
 <%
     horses = (
 	Thing("White"),

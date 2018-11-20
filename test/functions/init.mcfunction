@@ -37,6 +37,7 @@ scoreboard players set chest vars -1
 scoreboard players set weapons vars -1
 scoreboard players set tools vars -1
 scoreboard players set structure_blocks vars -1
+scoreboard players set mobs_3 vars -1
 scoreboard players set anvil vars -1
 scoreboard players set sponge vars -1
 scoreboard players set 2_fish vars -1

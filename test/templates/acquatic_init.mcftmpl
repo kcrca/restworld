@@ -1,6 +1,4 @@
 <%namespace name="base"  file="base.mcftmpl"/>\
-kill @e[type=!player,distance=0..7]
-kill @e[type=elder_guardian]
 summon minecraft:squid ~-1.5 ~3 ~5 {CustomName:"\"Squid\"",NoGravity:True,NoAI:True,Silent:True,Rotation:[90f,0f]}
 summon minecraft:dolphin ~-1.5 ~3 ~3 {CustomName:"\"Dolphin\"",Invulnerable:True,NoAI:True,Silent:True,Rotation:[90f,0f]}
 summon minecraft:cod ~-2 ~2.2 ~1.5 {CustomName:"\"Cod\"",NoAI:True,Silent:True,Rotation:[90f,0f]}

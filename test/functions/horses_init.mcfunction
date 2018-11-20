@@ -1,5 +1,4 @@
 
-tp @e[type=!player,distance=0..10] 10 -10 10
 
 
 

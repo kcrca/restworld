@@ -1,0 +1,32 @@
+<%!
+    global x
+    x = 0
+%>\
+<%def name="pair(name, id=None, block_state=None, name_kid=False)">
+<%
+    global x
+    thing = Thing(name, id)
+    nbt_add = ",%s" % block_state if block_state else ""
+    kid_name = ",CustomName:%s" % text(name) if name_kid else ""
+%>\
+summon ${thing.full_id()} ~${x} ~2 ~-1 {Age:-2147483648${kid_name},Tags:[kids]${nbt_add},NoAI:True,Silent:True,Rotation:[180f,0f]}
+summon ${thing.full_id()} ~${x} ~2 ~2 {CustomName:${text(thing.name)},Tags:[adult]${nbt_add},NoAI:True,Silent:True,Rotation:[180f,0f]}
+<% x -= 2 %>\
+</%def>
+
+${pair("Turtle")}
+${pair("Sheep")}
+${pair("jeb_", id="sheep", name_kid=True)}
+${pair("Cow")}
+${pair("Mooshroom")}
+${pair("Pig")}
+${pair("Chicken")}
+${pair("Ocelot")}
+${pair("Wolf", block_state="Owner:dummy")}
+${pair("Wolf")}
+${pair("Rabbit")}
+${pair("Bat")}
+
+setblock ~1 ~2 ~0 minecraft:turtle_egg[eggs=1,hatch=2]
+setblock ~1 ~2 ~1 minecraft:turtle_egg[eggs=1,hatch=1]
+setblock ~1 ~2 ~2 minecraft:turtle_egg[eggs=1,hatch=0]
