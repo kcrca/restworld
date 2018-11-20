@@ -1,0 +1,31 @@
+<%namespace name="base"  file="base.mcftmpl"/>
+tp @e[type=!player,distance=0..10] 10 -10 10
+<%
+    horses = (
+	Thing("White"),
+	Thing("Creamy"),
+	Thing("Chestnut"),
+	Thing("Brown"),
+	Thing("Black"),
+	Thing("Gray"),
+	Thing("Dark Brown"),
+    )
+    others = (
+	Thing("Mule"),
+	Thing("Donkey"),
+	Thing("Skeleton Horse"),
+	Thing("Zombie Horse"),
+    )
+%>
+
+<% z = 0 %>
+% for horse in horses:
+summon minecraft:horse ~-2.5 ~2 ~${z} {Variant:${loop.index},CustomName:${text(horse.name)},NoAI:True,Silent:True,Rotation:[270f,0f]}
+summon minecraft:horse ~0.5 ~2 ~${z} {Variant:${loop.index},Age:-2147483648,Tags:[kids],NoAI:True,Silent:True,Rotation:[270f,0f]}
+<% z += -2 %>\
+% endfor
+% for horse in others:
+summon ${horse.id} ~-2.5 ~2 ~${z} {CustomName:${text(horse.name)},NoAI:True,Silent:True,Rotation:[270f,0f]}
+summon ${horse.id} ~0.5 ~2 ~${z} {Age:-2147483648,Tags:[kids],NoAI:True,Silent:True,Rotation:[270f,0f]}
+<% z += -2 %>\
+% endfor

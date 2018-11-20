@@ -25,6 +25,7 @@ scoreboard players set end_portal vars -1
 scoreboard players set topped_blocks vars -1
 scoreboard players set llama vars -1
 scoreboard players set snow vars -1
+scoreboard players set horses vars -1
 scoreboard players set pumpkin vars -1
 scoreboard players set all_fish vars -1
 scoreboard players set ores vars -1
