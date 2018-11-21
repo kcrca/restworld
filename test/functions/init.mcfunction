@@ -30,6 +30,7 @@ scoreboard players set furnace vars -1
 scoreboard players set holders vars -1
 scoreboard players set holders vars -1
 scoreboard players set horses vars -1
+scoreboard players set horses vars -1
 scoreboard players set illager vars -1
 scoreboard players set lava_level vars -1
 scoreboard players set llamas vars -1

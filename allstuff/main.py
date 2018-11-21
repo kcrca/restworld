@@ -48,6 +48,17 @@ class Color(Thing):
             return self.dyes['default']
 
 
+class Horse(Thing):
+    def __init__(self, name, variant=None):
+        if variant is not None:
+            Thing.__init__(self, name, "horse")
+            self.tag = "%s_horses" % to_id(name)
+        else:
+            Thing.__init__(self, name)
+            self.tag = "%ss" % self.id
+        self.variant = variant
+
+
 class CommandBlock(Thing):
     def __init__(self, name, conditional):
         Thing.__init__(self, name)
@@ -175,6 +186,21 @@ def main():
             fishes.append((re.sub(r'[- ]', '_', f[0][1].lower()), f))
         else:
             fishes.append((f[0], list(v for v in f[1:])))
+    horses = (
+        Horse("White", 0),
+        Horse("Creamy", 1),
+        Horse("Chestnut", 2),
+        Horse("Brown", 3),
+        Horse("Black", 4),
+        Horse("Gray", 5),
+        Horse("Dark Brown", 6),
+    )
+    other_horses = (
+        Horse("Mule"),
+        Horse("Donkey"),
+        Horse("Skeleton Horse"),
+        Horse("Zombie Horse"),
+    )
 
     dir = sys.argv[1] if len(sys.argv) > 1 else '.'
     tmpl_dir = os.path.join(dir, 'templates')
@@ -199,6 +225,8 @@ def main():
             steppables=stepables,
             woods=woods,
             fishes=fishes,
+            horses=horses,
+            other_horses=other_horses,
             text=text,
             to_nicknamed=to_nicknamed,
             to_id=to_id,
