@@ -29,7 +29,7 @@ ${caller.body(when, loop.index, thing)}\
 % endfor
 </%def>
 
-<%def name="on_stand(where, mob, nbt=None)">
+<%def name="on_stand(where, mob, nbt='')">
 summon armor_stand ${where} {Small:True,Passengers:[{id:${to_id(mob)},CustomName:${text(mob)},${"%s," % nbt if nbt else ""}NoAI:True,Silent:True}]}
 </%def>
 
@@ -54,26 +54,27 @@ summon armor_stand ${where} {Small:True,Passengers:[{id:${to_id(mob)},CustomName
 %>
 </%def>
 
-<%def name="kid(thing, x, y_add, z, rotation, nbt='')">\
-summon ${thing.full_id()} ~${x} ~${2 + y_add} ~${z} {IsBaby:True,Age:-2147483648,Tags:[kids]${nbt},NoAI:True,Silent:True,Rotation:[${rotation}f,0f]}
+<%def name="kid(thing, x, y_add, z, rotation, nbt='', tags=())">\
+<% nbt = ",%s" % nbt if nbt else "" %>\
+summon ${thing.full_id()} ~${x} ~${2 + y_add} ~${z} {IsBaby:True,Age:-2147483648,Tags:[${",".join(tags + ("kids",))}]${nbt},NoAI:True,Silent:True,Rotation:[${rotation}f,0f]}
 </%def>
 
-<%def name="adult(thing, x, y_add, z, rotation, nbt='')">\
-summon ${thing.full_id()} ~${x} ~${2 + y_add} ~${z} {CustomName:${text(thing.name)},Tags:[adult]${nbt},NoAI:True,Silent:True,Rotation:[${rotation}f,0f]}
+<%def name="adult(thing, x, y_add, z, rotation, nbt='', tags=())">\
+<% nbt = ",%s" % nbt if nbt else "" %>\
+summon ${thing.full_id()} ~${x} ~${2 + y_add} ~${z} {CustomName:${text(thing.name)},Tags:[${",".join(tags + ("adult",))}]${nbt},NoAI:True,Silent:True,Rotation:[${rotation}f,0f]}
 </%def>
 
-<%def name="mobs(name, id=None, nbt=None, name_kid=False, do_kid=False, do_adult=False, y_add=0)">\
+<%def name="mobs(name, id=None, nbt='', tags=(), name_kid=False, do_kid=False, do_adult=False, y_add=0)">\
 <%
     global x, z, x_delta, z_delta, adult_x, adult_z, kid_x, kid_z, rotation
     if not do_kid and not do_adult:
 	do_kid = do_adult = True
     thing = Thing(name, id)
-    nbt = ",%s" % nbt if nbt else ""
     kid_name = "CustomName:%s," % text(name) if name_kid else ""
     if do_kid:
-	kid(thing, x + kid_x, y_add, z + kid_z, rotation, nbt)
+	kid(thing, x + kid_x, y_add, z + kid_z, rotation, nbt, tags)
     if do_adult:
-	adult(thing, x + adult_x, y_add, z + adult_z, rotation, nbt)
+	adult(thing, x + adult_x, y_add, z + adult_z, rotation, nbt, tags)
     x += x_delta
     z += z_delta
 %>\
