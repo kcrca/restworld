@@ -32,10 +32,14 @@ class Nicknamed(Thing):
 
 
 class Color(Thing):
+    _next_color = 0
+
     def __init__(self, name, rgb, dye_13):
         Thing.__init__(self, name)
         self.rgb = rgb
         self.dyes = {'1.13': dye_13, '1.14': '%s_dye' % self.id, 'default': dye_13}
+        self.color_num = Color._next_color
+        Color._next_color += 1
 
     def dye_name(self):
         try:

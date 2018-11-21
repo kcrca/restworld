@@ -70,7 +70,9 @@ summon ${thing.full_id()} ~${x} ~${2 + y_add} ~${z} {CustomName:${text(thing.nam
     if not do_kid and not do_adult:
 	do_kid = do_adult = True
     thing = Thing(name, id)
-    kid_name = "CustomName:%s," % text(name) if name_kid else ""
+    if name_kid:
+	nbt = ',' + nbt if nbbt else ''
+	nbt = "CustomName:%s" % text(name) + nbt
     if do_kid:
 	kid(thing, x + kid_x, y_add, z + kid_z, rotation, nbt, tags)
     if do_adult:

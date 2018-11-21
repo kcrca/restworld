@@ -3,11 +3,11 @@
 summon minecraft:turtle ~0 ~2 ~-1 {IsBaby:True,Age:-2147483648,Tags:[kid],NoAI:True,Silent:True,Rotation:[180f,0f]}
 summon minecraft:turtle ~0 ~2 ~2 {CustomName:"\"Turtle\"",Tags:[],NoAI:True,Silent:True,Rotation:[180f,0f]}
 
-summon minecraft:sheep ~-2 ~2 ~-1 {IsBaby:True,Age:-2147483648,Tags:[kid],NoAI:True,Silent:True,Rotation:[180f,0f]}
-summon minecraft:sheep ~-2 ~2 ~2 {CustomName:"\"Sheep\"",Tags:[],NoAI:True,Silent:True,Rotation:[180f,0f]}
+summon minecraft:sheep ~-2 ~2 ~-1 {IsBaby:True,Age:-2147483648,Tags:[colored_sheep,kid],NoAI:True,Silent:True,Rotation:[180f,0f]}
+summon minecraft:sheep ~-2 ~2 ~2 {CustomName:"\"Sheep\"",Tags:[colored_sheep],NoAI:True,Silent:True,Rotation:[180f,0f]}
 
-summon minecraft:sheep ~-4 ~2 ~-1 {IsBaby:True,Age:-2147483648,Tags:[kid],NoAI:True,Silent:True,Rotation:[180f,0f]}
-summon minecraft:sheep ~-4 ~2 ~2 {CustomName:"\"jeb_\"",Tags:[],NoAI:True,Silent:True,Rotation:[180f,0f]}
+summon minecraft:sheep ~-4 ~2 ~-1 {IsBaby:True,Age:-2147483648,Tags:[kid],CustomName:"\"jeb_\"",NoAI:True,Silent:True,Rotation:[180f,0f]}
+summon minecraft:sheep ~-4 ~2 ~2 {CustomName:"\"jeb_\"",Tags:[],CustomName:"\"jeb_\"",NoAI:True,Silent:True,Rotation:[180f,0f]}
 
 summon minecraft:cow ~-6 ~2 ~-1 {IsBaby:True,Age:-2147483648,Tags:[kid],NoAI:True,Silent:True,Rotation:[180f,0f]}
 summon minecraft:cow ~-6 ~2 ~2 {CustomName:"\"Cow\"",Tags:[],NoAI:True,Silent:True,Rotation:[180f,0f]}

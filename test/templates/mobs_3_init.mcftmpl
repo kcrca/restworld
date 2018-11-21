@@ -2,7 +2,7 @@
 \
 ${base.mobs_init(x_delta_init=-2, kid_z_init=-1, adult_z_init=2, rotation_init=180)}\
 ${base.mobs("Turtle")}
-${base.mobs("Sheep")}
+${base.mobs("Sheep", tags=("colored_sheep",))}
 ${base.mobs("jeb_", id="sheep", name_kid=True)}
 ${base.mobs("Cow")}
 ${base.mobs("Mooshroom")}
