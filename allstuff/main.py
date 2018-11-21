@@ -177,7 +177,7 @@ def main():
     func_dir = os.path.join(dir, 'functions')
     lookup = TemplateLookup(directories=['.'])
     vars = []
-    for tmpl_path in glob.glob(os.path.join(tmpl_dir, "*.mcftmpl")):
+    for tmpl_path in sorted(glob.glob(os.path.join(tmpl_dir, "*.mcftmpl"))):
         func_name = os.path.splitext(os.path.basename(tmpl_path))[0]
         if func_name == "init":
             continue

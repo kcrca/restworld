@@ -1,0 +1,16 @@
+<%namespace name="base"  file="base.mcftmpl"/>
+<%
+    illagers = (
+	Thing("Illusioner (unused)", "illusioner"),
+	Thing("Vindicator"),
+	Thing("Evoker"),
+    )
+%>
+
+${base.pair_init(x_delta_init=-2, rotation_init=180)}\
+% for illager in illagers:
+${base.pair(illager.name, id=illager.id, do_kid=False)}\
+% endfor
+${base.pair("Vex", do_kid=False, y_add=1, nbt="LifeTicks:2147483647")}\
+
+${base.adult(Thing("Phantom"), -5, 3, 5, 180)}

@@ -1,0 +1,15 @@
+<%namespace name="base"  file="base.mcftmpl"/>
+<%
+    undeads = (
+	Thing("Zombie"),
+	Thing("Husk"),
+	Thing("Drowned"),
+	Thing("Zombie Pigman"),
+    )
+%>
+
+${base.pair_init(z_delta_init=-2, adult_x_init=-1.0, kid_x_init=0.9, rotation_init=270)}\
+% for undead in undeads:
+${base.pair(undead.name)}\
+% endfor
+${base.pair("Witch", do_kid=False)}\

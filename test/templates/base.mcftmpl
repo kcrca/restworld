@@ -34,29 +34,44 @@ summon armor_stand ${where} {Small:True,Passengers:[{id:${to_id(mob)},CustomName
 </%def>
 
 <%!
-    global x, z, x_delta, z_delta
-    x = z = x_delta = z_delta = 0
+    global x, z, x_delta, z_delta, adult_x, adult_z, kid_x, kid_z, rotation
+    x = z = x_delta = z_delta = adult_x = adult_z = kid_x = kid_z = rotation = 0
 %>
-<%def name="pair_init(x_init=None, y_init=None, x_delta_init=None, y_delta_init=None)">
+
+<%def name="pair_init(x_init=None, z_init=None, x_delta_init=None, z_delta_init=None, kid_x_init=None, kid_z_init=None, adult_x_init=None, adult_z_init=None, rotation_init=None)">
 <%
-    global x, z, x_delta, z_delta
-    x = z = x_delta = z_delta = 0
+    global x, z, x_delta, z_delta, adult_x, adult_z, kid_x, kid_z, rotation
+    x = z = x_delta = z_delta = adult_x = adult_z = kid_x = kid_z = rotation = 0
     x = x_init if x_init else x
     z = z_init if z_init else z
     x_delta = x_delta_init if x_delta_init else x_delta
     z_delta = z_delta_init if z_delta_init else z_delta
+    adult_x = adult_x_init if adult_x_init else adult_x
+    adult_z = adult_z_init if adult_z_init else adult_z
+    kid_x = kid_x_init if kid_x_init else kid_x
+    kid_z = kid_z_init if kid_z_init else kid_z
+    rotation = rotation_init if rotation_init else rotation
 %>
 </%def>
-<%def name="pair(name, id=None, block_state=None, name_kid=False)">
+
+<%def name="kid(thing, x, y_add, z, rotation, nbt='')">\
+summon ${thing.full_id()} ~${x} ~${2 + y_add} ~${z} {IsBaby:True,Age:-2147483648,Tags:[kids]${nbt},NoAI:True,Silent:True,Rotation:[${rotation}f,0f]}
+</%def>
+
+<%def name="adult(thing, x, y_add, z, rotation, nbt='')">\
+summon ${thing.full_id()} ~${x} ~${2 + y_add} ~${z} {CustomName:${text(thing.name)},Tags:[adult]${nbt},NoAI:True,Silent:True,Rotation:[${rotation}f,0f]}
+</%def>
+
+<%def name="pair(name, id=None, nbt=None, name_kid=False, do_kid=True, do_adult=True, y_add=0)">\
 <%
-    global x, z, x_delta, z_delta
+    global x, z, x_delta, z_delta, adult_x, adult_z, kid_x, kid_z, rotation
     thing = Thing(name, id)
-    nbt_add = ",%s" % block_state if block_state else ""
-    kid_name = ",CustomName:%s" % text(name) if name_kid else ""
-%>\
-summon ${thing.full_id()} ~${x} ~2 ~${z-1} {Age:-2147483648${kid_name},Tags:[kids]${nbt_add},NoAI:True,Silent:True,Rotation:[180f,0f]}
-summon ${thing.full_id()} ~${x} ~2 ~${z+2} {CustomName:${text(thing.name)},Tags:[adult]${nbt_add},NoAI:True,Silent:True,Rotation:[180f,0f]}
-<%
+    nbt = ",%s" % nbt if nbt else ""
+    kid_name = "CustomName:%s," % text(name) if name_kid else ""
+    if do_kid:
+	kid(thing, x + kid_x, y_add, z + kid_z, rotation, nbt)
+    if do_adult:
+	adult(thing, x + adult_x, y_add, z + adult_z, rotation, nbt)
     x += x_delta
     z += z_delta
 %>\

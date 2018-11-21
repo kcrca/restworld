@@ -8,10 +8,8 @@
     )
 %>
 
-<% z = 0 %>
+${base.pair_init(z_delta_init=2, adult_x_init=2, kid_x_init=-0.4, rotation_init=90)}\
 % for llama in llamas:
-summon minecraft:llama ~2.4 ~2 ~${z} {Variant:${loop.index},CustomName:${text(llama.name)},Tame:True,NoAI:True,Silent:True,Rotation:[90f,0f]}
-summon minecraft:llama ~-0.6 ~2 ~${z} {Variant:${loop.index},Age:-2147483648,Tags:[kids],Tame:True,NoAI:True,Silent:True,Rotation:[90f,0f]}
-<% z += 2 %>\
+${base.pair(llama.name, id="llama", nbt="Variant:%d" % loop.index)}\
 % endfor
 summon minecraft:llama_spit ~ ~3 ~3 {CustomName:"\"Llama Spit\"",TXD:0,TYD:0,TZD:0,Steps:0,NoAI:True,Motion:[0,0,0],NoGravity:True}
