@@ -38,7 +38,7 @@ summon armor_stand ${where} {Small:True,Passengers:[{id:${to_id(mob)},CustomName
     x = z = x_delta = z_delta = adult_x = adult_z = kid_x = kid_z = rotation = 0
 %>
 
-<%def name="pair_init(x_init=None, z_init=None, x_delta_init=None, z_delta_init=None, kid_x_init=None, kid_z_init=None, adult_x_init=None, adult_z_init=None, rotation_init=None)">
+<%def name="mobs_init(x_init=None, z_init=None, x_delta_init=None, z_delta_init=None, kid_x_init=None, kid_z_init=None, adult_x_init=None, adult_z_init=None, rotation_init=None)">
 <%
     global x, z, x_delta, z_delta, adult_x, adult_z, kid_x, kid_z, rotation
     x = z = x_delta = z_delta = adult_x = adult_z = kid_x = kid_z = rotation = 0
@@ -62,9 +62,11 @@ summon ${thing.full_id()} ~${x} ~${2 + y_add} ~${z} {IsBaby:True,Age:-2147483648
 summon ${thing.full_id()} ~${x} ~${2 + y_add} ~${z} {CustomName:${text(thing.name)},Tags:[adult]${nbt},NoAI:True,Silent:True,Rotation:[${rotation}f,0f]}
 </%def>
 
-<%def name="pair(name, id=None, nbt=None, name_kid=False, do_kid=True, do_adult=True, y_add=0)">\
+<%def name="mobs(name, id=None, nbt=None, name_kid=False, do_kid=False, do_adult=False, y_add=0)">\
 <%
     global x, z, x_delta, z_delta, adult_x, adult_z, kid_x, kid_z, rotation
+    if not do_kid and not do_adult:
+	do_kid = do_adult = True
     thing = Thing(name, id)
     nbt = ",%s" % nbt if nbt else ""
     kid_name = "CustomName:%s," % text(name) if name_kid else ""

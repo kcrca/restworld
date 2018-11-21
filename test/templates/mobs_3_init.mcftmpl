@@ -1,18 +1,18 @@
 <%namespace name="base"  file="base.mcftmpl"/>\
 \
-${base.pair_init(x_delta_init=-2, kid_z_init=-1, adult_z_init=2, rotation_init=180)}\
-${base.pair("Turtle")}
-${base.pair("Sheep")}
-${base.pair("jeb_", id="sheep", name_kid=True)}
-${base.pair("Cow")}
-${base.pair("Mooshroom")}
-${base.pair("Pig")}
-${base.pair("Chicken")}
-${base.pair("Ocelot")}
-${base.pair("Wolf", nbt="Owner:dummy")}
-${base.pair("Wolf")}
-${base.pair("Rabbit")}
-${base.pair("Bat")}
+${base.mobs_init(x_delta_init=-2, kid_z_init=-1, adult_z_init=2, rotation_init=180)}\
+${base.mobs("Turtle")}
+${base.mobs("Sheep")}
+${base.mobs("jeb_", id="sheep", name_kid=True)}
+${base.mobs("Cow")}
+${base.mobs("Mooshroom")}
+${base.mobs("Pig")}
+${base.mobs("Chicken")}
+${base.mobs("Ocelot")}
+${base.mobs("Wolf", nbt="Owner:dummy")}
+${base.mobs("Wolf")}
+${base.mobs("Rabbit")}
+${base.mobs("Bat")}
 
 setblock ~1 ~2 ~0 minecraft:turtle_egg[eggs=1,hatch=2]
 setblock ~1 ~2 ~1 minecraft:turtle_egg[eggs=1,hatch=1]
