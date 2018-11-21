@@ -48,6 +48,7 @@ scoreboard players set stone vars -1
 scoreboard players set structure_blocks vars -1
 scoreboard players set tools vars -1
 scoreboard players set topped_blocks vars -1
+scoreboard players set turtle_eggs vars -1
 scoreboard players set undead vars -1
 scoreboard players set weapons vars -1
 scoreboard players set weapons vars -1

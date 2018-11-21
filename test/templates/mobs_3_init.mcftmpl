@@ -13,7 +13,3 @@ ${base.mobs("Wolf", nbt="Owner:dummy")}
 ${base.mobs("Wolf")}
 ${base.mobs("Rabbit")}
 ${base.mobs("Bat")}
-
-setblock ~1 ~2 ~0 minecraft:turtle_egg[eggs=1,hatch=2]
-setblock ~1 ~2 ~1 minecraft:turtle_egg[eggs=1,hatch=1]
-setblock ~1 ~2 ~2 minecraft:turtle_egg[eggs=1,hatch=0]

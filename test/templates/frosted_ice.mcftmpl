@@ -1,4 +1,4 @@
-<%namespace name="base"  file="base.mcftmpl"/>
+<%namespace name="base" file="base.mcftmpl"/>
 <%
     blocks = [Thing("Water"), ]
     for i in range (0, 4):

@@ -36,7 +36,3 @@ summon minecraft:rabbit ~-20 ~2 ~2 {CustomName:"\"Rabbit\"",Tags:[],NoAI:True,Si
 summon minecraft:bat ~-22 ~2 ~-1 {IsBaby:True,Age:-2147483648,Tags:[kid],NoAI:True,Silent:True,Rotation:[180f,0f]}
 summon minecraft:bat ~-22 ~2 ~2 {CustomName:"\"Bat\"",Tags:[],NoAI:True,Silent:True,Rotation:[180f,0f]}
 
-
-setblock ~1 ~2 ~0 minecraft:turtle_egg[eggs=1,hatch=2]
-setblock ~1 ~2 ~1 minecraft:turtle_egg[eggs=1,hatch=1]
-setblock ~1 ~2 ~2 minecraft:turtle_egg[eggs=1,hatch=0]
