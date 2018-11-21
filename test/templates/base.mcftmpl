@@ -31,4 +31,33 @@ ${caller.body(when, loop.index, thing)}\
 
 <%def name="on_stand(where, mob, nbt=None)">
 summon armor_stand ${where} {Small:True,Passengers:[{id:${to_id(mob)},CustomName:${text(mob)},${"%s," % nbt if nbt else ""}NoAI:True,Silent:True}]}
-</%def>"
+</%def>
+
+<%!
+    global x, z, x_delta, z_delta
+    x = z = x_delta = z_delta = 0
+%>
+<%def name="pair_init(x_init=None, y_init=None, x_delta_init=None, y_delta_init=None)">
+<%
+    global x, z, x_delta, z_delta
+    x = z = x_delta = z_delta = 0
+    x = x_init if x_init else x
+    z = z_init if z_init else z
+    x_delta = x_delta_init if x_delta_init else x_delta
+    z_delta = z_delta_init if z_delta_init else z_delta
+%>
+</%def>
+<%def name="pair(name, id=None, block_state=None, name_kid=False)">
+<%
+    global x, z, x_delta, z_delta
+    thing = Thing(name, id)
+    nbt_add = ",%s" % block_state if block_state else ""
+    kid_name = ",CustomName:%s" % text(name) if name_kid else ""
+%>\
+summon ${thing.full_id()} ~${x} ~2 ~${z-1} {Age:-2147483648${kid_name},Tags:[kids]${nbt_add},NoAI:True,Silent:True,Rotation:[180f,0f]}
+summon ${thing.full_id()} ~${x} ~2 ~${z+2} {CustomName:${text(thing.name)},Tags:[adult]${nbt_add},NoAI:True,Silent:True,Rotation:[180f,0f]}
+<%
+    x += x_delta
+    z += z_delta
+%>\
+</%def>

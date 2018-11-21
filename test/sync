@@ -1,0 +1,6 @@
+#!/bin/sh
+dst_dir="/Users/kcrca/Library/Application Support/minecraft/saves/AllStuff/datapacks/allstuff/data/allstuff"
+/Users/kcrca/allstuff/venv/bin/python /Users/kcrca/allstuff/allstuff/main.py
+rm -f "$dst_dir"/functions/*
+echo + 'cp functions/* "$dst_dir"/functions/'
+cp functions/* "$dst_dir"/functions/
