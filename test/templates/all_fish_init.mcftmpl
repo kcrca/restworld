@@ -2,7 +2,6 @@
 
 % for i in range(0, 12):
 summon minecraft:tropical_fish ~${3 + i / 6} ~2.2 ~${int(i % 6)} {Tags:[fish${i}],NoAI:True,Silent:True,Rotation:[90f,0f]}
-${base.adult
 % endfor
 
 % for i in range(0, 12):

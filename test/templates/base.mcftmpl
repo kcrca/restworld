@@ -56,12 +56,12 @@ summon armor_stand ${where} {Small:True,Passengers:[{id:${to_id(mob)},CustomName
 
 <%def name="kid(thing, x, y_add, z, rotation, nbt='', tags=())">\
 <% nbt = ",%s" % nbt if nbt else "" %>\
-summon ${thing.full_id()} ~${x} ~${2 + y_add} ~${z} {IsBaby:True,Age:-2147483648,Tags:[${",".join(tags + ("kids",))}]${nbt},NoAI:True,Silent:True,Rotation:[${rotation}f,0f]}
+summon ${thing.full_id()} ~${x} ~${2 + y_add} ~${z} {IsBaby:True,Age:-2147483648,Tags:[${",".join(tags + ("kid",))}]${nbt},NoAI:True,Silent:True,Rotation:[${rotation}f,0f]}
 </%def>
 
 <%def name="adult(thing, x, y_add, z, rotation, nbt='', tags=())">\
 <% nbt = ",%s" % nbt if nbt else "" %>\
-summon ${thing.full_id()} ~${x} ~${2 + y_add} ~${z} {CustomName:${text(thing.name)},Tags:[${",".join(tags + ("adult",))}]${nbt},NoAI:True,Silent:True,Rotation:[${rotation}f,0f]}
+summon ${thing.full_id()} ~${x} ~${2 + y_add} ~${z} {CustomName:${text(thing.name)},Tags:[${",".join(tags)}]${nbt},NoAI:True,Silent:True,Rotation:[${rotation}f,0f]}
 </%def>
 
 <%def name="mobs(name, id=None, nbt='', tags=(), name_kid=False, do_kid=False, do_adult=False, y_add=0)">\

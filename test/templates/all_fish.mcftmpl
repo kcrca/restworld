@@ -1,4 +1,4 @@
-<%namespace name="base"  file="base.mcftmpl"/>
+<%namespace name="base" file="base.mcftmpl"/>
 
 scoreboard players add pattern fish 1
 scoreboard players operation pattern fish %= NUM_COLORS fish
