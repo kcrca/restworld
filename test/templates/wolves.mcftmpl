@@ -1,0 +1,5 @@
+<%namespace name="base"  file="base.mcftmpl"/>\
+
+<%base:loop collection="${('True', 'False')}" args="when,i,thing">\
+${when(i)} execute as @e[tag=wolves] run data merge entity @s {Angry:${thing}}
+</%base:loop>\

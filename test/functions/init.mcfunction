@@ -11,8 +11,10 @@ scoreboard players set base vars -1
 scoreboard players set beam_colors vars -1
 scoreboard players set brewing vars -1
 scoreboard players set cake vars -1
+scoreboard players set cats vars -1
 scoreboard players set cauldron vars -1
 scoreboard players set chest vars -1
+scoreboard players set colored_mobs vars -1
 scoreboard players set colorings vars -1
 scoreboard players set colorings vars -1
 scoreboard players set columns vars -1
@@ -41,7 +43,6 @@ scoreboard players set ores vars -1
 scoreboard players set panes vars -1
 scoreboard players set panes vars -1
 scoreboard players set pumpkin vars -1
-scoreboard players set sheep vars -1
 scoreboard players set snow vars -1
 scoreboard players set sponge vars -1
 scoreboard players set steppable vars -1
@@ -53,5 +54,6 @@ scoreboard players set turtle_eggs vars -1
 scoreboard players set undead vars -1
 scoreboard players set weapons vars -1
 scoreboard players set weapons vars -1
+scoreboard players set wolves vars -1
 scoreboard players set wood vars -1
 scoreboard players set wood vars -1

@@ -2,14 +2,14 @@
 \
 ${base.mobs_init(x_delta_init=-2, kid_z_init=-1, adult_z_init=2, rotation_init=180)}\
 ${base.mobs("Turtle")}
-${base.mobs("Sheep", tags=("colored_sheep",))}
+${base.mobs("Sheep", tags=("sheep",))}
 ${base.mobs("jeb_", id="sheep", name_kid=True)}
 ${base.mobs("Cow")}
 ${base.mobs("Mooshroom")}
 ${base.mobs("Pig")}
 ${base.mobs("Chicken")}
-${base.mobs("Ocelot")}
-${base.mobs("Wolf", nbt="Owner:dummy")}
-${base.mobs("Wolf")}
-${base.mobs("Rabbit")}
+${base.mobs("Ocelot", tags=("cats",))}
+${base.mobs("Dog", id="wolf", nbt="Owner:dummy", tags=("dogs",))}
+${base.mobs("Wolf", tags=("wolves",))}
+${base.mobs("Rabbit", tags=("rabbits",))}
 ${base.mobs("Bat")}
