@@ -1,4 +1,5 @@
 #!/bin/sh
+set -e
 dst_dir="/Users/kcrca/Library/Application Support/minecraft/saves/AllStuff/datapacks/allstuff/data/allstuff"
 rm functions/*
 /Users/kcrca/allstuff/venv/bin/python /Users/kcrca/allstuff/allstuff/main.py

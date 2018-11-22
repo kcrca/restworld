@@ -1,3 +1,5 @@
-summon minecraft:parrot ~-5 ~3 ~3 {CustomName:"\"Parrott\"",OnGround:True,NoAI:True,Silent:True,Rotation:[90f,0f]}
-summon minecraft:snow_golem ~-3 ~2 ~3 {CustomName:"\"Snow Golem\"",NoAI:True,Silent:True,Rotation:[90f,0f]}
-summon minecraft:iron_golem ~-0.6 ~2 ~3 {CustomName:"\"Iron Golem\"",NoAI:True,Silent:True,Rotation:[0f,0f]}
+<%namespace name="base"  file="base.mcftmpl"/>\
+
+${base.adult(Thing("Parrot"),     0, 1, 0, 90, tags=('parrot',))}\
+${base.adult(Thing("Snow Golem"), 2, 0, 0, 90)}\
+${base.adult(Thing("Iron Golem"), 5, 0, 0, 0)}\

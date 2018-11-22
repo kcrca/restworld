@@ -58,7 +58,6 @@ class Horse(Thing):
             self.tag = "%ss" % self.id
         self.variant = variant
 
-
 class CommandBlock(Thing):
     def __init__(self, name, conditional):
         Thing.__init__(self, name)

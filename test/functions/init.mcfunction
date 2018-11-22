@@ -43,6 +43,7 @@ scoreboard players set nether_mobs vars -1
 scoreboard players set ores vars -1
 scoreboard players set panes vars -1
 scoreboard players set panes vars -1
+scoreboard players set parrots vars -1
 scoreboard players set pumpkin vars -1
 scoreboard players set rabbits vars -1
 scoreboard players set snow vars -1
