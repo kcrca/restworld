@@ -25,6 +25,7 @@ scoreboard players set dragon vars -1
 scoreboard players set drowned vars -1
 scoreboard players set end_mobs vars -1
 scoreboard players set end_portal vars -1
+scoreboard players set fangs vars -1
 scoreboard players set fences vars -1
 scoreboard players set fire vars -1
 scoreboard players set frosted_ice vars -1
@@ -44,6 +45,8 @@ scoreboard players set mobs_2 vars -1
 scoreboard players set mobs_3 vars -1
 scoreboard players set mobs_4 vars -1
 scoreboard players set nether_mobs vars -1
+scoreboard players set note_block vars -1
+scoreboard players set note_block vars -1
 scoreboard players set ores vars -1
 scoreboard players set panes vars -1
 scoreboard players set panes vars -1
