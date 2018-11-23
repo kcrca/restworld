@@ -235,8 +235,9 @@ def main():
         tmpl = Template(filename=tmpl_path, lookup=lookup)
         rendered = render_templ(tmpl)
         write_function(func_dir, func_name, rendered)
-        rendered = render_templ(tmpl, suppress_loop=True)
-        write_function(func_dir, func_name + "_cur", rendered)
+        if not func_name.endswith("init"):
+            rendered = render_templ(tmpl, suppress_loop=True)
+            write_function(func_dir, func_name + "_cur", rendered)
         vars.append(var_name)
 
     init_tmpl = Template(filename=os.path.join(tmpl_dir, "init.mcftmpl"), lookup=lookup)
