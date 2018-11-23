@@ -1,6 +1,6 @@
 scoreboard objectives add funcs dummy
 scoreboard players set 2_fish vars -1
-scoreboard players set 3_firsh vars -1
+scoreboard players set 3_fish vars -1
 scoreboard players set acquatic vars -1
 scoreboard players set all_fish vars -1
 scoreboard players set all_fish vars -1
