@@ -21,6 +21,7 @@ scoreboard players set columns vars -1
 scoreboard players set command_blocks vars -1
 scoreboard players set conduit vars -1
 scoreboard players set dragon vars -1
+scoreboard players set drowned vars -1
 scoreboard players set end_mobs vars -1
 scoreboard players set end_portal vars -1
 scoreboard players set fences vars -1
@@ -34,6 +35,7 @@ scoreboard players set horses vars -1
 scoreboard players set illager vars -1
 scoreboard players set lava_level vars -1
 scoreboard players set llamas vars -1
+scoreboard players set llamas vars -1
 scoreboard players set minerals vars -1
 scoreboard players set mobs_1 vars -1
 scoreboard players set mobs_2 vars -1
@@ -44,6 +46,7 @@ scoreboard players set ores vars -1
 scoreboard players set panes vars -1
 scoreboard players set panes vars -1
 scoreboard players set parrots vars -1
+scoreboard players set pufferfish vars -1
 scoreboard players set pumpkin vars -1
 scoreboard players set rabbits vars -1
 scoreboard players set snow vars -1

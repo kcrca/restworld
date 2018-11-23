@@ -10,6 +10,6 @@
 
 ${base.mobs_init(z_delta_init=2, adult_x_init=2, kid_x_init=-0.4, rotation_init=90)}\
 % for llama in llamas:
-${base.mobs(llama.name, id="llama", nbt="Variant:%d" % loop.index)}\
+${base.mobs(llama.name, id="llama", tags=("llamas",), nbt="Variant:%d" % loop.index)}\
 % endfor
 summon minecraft:llama_spit ~ ~3 ~3 {CustomName:"\"Llama Spit\"",TXD:0,TYD:0,TZD:0,Steps:0,NoAI:True,Motion:[0,0,0],NoGravity:True}

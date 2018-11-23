@@ -201,6 +201,24 @@ def main():
         Horse("Zombie Horse"),
     )
 
+    def render_templ(tmpl, **kwargs):
+        return tmpl.render(
+            var=var_name,
+            Thing=Thing,
+            colors=colors,
+            structure_blocks=structure_blocks,
+            command_blocks=command_blocks,
+            steppables=stepables,
+            woods=woods,
+            fishes=fishes,
+            horses=horses,
+            other_horses=other_horses,
+            text=text,
+            to_nicknamed=to_nicknamed,
+            to_id=to_id,
+            **kwargs
+        )
+
     dir = sys.argv[1] if len(sys.argv) > 1 else '.'
     tmpl_dir = os.path.join(dir, 'templates')
     func_dir = os.path.join(dir, 'functions')
@@ -215,22 +233,10 @@ def main():
         if var_name.endswith('_init'):
             var_name = var_name[:-5]
         tmpl = Template(filename=tmpl_path, lookup=lookup)
-        rendered = tmpl.render(
-            var=var_name,
-            Thing=Thing,
-            colors=colors,
-            structure_blocks=structure_blocks,
-            command_blocks=command_blocks,
-            steppables=stepables,
-            woods=woods,
-            fishes=fishes,
-            horses=horses,
-            other_horses=other_horses,
-            text=text,
-            to_nicknamed=to_nicknamed,
-            to_id=to_id,
-        )
+        rendered = render_templ(tmpl)
         write_function(func_dir, func_name, rendered)
+        rendered = render_templ(tmpl, suppress_loop=True)
+        write_function(func_dir, func_name + "_cur", rendered)
         vars.append(var_name)
 
     init_tmpl = Template(filename=os.path.join(tmpl_dir, "init.mcftmpl"), lookup=lookup)

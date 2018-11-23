@@ -2,7 +2,7 @@
 ${base.adult(Thing("Squid"), -1.5, 1, 5, 90, "NoGravity:True")}\
 ${base.adult(Thing("Dolphin"), -1.5, 1, 3, 90, "Invulnerable:True")}\
 ${base.adult(Thing("Cod"), -2, 1.2, 1.5, 90)}\
-${base.adult(Thing("Pufferfish"), 0.5, 1.5, 0.5, 90)}\
+${base.adult(Thing("Pufferfish"), 0.5, 1.5, 0.5, 90, tags=("pufferfish",))}\
 ${base.adult(Thing("Salmon"), -2, 1.2, -0.5, 90)}\
 ${base.adult(Thing("Guardian"), -1, 1, -2.5, 90)}\
 ${base.adult(Thing("Elder Guardian"), -1, 1, -7, 90)}\

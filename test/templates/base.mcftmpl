@@ -11,7 +11,9 @@ execute unless score ${var} funcs matches 0..${count - 1} run scoreboard players
 <%def name="when(i, as_prefix=False)">execute if score ${var} funcs matches ${i}${"" if as_prefix else " run"}</%def>
 
 <%def name="loop(collection)">
+% if not suppress_loop:
 ${increment(len(collection))}\
+% endif
 % for thing in collection:
 ${caller.body(when, loop.index, thing)}
 % endfor
@@ -23,7 +25,9 @@ ${caller.body(when, loop.index, thing)}
     backwards.reverse()
     merged = collection + backwards 
 %>\
+% if not suppress_loop:
 ${increment(len(merged))}\
+% endif
 % for thing in merged:
 ${caller.body(when, loop.index, thing)}\
 % endfor
