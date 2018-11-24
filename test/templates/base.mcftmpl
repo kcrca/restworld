@@ -3,9 +3,11 @@ tp @e[${who}] @e[tag=death,limit=1]
 </%def>
 
 <%def name="increment(count)">\
+% if var == func:
 execute unless score ${var} funcs matches 0.. run function ${var}_init
 scoreboard players add ${var} funcs 1
 execute unless score ${var} funcs matches 0..${count - 1} run scoreboard players set ${var} funcs 0
+% endif
 </%def>
 
 <%def name="when(i, as_prefix=False)">execute if score ${var} funcs matches ${i}${"" if as_prefix else " run"}</%def>
@@ -84,4 +86,10 @@ summon ${thing.full_id()} ~${x} ~${2 + y_add} ~${z} {CustomName:${text(thing.nam
     x += x_delta
     z += z_delta
 %>\
+</%def>
+
+<%def name="crop(stages, which, x, y, z, when, i, thing, name='age')">\
+% for s in range(0, 3):
+${when(i)} fill ~${x} ~${y} ~${z - s} ~${x + 2} ~${y} ~${z - s} minecraft:${which}[${name}=${stages[(i + s + len(stages)) % len(stages)]}]
+% endfor
 </%def>

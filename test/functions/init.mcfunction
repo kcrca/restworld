@@ -1,6 +1,9 @@
 scoreboard objectives add funcs dummy
 scoreboard players set 2_fish vars -1
 scoreboard players set 3_fish vars -1
+scoreboard players set 4_crops vars -1
+scoreboard players set 6_crops vars -1
+scoreboard players set 8_crops vars -1
 scoreboard players set acquatic vars -1
 scoreboard players set all_fish vars -1
 scoreboard players set all_fish vars -1
@@ -56,6 +59,7 @@ scoreboard players set pumpkin vars -1
 scoreboard players set rabbits vars -1
 scoreboard players set snow vars -1
 scoreboard players set sponge vars -1
+scoreboard players set stems vars -1
 scoreboard players set steppable vars -1
 scoreboard players set stone vars -1
 scoreboard players set structure_blocks vars -1

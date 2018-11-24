@@ -204,6 +204,7 @@ def main():
     def render_templ(tmpl, **kwargs):
         return tmpl.render(
             var=var_name,
+            func=var_name,
             Thing=Thing,
             colors=colors,
             structure_blocks=structure_blocks,
