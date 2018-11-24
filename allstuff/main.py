@@ -200,6 +200,20 @@ def main():
         Horse("Skeleton Horse"),
         Horse("Zombie Horse"),
     )
+    small_flowers = (
+        Thing("Allium"),
+        Thing("Azure Bluet"),
+        Thing("Blue Orchid"),
+        Thing("Dandelion"),
+        Thing("Oxeye Daisy"),
+        Thing("Poppy"),
+    )
+    tulips = (
+        "Red",
+        "Orange",
+        "Pink",
+        "White",
+    )
 
     def render_templ(tmpl, **kwargs):
         return tmpl.render(
@@ -214,6 +228,8 @@ def main():
             fishes=fishes,
             horses=horses,
             other_horses=other_horses,
+            small_flowers=small_flowers,
+            tulips=tulips,
             text=text,
             to_nicknamed=to_nicknamed,
             to_id=to_id,

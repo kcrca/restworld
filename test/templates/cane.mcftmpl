@@ -1,0 +1,13 @@
+<%namespace name="base"  file="base.mcftmpl"/>
+
+<%base:loop collection="${range(0, 4)}" args="when,i,thing">\
+% if thing == 0:
+${when(0)} setblock ~-1 ~4 ~ minecraft:sugar_cane
+% elif thing == 1:
+${when(1)} setblock ~-1 ~5 ~ minecraft:sugar_cane
+% elif thing == 2:
+${when(2)} setblock ~-1 ~5 ~ minecraft:air
+% elif thing == 3:
+${when(3)} setblock ~-1 ~4 ~ minecraft:air
+%endif
+</%base:loop>
