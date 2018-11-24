@@ -44,8 +44,10 @@ scoreboard players set horses vars -1
 scoreboard players set horses vars -1
 scoreboard players set illager vars -1
 scoreboard players set lava_level vars -1
+scoreboard players set lever vars -1
 scoreboard players set llamas vars -1
 scoreboard players set llamas vars -1
+scoreboard players set minecarts vars -1
 scoreboard players set minerals vars -1
 scoreboard players set mobs_1 vars -1
 scoreboard players set mobs_2 vars -1
@@ -54,10 +56,13 @@ scoreboard players set mobs_4 vars -1
 scoreboard players set nether_mobs vars -1
 scoreboard players set note_block vars -1
 scoreboard players set note_block vars -1
+scoreboard players set observer vars -1
+scoreboard players set observer vars -1
 scoreboard players set ores vars -1
 scoreboard players set panes vars -1
 scoreboard players set panes vars -1
 scoreboard players set parrots vars -1
+scoreboard players set piston vars -1
 scoreboard players set potable vars -1
 scoreboard players set pufferfish vars -1
 scoreboard players set pumpkin vars -1
@@ -72,6 +77,7 @@ scoreboard players set stone vars -1
 scoreboard players set structure_blocks vars -1
 scoreboard players set tools vars -1
 scoreboard players set topped_blocks vars -1
+scoreboard players set trapped_chest vars -1
 scoreboard players set tulips vars -1
 scoreboard players set turtle_eggs vars -1
 scoreboard players set undead vars -1
@@ -81,3 +87,5 @@ scoreboard players set weapons vars -1
 scoreboard players set wolves vars -1
 scoreboard players set wood vars -1
 scoreboard players set wood vars -1
+scoreboard players set wood_power vars -1
+scoreboard players set wood_power vars -1

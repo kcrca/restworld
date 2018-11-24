@@ -1,4 +1,4 @@
-<%namespace name="base"  file="base.mcftmpl"/>
+<%namespace name="base" file="base.mcftmpl"/>
 <% strengths = range(1, 6) %>
 
 <%base:bounce collection="${strengths}" args="when,i,thing">

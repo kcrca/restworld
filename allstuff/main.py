@@ -11,10 +11,10 @@ mc_version = '1.13'
 
 class Thing:
     def __init__(self, name, id=None, block_state=None):
+        self.name = name.strip()  # This allows a "%s Minecart" % "" to work
         if id is None:
-            id = to_id(name)
-        self.name = name
-        self.id = id
+            id = to_id(self.name.strip())
+        self.id = id.strip()
         self.block_state = block_state if block_state else ""
 
     def full_id(self):
@@ -57,6 +57,7 @@ class Horse(Thing):
             Thing.__init__(self, name)
             self.tag = "%ss" % self.id
         self.variant = variant
+
 
 class CommandBlock(Thing):
     def __init__(self, name, conditional):
