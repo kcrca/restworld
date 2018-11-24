@@ -28,6 +28,7 @@ scoreboard players set command_blocks vars -1
 scoreboard players set conduit vars -1
 scoreboard players set coral vars -1
 scoreboard players set creeper vars -1
+scoreboard players set daylight_sensor vars -1
 scoreboard players set dragon vars -1
 scoreboard players set drowned vars -1
 scoreboard players set end_mobs vars -1
