@@ -64,9 +64,11 @@ scoreboard players set panes vars -1
 scoreboard players set parrots vars -1
 scoreboard players set piston vars -1
 scoreboard players set potable vars -1
+scoreboard players set pressure_plate vars -1
 scoreboard players set pufferfish vars -1
 scoreboard players set pumpkin vars -1
 scoreboard players set rabbits vars -1
+scoreboard players set redstone_block vars -1
 scoreboard players set sand vars -1
 scoreboard players set sea_pickles vars -1
 scoreboard players set snow vars -1

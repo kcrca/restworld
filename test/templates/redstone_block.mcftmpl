@@ -1,0 +1,5 @@
+<%namespace name="base" file="base.mcftmpl"/>
+
+<%base:loop collection="${(Thing('Redstone Block'), Thing('Air'))}" args="when,i,thing">\
+${when(i)} setblock ~ ~3 ~ ${thing.full_id()}
+</%base:loop>
