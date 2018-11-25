@@ -290,28 +290,26 @@ def main():
     effect_signs(func_dir + "/effects")
 
 
+effects = (
+    Effect("Ambient Entity|Effect", "ambient"), Effect("Angry Villager"), Effect("Bubbles|and|Whirlpools", "bubbles"),
+    Effect("Clouds", note="Evaporation"), Effect("Crit"), Effect("Damage Indicator"), Effect("Dolphin"),
+    Effect("Dragon Breath"), Effect("Dripping Lava"), Effect("Dripping Water"), Effect("Dust", note="Redstone Dust"),
+    Effect("Effect"), Effect("Elder Guardian"), Effect("Enchant"), Effect("Enchanted Hit"), Effect("End Rod"),
+    Effect("Entity Effect"), Effect("Explosion"), Effect("Falling Dust"), Effect("Fireworks"), Effect("Fishing"),
+    Effect("Flame"), Effect("Happy Villager"), Effect("Heart"), Effect("Explosion Emitter"), Effect("Instant Effect"),
+    Effect("Item Slime"), Effect("Item Snowball"), Effect("Large Smoke"), Effect("Lava"), Effect("Mycelium"),
+    Effect("Nautilus"), Effect("Note"), Effect("Poof", note="Small Explosion"), Effect("Portal"), Effect("Rain"),
+    Effect("Smoke"), Effect("Snow"), Effect("Splash"), Effect("Squid Ink"), Effect("Sweep Attack"),
+    Effect("Totem of Undying"), Effect("Underwater"), Effect("Witch"),
+)
+
+
 def effect_function(effect):
     base = "function allstuff:effect/%s_%%s" % effect.id
     return "\n".join(base % f for f in ("init", "fast", "main", "slow"))
 
 
 def effect_signs(func_dir):
-    effects = (
-        Effect("Ambient Entity|Effect", "ambient"), Effect("Angry Villager"),
-        Effect("Bubbles|and|Whirlpools", "bubbles"),
-        Effect("Clouds", note="Evaporation"), Effect("Crit"), Effect("Damage Indicator"), Effect("Dolphin"),
-        Effect("Dragon Breath"), Effect("Dripping Lava"), Effect("Dripping Water"),
-        Effect("Dust", note="Redstone Dust"),
-        Effect("Effect"), Effect("Elder Guardian"), Effect("Enchant"), Effect("Enchanted Hit"), Effect("End Rod"),
-        Effect("Entity Effect"), Effect("Explosion"), Effect("Falling Dust"), Effect("Fireworks"), Effect("Fishing"),
-        Effect("Flame"), Effect("Happy Villager"), Effect("Heart"), Effect("Explosion Emitter"),
-        Effect("Instant Effect"),
-        Effect("Item Slime"), Effect("Item Snowball"), Effect("Large Smoke"), Effect("Lava"), Effect("Mycelium"),
-        Effect("Nautilus"), Effect("Note"), Effect("Poof", note="Small Explosion"), Effect("Portal"), Effect("Rain"),
-        Effect("Smoke"), Effect("Snow"), Effect("Splash"), Effect("Squid Ink"), Effect("Sweep Attack"),
-        Effect("Totem of Undying"), Effect("Underwater"), Effect("Witch"),
-    )
-
     per_x = (5, 5, 5, 5)
     widths = (7, 7, 7, 7)
     # per_x = (5, 7, 5, 2)
