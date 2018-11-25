@@ -1,6 +1,4 @@
-import collections
 import fnmatch
-import glob
 import os
 import re
 import sys
@@ -20,7 +18,7 @@ class Thing:
         self.block_state = block_state if block_state else ""
 
     def __repr__(self):
-        return self.name;
+        return self.name
 
     def full_id(self):
         id = "minecraft:%s" % self.id
