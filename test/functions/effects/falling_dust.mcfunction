@@ -1,0 +1,4 @@
+function allstuff:effect/falling_dust_init
+function allstuff:effect/falling_dust_fast
+function allstuff:effect/falling_dust_main
+function allstuff:effect/falling_dust_slow

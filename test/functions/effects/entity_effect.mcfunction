@@ -1,0 +1,4 @@
+function allstuff:effect/entity_effect_init
+function allstuff:effect/entity_effect_fast
+function allstuff:effect/entity_effect_main
+function allstuff:effect/entity_effect_slow

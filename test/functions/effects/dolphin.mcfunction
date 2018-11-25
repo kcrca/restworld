@@ -1,0 +1,4 @@
+function allstuff:effect/dolphin_init
+function allstuff:effect/dolphin_fast
+function allstuff:effect/dolphin_main
+function allstuff:effect/dolphin_slow

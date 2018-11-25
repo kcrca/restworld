@@ -1,0 +1,4 @@
+function allstuff:effect/elder_guardian_init
+function allstuff:effect/elder_guardian_fast
+function allstuff:effect/elder_guardian_main
+function allstuff:effect/elder_guardian_slow

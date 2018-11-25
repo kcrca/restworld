@@ -1,0 +1,4 @@
+function allstuff:effect/ambient_init
+function allstuff:effect/ambient_fast
+function allstuff:effect/ambient_main
+function allstuff:effect/ambient_slow

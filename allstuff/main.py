@@ -1,3 +1,5 @@
+import collections
+import fnmatch
 import glob
 import os
 import re
@@ -14,8 +16,11 @@ class Thing:
         self.name = name.strip()  # This allows a "%s Minecart" % "" to work
         if id is None:
             id = to_id(self.name.strip())
-        self.id = id.strip()
+        self.id = to_id(id.strip())
         self.block_state = block_state if block_state else ""
+
+    def __repr__(self):
+        return self.name;
 
     def full_id(self):
         id = "minecraft:%s" % self.id
@@ -83,6 +88,10 @@ def to_id(name):
 def to_nicknamed(kind, nicknames):
     items = [Nicknamed(n, kind) for n in nicknames]
     return items
+
+
+def has_loop(rendered):
+    return re.search(r'<%base:(loop|bounce|increment)', rendered, flags=re.MULTILINE)
 
 
 def main():
@@ -216,6 +225,11 @@ def main():
         "White",
     )
 
+    def find_files(dir, pat):
+        for root, dirnames, filenames in os.walk(dir):
+            for filename in fnmatch.filter(filenames, pat):
+                yield os.path.join(root, filename)
+
     def render_templ(tmpl, **kwargs):
         return tmpl.render(
             var=var_name,
@@ -242,7 +256,8 @@ def main():
     func_dir = os.path.join(dir, 'functions')
     lookup = TemplateLookup(directories=['.'])
     vars = []
-    for tmpl_path in sorted(glob.glob(os.path.join(tmpl_dir, "*.mcftmpl"))):
+    tmpl_suffix = ".mcftmpl"
+    for tmpl_path in sorted(find_files(tmpl_dir, "*%s" % tmpl_suffix)):
         func_name = os.path.splitext(os.path.basename(tmpl_path))[0]
         if func_name == "init":
             continue
@@ -252,18 +267,103 @@ def main():
             var_name = var_name[:-5]
         tmpl = Template(filename=tmpl_path, lookup=lookup)
         rendered = render_templ(tmpl)
-        write_function(func_dir, func_name, rendered)
-        if not func_name.endswith("init"):
+        dir = os.path.dirname(tmpl_path.replace(tmpl_dir, func_dir))
+        write_function(dir, func_name, rendered)
+        if not func_name.endswith("init") and has_loop(tmpl.source):
             rendered = render_templ(tmpl, suppress_loop=True)
-            write_function(func_dir, func_name + "_cur", rendered)
+            write_function(dir, func_name + "_cur", rendered)
         vars.append(var_name)
 
     init_tmpl = Template(filename=os.path.join(tmpl_dir, "init.mcftmpl"), lookup=lookup)
     write_function(func_dir, "init", init_tmpl.render(vars=vars))
+    effect_signs(func_dir + "/effects")
+
+
+class Effect(Thing):
+    def __init__(self, name, id=None, note=None):
+        Thing.__init__(self, name.replace('|', ' '), id)
+        self.note = "(%s)" % note if note else None
+        self.text = name
+
+    def sign_text(self):
+        t = self.text.split("|")
+        if self.note:
+            t += self.note.split("|")
+        return t
+
+
+effects = (
+    Effect("Ambient Entity|Effect", "ambient"), Effect("Angry Villager"), Effect("Bubbles|and|Whirlpools", "bubbles"),
+    Effect("Clouds", note="Evaporation"), Effect("Crit"), Effect("Damage Indicator"), Effect("Dolphin"),
+    Effect("Dragon Breath"), Effect("Dripping Lava"), Effect("Dripping Water"), Effect("Dust", note="Redstone Dust"),
+    Effect("Effect"), Effect("Elder Guardian"), Effect("Enchant"), Effect("Enchanted Hit"), Effect("End Rod"),
+    Effect("Entity Effect"), Effect("Explosion"), Effect("Falling Dust"), Effect("Fireworks"), Effect("Fishing"),
+    Effect("Flame"), Effect("Happy Villager"), Effect("Heart"), Effect("Explosion Emitter"), Effect("Instant Effect"),
+    Effect("Item Slime"), Effect("Item Snowball"), Effect("Large Smoke"), Effect("Lava"), Effect("Mycelium"),
+    Effect("Nautilus"), Effect("Note"), Effect("Poof", note="Small Explosion"), Effect("Portal"), Effect("Rain"),
+    Effect("Smoke"), Effect("Snow"), Effect("Splash"), Effect("Squid Ink"), Effect("Sweep Attack"),
+    Effect("Totem of Undying"), Effect("Underwater"), Effect("Witch"),
+)
+
+
+def effect_function(effect):
+    base = "function allstuff:effect/%s_%%s" % effect.id
+    return "\n".join(base % f for f in ("init", "fast", "main", "slow"))
+
+
+def effect_signs(func_dir):
+    per_x = (5, 5, 5, 5)
+    widths = (7, 7, 7, 7)
+    # per_x = (5, 7, 5, 2)
+    # widths = (7, 7, 7, 2)
+    # per_x = (1, 2, 1)
+    # widths = (2, 2, 2)
+    facings = ("east", "south", "west", "north")
+    frame = 0
+
+    def enter_frame():
+        x = (widths[frame] - per_x[frame]) / 2
+        return (x, x + per_x[frame], 3, facings[frame])
+
+    kill_command = "kill @e[type=armor_stand,distance=..10]"
+    commands = [
+        kill_command,
+        "summon minecraft:armor_stand ~1 ~0.5 ~-1 {Tags:[signer],Rotation:[90f,0f],ArmorItems:[{},{},{},{id:turtle_helmet,Count:1}]}",
+        "execute at @e[tag=signer] run fill ^0 ^0 ^0 ^-6 ^4 ^-6 air",
+    ]
+    (first_x, end_x, y, facing) = enter_frame()
+    x = first_x
+    print "effects #", len(effects)
+    for i, effect in enumerate(sorted(effects)):
+        sign_text = effect.sign_text()
+        sign_nbt = r'Text2:"{\"text\":\"%s\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"function allstuff:effects/%s\"}}"' % (
+            sign_text[0], effect.id)
+        for i, line in enumerate(sign_text[1:]):
+            sign_nbt += ",Text%d:%s" % (i + 3, text(line))
+        commands.append(
+            "execute at @e[tag=signer] run setblock ^%d ^%d ^ wall_sign[facing=%s]{%s}" % (-x, y, facing, sign_nbt))
+        write_function(func_dir, effect.id, effect_function(effect))
+        x += 1
+        if x >= end_x:
+            y -= 1
+            if y < 1:
+                commands.append(
+                    "execute as @e[tag=signer] run execute at @s run teleport @s ^-%d ^0 ^0 ~90 ~" % (
+                            widths[frame] - 1))
+                frame += 1
+                (first_x, end_x, y, facing) = enter_frame()
+            x = first_x
+
+    commands.append(kill_command)
+
+    write_function(func_dir, 'signs', "\n".join(commands))
 
 
 def write_function(func_dir, func_name, rendered):
-    with open(os.path.join(func_dir, '%s.mcfunction' % func_name), "w") as out:
+    if not os.path.exists(func_dir):
+        os.mkdir(func_dir)
+    out_file = os.path.join(func_dir, '%s.mcfunction' % func_name)
+    with open(out_file, "w") as out:
         out.write(rendered)
 
 

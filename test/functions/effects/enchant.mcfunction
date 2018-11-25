@@ -1,0 +1,4 @@
+function allstuff:effect/enchant_init
+function allstuff:effect/enchant_fast
+function allstuff:effect/enchant_main
+function allstuff:effect/enchant_slow

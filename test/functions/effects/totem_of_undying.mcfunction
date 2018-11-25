@@ -1,0 +1,4 @@
+function allstuff:effect/totem_of_undying_init
+function allstuff:effect/totem_of_undying_fast
+function allstuff:effect/totem_of_undying_main
+function allstuff:effect/totem_of_undying_slow

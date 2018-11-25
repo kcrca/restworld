@@ -1,0 +1,4 @@
+function allstuff:effect/instant_effect_init
+function allstuff:effect/instant_effect_fast
+function allstuff:effect/instant_effect_main
+function allstuff:effect/instant_effect_slow

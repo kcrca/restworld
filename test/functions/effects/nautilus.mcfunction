@@ -1,0 +1,4 @@
+function allstuff:effect/nautilus_init
+function allstuff:effect/nautilus_fast
+function allstuff:effect/nautilus_main
+function allstuff:effect/nautilus_slow

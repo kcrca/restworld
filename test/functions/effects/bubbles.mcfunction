@@ -1,0 +1,4 @@
+function allstuff:effect/bubbles_init
+function allstuff:effect/bubbles_fast
+function allstuff:effect/bubbles_main
+function allstuff:effect/bubbles_slow

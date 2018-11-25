@@ -1,0 +1,4 @@
+function allstuff:effect/dripping_lava_init
+function allstuff:effect/dripping_lava_fast
+function allstuff:effect/dripping_lava_main
+function allstuff:effect/dripping_lava_slow

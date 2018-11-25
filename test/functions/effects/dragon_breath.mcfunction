@@ -1,0 +1,4 @@
+function allstuff:effect/dragon_breath_init
+function allstuff:effect/dragon_breath_fast
+function allstuff:effect/dragon_breath_main
+function allstuff:effect/dragon_breath_slow

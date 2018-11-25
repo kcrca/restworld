@@ -1,0 +1,4 @@
+function allstuff:effect/fireworks_init
+function allstuff:effect/fireworks_fast
+function allstuff:effect/fireworks_main
+function allstuff:effect/fireworks_slow

@@ -1,0 +1,4 @@
+function allstuff:effect/enchanted_hit_init
+function allstuff:effect/enchanted_hit_fast
+function allstuff:effect/enchanted_hit_main
+function allstuff:effect/enchanted_hit_slow

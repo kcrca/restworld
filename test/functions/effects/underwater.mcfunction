@@ -1,0 +1,4 @@
+function allstuff:effect/underwater_init
+function allstuff:effect/underwater_fast
+function allstuff:effect/underwater_main
+function allstuff:effect/underwater_slow
