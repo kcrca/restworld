@@ -1,1 +1,1 @@
-function allstuff:effects/cow
+function allstuff:effects/animal

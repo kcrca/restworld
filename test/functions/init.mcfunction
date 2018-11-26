@@ -34,9 +34,9 @@ scoreboard players set ambient vars -1
 scoreboard players set ambient vars -1
 scoreboard players set angry_villager vars -1
 scoreboard players set angry_villager vars -1
+scoreboard players set animal vars -1
 scoreboard players set bubbles vars -1
 scoreboard players set clouds vars -1
-scoreboard players set cow vars -1
 scoreboard players set crit vars -1
 scoreboard players set crit vars -1
 scoreboard players set damage_indicator vars -1
@@ -67,7 +67,10 @@ scoreboard players set fireworks_change vars -1
 scoreboard players set fireworks vars -1
 scoreboard players set fishing vars -1
 scoreboard players set fishing vars -1
+scoreboard players set flame vars -1
+scoreboard players set flame vars -1
 scoreboard players set ocean vars -1
+scoreboard players set villager vars -1
 scoreboard players set end_mobs vars -1
 scoreboard players set end_portal vars -1
 scoreboard players set fangs vars -1

@@ -1,2 +1,2 @@
 <%namespace file="effect_base.mcftmpl" import="*"/>\
-${slow_clock()} particle minecraft:angry_villager ~ ~ ~ 0.5 0.5 0.5 0 5
+${fast_clock()} particle minecraft:angry_villager ~ ~ ~ 0.5 0.5 0.5 0 5
