@@ -1,4 +1,0 @@
-function allstuff:effect/explosion_init
-function allstuff:effect/explosion_fast
-function allstuff:effect/explosion_main
-function allstuff:effect/explosion_slow

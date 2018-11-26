@@ -1,4 +1,0 @@
-function allstuff:effect/squid_ink_init
-function allstuff:effect/squid_ink_fast
-function allstuff:effect/squid_ink_main
-function allstuff:effect/squid_ink_slow

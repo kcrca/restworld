@@ -1,0 +1,26 @@
+<%namespace name="base"  file="base.mcftmpl"/>\
+
+<%def name="fast_clock()">${clock("fast")}</%def>
+<%def name="main_clock()">${clock("main")}</%def>
+<%def name="slow_clock()">${clock("slow")}</%def>
+<%def name="at_center()">at @e[tag=effects_center] positioned ~ ~2 ~</%def>
+<%def name="clock(which)">execute if score ${which} clocks matches 0 ${at_center()} run</%def>
+<%def name="centered()">execute ${at_center()} run</%def>
+
+
+
+<%doc>
+
+"at"-ness goes to function invocation
+    (may need to set "block behind sign" before this)
+
+effect can need custom init and on-clock code
+
+all effects need to reload arena before execution
+
+sign can only run up to four commands (in order)
+    (a) Load area (will that stop execution?)
+    (b) set block behind to colored
+    (c) one-time init "function foo_init"
+    (d) set repeating command block to "function foo"
+</%doc>

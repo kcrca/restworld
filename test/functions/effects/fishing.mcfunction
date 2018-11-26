@@ -1,4 +1,0 @@
-function allstuff:effect/fishing_init
-function allstuff:effect/fishing_fast
-function allstuff:effect/fishing_main
-function allstuff:effect/fishing_slow

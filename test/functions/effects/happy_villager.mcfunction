@@ -1,4 +1,0 @@
-function allstuff:effect/happy_villager_init
-function allstuff:effect/happy_villager_fast
-function allstuff:effect/happy_villager_main
-function allstuff:effect/happy_villager_slow

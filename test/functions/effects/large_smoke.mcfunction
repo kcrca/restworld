@@ -1,4 +1,0 @@
-function allstuff:effect/large_smoke_init
-function allstuff:effect/large_smoke_fast
-function allstuff:effect/large_smoke_main
-function allstuff:effect/large_smoke_slow

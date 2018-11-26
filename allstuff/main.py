@@ -1,3 +1,4 @@
+import collections
 import fnmatch
 import os
 import re
@@ -270,7 +271,7 @@ def main():
     tmpl_suffix = ".mcftmpl"
     for tmpl_path in sorted(find_files(tmpl_dir, "*%s" % tmpl_suffix)):
         func_name = os.path.splitext(os.path.basename(tmpl_path))[0]
-        if func_name == "init":
+        if func_name in ("init", 'base', 'a_sign'):
             continue
         print '----- %s' % func_name
         var_name = func_name
@@ -283,11 +284,14 @@ def main():
         if not func_name.endswith("init") and has_loop(tmpl.source):
             rendered = render_templ(tmpl, suppress_loop=True)
             write_function(dir, func_name + "_cur", rendered)
+        if var_name in vars and var_name == func_name:
+            raise "Duplicate script/var name: %s" % var_name
         vars.append(var_name)
 
     init_tmpl = Template(filename=os.path.join(tmpl_dir, "init.mcftmpl"), lookup=lookup)
     write_function(func_dir, "init", init_tmpl.render(vars=vars))
-    effect_signs(func_dir + "/effects")
+    effects_dir = func_dir + "/effects"
+    effect_signs(effects_dir, Template(filename="%s/effects/a_sign.mcftmpl" % tmpl_dir, lookup=lookup))
 
 
 effects = (
@@ -309,13 +313,9 @@ def effect_function(effect):
     return "\n".join(base % f for f in ("init", "fast", "main", "slow"))
 
 
-def effect_signs(func_dir):
+def effect_signs(func_dir, sign_tmpl):
     per_x = (5, 5, 5, 5)
     widths = (7, 7, 7, 7)
-    # per_x = (5, 7, 5, 2)
-    # widths = (7, 7, 7, 2)
-    # per_x = (1, 2, 1)
-    # widths = (2, 2, 2)
     facings = ("east", "south", "west", "north")
     frame = 0
 
@@ -323,24 +323,19 @@ def effect_signs(func_dir):
         x = (widths[frame] - per_x[frame]) / 2
         return (x, x + per_x[frame], 3, facings[frame])
 
-    kill_command = "kill @e[type=armor_stand,distance=..10]"
+    kill_command = "kill @e[tag=signer]"
     commands = [
         kill_command,
-        "summon minecraft:armor_stand ~1 ~0.5 ~-1 {Tags:[signer],Rotation:[90f,0f],ArmorItems:[{},{},{},{id:turtle_helmet,Count:1}]}",
+        "summon minecraft:armor_stand ~1 ~1.5 ~-1 {Tags:[signer],Rotation:[90f,0f],ArmorItems:[{},{},{},{id:turtle_helmet,Count:1}]}",
         "execute at @e[tag=signer] run fill ^0 ^0 ^0 ^-6 ^4 ^-6 air",
     ]
     (first_x, end_x, y, facing) = enter_frame()
     x = first_x
-    print "effects #", len(effects)
     for i, effect in enumerate(sorted(effects)):
         sign_text = effect.sign_text()
-        sign_nbt = r'Text2:"{\"text\":\"%s\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"function allstuff:effects/%s\"}}"' % (
-            sign_text[0], effect.id)
-        for i, line in enumerate(sign_text[1:]):
-            sign_nbt += ",Text%d:%s" % (i + 3, text(line))
-        commands.append(
-            "execute at @e[tag=signer] run setblock ^%d ^%d ^ wall_sign[facing=%s]{%s}" % (-x, y, facing, sign_nbt))
-        write_function(func_dir, effect.id, effect_function(effect))
+        lines = ["", ] + sign_text + [""] * (max(0, 3 - len(sign_text)))
+        commands.append(sign_tmpl.render(effect=effect, lines=lines, x=-x, y=y, facing=facing).strip())
+        # write_function(func_dir, effect.id, effect_function(effect))
         x += 1
         if x >= end_x:
             y -= 1

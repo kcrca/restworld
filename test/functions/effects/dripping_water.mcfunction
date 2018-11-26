@@ -1,4 +1,0 @@
-function allstuff:effect/dripping_water_init
-function allstuff:effect/dripping_water_fast
-function allstuff:effect/dripping_water_main
-function allstuff:effect/dripping_water_slow

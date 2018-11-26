@@ -1,4 +1,0 @@
-function allstuff:effect/end_rod_init
-function allstuff:effect/end_rod_fast
-function allstuff:effect/end_rod_main
-function allstuff:effect/end_rod_slow

@@ -1,4 +1,0 @@
-function allstuff:effect/item_slime_init
-function allstuff:effect/item_slime_fast
-function allstuff:effect/item_slime_main
-function allstuff:effect/item_slime_slow

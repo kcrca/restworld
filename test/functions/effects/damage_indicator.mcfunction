@@ -1,4 +1,0 @@
-function allstuff:effect/damage_indicator_init
-function allstuff:effect/damage_indicator_fast
-function allstuff:effect/damage_indicator_main
-function allstuff:effect/damage_indicator_slow

@@ -1,0 +1,10 @@
+<%namespace file="effect_base.mcftmpl" import="*"/>\
+<%def name="sign_nbt(i, action)">Text${i+1}:"{\"text\":\"${lines[i]}\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"execute ${at_center()} run ${action}\"}}"</%def>
+<%def name="sign_local_nbt(i, action)">Text${i+1}:"{\"text\":\"${lines[i]}\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"${action}\"}}"</%def>
+
+execute at @e[tag=signer] run setblock ^${x} ^${y} ^ wall_sign[facing=${facing}]{\
+${sign_nbt(0, "setblock ~ ~-3 ~ redstone_block")},\
+${sign_nbt(1, r"data merge block ~0 ~-4 ~-1 {Command:\\\"function allstuff:effects/%s_init\\\"}" % effect.id)},\
+${sign_nbt(2, r"data merge block ~-1 ~-2 ~0 {Command:\\\"function allstuff:effects/%s\\\"}" % effect.id)},\
+${sign_local_nbt(3, "setblock ^-1 ^0 ^0 emerald_block")}\
+}

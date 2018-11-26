@@ -1,4 +1,0 @@
-function allstuff:effect/item_snowball_init
-function allstuff:effect/item_snowball_fast
-function allstuff:effect/item_snowball_main
-function allstuff:effect/item_snowball_slow

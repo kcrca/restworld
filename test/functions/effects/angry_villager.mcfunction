@@ -1,4 +1,0 @@
-function allstuff:effect/angry_villager_init
-function allstuff:effect/angry_villager_fast
-function allstuff:effect/angry_villager_main
-function allstuff:effect/angry_villager_slow

@@ -1,0 +1,2 @@
+Use <%namespace file="components.html" import="*"/> to stop saying "base.foo" everywhere
+

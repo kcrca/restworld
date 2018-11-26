@@ -10,7 +10,6 @@ scoreboard players set all_fish vars -1
 scoreboard players set anvil vars -1
 scoreboard players set armors vars -1
 scoreboard players set armors vars -1
-scoreboard players set base vars -1
 scoreboard players set beam_colors vars -1
 scoreboard players set brewing vars -1
 scoreboard players set cake vars -1
@@ -32,6 +31,7 @@ scoreboard players set daylight_sensor vars -1
 scoreboard players set dragon vars -1
 scoreboard players set drowned vars -1
 scoreboard players set ambient vars -1
+scoreboard players set effect_base vars -1
 scoreboard players set end_mobs vars -1
 scoreboard players set end_portal vars -1
 scoreboard players set fangs vars -1
