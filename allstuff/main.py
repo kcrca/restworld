@@ -313,15 +313,25 @@ def effect_function(effect):
     return "\n".join(base % f for f in ("init", "fast", "main", "slow"))
 
 
-def effect_signs(func_dir, sign_tmpl):
-    per_x = (5, 5, 5, 5)
-    widths = (7, 7, 7, 7)
-    facings = ("east", "south", "west", "north")
-    frame = 0
+class Frame:
+    def __init__(self, width, used, facing, block_at):
+        self.width = width
+        self.used = used
+        self.facing = facing
+        self.block_at = block_at
+        self.start = (width - used) / 2
+        self.end = width - self.start
 
-    def enter_frame():
-        x = (widths[frame] - per_x[frame]) / 2
-        return (x, x + per_x[frame], 3, facings[frame])
+
+def effect_signs(func_dir, sign_tmpl):
+    frames = (
+        Frame(7, 5, "east", (-1, 0)),
+        Frame(7, 5, "south", (0, -1)),
+        Frame(7, 5, "west", (1, 0)),
+        Frame(7, 5, "north", (0, -1)),
+    )
+    cur_frame = 0
+    frame = frames[cur_frame]
 
     kill_command = "kill @e[tag=signer]"
     commands = [
@@ -329,27 +339,28 @@ def effect_signs(func_dir, sign_tmpl):
         "summon minecraft:armor_stand ~1 ~1.5 ~-1 {Tags:[signer],Rotation:[90f,0f],ArmorItems:[{},{},{},{id:turtle_helmet,Count:1}]}",
         "execute at @e[tag=signer] run fill ^0 ^0 ^0 ^-6 ^4 ^-6 air",
     ]
-    (first_x, end_x, y, facing) = enter_frame()
-    x = first_x
+    x = frame.start
+    y = 3
     for i, effect in enumerate(sorted(effects)):
         sign_text = effect.sign_text()
         lines = ["", ] + sign_text + [""] * (max(0, 3 - len(sign_text)))
-        commands.append(sign_tmpl.render(effect=effect, lines=lines, x=-x, y=y, facing=facing).strip())
+        commands.append(sign_tmpl.render(effect=effect, lines=lines, x=-x, y=y, frame=frame).strip())
         # write_function(func_dir, effect.id, effect_function(effect))
         x += 1
-        if x >= end_x:
+        if x >= frame.end:
             y -= 1
             if y < 1:
                 commands.append(
                     "execute as @e[tag=signer] run execute at @s run teleport @s ^-%d ^0 ^0 ~90 ~" % (
-                            widths[frame] - 1))
-                frame += 1
-                (first_x, end_x, y, facing) = enter_frame()
-            x = first_x
+                            frame.width      - 1))
+                cur_frame += 1
+                frame = frames[cur_frame]
+                y = 3
+            x = frame.start
 
     commands.append(kill_command)
 
-    write_function(func_dir, 'signs', "\n".join(commands))
+    write_function(func_dir, 'signs', "\n".join(commands) + "\n")
 
 
 def write_function(func_dir, func_name, rendered):
