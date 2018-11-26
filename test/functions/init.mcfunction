@@ -31,6 +31,7 @@ scoreboard players set daylight_sensor vars -1
 scoreboard players set dragon vars -1
 scoreboard players set drowned vars -1
 scoreboard players set ambient vars -1
+scoreboard players set ambient vars -1
 scoreboard players set effect_base vars -1
 scoreboard players set end_mobs vars -1
 scoreboard players set end_portal vars -1
