@@ -1,4 +1,5 @@
 #!/bin/sh
+cd `dirname $0`
 set -e
 dst_dir="/Users/kcrca/Library/Application Support/minecraft/saves/AllStuff/datapacks/allstuff/data/allstuff"
 rm -rf functions

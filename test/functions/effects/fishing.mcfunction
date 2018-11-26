@@ -1,0 +1,1 @@
+execute if score fast clocks matches 0 at @e[tag=effects_center] positioned ~ ~2 ~ run particle minecraft:fishing ~ ~1.5 ~ 0.2 0 0.2 0 6

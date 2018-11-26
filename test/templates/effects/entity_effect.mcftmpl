@@ -1,0 +1,2 @@
+<%namespace file="effect_base.mcftmpl" import="*"/>\
+${main_clock()} particle minecraft:entity_effect ~ ~1 ~ 0.25 0.5 0.5 0.2 80
