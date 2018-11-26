@@ -58,6 +58,8 @@ scoreboard players set end_rod vars -1
 scoreboard players set entity_effect vars -1
 scoreboard players set entity_effect vars -1
 scoreboard players set explosion vars -1
+scoreboard players set explosion_emitter vars -1
+scoreboard players set explosion_emitter vars -1
 scoreboard players set explosion vars -1
 scoreboard players set falling_dust vars -1
 scoreboard players set falling_dust_change vars -1
@@ -69,7 +71,12 @@ scoreboard players set fishing vars -1
 scoreboard players set fishing vars -1
 scoreboard players set flame vars -1
 scoreboard players set flame vars -1
+scoreboard players set happy_villager vars -1
+scoreboard players set happy_villager vars -1
+scoreboard players set heart vars -1
+scoreboard players set heart vars -1
 scoreboard players set ocean vars -1
+scoreboard players set small_animal vars -1
 scoreboard players set villager vars -1
 scoreboard players set end_mobs vars -1
 scoreboard players set end_portal vars -1
