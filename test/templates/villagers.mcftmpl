@@ -1,7 +1,5 @@
 <%namespace name="base"  file="base.mcftmpl"/>
 
-<% professions = ("Farmer", "Librarian", "Priest", "Smith", "Butcher", "Nitwit") %>
-
 teleport @e[tag=villager] @e[tag=death,limit=1]
 
 <%base:loop collection="${(0, 1)}" args="when,i,thing">

@@ -1,7 +1,5 @@
 
 
-
-
 teleport @e[tag=villager] @e[tag=death,limit=1]
 
 

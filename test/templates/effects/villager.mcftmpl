@@ -1,1 +1,7 @@
-summon minecraft:villager ~0 ~0 ~0 {NoAI:True,Silent:True}
+<%namespace file="effect_base.mcftmpl" import="*"/>\
+<%namespace file="../base.mcftmpl" import="*"/>\
+
+${increment(len(professions))}\
+% for i in range(0, len(professions)):
+${when(i)} summon minecraft:villager ~0 ~0 ~0 {Profession:${i},NoAI:True,Silent:True}
+% endfor

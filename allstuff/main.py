@@ -1,4 +1,3 @@
-import collections
 import fnmatch
 import os
 import re
@@ -10,103 +9,7 @@ from mako.template import Template
 mc_version = '1.13'
 
 
-class Thing:
-    def __init__(self, name, id=None, block_state=None):
-        self.name = name.strip()  # This allows a "%s Minecart" % "" to work
-        if id is None:
-            id = to_id(self.name.strip())
-        self.id = to_id(id.strip())
-        self.block_state = block_state if block_state else ""
-
-    def __repr__(self):
-        return self.name
-
-    def full_id(self):
-        id = "minecraft:%s" % self.id
-        if self.block_state:
-            id += "[%s]" % self.block_state
-        return id
-
-
-class Nicknamed(Thing):
-    def __init__(self, nickname, kind, id=None, block_state=None):
-        Thing.__init__(self, ("%s %s" % (nickname, kind)).strip(), id, block_state)
-        self.nickname = nickname
-        self.kind = kind
-
-
-class Color(Thing):
-    _next_color = 0
-
-    def __init__(self, name, rgb, dye_13):
-        Thing.__init__(self, name)
-        self.rgb = rgb
-        self.dyes = {'1.13': dye_13, '1.14': '%s_dye' % self.id, 'default': dye_13}
-        self.color_num = Color._next_color
-        Color._next_color += 1
-
-    def dye_name(self):
-        try:
-            return self.dyes[mc_version]
-        except:
-            return self.dyes['default']
-
-
-class Horse(Thing):
-    def __init__(self, name, variant=None):
-        if variant is not None:
-            Thing.__init__(self, name, "horse")
-            self.tag = "%s_horses" % to_id(name)
-        else:
-            Thing.__init__(self, name)
-            self.tag = "%ss" % self.id
-        self.variant = variant
-
-
-class CommandBlock(Thing):
-    def __init__(self, name, conditional):
-        Thing.__init__(self, name)
-        self.conditional = conditional
-
-
-class Stepable(Thing):
-    def __init__(self, name, base_id, block=None):
-        Thing.__init__(self, name)
-        self.block = to_id(block) if block else self.id
-        self.base_id = to_id(base_id)
-
-
-class Effect(Thing):
-    def __init__(self, name, id=None, note=None):
-        Thing.__init__(self, name.replace('|', ' '), id)
-        self.note = "(%s)" % note if note else None
-        self.text = name
-
-    def sign_text(self):
-        t = self.text.split("|")
-        if self.note:
-            t += self.note.split("|")
-        return t
-
-
-def text(txt):
-    return r'"\"%s\""' % txt
-
-
-def to_id(name):
-    return name.lower().replace(" ", "_")
-
-
-def to_nicknamed(kind, nicknames):
-    items = [Nicknamed(n, kind) for n in nicknames]
-    return items
-
-
-def has_loop(rendered):
-    return re.search(r'<%base:(loop|bounce|increment)', rendered, flags=re.MULTILINE)
-
-
-def main():
+def render_templ(tmpl, var_name, **kwargs):
     colors = (
         Color("White", 16383998, "bone_meal"),
         Color("Orange", 16351261, "orange_dye"),
@@ -236,32 +139,131 @@ def main():
         "Pink",
         "White",
     )
+    professions = ("Farmer", "Librarian", "Priest", "Smith", "Butcher", "Nitwit")
 
+    return tmpl.render(
+        var=var_name,
+        func=var_name,
+        Thing=Thing,
+        colors=colors,
+        structure_blocks=structure_blocks,
+        command_blocks=command_blocks,
+        steppables=stepables,
+        woods=woods,
+        fishes=fishes,
+        horses=horses,
+        other_horses=other_horses,
+        small_flowers=small_flowers,
+        tulips=tulips,
+        professions=professions,
+        text=text,
+        to_nicknamed=to_nicknamed,
+        to_id=to_id,
+        **kwargs
+    )
+
+
+class Thing:
+    def __init__(self, name, id=None, block_state=None):
+        self.name = name.strip()  # This allows a "%s Minecart" % "" to work
+        if id is None:
+            id = to_id(self.name.strip())
+        self.id = to_id(id.strip())
+        self.block_state = block_state if block_state else ""
+
+    def __repr__(self):
+        return self.name
+
+    def full_id(self):
+        id = "minecraft:%s" % self.id
+        if self.block_state:
+            id += "[%s]" % self.block_state
+        return id
+
+
+class Nicknamed(Thing):
+    def __init__(self, nickname, kind, id=None, block_state=None):
+        Thing.__init__(self, ("%s %s" % (nickname, kind)).strip(), id, block_state)
+        self.nickname = nickname
+        self.kind = kind
+
+
+class Color(Thing):
+    _next_color = 0
+
+    def __init__(self, name, rgb, dye_13):
+        Thing.__init__(self, name)
+        self.rgb = rgb
+        self.dyes = {'1.13': dye_13, '1.14': '%s_dye' % self.id, 'default': dye_13}
+        self.color_num = Color._next_color
+        Color._next_color += 1
+
+    def dye_name(self):
+        try:
+            return self.dyes[mc_version]
+        except:
+            return self.dyes['default']
+
+
+class Horse(Thing):
+    def __init__(self, name, variant=None):
+        if variant is not None:
+            Thing.__init__(self, name, "horse")
+            self.tag = "%s_horses" % to_id(name)
+        else:
+            Thing.__init__(self, name)
+            self.tag = "%ss" % self.id
+        self.variant = variant
+
+
+class CommandBlock(Thing):
+    def __init__(self, name, conditional):
+        Thing.__init__(self, name)
+        self.conditional = conditional
+
+
+class Stepable(Thing):
+    def __init__(self, name, base_id, block=None):
+        Thing.__init__(self, name)
+        self.block = to_id(block) if block else self.id
+        self.base_id = to_id(base_id)
+
+
+class Effect(Thing):
+    def __init__(self, name, id=None, note=None):
+        Thing.__init__(self, name.replace('|', ' '), id)
+        self.note = "(%s)" % note if note else None
+        self.text = name
+
+    def sign_text(self):
+        t = self.text.split("|")
+        if self.note:
+            t += self.note.split("|")
+        return t
+
+
+def text(txt):
+    return r'"\"%s\""' % txt
+
+
+def to_id(name):
+    return name.lower().replace(" ", "_")
+
+
+def to_nicknamed(kind, nicknames):
+    items = [Nicknamed(n, kind) for n in nicknames]
+    return items
+
+
+def has_loop(rendered):
+    return re.search(r'<%base:(loop|bounce|increment)', rendered, flags=re.MULTILINE)
+
+
+def main():
     def find_files(dir, pat):
         for root, dirnames, filenames in os.walk(dir):
             for filename in fnmatch.filter(filenames, pat):
                 yield os.path.join(root, filename)
-
-    def render_templ(tmpl, **kwargs):
-        return tmpl.render(
-            var=var_name,
-            func=var_name,
-            Thing=Thing,
-            colors=colors,
-            structure_blocks=structure_blocks,
-            command_blocks=command_blocks,
-            steppables=stepables,
-            woods=woods,
-            fishes=fishes,
-            horses=horses,
-            other_horses=other_horses,
-            small_flowers=small_flowers,
-            tulips=tulips,
-            text=text,
-            to_nicknamed=to_nicknamed,
-            to_id=to_id,
-            **kwargs
-        )
 
     dir = sys.argv[1] if len(sys.argv) > 1 else '.'
     tmpl_dir = os.path.join(dir, 'templates')
@@ -277,11 +279,11 @@ def main():
         if var_name.endswith('_init'):
             var_name = var_name[:-5]
         tmpl = Template(filename=tmpl_path, lookup=lookup)
-        rendered = render_templ(tmpl)
+        rendered = render_templ(tmpl, var_name)
         dir = os.path.dirname(tmpl_path.replace(tmpl_dir, func_dir))
         write_function(dir, func_name, rendered)
         if not func_name.endswith("init") and has_loop(tmpl.source):
-            rendered = render_templ(tmpl, suppress_loop=True)
+            rendered = render_templ(tmpl, var_name, suppress_loop=True)
             write_function(dir, func_name + "_cur", rendered)
         if var_name in vars and var_name == func_name:
             raise "Duplicate script/var name: %s" % var_name
