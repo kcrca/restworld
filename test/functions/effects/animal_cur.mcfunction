@@ -3,9 +3,6 @@
 
 
 
-execute unless score animal funcs matches 0.. run function animal_init
-scoreboard players add animal funcs 1
-execute unless score animal funcs matches 0..5 run scoreboard players set animal funcs 0
 
 execute if score animal funcs matches 0 run summon minecraft:cow ~0 ~0 ~0 {NoAI:True,Silent:True}
 

@@ -1,7 +1,6 @@
-<%namespace file="effect_base.mcftmpl" import="*"/>\
-<%namespace file="../base.mcftmpl" import="*"/>\
+<%namespace file="effect_base.mcftmpl" import="*"/>
+<%namespace name="base"  file="../base.mcftmpl"/>
 
-${increment(len(professions))}\
-% for i in range(0, len(professions)):
+<%base:loop collection="${professions}" args="when,i,thing">
 ${when(i)} summon minecraft:villager ~0 ~0 ~0 {Profession:${i},NoAI:True,Silent:True}
-% endfor
+</%base:loop>

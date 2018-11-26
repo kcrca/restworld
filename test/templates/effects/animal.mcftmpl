@@ -1,8 +1,7 @@
-<%namespace file="effect_base.mcftmpl" import="*"/>\
-<%namespace file="../base.mcftmpl" import="*"/>\
+<%namespace file="effect_base.mcftmpl" import="*"/>
+<%namespace name="base"  file="../base.mcftmpl"/>
 <% animals = (Thing("cow"), Thing("Pig"), Thing("Horse"), Thing("Llama"), Thing("Sheep"), Thing("Polar Bear")) %>
 
-${increment(len(animals))}\
-% for i, a in enumerate(animals):
-${when(i)} summon ${a.full_id()} ~0 ~0 ~0 {NoAI:True,Silent:True}
-% endfor
+<%base:loop collection="${animals}" args="when,i,thing">
+${when(i)} summon ${thing.full_id()} ~0 ~0 ~0 {NoAI:True,Silent:True}
+</%base:loop>
