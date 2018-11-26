@@ -352,7 +352,7 @@ def effect_signs(func_dir, sign_tmpl):
             if y < 1:
                 commands.append(
                     "execute as @e[tag=signer] run execute at @s run teleport @s ^-%d ^0 ^0 ~90 ~" % (
-                            frame.width      - 1))
+                            frame.width - 1))
                 cur_frame += 1
                 frame = frames[cur_frame]
                 y = 3

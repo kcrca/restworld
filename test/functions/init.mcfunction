@@ -32,7 +32,17 @@ scoreboard players set dragon vars -1
 scoreboard players set drowned vars -1
 scoreboard players set ambient vars -1
 scoreboard players set ambient vars -1
+scoreboard players set angry_villager vars -1
+scoreboard players set angry_villager vars -1
+scoreboard players set bubbles vars -1
+scoreboard players set clouds vars -1
+scoreboard players set crit vars -1
+scoreboard players set crit vars -1
+scoreboard players set damage_indicator vars -1
+scoreboard players set damage_indicator vars -1
+scoreboard players set dolphin vars -1
 scoreboard players set effect_base vars -1
+scoreboard players set ocean vars -1
 scoreboard players set end_mobs vars -1
 scoreboard players set end_portal vars -1
 scoreboard players set fangs vars -1
