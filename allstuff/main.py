@@ -273,7 +273,6 @@ def main():
         func_name = os.path.splitext(os.path.basename(tmpl_path))[0]
         if func_name in ("init", 'base', 'a_sign'):
             continue
-        print '----- %s' % func_name
         var_name = func_name
         if var_name.endswith('_init'):
             var_name = var_name[:-5]
