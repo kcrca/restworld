@@ -323,13 +323,17 @@ class Frame:
         self.start = (width - used) / 2
         self.end = width - self.start
 
+    def to_next_wall(self):
+        return "execute as @e[tag=signer] run execute at @s run teleport @s ^-%d ^0 ^0 ~90 ~" % (
+                self.width - 1)
+
 
 def effect_signs(func_dir, sign_tmpl):
     frames = (
         Frame(7, 5, "east", (-1, 0)),
         Frame(7, 5, "south", (0, -1)),
         Frame(7, 5, "west", (1, 0)),
-        Frame(7, 5, "north", (0, -1)),
+        Frame(7, 5, "north", (0, 1)),
     )
     cur_frame = 0
     frame = frames[cur_frame]
@@ -338,7 +342,7 @@ def effect_signs(func_dir, sign_tmpl):
     commands = [
         kill_command,
         "summon minecraft:armor_stand ~1 ~1.5 ~-1 {Tags:[signer],Rotation:[90f,0f],ArmorItems:[{},{},{},{id:turtle_helmet,Count:1}]}",
-        "execute at @e[tag=signer] run fill ^0 ^0 ^0 ^-6 ^4 ^-6 air",
+        "execute at @e[tag=signer] run fill ^0 ^0 ^0 ^-3 ^3 ^-6 air",
     ]
     x = frame.start
     y = 3
@@ -351,13 +355,19 @@ def effect_signs(func_dir, sign_tmpl):
         if x >= frame.end:
             y -= 1
             if y < 1:
-                commands.append(
-                    "execute as @e[tag=signer] run execute at @s run teleport @s ^-%d ^0 ^0 ~90 ~" % (
-                            frame.width - 1))
+                commands.append(frame.to_next_wall())
                 cur_frame += 1
                 frame = frames[cur_frame]
                 y = 3
             x = frame.start
+    # Get to the last wall and put the "off" sign on it
+    while frame != frames[3]:
+        commands.append(frame.to_next_wall())
+        cur_frame += 1
+        frame = frames[cur_frame]
+    x = int(frame.width / 2 + 0.6)
+    y = 3
+    commands.append(sign_tmpl.render(effect=Effect("Off"), lines=['', 'Off', '', ''], x=-x, y=y, frame=frame).strip())
 
     commands.append(kill_command)
 
