@@ -1,1 +1,1 @@
-fill ~ ~ ~ ~ 2 ~ tnt
+fill ~ ~ ~ ~ ~2 ~ tnt

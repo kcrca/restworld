@@ -286,7 +286,7 @@ def main():
             rendered = render_templ(tmpl, var_name, suppress_loop=True)
             write_function(dir, func_name + "_cur", rendered)
         if var_name in vars and var_name == func_name:
-            raise "Duplicate script/var name: %s" % var_name
+            raise BaseException("Duplicate script/var name: %s" % var_name)
         vars.append(var_name)
 
     init_tmpl = Template(filename=os.path.join(tmpl_dir, "init.mcftmpl"), lookup=lookup)
@@ -301,10 +301,10 @@ effects = (
     Effect("Dragon Breath"), Effect("Dripping Lava"), Effect("Dripping Water"), Effect("Dust", note="Redstone Dust"),
     Effect("Effect"), Effect("Elder Guardian"), Effect("Enchant"), Effect("Enchanted Hit"), Effect("End Rod"),
     Effect("Entity Effect"), Effect("Explosion"), Effect("Falling Dust"), Effect("Fireworks"), Effect("Fishing"),
-    Effect("Flame"), Effect("Happy Villager"), Effect("Heart"), Effect("Explosion Emitter"), Effect("Instant Effect"),
-    Effect("Item Slime"), Effect("Item Snowball"), Effect("Large Smoke"), Effect("Lava"), Effect("Mycelium"),
-    Effect("Nautilus"), Effect("Note"), Effect("Poof", note="Small Explosion"), Effect("Portal"), Effect("Rain"),
-    Effect("Smoke"), Effect("Snow"), Effect("Splash"), Effect("Squid Ink"), Effect("Sweep Attack"),
+    Effect("Flame"), Effect("Happy Villager"), Effect("Heart"), Effect("Explosion Emitter", note="Large Explosion"),
+    Effect("Instant Effect"), Effect("Item Slime"), Effect("Item Snowball"), Effect("Large Smoke"), Effect("Lava"),
+    Effect("Mycelium"), Effect("Nautilus"), Effect("Note"), Effect("Poof", note="Small Explosion"), Effect("Portal"),
+    Effect("Rain"), Effect("Smoke"), Effect("Snow"), Effect("Splash"), Effect("Squid Ink"), Effect("Sweep Attack"),
     Effect("Totem of Undying"), Effect("Underwater"), Effect("Witch"),
 )
 
