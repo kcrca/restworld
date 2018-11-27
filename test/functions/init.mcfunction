@@ -90,6 +90,11 @@ scoreboard players set ocean vars -1
 scoreboard players set poof vars -1
 scoreboard players set portal vars -1
 scoreboard players set small_animal vars -1
+scoreboard players set smoke vars -1
+scoreboard players set spit vars -1
+scoreboard players set spit vars -1
+scoreboard players set splash vars -1
+scoreboard players set splash vars -1
 scoreboard players set villager vars -1
 scoreboard players set end_mobs vars -1
 scoreboard players set end_portal vars -1

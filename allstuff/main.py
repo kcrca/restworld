@@ -304,8 +304,8 @@ effects = (
     Effect("Flame"), Effect("Happy Villager"), Effect("Heart"), Effect("Explosion Emitter", note="Large Explosion"),
     Effect("Instant Effect"), Effect("Item Slime"), Effect("Item Snowball"), Effect("Large Smoke"), Effect("Lava"),
     Effect("Mycelium"), Effect("Nautilus"), Effect("Note"), Effect("Poof", note="Small Explosion"), Effect("Portal"),
-    Effect("Rain"), Effect("Smoke"), Effect("Snow"), Effect("Splash"), Effect("Squid Ink"), Effect("Sweep Attack"),
-    Effect("Totem of Undying"), Effect("Underwater"), Effect("Witch"),
+    Effect("Rain"), Effect("Smoke"), Effect("Snow"), Effect("Spit"), Effect("Splash"), Effect("Squid Ink"),
+    Effect("Sweep Attack"), Effect("Totem of Undying"), Effect("Underwater"), Effect("Witch"),
 )
 
 
