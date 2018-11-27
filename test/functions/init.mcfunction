@@ -95,7 +95,14 @@ scoreboard players set spit vars -1
 scoreboard players set spit vars -1
 scoreboard players set splash vars -1
 scoreboard players set splash vars -1
+scoreboard players set squid_ink vars -1
+scoreboard players set squid_ink vars -1
+scoreboard players set sweep_attack vars -1
+scoreboard players set totem_of_undying vars -1
+scoreboard players set underwater vars -1
 scoreboard players set villager vars -1
+scoreboard players set witch vars -1
+scoreboard players set witch vars -1
 scoreboard players set end_mobs vars -1
 scoreboard players set end_portal vars -1
 scoreboard players set fangs vars -1
