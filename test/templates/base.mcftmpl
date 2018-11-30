@@ -93,3 +93,7 @@ summon ${thing.full_id()} ~${x} ~${2 + y_add} ~${z} {CustomName:${text(thing.nam
 ${when(i)} fill ~${x} ~${y} ~${z - s} ~${x + 2} ~${y} ~${z - s} minecraft:${which}[${name}=${stages[(i + s + len(stages)) % len(stages)]}]
 % endfor
 </%def>
+
+<%def name="stop_clocks()">
+setblock 0 1 0 redstone_block
+</%def>

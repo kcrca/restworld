@@ -28,6 +28,11 @@ scoreboard players set conduit vars -1
 scoreboard players set coral vars -1
 scoreboard players set creeper vars -1
 scoreboard players set daylight_sensor vars -1
+scoreboard players set reset vars -1
+scoreboard players set restore vars -1
+scoreboard players set save vars -1
+scoreboard players set tick vars -1
+scoreboard players set tick vars -1
 scoreboard players set dragon vars -1
 scoreboard players set drowned vars -1
 scoreboard players set ambient vars -1
