@@ -20,6 +20,7 @@ scoreboard players set cauldron vars -1
 scoreboard players set center vars -1
 scoreboard players set center vars -1
 scoreboard players set chest vars -1
+scoreboard players set chickens vars -1
 scoreboard players set cocoa vars -1
 scoreboard players set colored_mobs vars -1
 scoreboard players set colorings vars -1
@@ -66,8 +67,6 @@ scoreboard players set entity_effect vars -1
 scoreboard players set entity_effect vars -1
 scoreboard players set explosion vars -1
 scoreboard players set explosion_emitter vars -1
-scoreboard players set explosion_emitter vars -1
-scoreboard players set explosion vars -1
 scoreboard players set falling_dust vars -1
 scoreboard players set falling_dust_change vars -1
 scoreboard players set falling_dust vars -1

@@ -26,7 +26,7 @@ def render_templ(tmpl, var_name, **kwargs):
         Color("Brown", 8606770, "cocoa_beans"),
         Color("Green", 6192150, "cactus_green"),
         Color("Red", 11546150, "rose_red"),
-        Color("Black", 1908001, "ink_sack"),
+        Color("Black", 1908001, "ink_sac"),
     )
     structure_blocks = (
         Thing("Data", "DATA"),

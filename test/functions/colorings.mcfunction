@@ -361,7 +361,7 @@ execute if score colorings funcs matches 15 run fill ~-9 ~3 ~4 ~-10 ~3 ~4 minecr
 execute if score colorings funcs matches 15 run setblock ~-10 ~3 ~4 minecraft:black_bed[facing=west,part=head]
 execute if score colorings funcs matches 15 run setblock ~-9 ~3 ~4 minecraft:black_bed[facing=west,part=foot]
 
-execute if score colorings funcs matches 15 run data merge entity @e[tag=colorings_item_frame,limit=1] {Item:{id:ink_sack},Count:1,ItemRotation:0}
+execute if score colorings funcs matches 15 run data merge entity @e[tag=colorings_item_frame,limit=1] {Item:{id:ink_sac},Count:1,ItemRotation:0}
 
 execute if score colorings funcs matches 15 run setblock ~-3 ~5 ~1 minecraft:black_terracotta
 execute if score colorings funcs matches 15 run setblock ~-5 ~5 ~1 minecraft:black_shulker_box

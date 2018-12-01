@@ -12,4 +12,5 @@
 <%base:loop collection="${potables}" args="when,i,thing">\
 ${when(i)} setblock ~ ~3 ~ minecraft:potted_${thing.id}
 ${when(i)} data merge block ~1 ~2 ~ {Text3:${text(thing.name)}}
+${when(i)} data merge block ~-1 ~2 ~ {Text3:${text(thing.name)}}
 </%base:loop>

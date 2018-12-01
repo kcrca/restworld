@@ -3,16 +3,14 @@
 
 
 
-execute if score weapons funcs matches 0 run data merge entity @e[tag=armor_horse,limit=1] {ArmorItem:{id:"minecraft:iron_horse_armor",Count:0}}
-execute if score weapons funcs matches 0 run data merge entity @e[tag=horse_armor_frame,limit=1] {Item:{id:iron_horse_armor},Count:0}
 
-execute if score weapons funcs matches 0 run data merge entity @e[tag=shovel_stand,limit=1] {HandItems:[{},{id:stone_shovel,Count:1}]}
-execute if score weapons funcs matches 0 run data merge entity @e[tag=hoe_stand,limit=1] {HandItems:[{},{id:stone_hoe,Count:1}]}
+execute if score weapons funcs matches 0 run data merge entity @e[tag=shovel_stand,limit=1] {HandItems:[{},{id:wooden_shovel,Count:1}]}
+execute if score weapons funcs matches 0 run data merge entity @e[tag=hoe_stand,limit=1] {HandItems:[{},{id:wooden_hoe,Count:1}]}
 
-execute if score weapons funcs matches 0 run data merge entity @e[tag=sword_stand,limit=1] {ShowArms:True,ArmorItems:[],HandItems:[{id:wooden_sword,Count:1},{id:shield,Count:1}],CustomName:"\"Wood\""}
+execute if score weapons funcs matches 0 run data merge entity @e[tag=sword_stand,limit=1] {ShowArms:True,ArmorItems:[],HandItems:[{id:wooden_sword,Count:1},{id:shield,Count:1}],CustomName:"\"Wooden\""}
 
-execute if score weapons funcs matches 0 run data merge entity @e[tag=axe_stand,limit=1] {HandItems:[{id:stone_axe,Count:1}]}
-execute if score weapons funcs matches 0 run data merge entity @e[tag=pickaxe_stand,limit=1] {HandItems:[{id:stone_pickaxe,Count:1}]}
+execute if score weapons funcs matches 0 run data merge entity @e[tag=axe_stand,limit=1] {HandItems:[{id:wooden_axe,Count:1}]}
+execute if score weapons funcs matches 0 run data merge entity @e[tag=pickaxe_stand,limit=1] {HandItems:[{id:wooden_pickaxe,Count:1}]}
 
 execute if score weapons funcs matches 0 run fill ~-3 ~2 ~1 ~-4 ~2 ~1 minecraft:stone
 execute if score weapons funcs matches 0 run setblock ~-3 ~2 ~3 minecraft:cobblestone
@@ -24,16 +22,14 @@ execute if score weapons funcs matches 0 run data merge entity @e[tag=source1_fr
 execute if score weapons funcs matches 0 run data merge entity @e[tag=source2_frame,limit=1] {Item:{id:stone},Count:1,ItemRotation:0}
 
 
-execute if score weapons funcs matches 1 run data merge entity @e[tag=armor_horse,limit=1] {ArmorItem:{id:"minecraft:iron_horse_armor",Count:0}}
-execute if score weapons funcs matches 1 run data merge entity @e[tag=horse_armor_frame,limit=1] {Item:{id:iron_horse_armor},Count:0}
 
-execute if score weapons funcs matches 1 run data merge entity @e[tag=shovel_stand,limit=1] {HandItems:[{},{id:wooden_shovel,Count:1}]}
-execute if score weapons funcs matches 1 run data merge entity @e[tag=hoe_stand,limit=1] {HandItems:[{},{id:wooden_hoe,Count:1}]}
+execute if score weapons funcs matches 1 run data merge entity @e[tag=shovel_stand,limit=1] {HandItems:[{},{id:stone_shovel,Count:1}]}
+execute if score weapons funcs matches 1 run data merge entity @e[tag=hoe_stand,limit=1] {HandItems:[{},{id:stone_hoe,Count:1}]}
 
-execute if score weapons funcs matches 1 run data merge entity @e[tag=sword_stand,limit=1] {ShowArms:True,ArmorItems:[{id:leather_boots,Count:1},{id:leather_leggings,Count:1},{id:leather_chestplate,Count:1},{id:leather_helmet,Count:1}],HandItems:[{id:stone_sword,Count:1},{id:shield,Count:1}],CustomName:"\"Stone\"",CustomNameVisible:True}
+execute if score weapons funcs matches 1 run data merge entity @e[tag=sword_stand,limit=1] {ShowArms:True,ArmorItems:[],HandItems:[{id:stone_sword,Count:1},{id:shield,Count:1}],CustomName:"\"Stone\""}
 
-execute if score weapons funcs matches 1 run data merge entity @e[tag=axe_stand,limit=1] {HandItems:[{id:wooden_axe,Count:1}]}
-execute if score weapons funcs matches 1 run data merge entity @e[tag=pickaxe_stand,limit=1] {HandItems:[{id:wooden_pickaxe,Count:1}]}
+execute if score weapons funcs matches 1 run data merge entity @e[tag=axe_stand,limit=1] {HandItems:[{id:stone_axe,Count:1}]}
+execute if score weapons funcs matches 1 run data merge entity @e[tag=pickaxe_stand,limit=1] {HandItems:[{id:stone_pickaxe,Count:1}]}
 
 execute if score weapons funcs matches 1 run fill ~-3 ~2 ~1 ~-4 ~2 ~1 minecraft:oak_wood
 execute if score weapons funcs matches 1 run setblock ~-3 ~2 ~3 minecraft:oak_log

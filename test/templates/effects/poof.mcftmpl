@@ -1,2 +1,2 @@
 <%namespace file="effect_base.mcftmpl" import="*"/>\
-${fast_clock()} particle minecraft:poof ~ ~1 ~ 0.25 0.25 0.25 0 30
+${main_clock()} particle minecraft:poof ~ ~1 ~ 0.25 0.25 0.25 0 30

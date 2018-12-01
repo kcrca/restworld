@@ -79,6 +79,7 @@ summon ${thing.full_id()} ~${x} ~${2 + y_add} ~${z} {CustomName:${text(thing.nam
     if name_kid:
 	nbt = ',' + nbt if nbbt else ''
 	nbt = "CustomName:%s" % text(name) + nbt
+    tags += (thing.id,)
     if do_kid:
 	kid(thing, x + kid_x, y_add, z + kid_z, rotation, nbt, tags)
     if do_adult:
