@@ -17,6 +17,8 @@ scoreboard players set cane vars -1
 scoreboard players set cane_soil vars -1
 scoreboard players set cats vars -1
 scoreboard players set cauldron vars -1
+scoreboard players set center vars -1
+scoreboard players set center vars -1
 scoreboard players set chest vars -1
 scoreboard players set cocoa vars -1
 scoreboard players set colored_mobs vars -1
@@ -111,6 +113,7 @@ scoreboard players set witch vars -1
 scoreboard players set end_mobs vars -1
 scoreboard players set end_portal vars -1
 scoreboard players set fangs vars -1
+scoreboard players set faster_clocks vars -1
 scoreboard players set fences vars -1
 scoreboard players set fire vars -1
 scoreboard players set frosted_ice vars -1
@@ -140,6 +143,7 @@ scoreboard players set ores vars -1
 scoreboard players set panes vars -1
 scoreboard players set panes vars -1
 scoreboard players set parrots vars -1
+scoreboard players set photo_shoot vars -1
 scoreboard players set piston vars -1
 scoreboard players set potable vars -1
 scoreboard players set pressure_plate vars -1
@@ -147,8 +151,10 @@ scoreboard players set pufferfish vars -1
 scoreboard players set pumpkin vars -1
 scoreboard players set rabbits vars -1
 scoreboard players set redstone_block vars -1
+scoreboard players set reset_clocks vars -1
 scoreboard players set sand vars -1
 scoreboard players set sea_pickles vars -1
+scoreboard players set slower_clocks vars -1
 scoreboard players set snow vars -1
 scoreboard players set sponge vars -1
 scoreboard players set stems vars -1
