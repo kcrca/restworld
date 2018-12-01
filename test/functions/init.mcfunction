@@ -137,6 +137,7 @@ scoreboard players set mobs_4 vars -1
 scoreboard players set nether_mobs vars -1
 scoreboard players set note_block vars -1
 scoreboard players set note_block vars -1
+scoreboard players set note_trigger vars -1
 scoreboard players set observer vars -1
 scoreboard players set observer vars -1
 scoreboard players set ores vars -1
@@ -161,6 +162,7 @@ scoreboard players set stems vars -1
 scoreboard players set steppable vars -1
 scoreboard players set stone vars -1
 scoreboard players set structure_blocks vars -1
+scoreboard players set to_spawn vars -1
 scoreboard players set tools vars -1
 scoreboard players set topped_blocks vars -1
 scoreboard players set trapped_chest vars -1
