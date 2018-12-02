@@ -1,7 +1,3 @@
-
-
-
-
 execute if score chickens funcs matches 0 as @e[tag=parrot] run data merge entity @s {CustomName:"\"Red\"",Variant:0,OnGround:False}
 
 execute if score chickens funcs matches 1 as @e[tag=parrot] run data merge entity @s {CustomName:"\"Red\"",Variant:0,OnGround:True}

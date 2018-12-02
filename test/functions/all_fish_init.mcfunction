@@ -1,5 +1,3 @@
-
-
 summon minecraft:tropical_fish ~3 ~2.2 ~0 {Tags:[fish0],NoAI:True,Silent:True,Rotation:[90f,0f]}
 summon minecraft:tropical_fish ~3 ~2.2 ~1 {Tags:[fish1],NoAI:True,Silent:True,Rotation:[90f,0f]}
 summon minecraft:tropical_fish ~3 ~2.2 ~2 {Tags:[fish2],NoAI:True,Silent:True,Rotation:[90f,0f]}

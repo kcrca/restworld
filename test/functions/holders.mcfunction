@@ -1,7 +1,3 @@
-
-
-
-
 execute unless score holders funcs matches 0.. run function holders_init
 scoreboard players add holders funcs 1
 execute unless score holders funcs matches 0..7 run scoreboard players set holders funcs 0
@@ -21,4 +17,3 @@ execute if score holders funcs matches 5 run data merge entity @e[tag=strength_l
 execute if score holders funcs matches 6 run data merge entity @e[tag=strength_llama,limit=1] {Strength:3}
 
 execute if score holders funcs matches 7 run data merge entity @e[tag=strength_llama,limit=1] {Strength:2}
-

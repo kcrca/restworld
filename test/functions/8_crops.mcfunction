@@ -1,7 +1,3 @@
-
-
-
-
 execute unless score 8_crops funcs matches 0.. run function 8_crops_init
 scoreboard players add 8_crops funcs 1
 execute unless score 8_crops funcs matches 0..9 run scoreboard players set 8_crops funcs 0
@@ -134,5 +130,3 @@ execute if score 8_crops funcs matches 9 run fill ~4 ~3 ~-6 ~6 ~3 ~-6 minecraft:
 execute if score 8_crops funcs matches 9 run fill ~0 ~2 ~-12 ~2 ~2 ~-12 minecraft:farmland[moisture=7]
 execute if score 8_crops funcs matches 9 run fill ~0 ~2 ~-13 ~2 ~2 ~-13 minecraft:farmland[moisture=0]
 execute if score 8_crops funcs matches 9 run fill ~0 ~2 ~-14 ~2 ~2 ~-14 minecraft:farmland[moisture=1]
-
-

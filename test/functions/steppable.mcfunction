@@ -1,5 +1,3 @@
-
-
 fill ~3 ~2 ~0 ~4 ~4 ~4 minecraft:air
 
 
@@ -121,7 +119,7 @@ execute if score steppable funcs matches 6 run setblock ~0 ~3 ~2 minecraft:brick
 execute if score steppable funcs matches 6 run setblock ~1 ~3 ~2 minecraft:brick_stairs[facing=south,shape=inner_left]
 execute if score steppable funcs matches 6 run setblock ~0 ~3 ~3 minecraft:brick_stairs[facing=east]
 execute if score steppable funcs matches 6 run setblock ~1 ~4 ~3 minecraft:brick_slab[type=top]
-execute if score steppable funcs matches 6 run setblock ~0 ~3 ~4 minecraft:terracotta
+execute if score steppable funcs matches 6 run setblock ~0 ~3 ~4 minecraft:clay
 
 
 
@@ -173,7 +171,3 @@ execute if score steppable funcs matches 10 run setblock ~1 ~3 ~2 minecraft:dark
 execute if score steppable funcs matches 10 run setblock ~0 ~3 ~3 minecraft:dark_prismarine_stairs[facing=east]
 execute if score steppable funcs matches 10 run setblock ~1 ~4 ~3 minecraft:dark_prismarine_slab[type=top]
 execute if score steppable funcs matches 10 run setblock ~0 ~3 ~4 minecraft:air
-
-
-
-

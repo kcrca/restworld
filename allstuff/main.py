@@ -55,7 +55,7 @@ def render_templ(tmpl, var_name, **kwargs):
         Stepable("Cobblestone", "Stone"),
         Stepable("Stone Brick", "Stone", block="Stone Bricks"),
         Stepable("Nether Brick", "Netherrack", block="Nether Bricks"),
-        Stepable("Brick", "Terracotta", block="Bricks"),
+        Stepable("Brick", "Clay", block="Bricks"),
         Stepable("Purpur", "air", block="Purpur Block"),
         Stepable("Prismarine", "air"),
         Stepable("Prismarine Brick", "air", block="Prismarine Bricks"),
@@ -379,7 +379,7 @@ def write_function(func_dir, func_name, rendered):
         os.mkdir(func_dir)
     out_file = os.path.join(func_dir, '%s.mcfunction' % func_name)
     with open(out_file, "w") as out:
-        out.write(rendered)
+        out.write(rendered.strip())
 
 
 if __name__ == '__main__':

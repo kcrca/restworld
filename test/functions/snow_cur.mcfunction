@@ -1,8 +1,3 @@
-
-
-
-
-
 execute if score snow funcs matches 0 run setblock ~ ~4 ~ snow[layers=1]
 
 execute if score snow funcs matches 1 run setblock ~ ~4 ~ snow[layers=2]
@@ -30,4 +25,3 @@ execute if score snow funcs matches 11 run setblock ~ ~4 ~ snow[layers=4]
 execute if score snow funcs matches 12 run setblock ~ ~4 ~ snow[layers=3]
 
 execute if score snow funcs matches 13 run setblock ~ ~4 ~ snow[layers=2]
-

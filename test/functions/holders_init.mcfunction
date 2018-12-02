@@ -1,4 +1,3 @@
-
 tp @e[tag=holder] @e[tag=death,limit=1]
 
 summon donkey ~-2 ~1.5 ~1 {Tags:[holder],Variant:2,ChestedHorse:True,Tame:True,NoAI:True,Silent:True,Rotation:[180f,0f],Stringth:5}

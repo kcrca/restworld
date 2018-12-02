@@ -1,5 +1,3 @@
-
-
 execute unless score cake funcs matches 0.. run function cake_init
 scoreboard players add cake funcs 1
 execute unless score cake funcs matches 0..11 run scoreboard players set cake funcs 0
@@ -27,4 +25,3 @@ execute if score cake funcs matches 9 run setblock ~ ~3 ~ cake[bites=3]
 execute if score cake funcs matches 10 run setblock ~ ~3 ~ cake[bites=2]
 
 execute if score cake funcs matches 11 run setblock ~ ~3 ~ cake[bites=1]
-

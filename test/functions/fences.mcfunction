@@ -1,7 +1,3 @@
-
-
-
-
 execute unless score fences funcs matches 0.. run function fences_init
 scoreboard players add fences funcs 1
 execute unless score fences funcs matches 0..8 run scoreboard players set fences funcs 0
@@ -40,5 +36,3 @@ execute if score fences funcs matches 7 run data merge block ~5 ~2 ~5 {Text2:"\"
 
 execute if score fences funcs matches 8 run fill ~ ~2 ~ ~5 ~3 ~7 minecraft:mossy_cobblestone_wall replace #allstuff:fences
 execute if score fences funcs matches 8 run data merge block ~5 ~2 ~5 {Text2:"\"Mossy\"",Text3:"\"Cobblestone Wall\""}
-
-

@@ -1,8 +1,3 @@
-
-
-
-
-
 execute unless score horses funcs matches 0.. run function horses_init
 scoreboard players add horses funcs 1
 execute unless score horses funcs matches 0..4 run scoreboard players set horses funcs 0
@@ -55,5 +50,3 @@ execute if score horses funcs matches 4 as @e[tag=black_horses] run data merge e
 execute if score horses funcs matches 4 as @e[tag=gray_horses] run data merge entity @s {Variant:1029}
 execute if score horses funcs matches 4 as @e[tag=dark_brown_horses] run data merge entity @s {Variant:1030}
 execute if score horses funcs matches 4 at @e[tag=brown_horses,tag=kid] run data merge block ~1 ~ ~ {Text3:"\"Black Dots\""}
-
-

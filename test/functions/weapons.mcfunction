@@ -1,7 +1,3 @@
-
-
-
-
 execute unless score weapons funcs matches 0.. run function weapons_init
 scoreboard players add weapons funcs 1
 execute unless score weapons funcs matches 0..4 run scoreboard players set weapons funcs 0
@@ -105,5 +101,3 @@ execute if score weapons funcs matches 4 run setblock ~-4 ~3 ~1 minecraft:diamon
 execute if score weapons funcs matches 4 run setblock ~-4 ~3 ~-1 minecraft:diamond_ore
 execute if score weapons funcs matches 4 run data merge entity @e[tag=source1_frame,limit=1] {Item:{id:diamond},Count:1,ItemRotation:0}
 execute if score weapons funcs matches 4 run data merge entity @e[tag=source2_frame,limit=1] {Item:{id:diamond},Count:1,ItemRotation:0}
-
-

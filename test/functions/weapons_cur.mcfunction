@@ -1,9 +1,3 @@
-
-
-
-
-
-
 execute if score weapons funcs matches 0 run data merge entity @e[tag=shovel_stand,limit=1] {HandItems:[{},{id:wooden_shovel,Count:1}]}
 execute if score weapons funcs matches 0 run data merge entity @e[tag=hoe_stand,limit=1] {HandItems:[{},{id:wooden_hoe,Count:1}]}
 
@@ -102,5 +96,3 @@ execute if score weapons funcs matches 4 run setblock ~-4 ~3 ~1 minecraft:diamon
 execute if score weapons funcs matches 4 run setblock ~-4 ~3 ~-1 minecraft:diamond_ore
 execute if score weapons funcs matches 4 run data merge entity @e[tag=source1_frame,limit=1] {Item:{id:diamond},Count:1,ItemRotation:0}
 execute if score weapons funcs matches 4 run data merge entity @e[tag=source2_frame,limit=1] {Item:{id:diamond},Count:1,ItemRotation:0}
-
-

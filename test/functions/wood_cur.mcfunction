@@ -1,7 +1,3 @@
-
-
-
-
 fill ~4 ~2 ~-1 ~3 ~2 ~-1 air
 fill ~4 ~2 ~1 ~4 ~3 ~2 air
 tp @e[tag=wood_boat] 10 0 0
@@ -192,5 +188,3 @@ execute if score wood funcs matches 5 run setblock ~4 ~3 ~1 minecraft:spruce_doo
 execute if score wood funcs matches 5 run setblock ~4 ~2 ~2 minecraft:spruce_door[facing=east,half=lower,hinge=right]
 execute if score wood funcs matches 5 run setblock ~4 ~3 ~2 minecraft:spruce_door[facing=east,half=upper,hinge=right]
 execute if score wood funcs matches 5 run summon minecraft:boat ~0 ~1.025 ~2.5 {Type:spruce,CustomName:"\"Spruce\"",CustomNameVisible:True,Tags:[wood_boat]}
-
-

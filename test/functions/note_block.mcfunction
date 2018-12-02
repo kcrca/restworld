@@ -1,6 +1,3 @@
-
-
-
 execute unless score note_block funcs matches 0.. run function note_block_init
 scoreboard players add note_block funcs 1
 execute unless score note_block funcs matches 0..24 run scoreboard players set note_block funcs 0
@@ -303,5 +300,3 @@ execute if score note_block funcs matches 24 if score instrument funcs matches 6
 execute if score note_block funcs matches 24 if score instrument funcs matches 7 run setblock ~ ~3 ~ minecraft:note_block[note=24,instrument=bass]
 execute if score note_block funcs matches 24 if score instrument funcs matches 8 run setblock ~ ~3 ~ minecraft:note_block[note=24,instrument=flute]
 execute if score note_block funcs matches 24 if score instrument funcs matches 9 run setblock ~ ~3 ~ minecraft:note_block[note=24,instrument=bell]
-
-

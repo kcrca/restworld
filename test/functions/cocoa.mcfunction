@@ -1,5 +1,3 @@
-
-
 execute unless score cocoa funcs matches 0.. run function cocoa_init
 scoreboard players add cocoa funcs 1
 execute unless score cocoa funcs matches 0..3 run scoreboard players set cocoa funcs 0
@@ -23,4 +21,3 @@ execute if score cocoa funcs matches 3 run setblock ~1 ~4 ~0 minecraft:cocoa[age
 execute if score cocoa funcs matches 3 run setblock ~-1 ~4 ~0 minecraft:cocoa[age=1,facing=east]
 execute if score cocoa funcs matches 3 run setblock ~0 ~4 ~1 minecraft:cocoa[age=1,facing=north]
 execute if score cocoa funcs matches 3 run setblock ~0 ~4 ~-1 minecraft:cocoa[age=1,facing=south]
-

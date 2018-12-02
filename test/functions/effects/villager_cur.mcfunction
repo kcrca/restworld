@@ -1,8 +1,3 @@
-
-
-
-
-
 execute if score villager funcs matches 0 run summon minecraft:villager ~0 ~0 ~0 {Profession:0,NoAI:True,Silent:True}
 
 
@@ -19,5 +14,3 @@ execute if score villager funcs matches 4 run summon minecraft:villager ~0 ~0 ~0
 
 
 execute if score villager funcs matches 5 run summon minecraft:villager ~0 ~0 ~0 {Profession:5,NoAI:True,Silent:True}
-
-

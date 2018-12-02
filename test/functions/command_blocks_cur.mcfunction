@@ -1,7 +1,3 @@
-
-
-
-
 execute if score command_blocks funcs matches 0 run setblock ~ ~3 ~ minecraft:command_block[facing=west,conditional=true]
 execute if score command_blocks funcs matches 0 run data merge block ~-1 ~2 ~ {Text2:"\"\"",Text4:"\"(Conditional)\""}
 
@@ -48,5 +44,3 @@ execute if score command_blocks funcs matches 10 run data merge block ~-1 ~2 ~ {
 
 execute if score command_blocks funcs matches 11 run setblock ~ ~3 ~ minecraft:repeating_command_block[facing=west,conditional=true]
 execute if score command_blocks funcs matches 11 run data merge block ~-1 ~2 ~ {Text2:"\"Repeating\"",Text4:"\"(Conditional)\""}
-
-

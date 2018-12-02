@@ -12,6 +12,6 @@
     ]
 %>
 
-<%base:bounce collection="${blocks}" args="when,i,thing">
+<%base:bounce collection="${blocks}" args="when,i,thing">\
 ${when(i)} setblock ~ ~3 ~ ${thing.full_id()}
 </%base:bounce>

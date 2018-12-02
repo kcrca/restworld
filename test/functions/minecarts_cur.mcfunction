@@ -1,7 +1,3 @@
-
-
-
-
 tp @e[tag=minecart_type] @e[tag=death,limit=1]
 
 execute if score minecarts funcs matches 0 run summon minecraft:minecart ~0 ~3 ~ {Tags:[minecart_type]}
@@ -21,5 +17,3 @@ execute if score minecarts funcs matches 4 run data merge block ~1 ~2 ~ {Text2:"
 
 execute if score minecarts funcs matches 5 run summon minecraft:command_block_minecart ~0 ~3 ~ {Tags:[minecart_type]}
 execute if score minecarts funcs matches 5 run data merge block ~1 ~2 ~ {Text2:"\"Command Block\"",Text3:"\"Minecart\""}
-
-

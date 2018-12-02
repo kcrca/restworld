@@ -1,7 +1,3 @@
-
-
-
-
 execute if score rabbits funcs matches 0 run execute as @e[tag=rabbits] run data merge entity @s {RabbitType:0,CustomName:"\"Brown\""}
 
 execute if score rabbits funcs matches 1 run execute as @e[tag=rabbits] run data merge entity @s {RabbitType:1,CustomName:"\"White\""}

@@ -1,7 +1,3 @@
-
-
-
-
 execute if score note_block funcs matches 0 if score instrument funcs matches 0 run setblock ~ ~3 ~ minecraft:note_block[note=0,instrument=hat]
 execute if score note_block funcs matches 0 if score instrument funcs matches 1 run setblock ~ ~3 ~ minecraft:note_block[note=0,instrument=basedrum]
 execute if score note_block funcs matches 0 if score instrument funcs matches 2 run setblock ~ ~3 ~ minecraft:note_block[note=0,instrument=snare]
@@ -300,5 +296,3 @@ execute if score note_block funcs matches 24 if score instrument funcs matches 6
 execute if score note_block funcs matches 24 if score instrument funcs matches 7 run setblock ~ ~3 ~ minecraft:note_block[note=24,instrument=bass]
 execute if score note_block funcs matches 24 if score instrument funcs matches 8 run setblock ~ ~3 ~ minecraft:note_block[note=24,instrument=flute]
 execute if score note_block funcs matches 24 if score instrument funcs matches 9 run setblock ~ ~3 ~ minecraft:note_block[note=24,instrument=bell]
-
-

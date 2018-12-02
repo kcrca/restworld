@@ -1,8 +1,3 @@
-
-
-
-
-
 execute if score ores funcs matches 0 run setblock ~ ~3 ~ minecraft:redstone_ore
 execute if score ores funcs matches 0 run data merge block ~1 ~2 ~ {Text2:"\"Redstone Ore\""}
 
@@ -57,5 +52,3 @@ execute if score ores funcs matches 7 run data merge block ~1 ~2 ~ {Text2:"\"Dia
 
 execute if score ores funcs matches 7 run setblock ~-3 ~3 ~ minecraft:diamond_block
 execute if score ores funcs matches 7 run data merge block ~-2 ~2 ~ {Text2:"\"Diamond Block\""}
-
-

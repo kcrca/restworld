@@ -1,7 +1,3 @@
-
-
-
-
 execute unless score armors funcs matches 0.. run function armors_init
 scoreboard players add armors funcs 1
 execute unless score armors funcs matches 0..4 run scoreboard players set armors funcs 0
@@ -24,5 +20,3 @@ execute if score armors funcs matches 3 if score turtle_helmet funcs matches 0 r
 
 execute if score armors funcs matches 4 unless score turtle_helmet funcs matches 0 run data merge entity @e[tag=armor_stand,limit=1] {CustomName:"\"Diamond\"",ArmorItems:[{id:diamond_boots,Count:1},{id:diamond_leggings,Count:1},{id:diamond_chestplate,Count:1},{id:turtle_helmet,Count:1}]}
 execute if score armors funcs matches 4 if score turtle_helmet funcs matches 0 run data merge entity @e[tag=armor_stand,limit=1] {CustomName:"\"Diamond\"",ArmorItems:[{id:diamond_boots,Count:1},{id:diamond_leggings,Count:1},{id:diamond_chestplate,Count:1},{id:diamond_helmet,Count:1}]}
-
-

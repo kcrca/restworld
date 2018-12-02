@@ -1,7 +1,3 @@
-
-
-
-
 summon minecraft:horse ~0.5 ~2 ~0 {IsBaby:True,Age:-2147483648,Tags:[white_horses,horse,kid],Variant:0,NoAI:True,Silent:True,Rotation:[270f,0f]}
 summon minecraft:horse ~-2.5 ~2 ~0 {CustomName:"\"White\"",Tags:[white_horses,horse],Variant:0,NoAI:True,Silent:True,Rotation:[270f,0f]}
 summon minecraft:horse ~0.5 ~2 ~-2 {IsBaby:True,Age:-2147483648,Tags:[creamy_horses,horse,kid],Variant:1,NoAI:True,Silent:True,Rotation:[270f,0f]}

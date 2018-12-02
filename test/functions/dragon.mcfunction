@@ -1,7 +1,3 @@
-
-
-
-
 kill @e[type=minecraft:ender_dragon]
 
 execute unless score dragon funcs matches 0.. run function dragon_init
@@ -19,5 +15,3 @@ execute if score dragon funcs matches 1 run summon dragon_fireball ~-10 ~5 ~ {di
 execute if score dragon funcs matches 1 run setblock ~-5 ~4 ~ minecraft:wall_sign[facing=west]{Text2:"\"Dragon\""}
 execute if score dragon funcs matches 1 run setblock ~-10 ~4 ~ minecraft:wall_sign[facing=west]{Text2:"\"Dragon Fireball\""}
 execute if score dragon funcs matches 1 run setblock ~-14 ~4 ~ minecraft:lever[powered=true,face=floor,facing=west]
-
-

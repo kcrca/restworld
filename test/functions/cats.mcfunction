@@ -1,5 +1,3 @@
-
-
 execute unless score cats funcs matches 0.. run function cats_init
 scoreboard players add cats funcs 1
 execute unless score cats funcs matches 0..3 run scoreboard players set cats funcs 0

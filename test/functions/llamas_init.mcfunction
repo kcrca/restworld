@@ -1,8 +1,3 @@
-
-
-
-
-
 summon minecraft:llama ~-0.4 ~2 ~0 {IsBaby:True,Age:-2147483648,Tags:[llamas,llama,kid],Variant:0,NoAI:True,Silent:True,Rotation:[90f,0f]}
 summon minecraft:llama ~2 ~2 ~0 {CustomName:"\"Creamy\"",Tags:[llamas,llama],Variant:0,NoAI:True,Silent:True,Rotation:[90f,0f]}
 summon minecraft:llama ~-0.4 ~2 ~2 {IsBaby:True,Age:-2147483648,Tags:[llamas,llama,kid],Variant:1,NoAI:True,Silent:True,Rotation:[90f,0f]}

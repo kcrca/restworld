@@ -1,7 +1,3 @@
-
-
-
-
 execute unless score brewing funcs matches 0.. run function brewing_init
 scoreboard players add brewing funcs 1
 execute unless score brewing funcs matches 0..7 run scoreboard players set brewing funcs 0
@@ -28,5 +24,3 @@ execute if score brewing funcs matches 6 run data merge block ~ ~3 ~ {Items:[{Sl
 
 
 execute if score brewing funcs matches 7 run data merge block ~ ~3 ~ {Items:[{Slot:0,id:potion,Count:1,tag:{Potion:water}},{Slot:1,id:potion,Count:1,tag:{Potion:water}},{Slot:2,id:potion,Count:1,tag:{Potion:water}}]}
-
-

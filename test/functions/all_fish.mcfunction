@@ -1,5 +1,3 @@
-
-
 scoreboard players add pattern fish 1
 scoreboard players operation pattern fish %= NUM_COLORS fish
 execute if score pattern fish matches 0 run scoreboard players add body fish 1

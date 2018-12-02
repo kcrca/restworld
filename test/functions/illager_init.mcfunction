@@ -1,8 +1,3 @@
-
-
-
-
-
 summon minecraft:illusioner ~0 ~2 ~0 {CustomName:"\"Illusioner (unused)\"",Tags:[illusioner],NoAI:True,Silent:True,Rotation:[180f,0f]}
 summon minecraft:vindicator ~-2 ~2 ~0 {CustomName:"\"Vindicator\"",Tags:[vindicator],NoAI:True,Silent:True,Rotation:[180f,0f]}
 summon minecraft:evoker ~-4 ~2 ~0 {CustomName:"\"Evoker\"",Tags:[evoker],NoAI:True,Silent:True,Rotation:[180f,0f]}

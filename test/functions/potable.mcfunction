@@ -1,7 +1,3 @@
-
-
-
-
 execute unless score potable funcs matches 0.. run function potable_init
 scoreboard players add potable funcs 1
 execute unless score potable funcs matches 0..20 run scoreboard players set potable funcs 0
@@ -88,5 +84,3 @@ execute if score potable funcs matches 19 run data merge block ~-1 ~2 ~ {Text3:"
 execute if score potable funcs matches 20 run setblock ~ ~3 ~ minecraft:potted_fern
 execute if score potable funcs matches 20 run data merge block ~1 ~2 ~ {Text3:"\"Fern\""}
 execute if score potable funcs matches 20 run data merge block ~-1 ~2 ~ {Text3:"\"Fern\""}
-
-

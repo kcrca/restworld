@@ -1,5 +1,3 @@
-
-
 execute if score colored_mobs funcs matches 0 run execute as @e[tag=sheep] run data merge entity @s {Color:656,CustomName:"\"White\""}
 execute if score colored_mobs funcs matches 0 run execute as @e[tag=dogs] run data merge entity @s {CollarColor:656}
 
@@ -47,4 +45,3 @@ execute if score colored_mobs funcs matches 14 run execute as @e[tag=dogs] run d
 
 execute if score colored_mobs funcs matches 15 run execute as @e[tag=sheep] run data merge entity @s {Color:671,CustomName:"\"Black\""}
 execute if score colored_mobs funcs matches 15 run execute as @e[tag=dogs] run data merge entity @s {CollarColor:671}
-

@@ -1,6 +1,3 @@
-
-
-
 execute unless score llamas funcs matches 0.. run function llamas_init
 scoreboard players add llamas funcs 1
 execute unless score llamas funcs matches 0..15 run scoreboard players set llamas funcs 0
@@ -20,4 +17,3 @@ execute if score llamas funcs matches 12 as @e[tag=llamas] run data merge entity
 execute if score llamas funcs matches 13 as @e[tag=llamas] run data merge entity @s {DecorItem:{id:green_carpet,Count:1}}
 execute if score llamas funcs matches 14 as @e[tag=llamas] run data merge entity @s {DecorItem:{id:red_carpet,Count:1}}
 execute if score llamas funcs matches 15 as @e[tag=llamas] run data merge entity @s {DecorItem:{id:black_carpet,Count:1}}
-

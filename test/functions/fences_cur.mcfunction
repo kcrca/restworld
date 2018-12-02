@@ -1,8 +1,3 @@
-
-
-
-
-
 execute if score fences funcs matches 0 run fill ~ ~2 ~ ~5 ~3 ~7 minecraft:acacia_fence replace #allstuff:fences
 execute if score fences funcs matches 0 run data merge block ~5 ~2 ~5 {Text2:"\"Acacia\"",Text3:"\"Fence\""}
 
@@ -37,5 +32,3 @@ execute if score fences funcs matches 7 run data merge block ~5 ~2 ~5 {Text2:"\"
 
 execute if score fences funcs matches 8 run fill ~ ~2 ~ ~5 ~3 ~7 minecraft:mossy_cobblestone_wall replace #allstuff:fences
 execute if score fences funcs matches 8 run data merge block ~5 ~2 ~5 {Text2:"\"Mossy\"",Text3:"\"Cobblestone Wall\""}
-
-

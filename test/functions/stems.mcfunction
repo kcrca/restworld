@@ -1,7 +1,3 @@
-
-
-
-
 execute unless score stems funcs matches 0.. run function stems_init
 scoreboard players add stems funcs 1
 execute unless score stems funcs matches 0..8 run scoreboard players set stems funcs 0
@@ -35,5 +31,3 @@ execute if score stems funcs matches 8 run setblock ~0 ~3 ~-1 minecraft:attached
 execute if score stems funcs matches 8 run setblock ~2 ~3 ~-1 minecraft:attached_melon_stem
 execute if score stems funcs matches 8 run setblock ~0 ~3 ~-2 minecraft:pumpkin
 execute if score stems funcs matches 8 run setblock ~2 ~3 ~-2 minecraft:melon
-
-

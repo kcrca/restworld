@@ -1,7 +1,3 @@
-
-
-
-
 execute if score structure_blocks funcs matches 0 run data merge block ~ ~3 ~ {mode:data}
 execute if score structure_blocks funcs matches 0 run data merge block ~-1 ~2 ~ {Text2:"\"Data\""}
 
@@ -16,5 +12,3 @@ execute if score structure_blocks funcs matches 2 run data merge block ~-1 ~2 ~ 
 
 execute if score structure_blocks funcs matches 3 run data merge block ~ ~3 ~ {mode:corner}
 execute if score structure_blocks funcs matches 3 run data merge block ~-1 ~2 ~ {Text2:"\"Corner\""}
-
-

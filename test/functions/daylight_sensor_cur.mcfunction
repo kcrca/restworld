@@ -1,7 +1,3 @@
-
-
-
-
 execute if score daylight_sensor funcs matches 0 run time set 4400
 execute if score daylight_sensor funcs matches 1 run time set 8000
 execute if score daylight_sensor funcs matches 2 run time set 9200
@@ -32,4 +28,3 @@ execute if score daylight_sensor funcs matches 26 run time set 1500
 execute if score daylight_sensor funcs matches 27 run time set 2000
 execute if score daylight_sensor funcs matches 28 run time set 2700
 execute if score daylight_sensor funcs matches 29 run time set 3500
-

@@ -1,5 +1,3 @@
-
-
 teleport @e[tag=villager] @e[tag=death,limit=1]
 
 
@@ -41,5 +39,3 @@ execute if score villagers funcs matches 1 run summon minecraft:zombie_villager 
 execute if score villagers funcs matches 1 run summon minecraft:zombie_villager ~-6 ~1.875 ~-2 {CustomName:"\"Zombie Smith\"",Tags:[villager,zombie_villager],Profession:3,NoAI:True,Silent:True,Rotation:[0f,0f]}
 execute if score villagers funcs matches 1 run summon minecraft:zombie_villager ~-8 ~1.875 ~-2 {CustomName:"\"Zombie Butcher\"",Tags:[villager,zombie_villager],Profession:4,NoAI:True,Silent:True,Rotation:[0f,0f]}
 execute if score villagers funcs matches 1 run summon minecraft:zombie_villager ~-10 ~1.875 ~-2 {CustomName:"\"Zombie Nitwit\"",Tags:[villager,zombie_villager],Profession:5,NoAI:True,Silent:True,Rotation:[0f,0f]}
-
-

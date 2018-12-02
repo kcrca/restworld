@@ -13,4 +13,4 @@ ${base.mobs("Dog", id="wolf", nbt="Owner:dummy", tags=("dogs",))}
 ${base.mobs("Wolf", tags=("wolves",))}
 ${base.mobs("Rabbit", tags=("rabbits",))}
 ${base.mobs("Bat")}
-${base.adult(Thing("Bat"), -22, 3, 1, 180, nbt="BatFlags:1", tags=("bat",))}
+${base.adult(Thing("Bat"), -22, 2, 1, 180, nbt="BatFlags:1", tags=("bat",))}

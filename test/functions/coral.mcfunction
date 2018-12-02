@@ -1,7 +1,3 @@
-
-
-
-
 execute unless score coral funcs matches 0.. run function coral_init
 scoreboard players add coral funcs 1
 execute unless score coral funcs matches 0..4 run scoreboard players set coral funcs 0
@@ -54,5 +50,3 @@ execute if score coral funcs matches 4 run setblock ~0 ~3 ~1 tube_coral_wall_fan
 execute if score coral funcs matches 4 run fill ~ ~2 ~2 ~ ~2 ~3 minecraft:dead_tube_coral_block
 execute if score coral funcs matches 4 run setblock ~-1 ~2 ~2 minecraft:dead_tube_coral_wall_fan[facing=west]
 execute if score coral funcs matches 4 run setblock ~0 ~3 ~2 minecraft:dead_tube_coral
-
-

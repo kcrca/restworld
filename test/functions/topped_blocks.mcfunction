@@ -1,8 +1,3 @@
-
-
-
-
-
 execute unless score topped_blocks funcs matches 0.. run function topped_blocks_init
 scoreboard players add topped_blocks funcs 1
 execute unless score topped_blocks funcs matches 0..4 run scoreboard players set topped_blocks funcs 0
@@ -29,6 +24,3 @@ execute if score topped_blocks funcs matches 3 run data merge block ~1 ~2 ~ {Tex
 
 execute if score topped_blocks funcs matches 4 run setblock ~ ~3 ~ minecraft:podzol
 execute if score topped_blocks funcs matches 4 run data merge block ~1 ~2 ~ {Text1:"\"\"",Text2:"\"Podzol\""}
-
-
-

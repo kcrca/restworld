@@ -1,8 +1,3 @@
-
-
-
-
-
 execute if score end_portal funcs matches 0 run fill ~2 ~2 ~2 ~2 ~2 ~-2 end_portal_frame[facing=west,eye=true]
 execute if score end_portal funcs matches 0 run fill ~2 ~2 ~2 ~-2 ~2 ~2 end_portal_frame[facing=north,eye=true]
 execute if score end_portal funcs matches 0 run fill ~-2 ~2 ~2 ~-2 ~2 ~-2 end_portal_frame[facing=east,eye=true]
@@ -15,7 +10,3 @@ execute if score end_portal funcs matches 1 run fill ~2 ~2 ~2 ~-2 ~2 ~2 end_port
 execute if score end_portal funcs matches 1 run fill ~-2 ~2 ~2 ~-2 ~2 ~-2 end_portal_frame[facing=east,eye=false]
 execute if score end_portal funcs matches 1 run fill ~2 ~2 ~-2 ~-2 ~2 ~-2 end_portal_frame[facing=south,eye=false]
 execute if score end_portal funcs matches 1 run fill ~1 ~2 ~1 ~-1 ~2 ~-1 minecraft:air
-
-
-
-

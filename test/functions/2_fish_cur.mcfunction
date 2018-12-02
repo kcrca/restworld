@@ -1,8 +1,3 @@
-
-
-
-
-
 execute if score 2_fish funcs matches 0 run data merge entity @e[tag=kob,limit=1] {Variant:917504,CustomName:"\"Red-White Kob\""}
 execute if score 2_fish funcs matches 0 run data merge entity @e[tag=dasher,limit=1] {Variant:117441280,CustomName:"\"White-Gray Dasher\""}
 execute if score 2_fish funcs matches 0 run data merge entity @e[tag=brinely,limit=1] {Variant:117441536,CustomName:"\"White-Gray Brinely\""}
@@ -21,5 +16,3 @@ execute if score 2_fish funcs matches 1 run data merge entity @e[tag=flopper,lim
 execute if score 2_fish funcs matches 1 run data merge entity @e[tag=stripey,limit=1] {Variant:67371265,CustomName:"\"Yellow Stripey\""}
 execute if score 2_fish funcs matches 1 run data merge entity @e[tag=blockfish,limit=1] {Variant:918273,CustomName:"\"Red-White Blockfish\""}
 execute if score 2_fish funcs matches 1 run data merge entity @e[tag=clayfish,limit=1] {Variant:16778497,CustomName:"\"White-Orange Clayfish\""}
-
-

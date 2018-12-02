@@ -1,6 +1,3 @@
-
-
-
 execute unless score fireworks_change funcs matches 0.. run function fireworks_change_init
 scoreboard players add fireworks_change funcs 1
 execute unless score fireworks_change funcs matches 0..4 run scoreboard players set fireworks_change funcs 0

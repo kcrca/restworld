@@ -1,8 +1,3 @@
-
-
-
-
-
 execute if score frosted_ice funcs matches 0 run setblock ~ ~3 ~ minecraft:water
 
 
@@ -16,5 +11,3 @@ execute if score frosted_ice funcs matches 3 run setblock ~ ~3 ~ minecraft:frost
 
 
 execute if score frosted_ice funcs matches 4 run setblock ~ ~3 ~ minecraft:frosted_ice[age=3]
-
-

@@ -1,6 +1,3 @@
-
-
-
 execute if score turtle_eggs funcs matches 0 run setblock ~0 ~2 ~0 minecraft:turtle_egg[eggs=1,hatch=0]
 execute if score turtle_eggs funcs matches 0 run setblock ~0 ~2 ~-1 minecraft:turtle_egg[eggs=1,hatch=1]
 execute if score turtle_eggs funcs matches 0 run setblock ~0 ~2 ~-2 minecraft:turtle_egg[eggs=1,hatch=2]

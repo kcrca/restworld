@@ -1,7 +1,3 @@
-
-
-
-
 execute if score 8_crops funcs matches 0 run fill ~0 ~3 ~0 ~2 ~3 ~0 minecraft:wheat[age=0]
 execute if score 8_crops funcs matches 0 run fill ~0 ~3 ~-1 ~2 ~3 ~-1 minecraft:wheat[age=1]
 execute if score 8_crops funcs matches 0 run fill ~0 ~3 ~-2 ~2 ~3 ~-2 minecraft:wheat[age=2]
@@ -131,5 +127,3 @@ execute if score 8_crops funcs matches 9 run fill ~4 ~3 ~-6 ~6 ~3 ~-6 minecraft:
 execute if score 8_crops funcs matches 9 run fill ~0 ~2 ~-12 ~2 ~2 ~-12 minecraft:farmland[moisture=7]
 execute if score 8_crops funcs matches 9 run fill ~0 ~2 ~-13 ~2 ~2 ~-13 minecraft:farmland[moisture=0]
 execute if score 8_crops funcs matches 9 run fill ~0 ~2 ~-14 ~2 ~2 ~-14 minecraft:farmland[moisture=1]
-
-

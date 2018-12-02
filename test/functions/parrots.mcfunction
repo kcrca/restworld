@@ -1,6 +1,3 @@
-
-
-
 execute unless score parrots funcs matches 0.. run function parrots_init
 scoreboard players add parrots funcs 1
 execute unless score parrots funcs matches 0..9 run scoreboard players set parrots funcs 0

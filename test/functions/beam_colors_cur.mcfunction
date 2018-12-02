@@ -1,8 +1,3 @@
-
-
-
-
-
 execute if score beam_colors funcs matches 0 run setblock ~ ~4 ~ minecraft:white_stained_glass
 execute if score beam_colors funcs matches 0 run data merge block ~ ~4 ~-1 {Text2:"\"White\""}
 
@@ -69,5 +64,3 @@ execute if score beam_colors funcs matches 15 run data merge block ~ ~4 ~-1 {Tex
 
 execute if score beam_colors funcs matches 16 run setblock ~ ~4 ~ minecraft:glass_pane
 execute if score beam_colors funcs matches 16 run data merge block ~ ~4 ~-1 {Text2:"\"Clear\""}
-
-

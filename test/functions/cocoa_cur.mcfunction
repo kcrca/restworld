@@ -1,6 +1,3 @@
-
-
-
 execute if score cocoa funcs matches 0 run setblock ~1 ~4 ~0 minecraft:cocoa[age=0,facing=west]
 execute if score cocoa funcs matches 0 run setblock ~-1 ~4 ~0 minecraft:cocoa[age=0,facing=east]
 execute if score cocoa funcs matches 0 run setblock ~0 ~4 ~1 minecraft:cocoa[age=0,facing=north]
@@ -20,4 +17,3 @@ execute if score cocoa funcs matches 3 run setblock ~1 ~4 ~0 minecraft:cocoa[age
 execute if score cocoa funcs matches 3 run setblock ~-1 ~4 ~0 minecraft:cocoa[age=1,facing=east]
 execute if score cocoa funcs matches 3 run setblock ~0 ~4 ~1 minecraft:cocoa[age=1,facing=north]
 execute if score cocoa funcs matches 3 run setblock ~0 ~4 ~-1 minecraft:cocoa[age=1,facing=south]
-

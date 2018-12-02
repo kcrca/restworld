@@ -1,7 +1,3 @@
-
-
-
-
 execute if score potable funcs matches 0 run setblock ~ ~3 ~ minecraft:potted_acacia_sapling
 execute if score potable funcs matches 0 run data merge block ~1 ~2 ~ {Text3:"\"Acacia Sapling\""}
 execute if score potable funcs matches 0 run data merge block ~-1 ~2 ~ {Text3:"\"Acacia Sapling\""}
@@ -85,5 +81,3 @@ execute if score potable funcs matches 19 run data merge block ~-1 ~2 ~ {Text3:"
 execute if score potable funcs matches 20 run setblock ~ ~3 ~ minecraft:potted_fern
 execute if score potable funcs matches 20 run data merge block ~1 ~2 ~ {Text3:"\"Fern\""}
 execute if score potable funcs matches 20 run data merge block ~-1 ~2 ~ {Text3:"\"Fern\""}
-
-

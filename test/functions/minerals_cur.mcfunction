@@ -1,8 +1,3 @@
-
-
-
-
-
 execute if score minerals funcs matches 0 run setblock ~ ~3 ~ minecraft:andesite
 execute if score minerals funcs matches 0 run data merge block ~-1 ~2 ~ {Text2:"\"Andesite\""}
 execute if score minerals funcs matches 0 run setblock ~ ~3 ~2 minecraft:polished_andesite
@@ -19,5 +14,3 @@ execute if score minerals funcs matches 2 run setblock ~ ~3 ~ minecraft:granite
 execute if score minerals funcs matches 2 run data merge block ~-1 ~2 ~ {Text2:"\"Granite\""}
 execute if score minerals funcs matches 2 run setblock ~ ~3 ~2 minecraft:polished_granite
 execute if score minerals funcs matches 2 run data merge block ~-1 ~2 ~2 {Text2:"\"Polished Granite\""}
-
-

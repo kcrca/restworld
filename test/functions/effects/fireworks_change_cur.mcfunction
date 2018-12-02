@@ -1,7 +1,3 @@
-
-
-
-
 execute if score fireworks_change funcs matches 0 run data merge block ~0 ~1 ~0 {Items:[{Slot:0,id:"minecraft:firework_rocket",Count:1,tag:{Fireworks:{Flight:0,Explosions:[{Type:0,Trail:1,Colors:[I;11743532]}]}}}]}
 
 

@@ -1,6 +1,3 @@
-
-
-
 execute unless score rabbits funcs matches 0.. run function rabbits_init
 scoreboard players add rabbits funcs 1
 execute unless score rabbits funcs matches 0..6 run scoreboard players set rabbits funcs 0

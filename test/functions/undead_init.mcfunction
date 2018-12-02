@@ -1,8 +1,3 @@
-
-
-
-
-
 summon minecraft:zombie ~0.9 ~2 ~-0.5 {IsBaby:True,Age:-2147483648,Tags:[zombie,zombie,kid],NoAI:True,Silent:True,Rotation:[270f,0f]}
 summon minecraft:zombie ~-1.0 ~2 ~-0.5 {CustomName:"\"Zombie\"",Tags:[zombie,zombie],NoAI:True,Silent:True,Rotation:[270f,0f]}
 summon minecraft:husk ~0.9 ~2 ~-2.5 {IsBaby:True,Age:-2147483648,Tags:[husk,husk,kid],NoAI:True,Silent:True,Rotation:[270f,0f]}

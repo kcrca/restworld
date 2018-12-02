@@ -1,5 +1,3 @@
-
-
 execute unless score pressure_plate funcs matches 0.. run function pressure_plate_init
 scoreboard players add pressure_plate funcs 1
 execute unless score pressure_plate funcs matches 0..15 run scoreboard players set pressure_plate funcs 0

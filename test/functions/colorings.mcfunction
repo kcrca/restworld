@@ -1,6 +1,3 @@
-
-
-
 execute unless score colorings funcs matches 0.. run function colorings_init
 scoreboard players add colorings funcs 1
 execute unless score colorings funcs matches 0..15 run scoreboard players set colorings funcs 0
@@ -371,5 +368,3 @@ execute if score colorings funcs matches 15 run data merge entity @e[tag=colorin
 
 execute if score colorings funcs matches 15 run data merge entity @e[tag=colorings_armor_stand,limit=1] {CustomName:"\"Black\"",CustomNameVisible:True,ArmorItems:[{id:leather_boots,Count:1,tag:{Variant:2,display:{color:1908001}}},{id:leather_leggings,Count:1,tag:{Variant:2,display:{color:1908001}}},{id:leather_chestplate,Count:1,tag:{Variant:2,display:{color:1908001}}},{id:leather_helmet,Count:1,tag:{Variant:2,display:{color:1908001}}}]}
 execute if score colorings funcs matches 15 run data merge entity @e[tag=colorings_llama,limit=1] {DecorItem:{id:black_carpet,Count:1},CustomNameVisible:True,CustomName:"\"Black\""}
-
-

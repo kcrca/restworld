@@ -1,7 +1,3 @@
-
-
-
-
 execute if score stems funcs matches 0 run setblock ~0 ~3 ~-2 minecraft:air
 execute if score stems funcs matches 0 run setblock ~2 ~3 ~-2 minecraft:air
 execute if score stems funcs matches 0 run setblock ~0 ~3 ~-1 minecraft:pumpkin_stem[age=0]
@@ -32,5 +28,3 @@ execute if score stems funcs matches 8 run setblock ~0 ~3 ~-1 minecraft:attached
 execute if score stems funcs matches 8 run setblock ~2 ~3 ~-1 minecraft:attached_melon_stem
 execute if score stems funcs matches 8 run setblock ~0 ~3 ~-2 minecraft:pumpkin
 execute if score stems funcs matches 8 run setblock ~2 ~3 ~-2 minecraft:melon
-
-

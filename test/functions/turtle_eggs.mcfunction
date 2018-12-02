@@ -1,6 +1,3 @@
-
-
-
 execute unless score turtle_eggs funcs matches 0.. run function turtle_eggs_init
 scoreboard players add turtle_eggs funcs 1
 execute unless score turtle_eggs funcs matches 0..5 run scoreboard players set turtle_eggs funcs 0

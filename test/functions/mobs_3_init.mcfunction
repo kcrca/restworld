@@ -1,5 +1,3 @@
-
-
 summon minecraft:turtle ~0 ~2 ~-1 {IsBaby:True,Age:-2147483648,Tags:[turtle,kid],NoAI:True,Silent:True,Rotation:[180f,0f]}
 summon minecraft:turtle ~0 ~2 ~2 {CustomName:"\"Turtle\"",Tags:[turtle],NoAI:True,Silent:True,Rotation:[180f,0f]}
 
@@ -36,5 +34,4 @@ summon minecraft:rabbit ~-20 ~2 ~2 {CustomName:"\"Rabbit\"",Tags:[rabbits,rabbit
 summon minecraft:bat ~-22 ~2 ~-1 {IsBaby:True,Age:-2147483648,Tags:[bat,kid],NoAI:True,Silent:True,Rotation:[180f,0f]}
 summon minecraft:bat ~-22 ~2 ~2 {CustomName:"\"Bat\"",Tags:[bat],NoAI:True,Silent:True,Rotation:[180f,0f]}
 
-summon minecraft:bat ~-22 ~5 ~1 {CustomName:"\"Bat\"",Tags:[bat],BatFlags:1,NoAI:True,Silent:True,Rotation:[180f,0f]}
-
+summon minecraft:bat ~-22 ~4 ~1 {CustomName:"\"Bat\"",Tags:[bat],BatFlags:1,NoAI:True,Silent:True,Rotation:[180f,0f]}

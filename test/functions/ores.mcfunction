@@ -1,7 +1,3 @@
-
-
-
-
 execute unless score ores funcs matches 0.. run function ores_init
 scoreboard players add ores funcs 1
 execute unless score ores funcs matches 0..7 run scoreboard players set ores funcs 0
@@ -60,5 +56,3 @@ execute if score ores funcs matches 7 run data merge block ~1 ~2 ~ {Text2:"\"Dia
 
 execute if score ores funcs matches 7 run setblock ~-3 ~3 ~ minecraft:diamond_block
 execute if score ores funcs matches 7 run data merge block ~-2 ~2 ~ {Text2:"\"Diamond Block\""}
-
-

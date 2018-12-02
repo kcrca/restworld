@@ -1,7 +1,3 @@
-
-
-
-
 execute unless score snow funcs matches 0.. run function snow_init
 scoreboard players add snow funcs 1
 execute unless score snow funcs matches 0..13 run scoreboard players set snow funcs 0
@@ -33,4 +29,3 @@ execute if score snow funcs matches 11 run setblock ~ ~4 ~ snow[layers=4]
 execute if score snow funcs matches 12 run setblock ~ ~4 ~ snow[layers=3]
 
 execute if score snow funcs matches 13 run setblock ~ ~4 ~ snow[layers=2]
-

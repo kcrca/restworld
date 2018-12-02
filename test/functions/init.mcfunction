@@ -133,6 +133,8 @@ scoreboard players set mobs_1 vars -1
 scoreboard players set mobs_2 vars -1
 scoreboard players set mobs_3 vars -1
 scoreboard players set mobs_4 vars -1
+scoreboard players set model vars -1
+scoreboard players set model vars -1
 scoreboard players set nether_mobs vars -1
 scoreboard players set note_block vars -1
 scoreboard players set note_block vars -1
@@ -154,6 +156,7 @@ scoreboard players set redstone_block vars -1
 scoreboard players set reset_clocks vars -1
 scoreboard players set sand vars -1
 scoreboard players set sea_pickles vars -1
+scoreboard players set shulker_box vars -1
 scoreboard players set slower_clocks vars -1
 scoreboard players set snow vars -1
 scoreboard players set sponge vars -1

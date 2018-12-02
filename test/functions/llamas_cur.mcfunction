@@ -1,6 +1,3 @@
-
-
-
 execute if score llamas funcs matches 0 as @e[tag=llamas] run data merge entity @s {DecorItem:{id:white_carpet,Count:1}}
 execute if score llamas funcs matches 1 as @e[tag=llamas] run data merge entity @s {DecorItem:{id:orange_carpet,Count:1}}
 execute if score llamas funcs matches 2 as @e[tag=llamas] run data merge entity @s {DecorItem:{id:magenta_carpet,Count:1}}
@@ -17,4 +14,3 @@ execute if score llamas funcs matches 12 as @e[tag=llamas] run data merge entity
 execute if score llamas funcs matches 13 as @e[tag=llamas] run data merge entity @s {DecorItem:{id:green_carpet,Count:1}}
 execute if score llamas funcs matches 14 as @e[tag=llamas] run data merge entity @s {DecorItem:{id:red_carpet,Count:1}}
 execute if score llamas funcs matches 15 as @e[tag=llamas] run data merge entity @s {DecorItem:{id:black_carpet,Count:1}}
-

@@ -1,9 +1,3 @@
-
-
-
-
-
-
 execute if score horses funcs matches 0 as @e[tag=white_horses] run data merge entity @s {Variant:0}
 execute if score horses funcs matches 0 as @e[tag=creamy_horses] run data merge entity @s {Variant:1}
 execute if score horses funcs matches 0 as @e[tag=chestnut_horses] run data merge entity @s {Variant:2}
@@ -52,5 +46,3 @@ execute if score horses funcs matches 4 as @e[tag=black_horses] run data merge e
 execute if score horses funcs matches 4 as @e[tag=gray_horses] run data merge entity @s {Variant:1029}
 execute if score horses funcs matches 4 as @e[tag=dark_brown_horses] run data merge entity @s {Variant:1030}
 execute if score horses funcs matches 4 at @e[tag=brown_horses,tag=kid] run data merge block ~1 ~ ~ {Text3:"\"Black Dots\""}
-
-

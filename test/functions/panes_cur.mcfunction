@@ -1,8 +1,3 @@
-
-
-
-
-
 execute if score panes funcs matches 0 run fill ~ ~2 ~ ~5 ~3 ~7 minecraft:white_stained_glass_pane replace #allstuff:panes
 execute if score panes funcs matches 0 run data merge block ~-1 ~2 ~5 {Text2:"\"White\"",Text3:"\"Stained Glass\""}
 
@@ -73,5 +68,3 @@ execute if score panes funcs matches 16 run data merge block ~-1 ~2 ~5 {Text2:"\
 
 execute if score panes funcs matches 17 run fill ~ ~2 ~ ~5 ~3 ~7 minecraft:glass_pane replace #allstuff:panes
 execute if score panes funcs matches 17 run data merge block ~-1 ~2 ~5 {Text2:"\"Glass Pane\"",Text3:"\"\""}
-
-

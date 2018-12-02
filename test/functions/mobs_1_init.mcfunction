@@ -1,4 +1,3 @@
-
 summon armor_stand ~8.2 ~3 ~-1 {Invisible:True,Small:True,Facing:north,Passengers:[{id:slime,CustomName:"\"Slime\"",Tags:[growing],NoAI:True,Silent:True}]}
 summon minecraft:creeper ~6 ~2.2 ~0 {CustomName:"\"Creeper\"",Tags:[creeper],NoAI:True,Silent:True,Rotation:[0f,0f]}
 summon minecraft:silverfish ~4.3 ~2.2 ~1 {CustomName:"\"Silverfish\"",Tags:[],NoAI:True,Silent:True,Rotation:[0f,0f]}

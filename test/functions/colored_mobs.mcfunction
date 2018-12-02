@@ -1,5 +1,3 @@
-
-
 execute unless score colored_mobs funcs matches 0.. run function colored_mobs_init
 scoreboard players add colored_mobs funcs 1
 execute unless score colored_mobs funcs matches 0..15 run scoreboard players set colored_mobs funcs 0
@@ -50,4 +48,3 @@ execute if score colored_mobs funcs matches 14 run execute as @e[tag=dogs] run d
 
 execute if score colored_mobs funcs matches 15 run execute as @e[tag=sheep] run data merge entity @s {Color:655,CustomName:"\"Black\""}
 execute if score colored_mobs funcs matches 15 run execute as @e[tag=dogs] run data merge entity @s {CollarColor:655}
-

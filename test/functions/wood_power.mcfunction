@@ -1,7 +1,3 @@
-
-
-
-
 execute unless score wood_power funcs matches 0.. run function wood_power_init
 scoreboard players add wood_power funcs 1
 execute unless score wood_power funcs matches 0..13 run scoreboard players set wood_power funcs 0
@@ -88,5 +84,3 @@ execute if score wood_power funcs matches 13 run setblock ~0 ~2 ~-1 minecraft:sp
 execute if score wood_power funcs matches 13 run setblock ~-1 ~3 ~0 minecraft:spruce_button[face=floor,powered=true]
 execute if score wood_power funcs matches 13 run setblock ~-1 ~1 ~0 minecraft:redstone_lamp[lit=true]
 execute if score wood_power funcs matches 13 run data merge block ~ ~2 ~1 {Text2:"\"Spruce\"",Text3:"\"(Powered)\""}
-
-

@@ -1,6 +1,3 @@
-
-
-
 execute unless score chickens funcs matches 0.. run function chickens_init
 scoreboard players add chickens funcs 1
 execute unless score chickens funcs matches 0..9 run scoreboard players set chickens funcs 0

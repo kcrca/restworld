@@ -1,7 +1,3 @@
-
-
-
-
 execute if score coral funcs matches 0 run fill ~0 ~2 ~0 ~0 ~3 ~0 minecraft:brain_coral_block
 execute if score coral funcs matches 0 run setblock ~-1 ~2 ~0 minecraft:brain_coral_wall_fan[facing=west]
 execute if score coral funcs matches 0 run setblock ~-1 ~2 ~1 minecraft:wall_sign[facing=west,waterlogged=false]{Text2:"\"Brain Coral\""}
@@ -51,5 +47,3 @@ execute if score coral funcs matches 4 run setblock ~0 ~3 ~1 tube_coral_wall_fan
 execute if score coral funcs matches 4 run fill ~ ~2 ~2 ~ ~2 ~3 minecraft:dead_tube_coral_block
 execute if score coral funcs matches 4 run setblock ~-1 ~2 ~2 minecraft:dead_tube_coral_wall_fan[facing=west]
 execute if score coral funcs matches 4 run setblock ~0 ~3 ~2 minecraft:dead_tube_coral
-
-
