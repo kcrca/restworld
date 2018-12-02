@@ -2,8 +2,8 @@
 \
 ${base.mobs_init(x_delta_init=-2, kid_z_init=-1, adult_z_init=2, rotation_init=180)}\
 ${base.mobs("Turtle")}
-${base.mobs("Sheep", tags=("sheep",))}
-${base.mobs("jeb_", id="sheep", name_kid=True)}
+${base.mobs("Sheep")}
+${base.mobs("jeb_", id="sheep", name_kid=True, auto_tag=False)}
 ${base.mobs("Cow")}
 ${base.mobs("Mooshroom")}
 ${base.mobs("Pig")}

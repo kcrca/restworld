@@ -4,6 +4,6 @@
 <%base:loop collection="${furnace_states}" args="when,i,thing">
 
 ${base.when(i)} setblock ~ ~3 ~ minecraft:furnace[facing=west,lit=${thing.id}]
-${base.when(i)} data merge block ~-1 ~2 ~-1 {Text3:${text(thing.name)}}
+${base.when(i)} data merge block ~-1 ~2 ~ {Text3:${text(thing.name)}}
 
 </%base:loop>

@@ -70,16 +70,17 @@ summon ${thing.full_id()} ~${x} ~${2 + y_add} ~${z} {IsBaby:True,Age:-2147483648
 summon ${thing.full_id()} ~${x} ~${2 + y_add} ~${z} {CustomName:${text(thing.name)},Tags:[${",".join(tags)}]${nbt},NoAI:True,Silent:True,Rotation:[${rotation}f,0f]}
 </%def>
 
-<%def name="mobs(name, id=None, nbt='', tags=(), name_kid=False, do_kid=False, do_adult=False, y_add=0)">\
+<%def name="mobs(name, id=None, nbt='', tags=(), auto_tag=True, name_kid=False, do_kid=False, do_adult=False, y_add=0)">\
 <%
     global x, z, x_delta, z_delta, adult_x, adult_z, kid_x, kid_z, rotation
     if not do_kid and not do_adult:
 	do_kid = do_adult = True
     thing = Thing(name, id)
     if name_kid:
-	nbt = ',' + nbt if nbbt else ''
-	nbt = "CustomName:%s" % text(name) + nbt
-    tags += (thing.id,)
+	nbt = ",%s" % nbt if nbt else ''
+	nbt = "CustomName:%s" % (text(name) + nbt)
+    if auto_tag:
+	tags += (thing.id,)
     if do_kid:
 	kid(thing, x + kid_x, y_add, z + kid_z, rotation, nbt, tags)
     if do_adult:
