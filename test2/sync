@@ -1,10 +1,11 @@
 #!/bin/sh
 cd `dirname $0`
 set -e
-dst_dir="/Users/kcrca/Library/Application Support/minecraft/saves/AllStuff/datapacks/allstuff/data/allstuff"
+dst_dir="/Users/kcrca/Library/Application Support/minecraft/saves/AllStuff/datapacks/allstuff/data/v2"
 rm -rf functions
 mkdir functions
 /Users/kcrca/allstuff/venv/bin/python /Users/kcrca/allstuff/allstuff/main.py
+test -d "$dst_dir" || mkdir -p "$dst_dir"
 rm -rf "$dst_dir"/functions
 test -d "$dst_dir"/tags && rm -rf "$dst_dir"/tags/*
 echo + 'cp functions/* "$dst_dir"/functions/'

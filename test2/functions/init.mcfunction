@@ -12,6 +12,7 @@ scoreboard players set armors vars -1
 scoreboard players set armors vars -1
 scoreboard players set beam_colors vars -1
 scoreboard players set brewing vars -1
+scoreboard players set cactus vars -1
 scoreboard players set cake vars -1
 scoreboard players set cane vars -1
 scoreboard players set cane_soil vars -1
@@ -156,6 +157,7 @@ scoreboard players set rabbits vars -1
 scoreboard players set redstone_block vars -1
 scoreboard players set reset_clocks vars -1
 scoreboard players set sand vars -1
+scoreboard players set sapling vars -1
 scoreboard players set sea_pickles vars -1
 scoreboard players set shulker_box vars -1
 scoreboard players set slower_clocks vars -1

@@ -3,5 +3,5 @@
 
 <%base:loop collection="${stages}" args="when,i,thing">\
 ${base.crop(stages, "beetroots", 0, 3, 0, when, i, thing)}\
-${base.crop(stages, "nether_wart", 0, 3, -4, when, i, thing)}\
+${base.crop(stages, "nether_wart", 14, 3, 0, when, i, thing)}\
 </%base:loop>
