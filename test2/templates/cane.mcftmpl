@@ -1,13 +1,3 @@
 <%namespace name="base"  file="base.mcftmpl"/>
 
-<%base:loop collection="${range(0, 4)}" args="when,i,thing">\
-% if thing == 0:
-${when(0)} setblock ~0 ~3 ~1 minecraft:sugar_cane
-% elif thing == 1:
-${when(1)} setblock ~0 ~4 ~1 minecraft:sugar_cane
-% elif thing == 2:
-${when(2)} setblock ~0 ~4 ~1 minecraft:air
-% elif thing == 3:
-${when(3)} setblock ~0 ~3 ~1 minecraft:air
-%endif
-</%base:loop>
+<%base:up_down which="Sugar Cane" count="${2}"/>

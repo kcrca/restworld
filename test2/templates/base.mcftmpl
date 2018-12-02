@@ -3,7 +3,7 @@ tp @e[${who}] @e[tag=death,limit=1]
 </%def>
 
 <%def name="increment(count)">\
-% if var == func:
+% if not suppress_loop and var == func:
 execute unless score ${var} funcs matches 0.. run function ${var}_init
 scoreboard players add ${var} funcs 1
 execute unless score ${var} funcs matches 0..${count - 1} run scoreboard players set ${var} funcs 0
@@ -12,10 +12,17 @@ execute unless score ${var} funcs matches 0..${count - 1} run scoreboard players
 
 <%def name="when(i, as_prefix=False)">execute if score ${var} funcs matches ${i}${"" if as_prefix else " run"}</%def>
 
+<%def name="up_down(which, count, x=0, y=4, z=0)">
+${increment(2 * count)}\
+<% id = Thing(which).full_id() %>
+% for i in range(0, count):
+${when(i)} setblock ~${x} ~${y + i} ~${z} ${id}
+${when(i + count)} setblock ~${x} ~${y + count - i - 1} ~${z} minecraft:air
+% endfor
+</%def>
+
 <%def name="loop(collection)">
-% if not suppress_loop:
 ${increment(len(collection))}\
-% endif
 % for thing in collection:
 ${caller.body(when, loop.index, thing)}
 % endfor
@@ -27,9 +34,7 @@ ${caller.body(when, loop.index, thing)}
     backwards.reverse()
     merged = collection + backwards 
 %>\
-% if not suppress_loop:
 ${increment(len(merged))}\
-% endif
 % for thing in merged:
 ${caller.body(when, loop.index, thing)}\
 % endfor
