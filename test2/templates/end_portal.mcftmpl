@@ -1,0 +1,17 @@
+<%namespace name="base"  file="base.mcftmpl"/>
+<% on_off = ("true", "false") %>
+
+<%base:loop collection="${on_off}" args="when,i,thing">
+${when(i)} fill ~2 ~2 ~2 ~2 ~2 ~-2 end_portal_frame[facing=west,eye=${thing}]
+${when(i)} fill ~2 ~2 ~2 ~-2 ~2 ~2 end_portal_frame[facing=north,eye=${thing}]
+${when(i)} fill ~-2 ~2 ~2 ~-2 ~2 ~-2 end_portal_frame[facing=east,eye=${thing}]
+${when(i)} fill ~2 ~2 ~-2 ~-2 ~2 ~-2 end_portal_frame[facing=south,eye=${thing}]
+${when(i)} fill ~1 ~2 ~1 ~-1 ~2 ~-1 \
+% if thing == "true":
+minecraft:end_portal
+% else:
+minecraft:air
+% endif
+</%base:loop>
+
+

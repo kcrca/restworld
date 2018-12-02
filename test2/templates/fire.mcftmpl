@@ -1,0 +1,17 @@
+<%namespace name="base"  file="base.mcftmpl"/>
+<%
+    blocks = [
+	Thing("Air"),
+	Thing("Fire", block_state="east=true"),
+	Thing("Fire", block_state="east=true,north=true"),
+	Thing("Fire", block_state="east=true,north=true"),
+	Thing("Fire", block_state="east=true,west=true"),
+	Thing("Fire", block_state="east=true,west=true,south=true"),
+	Thing("Fire", block_state="east=true,west=true,south=true,north=true"),
+	Thing("Fire"),
+    ]
+%>
+
+<%base:bounce collection="${blocks}" args="when,i,thing">\
+${when(i)} setblock ~ ~3 ~ ${thing.full_id()}
+</%base:bounce>

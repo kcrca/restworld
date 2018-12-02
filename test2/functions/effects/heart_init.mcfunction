@@ -1,0 +1,1 @@
+function allstuff:effects/small_animal

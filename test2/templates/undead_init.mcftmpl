@@ -1,0 +1,15 @@
+<%namespace name="base"  file="base.mcftmpl"/>
+<%
+    undeads = (
+	Thing("Zombie"),
+	Thing("Husk"),
+	Thing("Drowned"),
+	Thing("Zombie Pigman"),
+    )
+%>
+
+${base.mobs_init(z_init=-0.5, z_delta_init=-2, adult_x_init=-1.0, kid_x_init=0.9, rotation_init=270)}\
+% for undead in undeads:
+${base.mobs(undead.name, tags=(undead.id,))}\
+% endfor
+${base.mobs("Witch", do_adult=True)}\

@@ -1,0 +1,9 @@
+<%namespace name="base"  file="base.mcftmpl"/>
+<% minerals = (Thing("Andesite"), Thing("Diorite"), Thing("Granite")) %>
+
+<%base:loop collection="${minerals}" args="when,i,thing">
+${when(i)} setblock ~ ~3 ~ ${thing.full_id()}
+${when(i)} data merge block ~-1 ~2 ~ {Text2:"\"${thing.name}\""}
+${when(i)} setblock ~ ~3 ~2 minecraft:polished_${thing.id}
+${when(i)} data merge block ~-1 ~2 ~2 {Text2:"\"Polished ${thing.name}\""}
+</%base:loop>

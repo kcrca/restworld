@@ -1,0 +1,25 @@
+<%namespace name="base"  file="base.mcftmpl"/>
+
+teleport @e[tag=villager] @e[tag=death,limit=1]
+
+<%base:loop collection="${(0, 1)}" args="when,i,thing">
+% if thing == 0:
+${base.mobs_init(x_delta_init=-2, adult_z_init=-2, kid_z_init=0)}\
+%   for p in professions:
+${when(i)} ${base.mobs(p, id="villager", do_kid=True, nbt="Profession:%d" % loop.index, tags=("villager",))}\
+%   endfor
+${base.mobs_init(x_delta_init=-2, adult_z_init=-2, kid_z_init=0)}\
+%   for p in professions:
+${when(i)} ${base.mobs(p, id="villager", do_adult=True, nbt="Profession:%d" % loop.index, tags=("villager",))}\
+%   endfor
+% else:
+${base.mobs_init(x_delta_init=-2, adult_z_init=-2, kid_z_init=0)}\
+%   for p in professions:
+${when(i)} ${base.mobs("Zombie %s" % p, do_kid=True, y_add=-0.125, id="zombie_villager", nbt="Profession:%d" % loop.index, tags=("villager",))}\
+%   endfor
+${base.mobs_init(x_delta_init=-2, adult_z_init=-2, kid_z_init=0)}\
+%   for p in professions:
+${when(i)} ${base.mobs("Zombie %s" % p, do_adult=True, y_add=-0.125, id="zombie_villager", nbt="Profession:%d" % loop.index, tags=("villager",))}\
+%   endfor
+% endif
+</%base:loop>

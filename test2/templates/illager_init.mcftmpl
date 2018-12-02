@@ -1,0 +1,15 @@
+<%namespace name="base"  file="base.mcftmpl"/>
+<%
+    illagers = (
+	Thing("Illusioner (unused)", "illusioner"),
+	Thing("Vindicator"),
+	Thing("Evoker"),
+    )
+%>
+
+${base.mobs_init(x_delta_init=-2, rotation_init=180)}\
+% for illager in illagers:
+${base.mobs(illager.name, id=illager.id, do_adult=True)}\
+% endfor
+${base.mobs("Vex", do_adult=True, y_add=1, nbt="LifeTicks:2147483647")}\
+${base.adult(Thing("Phantom"), -5, 3, 5, 180)}\

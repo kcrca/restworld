@@ -1,0 +1,16 @@
+<%namespace name="base"  file="base.mcftmpl"/>
+<% corals = list(Thing("%s Coral" % c) for c in ("Brain", "Bubble", "Fire", "Horn", "Tube")) %>
+
+<%doc>The wallsign should be watterlogged, but currently (1.13.2) that means
+      the sign contents do not change. Try again later.</%doc>\
+<%base:loop collection="${corals}" args="when,i,thing">\
+${when(i)} fill ~0 ~2 ~0 ~0 ~3 ~0 ${thing.full_id()}_block
+${when(i)} setblock ~-1 ~2 ~0 ${thing.full_id()}_wall_fan[facing=west]
+${when(i)} setblock ~-1 ~2 ~1 minecraft:wall_sign[facing=west,waterlogged=false]{Text2:${text(thing.name)}}
+${when(i)} setblock ~0 ~3 ~1 minecraft:dead_${thing.id}
+${when(i)} setblock ~0 ~4 ~0 minecraft:${thing.id}
+${when(i)} setblock ~0 ~3 ~1 ${thing.id}_wall_fan[facing=south]
+${when(i)} fill ~ ~2 ~2 ~ ~2 ~3 minecraft:dead_${thing.id}_block
+${when(i)} setblock ~-1 ~2 ~2 minecraft:dead_${thing.id}_wall_fan[facing=west]
+${when(i)} setblock ~0 ~3 ~2 minecraft:dead_${thing.id}
+</%base:loop>

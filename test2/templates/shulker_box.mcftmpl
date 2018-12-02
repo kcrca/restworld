@@ -1,0 +1,5 @@
+<%namespace name="base"  file="base.mcftmpl"/>
+
+<%base:loop collection="${colors}" args="when,i,thing">
+${when(i)} setblock ~0 ~2 ~0 ${thing.full_id()}_shulker_box
+</%base:loop>
