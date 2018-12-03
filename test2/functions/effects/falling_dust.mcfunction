@@ -1,1 +1,1 @@
-execute if score main clocks matches 0 at @e[tag=effects_center] positioned ~ ~2 ~ run function allstuff:effects/falling_dust_change
+execute if score main clocks matches 0 at @e[tag=effects_center] positioned ~ ~2 ~ run function v2:effects/falling_dust_change

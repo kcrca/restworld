@@ -1,7 +1,7 @@
 <%namespace name="base"  file="base.mcftmpl"/>
 <% blocks = (
 	Thing("Grass Path"), Thing("Grass Block"),
-	Thing("Grass Block", block_state="snowy=true"), Thing("Mycelium"), Thing("Podzol")
+	Thing("Mycelium"), Thing("Podzol")
    )
 %>
 

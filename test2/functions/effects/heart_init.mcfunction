@@ -1,1 +1,1 @@
-function allstuff:effects/small_animal
+function v2:effects/small_animal

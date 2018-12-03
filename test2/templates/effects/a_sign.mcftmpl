@@ -4,8 +4,8 @@
 
 execute at @e[tag=signer] run setblock ^${x} ^${y} ^ wall_sign[facing=${frame.facing}]{\
 ${sign_nbt(0, "setblock ~ ~-3 ~ redstone_block")},\
-${sign_nbt(1, r"data merge block ~0 ~-4 ~-2 {Command:\\\"execute at @e[tag=effects_center] positioned ~ ~2 ~ run function allstuff:effects/%s_init\\\"}" % effect.id)},\
-${sign_nbt(2, r"data merge block ~-1 ~-2 ~0 {Command:\\\"execute at @e[tag=effects_center] positioned ~ ~2 ~ run function allstuff:effects/%s\\\"}" % effect.id)}\
+${sign_nbt(1, r"data merge block ~0 ~-4 ~-2 {Command:\\\"execute at @e[tag=effects_center] positioned ~ ~2 ~ run function v2:effects/%s_init\\\"}" % effect.id)},\
+${sign_nbt(2, r"data merge block ~-1 ~-2 ~0 {Command:\\\"execute at @e[tag=effects_center] positioned ~ ~2 ~ run function v2:effects/%s\\\"}" % effect.id)}\
 %if effect.name != "Off":
 ,${sign_local_nbt(3, "setblock ^%d ^0 ^%d emerald_block" % (frame.block_at[0], frame.block_at[1]))}\
 %endif
