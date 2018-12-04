@@ -115,6 +115,7 @@ scoreboard players set end_mobs vars -1
 scoreboard players set end_portal vars -1
 scoreboard players set fangs vars -1
 scoreboard players set faster_clocks vars -1
+scoreboard players set fencelike vars -1
 scoreboard players set fences vars -1
 scoreboard players set fire vars -1
 scoreboard players set frosted_ice vars -1
@@ -147,7 +148,6 @@ scoreboard players set observer vars -1
 scoreboard players set observer vars -1
 scoreboard players set ores vars -1
 scoreboard players set panes vars -1
-scoreboard players set panes vars -1
 scoreboard players set parrots vars -1
 scoreboard players set photo_shoot vars -1
 scoreboard players set piston vars -1
@@ -177,6 +177,7 @@ scoreboard players set tulips vars -1
 scoreboard players set turtle_eggs vars -1
 scoreboard players set undead vars -1
 scoreboard players set villagers vars -1
+scoreboard players set walls vars -1
 scoreboard players set weapons vars -1
 scoreboard players set weapons vars -1
 scoreboard players set wolves vars -1

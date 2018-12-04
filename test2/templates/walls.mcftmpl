@@ -1,7 +1,10 @@
 <%namespace name="base"  file="base.mcftmpl"/>
-<% blocks = to_nicknamed("Fence", woods + ("Nether Brick",)) %>
+<%
+    blocks = to_nicknamed("Cobblestone Wall", ("", "Mossy")) + [Thing("Iron Bars"),]
+%>
 
 <%base:loop collection="${blocks}" args="when,i,thing">
+${base.fencelike(when, i, thing.full_id(), thing.name, "Stained Glass")}\
 % try:
 ${base.fencelike(when, i, thing.full_id(), thing.nickname, thing.kind)}
 % except:

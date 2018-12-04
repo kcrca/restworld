@@ -1,6 +1,6 @@
 tp @e[tag=material_static] @e[tag=death,limit=1]
 
-summon armor_stand ~ ~1.5 ~ {Tags:[armor_stand,material_static],Rotation:[180f,0f],ShowArms:True}
+summon armor_stand ~ ~1.5 ~ {CustomNameVisible:True,Tags:[armor_stand,material_static],Rotation:[180f,0f],ShowArms:True}
 
 summon armor_stand ~-0.8 ~1.5 ~ {Tags:[material_4,material_static],Rotation:[180f,0f],ShowArms:True,Invisible:True}
 summon armor_stand ~0.6 ~1.5 ~ {Tags:[material_3,material_static],Rotation:[180f,0f],ShowArms:True,Invisible:True}

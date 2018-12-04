@@ -1,12 +1,10 @@
 <%namespace name="base"  file="base.mcftmpl"/>
-<% blocks = colors + (Thing("Iron Bars"), Thing("Glass Pane")) %>
+<% blocks = colors + (Thing("Glass Pane"),) %>
 
 <%base:loop collection="${blocks}" args="when,i,thing">
 % if thing in colors:
-${when(i)} fill ~ ~2 ~ ~5 ~3 ~7 minecraft:${thing.id}_stained_glass_pane replace #v2:panes
-${when(i)} data merge block ~-1 ~2 ~5 {Text2:${text(thing.name)},Text3:${text("Stained Glass")}}
+${base.fencelike(when, i, "minecraft:%s_stained_glass_pane" % thing.id, thing.name, "Stained Glass")}\
 % else:
-${when(i)} fill ~ ~2 ~ ~5 ~3 ~7 ${thing.full_id()} replace #v2:panes
-${when(i)} data merge block ~-1 ~2 ~5 {Text2:${text(thing.name)},Text3:${text("")}}
+${base.fencelike(when, i, thing.full_id(), thing.name, "")}\
 % endif
 </%base:loop>

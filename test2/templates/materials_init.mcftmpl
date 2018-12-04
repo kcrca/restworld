@@ -2,7 +2,7 @@
 <%invisible="True"%>
 
 ${base.remove("tag=material_static")}
-summon armor_stand ~ ~1.5 ~ {Tags:[armor_stand,material_static],Rotation:[180f,0f],ShowArms:True}
+summon armor_stand ~ ~1.5 ~ {CustomNameVisible:True,Tags:[armor_stand,material_static],Rotation:[180f,0f],ShowArms:True}
 <% num = 0 %>
 %for i in range(0, 4):
 summon armor_stand ~-${0.8 + i * 0.7} ~1.5 ~ {Tags:[material_${4+i},material_static],Rotation:[180f,0f],ShowArms:True,Invisible:${invisible}}
