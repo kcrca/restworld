@@ -1,5 +1,5 @@
 <%namespace name="base" file="base.mcftmpl"/>
 
 <%base:loop collection="${(Thing('Sand'), Thing('Red Sand'))}" args="when,i,thing">\
-${when(i)} fill ~0 ~2 ~1 ~-4 ~2 ~0 ${thing.full_id()} replace #allstuff:sand
+${when(i)} fill ~0 ~2 ~1 ~-4 ~2 ~0 ${thing.full_id()} replace #v2:sand
 </%base:loop>
