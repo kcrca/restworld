@@ -9,12 +9,14 @@
     has_horse = False
 %>
 
+${base.remove("tag=material_thing")}
 <%base:loop collection="${materials}" args="when,i,thing">
 <% armor = armors[i] %>\
-kill @e[tag=material_thing]
 ${when(i, as_prefix=True)} if score turtle_helmet funcs matches 0 run data merge entity @e[tag=armor_stand,limit=1] {ArmorItems:[{id:${armor}_boots,Count:1},{id:${armor}_leggings,Count:1},{id:${armor}_chestplate,Count:1},{id:${armor}_helmet,Count:1}]}
 ${when(i, as_prefix=True)} unless score turtle_helmet funcs matches 0 run data merge entity @e[tag=armor_stand,limit=1] {ArmorItems:[{id:${armor}_boots,Count:1},{id:${armor}_leggings,Count:1},{id:${armor}_chestplate,Count:1},{id:turtle_helmet,Count:1}]}
 ${when(i)} fill ~-3 ~2 ~2 ~-3 ~5 ~2 ${blocks[i].full_id()}
+${when(i)} setblock ~4 ~4 ~2 ${blocks[i].full_id()}
+${when(i)}
 ${when(i)} data merge entity @e[tag=armor_boots,limit=1] {Item:{id:${armor}_boots,Count:1},ItemRotation:0}
 ${when(i)} data merge entity @e[tag=armor_leggings,limit=1] {Item:{id:${armor}_leggings,Count:1},ItemRotation:0}
 ${when(i)} data merge entity @e[tag=armor_chestplate,limit=1] {Item:{id:${armor}_chestplate,Count:1},ItemRotation:0}

@@ -1,5 +1,4 @@
-kill @e[tag=material_static]
-
+tp @e[tag=material_static] @e[tag=death,limit=1]
 
 summon armor_stand ~ ~1.5 ~ {Tags:[armor_stand,material_static],Rotation:[180f,0f],ShowArms:True}
 
@@ -14,7 +13,9 @@ summon armor_stand ~2.7 ~1.5 ~ {Tags:[material_0,material_static],Rotation:[180f
 
 fill ~-3 ~2 ~2 ~-3 ~5 ~2 stone
 
-kill @e[tag=armor_frame]
+
+tp @e[tag=armor_frame] @e[tag=death,limit=1]
+
 summon item_frame ~-3 ~2 ~1 {Facing:2,Tags:[armor_boots,armor_frame],Item:{id:stone,Count:1},temRotation:0}
 summon item_frame ~-3 ~3 ~1 {Facing:2,Tags:[armor_leggings,armor_frame],Item:{id:jungle_leaves,Count:1},temRotation:0}
 summon item_frame ~-3 ~4 ~1 {Facing:2,Tags:[armor_chestplate,armor_frame],Item:{id:acacia_leaves,Count:1},temRotation:0}

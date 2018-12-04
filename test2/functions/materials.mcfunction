@@ -1,11 +1,15 @@
+tp @e[tag=material_thing] @e[tag=death,limit=1]
+
+
 execute unless score materials funcs matches 0.. run function materials_init
 scoreboard players add materials funcs 1
 execute unless score materials funcs matches 0..4 run scoreboard players set materials funcs 0
 
-kill @e[tag=material_thing]
 execute if score materials funcs matches 0 if score turtle_helmet funcs matches 0 run data merge entity @e[tag=armor_stand,limit=1] {ArmorItems:[{id:leather_boots,Count:1},{id:leather_leggings,Count:1},{id:leather_chestplate,Count:1},{id:leather_helmet,Count:1}]}
 execute if score materials funcs matches 0 unless score turtle_helmet funcs matches 0 run data merge entity @e[tag=armor_stand,limit=1] {ArmorItems:[{id:leather_boots,Count:1},{id:leather_leggings,Count:1},{id:leather_chestplate,Count:1},{id:turtle_helmet,Count:1}]}
 execute if score materials funcs matches 0 run fill ~-3 ~2 ~2 ~-3 ~5 ~2 minecraft:oak_planks
+execute if score materials funcs matches 0 run setblock ~4 ~4 ~2 minecraft:oak_planks
+execute if score materials funcs matches 0 run
 execute if score materials funcs matches 0 run data merge entity @e[tag=armor_boots,limit=1] {Item:{id:leather_boots,Count:1},ItemRotation:0}
 execute if score materials funcs matches 0 run data merge entity @e[tag=armor_leggings,limit=1] {Item:{id:leather_leggings,Count:1},ItemRotation:0}
 execute if score materials funcs matches 0 run data merge entity @e[tag=armor_chestplate,limit=1] {Item:{id:leather_chestplate,Count:1},ItemRotation:0}
@@ -27,10 +31,11 @@ execute if score materials funcs matches 0 run data merge entity @e[tag=material
 execute if score materials funcs matches 0 run data merge block ~-2 ~ ~1 {name:"minecraft:material_wooden"}
 
 
-kill @e[tag=material_thing]
 execute if score materials funcs matches 1 if score turtle_helmet funcs matches 0 run data merge entity @e[tag=armor_stand,limit=1] {ArmorItems:[{id:chainmail_boots,Count:1},{id:chainmail_leggings,Count:1},{id:chainmail_chestplate,Count:1},{id:chainmail_helmet,Count:1}]}
 execute if score materials funcs matches 1 unless score turtle_helmet funcs matches 0 run data merge entity @e[tag=armor_stand,limit=1] {ArmorItems:[{id:chainmail_boots,Count:1},{id:chainmail_leggings,Count:1},{id:chainmail_chestplate,Count:1},{id:turtle_helmet,Count:1}]}
 execute if score materials funcs matches 1 run fill ~-3 ~2 ~2 ~-3 ~5 ~2 minecraft:stone
+execute if score materials funcs matches 1 run setblock ~4 ~4 ~2 minecraft:stone
+execute if score materials funcs matches 1 run
 execute if score materials funcs matches 1 run data merge entity @e[tag=armor_boots,limit=1] {Item:{id:chainmail_boots,Count:1},ItemRotation:0}
 execute if score materials funcs matches 1 run data merge entity @e[tag=armor_leggings,limit=1] {Item:{id:chainmail_leggings,Count:1},ItemRotation:0}
 execute if score materials funcs matches 1 run data merge entity @e[tag=armor_chestplate,limit=1] {Item:{id:chainmail_chestplate,Count:1},ItemRotation:0}
@@ -52,10 +57,11 @@ execute if score materials funcs matches 1 run data merge entity @e[tag=material
 execute if score materials funcs matches 1 run data merge block ~-2 ~ ~1 {name:"minecraft:material_stone"}
 
 
-kill @e[tag=material_thing]
 execute if score materials funcs matches 2 if score turtle_helmet funcs matches 0 run data merge entity @e[tag=armor_stand,limit=1] {ArmorItems:[{id:iron_boots,Count:1},{id:iron_leggings,Count:1},{id:iron_chestplate,Count:1},{id:iron_helmet,Count:1}]}
 execute if score materials funcs matches 2 unless score turtle_helmet funcs matches 0 run data merge entity @e[tag=armor_stand,limit=1] {ArmorItems:[{id:iron_boots,Count:1},{id:iron_leggings,Count:1},{id:iron_chestplate,Count:1},{id:turtle_helmet,Count:1}]}
 execute if score materials funcs matches 2 run fill ~-3 ~2 ~2 ~-3 ~5 ~2 minecraft:iron_block
+execute if score materials funcs matches 2 run setblock ~4 ~4 ~2 minecraft:iron_block
+execute if score materials funcs matches 2 run
 execute if score materials funcs matches 2 run data merge entity @e[tag=armor_boots,limit=1] {Item:{id:iron_boots,Count:1},ItemRotation:0}
 execute if score materials funcs matches 2 run data merge entity @e[tag=armor_leggings,limit=1] {Item:{id:iron_leggings,Count:1},ItemRotation:0}
 execute if score materials funcs matches 2 run data merge entity @e[tag=armor_chestplate,limit=1] {Item:{id:iron_chestplate,Count:1},ItemRotation:0}
@@ -79,10 +85,11 @@ execute if score materials funcs matches 2 run data merge entity @e[tag=material
 execute if score materials funcs matches 2 run data merge block ~-2 ~ ~1 {name:"minecraft:material_iron"}
 
 
-kill @e[tag=material_thing]
 execute if score materials funcs matches 3 if score turtle_helmet funcs matches 0 run data merge entity @e[tag=armor_stand,limit=1] {ArmorItems:[{id:golden_boots,Count:1},{id:golden_leggings,Count:1},{id:golden_chestplate,Count:1},{id:golden_helmet,Count:1}]}
 execute if score materials funcs matches 3 unless score turtle_helmet funcs matches 0 run data merge entity @e[tag=armor_stand,limit=1] {ArmorItems:[{id:golden_boots,Count:1},{id:golden_leggings,Count:1},{id:golden_chestplate,Count:1},{id:turtle_helmet,Count:1}]}
 execute if score materials funcs matches 3 run fill ~-3 ~2 ~2 ~-3 ~5 ~2 minecraft:gold_block
+execute if score materials funcs matches 3 run setblock ~4 ~4 ~2 minecraft:gold_block
+execute if score materials funcs matches 3 run
 execute if score materials funcs matches 3 run data merge entity @e[tag=armor_boots,limit=1] {Item:{id:golden_boots,Count:1},ItemRotation:0}
 execute if score materials funcs matches 3 run data merge entity @e[tag=armor_leggings,limit=1] {Item:{id:golden_leggings,Count:1},ItemRotation:0}
 execute if score materials funcs matches 3 run data merge entity @e[tag=armor_chestplate,limit=1] {Item:{id:golden_chestplate,Count:1},ItemRotation:0}
@@ -106,10 +113,11 @@ execute if score materials funcs matches 3 run data merge entity @e[tag=material
 execute if score materials funcs matches 3 run data merge block ~-2 ~ ~1 {name:"minecraft:material_golden"}
 
 
-kill @e[tag=material_thing]
 execute if score materials funcs matches 4 if score turtle_helmet funcs matches 0 run data merge entity @e[tag=armor_stand,limit=1] {ArmorItems:[{id:diamond_boots,Count:1},{id:diamond_leggings,Count:1},{id:diamond_chestplate,Count:1},{id:diamond_helmet,Count:1}]}
 execute if score materials funcs matches 4 unless score turtle_helmet funcs matches 0 run data merge entity @e[tag=armor_stand,limit=1] {ArmorItems:[{id:diamond_boots,Count:1},{id:diamond_leggings,Count:1},{id:diamond_chestplate,Count:1},{id:turtle_helmet,Count:1}]}
 execute if score materials funcs matches 4 run fill ~-3 ~2 ~2 ~-3 ~5 ~2 minecraft:diamond_block
+execute if score materials funcs matches 4 run setblock ~4 ~4 ~2 minecraft:diamond_block
+execute if score materials funcs matches 4 run
 execute if score materials funcs matches 4 run data merge entity @e[tag=armor_boots,limit=1] {Item:{id:diamond_boots,Count:1},ItemRotation:0}
 execute if score materials funcs matches 4 run data merge entity @e[tag=armor_leggings,limit=1] {Item:{id:diamond_leggings,Count:1},ItemRotation:0}
 execute if score materials funcs matches 4 run data merge entity @e[tag=armor_chestplate,limit=1] {Item:{id:diamond_chestplate,Count:1},ItemRotation:0}
