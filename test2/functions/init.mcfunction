@@ -129,6 +129,8 @@ scoreboard players set lava_level vars -1
 scoreboard players set lever vars -1
 scoreboard players set llamas vars -1
 scoreboard players set llamas vars -1
+scoreboard players set materials vars -1
+scoreboard players set materials vars -1
 scoreboard players set minecarts vars -1
 scoreboard players set minerals vars -1
 scoreboard players set mobs_1 vars -1

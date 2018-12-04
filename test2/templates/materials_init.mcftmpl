@@ -1,0 +1,19 @@
+kill @e[tag=material_static]
+<%invisible="True"%>
+
+summon armor_stand ~ ~1.5 ~ {Tags:[armor_stand,material_static],Rotation:[180f,0f],ShowArms:True}
+<% num = 0 %>
+%for i in range(0, 4):
+summon armor_stand ~-${0.8 + i * 0.7} ~1.5 ~ {Tags:[material_${4+i},material_static],Rotation:[180f,0f],ShowArms:True,Invisible:${invisible}}
+summon armor_stand ~${+0.6 + i * 0.7} ~1.5 ~ {Tags:[material_${3-i},material_static],Rotation:[180f,0f],ShowArms:True,Invisible:${invisible}}
+%endfor
+
+fill ~-3 ~2 ~2 ~-3 ~5 ~2 stone
+
+kill @e[tag=armor_frame]
+summon item_frame ~-3 ~2 ~1 {Facing:2,Tags:[armor_boots,armor_frame],Item:{id:stone,Count:1},temRotation:0}
+summon item_frame ~-3 ~3 ~1 {Facing:2,Tags:[armor_leggings,armor_frame],Item:{id:jungle_leaves,Count:1},temRotation:0}
+summon item_frame ~-3 ~4 ~1 {Facing:2,Tags:[armor_chestplate,armor_frame],Item:{id:acacia_leaves,Count:1},temRotation:0}
+summon item_frame ~-3 ~5 ~1 {Facing:2,Tags:[armor_helmet,armor_frame],Item:{id:oak_leaves,Count:1},temRotation:0}
+summon item_frame ~4 ~4 ~1 {Facing:2,Tags:[armor_horse_frame,armor_frame],Item:{id:oak_leaves,Count:1},temRotation:0}
+function v2:materials_cur
