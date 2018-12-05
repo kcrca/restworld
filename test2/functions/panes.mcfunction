@@ -1,6 +1,6 @@
 execute unless score panes funcs matches 0.. run function panes_init
 scoreboard players add panes funcs 1
-execute unless score panes funcs matches 0..16 run scoreboard players set panes funcs 0
+execute unless score panes funcs matches 0..17 run scoreboard players set panes funcs 0
 
 execute if score panes funcs matches 0 run fill ~ ~2 ~ ~6 ~3 ~5 minecraft:white_stained_glass_pane replace #v2:fencelike
 execute if score panes funcs matches 0 run data merge block ~5 ~2 ~0 {Text2:"\"White\"",Text3:"\"Stained Glass\""}
@@ -68,3 +68,7 @@ execute if score panes funcs matches 15 run data merge block ~5 ~2 ~0 {Text2:"\"
 
 execute if score panes funcs matches 16 run fill ~ ~2 ~ ~6 ~3 ~5 minecraft:glass_pane replace #v2:fencelike
 execute if score panes funcs matches 16 run data merge block ~5 ~2 ~0 {Text2:"\"Glass Pane\"",Text3:"\"\""}
+
+
+execute if score panes funcs matches 17 run fill ~ ~2 ~ ~6 ~3 ~5 minecraft:iron_bars replace #v2:fencelike
+execute if score panes funcs matches 17 run data merge block ~5 ~2 ~0 {Text2:"\"Iron Bars\"",Text3:"\"\""}
