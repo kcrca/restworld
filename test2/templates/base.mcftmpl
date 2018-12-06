@@ -1,4 +1,4 @@
-<%def name="remove(who)">
+<%def name="remove(who)">\
 tp @e[${who}] @e[tag=death,limit=1]
 </%def>
 

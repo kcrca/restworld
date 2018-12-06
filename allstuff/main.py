@@ -174,10 +174,11 @@ class Thing:
     def __repr__(self):
         return self.name
 
-    def full_id(self):
+    def full_id(self, block_state=""):
         id = "minecraft:%s" % self.id
-        if self.block_state:
-            id += "[%s]" % self.block_state
+        state = self.block_state + ("," if block_state and self.block_state else "") + block_state
+        if state:
+            id += "[%s]" % state
         return id
 
 
@@ -300,8 +301,8 @@ effects = (
     Effect("Flame"), Effect("Happy Villager"), Effect("Heart"), Effect("Explosion Emitter", note="Large Explosion"),
     Effect("Instant Effect"), Effect("Item Slime"), Effect("Item Snowball"), Effect("Large Smoke"), Effect("Lava"),
     Effect("Mycelium"), Effect("Nautilus"), Effect("Note"), Effect("Poof", note="Small Explosion"), Effect("Portal"),
-    Effect("Rain"), Effect("Smoke"), Effect("Snow"), Effect("Spit"), Effect("Splash"), Effect("Squid Ink"),
-    Effect("Sweep Attack"), Effect("Totem of Undying"), Effect("Underwater"), Effect("Witch"),
+    Effect("Rain|(Unimplemented)"), Effect("Smoke"), Effect("Snow|(Unimplemented)"), Effect("Spit"), Effect("Splash"),
+    Effect("Squid Ink"), Effect("Sweep Attack"), Effect("Totem of Undying"), Effect("Underwater"), Effect("Witch"),
 )
 
 
@@ -338,7 +339,7 @@ def effect_signs(func_dir, sign_tmpl):
     commands = [
         kill_command,
         "summon minecraft:armor_stand ~1 ~1.5 ~-1 {Tags:[signer],Rotation:[90f,0f],ArmorItems:[{},{},{},{id:turtle_helmet,Count:1}]}",
-        "execute at @e[tag=signer] run fill ^0 ^0 ^0 ^-3 ^3 ^-6 air",
+        "execute at @e[tag=signer] run fill ^0 ^0 ^0 ^-6 ^3 ^-6 air",
     ]
     x = frame.start
     y = 3

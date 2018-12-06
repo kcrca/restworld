@@ -1,0 +1,1 @@
+setblock ~ ~3 ~ minecraft:wall_sign[facing=west]

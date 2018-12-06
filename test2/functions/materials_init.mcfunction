@@ -13,7 +13,6 @@ summon armor_stand ~2.7 ~1.5 ~ {Tags:[material_0,material_static],Rotation:[180f
 
 fill ~-3 ~2 ~2 ~-3 ~5 ~2 stone
 
-
 tp @e[tag=armor_frame] @e[tag=death,limit=1]
 
 summon item_frame ~-3 ~2 ~1 {Facing:2,Tags:[armor_boots,armor_frame],Item:{id:stone,Count:1},temRotation:0}

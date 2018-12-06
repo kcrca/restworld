@@ -8,8 +8,9 @@
 
 <%base:loop collection="${powerings}" args="when,i,thing">\
 <% wood, powered = thing %>
-${when(i)} setblock ~0 ~2 ~-1 minecraft:${wood.id}_pressure_plate[powered=${powered}]
-${when(i)} setblock ~-1 ~3 ~0 minecraft:${wood.id}_button[face=floor,powered=${powered}]
-${when(i)} setblock ~-1 ~1 ~0 minecraft:redstone_lamp[lit=${powered}]
-${when(i)} data merge block ~ ~2 ~1 {Text2:${text(wood.name)},Text3:${text("(Powered)" if powered == "true" else "")}}
+${when(i)} setblock ~1 ~2 ~-1 minecraft:${wood.id}_pressure_plate[powered=${powered}]
+${when(i)} setblock ~1 ~3 ~0 minecraft:${wood.id}_button[facing=east,powered=${powered}]
+${when(i)} setblock ~0 ~3 ~0 minecraft:redstone_lamp[lit=${powered}]
+${when(i)} setblock ~-1 ~2 ~0 minecraft:redstone_lamp[lit=${powered}]
+${when(i)} data merge block ~1 ~2 ~0 {Text2:${text(wood.name)},Text3:${text("(Powered)" if powered == "true" else "")}}
 </%base:loop>

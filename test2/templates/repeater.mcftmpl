@@ -1,0 +1,5 @@
+<%namespace name="base" file="base.mcftmpl"/>
+
+${base.increment(2)}
+${base.when(0)} fill ~0 ~2 ~-1 ~0 ~2 ~1 minecraft:redstone_block replace minecraft:air
+${base.when(1)} fill ~0 ~2 ~-1 ~0 ~2 ~1 minecraft:air replace minecraft:redstone_block

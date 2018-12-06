@@ -9,4 +9,4 @@ ${sign_nbt(2, r"data merge block ~-1 ~-2 ~0 {Command:\\\"execute at @e[tag=effec
 %if effect.name != "Off":
 ,${sign_local_nbt(3, "setblock ^%d ^0 ^%d emerald_block" % (frame.block_at[0], frame.block_at[1]))}\
 %endif
-}
+} replace

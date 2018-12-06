@@ -1,9 +1,8 @@
-<%namespace name="base"  file="base.mcftmpl"/>
+<%namespace name="base" file="base.mcftmpl"/>
 <% pistons = list(Thing("%s Piston" % p) for p in ("", "Sticky")) %>
 
 <%base:loop collection="${pistons}" args="when,i,thing">\
-${when(i)} setblock ~ ~3 ~ ${thing.full_id()}[facing=south]
-${when(i)} data merge block ~ ~2 ~1 {Text2:${text(thing.name)}}
-${when(i)} setblock ~-1 ~3 ~1 minecraft:piston_head[facing=south${",type=sticky" if thing.name.startswith("Sticky") else ""}]
-${when(i)} setblock ~-1 ~3 ~0 ${thing.full_id()}[facing=south,extended=true]
+${when(i)} setblock ~0 ~2 ~0 ${thing.full_id()}[facing=west]
+${when(i)} setblock ~0 ~2 ~1 ${thing.full_id()}[facing=west,extended=true]
+${when(i)} data merge block ~ ~3 ~ {Text2:${text(thing.name)}}
 </%base:loop>
