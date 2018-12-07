@@ -125,6 +125,7 @@ scoreboard players set furnace vars -1
 scoreboard players set growing vars -1
 scoreboard players set holders vars -1
 scoreboard players set holders vars -1
+scoreboard players set hopper vars -1
 scoreboard players set horses vars -1
 scoreboard players set horses vars -1
 scoreboard players set illager vars -1
@@ -162,6 +163,7 @@ scoreboard players set rail vars -1
 scoreboard players set rail_finish vars -1
 scoreboard players set redstone_block vars -1
 scoreboard players set redstone_dust vars -1
+scoreboard players set redstone_lamp vars -1
 scoreboard players set redstone_torch vars -1
 scoreboard players set repeater vars -1
 scoreboard players set reset_clocks vars -1
