@@ -1,0 +1,23 @@
+<%namespace name="base" file="../base.mcftmpl"/>
+<%
+    bottles = (
+	(),
+	(0,),
+	(1,),
+	(2,),
+	(2,0),
+	(1,2),
+	(0,1),
+	(0,1,2),
+    )
+%>
+
+<%base:loop collection="${bottles}" args="when,i,where">
+% for j in range(0, 3):
+% if j in where:
+${when(i)} replaceitem block ~ ~2 ~ container.${j} minecraft:potion{Potion:"minecraft:water"} 1
+% else:
+${when(i)} replaceitem block ~ ~2 ~ container.${j} minecraft:air
+% endif
+% endfor
+</%base:loop>
