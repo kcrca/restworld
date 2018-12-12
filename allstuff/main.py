@@ -1,4 +1,5 @@
 import fnmatch
+import glob
 import os
 import re
 import sys
@@ -257,6 +258,13 @@ def has_loop(rendered):
 
 
 def main():
+    tmpl_suffix = ".mcftmpl"
+    func_suffix = ".mcfunction"
+    speeds = ("main", "fast", "slow")
+    misc = ("reset", "cleanup")
+    categories = ("init", "enter", "exit") + speeds + tuple("finish_%s" % s for s in speeds) + misc
+    category_re = re.compile(r"^(([a-z_0-9]+?)(?:_(" + "|".join(categories) + "))?)%s$" % tmpl_suffix)
+
     def find_files(dir, pat):
         for root, dirnames, filenames in os.walk(dir):
             for filename in fnmatch.filter(filenames, pat):
@@ -266,30 +274,80 @@ def main():
     tmpl_dir = os.path.join(dir, 'templates')
     func_dir = os.path.join(dir, 'functions')
     lookup = TemplateLookup(directories=['.'])
-    vars = []
-    tmpl_suffix = ".mcftmpl"
-    for tmpl_path in sorted(find_files(tmpl_dir, "*%s" % tmpl_suffix)):
-        func_name = os.path.splitext(os.path.basename(tmpl_path))[0]
-        if func_name in ("init", 'base', 'a_sign'):
-            continue
-        var_name = func_name
-        if var_name.endswith('_init'):
-            var_name = var_name[:-5]
-        tmpl = Template(filename=tmpl_path, lookup=lookup)
-        rendered = render_templ(tmpl, var_name)
-        dir = os.path.dirname(tmpl_path.replace(tmpl_dir, func_dir))
-        write_function(dir, func_name, rendered)
-        if not func_name.endswith("init") and has_loop(tmpl.source):
-            rendered = render_templ(tmpl, var_name, suppress_loop=True)
-            write_function(dir, func_name + "_cur", rendered)
-        if var_name in vars and var_name == func_name:
-            raise BaseException("Duplicate script/var name: %s" % var_name)
-        vars.append(var_name)
+    home_tmpl = Template(filename="templates/home%s" % tmpl_suffix, lookup=lookup)
+    group_tmpl = Template(filename="templates/group%s" % tmpl_suffix, lookup=lookup)
+    tick_tmpl = Template(filename="templates/tick%s" % tmpl_suffix, lookup=lookup)
 
-    init_tmpl = Template(filename=os.path.join(tmpl_dir, "init.mcftmpl"), lookup=lookup)
-    write_function(func_dir, "init", init_tmpl.render(vars=vars))
-    effects_dir = func_dir + "/effects"
-    effect_signs(effects_dir, Template(filename="%s/effects/a_sign.mcftmpl" % tmpl_dir, lookup=lookup))
+    vars = []
+
+    class Room:
+        def __init__(self, dir):
+            dir = dir.strip('/')
+            self.dir = dir
+            self.name = os.path.basename(dir)
+            self.func_dir = dir.replace('templates', 'functions')
+            self.lists = {}
+
+        def consume(self, tmpl_path):
+            m = category_re.match(os.path.basename(tmpl_path))
+            var = m.group(2)
+            which = m.group(3)
+            func = m.group(1)
+            tmpl = Template(filename=tmpl_path, lookup=lookup)
+            rendered = render_templ(tmpl, var)
+            write_function(self.func_dir, func, rendered)
+            write_function(self.func_dir, "%s_home" % var, home_tmpl.render(var=var))
+            if which and which not in misc:
+                entry = [var, ]
+                try:
+                    self.lists[which] += entry
+                except KeyError:
+                    self.lists[which] = entry
+
+        def generate(self):
+            for tmpl_path in sorted(glob.glob(os.path.join(self.dir, "*" + tmpl_suffix))):
+                self.consume(tmpl_path)
+            on_tick = []
+            after_tick = []
+            for which in self.lists:
+                files = self.lists[which]
+                rendered = group_tmpl.render(room=self.name, funcs=files, which=which)
+                write_function(self.func_dir, "_%s" % which, rendered)
+                if which[-4:] in speeds:
+                    if len(which) == 4:
+                        on_tick += [which, ]
+                    else:
+                        after_tick += [which[-4:], ]
+            if on_tick or after_tick:
+                rendered = tick_tmpl.render(room=self.name, on_tick=on_tick, after_tick=after_tick)
+                write_function(self.func_dir, "_tick", rendered)
+
+    for room_dir in glob.glob(os.path.join(tmpl_dir, '*/')):
+        room = Room(room_dir)
+        room.generate()
+
+    # for tmpl_path in sorted(find_files(tmpl_dir, "*%s" % tmpl_suffix)):
+    #     func_name = os.path.splitext(os.path.basename(tmpl_path))[0]
+    #     if func_name in ("init", 'base', 'a_sign'):
+    #         continue
+    #     var_name = func_name
+    #     if var_name.endswith('_init'):
+    #         var_name = var_name[:-5]
+    #     tmpl = Template(filename=tmpl_path, lookup=lookup)
+    #     rendered = render_templ(tmpl, var_name)
+    #     dir = os.path.dirname(tmpl_path.replace(tmpl_dir, func_dir))
+    #     write_function(dir, func_name, rendered)
+    #     if not func_name.endswith("init") and has_loop(tmpl.source):
+    #         rendered = render_templ(tmpl, var_name, suppress_loop=True)
+    #         write_function(dir, func_name + "_cur", rendered)
+    #     if var_name in vars and var_name == func_name:
+    #         raise BaseException("Duplicate script/var name: %s" % var_name)
+    #     vars.append(var_name)
+    #
+    # init_tmpl = Template(filename=os.path.join(tmpl_dir, "init.mcftmpl"), lookup=lookup)
+    # write_function(func_dir, "init", init_tmpl.render(vars=vars))
+    # effects_dir = func_dir + "/effects"
+    # effect_signs(effects_dir, Template(filename="%s/effects/a_sign.mcftmpl" % tmpl_dir, lookup=lookup))
 
 
 effects = (

@@ -1,0 +1,1 @@
+execute at @e[tag=note_block_home] run function v3:redstone/note_block_fast

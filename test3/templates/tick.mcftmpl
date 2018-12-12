@@ -1,0 +1,6 @@
+%for f in on_tick:
+execute if score ${f} clocks matches 0 run function v3:${room}/_${f}
+%endfor
+%for f in after_tick:
+execute if score ${f} clocks matches 1 run function v3:${room}/_finish_${f}
+%endfor
