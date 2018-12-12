@@ -8,5 +8,5 @@ mkdir functions
 test -d "$dst_dir" || mkdir -p "$dst_dir"
 rm -rf "$dst_dir"/functions
 test -d "$dst_dir"/tags && rm -rf "$dst_dir"/tags/*
-echo + cp functions/* "$dst_dir"/functions/
+echo + cp "functions/* $dst_dir/functions/"
 tar cf - functions tags | (cd "$dst_dir" ; tar xf -)

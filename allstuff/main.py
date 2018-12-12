@@ -286,7 +286,8 @@ def main():
             self.dir = dir
             self.name = os.path.basename(dir)
             self.func_dir = dir.replace('templates', 'functions')
-            self.lists = {}
+            self.lists = {"enter": []}
+            self.vars = set()
 
         def consume(self, tmpl_path):
             m = category_re.match(os.path.basename(tmpl_path))
@@ -302,6 +303,7 @@ def main():
                 write_function(self.func_dir, "%s_cur" % var, rendered)
 
             if which and which not in misc:
+                self.vars.add(var)
                 entry = [var, ]
                 try:
                     self.lists[which] += entry
@@ -315,7 +317,7 @@ def main():
             after_tick = []
             for which in self.lists:
                 files = self.lists[which]
-                rendered = group_tmpl.render(room=self.name, funcs=files, which=which)
+                rendered = group_tmpl.render(room=self.name, funcs=files, which=which, vars=self.vars)
                 write_function(self.func_dir, "_%s" % which, rendered)
                 if which[-4:] in speeds:
                     if len(which) == 4:
