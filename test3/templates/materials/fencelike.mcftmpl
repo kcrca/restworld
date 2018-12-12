@@ -1,0 +1,10 @@
+<%namespace name="base" file="../base.mcftmpl"/>
+
+<%def name="switch_to_fencelike(which, x_delta)">\
+tag @e[tag=walls_home] add fencelike_home
+tag @e[tag=panes_home] add fencelike_home
+tag @e[tag=fences_home] add fencelike_home
+${base.remove("tag=fencelike_home")}
+execute positioned ~-${x_delta} ~-1 ~1 run function v3:materials/${which}_home
+execute at @e[tag=${which}_home] run function v3:materials/${which}_cur
+</%def>

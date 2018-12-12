@@ -1,0 +1,23 @@
+<%namespace name="base"file="../base.mcftmpl"/>
+<% blocks = (
+       Thing("Redstone"),
+       Thing("Emerald"),
+       Thing("Nether Quartz"),
+       Thing("Gold"),
+       Thing("Iron"),
+       Thing("Coal"),
+       Thing("Lapis"),
+       Thing("Diamond"),
+   )
+%>
+
+<%base:loop collection="${blocks}" args="when,i,thing">
+${when(i)} fill ~4 ~3 ~2 ~0 ~2 ~0 ${thing.full_id()}_ore replace #v3:ores
+${when(i)} fill ~4 ~3 ~2 ~0 ~2 ~0 ${thing.full_id() if "Quartz" not in thing.name else "quartz"}_block replace #v3:ore_blocks
+${when(i)} data merge block ~2 ~2 ~3 {Text2:${text(thing.name)}}
+%if thing.name == "Nether Quartz":
+${when(i)} fill ~4 ~3 ~2 ~0 ~2 ~0 netherrack replace stone
+%elif thing.name == "Gold":
+${when(i)} fill ~4 ~3 ~2 ~0 ~2 ~0 stone replace netherrack
+%endif
+</%base:loop>

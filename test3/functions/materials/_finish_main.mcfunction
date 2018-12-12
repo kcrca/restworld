@@ -1,0 +1,1 @@
+execute at @e[tag=materials_home] run function v3:materials/materials_finish_main

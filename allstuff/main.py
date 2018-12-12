@@ -297,6 +297,10 @@ def main():
             rendered = render_templ(tmpl, var)
             write_function(self.func_dir, func, rendered)
             write_function(self.func_dir, "%s_home" % var, home_tmpl.render(var=var))
+            if which in speeds:
+                rendered = render_templ(tmpl, var, suppress_loop=True)
+                write_function(self.func_dir, "%s_cur" % var, rendered)
+
             if which and which not in misc:
                 entry = [var, ]
                 try:
