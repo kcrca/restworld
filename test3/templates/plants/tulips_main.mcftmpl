@@ -1,0 +1,7 @@
+<%namespace name="base" file="../base.mcftmpl"/>
+
+<%base:loop collection="${tulips}" args="when,i,thing">\
+${when(i)} setblock ~ ~3 ~ ${Thing("%s Tulip" % thing).full_id()}
+${when(i)} data merge block ~1 ~2 ~ {Text2:${text(thing)}}
+${when(i)} data merge block ~-1 ~2 ~ {Text2:${text(thing)}}
+</%base:loop>
