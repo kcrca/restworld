@@ -2,5 +2,5 @@
 <% blocks = [Thing("Anvil"), Thing("Chipped Anvil"), Thing("Damaged Anvil")] %>
 
 <%base:bounce collection="${blocks}" args="when,i,thing">
-${when(i)} setblock ~ ~3 ~ ${thing.full_id()}
+${when(i)} setblock ~ ~2 ~ ${thing.full_id()}
 </%base:bounce>

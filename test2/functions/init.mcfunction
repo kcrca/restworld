@@ -11,6 +11,7 @@ scoreboard players set anvil vars -1
 scoreboard players set armors vars -1
 scoreboard players set armors vars -1
 scoreboard players set beam_colors vars -1
+scoreboard players set beam_colors vars -1
 scoreboard players set brewing vars -1
 scoreboard players set cactus vars -1
 scoreboard players set cake vars -1
@@ -178,6 +179,9 @@ scoreboard players set stems vars -1
 scoreboard players set steppable vars -1
 scoreboard players set stone vars -1
 scoreboard players set structure_blocks vars -1
+scoreboard players set survival vars -1
+scoreboard players set survival vars -1
+scoreboard players set survival_stop vars -1
 scoreboard players set to_spawn vars -1
 scoreboard players set tools vars -1
 scoreboard players set topped_blocks vars -1
