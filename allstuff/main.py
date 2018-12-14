@@ -424,7 +424,7 @@ def effect_signs(func_dir, sign_tmpl):
     for i, effect in enumerate(sorted(effects)):
         sign_text = effect.sign_text()
         lines = ["", ] + sign_text + [""] * (max(0, 3 - len(sign_text)))
-        commands.append(sign_tmpl.render(effect=effect, lines=lines, x=-x, y=y, frame=frame).strip())
+        commands.append(sign_tmpl.render(effect=effect, lines=lines, x=-x, y=y, z=0, frame=frame).strip())
         # write_function(func_dir, effect.id, effect_function(effect))
         x += 1
         if x >= frame.end:
@@ -440,10 +440,10 @@ def effect_signs(func_dir, sign_tmpl):
         commands.append(frame.to_next_wall())
         cur_frame += 1
         frame = frames[cur_frame]
-    x = int(frame.width / 2 + 0.6)
+    x = int(frame.width / 2 + 0.6)/
     y = 3
     commands.append(
-        sign_tmpl.render(effect=Effects("Off"), lines=['', 'Off', '', ''], x=-x, y=y, frame=frame).strip())
+        sign_tmpl.render(effect=Effects("Off"), lines=['', 'Off', '', ''], x=-x, y=y, z=2, frame=frame).strip())
 
     commands.append(kill_command)
 
