@@ -2,5 +2,5 @@
 <%namespace name="base"  file="../base.mcftmpl"/>
 
 <%base:loop collection="${professions}" args="when,i,thing">
-${when(i)} summon minecraft:villager ~0 ~0 ~0 {Profession:${i},NoAI:True,Silent:True}
+${when(i)} ${summon("villager", 0, "Profession:%d,NoAI:True" % i)}
 </%base:loop>

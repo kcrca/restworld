@@ -3,5 +3,5 @@
 <% animals = (Thing("ocelot"), Thing("Horse"), Thing("Llama")) %>
 
 <%base:loop collection="${animals}" args="when,i,thing">
-${when(i)} summon ${thing.full_id()} ~0 ~0 ~0 {NoAI:True,Silent:True,CatType:1}
+${when(i)} ${summon(thing.id, 0, "CatType:1,NoAI:True")}
 </%base:loop>
