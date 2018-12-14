@@ -1,0 +1,8 @@
+<%namespace name="base"  file="../base.mcftmpl"/>\
+<% types = (11743532, 6719955, 14602026, 3887386, 15790320) %>
+
+<%base:loop collection="${types}" args="when,i,thing">
+${when(i)} data merge block ~0 ~1 ~0 {Items:[{Slot:0,id:"minecraft:firework_rocket",Count:1,tag:{Fireworks:{Flight:0,Explosions:[{Type:${i},Trail:1,Colors:[I;${thing}]}]}}}]}
+</%base:loop>
+setblock ~ ~ ~ redstone_torch
+setblock ~ ~ ~ air

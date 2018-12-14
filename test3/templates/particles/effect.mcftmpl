@@ -1,0 +1,2 @@
+<%namespace file="particle_base.mcftmpl" import="*"/>\
+${fast_clock()} particle minecraft:particle ~ ~1 ~ 0.25 0.5 0.5 0.2 20

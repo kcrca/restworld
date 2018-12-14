@@ -227,7 +227,7 @@ class Stepable(Thing):
         self.base_id = to_id(base_id)
 
 
-class Effect(Thing):
+class Particles(Thing):
     def __init__(self, name, id=None, note=None):
         Thing.__init__(self, name.replace('|', ' '), id)
         self.note = "(%s)" % note if note else None
@@ -277,8 +277,7 @@ def main():
     tmpls = {}
     for f in ("home", "group", "tick", "incr", "decr", "cur"):
         tmpls[f] = Template(filename="templates/%s%s" % (f, tmpl_suffix), lookup=lookup)
-
-    vars = []
+    incr_funcs = ("incr", "decr", "cur")
 
     class Room:
         def __init__(self, dir):
@@ -297,6 +296,11 @@ def main():
             tmpl = Template(filename=tmpl_path, lookup=lookup)
             rendered = render_templ(tmpl, var)
             write_function(self.func_dir, func, rendered)
+
+            # The particles room is just special
+            if room.name == 'particles':
+                return
+
             write_function(self.func_dir, "%s_home" % var, tmpls["home"].render(var=var))
             if which in speeds and not os.path.exists(tmpl_path.replace("_%s." % which, "_cur.")):
                 rendered = render_templ(tmpl, var, suppress_loop=True)
@@ -327,7 +331,7 @@ def main():
             if on_tick or after_tick:
                 rendered = tmpls["tick"].render(room=self.name, on_tick=on_tick, after_tick=after_tick)
                 write_function(self.func_dir, "_tick", rendered)
-            for f in ("incr", "decr", "cur"):
+            for f in incr_funcs:
                 rendered = tmpls[f].render(room=self.name, vars=self.vars)
                 write_function(self.func_dir, "_%s" % f, rendered)
 
@@ -337,9 +341,8 @@ def main():
         room.generate()
         rooms += [room.name, ]
 
-    write_function(func_dir, "_incr", "\n".join("function v3:%s/_incr" % r for r in rooms))
-    write_function(func_dir, "_decr", "\n".join("function v3:%s/_decr" % r for r in rooms))
-    write_function(func_dir, "_cur", "\n".join("function v3:%s/_cur" % r for r in rooms))
+    for f in incr_funcs:
+        write_function(func_dir, "_%s" % f, "\n".join("function v3:%s/_%s" % (r, f) for r in rooms))
 
     # for tmpl_path in sorted(find_files(tmpl_dir, "*%s" % tmpl_suffix)):
     #     func_name = os.path.splitext(os.path.basename(tmpl_path))[0]
@@ -361,26 +364,29 @@ def main():
     #
     # init_tmpl = Template(filename=os.path.join(tmpl_dir, "init.mcftmpl"), lookup=lookup)
     # write_function(func_dir, "init", init_tmpl.render(vars=vars))
-    # effects_dir = func_dir + "/effects"
-    # effect_signs(effects_dir, Template(filename="%s/effects/a_sign.mcftmpl" % tmpl_dir, lookup=lookup))
+    particles_dir = func_dir + "/particles"
+    particle_signs(particles_dir, Template(filename="%s/particles_sign.mcftmpl" % tmpl_dir, lookup=lookup))
 
 
-effects = (
-    Effect("Ambient Entity|Effect", "ambient"), Effect("Angry Villager"), Effect("Bubbles|and|Whirlpools", "bubbles"),
-    Effect("Clouds", note="Evaporation"), Effect("Crit"), Effect("Damage Indicator"), Effect("Dolphin"),
-    Effect("Dragon Breath"), Effect("Dripping Lava"), Effect("Dripping Water"), Effect("Dust", note="Redstone Dust"),
-    Effect("Effect"), Effect("Elder Guardian"), Effect("Enchant"), Effect("Enchanted Hit"), Effect("End Rod"),
-    Effect("Entity Effect"), Effect("Explosion"), Effect("Falling Dust"), Effect("Fireworks"), Effect("Fishing"),
-    Effect("Flame"), Effect("Happy Villager"), Effect("Heart"), Effect("Explosion Emitter", note="Large Explosion"),
-    Effect("Instant Effect"), Effect("Item Slime"), Effect("Item Snowball"), Effect("Large Smoke"), Effect("Lava"),
-    Effect("Mycelium"), Effect("Nautilus"), Effect("Note"), Effect("Poof", note="Small Explosion"), Effect("Portal"),
-    Effect("Rain|(Unimplemented)"), Effect("Smoke"), Effect("Snow|(Unimplemented)"), Effect("Spit"), Effect("Splash"),
-    Effect("Squid Ink"), Effect("Sweep Attack"), Effect("Totem of Undying"), Effect("Underwater"), Effect("Witch"),
+particles = (
+    Particles("Ambient Entity|Effect", "ambient"), Particles("Angry Villager"),
+    Particles("Bubbles|and|Whirlpools", "bubbles"), Particles("Clouds", note="Evaporation"), Particles("Crit"),
+    Particles("Damage Indicator"), Particles("Dolphin"), Particles("Dragon Breath"), Particles("Dripping Lava"),
+    Particles("Dripping Water"), Particles("Dust", note="Redstone Dust"), Particles("Effect"),
+    Particles("Elder Guardian"), Particles("Enchant"), Particles("Enchanted Hit"), Particles("End Rod"),
+    Particles("Entity Effect"), Particles("Explosion"), Particles("Falling Dust"), Particles("Fireworks"),
+    Particles("Fishing"), Particles("Flame"), Particles("Happy Villager"), Particles("Heart"),
+    Particles("Explosion Emitter", note="Large Explosion"), Particles("Instant Effect"), Particles("Item Slime"),
+    Particles("Item Snowball"), Particles("Large Smoke"), Particles("Lava"), Particles("Mycelium"),
+    Particles("Nautilus"), Particles("Note"), Particles("Poof", note="Small Explosion"), Particles("Portal"),
+    Particles("Rain|(Unimplemented)"), Particles("Smoke"), Particles("Snow|(Unimplemented)"), Particles("Spit"),
+    Particles("Splash"), Particles("Squid Ink"), Particles("Sweep Attack"), Particles("Totem of Undying"),
+    Particles("Underwater"), Particles("Witch"),
 )
 
 
-def effect_function(effect):
-    base = "function allstuff:effect/%s_%%s" % effect.id
+def particles_function(particle):
+    base = "function allstuff:particle/%s_%%s" % particle.id
     return "\n".join(base % f for f in ("init", "fast", "main", "slow")) + "\n"
 
 
@@ -398,7 +404,7 @@ class Frame:
                 self.width - 1)
 
 
-def effect_signs(func_dir, sign_tmpl):
+def particle_signs(func_dir, sign_tmpl):
     frames = (
         Frame(7, 5, "east", (-1, 0)),
         Frame(7, 5, "south", (0, -1)),
@@ -416,11 +422,11 @@ def effect_signs(func_dir, sign_tmpl):
     ]
     x = frame.start
     y = 3
-    for i, effect in enumerate(sorted(effects)):
-        sign_text = effect.sign_text()
+    for i, particle in enumerate(sorted(particles)):
+        sign_text = particle.sign_text()
         lines = ["", ] + sign_text + [""] * (max(0, 3 - len(sign_text)))
-        commands.append(sign_tmpl.render(effect=effect, lines=lines, x=-x, y=y, frame=frame).strip())
-        # write_function(func_dir, effect.id, effect_function(effect))
+        commands.append(sign_tmpl.render(particle=particle, lines=lines, x=-x, y=y, frame=frame).strip())
+        # write_function(func_dir, particle.id, particle_function(particle))
         x += 1
         if x >= frame.end:
             y -= 1
@@ -437,7 +443,8 @@ def effect_signs(func_dir, sign_tmpl):
         frame = frames[cur_frame]
     x = int(frame.width / 2 + 0.6)
     y = 3
-    commands.append(sign_tmpl.render(effect=Effect("Off"), lines=['', 'Off', '', ''], x=-x, y=y, frame=frame).strip())
+    commands.append(
+        sign_tmpl.render(particle=Particles("Off"), lines=['', 'Off', '', ''], x=-x, y=y, frame=frame).strip())
 
     commands.append(kill_command)
 

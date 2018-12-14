@@ -1,0 +1,2 @@
+<%namespace file="particle_base.mcftmpl" import="*"/>\
+${fast_clock()} summon minecraft:llama_spit ~ ~2.2 ~0.2 {Motion:[0.0,0.0,1.0],direction:[0.0,0.0,1.0],ExplosionPower:1}

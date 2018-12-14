@@ -1,0 +1,2 @@
+<%namespace file="particle_base.mcftmpl" import="*"/>\
+${main_clock()} particle minecraft:poof ~ ~1 ~ 0.25 0.25 0.25 0 30

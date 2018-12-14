@@ -1,0 +1,17 @@
+<%namespace name="base"  file="../base.mcftmpl"/>\
+
+<%def name="fast_clock()">${clock("fast")}</%def>
+<%def name="main_clock()">${clock("main")}</%def>
+<%def name="slow_clock()">${clock("slow")}</%def>
+<%def name="at_center()">at @e[tag=particles_center] positioned ~ ~2 ~</%def>
+<%def name="clock(which)">execute if score ${which} clocks matches 0 ${at_center()} run</%def>
+<%def name="centered()">execute ${at_center()} run</%def>
+
+<%def name="run_random(commands)">
+scoreboard players operation random funcs = clock clocks
+scoreboard players set random_range funcs ${len(commands)}
+scoreboard players operation random funcs %= random_range funcs
+%for cmd in commands:
+execute if score random funcs matches ${loop.index} run ${cmd}
+%endfor
+</%def>
