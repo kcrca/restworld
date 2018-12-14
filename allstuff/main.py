@@ -285,7 +285,7 @@ def main():
             self.dir = dir
             self.name = os.path.basename(dir)
             self.func_dir = dir.replace('templates', 'functions')
-            self.lists = {"enter": []}
+            self.lists = {"exit": []}
             self.vars = set()
 
         def consume(self, tmpl_path):
@@ -322,6 +322,10 @@ def main():
             for which in self.lists:
                 files = self.lists[which]
                 rendered = tmpls["group"].render(room=self.name, funcs=files, which=which, vars=self.vars)
+                # Need to set this on everything, "exiting room" seems the lowest-frequency tool to do it. We do it
+                # at exit so any entities summoned while in the room will get marked.
+                if which == "exit":
+                    rendered += "execute at @e[type=!player] run data merge entity @s {PersistenceRequired:True}\n"
                 write_function(self.func_dir, "_%s" % which, rendered)
                 if which[-4:] in speeds:
                     if len(which) == 4:

@@ -1,2 +1,2 @@
 <%namespace file="effect_base.mcftmpl" import="*"/>\
-${main_clock()} particle minecraft:witch ~ ~2.3 ~ 0.3 0.3 0.3 0 6
+${fast_clock()} particle minecraft:witch ~ ~2.3 ~ 0.3 0.3 0.3 0 6

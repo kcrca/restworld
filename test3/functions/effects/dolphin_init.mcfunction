@@ -4,4 +4,4 @@ fill ~4 ~5 ~4 ~-4 ~5 ~-4 minecraft:barrier
 fill ~3 ~5 ~3 ~-3 ~5 ~-3 minecraft:air
 fill ~3 ~7 ~3 ~-3 ~7 ~-3 minecraft:barrier
 function v3:effects/ocean
-summon minecraft:dolphin ~0 ~1.5 ~0 {Tags:[effecter]}
+summon minecraft:dolphin ~0 ~1.5 ~0 {Tags:[effecter],PersistenceRequired:True}

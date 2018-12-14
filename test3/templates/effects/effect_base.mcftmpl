@@ -13,7 +13,7 @@
 	nbt += ","
     except TypeError:
 	nbt = ""
-    nbt += "Tags:[effecter]"
+    nbt += "Tags:[effecter],PersistenceRequired:True"
 %>summon minecraft:${id} ~0 ~${y} ~0 {${nbt}}\
 </%def>
 
