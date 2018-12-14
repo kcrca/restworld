@@ -1,2 +1,0 @@
-<%namespace file="particle_base.mcftmpl" import="*"/>\
-${main_clock()} particle minecraft:ambient_entity_particle ~ ~ ~ 0.5 5 0.5 1 500

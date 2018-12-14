@@ -1,2 +1,0 @@
-<%namespace file="particle_base.mcftmpl" import="*"/>\
-${fast_clock()} particle minecraft:enchanted_hit ~ ~1 ~ 0.5 0.5 0.5 0 15

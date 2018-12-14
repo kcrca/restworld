@@ -1,0 +1,2 @@
+<%namespace file="effect_base.mcftmpl" import="*"/>\
+${main_clock()} function v3:effects/fireworks_change

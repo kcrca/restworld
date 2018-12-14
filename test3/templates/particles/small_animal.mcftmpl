@@ -1,7 +1,0 @@
-<%namespace file="particle_base.mcftmpl" import="*"/>
-<%namespace name="base"  file="../base.mcftmpl"/>
-<% animals = (Thing("ocelot"), Thing("Horse"), Thing("Llama")) %>
-
-<%base:loop collection="${animals}" args="when,i,thing">
-${when(i)} summon ${thing.full_id()} ~0 ~0 ~0 {NoAI:True,Silent:True,CatType:1}
-</%base:loop>

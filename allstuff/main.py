@@ -227,7 +227,7 @@ class Stepable(Thing):
         self.base_id = to_id(base_id)
 
 
-class Particles(Thing):
+class Effects(Thing):
     def __init__(self, name, id=None, note=None):
         Thing.__init__(self, name.replace('|', ' '), id)
         self.note = "(%s)" % note if note else None
@@ -297,8 +297,8 @@ def main():
             rendered = render_templ(tmpl, var)
             write_function(self.func_dir, func, rendered)
 
-            # The particles room is just special
-            if room.name == 'particles':
+            # The effects room is just special
+            if room.name == 'effects':
                 return
 
             write_function(self.func_dir, "%s_home" % var, tmpls["home"].render(var=var))
@@ -364,29 +364,28 @@ def main():
     #
     # init_tmpl = Template(filename=os.path.join(tmpl_dir, "init.mcftmpl"), lookup=lookup)
     # write_function(func_dir, "init", init_tmpl.render(vars=vars))
-    particles_dir = func_dir + "/particles"
-    particle_signs(particles_dir, Template(filename="%s/particles_sign.mcftmpl" % tmpl_dir, lookup=lookup))
+    effects_dir = func_dir + "/effects"
+    effect_signs(effects_dir, Template(filename="%s/effects_sign.mcftmpl" % tmpl_dir, lookup=lookup))
 
 
-particles = (
-    Particles("Ambient Entity|Effect", "ambient"), Particles("Angry Villager"),
-    Particles("Bubbles|and|Whirlpools", "bubbles"), Particles("Clouds", note="Evaporation"), Particles("Crit"),
-    Particles("Damage Indicator"), Particles("Dolphin"), Particles("Dragon Breath"), Particles("Dripping Lava"),
-    Particles("Dripping Water"), Particles("Dust", note="Redstone Dust"), Particles("Effect"),
-    Particles("Elder Guardian"), Particles("Enchant"), Particles("Enchanted Hit"), Particles("End Rod"),
-    Particles("Entity Effect"), Particles("Explosion"), Particles("Falling Dust"), Particles("Fireworks"),
-    Particles("Fishing"), Particles("Flame"), Particles("Happy Villager"), Particles("Heart"),
-    Particles("Explosion Emitter", note="Large Explosion"), Particles("Instant Effect"), Particles("Item Slime"),
-    Particles("Item Snowball"), Particles("Large Smoke"), Particles("Lava"), Particles("Mycelium"),
-    Particles("Nautilus"), Particles("Note"), Particles("Poof", note="Small Explosion"), Particles("Portal"),
-    Particles("Rain|(Unimplemented)"), Particles("Smoke"), Particles("Snow|(Unimplemented)"), Particles("Spit"),
-    Particles("Splash"), Particles("Squid Ink"), Particles("Sweep Attack"), Particles("Totem of Undying"),
-    Particles("Underwater"), Particles("Witch"),
+effects = (
+    Effects("Ambient Entity|Effect", "ambient"), Effects("Angry Villager"),
+    Effects("Bubbles|and|Whirlpools", "bubbles"), Effects("Clouds", note="Evaporation"), Effects("Crit"),
+    Effects("Damage Indicator"), Effects("Dolphin"), Effects("Dragon Breath"), Effects("Dripping Lava"),
+    Effects("Dripping Water"), Effects("Dust", note="Redstone Dust"), Effects("Effect"), Effects("Elder Guardian"),
+    Effects("Enchant"), Effects("Enchanted Hit"), Effects("End Rod"), Effects("Entity Effect"), Effects("Explosion"),
+    Effects("Falling Dust"), Effects("Fireworks"), Effects("Fishing"), Effects("Flame"), Effects("Happy Villager"),
+    Effects("Heart"), Effects("Explosion Emitter", note="Large Explosion"), Effects("Instant Effect"),
+    Effects("Item Slime"), Effects("Item Snowball"), Effects("Large Smoke"), Effects("Lava"), Effects("Mycelium"),
+    Effects("Nautilus"), Effects("Note"), Effects("Poof", note="Small Explosion"), Effects("Portal"),
+    Effects("Rain|(Unimplemented)"), Effects("Smoke"), Effects("Snow|(Unimplemented)"), Effects("Spit"),
+    Effects("Splash"), Effects("Squid Ink"), Effects("Sweep Attack"), Effects("Totem of Undying"),
+    Effects("Underwater"), Effects("Witch"),
 )
 
 
-def particles_function(particle):
-    base = "function allstuff:particle/%s_%%s" % particle.id
+def effects_function(effect):
+    base = "function allstuff:effect/%s_%%s" % effect.id
     return "\n".join(base % f for f in ("init", "fast", "main", "slow")) + "\n"
 
 
@@ -404,7 +403,7 @@ class Frame:
                 self.width - 1)
 
 
-def particle_signs(func_dir, sign_tmpl):
+def effect_signs(func_dir, sign_tmpl):
     frames = (
         Frame(7, 5, "east", (-1, 0)),
         Frame(7, 5, "south", (0, -1)),
@@ -422,11 +421,11 @@ def particle_signs(func_dir, sign_tmpl):
     ]
     x = frame.start
     y = 3
-    for i, particle in enumerate(sorted(particles)):
-        sign_text = particle.sign_text()
+    for i, effect in enumerate(sorted(effects)):
+        sign_text = effect.sign_text()
         lines = ["", ] + sign_text + [""] * (max(0, 3 - len(sign_text)))
-        commands.append(sign_tmpl.render(particle=particle, lines=lines, x=-x, y=y, frame=frame).strip())
-        # write_function(func_dir, particle.id, particle_function(particle))
+        commands.append(sign_tmpl.render(effect=effect, lines=lines, x=-x, y=y, frame=frame).strip())
+        # write_function(func_dir, effect.id, effect_function(effect))
         x += 1
         if x >= frame.end:
             y -= 1
@@ -444,7 +443,7 @@ def particle_signs(func_dir, sign_tmpl):
     x = int(frame.width / 2 + 0.6)
     y = 3
     commands.append(
-        sign_tmpl.render(particle=Particles("Off"), lines=['', 'Off', '', ''], x=-x, y=y, frame=frame).strip())
+        sign_tmpl.render(effect=Effects("Off"), lines=['', 'Off', '', ''], x=-x, y=y, frame=frame).strip())
 
     commands.append(kill_command)
 

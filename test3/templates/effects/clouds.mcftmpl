@@ -1,0 +1,2 @@
+<%namespace file="effect_base.mcftmpl" import="*"/>\
+${main_clock()} particle minecraft:cloud ~ ~1 ~ 0.25 0.25 0.25 0.05 50
