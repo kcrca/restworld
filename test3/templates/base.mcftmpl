@@ -16,10 +16,15 @@ execute unless score ${var} funcs matches 0..${count - 1} run scoreboard players
 <%def name="up_down(which, count, x=0, y=4, z=0)">
 ${increment(2 * count)}\
 <% id = Thing(which).full_id() %>
-% for i in range(0, count):
-${when(i)} setblock ~${x} ~${y + i} ~${z} ${id}
-${when(i + count)} setblock ~${x} ~${y + count - i - 1} ~${z} minecraft:air
-% endfor
+fill ~ ~4 ~ ~ ~${4 + count} ~ minecraft:air
+%for i in range(1, count + 1):
+${when(i)} fill ~ ~3 ~ ~ ~${3 + i} ~ ${id}
+%endfor
+%for i in range(count + 1, 2 * count):
+${when(i)} fill ~ ~3 ~ ~ ~${3 + (i - count)} ~ ${id}
+%endfor
+<%doc> Need this kill because sometimes lopping off a thing (sugar_cane) drops an item </%doc>
+kill @e[type=item,distance=..10,nbt={Item:{id:"${id}"}}]
 </%def>
 
 <%def name="loop(collection)">
