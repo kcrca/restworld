@@ -1,2 +1,2 @@
 kill @e[tag=redstone_block_home]
-summon minecraft:armor_stand ~ ~0.5 ~ {Tags:[redstone_block_home],Small:true,NoGravity:true}
+summon minecraft:dragon_fireball ~ ~0.5 ~ {Tags:[redstone_block_home,homer],NoGravity:true,direction:[0.0,0.0,0.0],ExplosionPower:0}
