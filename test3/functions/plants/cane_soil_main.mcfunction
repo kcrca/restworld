@@ -1,6 +1,7 @@
 execute unless score cane_soil funcs matches 0.. run function cane_soil_init
 scoreboard players add cane_soil funcs 1
-execute unless score cane_soil funcs matches 0..9 run scoreboard players set cane_soil funcs 0
+scoreboard players set cane_soil max 10
+execute unless score cane_soil funcs matches 0..9 run scoreboard players operation cane_soil funcs %= cane_soil max
 
 execute if score cane_soil funcs matches 0 run setblock ~ ~2 ~1 minecraft:grass_block
 

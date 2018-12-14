@@ -1,6 +1,7 @@
 execute unless score pottable funcs matches 0.. run function pottable_init
 scoreboard players add pottable funcs 1
-execute unless score pottable funcs matches 0..20 run scoreboard players set pottable funcs 0
+scoreboard players set pottable max 21
+execute unless score pottable funcs matches 0..20 run scoreboard players operation pottable funcs %= pottable max
 execute if score pottable funcs matches 0 run setblock ~ ~3 ~ minecraft:potted_acacia_sapling
 execute if score pottable funcs matches 0 run data merge block ~1 ~2 ~ {Text3:"\"Acacia Sapling\""}
 execute if score pottable funcs matches 0 run data merge block ~-1 ~2 ~ {Text3:"\"Acacia Sapling\""}

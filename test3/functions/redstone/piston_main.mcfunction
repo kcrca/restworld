@@ -1,6 +1,7 @@
 execute unless score piston funcs matches 0.. run function piston_init
 scoreboard players add piston funcs 1
-execute unless score piston funcs matches 0..1 run scoreboard players set piston funcs 0
+scoreboard players set piston max 2
+execute unless score piston funcs matches 0..1 run scoreboard players operation piston funcs %= piston max
 execute if score piston funcs matches 0 run setblock ~0 ~2 ~0 minecraft:piston[facing=west]
 execute if score piston funcs matches 0 run setblock ~0 ~2 ~1 minecraft:piston[facing=west,extended=true]
 execute if score piston funcs matches 0 run data merge block ~ ~3 ~ {Text2:"\"Piston\""}

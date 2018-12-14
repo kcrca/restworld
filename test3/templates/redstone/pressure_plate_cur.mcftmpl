@@ -1,0 +1,7 @@
+scoreboard players set pressure_plate max 16
+execute unless score pressure_plate funcs matches 0..1 run scoreboard players operation pressure_plate funcs %= pressure_plate max
+
+kill @e[tag=plate_items]
+%for i in range(1, 16):
+execute if score ${var} funcs matches ${i}.. run function v3:redstone/pressure_plate_add
+%endfor

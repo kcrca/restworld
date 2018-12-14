@@ -1,6 +1,7 @@
 execute unless score brewing funcs matches 0.. run function brewing_init
 scoreboard players add brewing funcs 1
-execute unless score brewing funcs matches 0..7 run scoreboard players set brewing funcs 0
+scoreboard players set brewing max 8
+execute unless score brewing funcs matches 0..7 run scoreboard players operation brewing funcs %= brewing max
 
 execute if score brewing funcs matches 0 run replaceitem block ~ ~2 ~ container.0 minecraft:air
 execute if score brewing funcs matches 0 run replaceitem block ~ ~2 ~ container.1 minecraft:air

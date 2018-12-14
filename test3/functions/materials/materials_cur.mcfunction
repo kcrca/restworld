@@ -1,6 +1,8 @@
 tp @e[tag=material_thing] @e[tag=death,limit=1]
 
 
+scoreboard players set materials max 5
+execute unless score materials funcs matches 0..4 run scoreboard players operation materials funcs %= materials max
 
 execute if score materials funcs matches 0 if score turtle_helmet funcs matches 0 run data merge entity @e[tag=armor_stand,limit=1] {CustomName:"\"Wooden\"",ArmorItems:[{id:leather_boots,Count:1},{id:leather_leggings,Count:1},{id:leather_chestplate,Count:1},{id:leather_helmet,Count:1}]}
 execute if score materials funcs matches 0 unless score turtle_helmet funcs matches 0 run data merge entity @e[tag=armor_stand,limit=1] {CustomName:"\"Wooden\"",ArmorItems:[{id:leather_boots,Count:1},{id:leather_leggings,Count:1},{id:leather_chestplate,Count:1},{id:turtle_helmet,Count:1}]}

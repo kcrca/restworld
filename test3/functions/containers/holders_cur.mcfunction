@@ -1,3 +1,6 @@
+scoreboard players set holders max 8
+execute unless score holders funcs matches 0..7 run scoreboard players operation holders funcs %= holders max
+
 execute if score holders funcs matches 0 run data merge entity @e[tag=strength_llama,limit=1] {Strength:1}
 
 execute if score holders funcs matches 1 run data merge entity @e[tag=strength_llama,limit=1] {Strength:2}

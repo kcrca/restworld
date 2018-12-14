@@ -1,6 +1,7 @@
 execute unless score cocoa funcs matches 0.. run function cocoa_init
 scoreboard players add cocoa funcs 1
-execute unless score cocoa funcs matches 0..3 run scoreboard players set cocoa funcs 0
+scoreboard players set cocoa max 4
+execute unless score cocoa funcs matches 0..3 run scoreboard players operation cocoa funcs %= cocoa max
 
 execute if score cocoa funcs matches 0 run setblock ~1 ~4 ~0 minecraft:cocoa[age=0,facing=west]
 execute if score cocoa funcs matches 0 run setblock ~-1 ~4 ~0 minecraft:cocoa[age=0,facing=east]

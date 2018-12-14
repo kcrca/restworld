@@ -1,3 +1,5 @@
+scoreboard players set stems max 9
+execute unless score stems funcs matches 0..8 run scoreboard players operation stems funcs %= stems max
 execute if score stems funcs matches 0 run setblock ~0 ~3 ~-2 minecraft:air
 execute if score stems funcs matches 0 run setblock ~2 ~3 ~-2 minecraft:air
 execute if score stems funcs matches 0 run setblock ~0 ~3 ~-1 minecraft:pumpkin_stem[age=0]

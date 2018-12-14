@@ -1,6 +1,7 @@
 execute unless score walls funcs matches 0.. run function walls_init
 scoreboard players add walls funcs 1
-execute unless score walls funcs matches 0..1 run scoreboard players set walls funcs 0
+scoreboard players set walls max 2
+execute unless score walls funcs matches 0..1 run scoreboard players operation walls funcs %= walls max
 
 execute if score walls funcs matches 0 run fill ~ ~2 ~ ~6 ~3 ~5 minecraft:cobblestone_wall replace #v3:fencelike
 execute if score walls funcs matches 0 run data merge block ~5 ~2 ~0 {Text2:"\"Cobblestone Wall\"",Text3:"\"Stained Glass\""}

@@ -6,7 +6,8 @@ tp @e[tag=wood_boat] @e[tag=death,limit=1]
 
 execute unless score wood funcs matches 0.. run function wood_init
 scoreboard players add wood funcs 1
-execute unless score wood funcs matches 0..5 run scoreboard players set wood funcs 0
+scoreboard players set wood max 6
+execute unless score wood funcs matches 0..5 run scoreboard players operation wood funcs %= wood max
 
 
 execute if score wood funcs matches 0 run setblock ~-4 ~2 ~0 minecraft:acacia_fence

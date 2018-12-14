@@ -1,6 +1,7 @@
 execute unless score 4_crops funcs matches 0.. run function 4_crops_init
 scoreboard players add 4_crops funcs 1
-execute unless score 4_crops funcs matches 0..5 run scoreboard players set 4_crops funcs 0
+scoreboard players set 4_crops max 6
+execute unless score 4_crops funcs matches 0..5 run scoreboard players operation 4_crops funcs %= 4_crops max
 execute if score 4_crops funcs matches 0 run fill ~0 ~3 ~0 ~2 ~3 ~0 minecraft:beetroots[age=0]
 execute if score 4_crops funcs matches 0 run fill ~0 ~3 ~-1 ~2 ~3 ~-1 minecraft:beetroots[age=1]
 execute if score 4_crops funcs matches 0 run fill ~0 ~3 ~-2 ~2 ~3 ~-2 minecraft:beetroots[age=2]

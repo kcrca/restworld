@@ -1,6 +1,7 @@
 execute unless score dispenser funcs matches 0.. run function dispenser_init
 scoreboard players add dispenser funcs 1
-execute unless score dispenser funcs matches 0..1 run scoreboard players set dispenser funcs 0
+scoreboard players set dispenser max 2
+execute unless score dispenser funcs matches 0..1 run scoreboard players operation dispenser funcs %= dispenser max
 execute if score dispenser funcs matches 0 run setblock ~0 ~2 ~0 minecraft:dispenser[facing=up]
 execute if score dispenser funcs matches 0 run setblock ~0 ~4 ~0 minecraft:dispenser[facing=west]
 execute if score dispenser funcs matches 0 run setblock ~0 ~6 ~0 minecraft:dispenser[facing=down]

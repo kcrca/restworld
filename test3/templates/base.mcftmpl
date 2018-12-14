@@ -6,8 +6,9 @@ tp @e[${who}] @e[tag=death,limit=1]
 % if not suppress_loop and var == func:
 execute unless score ${var} funcs matches 0.. run function ${var}_init
 scoreboard players add ${var} funcs 1
-execute unless score ${var} funcs matches 0..${count - 1} run scoreboard players set ${var} funcs 0
 % endif
+scoreboard players set ${var} max ${count}
+execute unless score ${var} funcs matches 0..${count - 1} run scoreboard players operation ${var} funcs %= ${var} max
 </%def>
 
 <%def name="when(i, as_prefix=False)">execute if score ${var} funcs matches ${i}${"" if as_prefix else " run"}</%def>

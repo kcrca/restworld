@@ -1,6 +1,7 @@
 execute unless score daylight_sensor funcs matches 0.. run function daylight_sensor_init
 scoreboard players add daylight_sensor funcs 1
-execute unless score daylight_sensor funcs matches 0..29 run scoreboard players set daylight_sensor funcs 0
+scoreboard players set daylight_sensor max 30
+execute unless score daylight_sensor funcs matches 0..29 run scoreboard players operation daylight_sensor funcs %= daylight_sensor max
 execute if score daylight_sensor funcs matches 0 run time set 4400
 execute if score daylight_sensor funcs matches 1 run time set 8000
 execute if score daylight_sensor funcs matches 2 run time set 9200

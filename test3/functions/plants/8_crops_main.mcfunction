@@ -1,6 +1,7 @@
 execute unless score 8_crops funcs matches 0.. run function 8_crops_init
 scoreboard players add 8_crops funcs 1
-execute unless score 8_crops funcs matches 0..9 run scoreboard players set 8_crops funcs 0
+scoreboard players set 8_crops max 10
+execute unless score 8_crops funcs matches 0..9 run scoreboard players operation 8_crops funcs %= 8_crops max
 execute if score 8_crops funcs matches 0 run fill ~0 ~3 ~0 ~2 ~3 ~0 minecraft:wheat[age=0]
 execute if score 8_crops funcs matches 0 run fill ~0 ~3 ~-1 ~2 ~3 ~-1 minecraft:wheat[age=1]
 execute if score 8_crops funcs matches 0 run fill ~0 ~3 ~-2 ~2 ~3 ~-2 minecraft:wheat[age=2]

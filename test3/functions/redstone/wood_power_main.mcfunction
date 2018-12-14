@@ -1,6 +1,7 @@
 execute unless score wood_power funcs matches 0.. run function wood_power_init
 scoreboard players add wood_power funcs 1
-execute unless score wood_power funcs matches 0..13 run scoreboard players set wood_power funcs 0
+scoreboard players set wood_power max 14
+execute unless score wood_power funcs matches 0..13 run scoreboard players operation wood_power funcs %= wood_power max
 
 execute if score wood_power funcs matches 0 run setblock ~1 ~2 ~-1 minecraft:stone_pressure_plate[powered=false]
 execute if score wood_power funcs matches 0 run setblock ~1 ~3 ~0 minecraft:stone_button[facing=east,powered=false]

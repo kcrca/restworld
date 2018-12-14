@@ -1,3 +1,5 @@
+scoreboard players set sapling max 2
+execute unless score sapling funcs matches 0..1 run scoreboard players operation sapling funcs %= sapling max
 execute if score sapling funcs matches 0 run setblock ~0 ~3 ~0 minecraft:acacia_sapling[stage=0]
 execute if score sapling funcs matches 0 run setblock ~0 ~3 ~-3 minecraft:birch_sapling[stage=0]
 execute if score sapling funcs matches 0 run setblock ~0 ~3 ~-6 minecraft:jungle_sapling[stage=0]

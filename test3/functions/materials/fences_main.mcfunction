@@ -1,6 +1,7 @@
 execute unless score fences funcs matches 0.. run function fences_init
 scoreboard players add fences funcs 1
-execute unless score fences funcs matches 0..6 run scoreboard players set fences funcs 0
+scoreboard players set fences max 7
+execute unless score fences funcs matches 0..6 run scoreboard players operation fences funcs %= fences max
 
 execute if score fences funcs matches 0 run fill ~ ~2 ~ ~6 ~3 ~5 minecraft:acacia_fence replace #v3:fencelike
 execute if score fences funcs matches 0 run data merge block ~5 ~2 ~0 {Text2:"\"Acacia\"",Text3:"\"Fence\""}

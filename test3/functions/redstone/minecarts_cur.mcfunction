@@ -1,5 +1,7 @@
 tp @e[tag=minecart_type] @e[tag=death,limit=1]
 
+scoreboard players set minecarts max 6
+execute unless score minecarts funcs matches 0..5 run scoreboard players operation minecarts funcs %= minecarts max
 execute if score minecarts funcs matches 0 run summon minecraft:minecart ~0 ~3 ~ {Tags:[minecart_type]}
 execute if score minecarts funcs matches 0 run data merge block ~-1 ~2 ~ {Text2:"\"Minecart\"",Text3:"\"\""}
 

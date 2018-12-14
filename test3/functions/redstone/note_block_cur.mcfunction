@@ -1,3 +1,6 @@
+scoreboard players set note_block max 25
+execute unless score note_block funcs matches 0..24 run scoreboard players operation note_block funcs %= note_block max
+
 execute if score note_block funcs matches 0 if score instrument funcs matches 0 run setblock ~0 ~3 ~0 minecraft:note_block[note=0,instrument=hat]
 execute if score note_block funcs matches 0 if score instrument funcs matches 1 run setblock ~0 ~3 ~0 minecraft:note_block[note=0,instrument=basedrum]
 execute if score note_block funcs matches 0 if score instrument funcs matches 2 run setblock ~0 ~3 ~0 minecraft:note_block[note=0,instrument=snare]

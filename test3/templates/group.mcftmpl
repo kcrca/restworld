@@ -1,4 +1,4 @@
-%if which == "enter":
+%if which in ("init", "enter"):
 <%doc> Adding 0 to a score creates it if it doesn't exist </%doc>
 %for v in sorted(vars):
 scoreboard players add ${v} funcs 0

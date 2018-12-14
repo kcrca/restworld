@@ -1,3 +1,5 @@
+scoreboard players set coral max 5
+execute unless score coral funcs matches 0..4 run scoreboard players operation coral funcs %= coral max
 execute if score coral funcs matches 0 run fill ~0 ~2 ~0 ~0 ~2 ~1 minecraft:brain_coral_block
 execute if score coral funcs matches 0 run setblock ~0 ~3 ~0 minecraft:brain_coral
 execute if score coral funcs matches 0 run setblock ~0 ~3 ~1 minecraft:brain_coral_fan

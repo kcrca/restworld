@@ -1,6 +1,7 @@
 execute unless score ores funcs matches 0.. run function ores_init
 scoreboard players add ores funcs 1
-execute unless score ores funcs matches 0..7 run scoreboard players set ores funcs 0
+scoreboard players set ores max 8
+execute unless score ores funcs matches 0..7 run scoreboard players operation ores funcs %= ores max
 
 execute if score ores funcs matches 0 run fill ~4 ~3 ~2 ~0 ~2 ~0 minecraft:redstone_ore replace #v3:ores
 execute if score ores funcs matches 0 run fill ~4 ~3 ~2 ~0 ~2 ~0 minecraft:redstone_block replace #v3:ore_blocks

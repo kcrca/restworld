@@ -1,6 +1,7 @@
 execute unless score rail funcs matches 0.. run function rail_init
 scoreboard players add rail funcs 1
-execute unless score rail funcs matches 0..6 run scoreboard players set rail funcs 0
+scoreboard players set rail max 7
+execute unless score rail funcs matches 0..6 run scoreboard players operation rail funcs %= rail max
 execute if score rail funcs matches 0 run fill ~1 ~0 ~-1 ~1 ~0 ~-2 minecraft:air
 execute if score rail funcs matches 0 run fill ~1 ~2 ~-1 ~2 ~2 ~-1 minecraft:rail[shape=east_west]
 execute if score rail funcs matches 0 run setblock ~3 ~3 ~-1 minecraft:rail[shape=east_west]

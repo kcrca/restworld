@@ -261,7 +261,7 @@ def main():
     tmpl_suffix = ".mcftmpl"
     func_suffix = ".mcfunction"
     speeds = ("main", "fast", "slow")
-    misc = ("reset", "cleanup")
+    misc = ("reset", "cleanup", "cur", "incr", "decr")
     categories = ("init", "enter", "exit", "tick") + speeds + tuple("finish_%s" % s for s in speeds) + misc
     category_re = re.compile(r"^(([a-z_0-9]+?)(?:_(" + "|".join(categories) + "))?)%s$" % tmpl_suffix)
 
@@ -274,9 +274,9 @@ def main():
     tmpl_dir = os.path.join(dir, 'templates')
     func_dir = os.path.join(dir, 'functions')
     lookup = TemplateLookup(directories=['.'])
-    home_tmpl = Template(filename="templates/home%s" % tmpl_suffix, lookup=lookup)
-    group_tmpl = Template(filename="templates/group%s" % tmpl_suffix, lookup=lookup)
-    tick_tmpl = Template(filename="templates/tick%s" % tmpl_suffix, lookup=lookup)
+    tmpls = {}
+    for f in ("home", "group", "tick", "incr", "decr", "cur"):
+        tmpls[f] = Template(filename="templates/%s%s" % (f, tmpl_suffix), lookup=lookup)
 
     vars = []
 
@@ -297,8 +297,8 @@ def main():
             tmpl = Template(filename=tmpl_path, lookup=lookup)
             rendered = render_templ(tmpl, var)
             write_function(self.func_dir, func, rendered)
-            write_function(self.func_dir, "%s_home" % var, home_tmpl.render(var=var))
-            if which in speeds:
+            write_function(self.func_dir, "%s_home" % var, tmpls["home"].render(var=var))
+            if which in speeds and not os.path.exists(tmpl_path.replace("_%s." % which, "_cur.")):
                 rendered = render_templ(tmpl, var, suppress_loop=True)
                 write_function(self.func_dir, "%s_cur" % var, rendered)
 
@@ -311,13 +311,13 @@ def main():
                     self.lists[which] = entry
 
         def generate(self):
-            for tmpl_path in sorted(glob.glob(os.path.join(self.dir, "*" + tmpl_suffix))):
+            for tmpl_path in sorted(glob.glob(os.path.join(self.dir, "*%s" % tmpl_suffix))):
                 self.consume(tmpl_path)
             on_tick = []
             after_tick = []
             for which in self.lists:
                 files = self.lists[which]
-                rendered = group_tmpl.render(room=self.name, funcs=files, which=which, vars=self.vars)
+                rendered = tmpls["group"].render(room=self.name, funcs=files, which=which, vars=self.vars)
                 write_function(self.func_dir, "_%s" % which, rendered)
                 if which[-4:] in speeds:
                     if len(which) == 4:
@@ -325,12 +325,21 @@ def main():
                     else:
                         after_tick += [which[-4:], ]
             if on_tick or after_tick:
-                rendered = tick_tmpl.render(room=self.name, on_tick=on_tick, after_tick=after_tick)
+                rendered = tmpls["tick"].render(room=self.name, on_tick=on_tick, after_tick=after_tick)
                 write_function(self.func_dir, "_tick", rendered)
+            for f in ("incr", "decr", "cur"):
+                rendered = tmpls[f].render(room=self.name, vars=self.vars)
+                write_function(self.func_dir, "_%s" % f, rendered)
 
+    rooms = []
     for room_dir in glob.glob(os.path.join(tmpl_dir, '*/')):
         room = Room(room_dir)
         room.generate()
+        rooms += [room.name, ]
+
+    write_function(func_dir, "_incr", "\n".join("function v3:%s/_incr" % r for r in rooms))
+    write_function(func_dir, "_decr", "\n".join("function v3:%s/_decr" % r for r in rooms))
+    write_function(func_dir, "_cur", "\n".join("function v3:%s/_cur" % r for r in rooms))
 
     # for tmpl_path in sorted(find_files(tmpl_dir, "*%s" % tmpl_suffix)):
     #     func_name = os.path.splitext(os.path.basename(tmpl_path))[0]
