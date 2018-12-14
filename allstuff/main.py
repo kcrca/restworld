@@ -262,7 +262,7 @@ def main():
     func_suffix = ".mcfunction"
     speeds = ("main", "fast", "slow")
     misc = ("reset", "cleanup")
-    categories = ("init", "enter", "exit") + speeds + tuple("finish_%s" % s for s in speeds) + misc
+    categories = ("init", "enter", "exit", "tick") + speeds + tuple("finish_%s" % s for s in speeds) + misc
     category_re = re.compile(r"^(([a-z_0-9]+?)(?:_(" + "|".join(categories) + "))?)%s$" % tmpl_suffix)
 
     def find_files(dir, pat):
@@ -372,7 +372,7 @@ effects = (
 
 def effect_function(effect):
     base = "function allstuff:effect/%s_%%s" % effect.id
-    return "\n".join(base % f for f in ("init", "fast", "main", "slow"))
+    return "\n".join(base % f for f in ("init", "fast", "main", "slow")) + "\n"
 
 
 class Frame:
@@ -440,7 +440,7 @@ def write_function(func_dir, func_name, rendered):
         os.mkdir(func_dir)
     out_file = os.path.join(func_dir, '%s.mcfunction' % func_name)
     with open(out_file, "w") as out:
-        out.write(rendered.strip())
+        out.write(rendered.strip() + "\n")
 
 
 if __name__ == '__main__':
