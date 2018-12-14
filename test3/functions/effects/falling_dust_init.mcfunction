@@ -1,1 +1,2 @@
-fill ~-3 ~4 ~-3 ~3 ~4 ~3 minecraft:barrier
+fill ~-2 ~4 ~-2 ~2 ~4 ~2 minecraft:barrier
+function v3:effects/falling_dust_change

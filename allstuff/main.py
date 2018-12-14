@@ -440,7 +440,7 @@ def effect_signs(func_dir, sign_tmpl):
         commands.append(frame.to_next_wall())
         cur_frame += 1
         frame = frames[cur_frame]
-    x = int(frame.width / 2 + 0.6)/
+    x = int(frame.width / 2 + 0.6)
     y = 3
     commands.append(
         sign_tmpl.render(effect=Effects("Off"), lines=['', 'Off', '', ''], x=-x, y=y, z=2, frame=frame).strip())
