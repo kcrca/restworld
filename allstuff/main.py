@@ -260,8 +260,9 @@ def has_loop(rendered):
 def main():
     tmpl_suffix = ".mcftmpl"
     func_suffix = ".mcfunction"
+    incr_funcs = ("incr", "decr", "cur")
     speeds = ("main", "fast", "slow")
-    misc = ("reset", "cleanup", "cur", "incr", "decr")
+    misc = ("reset", "cleanup") + incr_funcs
     categories = ("init", "enter", "exit", "tick") + speeds + tuple("finish_%s" % s for s in speeds) + misc
     category_re = re.compile(r"^(([a-z_0-9]+?)(?:_(" + "|".join(categories) + "))?)%s$" % tmpl_suffix)
 
@@ -275,9 +276,8 @@ def main():
     func_dir = os.path.join(dir, 'functions')
     lookup = TemplateLookup(directories=['.'])
     tmpls = {}
-    for f in ("home", "group", "tick", "incr", "decr", "cur"):
+    for f in ("home", "group", "tick") + incr_funcs:
         tmpls[f] = Template(filename="templates/%s%s" % (f, tmpl_suffix), lookup=lookup)
-    incr_funcs = ("incr", "decr", "cur")
 
     class Room:
         def __init__(self, dir):

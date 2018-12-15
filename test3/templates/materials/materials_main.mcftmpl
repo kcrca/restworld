@@ -10,6 +10,7 @@
 %>
 
 ${base.remove("tag=material_thing")}
+
 <%base:loop collection="${materials}" args="when,i,thing">
 <% armor = armors[i] %>\
 ${when(i, as_prefix=True)} if score turtle_helmet funcs matches 0 run data merge entity @e[tag=armor_stand,limit=1] {CustomName:${text(thing.capitalize())},ArmorItems:[{id:${armor}_boots,Count:1},{id:${armor}_leggings,Count:1},{id:${armor}_chestplate,Count:1},{id:${armor}_helmet,Count:1}]}

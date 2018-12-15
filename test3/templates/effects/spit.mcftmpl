@@ -1,2 +1,2 @@
 <%namespace file="effect_base.mcftmpl" import="*"/>\
-${fast_clock()} summon minecraft:llama_spit ~ ~1.55 ~0.7 {Motion:[0.0,0.0,1.0],direction:[0.0,0.0,1.0],ExplosionPower:1}
+${fast_clock()} summon minecraft:llama_spit ~ ~1.6 ~0.7 {Motion:[0.0,0.0,1.0],direction:[0.0,0.0,1.0],ExplosionPower:1}
