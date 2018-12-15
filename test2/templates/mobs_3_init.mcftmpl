@@ -7,7 +7,7 @@ ${base.mobs("jeb_", id="sheep", name_kid=True, auto_tag=False)}
 ${base.mobs("Cow")}
 ${base.mobs("Mooshroom")}
 ${base.mobs("Pig")}
-${base.mobs("Chicken")}
+${base.mobs("Chicken", nbt="EggLayTime=2305843009213693951")}
 ${base.mobs("Ocelot", tags=("cats",))}
 ${base.mobs("Dog", id="wolf", nbt="Owner:dummy", tags=("dogs",))}
 ${base.mobs("Wolf", tags=("wolves",))}
