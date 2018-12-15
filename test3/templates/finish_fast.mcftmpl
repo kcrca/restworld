@@ -1,0 +1,3 @@
+%for v in vars:
+execute at @e[tag=${v}_home] run function v3:${room}/${v}_finish
+%endfor

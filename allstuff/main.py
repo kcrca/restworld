@@ -260,7 +260,7 @@ def has_loop(rendered):
 def main():
     tmpl_suffix = ".mcftmpl"
     func_suffix = ".mcfunction"
-    incr_funcs = ("incr", "decr", "cur")
+    incr_funcs = ("incr", "decr", "cur", "finish")
     speeds = ("main", "fast", "slow")
     misc = ("reset", "cleanup") + incr_funcs
     categories = ("init", "enter", "exit", "tick") + speeds + tuple("finish_%s" % s for s in speeds) + misc
@@ -335,9 +335,15 @@ def main():
             if on_tick or after_tick:
                 rendered = tmpls["tick"].render(room=self.name, on_tick=on_tick, after_tick=after_tick)
                 write_function(self.func_dir, "_tick", rendered)
+                rendered = tmpls["finish"].render(room=self.name, on_tick=on_tick, after_tick=after_tick)
+                write_function(self.func_dir, "_finish", rendered)
             for f in incr_funcs:
+                if f == "finish":
+                    continue
                 rendered = tmpls[f].render(room=self.name, vars=self.vars)
                 write_function(self.func_dir, "_%s" % f, rendered)
+            rendered = tmpls["home"].render(var="finish")
+            write_function(func_dir, "finish_home", rendered)
 
     rooms = []
     for room_dir in glob.glob(os.path.join(tmpl_dir, '*/')):
@@ -348,26 +354,6 @@ def main():
     for f in incr_funcs:
         write_function(func_dir, "_%s" % f, "\n".join("function v3:%s/_%s" % (r, f) for r in rooms))
 
-    # for tmpl_path in sorted(find_files(tmpl_dir, "*%s" % tmpl_suffix)):
-    #     func_name = os.path.splitext(os.path.basename(tmpl_path))[0]
-    #     if func_name in ("init", 'base', 'a_sign'):
-    #         continue
-    #     var_name = func_name
-    #     if var_name.endswith('_init'):
-    #         var_name = var_name[:-5]
-    #     tmpl = Template(filename=tmpl_path, lookup=lookup)
-    #     rendered = render_templ(tmpl, var_name)
-    #     dir = os.path.dirname(tmpl_path.replace(tmpl_dir, func_dir))
-    #     write_function(dir, func_name, rendered)
-    #     if not func_name.endswith("init") and has_loop(tmpl.source):
-    #         rendered = render_templ(tmpl, var_name, suppress_loop=True)
-    #         write_function(dir, func_name + "_cur", rendered)
-    #     if var_name in vars and var_name == func_name:
-    #         raise BaseException("Duplicate script/var name: %s" % var_name)
-    #     vars.append(var_name)
-    #
-    # init_tmpl = Template(filename=os.path.join(tmpl_dir, "init.mcftmpl"), lookup=lookup)
-    # write_function(func_dir, "init", init_tmpl.render(vars=vars))
     effects_dir = func_dir + "/effects"
     effect_signs(effects_dir, Template(filename="%s/effects_sign.mcftmpl" % tmpl_dir, lookup=lookup))
 

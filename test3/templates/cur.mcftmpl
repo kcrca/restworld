@@ -1,3 +1,4 @@
 %for v in vars:
 execute at @e[tag=${v}_home] run function v3:${room}/${v}_cur
 %endfor
+execute at @e[tag=finish_home] run setblock ~1 ~ ~ minecraft:redstone_block
