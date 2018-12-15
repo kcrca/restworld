@@ -1,6 +1,7 @@
 tp @e[tag=material_thing] @e[tag=death,limit=1]
 
 
+
 scoreboard players set materials max 5
 execute unless score materials funcs matches 0..4 run scoreboard players operation materials funcs %= materials max
 
