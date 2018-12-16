@@ -8,7 +8,7 @@
     )
 %>
 
-${base.mobs_init(z_delta_init=2, adult_x_init=2, kid_x_init=-0.4, rotation_init=90)}\
+${base.mobs_init(z_delta_init=1.6, adult_x_init=2, kid_x_init=-0.4, rotation_init=90, tags_init=("friendlies",))}\
 % for llama in llamas:
 ${base.mobs(llama.name, id="llama", tags=("llamas",), nbt="Variant:%d" % loop.index)}\
 % endfor

@@ -3,3 +3,4 @@
 ${base.adult(Thing("Parrot"),     0, 1, 0, 90, tags=('parrot',))}\
 ${base.adult(Thing("Snow Golem"), 2, 0, 0, 90)}\
 ${base.adult(Thing("Iron Golem"), 5, 0, 0, 0)}\
+${base.mobs("Rabbit", tags=("rabbits",))}

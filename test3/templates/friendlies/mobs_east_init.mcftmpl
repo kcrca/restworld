@@ -1,0 +1,10 @@
+<%namespace name="mobs" file="../mobs.mcftmpl"/>\
+<% llamas = ( Thing("Creamy"), Thing("White"), Thing("Brown"), Thing("Gray")) %>
+
+${base.mobs_init(z_delta_init=2, kid_x_init=-2.2, adult_x_init=0.20, rotation_init=90, tags_init=("friendlies",))}\
+% for llama in llamas:
+${base.mobs(llama.name, id="llama", tags=("llamas",), nbt="Variant:%d" % loop.index)}\
+% endfor
+summon minecraft:llama_spit ~3 ~3 ~0 {CustomName:"\"Llama Spit\"",TXD:0,TYD:0,TZD:0,Steps:0,NoAI:True,Motion:[0,0,0],NoGravity:True}
+${base.mobs("Ocelot", tags=("cats",))}
+${base.mobs("Rabbit", tags=("rabbits",))}

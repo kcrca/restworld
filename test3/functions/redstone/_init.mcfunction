@@ -15,6 +15,9 @@ scoreboard players add redstone_torch funcs 0
 scoreboard players add repeater funcs 0
 scoreboard players add wood_power funcs 0
 
+tp @e[tag=redstone] @e[tag=death,limit=1]
+
+
 execute at @e[tag=dispenser_home] run function v3:redstone/dispenser_init
 execute at @e[tag=note_block_home] run function v3:redstone/note_block_init
 execute at @e[tag=piston_home] run function v3:redstone/piston_init

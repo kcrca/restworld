@@ -14,4 +14,5 @@ scoreboard players add sea_pickles funcs 0
 scoreboard players add stems funcs 0
 scoreboard players add tulips funcs 0
 
+
 execute at @e[tag=cane_home] run function v3:plants/cane_enter

@@ -1,10 +1,25 @@
+<%namespace name="base" file="base.mcftmpl"/>
+
 %if which in ("init", "enter"):
 <%doc> Adding 0 to a score creates it if it doesn't exist </%doc>
 %for v in sorted(vars):
 scoreboard players add ${v} funcs 0
 %endfor
+
+%if which == "init":
+${base.remove("tag=%s" % room)}
+%endif
 %endif
 
 %for f in funcs:
 execute at @e[tag=${f}_home] run function v3:${room}/${f}_${which}
 %endfor
+
+%if which == "exit":
+<%doc>
+    Need to set this on everything, "exiting room" seems the lowest-frequency
+    tool to do it. We do it at exit so any entities summoned while in the room
+    will get marked.
+</%doc>
+execute at @e[type=!player] run data merge entity @s {PersistenceRequired:True}
+%endif
