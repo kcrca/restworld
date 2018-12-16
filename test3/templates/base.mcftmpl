@@ -74,33 +74,35 @@ summon armor_stand ${where} {Small:True,Passengers:[{id:${to_id(mob)},CustomName
 %>
 </%def>
 
-<%def name="kid(thing, x, y_add, z, rotation, nbt='', tags=(), prefix=None)">\
-<% nbt = ",%s" % nbt if nbt else "" %>\
-<% prefix = " %s" % prefix if prefix else "" %>\
-${prefix}summon ${thing.full_id()} ~${x} ~${2 + y_add} ~${z} {IsBaby:True,Age:-2147483648,Tags:[${",".join(tags + ("kid",))}]${nbt},PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[${rotation}f,0f]}
+<%def name="_mob(thing, at_x, y_add, at_z, at_rotation, nbt='', tags=())">\
+<%
+    global x, y, z, x_delta, z_delta, adult_x, adult_z, kid_x, kid_z, rotation, tag_all
+    nbt = ",%s" % nbt if nbt else ""
+    tags += tag_all
+%>\
+summon ${thing.full_id()} ~${at_x} ~${2 + y_add} ~${at_z} {Tags:[${",".join(tags)}]${nbt},PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[${at_rotation}f,0f]}
 </%def>
 
-<%def name="adult(thing, x, y_add, z, rotation, nbt='', tags=(), prefix=None)">\
-<% nbt = ",%s" % nbt if nbt else "" %>\
-<% prefix = " %s" % prefix if prefix else "" %>\
-${prefix}summon ${thing.full_id()} ~${x} ~${2 + y_add} ~${z} {CustomName:${text(thing.name)},Tags:[${",".join(tags)}]${nbt},PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[${rotation}f,0f]}
+<%def name="kid(thing, x=None, y_add=None, z=None, rotation=0, nbt='', tags=(), name_kid=False)">\
+${_mob(thing, x, y_add, z, rotation, commas(nbt, "IsBaby:True,Age:-2147483648", "CustomName:%s" % text(thing.name) if name_id else ""), tags + ("kid",))}\
 </%def>
 
-<%def name="mobs(name, id=None, nbt='', tags=(), auto_tag=True, name_kid=False, do_kid=False, do_adult=False, y_add=0, prefix=None)">\
+<%def name="adult(thing, x=None, y_add=None, z=None, rotation=0, nbt='', tags=())">\
+${_mob(thing, x, y_add, z, rotation, commas(nbt, "CustomName:%s" % text(thing.name)), tags)}\
+</%def>
+
+<%def name="mobs(name, id=None, nbt='', tags=(), auto_tag=True, name_kid=False, do_kid=False, do_adult=False, y_add=0)">\
 <%
     global x, y, z, x_delta, z_delta, adult_x, adult_z, kid_x, kid_z, rotation, tag_all
     if not do_kid and not do_adult:
 	do_kid = do_adult = True
     thing = Thing(name, id)
-    if name_kid:
-	nbt = ",%s" % nbt if nbt else ''
-	nbt = "CustomName:%s" % (text(name) + nbt)
     if auto_tag:
 	tags += (thing.id,)
     if do_kid:
-	kid(thing, x + kid_x, y + y_add, z + kid_z, rotation, nbt, tags + tag_all, prefix)
+	kid(thing, x + kid_x, y + y_add, z + kid_z, rotation, nbt, tags, name_kid=name_kid)
     if do_adult:
-	adult(thing, x + adult_x, y + y_add, z + adult_z, rotation, nbt, tags + tag_all, prefix)
+	adult(thing, x + adult_x, y + y_add, z + adult_z, rotation, nbt, tags)
     x += x_delta
     z += z_delta
 %>\

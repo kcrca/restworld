@@ -10,7 +10,7 @@ from mako.template import Template
 mc_version = '1.13'
 
 
-def render_templ(tmpl, var_name, **kwargs):
+def render_tmpl(tmpl, var_name, **kwargs):
     colors = (
         Color("White", 16383998, "bone_meal"),
         Color("Orange", 16351261, "orange_dye"),
@@ -160,6 +160,7 @@ def render_templ(tmpl, var_name, **kwargs):
         text=text,
         to_nicknamed=to_nicknamed,
         to_id=to_id,
+        commas=commas,
         **kwargs
     )
 
@@ -253,6 +254,10 @@ def to_nicknamed(kind, nicknames):
     return items
 
 
+def commas(*args):
+    return ",".join(list([str for str in args if str]))
+
+
 def has_loop(rendered):
     return re.search(r'<%base:(loop|bounce|increment)', rendered, flags=re.MULTILINE)
 
@@ -294,7 +299,7 @@ def main():
             which = m.group(3)
             func = m.group(1)
             tmpl = Template(filename=tmpl_path, lookup=lookup)
-            rendered = render_templ(tmpl, var, room=self.name)
+            rendered = render_tmpl(tmpl, var, room=self.name)
             write_function(self.func_dir, func, rendered)
 
             # The effects room is just special
@@ -303,7 +308,7 @@ def main():
 
             write_function(self.func_dir, "%s_home" % var, tmpls["home"].render(var=var))
             if which in speeds and not os.path.exists(tmpl_path.replace("_%s." % which, "_cur.")):
-                rendered = render_templ(tmpl, var, suppress_loop=True)
+                rendered = render_tmpl(tmpl, var, suppress_loop=True)
                 write_function(self.func_dir, "%s_cur" % var, rendered)
 
             if which and which not in misc:

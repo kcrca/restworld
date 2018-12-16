@@ -9,35 +9,35 @@ execute unless score villagers funcs matches 0..1 run scoreboard players operati
 
 
 
-execute if score villagers funcs matches 0 run summon minecraft:villager ~0 ~2.3 ~-2 {IsBaby:True,Age:-2147483648,Tags:[villager,villager,kid],Profession:0,PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[180f,0f]}
-execute if score villagers funcs matches 0 run summon minecraft:villager ~-2 ~2.3 ~-2 {IsBaby:True,Age:-2147483648,Tags:[villager,villager,kid],Profession:1,PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[180f,0f]}
-execute if score villagers funcs matches 0 run summon minecraft:villager ~-4 ~2.3 ~-2 {IsBaby:True,Age:-2147483648,Tags:[villager,villager,kid],Profession:2,PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[180f,0f]}
-execute if score villagers funcs matches 0 run summon minecraft:villager ~-6 ~2.3 ~-2 {IsBaby:True,Age:-2147483648,Tags:[villager,villager,kid],Profession:3,PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[180f,0f]}
-execute if score villagers funcs matches 0 run summon minecraft:villager ~-8 ~2.3 ~-2 {IsBaby:True,Age:-2147483648,Tags:[villager,villager,kid],Profession:4,PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[180f,0f]}
-execute if score villagers funcs matches 0 run summon minecraft:villager ~-10 ~2.3 ~-2 {IsBaby:True,Age:-2147483648,Tags:[villager,villager,kid],Profession:5,PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[180f,0f]}
+execute if score villagers funcs matches 0 run summon minecraft:villager ~0 ~2.3 ~-2 {Tags:[villager,villager,kid],Profession:0,IsBaby:True,Age:-2147483648,PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[180f,0f]}
+execute if score villagers funcs matches 0 run summon minecraft:villager ~-2 ~2.3 ~-2 {Tags:[villager,villager,kid],Profession:1,IsBaby:True,Age:-2147483648,PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[180f,0f]}
+execute if score villagers funcs matches 0 run summon minecraft:villager ~-4 ~2.3 ~-2 {Tags:[villager,villager,kid],Profession:2,IsBaby:True,Age:-2147483648,PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[180f,0f]}
+execute if score villagers funcs matches 0 run summon minecraft:villager ~-6 ~2.3 ~-2 {Tags:[villager,villager,kid],Profession:3,IsBaby:True,Age:-2147483648,PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[180f,0f]}
+execute if score villagers funcs matches 0 run summon minecraft:villager ~-8 ~2.3 ~-2 {Tags:[villager,villager,kid],Profession:4,IsBaby:True,Age:-2147483648,PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[180f,0f]}
+execute if score villagers funcs matches 0 run summon minecraft:villager ~-10 ~2.3 ~-2 {Tags:[villager,villager,kid],Profession:5,IsBaby:True,Age:-2147483648,PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[180f,0f]}
 
 
-execute if score villagers funcs matches 0 run summon minecraft:villager ~0 ~2.3 ~0 {CustomName:"\"Farmer\"",Tags:[villager,villager],Profession:0,PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[180f,0f]}
-execute if score villagers funcs matches 0 run summon minecraft:villager ~-2 ~2.3 ~0 {CustomName:"\"Librarian\"",Tags:[villager,villager],Profession:1,PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[180f,0f]}
-execute if score villagers funcs matches 0 run summon minecraft:villager ~-4 ~2.3 ~0 {CustomName:"\"Priest\"",Tags:[villager,villager],Profession:2,PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[180f,0f]}
-execute if score villagers funcs matches 0 run summon minecraft:villager ~-6 ~2.3 ~0 {CustomName:"\"Smith\"",Tags:[villager,villager],Profession:3,PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[180f,0f]}
-execute if score villagers funcs matches 0 run summon minecraft:villager ~-8 ~2.3 ~0 {CustomName:"\"Butcher\"",Tags:[villager,villager],Profession:4,PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[180f,0f]}
-execute if score villagers funcs matches 0 run summon minecraft:villager ~-10 ~2.3 ~0 {CustomName:"\"Nitwit\"",Tags:[villager,villager],Profession:5,PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[180f,0f]}
+execute if score villagers funcs matches 0 run summon minecraft:villager ~0 ~2.3 ~0 {Tags:[villager,villager],Profession:0,CustomName:"\"Farmer\"",PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[180f,0f]}
+execute if score villagers funcs matches 0 run summon minecraft:villager ~-2 ~2.3 ~0 {Tags:[villager,villager],Profession:1,CustomName:"\"Librarian\"",PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[180f,0f]}
+execute if score villagers funcs matches 0 run summon minecraft:villager ~-4 ~2.3 ~0 {Tags:[villager,villager],Profession:2,CustomName:"\"Priest\"",PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[180f,0f]}
+execute if score villagers funcs matches 0 run summon minecraft:villager ~-6 ~2.3 ~0 {Tags:[villager,villager],Profession:3,CustomName:"\"Smith\"",PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[180f,0f]}
+execute if score villagers funcs matches 0 run summon minecraft:villager ~-8 ~2.3 ~0 {Tags:[villager,villager],Profession:4,CustomName:"\"Butcher\"",PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[180f,0f]}
+execute if score villagers funcs matches 0 run summon minecraft:villager ~-10 ~2.3 ~0 {Tags:[villager,villager],Profession:5,CustomName:"\"Nitwit\"",PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[180f,0f]}
 
 
 
 
-execute if score villagers funcs matches 1 run summon minecraft:zombie_villager ~0 ~2.175 ~-2 {IsBaby:True,Age:-2147483648,Tags:[villager,zombie_villager,kid],Profession:0,PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[180f,0f]}
-execute if score villagers funcs matches 1 run summon minecraft:zombie_villager ~-2 ~2.175 ~-2 {IsBaby:True,Age:-2147483648,Tags:[villager,zombie_villager,kid],Profession:1,PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[180f,0f]}
-execute if score villagers funcs matches 1 run summon minecraft:zombie_villager ~-4 ~2.175 ~-2 {IsBaby:True,Age:-2147483648,Tags:[villager,zombie_villager,kid],Profession:2,PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[180f,0f]}
-execute if score villagers funcs matches 1 run summon minecraft:zombie_villager ~-6 ~2.175 ~-2 {IsBaby:True,Age:-2147483648,Tags:[villager,zombie_villager,kid],Profession:3,PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[180f,0f]}
-execute if score villagers funcs matches 1 run summon minecraft:zombie_villager ~-8 ~2.175 ~-2 {IsBaby:True,Age:-2147483648,Tags:[villager,zombie_villager,kid],Profession:4,PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[180f,0f]}
-execute if score villagers funcs matches 1 run summon minecraft:zombie_villager ~-10 ~2.175 ~-2 {IsBaby:True,Age:-2147483648,Tags:[villager,zombie_villager,kid],Profession:5,PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[180f,0f]}
+execute if score villagers funcs matches 1 run summon minecraft:zombie_villager ~0 ~2.175 ~-2 {Tags:[villager,zombie_villager,kid],Profession:0,IsBaby:True,Age:-2147483648,PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[180f,0f]}
+execute if score villagers funcs matches 1 run summon minecraft:zombie_villager ~-2 ~2.175 ~-2 {Tags:[villager,zombie_villager,kid],Profession:1,IsBaby:True,Age:-2147483648,PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[180f,0f]}
+execute if score villagers funcs matches 1 run summon minecraft:zombie_villager ~-4 ~2.175 ~-2 {Tags:[villager,zombie_villager,kid],Profession:2,IsBaby:True,Age:-2147483648,PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[180f,0f]}
+execute if score villagers funcs matches 1 run summon minecraft:zombie_villager ~-6 ~2.175 ~-2 {Tags:[villager,zombie_villager,kid],Profession:3,IsBaby:True,Age:-2147483648,PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[180f,0f]}
+execute if score villagers funcs matches 1 run summon minecraft:zombie_villager ~-8 ~2.175 ~-2 {Tags:[villager,zombie_villager,kid],Profession:4,IsBaby:True,Age:-2147483648,PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[180f,0f]}
+execute if score villagers funcs matches 1 run summon minecraft:zombie_villager ~-10 ~2.175 ~-2 {Tags:[villager,zombie_villager,kid],Profession:5,IsBaby:True,Age:-2147483648,PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[180f,0f]}
 
 
-execute if score villagers funcs matches 1 run summon minecraft:zombie_villager ~0 ~2.175 ~0 {CustomName:"\"Zombie Farmer\"",Tags:[villager,zombie_villager],Profession:0,PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[180f,0f]}
-execute if score villagers funcs matches 1 run summon minecraft:zombie_villager ~-2 ~2.175 ~0 {CustomName:"\"Zombie Librarian\"",Tags:[villager,zombie_villager],Profession:1,PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[180f,0f]}
-execute if score villagers funcs matches 1 run summon minecraft:zombie_villager ~-4 ~2.175 ~0 {CustomName:"\"Zombie Priest\"",Tags:[villager,zombie_villager],Profession:2,PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[180f,0f]}
-execute if score villagers funcs matches 1 run summon minecraft:zombie_villager ~-6 ~2.175 ~0 {CustomName:"\"Zombie Smith\"",Tags:[villager,zombie_villager],Profession:3,PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[180f,0f]}
-execute if score villagers funcs matches 1 run summon minecraft:zombie_villager ~-8 ~2.175 ~0 {CustomName:"\"Zombie Butcher\"",Tags:[villager,zombie_villager],Profession:4,PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[180f,0f]}
-execute if score villagers funcs matches 1 run summon minecraft:zombie_villager ~-10 ~2.175 ~0 {CustomName:"\"Zombie Nitwit\"",Tags:[villager,zombie_villager],Profession:5,PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[180f,0f]}
+execute if score villagers funcs matches 1 run summon minecraft:zombie_villager ~0 ~2.175 ~0 {Tags:[villager,zombie_villager],Profession:0,CustomName:"\"Zombie Farmer\"",PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[180f,0f]}
+execute if score villagers funcs matches 1 run summon minecraft:zombie_villager ~-2 ~2.175 ~0 {Tags:[villager,zombie_villager],Profession:1,CustomName:"\"Zombie Librarian\"",PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[180f,0f]}
+execute if score villagers funcs matches 1 run summon minecraft:zombie_villager ~-4 ~2.175 ~0 {Tags:[villager,zombie_villager],Profession:2,CustomName:"\"Zombie Priest\"",PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[180f,0f]}
+execute if score villagers funcs matches 1 run summon minecraft:zombie_villager ~-6 ~2.175 ~0 {Tags:[villager,zombie_villager],Profession:3,CustomName:"\"Zombie Smith\"",PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[180f,0f]}
+execute if score villagers funcs matches 1 run summon minecraft:zombie_villager ~-8 ~2.175 ~0 {Tags:[villager,zombie_villager],Profession:4,CustomName:"\"Zombie Butcher\"",PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[180f,0f]}
+execute if score villagers funcs matches 1 run summon minecraft:zombie_villager ~-10 ~2.175 ~0 {Tags:[villager,zombie_villager],Profession:5,CustomName:"\"Zombie Nitwit\"",PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[180f,0f]}

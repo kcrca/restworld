@@ -1,0 +1,9 @@
+<%namespace name="base" file="../base.mcftmpl"/>\
+
+${base.mobs_init(z_delta_init=-2, y_init=2, kid_x_init=-1.6, adult_x_init=1.8, rotation_init=270, tags_init=("acquatic",))}\
+${base.mobs("Dolphin", nbt="Invulnerable:True", tags=("acquatic",), do_adult=True)}\
+${base.mobs("Squid", nbt="NoGravity:True", tags=("acquatic",), do_adult=True)}\
+${base.mobs_init(z_init=-4, z_delta_init=-1, y_init=2, kid_x_init=-1.6, adult_x_init=1.8, rotation_init=270, tags_init=("acquatic",))}\
+${base.mobs("Salmon", tags=("acquatic",), do_adult=True)}\
+${base.mobs("Cod", tags=("acquatic",), do_adult=True)}\
+${base.mobs("Pufferfish", tags=("acuqatic","pufferfish",), do_adult=True)}\

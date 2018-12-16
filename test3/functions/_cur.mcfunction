@@ -1,3 +1,4 @@
+function v3:acquatic/_cur
 function v3:materials/_cur
 function v3:plants/_cur
 function v3:center/_cur

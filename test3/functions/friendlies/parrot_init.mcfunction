@@ -1,1 +1,1 @@
-summon minecraft:parrot ~0 ~3 ~0 {CustomName:"\"Parrot\"",Tags:[parrot,friendlies],PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[90f,0f]}
+summon minecraft:parrot ~0 ~3 ~0 {Tags:[parrot,friendlies,friendlies],CustomName:"\"Parrot\"",PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[90f,0f]}

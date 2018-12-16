@@ -1,3 +1,4 @@
+function v3:acquatic/_decr
 function v3:materials/_decr
 function v3:plants/_decr
 function v3:center/_decr

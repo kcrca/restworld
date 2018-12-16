@@ -1,0 +1,13 @@
+<% import re %>
+
+% for i in range(0, 12):
+summon minecraft:tropical_fish ~${i / 6} ~2.2 ~${int(i % 6)} {Tags:[fish${i},acquatic],NoAI:True,Silent:True,Rotation:[90f,0f]}
+% endfor
+
+scoreboard objectives remove fish
+scoreboard objectives add fish dummy
+scoreboard players set NUM_COLORS fish 16
+scoreboard players set body fish 0
+scoreboard players set pattern fish 0
+scoreboard players set BODY_SCALE fish 65536
+scoreboard players set PATTERN_SCALE fish 16777216
