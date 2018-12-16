@@ -1,0 +1,5 @@
+<%namespace name="base"  file="../base.mcftmpl"/>
+
+${base.increment(2)}
+${base.when(0)} execute as @e[tag=snow_golem] run data merge entity @s {Pumpkin:1}
+${base.when(1)} execute as @e[tag=snow_golem] run data merge entity @s {Pumpkin:0}

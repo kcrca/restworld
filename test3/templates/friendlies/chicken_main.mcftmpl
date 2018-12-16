@@ -1,0 +1,5 @@
+<%namespace name="base" file="../base.mcftmpl"/>\
+
+<%base:loop collection="${('True', 'False')}" args="when,i,thing">
+${when(i, as_prefix=True)} as @e[tag=chicken] run data merge entity @s {OnGround:${thing},EggLayTime:65535}\
+</%base:loop>\

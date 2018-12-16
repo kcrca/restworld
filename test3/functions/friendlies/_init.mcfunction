@@ -24,7 +24,6 @@ tp @e[tag=friendlies] @e[tag=death,limit=1]
 
 execute at @e[tag=canine_home] run function v3:friendlies/canine_init
 execute at @e[tag=chicken_home] run function v3:friendlies/chicken_init
-execute at @e[tag=cow_home] run function v3:friendlies/cow_init
 execute at @e[tag=horse_home] run function v3:friendlies/horse_init
 execute at @e[tag=horselike_home] run function v3:friendlies/horselike_init
 execute at @e[tag=iron_golem_home] run function v3:friendlies/iron_golem_init

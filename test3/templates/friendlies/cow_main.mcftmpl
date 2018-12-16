@@ -1,0 +1,7 @@
+<%namespace name="base"  file="../base.mcftmpl"/>
+
+${base.remove("tag=cowish")}
+
+${base.increment(2)}
+${base.when(0)} function v3:friendlies/do_cow
+${base.when(1)} function v3:friendlies/do_mooshroom
