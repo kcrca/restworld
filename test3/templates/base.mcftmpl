@@ -51,16 +51,17 @@ summon armor_stand ${where} {Small:True,Passengers:[{id:${to_id(mob)},CustomName
 </%def>
 
 <%!
-    global x, z, x_delta, z_delta, adult_x, adult_z, kid_x, kid_z, rotation, tag_al
-    x = z = x_delta = z_delta = adult_x = adult_z = kid_x = kid_z = rotation = 0
+    global x, y, z, x_delta, z_delta, adult_x, adult_z, kid_x, kid_z, rotation, tag_al
+    x = y = z = x_delta = z_delta = adult_x = adult_z = kid_x = kid_z = rotation = 0
     tag_all = ()
 %>
 
-<%def name="mobs_init(x_init=None, z_init=None, x_delta_init=None, z_delta_init=None, kid_x_init=None, kid_z_init=None, adult_x_init=None, adult_z_init=None, rotation_init=None, tags_init=())">
+<%def name="mobs_init(x_init=None, y_init=None, z_init=None, x_delta_init=None, z_delta_init=None, kid_x_init=None, kid_z_init=None, adult_x_init=None, adult_z_init=None, rotation_init=None, tags_init=())">
 <%
-    global x, z, x_delta, z_delta, adult_x, adult_z, kid_x, kid_z, rotation, tag_all
-    x = z = x_delta = z_delta = adult_x = adult_z = kid_x = kid_z = rotation = 0
+    global x, y, z, x_delta, z_delta, adult_x, adult_z, kid_x, kid_z, rotation, tag_all
+    x = y = z = x_delta = z_delta = adult_x = adult_z = kid_x = kid_z = rotation = 0
     x = x_init if x_init else x
+    y = y_init if y_init else y
     z = z_init if z_init else z
     x_delta = x_delta_init if x_delta_init else x_delta
     z_delta = z_delta_init if z_delta_init else z_delta
@@ -85,7 +86,7 @@ summon ${thing.full_id()} ~${x} ~${2 + y_add} ~${z} {CustomName:${text(thing.nam
 
 <%def name="mobs(name, id=None, nbt='', tags=(), auto_tag=True, name_kid=False, do_kid=False, do_adult=False, y_add=0)">\
 <%
-    global x, z, x_delta, z_delta, adult_x, adult_z, kid_x, kid_z, rotation, tag_all
+    global x, y, z, x_delta, z_delta, adult_x, adult_z, kid_x, kid_z, rotation, tag_all
     if not do_kid and not do_adult:
 	do_kid = do_adult = True
     thing = Thing(name, id)
@@ -95,9 +96,9 @@ summon ${thing.full_id()} ~${x} ~${2 + y_add} ~${z} {CustomName:${text(thing.nam
     if auto_tag:
 	tags += (thing.id,)
     if do_kid:
-	kid(thing, x + kid_x, y_add, z + kid_z, rotation, nbt, tags + tag_all)
+	kid(thing, x + kid_x, y + y_add, z + kid_z, rotation, nbt, tags + tag_all)
     if do_adult:
-	adult(thing, x + adult_x, y_add, z + adult_z, rotation, nbt, tags + tag_all)
+	adult(thing, x + adult_x, y + y_add, z + adult_z, rotation, nbt, tags + tag_all)
     x += x_delta
     z += z_delta
 %>\

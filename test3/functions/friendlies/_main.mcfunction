@@ -1,1 +1,10 @@
+execute at @e[tag=canine_home] run function v3:friendlies/canine_main
+execute at @e[tag=colored_mobs_home] run function v3:friendlies/colored_mobs_main
+execute at @e[tag=horse_armors_home] run function v3:friendlies/horse_armors_main
+execute at @e[tag=horse_home] run function v3:friendlies/horse_main
+execute at @e[tag=llamas_carpets_home] run function v3:friendlies/llamas_carpets_main
+execute at @e[tag=ocelot_home] run function v3:friendlies/ocelot_main
+execute at @e[tag=parrot_home] run function v3:friendlies/parrot_main
+execute at @e[tag=rabbits_home] run function v3:friendlies/rabbits_main
 execute at @e[tag=turtle_eggs_home] run function v3:friendlies/turtle_eggs_main
+execute at @e[tag=villagers_home] run function v3:friendlies/villagers_main

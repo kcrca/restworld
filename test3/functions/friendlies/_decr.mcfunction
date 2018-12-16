@@ -1,5 +1,21 @@
-scoreboard players remove turtle funcs 1
-scoreboard players remove turtle_eggs funcs 1
+scoreboard players remove colored_mobs funcs 1
+scoreboard players remove sheep funcs 1
+scoreboard players remove horse_armors funcs 1
+scoreboard players remove rabbits funcs 1
 scoreboard players remove parrot funcs 1
+scoreboard players remove cow funcs 1
+scoreboard players remove turtle funcs 1
+scoreboard players remove polar_bear funcs 1
+scoreboard players remove horselike funcs 1
+scoreboard players remove snow_golem funcs 1
+scoreboard players remove horse funcs 1
+scoreboard players remove canine funcs 1
+scoreboard players remove llamas_carpets funcs 1
+scoreboard players remove iron_golem funcs 1
+scoreboard players remove turtle_eggs funcs 1
 scoreboard players remove mobs_east funcs 1
+scoreboard players remove ocelot funcs 1
+scoreboard players remove chicken funcs 1
+scoreboard players remove pig funcs 1
+scoreboard players remove villagers funcs 1
 function v3:friendlies/_cur

@@ -1,0 +1,5 @@
+<%namespace name="base" file="../base.mcftmpl"/>
+
+<%base:loop collection="${colors}" args="when,i,thing">\
+${when(i, as_prefix=True)} as @e[tag=llama] run data merge entity @s {DecorItem:{id:${thing.id}_carpet,Count:1}}\
+</%base:loop>
