@@ -6,3 +6,4 @@ function v3:redstone/_cur
 function v3:friendlies/_cur
 function v3:containers/_cur
 function v3:effects/_cur
+function v3:monsters/_cur

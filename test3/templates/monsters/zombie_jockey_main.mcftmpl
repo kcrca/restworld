@@ -1,0 +1,9 @@
+<%namespace name="base"  file="../base.mcftmpl"/>
+<% types=("zombie", "husk", "drowned") %>
+
+${base.remove("tag=zombieish")}
+
+${base.mobs_init(kid_x_init=-1.2, rotation_init=90, tags_init=("zombieish","monsters"))}\
+<%base:loop collection="${types}" args="when,i,thing">\
+${base.mobs("Chicken", do_kid=True, when=when, i=i, nbt='Passengers:[{id:"minecraft:%s",Tags:[zombie,kid,monsters],IsBaby:True,Age:-2147483648,Rotation:[90f,0f],PersistenceRequired:True,NoAI:True,Silent:True}]' % thing)}
+</%base:loop>

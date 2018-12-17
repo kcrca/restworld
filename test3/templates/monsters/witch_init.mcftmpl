@@ -1,0 +1,4 @@
+<%namespace name="base" file="../base.mcftmpl"/>
+
+${base.mobs_init(z_delta_init=2, x_init=-1, rotation_init=90, tags_init=("monsters","illagers"))}\
+${base.mobs("Witch", do_adult=True)}\

@@ -1,0 +1,9 @@
+<%namespace name="base"  file="../base.mcftmpl"/>
+
+${base.remove("tag=zombieish")}
+
+${base.mobs_init(kid_x_init=-1.7, adult_x_init=0.20, rotation_init=90, tags_init=("zombieish","monsters"))}\
+${base.increment(3)}
+${base.mobs("Zombie", when=base.when, i=0)}
+${base.mobs("Husk", when=base.when, i=1)}
+${base.mobs("Drowned", when=base.when, i=2)}

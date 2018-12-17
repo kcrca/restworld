@@ -6,3 +6,4 @@ function v3:redstone/_decr
 function v3:friendlies/_decr
 function v3:containers/_decr
 function v3:effects/_decr
+function v3:monsters/_decr

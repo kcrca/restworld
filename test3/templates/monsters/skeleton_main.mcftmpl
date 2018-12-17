@@ -1,0 +1,8 @@
+<%namespace name="base"  file="../base.mcftmpl"/>
+
+${base.remove("tag=skeletal")}
+
+${base.mobs_init(kid_x_init=1.4, adult_x_init=0.8, rotation_init=270, tags_init=("monsters","skeletal"))}\
+${base.increment(2)}
+${base.mobs("Skeleton", do_adult=True, when=base.when, i=0)}
+${base.mobs("Stray", do_adult=True, when=base.when, i=1)}

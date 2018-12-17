@@ -2,6 +2,7 @@
 
 ${base.remove("tag=cowish")}
 
+${base.mobs_init(kid_x_init=1.4, adult_x_init=-1.2, rotation_init=270, tags_init=("friendlies,cowish",))}
 ${base.increment(2)}
-${base.when(0)} function v3:friendlies/do_cow
-${base.when(1)} function v3:friendlies/do_mooshroom
+${base.mobs("Cow", when=base.when, i=0)}
+${base.mobs("MooShroom", when=base.when, i=1)}
