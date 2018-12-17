@@ -1,0 +1,1 @@
+exzecute unless entity @e[type=minecraft:painting,nbt={Motive:wither}] run summon minecraft:painting ~1 ~3 ~1 {Motive:wither,Facing:3}

@@ -1,0 +1,14 @@
+<%namespace name="base" file="../base.mcftmpl"/>
+<% r = range(0, 2) %>
+
+
+say foo
+kill @e[type=minecraft:ender_dragon]
+<%base:loop collection="${r}" args="when,i,thing">
+%if i:
+${when(i)} summon minecraft:ender_dragon ~ ~5 ~ {NoAi:True,Silent:True,Rotation:[180f,0f],PersistenceRequired:True,Tags:[dragon]}
+${when(i)} summon dragon_fireball ~-10 ~5 ~ {direction:[0.0,0.0,0.0],ExplosionPower:0,Tags:[dragon]}
+%else:
+{when(i)} kill @e[tag=dragon]
+%endif
+</%base:loop>

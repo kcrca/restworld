@@ -1,0 +1,1 @@
+summon armor_stand ~0 ~2 ~-0 {Tags:[monsters],Small:True,Passengers:[{id:magma_cube,Rotation:[180f,0f],CustomName:"\"Magma Cube\"",Tags:[growing],NoAI:True,Silent:True}],Invisible:True,Rotation:[180f,0f]}
