@@ -25,12 +25,30 @@ execute if score villagers funcs matches 0 run summon minecraft:villager ~-10 ~2
 
 
 
-execute if score villagers funcs matches 1 run summon minecraft:zombie_villager ~0 ~2.175 ~-2 {Tags:[villager,zombie_villager,kid],Profession:0,IsBaby:True,Age:-2147483648,PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[180f,0f]}
-execute if score villagers funcs matches 1 run summon minecraft:zombie_villager ~-2 ~2.175 ~-2 {Tags:[villager,zombie_villager,kid],Profession:1,IsBaby:True,Age:-2147483648,PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[180f,0f]}
-execute if score villagers funcs matches 1 run summon minecraft:zombie_villager ~-4 ~2.175 ~-2 {Tags:[villager,zombie_villager,kid],Profession:2,IsBaby:True,Age:-2147483648,PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[180f,0f]}
-execute if score villagers funcs matches 1 run summon minecraft:zombie_villager ~-6 ~2.175 ~-2 {Tags:[villager,zombie_villager,kid],Profession:3,IsBaby:True,Age:-2147483648,PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[180f,0f]}
-execute if score villagers funcs matches 1 run summon minecraft:zombie_villager ~-8 ~2.175 ~-2 {Tags:[villager,zombie_villager,kid],Profession:4,IsBaby:True,Age:-2147483648,PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[180f,0f]}
-execute if score villagers funcs matches 1 run summon minecraft:zombie_villager ~-10 ~2.175 ~-2 {Tags:[villager,zombie_villager,kid],Profession:5,IsBaby:True,Age:-2147483648,PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[180f,0f]}
+
+
+execute if score villagers funcs matches 1 run execute if score villager_jockeys funcs matches 0 run summon minecraft:zombie_villager ~0 ~2.175 ~-2 {Tags:[villager,zombie_villager,kid],Profession:0,IsBaby:True,Age:-2147483648,PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[180f,0f]}
+execute if score villagers funcs matches 1 run execute if score villager_jockeys funcs matches 0 run summon minecraft:zombie_villager ~-2 ~2.175 ~-2 {Tags:[villager,zombie_villager,kid],Profession:1,IsBaby:True,Age:-2147483648,PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[180f,0f]}
+execute if score villagers funcs matches 1 run execute if score villager_jockeys funcs matches 0 run summon minecraft:zombie_villager ~-4 ~2.175 ~-2 {Tags:[villager,zombie_villager,kid],Profession:2,IsBaby:True,Age:-2147483648,PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[180f,0f]}
+execute if score villagers funcs matches 1 run execute if score villager_jockeys funcs matches 0 run summon minecraft:zombie_villager ~-6 ~2.175 ~-2 {Tags:[villager,zombie_villager,kid],Profession:3,IsBaby:True,Age:-2147483648,PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[180f,0f]}
+execute if score villagers funcs matches 1 run execute if score villager_jockeys funcs matches 0 run summon minecraft:zombie_villager ~-8 ~2.175 ~-2 {Tags:[villager,zombie_villager,kid],Profession:4,IsBaby:True,Age:-2147483648,PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[180f,0f]}
+execute if score villagers funcs matches 1 run execute if score villager_jockeys funcs matches 0 run summon minecraft:zombie_villager ~-10 ~2.175 ~-2 {Tags:[villager,zombie_villager,kid],Profession:5,IsBaby:True,Age:-2147483648,PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[180f,0f]}
+
+
+
+execute if score villagers funcs matches 1 run execute if score villager_jockeys funcs matches 1 run summon minecraft:chicken ~0 ~2.175 ~-2 {Tags:[villager,chicken],Passengers:[{id:"minecraft:zombie_villager",Profession:0,IsBaby:True,Age:-2147483648,Tags:[zombie_villager,kids],Rotation:[180f,0f],Facing:north,PersistenceRequired:True,NoAI:True,Silent:True}],CustomName:"\"Chicken\"",PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[180f,0f]}
+
+execute if score villagers funcs matches 1 run execute if score villager_jockeys funcs matches 1 run summon minecraft:chicken ~-2 ~2.175 ~-2 {Tags:[villager,chicken],Passengers:[{id:"minecraft:zombie_villager",Profession:1,IsBaby:True,Age:-2147483648,Tags:[zombie_villager,kids],Rotation:[180f,0f],Facing:north,PersistenceRequired:True,NoAI:True,Silent:True}],CustomName:"\"Chicken\"",PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[180f,0f]}
+
+execute if score villagers funcs matches 1 run execute if score villager_jockeys funcs matches 1 run summon minecraft:chicken ~-4 ~2.175 ~-2 {Tags:[villager,chicken],Passengers:[{id:"minecraft:zombie_villager",Profession:2,IsBaby:True,Age:-2147483648,Tags:[zombie_villager,kids],Rotation:[180f,0f],Facing:north,PersistenceRequired:True,NoAI:True,Silent:True}],CustomName:"\"Chicken\"",PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[180f,0f]}
+
+execute if score villagers funcs matches 1 run execute if score villager_jockeys funcs matches 1 run summon minecraft:chicken ~-6 ~2.175 ~-2 {Tags:[villager,chicken],Passengers:[{id:"minecraft:zombie_villager",Profession:3,IsBaby:True,Age:-2147483648,Tags:[zombie_villager,kids],Rotation:[180f,0f],Facing:north,PersistenceRequired:True,NoAI:True,Silent:True}],CustomName:"\"Chicken\"",PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[180f,0f]}
+
+execute if score villagers funcs matches 1 run execute if score villager_jockeys funcs matches 1 run summon minecraft:chicken ~-8 ~2.175 ~-2 {Tags:[villager,chicken],Passengers:[{id:"minecraft:zombie_villager",Profession:4,IsBaby:True,Age:-2147483648,Tags:[zombie_villager,kids],Rotation:[180f,0f],Facing:north,PersistenceRequired:True,NoAI:True,Silent:True}],CustomName:"\"Chicken\"",PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[180f,0f]}
+
+execute if score villagers funcs matches 1 run execute if score villager_jockeys funcs matches 1 run summon minecraft:chicken ~-10 ~2.175 ~-2 {Tags:[villager,chicken],Passengers:[{id:"minecraft:zombie_villager",Profession:5,IsBaby:True,Age:-2147483648,Tags:[zombie_villager,kids],Rotation:[180f,0f],Facing:north,PersistenceRequired:True,NoAI:True,Silent:True}],CustomName:"\"Chicken\"",PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[180f,0f]}
+
+
 
 
 execute if score villagers funcs matches 1 run summon minecraft:zombie_villager ~0 ~2.175 ~0 {Tags:[villager,zombie_villager],Profession:0,CustomName:"\"Zombie Farmer\"",PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[180f,0f]}

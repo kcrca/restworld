@@ -1,1 +1,1 @@
-summon minecraft:phantom ~-1 ~5 ~0 {Tags:[monsters,monsters,illagers],CustomName:"\"Phantom\"",PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[90f,0f]}
+summon minecraft:armor_stand ~-1 ~4.5 ~0 {Invisible:true,Small:true,NoGravity:true,Tags:[monsters,illagers],PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[90f,0f],Passengers:[{id:"minecraft:phantom",Tags:[monsters,illagers],CustomName:"\"Phantom\"",PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[90f,0f]}]}

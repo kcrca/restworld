@@ -1,0 +1,8 @@
+<%namespace name="base" file="../base.mcftmpl"/>\
+<% levels = (0, 9, 20, 30) %>
+
+data merge block ~-6 ~6 ~0 {Items:[{Slot:0,id:lapis_lazuli,Count:64},{Slot:1,id:book,Count:64}]}
+
+<%base:loop collection="${levels}" args="when,i,thing">
+${when(i)} xp set @p ${thing} levels
+</%base:loop>

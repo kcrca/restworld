@@ -6,7 +6,6 @@ scoreboard players add fangs funcs 1
 scoreboard players add pigmen funcs 1
 scoreboard players add zombie_horse funcs 1
 scoreboard players add shulker funcs 1
-scoreboard players add illager funcs 1
 scoreboard players add phantom funcs 1
 scoreboard players add silverfish funcs 1
 scoreboard players add creeper funcs 1
@@ -19,7 +18,7 @@ scoreboard players add spider funcs 1
 scoreboard players add zombie funcs 1
 scoreboard players add witch funcs 1
 scoreboard players add zombie_jockey funcs 1
-scoreboard players add dragon funcs 1
+scoreboard players add illager funcs 1
 scoreboard players add magma_cube funcs 1
 scoreboard players add growing funcs 1
 function v3:monsters/_cur

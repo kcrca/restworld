@@ -1,7 +1,6 @@
 scoreboard players add blaze funcs 0
 scoreboard players add cave_spider funcs 0
 scoreboard players add creeper funcs 0
-scoreboard players add dragon funcs 0
 scoreboard players add enderman funcs 0
 scoreboard players add endermite funcs 0
 scoreboard players add fangs funcs 0

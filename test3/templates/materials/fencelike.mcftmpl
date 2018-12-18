@@ -1,10 +1,9 @@
 <%namespace name="base" file="../base.mcftmpl"/>
 
+<% types = ("walls", "fences", "panes") %>
+
 <%def name="switch_to_fencelike(which, x_delta)">\
-tag @e[tag=walls_home] add fencelike_home
-tag @e[tag=panes_home] add fencelike_home
-tag @e[tag=fences_home] add fencelike_home
-${base.remove("tag=fencelike_home")}
-execute positioned ~-${x_delta} ~-1 ~1 run function v3:materials/${which}_home
-execute at @e[tag=${which}_home] run function v3:materials/${which}_cur
+kill @e[tag=which_fencelike_home]
+execute at @e[tag=fencelike_home] run summon armor_stand ~1 ~ ~ {Tags:[${"%s_home" % which},which_fencelike_home],Small:True,GravityOn:True}
+execute at @e[tag=${"%s_home" % which}] run function v3:materials/${which}_cur
 </%def>

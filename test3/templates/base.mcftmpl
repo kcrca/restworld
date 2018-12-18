@@ -46,10 +46,6 @@ ${caller.body(when, loop.index, thing)}\
 % endfor
 </%def>
 
-<%def name="on_stand(where, mob, nbt='')">
-summon armor_stand ${where} {Small:True,Passengers:[{id:${to_id(mob)},CustomName:${text(mob)},${"%s," % nbt if nbt else ""}NoAI:True,Silent:True}]}
-</%def>
-
 <%!
     global x, y, z, x_delta, z_delta, adult_x, adult_z, kid_x, kid_z, rotation, tag_al
     x = y = z = x_delta = z_delta = adult_x = adult_z = kid_x = kid_z = rotation = 0
@@ -74,7 +70,7 @@ summon armor_stand ${where} {Small:True,Passengers:[{id:${to_id(mob)},CustomName
 %>
 </%def>
 
-<%def name="_mob(thing, at_x, y_add, at_z, at_rotation, nbt='', tags=(), when=None, i=None)">\
+<%def name="_mob(thing, at_x, y_add, at_z, at_rotation, nbt='', tags=(), when=None, i=None, on_stand=False)">\
 <%
     global x, y, z, x_delta, z_delta, adult_x, adult_z, kid_x, kid_z, rotation, tag_all
     nbt = ",%s" % nbt if nbt else ""
@@ -83,18 +79,22 @@ summon armor_stand ${where} {Small:True,Passengers:[{id:${to_id(mob)},CustomName
 %if when:
 ${when(i)} \
 %endif
+%if on_stand:
+summon minecraft:armor_stand ~${at_x} ~${2 + y_add - 1} ~${at_z} {Invisible:true,Small:true,NoGravity:true,Tags:[${",".join(tags)}],PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[${at_rotation}f,0f],Passengers:[{id:"${thing.full_id()}",Tags:[${",".join(tags)}]${nbt},PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[${at_rotation}f,0f]}]}
+%else:
 summon ${thing.full_id()} ~${at_x} ~${2 + y_add} ~${at_z} {Tags:[${",".join(tags)}]${nbt},PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[${at_rotation}f,0f]}
+%endif
 </%def>
 
-<%def name="kid(thing, x=None, y_add=None, z=None, rotation=0, nbt='', tags=(), name_kid=False, when=None, i=None)">\
-${_mob(thing, x, y_add, z, rotation, commas(nbt, "IsBaby:True,Age:-2147483648", "CustomName:%s" % text(thing.name) if name_id else ""), tags + ("kid",), when=when, i=i)}\
+<%def name="kid(thing, x=None, y_add=None, z=None, rotation=0, nbt='', tags=(), name_kid=False, when=None, i=None, on_stand=False)">\
+${_mob(thing, x, y_add, z, rotation, commas(nbt, "IsBaby:True,Age:-2147483648", "CustomName:%s" % text(thing.name) if name_id else ""), tags + ("kid",), when=when, i=i, on_stand=on_stand)}\
 </%def>
 
-<%def name="adult(thing, x=None, y_add=None, z=None, rotation=0, nbt='', tags=(), when=None, i=None)">\
-${_mob(thing, x, y_add, z, rotation, commas(nbt, "CustomName:%s" % text(thing.name)), tags, when=when, i=i)}\
+<%def name="adult(thing, x=None, y_add=None, z=None, rotation=0, nbt='', tags=(), when=None, i=None, on_stand=False)">\
+${_mob(thing, x, y_add, z, rotation, commas(nbt, "CustomName:%s" % text(thing.name)), tags, when=when, i=i, on_stand=on_stand)}\
 </%def>
 
-<%def name="mobs(name, id=None, nbt='', tags=(), auto_tag=True, name_kid=False, do_kid=False, do_adult=False, y_add=0, when=None, i=None)">\
+<%def name="mobs(name, id=None, nbt='', tags=(), auto_tag=True, name_kid=False, do_kid=False, do_adult=False, y_add=0, when=None, i=None, on_stand=False)">\
 <%
     global x, y, z, x_delta, z_delta, adult_x, adult_z, kid_x, kid_z, rotation, tag_all
     if not do_kid and not do_adult:
@@ -103,9 +103,9 @@ ${_mob(thing, x, y_add, z, rotation, commas(nbt, "CustomName:%s" % text(thing.na
     if auto_tag:
 	tags += (thing.id,)
     if do_kid:
-	kid(thing, x + kid_x, y + y_add, z + kid_z, rotation, nbt, tags, name_kid=name_kid, when=when, i=i)
+	kid(thing, x + kid_x, y + y_add, z + kid_z, rotation, nbt, tags, name_kid=name_kid, when=when, i=i, on_stand=on_stand)
     if do_adult:
-	adult(thing, x + adult_x, y + y_add, z + adult_z, rotation, nbt, tags, when=when, i=i)
+	adult(thing, x + adult_x, y + y_add, z + adult_z, rotation, nbt, tags, when=when, i=i, on_stand=on_stand)
     x += x_delta
     z += z_delta
 %>\

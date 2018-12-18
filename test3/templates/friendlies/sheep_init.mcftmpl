@@ -1,6 +1,6 @@
 <%namespace name="base" file="../base.mcftmpl"/>\
 
 ${base.mobs_init(z_delta_init=2, kid_x_init=-2.2, adult_x_init=0.20, rotation_init=90, tags_init=("friendlies",))}\
-${base.mobs("Sheep")}
+${base.mobs("Sheep", tags=("colorable",))}
 ${base.mobs("Sheared Sheep", id="sheep", nbt="Sheared:True")}
 ${base.mobs("jeb_", id="sheep", name_kid=True, auto_tag=False)}
