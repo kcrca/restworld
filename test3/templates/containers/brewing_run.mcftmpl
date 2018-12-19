@@ -1,0 +1,6 @@
+<%namespace name="base" file="../base.mcftmpl"/>
+
+${base.increment(2)}
+${base.when(0)} function v3:containers/brewing_init
+${base.when(1)} replaceitem block ~ ~2 ~ container.3 minecraft:spider_eye 64
+${base.when(1)} replaceitem block ~ ~2 ~ container.4 minecraft:blaze_powder 64

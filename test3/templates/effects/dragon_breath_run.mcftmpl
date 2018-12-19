@@ -1,0 +1,4 @@
+<%namespace name="base" file="../base.mcftmpl"/>
+
+${base.increment(48)}
+${base.when(0)} summon minecraft:dragon_fireball ~0 ~1 ~0 {direction:[0.0,-0.3,0.0],ExplosionPower:1}

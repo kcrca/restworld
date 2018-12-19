@@ -7,5 +7,4 @@ times = (
 
 <%base:loop collection="${times}" args="when,i,thing">\
 ${when(i)} time set ${thing}
-${when(i)} say time set ${thing}\
 </%base:loop>

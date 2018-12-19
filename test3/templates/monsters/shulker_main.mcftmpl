@@ -1,0 +1,5 @@
+<%namespace name="base" file="../base.mcftmpl"/>\
+
+<%base:bounce collection="${[0, 30, 100]}" args="when,i,thing">\
+${when(i)} data merge entity @e[tag=shulker,limit=1] {Peek:${thing}}
+</%base:bounce>\

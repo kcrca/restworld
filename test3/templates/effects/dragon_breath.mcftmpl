@@ -1,2 +1,4 @@
+<%namespace name="base" file="../base.mcftmpl"/>
 <%namespace file="effect_base.mcftmpl" import="*"/>\
-${fast_clock()} summon minecraft:dragon_fireball ~0 ~-4 ~0 {direction:[0.0,-2.0,0.0],ExplosionPower:1}
+
+${slow_clock()} function v3:effects/dragon_breath_run

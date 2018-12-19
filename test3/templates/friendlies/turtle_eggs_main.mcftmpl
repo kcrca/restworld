@@ -1,7 +1,7 @@
 <%namespace name="base" file="../base.mcftmpl"/>
 
-<%base:bounce collection="${range(1, 5)}" args="when,i,thing">\
-% for hatch in range(0, 3):
-${when(i)} setblock ~${-hatch} ~2 ~0 minecraft:turtle_egg[eggs=${thing},hatch=${hatch}]
+<%base:bounce collection="${range(0, 3)}" args="when,i,thing">\
+% for count in range(4, 0, -1):
+${when(i)} setblock ~${count - 3} ~2 ~0 minecraft:turtle_egg[eggs=${count},hatch=${thing}]
 % endfor
 </%base:bounce>\
