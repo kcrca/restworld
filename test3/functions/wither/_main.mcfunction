@@ -1,1 +1,1 @@
-execute at @e[tag=wither_home] run function v3:wither/wither_main
+execute at @e[tag=wither_mob_home] run function v3:wither/wither_mob_main

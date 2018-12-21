@@ -1,4 +1,4 @@
 <%namespace name="base" file="../base.mcftmpl"/>
 
 ${base.mobs_init(rotation_init=180, tags_init=("wither",))}
-${base.mobs("Wither", y_add=1, do_adult=True)}
+${base.mobs("Wither", y_add=1, do_adult=True, tags=("wither_mob",))}
