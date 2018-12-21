@@ -43,3 +43,4 @@ execute at @e[tag=spider_home] run function v3:monsters/spider_init
 execute at @e[tag=witch_home] run function v3:monsters/witch_init
 execute at @e[tag=wither_skeleton_home] run function v3:monsters/wither_skeleton_init
 execute at @e[tag=zombie_horse_home] run function v3:monsters/zombie_horse_init
+execute at @e[tag=zombie_home] run function v3:monsters/zombie_init

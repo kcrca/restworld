@@ -1,2 +1,2 @@
-kill @e[tag=finish_home]
-summon minecraft:armor_stand ~ ~0.5 ~ {Tags:[finish_home,homer],NoGravity:true,Small:True,PersistenceRequired:True}
+kill @e[tag=finis_home]
+summon minecraft:armor_stand ~ ~0.5 ~ {Tags:[finis_home,homer,monsters_home],NoGravity:true,Small:True,PersistenceRequired:True}

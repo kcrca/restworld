@@ -1,0 +1,13 @@
+execute at @e[tag=sleeping_bat] run clone ~ ~1 ~ ~ ~1 ~ ~ ~3 ~ replace move
+execute as @e[tag=friendlies_home] run data merge entity @s {Invisible:true}
+execute as @e[tag=friendlies_home] run execute at @s run tp @s ~ ~2 ~
+execute as @e[tag=friendlies] run execute at @s run tp @s ~ ~2 ~
+execute as @e[tag=monsters_home] run data merge entity @s {Invisible:true}
+execute as @e[tag=monsters_home] run execute at @s run tp @s ~ ~2 ~
+execute as @e[tag=monsters] run execute at @s run tp @s ~ ~2 ~
+execute as @e[tag=acquatic_home] run data merge entity @s {Invisible:true}
+execute as @e[tag=acquatic_home] run execute at @s run tp @s ~ ~2 ~
+execute as @e[tag=acquatic] run execute at @s run tp @s ~ ~2 ~
+execute as @e[tag=wither_home] run data merge entity @s {Invisible:true}
+execute as @e[tag=wither_home] run execute at @s run tp @s ~ ~2 ~
+execute as @e[tag=wither] run execute at @s run tp @s ~ ~2 ~

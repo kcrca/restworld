@@ -8,4 +8,5 @@ function v3:wither/_finish
 function v3:friendlies/_finish
 function v3:containers/_finish
 function v3:effects/_finish
+function v3:global/_finish
 function v3:monsters/_finish

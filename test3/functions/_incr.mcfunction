@@ -8,4 +8,5 @@ function v3:wither/_incr
 function v3:friendlies/_incr
 function v3:containers/_incr
 function v3:effects/_incr
+function v3:global/_incr
 function v3:monsters/_incr

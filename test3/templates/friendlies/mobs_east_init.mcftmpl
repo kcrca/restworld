@@ -9,4 +9,4 @@ summon minecraft:llama_spit ~3 ~3 ~0 {CustomName:"\"Llama Spit\"",TXD:0,TYD:0,TZ
 ${base.mobs("Rabbit", tags=("rabbits",))}
 
 ${base.mobs("Bat", y_add=0.5, do_kid=True)}
-${base.adult(Thing("Bat"), 0, 1.5, 10, 270, nbt="BatFlags:1", tags=("bat", "friendlies"))}
+${base.adult(Thing("Bat"), 0, 1.5, 10, 270, nbt="BatFlags:1", tags=("bat", "sleeping_bat", "friendlies"))}

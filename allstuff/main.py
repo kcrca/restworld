@@ -306,9 +306,9 @@ def main():
             if room.name == 'effects':
                 return
 
-            write_function(self.func_dir, "%s_home" % var, tmpls["home"].render(var=var))
+            write_function(self.func_dir, "%s_home" % var, tmpls["home"].render(var=var, room=self.name))
             if which in speeds and not os.path.exists(tmpl_path.replace("_%s." % which, "_cur.")):
-                rendered = render_tmpl(tmpl, var, suppress_loop=True)
+                rendered = render_tmpl(tmpl, var, suppress_loop=True, room=self.name)
                 write_function(self.func_dir, "%s_cur" % var, rendered)
 
             if which and which not in misc:
@@ -343,7 +343,7 @@ def main():
                     continue
                 rendered = tmpls[f].render(room=self.name, vars=self.vars)
                 write_function(self.func_dir, "_%s" % f, rendered)
-            rendered = tmpls["home"].render(var="finish")
+            rendered = tmpls["home"].render(var="finis", room=self.name)
             write_function(func_dir, "finish_home", rendered)
 
     rooms = []

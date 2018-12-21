@@ -1,0 +1,6 @@
+execute at @e[tag=sleeping_bat] run clone ~ ~1 ~ ~ ~1 ~ ~ ~-1 ~ replace move
+%for room in ("friendlies", "monsters", "acquatic", "wither"):
+execute as @e[tag=${room}_home] run data merge entity @s {Invisible:falsre}
+execute as @e[tag=${room}_home] run execute at @s run tp @s ~ ~-2 ~
+execute as @e[tag=${room}] run execute at @s run tp @s ~ ~-2 ~
+%endfor

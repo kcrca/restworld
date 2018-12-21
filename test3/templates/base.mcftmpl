@@ -66,7 +66,7 @@ ${caller.body(when, loop.index, thing)}\
     kid_x = kid_x_init if kid_x_init else kid_x
     kid_z = kid_z_init if kid_z_init else kid_z
     rotation = rotation_init if rotation_init else rotation
-    tag_all = tags_init
+    tag_all = tags_init + (room,)
 %>
 </%def>
 
