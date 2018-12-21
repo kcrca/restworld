@@ -1,2 +1,2 @@
-scoreboard players remove center funcs 1
+scoreboard players remove lights funcs 1
 function v3:center/_cur

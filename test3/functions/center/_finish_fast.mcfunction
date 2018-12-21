@@ -1,1 +1,1 @@
-execute at @e[tag=center_home] run function v3:center/center_finish_fast
+execute at @e[tag=lights_home] run function v3:center/lights_finish_fast

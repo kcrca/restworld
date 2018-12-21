@@ -1,1 +1,1 @@
-execute at @e[tag=materials_home] run function v3:materials/materials_finish_main
+execute at @e[tag=basic_home] run function v3:materials/basic_finish_main

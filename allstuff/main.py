@@ -296,6 +296,8 @@ def main():
         def consume(self, tmpl_path):
             m = category_re.match(os.path.basename(tmpl_path))
             var = m.group(2)
+            if var == self.name:
+                raise NameError("Cannot name script the same as room name: %s" % var)
             which = m.group(3)
             func = m.group(1)
             tmpl = Template(filename=tmpl_path, lookup=lookup)
