@@ -1,1 +1,1 @@
-summon armor_stand ~0 ~2 ~-0 {Tags:[monsters],Small:True,Passengers:[{id:slime,Rotation:[270f,0f],CustomName:"\"Slime\"",Tags:[growing],NoAI:True,Silent:True}],Invisible:True,Rotation:[270f,0f]}
+summon minecraft:armor_stand ~0 ~3 ~0 {Invisible:true,Small:true,NoGravity:true,Tags:[slime,monsters,growing,monsters],PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[270f,0f],Passengers:[{id:"minecraft:slime",Tags:[slime,monsters,growing,monsters,passenger],CustomName:"\"Slime\"",PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[270f,0f]}]}

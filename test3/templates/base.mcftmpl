@@ -80,7 +80,7 @@ ${caller.body(when, loop.index, thing)}\
 ${when(i)} \
 %endif
 %if on_stand:
-summon minecraft:armor_stand ~${at_x} ~${2 + y_add - 1} ~${at_z} {Invisible:true,Small:true,NoGravity:true,Tags:[${",".join(tags)}],PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[${at_rotation}f,0f],Passengers:[{id:"${thing.full_id()}",Tags:[${",".join(tags)}]${nbt},PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[${at_rotation}f,0f]}]}
+summon minecraft:armor_stand ~${at_x} ~${2 + y_add - 1} ~${at_z} {Invisible:true,Small:true,NoGravity:true,Tags:[${",".join(tags)}],PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[${at_rotation}f,0f],Passengers:[{id:"${thing.full_id()}",Tags:[${",".join(tags)},passenger]${nbt},PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[${at_rotation}f,0f]}]}
 %else:
 summon ${thing.full_id()} ~${at_x} ~${2 + y_add} ~${at_z} {Tags:[${",".join(tags)}]${nbt},PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[${at_rotation}f,0f]}
 %endif
