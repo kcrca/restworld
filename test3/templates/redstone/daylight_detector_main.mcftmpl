@@ -1,0 +1,28 @@
+<%namespace name="base" file="../base.mcftmpl"/>
+<%
+height = 8
+day_times = (
+    8000, 9200, 10000, 10400, 10800, 11100, 11600, 11900, 12100, 12300, 12600, 12800, 13100, 13400, 19000, 22500,
+    23000, 23100, 23400, 23600, 23800, 0, 300, 700, 1000, 1500, 2000, 2700, 3500, 4400, )
+inv_times = [
+    23960, 23959, 23780, 23600, 23400, 23200, 23100, 22900, 22800, 22600, 22400, 22300, 0, 1, 2, 3]
+inv_times = list(reversed(inv_times)) + inv_times[1:-1]
+%>
+
+scoreboard players set daylight_inv funcs 0
+execute if block ~ ~2 ~ daylight_detector[inverted=true] run scoreboard players set daylight_inv funcs 1
+fill ~3 ~${height} ~3 ~-3 ~${height} ~-3 minecraft:air
+
+execute if score daylight_inv funcs matches 0 run data merge block ~ ~2 ~-1 {Text1:${text("Daylight Detector")},Text2:${text("")}}
+execute if score daylight_inv funcs matches 1 run data merge block ~ ~2 ~-1 {Text1:${text("Inverted")},Text2:${text("Daylight Detector")}}
+<%base:loop collection="${day_times}" args="when,i,thing">\
+${when(i)} execute if score daylight_inv funcs matches 0 run time set ${day_times[i]}
+<% inv = inv_times[i] %>
+${when(i)} execute if score daylight_inv funcs matches 1 run say time ${i}: ${inv}
+%if inv > 22200:
+${when(i)} execute if score daylight_inv funcs matches 1 run time set ${inv}
+%else:
+${when(i)} execute if score daylight_inv funcs matches 1 run time set 22300
+${when(i)} execute if score daylight_inv funcs matches 1 run fill ~${inv} ~${height} ~${inv} ~${-inv} ~${height} ~${-inv} minecraft:stone
+%endif
+</%base:loop>

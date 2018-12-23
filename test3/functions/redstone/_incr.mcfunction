@@ -1,5 +1,5 @@
-scoreboard players add daylight_sensor funcs 1
 scoreboard players add redstone_torch funcs 1
+scoreboard players add daylight_detector funcs 1
 scoreboard players add repeater funcs 1
 scoreboard players add piston funcs 1
 scoreboard players add observer funcs 1

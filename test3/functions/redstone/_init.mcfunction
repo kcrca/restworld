@@ -1,4 +1,4 @@
-scoreboard players add daylight_sensor funcs 0
+scoreboard players add daylight_detector funcs 0
 scoreboard players add dispenser funcs 0
 scoreboard players add hopper funcs 0
 scoreboard players add lever funcs 0

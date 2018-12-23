@@ -1,5 +1,5 @@
-scoreboard players remove daylight_sensor funcs 1
 scoreboard players remove redstone_torch funcs 1
+scoreboard players remove daylight_detector funcs 1
 scoreboard players remove repeater funcs 1
 scoreboard players remove piston funcs 1
 scoreboard players remove observer funcs 1

@@ -1,5 +1,5 @@
-execute at @e[tag=daylight_sensor_home] run function v3:redstone/daylight_sensor_cur
 execute at @e[tag=redstone_torch_home] run function v3:redstone/redstone_torch_cur
+execute at @e[tag=daylight_detector_home] run function v3:redstone/daylight_detector_cur
 execute at @e[tag=repeater_home] run function v3:redstone/repeater_cur
 execute at @e[tag=piston_home] run function v3:redstone/piston_cur
 execute at @e[tag=observer_home] run function v3:redstone/observer_cur

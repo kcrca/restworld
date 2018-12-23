@@ -1,4 +1,4 @@
-execute at @e[tag=daylight_sensor_home] run function v3:redstone/daylight_sensor_main
+execute at @e[tag=daylight_detector_home] run function v3:redstone/daylight_detector_main
 execute at @e[tag=dispenser_home] run function v3:redstone/dispenser_main
 execute at @e[tag=hopper_home] run function v3:redstone/hopper_main
 execute at @e[tag=lever_home] run function v3:redstone/lever_main
