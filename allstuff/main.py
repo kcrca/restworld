@@ -294,6 +294,11 @@ def main():
             self.vars = set()
 
         def consume(self, tmpl_path):
+            """
+            Consume one single template file, remembering whatever type it is.
+            :param tmpl_path:
+            :return:
+            """
             m = category_re.match(os.path.basename(tmpl_path))
             var = m.group(2)
             if var == self.name:
@@ -322,6 +327,11 @@ def main():
                     self.lists[which] = entry
 
         def generate(self):
+            """
+            Generate all the files for a single room (directory). First consume all the files, then generate all the
+            room-wide files.
+            :return:
+            """
             for tmpl_path in sorted(glob.glob(os.path.join(self.dir, "*%s" % tmpl_suffix))):
                 self.consume(tmpl_path)
             on_tick = []
