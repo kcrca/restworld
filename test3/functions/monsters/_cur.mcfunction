@@ -17,7 +17,6 @@ execute at @e[tag=enderman_home] run function v3:monsters/enderman_cur
 execute at @e[tag=spider_home] run function v3:monsters/spider_cur
 execute at @e[tag=zombie_home] run function v3:monsters/zombie_cur
 execute at @e[tag=witch_home] run function v3:monsters/witch_cur
-execute at @e[tag=zombie_jockey_home] run function v3:monsters/zombie_jockey_cur
 execute at @e[tag=illager_home] run function v3:monsters/illager_cur
 execute at @e[tag=magma_cube_home] run function v3:monsters/magma_cube_cur
 execute at @e[tag=growing_home] run function v3:monsters/growing_cur

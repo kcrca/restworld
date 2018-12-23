@@ -20,7 +20,6 @@ scoreboard players add witch funcs 0
 scoreboard players add wither_skeleton funcs 0
 scoreboard players add zombie funcs 0
 scoreboard players add zombie_horse funcs 0
-scoreboard players add zombie_jockey funcs 0
 
 tp @e[tag=monsters] @e[tag=death,limit=1]
 

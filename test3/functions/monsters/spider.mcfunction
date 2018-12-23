@@ -9,4 +9,4 @@ execute unless score spider funcs matches 0..1 run scoreboard players operation 
 
 execute if score spider funcs matches 0 run summon minecraft:spider ~-0.2 ~2.5 ~0 {Tags:[spider,monsters,monsters],CustomName:"\"Spider\"",PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[270f,0f]}
 
-execute if score spider funcs matches 1 run summon minecraft:spider ~-0.2 ~2.5 ~0 {Tags:[spider,monsters,monsters],Passengers:[{id:"minecraft:skeleton",Tags:[monsters],Rotation:[270f,0f],Facing:east,PersistenceRequired:True,NoAI:True,Silent:True}],CustomName:"\"Spider\"",PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[270f,0f]}
+execute if score spider funcs matches 1 run summon minecraft:spider ~-0.2 ~2.5 ~0 {Tags:[spider,monsters,monsters],Passengers:[{id:"minecraft:skeleton",Tags:[monsters],HandItems:[{id:"minecraft:bow",Count:1b},{}],Rotation:[270f,0f],Facing:east,PersistenceRequired:True,NoAI:True,Silent:True}],CustomName:"\"Spider\"",PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[270f,0f]}

@@ -17,7 +17,6 @@ scoreboard players remove enderman funcs 1
 scoreboard players remove spider funcs 1
 scoreboard players remove zombie funcs 1
 scoreboard players remove witch funcs 1
-scoreboard players remove zombie_jockey funcs 1
 scoreboard players remove illager funcs 1
 scoreboard players remove magma_cube funcs 1
 scoreboard players remove growing funcs 1

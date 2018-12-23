@@ -17,7 +17,6 @@ scoreboard players add enderman funcs 1
 scoreboard players add spider funcs 1
 scoreboard players add zombie funcs 1
 scoreboard players add witch funcs 1
-scoreboard players add zombie_jockey funcs 1
 scoreboard players add illager funcs 1
 scoreboard players add magma_cube funcs 1
 scoreboard players add growing funcs 1
