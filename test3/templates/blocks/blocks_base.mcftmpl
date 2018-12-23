@@ -1,0 +1,15 @@
+<%namespace name="base" file="../base.mcftmpl"/>
+
+<%def name="blocks(collection, *others, **kwargs)">${do_blocks((collection,) + others, **kwargs)}</%def>
+<%def name="do_blocks(collections, sign=-1, xd=0, zd=0)">
+<%base:loop collection="${collections[0]}" args="when,i,thing">\
+<% x = z = 0 %>\
+%for c in collections:
+<% t = Thing(c[i]) %>\
+${when(i)} setblock ~${x} ~3 ~${z} ${t.full_id()}
+${when(i)} data merge block ~${x} ~2 ~${z + sign} {Text2:${text(t.name)}}
+<% x += xd %>\
+<% z += zd %>\
+%endfor
+</%base:loop>
+</%def>\

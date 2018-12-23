@@ -1,3 +1,4 @@
+function v3:blocks/_incr
 function v3:acquatic/_incr
 function v3:materials/_incr
 function v3:plants/_incr

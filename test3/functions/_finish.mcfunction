@@ -1,3 +1,4 @@
+function v3:blocks/_finish
 function v3:acquatic/_finish
 function v3:materials/_finish
 function v3:plants/_finish
