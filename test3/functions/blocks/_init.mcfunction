@@ -4,6 +4,7 @@ scoreboard players add cobble funcs 0
 scoreboard players add command_blocks funcs 0
 scoreboard players add dirt funcs 0
 scoreboard players add end funcs 0
+scoreboard players add expand funcs 0
 scoreboard players add frosted_ice funcs 0
 scoreboard players add ice funcs 0
 scoreboard players add music funcs 0

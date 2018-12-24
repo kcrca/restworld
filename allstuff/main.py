@@ -141,6 +141,28 @@ def render_tmpl(tmpl, var_name, **kwargs):
         "White",
     )
     professions = ("Farmer", "Librarian", "Priest", "Smith", "Butcher", "Nitwit")
+    mobs = (
+        # Passive
+        Mob("Bat"), Mob("Chicken"), Mob("Cod", acquatic=True), ("Cow"), Mob("Donkey"), Mob("Horse"), Mob("Mooshoroo"),
+        Mob("Mooshroom"), Mob("Mule"), Mob("Ocelot", nbt="CatType:1"), Mob("Ocelot", nbt="CatType:1"),
+        Mob("Parrot", can_fly=True), Mob("Pig"), Mob("Rabbit"), Mob("Sheep"), Mob("Skeleton Horse"),
+        Mob("Salmon", acquatic=True), Mob("Squid", acquatic=True), Mob("Turtle"), Mob("Tropical Fish", acquatic=True),
+        Mob("Villager"), Mob("Pufferfish", acquatic=True),
+
+        # Neutral
+        Mob("Dolphin", acquatic=True), Mob("Llama"), Mob("Polar Bear"), Mob("Wolf"), Mob("Wolf", nbt="Owner=dummy"),
+        Mob("Enderman"), Mob("Spider"), Mob("Zombie Pigman"),
+
+        # Hostile
+        Mob("Blaze", can_fly=True), Mob("Cave Spider"), Mob("Chicken Jockey"), Mob("Creeper"), Mob("Drowned"),
+        Mob("Elder Guardian", acquatic=True), Mob("Endermite"), Mob("Evoker"), Mob("Ghast", can_fly=True),
+        Mob("Guardian", acquatic=True), Mob("Husk"), Mob("Magma Cube"), Mob("Phantom", can_fly=True),
+        Mob("Shulker", can_fly=True), Mob("Silverfish"), Mob("Skeleton"), Mob("Skeleton Horseman"),
+        Mob("Spider Jockey"), Mob("Stray"), Mob("Vindicator"), Mob("Witch"), Mob("Wither Skeleton"), Mob("Zombie"),
+        Mob("Zombie Villager"),
+
+        Mob("Iron Golem"), Mob("Snow Golem"),
+    )
 
     return tmpl.render(
         var=var_name,
@@ -213,6 +235,14 @@ class Horse(Thing):
             Thing.__init__(self, name)
             self.tag = "%ss" % self.id
         self.variant = variant
+
+
+class Mob(Thing):
+    def __init__(self, name, nbt=None, can_fly=False, acquatic=False):
+        Thing.__init__(self, name)
+        self.nbt = nbt
+        self.can_fly = can_fly
+        self.acquatic = acquatic
 
 
 class CommandBlock(Thing):
@@ -427,7 +457,7 @@ def effect_signs(func_dir, sign_tmpl):
     for i, effect in enumerate(sorted(effects)):
         sign_text = effect.sign_text()
         lines = ["", ] + sign_text + [""] * (max(0, 3 - len(sign_text)))
-        commands.append(sign_tmpl.render(effect=effect, lines=lines, x=-x, y=y, z=0, frame=frame).strip())
+        commands.append(sign_tmpl.render(room="effects", effect=effect, lines=lines, x=-x, y=y, z=0, frame=frame).strip())
         # write_function(func_dir, effect.id, effect_function(effect))
         x += 1
         if x >= frame.end:
@@ -446,7 +476,7 @@ def effect_signs(func_dir, sign_tmpl):
     x = int(frame.width / 2 + 0.6)
     y = 3
     commands.append(
-        sign_tmpl.render(effect=Effects("Off"), lines=['', 'Off', '', ''], x=-x, y=y, z=2, frame=frame).strip())
+        sign_tmpl.render(room="effects", effect=Effects("Off"), lines=['', 'Off', '', ''], x=-x, y=y, z=2, frame=frame).strip())
 
     commands.append(kill_command)
 

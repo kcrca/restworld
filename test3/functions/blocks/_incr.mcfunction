@@ -15,6 +15,7 @@ scoreboard players add pumpkin funcs 1
 scoreboard players add quartz funcs 1
 scoreboard players add dirt funcs 1
 scoreboard players add frosted_ice funcs 1
+scoreboard players add expand funcs 1
 scoreboard players add stone funcs 1
 scoreboard players add structure_blocks funcs 1
 scoreboard players add prismarine funcs 1

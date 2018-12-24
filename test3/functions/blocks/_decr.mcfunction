@@ -15,6 +15,7 @@ scoreboard players remove pumpkin funcs 1
 scoreboard players remove quartz funcs 1
 scoreboard players remove dirt funcs 1
 scoreboard players remove frosted_ice funcs 1
+scoreboard players remove expand funcs 1
 scoreboard players remove stone funcs 1
 scoreboard players remove structure_blocks funcs 1
 scoreboard players remove prismarine funcs 1

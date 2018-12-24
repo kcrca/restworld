@@ -15,6 +15,7 @@ execute at @e[tag=pumpkin_home] run function v3:blocks/pumpkin_cur
 execute at @e[tag=quartz_home] run function v3:blocks/quartz_cur
 execute at @e[tag=dirt_home] run function v3:blocks/dirt_cur
 execute at @e[tag=frosted_ice_home] run function v3:blocks/frosted_ice_cur
+execute at @e[tag=expand_home] run function v3:blocks/expand_cur
 execute at @e[tag=stone_home] run function v3:blocks/stone_cur
 execute at @e[tag=structure_blocks_home] run function v3:blocks/structure_blocks_cur
 execute at @e[tag=prismarine_home] run function v3:blocks/prismarine_cur
