@@ -1,0 +1,3 @@
+<%namespace import="*" file="blocks_base.mcftmpl"/>
+<% types = ("Coal", "Iron", "Gold", "Diamond", "Lapis", "Emerald", "Redstone") %>
+${blocks(tuple("%s Ore" % t for t in types), tuple("%s Block" % t for t in types), dz=3)}

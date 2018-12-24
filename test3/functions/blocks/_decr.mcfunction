@@ -1,2 +1,24 @@
+scoreboard players remove bricks funcs 1
+scoreboard players remove soil funcs 1
+scoreboard players remove command_blocks funcs 1
+scoreboard players remove cobble funcs 1
+scoreboard players remove sponge funcs 1
+scoreboard players remove wood_blocks funcs 1
+scoreboard players remove skulls funcs 1
+scoreboard players remove end funcs 1
+scoreboard players remove sandstone funcs 1
+scoreboard players remove ice funcs 1
+scoreboard players remove stone_bricks funcs 1
+scoreboard players remove music funcs 1
+scoreboard players remove purpur funcs 1
+scoreboard players remove pumpkin funcs 1
+scoreboard players remove quartz funcs 1
+scoreboard players remove dirt funcs 1
+scoreboard players remove frosted_ice funcs 1
 scoreboard players remove stone funcs 1
+scoreboard players remove structure_blocks funcs 1
+scoreboard players remove prismarine funcs 1
+scoreboard players remove nether funcs 1
+scoreboard players remove cake funcs 1
+scoreboard players remove ores funcs 1
 function v3:blocks/_cur

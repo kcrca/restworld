@@ -1,15 +1,37 @@
 <%namespace name="base" file="../base.mcftmpl"/>
 
 <%def name="blocks(collection, *others, **kwargs)">${do_blocks((collection,) + others, **kwargs)}</%def>
-<%def name="do_blocks(collections, sign=-1, xd=0, zd=0)">
+<%def name="do_blocks(collections, sign=-1, dx=0, dz=0, size=0)">
 <%base:loop collection="${collections[0]}" args="when,i,thing">\
-<% x = z = 0 %>\
+<%
+  x = z = 0
+  x_size = 0
+%>\
 %for c in collections:
-<% t = Thing(c[i]) %>\
+<%
+    if isinstance(c[i], Thing):
+	t = c[i]
+	lines = (t.name,)
+    else:
+	t = Thing(c[i].replace("|", " "))
+	lines = c[i].split("|")
+    signage = ()
+    for j in range(0, 3):
+	txt = lines[j] if j < len(lines) else ""
+	signage += ("Text%d:%s" % (j + 2, text(txt)),)
+%>
 ${when(i)} setblock ~${x} ~3 ~${z} ${t.full_id()}
-${when(i)} data merge block ~${x} ~2 ~${z + sign} {Text2:${text(t.name)}}
-<% x += xd %>\
-<% z += zd %>\
+${when(i)} data merge block ~${x} ~2 ~${z + sign} {${",".join(signage)}}
+<%
+    x += dx
+    x_size += 1
+    if size == 0:
+	z += dz
+    elif x_size >= size:
+	x = 0
+	z += dz
+	x_size = 0
+%>\
 %endfor
 </%base:loop>
 </%def>\

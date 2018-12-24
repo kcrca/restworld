@@ -1,0 +1,2 @@
+<%namespace name="base" file="../base.mcftmpl"/>\
+data merge block ~ ~2 ~-1 {Text2:${text("Cake")}}

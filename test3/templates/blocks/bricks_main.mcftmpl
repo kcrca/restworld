@@ -1,0 +1,3 @@
+<%namespace import="*" file="blocks_base.mcftmpl"/>
+<% types = ("Bricks", "Nether Bricks", "Red Nether Bricks") %>
+${blocks(types)}
