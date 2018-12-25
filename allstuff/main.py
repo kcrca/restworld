@@ -443,9 +443,15 @@ def effect_signs(func_dir, sign_tmpl):
         Frame(7, 5, "west", (1, 0)),
         Frame(7, 5, "north", (0, 1)),
     )
+    subjects = sorted(effects)
+    room = "effects"
+
+    room_signs(func_dir, room, sign_tmpl, subjects, frames)
+
+
+def room_signs(func_dir, room, sign_tmpl, subjects, frames):
     cur_frame = 0
     frame = frames[cur_frame]
-
     kill_command = "kill @e[tag=signer]"
     commands = [
         kill_command,
@@ -454,11 +460,11 @@ def effect_signs(func_dir, sign_tmpl):
     ]
     x = frame.start
     y = 3
-    for i, effect in enumerate(sorted(effects)):
-        sign_text = effect.sign_text()
+    for i, subj in enumerate(subjects):
+        sign_text = subj.sign_text()
         lines = ["", ] + sign_text + [""] * (max(0, 3 - len(sign_text)))
-        commands.append(sign_tmpl.render(room="effects", effect=effect, lines=lines, x=-x, y=y, z=0, frame=frame).strip())
-        # write_function(func_dir, effect.id, effect_function(effect))
+        commands.append(sign_tmpl.render(room=room, subj=subj, lines=lines, x=-x, y=y, z=0, frame=frame).strip())
+        # write_function(func_dir, subj.id, effect_function(subj))
         x += 1
         if x >= frame.end:
             y -= 1
@@ -476,10 +482,9 @@ def effect_signs(func_dir, sign_tmpl):
     x = int(frame.width / 2 + 0.6)
     y = 3
     commands.append(
-        sign_tmpl.render(room="effects", effect=Effects("Off"), lines=['', 'Off', '', ''], x=-x, y=y, z=2, frame=frame).strip())
-
+        sign_tmpl.render(room=room, subj=Effects("Off"), lines=['', 'Off', '', ''], x=-x, y=y, z=2,
+                         frame=frame).strip())
     commands.append(kill_command)
-
     write_function(func_dir, 'signs', "\n".join(commands) + "\n")
 
 

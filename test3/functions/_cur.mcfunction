@@ -6,6 +6,7 @@ function v3:enders/_cur
 function v3:center/_cur
 function v3:redstone/_cur
 function v3:wither/_cur
+function v3:arena/_cur
 function v3:friendlies/_cur
 function v3:containers/_cur
 function v3:effects/_cur
