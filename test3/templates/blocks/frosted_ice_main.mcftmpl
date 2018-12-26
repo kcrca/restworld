@@ -1,20 +1,11 @@
 <%namespace name="base" file="../base.mcftmpl"/>
 <%namespace import="*" file="blocks_base.mcftmpl"/>
 <%
-    types = [Thing("Water"), ]
+    types = []
     for i in range (0, 4):
 	types.append(Thing("Frosted Ice", block_state="age=%d" % i))
 %>
 ${blocks(tuple(types), sign=1)}
-${base.when(0)} setblock ~1 ~3 ~0 wall_sign[facing=east]
-${base.when(0)} setblock ~-1 ~3 ~0 wall_sign[facing=west]
-${base.when(0)} setblock ~0 ~3 ~1 wall_sign[facing=south]
-${base.when(0)} setblock ~0 ~3 ~-1 wall_sign[facing=north]
-${base.unless(0)} setblock ~1 ~3 ~0 air
-${base.unless(0)} setblock ~-1 ~3 ~0 air
-${base.unless(0)} setblock ~0 ~3 ~1 air
-${base.unless(0)} setblock ~0 ~3 ~-1 air
-${base.when(0)} data merge block ~0 ~2 ~1 {Text3:${text("")}}
 %for i in range(1, 5):
-${base.when(i)} data merge block ~0 ~2 ~1 {Text3:${text("Age: %d" % i)}}
+${base.when(i - 1)} data merge block ~0 ~2 ~1 {Text3:${text("Age: %d" % i)}}
 %endfor

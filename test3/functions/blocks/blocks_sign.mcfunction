@@ -6,3 +6,6 @@ execute at @e[tag=signer] run data merge block ~ ~ ~13 {Text1:"{\"text\":\"\",\"
 execute as @e[tag=signer] run execute at @s run tp @s ^ ^ ^3
 execute as @e[tag=signer] run execute at @s unless block ^ ^-1 ^ minecraft:stone run kill @e[tag=signer]
 execute as @e[tag=signer] run execute at @s if block ^ ^-1 ^ minecraft:stone run function v3:blocks/blocks_sign
+tag @e[tag=frosted_ice_home] add no_expansion
+tag @e[tag=cake_home] add no_expansion
+tag @e[tag=skulls_home] add no_expansion

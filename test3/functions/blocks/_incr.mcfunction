@@ -1,5 +1,5 @@
 scoreboard players add bricks funcs 1
-scoreboard players add soil funcs 1
+scoreboard players add blocks_sign funcs 1
 scoreboard players add command_blocks funcs 1
 scoreboard players add cobble funcs 1
 scoreboard players add sponge funcs 1
@@ -7,9 +7,11 @@ scoreboard players add wood_blocks funcs 1
 scoreboard players add skulls funcs 1
 scoreboard players add end funcs 1
 scoreboard players add sandstone funcs 1
+scoreboard players add snow funcs 1
 scoreboard players add ice funcs 1
 scoreboard players add stone_bricks funcs 1
 scoreboard players add music funcs 1
+scoreboard players add soil funcs 1
 scoreboard players add purpur funcs 1
 scoreboard players add pumpkin funcs 1
 scoreboard players add quartz funcs 1

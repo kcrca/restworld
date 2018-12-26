@@ -141,28 +141,6 @@ def render_tmpl(tmpl, var_name, **kwargs):
         "White",
     )
     professions = ("Farmer", "Librarian", "Priest", "Smith", "Butcher", "Nitwit")
-    mobs = (
-        # Passive
-        Mob("Bat"), Mob("Chicken"), Mob("Cod", acquatic=True), ("Cow"), Mob("Donkey"), Mob("Horse"), Mob("Mooshoroo"),
-        Mob("Mooshroom"), Mob("Mule"), Mob("Ocelot", nbt="CatType:1"), Mob("Ocelot", nbt="CatType:1"),
-        Mob("Parrot", can_fly=True), Mob("Pig"), Mob("Rabbit"), Mob("Sheep"), Mob("Skeleton Horse"),
-        Mob("Salmon", acquatic=True), Mob("Squid", acquatic=True), Mob("Turtle"), Mob("Tropical Fish", acquatic=True),
-        Mob("Villager"), Mob("Pufferfish", acquatic=True),
-
-        # Neutral
-        Mob("Dolphin", acquatic=True), Mob("Llama"), Mob("Polar Bear"), Mob("Wolf"), Mob("Wolf", nbt="Owner=dummy"),
-        Mob("Enderman"), Mob("Spider"), Mob("Zombie Pigman"),
-
-        # Hostile
-        Mob("Blaze", can_fly=True), Mob("Cave Spider"), Mob("Chicken Jockey"), Mob("Creeper"), Mob("Drowned"),
-        Mob("Elder Guardian", acquatic=True), Mob("Endermite"), Mob("Evoker"), Mob("Ghast", can_fly=True),
-        Mob("Guardian", acquatic=True), Mob("Husk"), Mob("Magma Cube"), Mob("Phantom", can_fly=True),
-        Mob("Shulker", can_fly=True), Mob("Silverfish"), Mob("Skeleton"), Mob("Skeleton Horseman"),
-        Mob("Spider Jockey"), Mob("Stray"), Mob("Vindicator"), Mob("Witch"), Mob("Wither Skeleton"), Mob("Zombie"),
-        Mob("Zombie Villager"),
-
-        Mob("Iron Golem"), Mob("Snow Golem"),
-    )
 
     return tmpl.render(
         var=var_name,
@@ -238,11 +216,19 @@ class Horse(Thing):
 
 
 class Mob(Thing):
-    def __init__(self, name, nbt=None, can_fly=False, acquatic=False):
-        Thing.__init__(self, name)
+    def __init__(self, name, id=None, nbt=None, can_fly=False, acquatic=False):
+        Thing.__init__(self, name, id=id)
         self.nbt = nbt
         self.can_fly = can_fly
         self.acquatic = acquatic
+
+    def sign_text(self):
+        return [self.name, ]
+
+    def inner_nbt(self):
+        if not self.nbt:
+            return ""
+        return ",%s" % self.nbt
 
 
 class CommandBlock(Thing):
@@ -397,8 +383,8 @@ def main():
     for f in incr_funcs:
         write_function(func_dir, "_%s" % f, "\n".join("function v3:%s/_%s" % (r, f) for r in rooms))
 
-    effects_dir = func_dir + "/effects"
-    effect_signs(effects_dir, Template(filename="%s/effects_sign.mcftmpl" % tmpl_dir, lookup=lookup))
+    effect_signs(func_dir + "/effects", Template(filename="%s/effects_sign.mcftmpl" % tmpl_dir, lookup=lookup))
+    arena_signs(func_dir + "/arena", Template(filename="%s/arena_sign.mcftmpl" % tmpl_dir, lookup=lookup))
 
 
 effects = (
@@ -416,13 +402,36 @@ effects = (
     Effects("Underwater"), Effects("Witch"),
 )
 
+mobs = (
+    # Passive
+    Mob("Bat"), Mob("Chicken"), Mob("Cod", acquatic=True), Mob("Cow"), Mob("Donkey"), Mob("Horse"), Mob("Mooshoroo"),
+    Mob("Mooshroom"), Mob("Mule"), Mob("Ocelot"), Mob("Cat", id="ocelot", nbt="CatType:1"), Mob("Parrot", can_fly=True),
+    Mob("Pig"), Mob("Rabbit"), Mob("Sheep"), Mob("Skeleton Horse"), Mob("Salmon", acquatic=True),
+    Mob("Squid", acquatic=True), Mob("Turtle"), Mob("Tropical Fish", acquatic=True),
+    Mob("Villager"), Mob("Pufferfish", acquatic=True),
+
+    # Neutral
+    Mob("Dolphin", acquatic=True), Mob("Llama"), Mob("Polar Bear"), Mob("Wolf"), Mob("Wolf", nbt="Owner=dummy"),
+    Mob("Enderman"), Mob("Spider"), Mob("Zombie Pigman"),
+
+    # Hostile
+    Mob("Blaze", can_fly=True), Mob("Cave Spider"), Mob("Chicken Jockey"), Mob("Creeper"), Mob("Drowned"),
+    Mob("Elder Guardian", acquatic=True), Mob("Endermite"), Mob("Evoker"), Mob("Ghast", can_fly=True),
+    Mob("Guardian", acquatic=True), Mob("Husk"), Mob("Magma Cube"), Mob("Phantom", can_fly=True),
+    Mob("Shulker", can_fly=True), Mob("Silverfish"), Mob("Skeleton"), Mob("Skeleton Horseman"),
+    Mob("Spider Jockey"), Mob("Stray"), Mob("Vindicator"), Mob("Witch"), Mob("Wither Skeleton"), Mob("Zombie"),
+    Mob("Zombie Villager"),
+
+    Mob("Iron Golem"), Mob("Snow Golem"),
+)
+
 
 def effects_function(effect):
     base = "function allstuff:effect/%s_%%s" % effect.id
     return "\n".join(base % f for f in ("init", "fast", "main", "slow")) + "\n"
 
 
-class Frame:
+class Wall:
     def __init__(self, width, used, facing, block_at):
         self.width = width
         self.used = used
@@ -436,54 +445,60 @@ class Frame:
                 self.width - 1)
 
 
-def effect_signs(func_dir, sign_tmpl):
-    frames = (
-        Frame(7, 5, "east", (-1, 0)),
-        Frame(7, 5, "south", (0, -1)),
-        Frame(7, 5, "west", (1, 0)),
-        Frame(7, 5, "north", (0, 1)),
+def arena_signs(func_dir, sign_tmpl):
+    walls = (
+        Wall(6, 4, "west", (-1, 0)),
+        Wall(9, 7, "north", (0, -1)),
+        Wall(6, 4, "east", (1, 0)),
+        Wall(9, 7, "south", (0, 1)),
     )
-    subjects = sorted(effects)
-    room = "effects"
-
-    room_signs(func_dir, room, sign_tmpl, subjects, frames)
+    room_signs(func_dir, "arena", sign_tmpl, sorted(mobs), walls, (0, 2.5, 0, 270))
 
 
-def room_signs(func_dir, room, sign_tmpl, subjects, frames):
-    cur_frame = 0
-    frame = frames[cur_frame]
+def effect_signs(func_dir, sign_tmpl):
+    walls = (
+        Wall(7, 5, "east", (-1, 0)),
+        Wall(7, 5, "south", (0, -1)),
+        Wall(7, 5, "west", (1, 0)),
+        Wall(7, 5, "north", (0, 1)),
+    )
+    room_signs(func_dir, "effects", sign_tmpl, sorted(effects), walls, (1, 1.5, -1, 90))
+
+
+def room_signs(func_dir, room, sign_tmpl, subjects, walls, start):
+    cur_wall = 0
+    wall = walls[cur_wall]
     kill_command = "kill @e[tag=signer]"
     commands = [
         kill_command,
-        "summon minecraft:armor_stand ~1 ~1.5 ~-1 {Tags:[signer],Rotation:[90f,0f],ArmorItems:[{},{},{},{id:turtle_helmet,Count:1}]}",
-        "execute at @e[tag=signer] run fill ^0 ^0 ^0 ^-6 ^3 ^-6 air",
+        "summon minecraft:armor_stand ~%f ~%f ~%f {Tags:[signer],Rotation:[%df,0f],ArmorItems:[{},{},{},{id:turtle_helmet,Count:1}]}" % start,
+        "execute at @e[tag=signer] run fill ^0 ^0 ^0 ^-%d ^3 ^-%d air" % (walls[0].width - 1, walls[1].width - 1),
     ]
-    x = frame.start
+    x = wall.start
     y = 3
     for i, subj in enumerate(subjects):
         sign_text = subj.sign_text()
         lines = ["", ] + sign_text + [""] * (max(0, 3 - len(sign_text)))
-        commands.append(sign_tmpl.render(room=room, subj=subj, lines=lines, x=-x, y=y, z=0, frame=frame).strip())
+        commands.append(sign_tmpl.render(room=room, subj=subj, lines=lines, x=-x, y=y, z=0, wall=wall).strip())
         # write_function(func_dir, subj.id, effect_function(subj))
         x += 1
-        if x >= frame.end:
+        if x >= wall.end:
             y -= 1
             if y < 1:
-                commands.append(frame.to_next_wall())
-                cur_frame += 1
-                frame = frames[cur_frame]
+                commands.append(wall.to_next_wall())
+                cur_wall += 1
+                wall = walls[cur_wall]
                 y = 3
-            x = frame.start
+            x = wall.start
     # Get to the last wall and put the "off" sign on it
-    while frame != frames[3]:
-        commands.append(frame.to_next_wall())
-        cur_frame += 1
-        frame = frames[cur_frame]
-    x = int(frame.width / 2 + 0.6)
+    while wall != walls[3]:
+        commands.append(wall.to_next_wall())
+        cur_wall += 1
+        wall = walls[cur_wall]
+    x = int(wall.width / 2 + 0.6)
     y = 3
     commands.append(
-        sign_tmpl.render(room=room, subj=Effects("Off"), lines=['', 'Off', '', ''], x=-x, y=y, z=2,
-                         frame=frame).strip())
+        sign_tmpl.render(room=room, subj=Effects("Off"), lines=['', 'Off', '', ''], x=-x, y=y, z=2, wall=wall).strip())
     commands.append(kill_command)
     write_function(func_dir, 'signs', "\n".join(commands) + "\n")
 
