@@ -1,0 +1,6 @@
+<%namespace name="base" file="../base.mcftmpl"/>
+<% stages = range(1, 9) %>
+
+<%base:bounce collection="${stages}" args="when,i,thing">
+${when(i)} setblock ~ ~4 ~ snow[layers=${thing}]
+</%base:bounce>

@@ -1,0 +1,9 @@
+<%namespace file="effects/effect_base.mcftmpl" import="*"/>\
+<%namespace file="sign_base.mcftmpl" import="*"/>\
+
+execute at @e[tag=signer] run setblock ^${x} ^${y} ^${z} wall_sign[facing=${wall.facing}]{\
+${sign_nbt(1, "summon %s ~ ~ ~" % subj.full_id(), subj.name)}\
+%if subj.name != "Off":
+,${sign_local_nbt(3, "setblock ^%d ^0 ^%d emerald_block" % (-wall.block_at[0], -wall.block_at[1]), "")}\
+%endif
+} replace
