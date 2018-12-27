@@ -1,0 +1,5 @@
+<%doc>generic_home is used for entirely static blocks. This is used for blocks that are changed, but
+      by a different command block than the one under it. These want to be expanded as they change,
+      </%doc>
+kill @e[tag=just_expand_home,distance=..2]
+summon minecraft:armor_stand ~ ~0.5 ~ {Tags:[just_expand_home,homer,blocks_home],NoGravity:true,Small:true,PersistenceRequired:true}

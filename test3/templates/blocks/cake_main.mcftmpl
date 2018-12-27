@@ -3,5 +3,5 @@
 
 <%base:bounce collection="${bites}" args="when,i,thing">
 ${when(i)} setblock ~ ~3 ~ minecraft:cake[bites=${thing}]
-${when(i)} data merge block ~ ~2 ~-1 {Text3:${text("Bites: %d" % thing)}}
+${when(i)} data merge block ~ ~2 ~1 {Text3:${text("Bites: %d" % thing)}}
 </%base:bounce>

@@ -402,43 +402,40 @@ effects = (
     Effects("Underwater"), Effects("Witch"),
 )
 
-mobs = (
-    # Passive
-    Mob("Bat"), Mob("Chicken"), Mob("Cod", acquatic=True), Mob("Cow"), Mob("Donkey"), Mob("Horse"), Mob("Mooshoroo"),
-    Mob("Mooshroom"), Mob("Mule"), Mob("Ocelot"), Mob("Cat", id="ocelot", nbt="CatType:1"), Mob("Parrot", can_fly=True),
-    Mob("Pig"), Mob("Rabbit"), Mob("Sheep"), Mob("Skeleton Horse"), Mob("Salmon", acquatic=True),
-    Mob("Squid", acquatic=True), Mob("Turtle"), Mob("Tropical Fish", acquatic=True),
-    Mob("Villager"), Mob("Pufferfish", acquatic=True),
-
-    # Neutral
-    Mob("Dolphin", acquatic=True), Mob("Llama"), Mob("Polar Bear"), Mob("Wolf"), Mob("Wolf", nbt="Owner=dummy"),
-    Mob("Enderman"), Mob("Spider"), Mob("Zombie Pigman"),
-
-    # Hostile
-    Mob("Blaze", can_fly=True), Mob("Cave Spider"), Mob("Chicken Jockey"), Mob("Creeper"), Mob("Drowned"),
-    Mob("Elder Guardian", acquatic=True), Mob("Endermite"), Mob("Evoker"), Mob("Ghast", can_fly=True),
-    Mob("Guardian", acquatic=True), Mob("Husk"), Mob("Magma Cube"), Mob("Phantom", can_fly=True),
-    Mob("Shulker", can_fly=True), Mob("Silverfish"), Mob("Skeleton"), Mob("Skeleton Horseman"),
-    Mob("Spider Jockey"), Mob("Stray"), Mob("Vindicator"), Mob("Witch"), Mob("Wither Skeleton"), Mob("Zombie"),
-    Mob("Zombie Villager"),
-
-    Mob("Iron Golem"), Mob("Snow Golem"),
+mob_palettes = (
+    ("Acquatic", (
+        Mob("Cod", acquatic=True), Mob("Dolphin", acquatic=True), Mob("Elder Guardian", acquatic=True),
+        Mob("Guardian", acquatic=True), Mob("Pufferfish", acquatic=True), Mob("Salmon", acquatic=True),
+        Mob("Squid", acquatic=True), Mob("Tropical Fish", acquatic=True),
+    )), ("Domestic", (
+        Mob("Cat", id="ocelot", nbt="CatType:1"), Mob("Chicken"), Mob("Cow"), Mob("Dog", id="wolf", nbt="Owner=dummy"),
+        Mob("Donkey"), Mob("Horse"), Mob("Llama"), Mob("Mooshroom"), Mob("Mule"), Mob("Parrot", can_fly=True),
+        Mob("Pig"), Mob("Rabbit"), Mob("Sheep"),
+    )), ("Neutral", (
+        Mob("Bat"), Mob("Enderman"), Mob("Iron Golem"), Mob("Ocelot"), Mob("Polar Bear"), Mob("Skeleton Horse"),
+        Mob("Snow Golem"), Mob("Turtle"), Mob("Villager"), Mob("Wolf"),
+    )), ("Hostile", (
+        Mob("Cave Spider"), Mob("Chicken Jockey"), Mob("Creeper"), Mob("Drowned"), Mob("Endermite"), Mob("Evoker"),
+        Mob("Husk"), Mob("Phantom", can_fly=True), Mob("Silverfish"), Mob("Skeleton Horseman"), Mob("Skeleton"),
+        Mob("Spider Jockey"), Mob("Spider"), Mob("Stray"), Mob("Vindicator"), Mob("Witch"), Mob("Zombie Villager"),
+        Mob("Zombie"),
+    )), ("Nether & End", (
+        Mob("Blaze", can_fly=True), Mob("Ghast", can_fly=True), Mob("Magma Cube"), Mob("Shulker", can_fly=True),
+        Mob("Wither Skeleton"), Mob("Zombie Pigman"),
+    )),
 )
 
 
-def effects_function(effect):
-    base = "function allstuff:effect/%s_%%s" % effect.id
-    return "\n".join(base % f for f in ("init", "fast", "main", "slow")) + "\n"
-
-
 class Wall:
-    def __init__(self, width, used, facing, block_at):
+    def __init__(self, width, used, facing, block_at, y_first=3, y_last=1):
         self.width = width
         self.used = used
         self.facing = facing
         self.block_at = block_at
         self.start = (width - used) / 2
         self.end = width - self.start
+        self.y_first = y_first
+        self.y_last = y_last
 
     def to_next_wall(self):
         return "execute as @e[tag=signer] run execute at @s run teleport @s ^-%d ^0 ^0 ~90 ~" % (
@@ -447,12 +444,14 @@ class Wall:
 
 def arena_signs(func_dir, sign_tmpl):
     walls = (
-        Wall(6, 4, "west", (-1, 0)),
-        Wall(9, 7, "north", (0, -1)),
-        Wall(6, 4, "east", (1, 0)),
-        Wall(9, 7, "south", (0, 1)),
+        Wall(7, 5, "west", (-1, 0), y_last=0),
+        Wall(1, 0, "north", (0, -1)),
     )
-    room_signs(func_dir, "arena", sign_tmpl, sorted(mobs), walls, (0, 2.5, 0, 270))
+    for p in mob_palettes:
+        wall_name, mobs = p
+        wall_id = wall_name.replace(" & ", "_").lower()
+        file_name = "%s_signs" % wall_id
+        room_signs(func_dir, "arena", sign_tmpl, sorted(mobs), walls, (0, 2.5, 0, 270), label=wall_name, file=file_name)
 
 
 def effect_signs(func_dir, sign_tmpl):
@@ -462,20 +461,26 @@ def effect_signs(func_dir, sign_tmpl):
         Wall(7, 5, "west", (1, 0)),
         Wall(7, 5, "north", (0, 1)),
     )
-    room_signs(func_dir, "effects", sign_tmpl, sorted(effects), walls, (1, 1.5, -1, 90))
+    room_signs(func_dir, "effects", sign_tmpl, sorted(effects), walls, (1, 1.5, -1, 90), do_off_sign=True)
 
 
-def room_signs(func_dir, room, sign_tmpl, subjects, walls, start):
+def room_signs(func_dir, room, sign_tmpl, subjects, walls, start, do_off_sign=False, label=None, file='signs'):
     cur_wall = 0
     wall = walls[cur_wall]
     kill_command = "kill @e[tag=signer]"
     commands = [
         kill_command,
         "summon minecraft:armor_stand ~%f ~%f ~%f {Tags:[signer],Rotation:[%df,0f],ArmorItems:[{},{},{},{id:turtle_helmet,Count:1}]}" % start,
-        "execute at @e[tag=signer] run fill ^0 ^0 ^0 ^-%d ^3 ^-%d air" % (walls[0].width - 1, walls[1].width - 1),
+        "execute at @e[tag=signer] run fill ^0 ^0 ^0 ^%d ^%d ^%d air" % (
+            -(walls[0].width - 1), wall.y_first + 1, -(walls[1].width - 1)),
     ]
+    if label:
+        commands += [
+            "execute at @e[tag=signer] run setblock ^%d ^%d ^%d wall_sign[facing=%s]{Text2:%s}" % (
+                -int(walls[0].width / 2), wall.y_first + 1, -int(walls[1].width / 2), wall.facing, text(label)),
+        ]
     x = wall.start
-    y = 3
+    y = wall.y_first
     for i, subj in enumerate(subjects):
         sign_text = subj.sign_text()
         lines = ["", ] + sign_text + [""] * (max(0, 3 - len(sign_text)))
@@ -484,23 +489,25 @@ def room_signs(func_dir, room, sign_tmpl, subjects, walls, start):
         x += 1
         if x >= wall.end:
             y -= 1
-            if y < 1:
+            if y < wall.y_last:
                 commands.append(wall.to_next_wall())
                 cur_wall += 1
                 wall = walls[cur_wall]
                 y = 3
             x = wall.start
-    # Get to the last wall and put the "off" sign on it
-    while wall != walls[3]:
-        commands.append(wall.to_next_wall())
-        cur_wall += 1
-        wall = walls[cur_wall]
-    x = int(wall.width / 2 + 0.6)
-    y = 3
-    commands.append(
-        sign_tmpl.render(room=room, subj=Effects("Off"), lines=['', 'Off', '', ''], x=-x, y=y, z=2, wall=wall).strip())
-    commands.append(kill_command)
-    write_function(func_dir, 'signs', "\n".join(commands) + "\n")
+    if do_off_sign:
+        # Get to the last wall and put the "off" sign on it
+        while cur_wall < len(walls) - 1:
+            commands.append(wall.to_next_wall())
+            cur_wall += 1
+            wall = walls[cur_wall]
+        x = int(wall.width / 2 + 0.6)
+        y = 3
+        commands.append(
+            sign_tmpl.render(room=room, subj=Effects("Off"), lines=['', 'Off', '', ''], x=-x, y=y, z=2,
+                             wall=wall).strip())
+        commands.append(kill_command)
+    write_function(func_dir, file, "\n".join(commands) + "\n")
 
 
 def write_function(func_dir, func_name, rendered):
