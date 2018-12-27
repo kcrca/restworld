@@ -6,7 +6,6 @@ function v3:enders/_decr
 function v3:center/_decr
 function v3:redstone/_decr
 function v3:wither/_decr
-function v3:arena/_decr
 function v3:friendlies/_decr
 function v3:containers/_decr
 function v3:effects/_decr
