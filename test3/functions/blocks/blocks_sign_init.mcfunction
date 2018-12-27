@@ -8,4 +8,5 @@ execute as @e[tag=signer] run execute at @s unless block ^ ^0 ^ minecraft:air ru
 execute as @e[tag=signer] run execute at @s if block ^ ^0 ^ minecraft:air run function v3:blocks/blocks_sign_init
 tag @e[tag=frosted_ice_home] add no_expansion
 tag @e[tag=cake_home] add no_expansion
-tag @e[tag=skulls_home] add no_expansion
+tag @e[tag=block_sign_home] add no_expansion
+tag @e[tag=expand_home] add no_expansion
