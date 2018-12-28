@@ -2,6 +2,8 @@ scoreboard players add blocks_sign funcs 0
 scoreboard players add bricks funcs 0
 scoreboard players add cake funcs 0
 scoreboard players add cobble funcs 0
+scoreboard players add colorings funcs 0
+scoreboard players add colorings_turned funcs 0
 scoreboard players add command_blocks funcs 0
 scoreboard players add dirt funcs 0
 scoreboard players add end funcs 0
@@ -30,5 +32,7 @@ tp @e[tag=blocks] @e[tag=death,limit=1]
 
 execute at @e[tag=blocks_sign_home] run function v3:blocks/blocks_sign_init
 execute at @e[tag=cake_home] run function v3:blocks/cake_init
+execute at @e[tag=colorings_home] run function v3:blocks/colorings_init
+execute at @e[tag=colorings_turned_home] run function v3:blocks/colorings_turned_init
 execute at @e[tag=command_blocks_home] run function v3:blocks/command_blocks_init
 execute at @e[tag=structure_blocks_home] run function v3:blocks/structure_blocks_init

@@ -1,6 +1,8 @@
 execute at @e[tag=bricks_home] run function v3:blocks/bricks_main
 execute at @e[tag=cake_home] run function v3:blocks/cake_main
 execute at @e[tag=cobble_home] run function v3:blocks/cobble_main
+execute at @e[tag=colorings_home] run function v3:blocks/colorings_main
+execute at @e[tag=colorings_turned_home] run function v3:blocks/colorings_turned_main
 execute at @e[tag=command_blocks_home] run function v3:blocks/command_blocks_main
 execute at @e[tag=dirt_home] run function v3:blocks/dirt_main
 execute at @e[tag=end_home] run function v3:blocks/end_main

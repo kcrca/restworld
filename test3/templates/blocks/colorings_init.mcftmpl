@@ -1,0 +1,9 @@
+kill @e[tag=${var}_item]
+
+summon minecraft:item_frame ~-6 ~4 ~2 {Facing:3,Tags:[${var}_item_frame,${var}_item],Item:{id:stone,Count:1}}
+summon minecraft:armor_stand ~-9 ~3 ~2 {Tags:[${var}_armor_stand,${var}_item],Rotation:[-45f,0f]}
+summon minecraft:llama ~1.2 ~3 ~4 {Tags:[${var}_llama,${var}_item],Variant:1,Tame:true,NoAI:true,Silent:true,Rotation:[160f,0f],Leashed:true}
+
+setblock ~-5 ~4 ~2 wall_sign[facing=south]{Text2:${text("Shulker Box")}}
+setblock ~-3 ~4 ~2 wall_sign[facing=south]{Text2:${text("Terracotta")}}
+setblock ~-5 ~4 ~0 wall_sign[facing=south]{Text2:${text("Banner")}}

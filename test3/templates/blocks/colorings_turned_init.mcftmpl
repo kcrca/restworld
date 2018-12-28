@@ -1,0 +1,7 @@
+<%namespace name="base" file="../base.mcftmpl"/>
+
+kill @e[tag=${var}_stage]
+
+summon minecraft:item_frame ~2 ~4 ~6 {Facing:5,Tags:[${var}_item_frame,${var}_stage],Item:{id:stone,Count:1}}
+summon minecraft:armor_stand ~2 ~3 ~8 {Tags:[${var}_armor_stand,${var}_stage],Rotation:[-135f,0f]}
+summon minecraft:llama ~1.5 ~3 ~0.5 {Tags:[${var}_llama,${var}_stage],Variant:1,Tame:true,NoAI:true,Silent:true,Rotation:[20f,0f]}

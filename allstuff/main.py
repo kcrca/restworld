@@ -1,4 +1,3 @@
-import fnmatch
 import glob
 import os
 import re
@@ -200,7 +199,7 @@ class Color(Thing):
     def dye_name(self):
         try:
             return self.dyes[mc_version]
-        except:
+        except KeyError:
             return self.dyes['default']
 
 
@@ -271,7 +270,7 @@ def to_nicknamed(kind, nicknames):
 
 
 def commas(*args):
-    return ",".join(list([str for str in args if str]))
+    return ",".join(list([s for s in args if s]))
 
 
 def has_loop(rendered):
@@ -280,32 +279,26 @@ def has_loop(rendered):
 
 def main():
     tmpl_suffix = ".mcftmpl"
-    func_suffix = ".mcfunction"
     incr_funcs = ("incr", "decr", "cur", "finish")
     speeds = ("main", "fast", "slow")
     misc = ("reset", "cleanup") + incr_funcs
     categories = ("init", "enter", "exit", "tick") + speeds + tuple("finish_%s" % s for s in speeds) + misc
     category_re = re.compile(r"^(([a-z_0-9]+?)(?:_(" + "|".join(categories) + "))?)%s$" % tmpl_suffix)
 
-    def find_files(dir, pat):
-        for root, dirnames, filenames in os.walk(dir):
-            for filename in fnmatch.filter(filenames, pat):
-                yield os.path.join(root, filename)
-
-    dir = sys.argv[1] if len(sys.argv) > 1 else '.'
-    tmpl_dir = os.path.join(dir, 'templates')
-    func_dir = os.path.join(dir, 'functions')
+    src_dir = sys.argv[1] if len(sys.argv) > 1 else '.'
+    tmpl_dir = os.path.join(src_dir, 'templates')
+    func_dir = os.path.join(src_dir, 'functions')
     lookup = TemplateLookup(directories=['.'])
     tmpls = {}
     for f in ("home", "group", "tick") + incr_funcs:
         tmpls[f] = Template(filename="templates/%s%s" % (f, tmpl_suffix), lookup=lookup)
 
     class Room:
-        def __init__(self, dir):
-            dir = dir.strip('/')
-            self.dir = dir
-            self.name = os.path.basename(dir)
-            self.func_dir = dir.replace('templates', 'functions')
+        def __init__(self, dir_name):
+            dir_name = dir_name.strip('/')
+            self.room_dir = dir_name
+            self.name = os.path.basename(dir_name)
+            self.func_dir = dir_name.replace('templates', 'functions')
             self.lists = {"exit": []}
             self.vars = set()
 
@@ -348,7 +341,7 @@ def main():
             room-wide files.
             :return:
             """
-            for tmpl_path in sorted(glob.glob(os.path.join(self.dir, "*%s" % tmpl_suffix))):
+            for tmpl_path in sorted(glob.glob(os.path.join(self.room_dir, "*%s" % tmpl_suffix))):
                 self.consume(tmpl_path)
             on_tick = []
             after_tick = []
@@ -366,11 +359,11 @@ def main():
                 write_function(self.func_dir, "_tick", rendered)
                 rendered = tmpls["finish"].render(room=self.name, on_tick=on_tick, after_tick=after_tick)
                 write_function(self.func_dir, "_finish", rendered)
-            for f in incr_funcs:
-                if f == "finish":
+            for func in incr_funcs:
+                if func == "finish":
                     continue
-                rendered = tmpls[f].render(room=self.name, vars=self.vars)
-                write_function(self.func_dir, "_%s" % f, rendered)
+                rendered = tmpls[func].render(room=self.name, vars=self.vars)
+                write_function(self.func_dir, "_%s" % func, rendered)
             rendered = tmpls["home"].render(var="finis", room=self.name)
             write_function(func_dir, "finish_home", rendered)
 
@@ -384,7 +377,6 @@ def main():
         write_function(func_dir, "_%s" % f, "\n".join("function v3:%s/_%s" % (r, f) for r in rooms))
 
     effect_signs(func_dir + "/effects", Template(filename="%s/effects_sign.mcftmpl" % tmpl_dir, lookup=lookup))
-    arena_signs(func_dir + "/arena", Template(filename="%s/arena_sign.mcftmpl" % tmpl_dir, lookup=lookup))
 
 
 effects = (
@@ -400,29 +392,6 @@ effects = (
     Effects("Rain|(Unimplemented)"), Effects("Smoke"), Effects("Snow|(Unimplemented)"), Effects("Spit"),
     Effects("Splash"), Effects("Squid Ink"), Effects("Sweep Attack"), Effects("Totem of Undying"),
     Effects("Underwater"), Effects("Witch"),
-)
-
-mob_palettes = (
-    ("Acquatic", (
-        Mob("Cod", acquatic=True), Mob("Dolphin", acquatic=True), Mob("Elder Guardian", acquatic=True),
-        Mob("Guardian", acquatic=True), Mob("Pufferfish", acquatic=True), Mob("Salmon", acquatic=True),
-        Mob("Squid", acquatic=True), Mob("Tropical Fish", acquatic=True),
-    )), ("Domestic", (
-        Mob("Cat", id="ocelot", nbt="CatType:1"), Mob("Chicken"), Mob("Cow"), Mob("Dog", id="wolf", nbt="Owner=dummy"),
-        Mob("Donkey"), Mob("Horse"), Mob("Llama"), Mob("Mooshroom"), Mob("Mule"), Mob("Parrot", can_fly=True),
-        Mob("Pig"), Mob("Rabbit"), Mob("Sheep"),
-    )), ("Neutral", (
-        Mob("Bat"), Mob("Enderman"), Mob("Iron Golem"), Mob("Ocelot"), Mob("Polar Bear"), Mob("Skeleton Horse"),
-        Mob("Snow Golem"), Mob("Turtle"), Mob("Villager"), Mob("Wolf"),
-    )), ("Hostile", (
-        Mob("Cave Spider"), Mob("Chicken Jockey"), Mob("Creeper"), Mob("Drowned"), Mob("Endermite"), Mob("Evoker"),
-        Mob("Husk"), Mob("Phantom", can_fly=True), Mob("Silverfish"), Mob("Skeleton Horseman"), Mob("Skeleton"),
-        Mob("Spider Jockey"), Mob("Spider"), Mob("Stray"), Mob("Vindicator"), Mob("Witch"), Mob("Zombie Villager"),
-        Mob("Zombie"),
-    )), ("Nether & End", (
-        Mob("Blaze", can_fly=True), Mob("Ghast", can_fly=True), Mob("Magma Cube"), Mob("Shulker", can_fly=True),
-        Mob("Wither Skeleton"), Mob("Zombie Pigman"),
-    )),
 )
 
 
@@ -442,18 +411,6 @@ class Wall:
                 self.width - 1)
 
 
-def arena_signs(func_dir, sign_tmpl):
-    walls = (
-        Wall(7, 5, "west", (-1, 0), y_last=0),
-        Wall(1, 0, "north", (0, -1)),
-    )
-    for p in mob_palettes:
-        wall_name, mobs = p
-        wall_id = wall_name.replace(" & ", "_").lower()
-        file_name = "%s_signs" % wall_id
-        room_signs(func_dir, "arena", sign_tmpl, sorted(mobs), walls, (0, 2.5, 0, 270), label=wall_name, file=file_name)
-
-
 def effect_signs(func_dir, sign_tmpl):
     walls = (
         Wall(7, 5, "east", (-1, 0)),
@@ -464,7 +421,7 @@ def effect_signs(func_dir, sign_tmpl):
     room_signs(func_dir, "effects", sign_tmpl, sorted(effects), walls, (1, 1.5, -1, 90), do_off_sign=True)
 
 
-def room_signs(func_dir, room, sign_tmpl, subjects, walls, start, do_off_sign=False, label=None, file='signs'):
+def room_signs(func_dir, room, sign_tmpl, subjects, walls, start, do_off_sign=False, label=None):
     cur_wall = 0
     wall = walls[cur_wall]
     kill_command = "kill @e[tag=signer]"
@@ -507,7 +464,7 @@ def room_signs(func_dir, room, sign_tmpl, subjects, walls, start, do_off_sign=Fa
             sign_tmpl.render(room=room, subj=Effects("Off"), lines=['', 'Off', '', ''], x=-x, y=y, z=2,
                              wall=wall).strip())
         commands.append(kill_command)
-    write_function(func_dir, file, "\n".join(commands) + "\n")
+    write_function(func_dir, "signs", "\n".join(commands) + "\n")
 
 
 def write_function(func_dir, func_name, rendered):
