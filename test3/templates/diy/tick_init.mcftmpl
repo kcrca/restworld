@@ -1,0 +1,10 @@
+<%def name="summoner(pos, tag)">
+summon minecraft:armor_stand ${pos} {Tags:[${tag},customizer],NoGravity:True,Small:True,ArmorItems:[{},{},{},{id:turtle_helmet,Count:1}],Rotation:[180f,0f]}
+</%def>
+kill @e[tag=customizer]
+<%doc>
+</%doc>
+${summoner("~-1 ~-3 ~0", "starter")}
+${summoner("~-1 ~-3 ~-6", "ender")}
+${summoner("~-1 ~-1 ~0", "cloner")}
+${summoner("~2 ~-1 ~-3 ", "displayer")}
