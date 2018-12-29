@@ -1,8 +1,0 @@
-execute at @e[tag=sleeping_bat] run clone ~ ~1 ~ ~ ~1 ~ ~ ~-1 ~ replace move
-execute at @e[tag=turtle_eggs_home] run clone ~1 ~4 ~0 ~-2 ~4 ~0 ~-2 ~2 ~0 replace move
-execute at @e[tag=brown_horses,tag=kid] run clone ~2 ~ ~ ~2 ~ ~ ~2 ~-2 ~ replace move
-%for room in ("friendlies", "monsters", "acquatic", "wither"):
-execute as @e[tag=${room}_home] run data merge entity @s {Invisible:false}
-execute as @e[tag=${room}_home] run execute at @s run tp @s ~ ~-2 ~
-execute as @e[tag=${room},tag=!passenger] run execute at @s run tp @s ~ ~-2 ~
-%endfor
