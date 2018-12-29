@@ -145,6 +145,7 @@ def render_tmpl(tmpl, var_name, **kwargs):
         var=var_name,
         func=var_name,
         Thing=Thing,
+        Mob=Mob,
         colors=colors,
         structure_blocks=structure_blocks,
         command_blocks=command_blocks,
@@ -166,7 +167,8 @@ def render_tmpl(tmpl, var_name, **kwargs):
 
 class Thing:
     def __init__(self, name, id=None, block_state=None):
-        self.name = name.strip()  # This allows a "%s Minecart" % "" to work
+        self.text = name
+        self.name = name.replace("|", " ").strip()  # This allows a "%s Minecart" % "" to work
         if id is None:
             id = to_id(self.name.strip())
         self.id = to_id(id.strip())
@@ -181,6 +183,9 @@ class Thing:
         if state:
             id += "[%s]" % state
         return id
+
+    def sign_text(self):
+        return self.text.split("|")
 
 
 class Nicknamed(Thing):
@@ -221,9 +226,6 @@ class Mob(Thing):
         self.can_fly = can_fly
         self.acquatic = acquatic
 
-    def sign_text(self):
-        return [self.name, ]
-
     def inner_nbt(self):
         if not self.nbt:
             return ""
@@ -243,14 +245,13 @@ class Stepable(Thing):
         self.base_id = to_id(base_id)
 
 
-class Effects(Thing):
+class Effects(object, Thing):
     def __init__(self, name, id=None, note=None):
-        Thing.__init__(self, name.replace('|', ' '), id)
+        Thing.__init__(self, name, id)
         self.note = "(%s)" % note if note else None
-        self.text = name
 
     def sign_text(self):
-        t = self.text.split("|")
+        t = super(Effects, self).sign_text()
         if self.note:
             t += self.note.split("|")
         return t

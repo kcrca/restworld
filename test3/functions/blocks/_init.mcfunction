@@ -21,6 +21,7 @@ scoreboard players add sandstone funcs 0
 scoreboard players add skulls funcs 0
 scoreboard players add snow funcs 0
 scoreboard players add soil funcs 0
+scoreboard players add spawner funcs 0
 scoreboard players add sponge funcs 0
 scoreboard players add stone funcs 0
 scoreboard players add stone_bricks funcs 0

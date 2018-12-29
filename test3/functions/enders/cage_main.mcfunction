@@ -1,4 +1,3 @@
-say hi
 execute unless score cage funcs matches 0.. run function cage_init
 scoreboard players add cage funcs 1
 scoreboard players set cage max 2

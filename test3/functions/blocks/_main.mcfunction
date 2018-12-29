@@ -19,6 +19,7 @@ execute at @e[tag=sandstone_home] run function v3:blocks/sandstone_main
 execute at @e[tag=skulls_home] run function v3:blocks/skulls_main
 execute at @e[tag=snow_home] run function v3:blocks/snow_main
 execute at @e[tag=soil_home] run function v3:blocks/soil_main
+execute at @e[tag=spawner_home] run function v3:blocks/spawner_main
 execute at @e[tag=sponge_home] run function v3:blocks/sponge_main
 execute at @e[tag=stone_bricks_home] run function v3:blocks/stone_bricks_main
 execute at @e[tag=stone_home] run function v3:blocks/stone_main

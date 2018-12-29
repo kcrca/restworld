@@ -1,4 +1,3 @@
-say hi
 scoreboard players set cage max 2
 execute unless score cage funcs matches 0..1 run scoreboard players operation cage funcs %= cage max
 

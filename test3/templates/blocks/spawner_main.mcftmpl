@@ -1,0 +1,12 @@
+<%namespace import="*" file="blocks_base.mcftmpl"/>
+<%
+    types = (
+	Mob("Pig Spawner", id="spawner", nbt='SpawnData:{id:"minecraft:pig"}'),
+	Mob("Zombie Spawner", id="spawner", nbt='SpawnData:{id:"minecraft:zombie"}'),
+	Mob("Skeleton Spawner", id="spawner", nbt='SpawnData:{id:"minecraft:skeleton"}'),
+	Mob("Spider Spawner", id="spawner", nbt='SpawnData:{id:"minecraft:spider"}'),
+	Mob("Cave Spider|Spawner", id="spawner", nbt='SpawnData:{id:"minecraft:cave_spider"}'),
+	Mob("Blaze Spawner", id="spawner", nbt='SpawnData:{id:"minecraft:blaze"}'),
+    )
+%>
+${blocks(types, sign=1, destroy=True)}

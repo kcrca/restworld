@@ -9,5 +9,6 @@ execute as @e[tag=signer] run execute at @s if block ^ ^0 ^ minecraft:air run fu
 tag @e[tag=colorings_home] add no_expansion
 tag @e[tag=frosted_ice_home] add no_expansion
 tag @e[tag=cake_home] add no_expansion
+tag @e[tag=spawner_home] add no_expansion
 tag @e[tag=block_sign_home] add no_expansion
 tag @e[tag=expand_home] add no_expansion

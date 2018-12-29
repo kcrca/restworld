@@ -1,7 +1,7 @@
 <%namespace name="base" file="../base.mcftmpl"/>
 
 <%def name="blocks(collection, *others, **kwargs)">${do_blocks((collection,) + others, **kwargs)}</%def>
-<%def name="do_blocks(collections, sign=-1, dx=0, dz=0, size=0)">
+<%def name="do_blocks(collections, sign=-1, dx=0, dz=0, size=0, destroy=False)">
 <%base:loop collection="${collections[0]}" args="when,i,thing">\
 <%
   x = z = 0
@@ -11,16 +11,23 @@
 <%
     if isinstance(c[i], Thing):
 	t = c[i]
-	lines = (t.name,)
     else:
 	t = Thing(c[i].replace("|", " "))
 	lines = c[i].split("|")
+    lines = t.sign_text()
     signage = ()
     for j in range(0, 3):
 	txt = lines[j] if j < len(lines) else ""
 	signage += ("Text%d:%s" % (j + 2, text(txt)),)
+    try:
+	nbt = "{%s}" % t.nbt
+    except AttributeError:
+	nbt = ""
 %>
-${when(i)} setblock ~${x} ~3 ~${z} ${t.full_id()}
+%if destroy:
+    ${when(i)} setblock ~${x} ~3 ~${z} minecraft:air
+%endif
+${when(i)} setblock ~${x} ~3 ~${z} ${t.full_id()}${nbt}${" destroy" if destroy else ""}
 ${when(i)} data merge block ~${x} ~2 ~${z + sign} {${",".join(signage)}}
 <%
     x += dx

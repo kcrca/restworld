@@ -8,6 +8,6 @@ execute at @e[tag=signer] run data merge block ~ ~ ~13 {${sign_local_nbt(0, "fun
 execute as @e[tag=signer] run execute at @s run tp @s ^ ^ ^3
 execute as @e[tag=signer] run execute at @s unless block ^ ^0 ^ minecraft:air run kill @e[tag=signer]
 execute as @e[tag=signer] run execute at @s if block ^ ^0 ^ minecraft:air run function v3:blocks/blocks_sign_init
-%for no_expand in ("colorings", "frosted_ice", "cake", "block_sign", "expand"):
+%for no_expand in ("colorings", "frosted_ice", "cake", "spawner", "block_sign", "expand"):
 tag @e[tag=${no_expand}_home] add no_expansion
 %endfor

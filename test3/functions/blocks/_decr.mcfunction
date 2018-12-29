@@ -1,6 +1,7 @@
 scoreboard players remove bricks funcs 1
 scoreboard players remove blocks_sign funcs 1
 scoreboard players remove command_blocks funcs 1
+scoreboard players remove spawner funcs 1
 scoreboard players remove cobble funcs 1
 scoreboard players remove sponge funcs 1
 scoreboard players remove wood_blocks funcs 1

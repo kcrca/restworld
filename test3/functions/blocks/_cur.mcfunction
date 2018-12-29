@@ -1,6 +1,7 @@
 execute at @e[tag=bricks_home] run function v3:blocks/bricks_cur
 execute at @e[tag=blocks_sign_home] run function v3:blocks/blocks_sign_cur
 execute at @e[tag=command_blocks_home] run function v3:blocks/command_blocks_cur
+execute at @e[tag=spawner_home] run function v3:blocks/spawner_cur
 execute at @e[tag=cobble_home] run function v3:blocks/cobble_cur
 execute at @e[tag=sponge_home] run function v3:blocks/sponge_cur
 execute at @e[tag=wood_blocks_home] run function v3:blocks/wood_blocks_cur
