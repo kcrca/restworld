@@ -1,3 +1,5 @@
+scoreboard players add cage funcs 0
+scoreboard players add crystal funcs 0
 scoreboard players add dragon funcs 0
 scoreboard players add end_portal funcs 0
 

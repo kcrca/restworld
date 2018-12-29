@@ -1,0 +1,9 @@
+<%namespace name="base" file="../base.mcftmpl"/>
+
+kill @e[tag=crystal]
+${base.increment(2)}
+${base.when(0)} summon end_crystal ~0 ~5.0 ~0 {Tags:[crystal]}
+${base.when(0)} setblock ~0 ~5 ~0 minecraft:fire
+
+${base.when(1)} kill @e[tag=crystal]
+${base.when(1)} setblock ~0 ~5 ~0 minecraft:air
