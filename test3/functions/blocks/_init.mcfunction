@@ -23,6 +23,7 @@ scoreboard players add snow funcs 0
 scoreboard players add soil funcs 0
 scoreboard players add spawner funcs 0
 scoreboard players add sponge funcs 0
+scoreboard players add stepable funcs 0
 scoreboard players add stone funcs 0
 scoreboard players add stone_bricks funcs 0
 scoreboard players add structure_blocks funcs 0
@@ -36,4 +37,5 @@ execute at @e[tag=cake_home] run function v3:blocks/cake_init
 execute at @e[tag=colorings_home] run function v3:blocks/colorings_init
 execute at @e[tag=colorings_turned_home] run function v3:blocks/colorings_turned_init
 execute at @e[tag=command_blocks_home] run function v3:blocks/command_blocks_init
+execute at @e[tag=stepable_home] run function v3:blocks/stepable_init
 execute at @e[tag=structure_blocks_home] run function v3:blocks/structure_blocks_init

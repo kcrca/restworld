@@ -1,0 +1,21 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:acacia_planks",
+    "minecraft:birch_planks",
+    "minecraft:jungle_planks",
+    "minecraft:oak_planks",
+    "minecraft:dark_oak_planks",
+    "minecraft:spruce_planks",
+    "minecraft:purpur_block",
+    "minecraft:cobblestone",
+    "minecraft:bricks",
+    "minecraft:stone_bricks",
+    "minecraft:nether_bricks",
+    "minecraft:sandstone",
+    "minecraft:red_sandstone",
+    "minecraft:prismarine",
+    "minecraft:prismarine_bricks",
+    "minecraft:dark_prismarine"
+  ]
+}

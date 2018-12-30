@@ -15,6 +15,7 @@ scoreboard players add purpur funcs 1
 scoreboard players add soil funcs 1
 scoreboard players add music funcs 1
 scoreboard players add colorings funcs 1
+scoreboard players add stepable funcs 1
 scoreboard players add pumpkin funcs 1
 scoreboard players add quartz funcs 1
 scoreboard players add dirt funcs 1

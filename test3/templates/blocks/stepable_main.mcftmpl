@@ -1,0 +1,45 @@
+<%namespace name="base" file="../base.mcftmpl"/>\
+
+<%!
+
+import re
+
+blocks = (
+    "Acacia Planks",
+    "Birch Planks",
+    "Jungle Planks",
+    "Oak Planks",
+    "Dark Oak Planks",
+    "Spruce Planks",
+    "Purpur Block",
+    "Cobblestone",
+    "Bricks",
+    "Stone Bricks",
+    "Nether Bricks",
+    "Sandstone",
+    "Red Sandstone",
+    "Prismarine",
+    "Prismarine Bricks",
+    "Dark Prismarine",
+)
+stairs = tuple(re.sub("marine$", "marine Stairs", re.sub("stone$", "stone Stairs", f.replace("Planks", "Stairs").replace("Bricks", "Brick Stairs").replace( "Block", "Stairs"))) for f in blocks)
+slabs = tuple(f.replace("Stairs", "Slab") for f in stairs)
+%>
+
+<%base:loop collection="${blocks}" args="when,i,thing">
+
+<% pl, sl, st = Thing(thing), Thing(slabs[i]), Thing(stairs[i]) %>\
+${when(i)} fill ~ ~3 ~ ~4 ~6 ~3 ${pl.full_id()} replace #v3:stepable_planks
+${when(i)} fill ~ ~3 ~ ~4 ~6 ~3 ${sl.full_id()}[type=double] replace #v3:stepable_slabs[type=double]
+%for t in ("top", "bottom"):
+${when(i)} fill ~ ~3 ~ ~4 ~6 ~3 ${sl.full_id()}[type=${t}] replace #v3:stepable_slabs[type=${t}]
+%for f in ("north", "east", "west", "south"):
+${when(i)} fill ~ ~3 ~ ~4 ~6 ~3 ${st.full_id()}[half=${t},facing=${f}] replace #v3:stepable_stairs[half=${t},facing=${f}]
+%for s in ("inner_left", "inner_right", "outer_left", "outer_right"):
+${when(i)} fill ~ ~3 ~ ~4 ~6 ~3 ${st.full_id()}[half=${t},facing=${f},shape=${s}] replace #v3:stepable_stairs[half=${t},facing=${f},shape=${s}]
+%endfor
+%endfor
+%endfor
+${when(i)} data merge block ~3 ~2 ~-1 {Text2:${text(re.sub(r" [^ ]*$", "", pl.name))}}
+
+</%base:loop>
