@@ -9,16 +9,13 @@ inv_times = [
 inv_times = list(reversed(inv_times)) + inv_times[1:-1]
 %>
 
-scoreboard players set daylight_inv funcs 0
-execute if block ~ ~2 ~ daylight_detector[inverted=true] run scoreboard players set daylight_inv funcs 1
+execute at @e[tag=daylight_detector_setup_home] run function v3:redstone/daylight_detector_setup
 fill ~3 ~${height} ~3 ~-3 ~${height} ~-3 minecraft:air
 
-execute if score daylight_inv funcs matches 0 run data merge block ~ ~2 ~-1 {Text1:${text("Daylight Detector")},Text2:${text("")}}
-execute if score daylight_inv funcs matches 1 run data merge block ~ ~2 ~-1 {Text1:${text("Inverted")},Text2:${text("Daylight Detector")}}
 <%base:loop collection="${day_times}" args="when,i,thing">\
+
 ${when(i)} execute if score daylight_inv funcs matches 0 run time set ${day_times[i]}
 <% inv = inv_times[i] %>
-${when(i)} execute if score daylight_inv funcs matches 1 run say time ${i}: ${inv}
 %if inv > 22200:
 ${when(i)} execute if score daylight_inv funcs matches 1 run time set ${inv}
 %else:
