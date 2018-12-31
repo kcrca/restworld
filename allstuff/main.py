@@ -258,7 +258,7 @@ class Effects(object, Thing):
 
 
 def text(txt):
-    return r'"\"%s\""' % txt
+    return r'"\"%s\""' % txt.replace('"', r'\\\"')
 
 
 def to_id(name):

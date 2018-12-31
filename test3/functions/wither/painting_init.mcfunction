@@ -1,2 +1,1 @@
-execute unless entity @e[type=minecraft:painting,nbt={Motive:wither}] run summon minecraft:painting ~1 ~3 ~1 {Motive:wither,Facing:3}
-kill @e[type=item,type=painting]
+execute unless entity @e[type=painting,nbt={Motive:wither},distance=..10] run summon minecraft:painting ~1 ~3 ~1 {Motive:wither,Facing:3,CustomName:"\"\\\"Wither\\\"\""}

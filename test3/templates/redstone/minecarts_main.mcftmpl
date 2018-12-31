@@ -1,6 +1,6 @@
 <%namespace name="base" file="../base.mcftmpl"/>
 <%
-    types = list(Thing(t, "%s Minecart" % to_id(t)) for t in ("", "Chest", "Furnace", "TNT", "Hopper", "Command Block"))
+    types = list(Thing(t, "%s Minecart" % to_id(t)) for t in ("", "Chest", "Furnace", "TNT", "Hopper", "Spawner", "Command Block"))
 %>
 
 <%base:remove who="tag=minecart_type"/>\

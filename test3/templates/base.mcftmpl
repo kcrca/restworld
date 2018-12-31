@@ -87,15 +87,18 @@ summon ${thing.full_id()} ~${at_x} ~${2 + y_add} ~${at_z} {Tags:[${",".join(tags
 %endif
 </%def>
 
-<%def name="kid(thing, x=None, y_add=None, z=None, rotation=0, nbt='', tags=(), name_kid=False, when=None, i=None, on_stand=False)">\
-${_mob(thing, x, y_add, z, rotation, commas(nbt, "IsBaby:True,Age:-2147483648", "CustomName:%s" % text(thing.name) if name_id else ""), tags + ("kid",), when=when, i=i, on_stand=on_stand)}\
+<%def name="kid(thing, x=None, y_add=None, z=None, rotation=0, nbt='', tags=(), name_kid=True, when=None, i=None, on_stand=False)">\
+${_mob(thing, x, y_add, z, rotation,
+       commas(nbt, "IsBaby:True,Age:-2147483648", "CustomName:%s" % text(thing.name) if name_id else "",
+              "CustomName:%s" % text(thing.name) if name_kid else ""),
+       tags + ("kid",), when=when, i=i, on_stand=on_stand)}\
 </%def>
 
 <%def name="adult(thing, x=None, y_add=None, z=None, rotation=0, nbt='', tags=(), when=None, i=None, on_stand=False)">\
 ${_mob(thing, x, y_add, z, rotation, commas(nbt, "CustomName:%s" % text(thing.name)), tags, when=when, i=i, on_stand=on_stand)}\
 </%def>
 
-<%def name="mobs(name, id=None, nbt='', tags=(), auto_tag=True, name_kid=False, do_kid=False, do_adult=False, y_add=0, when=None, i=None, on_stand=False)">\
+<%def name="mobs(name, id=None, nbt='', tags=(), auto_tag=True, name_kid=True, do_kid=False, do_adult=False, y_add=0, when=None, i=None, on_stand=False)">\
 <%
     global x, y, z, x_delta, z_delta, adult_x, adult_z, kid_x, kid_z, rotation, tag_all
     if not do_kid and not do_adult:

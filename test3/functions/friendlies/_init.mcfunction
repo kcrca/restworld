@@ -9,7 +9,6 @@ scoreboard players add horselike funcs 0
 scoreboard players add iron_golem funcs 0
 scoreboard players add llamas funcs 0
 scoreboard players add llamas_carpets funcs 0
-scoreboard players add mobs_east funcs 0
 scoreboard players add ocelot funcs 0
 scoreboard players add parrot funcs 0
 scoreboard players add pig funcs 0
@@ -31,7 +30,6 @@ execute at @e[tag=horse_home] run function v3:friendlies/horse_init
 execute at @e[tag=horselike_home] run function v3:friendlies/horselike_init
 execute at @e[tag=iron_golem_home] run function v3:friendlies/iron_golem_init
 execute at @e[tag=llamas_home] run function v3:friendlies/llamas_init
-execute at @e[tag=mobs_east_home] run function v3:friendlies/mobs_east_init
 execute at @e[tag=ocelot_home] run function v3:friendlies/ocelot_init
 execute at @e[tag=parrot_home] run function v3:friendlies/parrot_init
 execute at @e[tag=pig_home] run function v3:friendlies/pig_init
