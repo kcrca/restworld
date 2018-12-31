@@ -1,0 +1,8 @@
+<%namespace name="base" file="../base.mcftmpl"/>\
+
+${base.increment(4)}
+
+${base.unless(3)} clone ~6 ~2 ~13 ~0 ~-8 ~-1 ~-5 ~-8 ~-1 replace force
+${base.unless(3)} fill ~1 ~-1 ~9 ~-3 ~-1 ~3 air
+${base.when(3)} say Memory at maximum size
+${base.when(3)} scoreboard players set grow funcs 2

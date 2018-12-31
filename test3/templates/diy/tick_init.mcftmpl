@@ -4,7 +4,7 @@ summon minecraft:armor_stand ${pos} {Tags:[${tag},customizer],NoGravity:True,Sma
 kill @e[tag=customizer]
 <%doc>
 </%doc>
-${summoner("~-1 ~-3 ~0", "starter")}
-${summoner("~-1 ~-3 ~-6", "ender")}
-${summoner("~-1 ~-1 ~0", "cloner")}
-${summoner("~2 ~-1 ~-3 ", "displayer")}
+${summoner("~-1 ~-3 ~0", "diy_starter")}
+${summoner("~-1 ~-3 ~-6", "diy_ender")}
+${summoner("~-1 ~-1 ~0", "diy_cloner")}
+${summoner("~2 ~-1 ~-3 ", "diy_displayer")}

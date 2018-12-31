@@ -33,3 +33,5 @@ execute if score zombie funcs matches 2 run summon minecraft:drowned ~0.2 ~2 ~0 
 execute if score zombie_jockey funcs matches 1 run execute if score zombie funcs matches 2 run summon minecraft:drowned ~0.2 ~2 ~0 {Tags:[drowned,zombieish,monsters,monsters],CustomName:"\"Drowned\"",PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[90f,0f]}
 
 execute if score zombie_jockey funcs matches 1 run execute if score zombie funcs matches 2 run summon minecraft:chicken ~-1.7 ~2 ~0 {Tags:[chicken,kid,zombieish,monsters,monsters],Passengers:[{id:"minecraft:drowned",Tags:[zombie,kid,monsters],IsBaby:True,Age:-2147483648,Rotation:[90f,0f],PersistenceRequired:True,NoAI:True,Silent:True}],IsBaby:True,Age:-2147483648,PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[90f,0f]}
+
+execute if score zombie funcs matches 2 run execute as @e[tag=zombieish,tag=!kid] run data merge entity @s {HandItems:[{id:trident,Count:1}]}
