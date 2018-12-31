@@ -13,4 +13,4 @@ execute at @e[tag=cane_home] run function v3:plants/cane_cur
 execute at @e[tag=cane_soil_home] run function v3:plants/cane_soil_cur
 execute at @e[tag=pottable_home] run function v3:plants/pottable_cur
 execute at @e[tag=cactus_home] run function v3:plants/cactus_cur
-execute at @e[tag=finish_home] run setblock ~1 ~ ~ minecraft:redstone_block
+function v3:plants/_finish

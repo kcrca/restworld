@@ -12,7 +12,7 @@ scoreboard players add frosted_ice funcs 0
 scoreboard players add ice funcs 0
 scoreboard players add music funcs 0
 scoreboard players add nether funcs 0
-scoreboard players add ores funcs 0
+scoreboard players add ore_blocks funcs 0
 scoreboard players add prismarine funcs 0
 scoreboard players add pumpkin funcs 0
 scoreboard players add purpur funcs 0

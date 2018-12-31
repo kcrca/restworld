@@ -5,4 +5,4 @@ execute at @e[tag=wood_home] run function v3:materials/wood_cur
 execute at @e[tag=basic_home] run function v3:materials/basic_cur
 execute at @e[tag=fences_home] run function v3:materials/fences_cur
 execute at @e[tag=ores_home] run function v3:materials/ores_cur
-execute at @e[tag=finish_home] run setblock ~1 ~ ~ minecraft:redstone_block
+function v3:materials/_finish

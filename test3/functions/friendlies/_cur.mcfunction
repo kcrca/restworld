@@ -19,4 +19,4 @@ execute at @e[tag=chicken_home] run function v3:friendlies/chicken_cur
 execute at @e[tag=horse_home] run function v3:friendlies/horse_cur
 execute at @e[tag=villagers_home] run function v3:friendlies/villagers_cur
 execute at @e[tag=turtle_home] run function v3:friendlies/turtle_cur
-execute at @e[tag=finish_home] run setblock ~1 ~ ~ minecraft:redstone_block
+function v3:friendlies/_finish

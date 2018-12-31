@@ -14,4 +14,4 @@ execute at @e[tag=pressure_plate_home] run function v3:redstone/pressure_plate_c
 execute at @e[tag=minecarts_home] run function v3:redstone/minecarts_cur
 execute at @e[tag=dispenser_home] run function v3:redstone/dispenser_cur
 execute at @e[tag=lever_home] run function v3:redstone/lever_cur
-execute at @e[tag=finish_home] run setblock ~1 ~ ~ minecraft:redstone_block
+function v3:redstone/_finish

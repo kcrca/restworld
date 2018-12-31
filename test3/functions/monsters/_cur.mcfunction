@@ -20,4 +20,4 @@ execute at @e[tag=witch_home] run function v3:monsters/witch_cur
 execute at @e[tag=illager_home] run function v3:monsters/illager_cur
 execute at @e[tag=magma_cube_home] run function v3:monsters/magma_cube_cur
 execute at @e[tag=growing_home] run function v3:monsters/growing_cur
-execute at @e[tag=finish_home] run setblock ~1 ~ ~ minecraft:redstone_block
+function v3:monsters/_finish

@@ -1,13 +1,13 @@
 <%namespace name="base"file="../base.mcftmpl"/>
 <% blocks = (
+       Thing("Coal"),
+       Thing("Iron"),
+       Thing("Gold"),
+       Thing("Lapis"),
        Thing("Redstone"),
+       Thing("Diamond"),
        Thing("Emerald"),
        Thing("Nether Quartz"),
-       Thing("Gold"),
-       Thing("Iron"),
-       Thing("Coal"),
-       Thing("Lapis"),
-       Thing("Diamond"),
    )
 %>
 
