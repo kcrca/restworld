@@ -25,7 +25,7 @@
 	nbt = ""
 %>
 %if destroy:
-    ${when(i)} setblock ~${x} ~3 ~${z} minecraft:air
+    ${when(i)} setblock ~${x} ~3 ~${z} minecraft:air destroy
 %endif
 ${when(i)} setblock ~${x} ~3 ~${z} ${t.full_id()}${nbt}${" destroy" if destroy else ""}
 ${when(i)} data merge block ~${x} ~2 ~${z + sign} {${",".join(signage)}}

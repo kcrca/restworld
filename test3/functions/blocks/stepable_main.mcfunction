@@ -48,7 +48,7 @@ execute if score stepable funcs matches 0 run fill ~ ~3 ~ ~4 ~6 ~3 minecraft:aca
 execute if score stepable funcs matches 0 run fill ~ ~3 ~ ~4 ~6 ~3 minecraft:acacia_stairs[half=bottom,facing=south,shape=inner_right] replace #v3:stepable_stairs[half=bottom,facing=south,shape=inner_right]
 execute if score stepable funcs matches 0 run fill ~ ~3 ~ ~4 ~6 ~3 minecraft:acacia_stairs[half=bottom,facing=south,shape=outer_left] replace #v3:stepable_stairs[half=bottom,facing=south,shape=outer_left]
 execute if score stepable funcs matches 0 run fill ~ ~3 ~ ~4 ~6 ~3 minecraft:acacia_stairs[half=bottom,facing=south,shape=outer_right] replace #v3:stepable_stairs[half=bottom,facing=south,shape=outer_right]
-execute if score stepable funcs matches 0 run data merge block ~3 ~2 ~-1 {Text2:"\"Acacia\""}
+execute if score stepable funcs matches 0 run data merge block ~0 ~2 ~-1 {Text2:"\"Acacia\""}
 
 
 
@@ -97,7 +97,7 @@ execute if score stepable funcs matches 1 run fill ~ ~3 ~ ~4 ~6 ~3 minecraft:bir
 execute if score stepable funcs matches 1 run fill ~ ~3 ~ ~4 ~6 ~3 minecraft:birch_stairs[half=bottom,facing=south,shape=inner_right] replace #v3:stepable_stairs[half=bottom,facing=south,shape=inner_right]
 execute if score stepable funcs matches 1 run fill ~ ~3 ~ ~4 ~6 ~3 minecraft:birch_stairs[half=bottom,facing=south,shape=outer_left] replace #v3:stepable_stairs[half=bottom,facing=south,shape=outer_left]
 execute if score stepable funcs matches 1 run fill ~ ~3 ~ ~4 ~6 ~3 minecraft:birch_stairs[half=bottom,facing=south,shape=outer_right] replace #v3:stepable_stairs[half=bottom,facing=south,shape=outer_right]
-execute if score stepable funcs matches 1 run data merge block ~3 ~2 ~-1 {Text2:"\"Birch\""}
+execute if score stepable funcs matches 1 run data merge block ~0 ~2 ~-1 {Text2:"\"Birch\""}
 
 
 
@@ -146,7 +146,7 @@ execute if score stepable funcs matches 2 run fill ~ ~3 ~ ~4 ~6 ~3 minecraft:jun
 execute if score stepable funcs matches 2 run fill ~ ~3 ~ ~4 ~6 ~3 minecraft:jungle_stairs[half=bottom,facing=south,shape=inner_right] replace #v3:stepable_stairs[half=bottom,facing=south,shape=inner_right]
 execute if score stepable funcs matches 2 run fill ~ ~3 ~ ~4 ~6 ~3 minecraft:jungle_stairs[half=bottom,facing=south,shape=outer_left] replace #v3:stepable_stairs[half=bottom,facing=south,shape=outer_left]
 execute if score stepable funcs matches 2 run fill ~ ~3 ~ ~4 ~6 ~3 minecraft:jungle_stairs[half=bottom,facing=south,shape=outer_right] replace #v3:stepable_stairs[half=bottom,facing=south,shape=outer_right]
-execute if score stepable funcs matches 2 run data merge block ~3 ~2 ~-1 {Text2:"\"Jungle\""}
+execute if score stepable funcs matches 2 run data merge block ~0 ~2 ~-1 {Text2:"\"Jungle\""}
 
 
 
@@ -195,7 +195,7 @@ execute if score stepable funcs matches 3 run fill ~ ~3 ~ ~4 ~6 ~3 minecraft:oak
 execute if score stepable funcs matches 3 run fill ~ ~3 ~ ~4 ~6 ~3 minecraft:oak_stairs[half=bottom,facing=south,shape=inner_right] replace #v3:stepable_stairs[half=bottom,facing=south,shape=inner_right]
 execute if score stepable funcs matches 3 run fill ~ ~3 ~ ~4 ~6 ~3 minecraft:oak_stairs[half=bottom,facing=south,shape=outer_left] replace #v3:stepable_stairs[half=bottom,facing=south,shape=outer_left]
 execute if score stepable funcs matches 3 run fill ~ ~3 ~ ~4 ~6 ~3 minecraft:oak_stairs[half=bottom,facing=south,shape=outer_right] replace #v3:stepable_stairs[half=bottom,facing=south,shape=outer_right]
-execute if score stepable funcs matches 3 run data merge block ~3 ~2 ~-1 {Text2:"\"Oak\""}
+execute if score stepable funcs matches 3 run data merge block ~0 ~2 ~-1 {Text2:"\"Oak\""}
 
 
 
@@ -244,7 +244,7 @@ execute if score stepable funcs matches 4 run fill ~ ~3 ~ ~4 ~6 ~3 minecraft:dar
 execute if score stepable funcs matches 4 run fill ~ ~3 ~ ~4 ~6 ~3 minecraft:dark_oak_stairs[half=bottom,facing=south,shape=inner_right] replace #v3:stepable_stairs[half=bottom,facing=south,shape=inner_right]
 execute if score stepable funcs matches 4 run fill ~ ~3 ~ ~4 ~6 ~3 minecraft:dark_oak_stairs[half=bottom,facing=south,shape=outer_left] replace #v3:stepable_stairs[half=bottom,facing=south,shape=outer_left]
 execute if score stepable funcs matches 4 run fill ~ ~3 ~ ~4 ~6 ~3 minecraft:dark_oak_stairs[half=bottom,facing=south,shape=outer_right] replace #v3:stepable_stairs[half=bottom,facing=south,shape=outer_right]
-execute if score stepable funcs matches 4 run data merge block ~3 ~2 ~-1 {Text2:"\"Dark Oak\""}
+execute if score stepable funcs matches 4 run data merge block ~0 ~2 ~-1 {Text2:"\"Dark Oak\""}
 
 
 
@@ -293,7 +293,7 @@ execute if score stepable funcs matches 5 run fill ~ ~3 ~ ~4 ~6 ~3 minecraft:spr
 execute if score stepable funcs matches 5 run fill ~ ~3 ~ ~4 ~6 ~3 minecraft:spruce_stairs[half=bottom,facing=south,shape=inner_right] replace #v3:stepable_stairs[half=bottom,facing=south,shape=inner_right]
 execute if score stepable funcs matches 5 run fill ~ ~3 ~ ~4 ~6 ~3 minecraft:spruce_stairs[half=bottom,facing=south,shape=outer_left] replace #v3:stepable_stairs[half=bottom,facing=south,shape=outer_left]
 execute if score stepable funcs matches 5 run fill ~ ~3 ~ ~4 ~6 ~3 minecraft:spruce_stairs[half=bottom,facing=south,shape=outer_right] replace #v3:stepable_stairs[half=bottom,facing=south,shape=outer_right]
-execute if score stepable funcs matches 5 run data merge block ~3 ~2 ~-1 {Text2:"\"Spruce\""}
+execute if score stepable funcs matches 5 run data merge block ~0 ~2 ~-1 {Text2:"\"Spruce\""}
 
 
 
@@ -342,7 +342,7 @@ execute if score stepable funcs matches 6 run fill ~ ~3 ~ ~4 ~6 ~3 minecraft:pur
 execute if score stepable funcs matches 6 run fill ~ ~3 ~ ~4 ~6 ~3 minecraft:purpur_stairs[half=bottom,facing=south,shape=inner_right] replace #v3:stepable_stairs[half=bottom,facing=south,shape=inner_right]
 execute if score stepable funcs matches 6 run fill ~ ~3 ~ ~4 ~6 ~3 minecraft:purpur_stairs[half=bottom,facing=south,shape=outer_left] replace #v3:stepable_stairs[half=bottom,facing=south,shape=outer_left]
 execute if score stepable funcs matches 6 run fill ~ ~3 ~ ~4 ~6 ~3 minecraft:purpur_stairs[half=bottom,facing=south,shape=outer_right] replace #v3:stepable_stairs[half=bottom,facing=south,shape=outer_right]
-execute if score stepable funcs matches 6 run data merge block ~3 ~2 ~-1 {Text2:"\"Purpur\""}
+execute if score stepable funcs matches 6 run data merge block ~0 ~2 ~-1 {Text2:"\"Purpur\""}
 
 
 
@@ -391,7 +391,7 @@ execute if score stepable funcs matches 7 run fill ~ ~3 ~ ~4 ~6 ~3 minecraft:cob
 execute if score stepable funcs matches 7 run fill ~ ~3 ~ ~4 ~6 ~3 minecraft:cobblestone_stairs[half=bottom,facing=south,shape=inner_right] replace #v3:stepable_stairs[half=bottom,facing=south,shape=inner_right]
 execute if score stepable funcs matches 7 run fill ~ ~3 ~ ~4 ~6 ~3 minecraft:cobblestone_stairs[half=bottom,facing=south,shape=outer_left] replace #v3:stepable_stairs[half=bottom,facing=south,shape=outer_left]
 execute if score stepable funcs matches 7 run fill ~ ~3 ~ ~4 ~6 ~3 minecraft:cobblestone_stairs[half=bottom,facing=south,shape=outer_right] replace #v3:stepable_stairs[half=bottom,facing=south,shape=outer_right]
-execute if score stepable funcs matches 7 run data merge block ~3 ~2 ~-1 {Text2:"\"Cobblestone\""}
+execute if score stepable funcs matches 7 run data merge block ~0 ~2 ~-1 {Text2:"\"Cobblestone\""}
 
 
 
@@ -440,7 +440,7 @@ execute if score stepable funcs matches 8 run fill ~ ~3 ~ ~4 ~6 ~3 minecraft:bri
 execute if score stepable funcs matches 8 run fill ~ ~3 ~ ~4 ~6 ~3 minecraft:brick_stairs[half=bottom,facing=south,shape=inner_right] replace #v3:stepable_stairs[half=bottom,facing=south,shape=inner_right]
 execute if score stepable funcs matches 8 run fill ~ ~3 ~ ~4 ~6 ~3 minecraft:brick_stairs[half=bottom,facing=south,shape=outer_left] replace #v3:stepable_stairs[half=bottom,facing=south,shape=outer_left]
 execute if score stepable funcs matches 8 run fill ~ ~3 ~ ~4 ~6 ~3 minecraft:brick_stairs[half=bottom,facing=south,shape=outer_right] replace #v3:stepable_stairs[half=bottom,facing=south,shape=outer_right]
-execute if score stepable funcs matches 8 run data merge block ~3 ~2 ~-1 {Text2:"\"Bricks\""}
+execute if score stepable funcs matches 8 run data merge block ~0 ~2 ~-1 {Text2:"\"Bricks\""}
 
 
 
@@ -489,7 +489,7 @@ execute if score stepable funcs matches 9 run fill ~ ~3 ~ ~4 ~6 ~3 minecraft:sto
 execute if score stepable funcs matches 9 run fill ~ ~3 ~ ~4 ~6 ~3 minecraft:stone_brick_stairs[half=bottom,facing=south,shape=inner_right] replace #v3:stepable_stairs[half=bottom,facing=south,shape=inner_right]
 execute if score stepable funcs matches 9 run fill ~ ~3 ~ ~4 ~6 ~3 minecraft:stone_brick_stairs[half=bottom,facing=south,shape=outer_left] replace #v3:stepable_stairs[half=bottom,facing=south,shape=outer_left]
 execute if score stepable funcs matches 9 run fill ~ ~3 ~ ~4 ~6 ~3 minecraft:stone_brick_stairs[half=bottom,facing=south,shape=outer_right] replace #v3:stepable_stairs[half=bottom,facing=south,shape=outer_right]
-execute if score stepable funcs matches 9 run data merge block ~3 ~2 ~-1 {Text2:"\"Stone\""}
+execute if score stepable funcs matches 9 run data merge block ~0 ~2 ~-1 {Text2:"\"Stone\""}
 
 
 
@@ -538,7 +538,7 @@ execute if score stepable funcs matches 10 run fill ~ ~3 ~ ~4 ~6 ~3 minecraft:ne
 execute if score stepable funcs matches 10 run fill ~ ~3 ~ ~4 ~6 ~3 minecraft:nether_brick_stairs[half=bottom,facing=south,shape=inner_right] replace #v3:stepable_stairs[half=bottom,facing=south,shape=inner_right]
 execute if score stepable funcs matches 10 run fill ~ ~3 ~ ~4 ~6 ~3 minecraft:nether_brick_stairs[half=bottom,facing=south,shape=outer_left] replace #v3:stepable_stairs[half=bottom,facing=south,shape=outer_left]
 execute if score stepable funcs matches 10 run fill ~ ~3 ~ ~4 ~6 ~3 minecraft:nether_brick_stairs[half=bottom,facing=south,shape=outer_right] replace #v3:stepable_stairs[half=bottom,facing=south,shape=outer_right]
-execute if score stepable funcs matches 10 run data merge block ~3 ~2 ~-1 {Text2:"\"Nether\""}
+execute if score stepable funcs matches 10 run data merge block ~0 ~2 ~-1 {Text2:"\"Nether\""}
 
 
 
@@ -587,7 +587,7 @@ execute if score stepable funcs matches 11 run fill ~ ~3 ~ ~4 ~6 ~3 minecraft:sa
 execute if score stepable funcs matches 11 run fill ~ ~3 ~ ~4 ~6 ~3 minecraft:sandstone_stairs[half=bottom,facing=south,shape=inner_right] replace #v3:stepable_stairs[half=bottom,facing=south,shape=inner_right]
 execute if score stepable funcs matches 11 run fill ~ ~3 ~ ~4 ~6 ~3 minecraft:sandstone_stairs[half=bottom,facing=south,shape=outer_left] replace #v3:stepable_stairs[half=bottom,facing=south,shape=outer_left]
 execute if score stepable funcs matches 11 run fill ~ ~3 ~ ~4 ~6 ~3 minecraft:sandstone_stairs[half=bottom,facing=south,shape=outer_right] replace #v3:stepable_stairs[half=bottom,facing=south,shape=outer_right]
-execute if score stepable funcs matches 11 run data merge block ~3 ~2 ~-1 {Text2:"\"Sandstone\""}
+execute if score stepable funcs matches 11 run data merge block ~0 ~2 ~-1 {Text2:"\"Sandstone\""}
 
 
 
@@ -636,7 +636,7 @@ execute if score stepable funcs matches 12 run fill ~ ~3 ~ ~4 ~6 ~3 minecraft:re
 execute if score stepable funcs matches 12 run fill ~ ~3 ~ ~4 ~6 ~3 minecraft:red_sandstone_stairs[half=bottom,facing=south,shape=inner_right] replace #v3:stepable_stairs[half=bottom,facing=south,shape=inner_right]
 execute if score stepable funcs matches 12 run fill ~ ~3 ~ ~4 ~6 ~3 minecraft:red_sandstone_stairs[half=bottom,facing=south,shape=outer_left] replace #v3:stepable_stairs[half=bottom,facing=south,shape=outer_left]
 execute if score stepable funcs matches 12 run fill ~ ~3 ~ ~4 ~6 ~3 minecraft:red_sandstone_stairs[half=bottom,facing=south,shape=outer_right] replace #v3:stepable_stairs[half=bottom,facing=south,shape=outer_right]
-execute if score stepable funcs matches 12 run data merge block ~3 ~2 ~-1 {Text2:"\"Red\""}
+execute if score stepable funcs matches 12 run data merge block ~0 ~2 ~-1 {Text2:"\"Red\""}
 
 
 
@@ -685,7 +685,7 @@ execute if score stepable funcs matches 13 run fill ~ ~3 ~ ~4 ~6 ~3 minecraft:pr
 execute if score stepable funcs matches 13 run fill ~ ~3 ~ ~4 ~6 ~3 minecraft:prismarine_stairs[half=bottom,facing=south,shape=inner_right] replace #v3:stepable_stairs[half=bottom,facing=south,shape=inner_right]
 execute if score stepable funcs matches 13 run fill ~ ~3 ~ ~4 ~6 ~3 minecraft:prismarine_stairs[half=bottom,facing=south,shape=outer_left] replace #v3:stepable_stairs[half=bottom,facing=south,shape=outer_left]
 execute if score stepable funcs matches 13 run fill ~ ~3 ~ ~4 ~6 ~3 minecraft:prismarine_stairs[half=bottom,facing=south,shape=outer_right] replace #v3:stepable_stairs[half=bottom,facing=south,shape=outer_right]
-execute if score stepable funcs matches 13 run data merge block ~3 ~2 ~-1 {Text2:"\"Prismarine\""}
+execute if score stepable funcs matches 13 run data merge block ~0 ~2 ~-1 {Text2:"\"Prismarine\""}
 
 
 
@@ -734,7 +734,7 @@ execute if score stepable funcs matches 14 run fill ~ ~3 ~ ~4 ~6 ~3 minecraft:pr
 execute if score stepable funcs matches 14 run fill ~ ~3 ~ ~4 ~6 ~3 minecraft:prismarine_brick_stairs[half=bottom,facing=south,shape=inner_right] replace #v3:stepable_stairs[half=bottom,facing=south,shape=inner_right]
 execute if score stepable funcs matches 14 run fill ~ ~3 ~ ~4 ~6 ~3 minecraft:prismarine_brick_stairs[half=bottom,facing=south,shape=outer_left] replace #v3:stepable_stairs[half=bottom,facing=south,shape=outer_left]
 execute if score stepable funcs matches 14 run fill ~ ~3 ~ ~4 ~6 ~3 minecraft:prismarine_brick_stairs[half=bottom,facing=south,shape=outer_right] replace #v3:stepable_stairs[half=bottom,facing=south,shape=outer_right]
-execute if score stepable funcs matches 14 run data merge block ~3 ~2 ~-1 {Text2:"\"Prismarine\""}
+execute if score stepable funcs matches 14 run data merge block ~0 ~2 ~-1 {Text2:"\"Prismarine\""}
 
 
 
@@ -783,4 +783,4 @@ execute if score stepable funcs matches 15 run fill ~ ~3 ~ ~4 ~6 ~3 minecraft:da
 execute if score stepable funcs matches 15 run fill ~ ~3 ~ ~4 ~6 ~3 minecraft:dark_prismarine_stairs[half=bottom,facing=south,shape=inner_right] replace #v3:stepable_stairs[half=bottom,facing=south,shape=inner_right]
 execute if score stepable funcs matches 15 run fill ~ ~3 ~ ~4 ~6 ~3 minecraft:dark_prismarine_stairs[half=bottom,facing=south,shape=outer_left] replace #v3:stepable_stairs[half=bottom,facing=south,shape=outer_left]
 execute if score stepable funcs matches 15 run fill ~ ~3 ~ ~4 ~6 ~3 minecraft:dark_prismarine_stairs[half=bottom,facing=south,shape=outer_right] replace #v3:stepable_stairs[half=bottom,facing=south,shape=outer_right]
-execute if score stepable funcs matches 15 run data merge block ~3 ~2 ~-1 {Text2:"\"Dark\""}
+execute if score stepable funcs matches 15 run data merge block ~0 ~2 ~-1 {Text2:"\"Dark\""}

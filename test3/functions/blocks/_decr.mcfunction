@@ -16,6 +16,7 @@ scoreboard players remove soil funcs 1
 scoreboard players remove purpur funcs 1
 scoreboard players remove colorings funcs 1
 scoreboard players remove stepable funcs 1
+scoreboard players remove slabs funcs 1
 scoreboard players remove pumpkin funcs 1
 scoreboard players remove quartz funcs 1
 scoreboard players remove dirt funcs 1

@@ -17,6 +17,7 @@ execute at @e[tag=purpur_home] run function v3:blocks/purpur_main
 execute at @e[tag=quartz_home] run function v3:blocks/quartz_main
 execute at @e[tag=sandstone_home] run function v3:blocks/sandstone_main
 execute at @e[tag=skulls_home] run function v3:blocks/skulls_main
+execute at @e[tag=slabs_home] run function v3:blocks/slabs_main
 execute at @e[tag=snow_home] run function v3:blocks/snow_main
 execute at @e[tag=soil_home] run function v3:blocks/soil_main
 execute at @e[tag=spawner_home] run function v3:blocks/spawner_main

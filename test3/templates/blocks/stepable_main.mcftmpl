@@ -25,7 +25,6 @@ blocks = (
 stairs = tuple(re.sub("marine$", "marine Stairs", re.sub("stone$", "stone Stairs", f.replace("Planks", "Stairs").replace("Bricks", "Brick Stairs").replace( "Block", "Stairs"))) for f in blocks)
 slabs = tuple(f.replace("Stairs", "Slab") for f in stairs)
 %>
-
 <%base:loop collection="${blocks}" args="when,i,thing">
 
 <% pl, sl, st = Thing(thing), Thing(slabs[i]), Thing(stairs[i]) %>\
@@ -40,6 +39,6 @@ ${when(i)} fill ~ ~3 ~ ~4 ~6 ~3 ${st.full_id()}[half=${t},facing=${f},shape=${s}
 %endfor
 %endfor
 %endfor
-${when(i)} data merge block ~3 ~2 ~-1 {Text2:${text(re.sub(r" [^ ]*$", "", pl.name))}}
+${when(i)} data merge block ~0 ~2 ~-1 {Text2:${text(re.sub(r" [^ ]*$", "", pl.name))}}
 
 </%base:loop>

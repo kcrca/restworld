@@ -16,6 +16,7 @@ execute at @e[tag=soil_home] run function v3:blocks/soil_cur
 execute at @e[tag=purpur_home] run function v3:blocks/purpur_cur
 execute at @e[tag=colorings_home] run function v3:blocks/colorings_cur
 execute at @e[tag=stepable_home] run function v3:blocks/stepable_cur
+execute at @e[tag=slabs_home] run function v3:blocks/slabs_cur
 execute at @e[tag=pumpkin_home] run function v3:blocks/pumpkin_cur
 execute at @e[tag=quartz_home] run function v3:blocks/quartz_cur
 execute at @e[tag=dirt_home] run function v3:blocks/dirt_cur

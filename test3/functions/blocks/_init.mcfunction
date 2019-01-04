@@ -19,6 +19,7 @@ scoreboard players add purpur funcs 0
 scoreboard players add quartz funcs 0
 scoreboard players add sandstone funcs 0
 scoreboard players add skulls funcs 0
+scoreboard players add slabs funcs 0
 scoreboard players add snow funcs 0
 scoreboard players add soil funcs 0
 scoreboard players add spawner funcs 0
