@@ -1,0 +1,7 @@
+<%namespace import="*" file="arena_sign.mcftmpl"/>
+
+${arena_sign( 1, -1, "Ocean", "toggle_ocean")}
+${arena_sign( 1,  0, "Kill All", "kill_arena")}
+${arena_sign( 1,  1, "Night", "toggle_night")}
+${arena_sign( 0, -1, "Angry Vindicator", "angry_vindicator")}
+${arena_sign( 0,  0, "Go Home", "go_home")}

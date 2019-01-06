@@ -8,4 +8,3 @@ execute if score crystal funcs matches 0 run summon end_crystal ~0 ~5.0 ~0 {Tags
 execute if score crystal funcs matches 0 run setblock ~0 ~5 ~0 minecraft:fire
 
 execute if score crystal funcs matches 1 run kill @e[tag=crystal]
-execute if score crystal funcs matches 1 run setblock ~0 ~5 ~0 minecraft:air
