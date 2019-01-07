@@ -374,7 +374,7 @@ def main():
         room.generate()
         rooms += [room.name, ]
 
-    for f in incr_funcs:
+    for f in incr_funcs + ("init",):
         write_function(func_dir, "_%s" % f, "\n".join("function v3:%s/_%s" % (r, f) for r in rooms))
 
     effect_signs(func_dir + "/effects", Template(filename="%s/effects_sign.mcftmpl" % tmpl_dir, lookup=lookup))

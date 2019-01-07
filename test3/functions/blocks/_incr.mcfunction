@@ -1,7 +1,6 @@
 scoreboard players add bricks funcs 1
 scoreboard players add blocks_sign funcs 1
 scoreboard players add command_blocks funcs 1
-scoreboard players add spawner funcs 1
 scoreboard players add cobble funcs 1
 scoreboard players add sponge funcs 1
 scoreboard players add wood_blocks funcs 1
