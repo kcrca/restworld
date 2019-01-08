@@ -1,1 +1,1 @@
-execute positioned ~-20 ~0 ~-20 run kill @e[type=!player,dx=41,dy=16,dz=41]
+execute positioned ~-21 ~0 ~-21 run kill @e[type=!player,dx=43,dy=16,dz=43]

@@ -1,0 +1,15 @@
+function v3:blocks/_init
+function v3:acquatic/_init
+function v3:materials/_init
+function v3:diy/_init
+function v3:plants/_init
+function v3:enders/_init
+function v3:center/_init
+function v3:redstone/_init
+function v3:wither/_init
+function v3:arena/_init
+function v3:friendlies/_init
+function v3:containers/_init
+function v3:effects/_init
+function v3:global/_init
+function v3:monsters/_init
