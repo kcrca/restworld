@@ -158,6 +158,7 @@ def render_tmpl(tmpl, var_name, **kwargs):
         tulips=tulips,
         professions=professions,
         text=text,
+        text_attrs=text_attrs,
         to_nicknamed=to_nicknamed,
         to_id=to_id,
         commas=commas,
@@ -259,6 +260,14 @@ class Effects(object, Thing):
 
 def text(txt):
     return r'"\"%s\""' % txt.replace('"', r'\\\"')
+
+def text_attrs(attrs):
+    if not attrs:
+        return ""
+    s = ""
+    for k,v in attrs.iteritems():
+        s += r',\"%s\":\"%s\"' % (k, v)
+    return s
 
 
 def to_id(name):

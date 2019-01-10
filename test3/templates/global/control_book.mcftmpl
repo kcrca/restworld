@@ -1,17 +1,27 @@
-<%def name="scribe(txt)">{\"text\":\"${txt}\"}</%def>
-<%def name="action(txt, tooltip, function)">{\"text\":\"${txt}\",\"color\":\"dark_green\",\"underlined\":true,\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/${function}\"}, \"hoverEvent\":{\"action\":\"show_text\",\"value\":\"${tooltip}\"}}</%def>
+<%def name="scribe(txt, more=None)">{\"text\":\"${txt}\"${text_attrs(more)}}</%def>
+<%def name="action(txt, tooltip, function, more=None)">{\"text\":\"${txt}\",\"color\":\"dark_green\",\"underlined\":true,\"clickEvent\":{\"action\":\"run_command\",\"value\":\"/${function}\"}, \"hoverEvent\":{\"action\":\"show_text\",\"value\":\"${tooltip}\"}${text_attrs(more)}}</%def>
 
 give @p written_book{pages:[ "[\"\", \
-${scribe(r"\\nClock State:\\n      ")}, \
-${action(r"|\\u25c0\\u25c0", "Previous", "function v3:_decr")}, ${scribe(" ")}, \
-${action(r"||/\\u25b6", "Play/Pause", "setblock 1 1 1 stone destroy")}, ${scribe(" ")}, \
+${scribe(r"Clock State:\\n      ")}, \
+${action(r"|\\u25c0\\u25c0", "Previous", "function v3:_decr")}, ${scribe("  ")}, \
+${action(r"||", "Play/Pause", "setblock 1 1 1 stone destroy", {"bold": True})}, \
+${action(r"/\\u25b6", "Play/Pause", "setblock 1 1 1 stone destroy")}, ${scribe("  ")}, \
 ${action(r"\\u25b6\\u25b6|", "Next", "function v3:_incr")}, ${scribe(r"\\n")}, \
-${scribe(r"Clock Speed:\\n      ")}, \
+${scribe(r"\\nClock Speed:\\n      ")}, \
 ${action(r"<<", "Slower Clock Speed", "function v3:center/slower_clocks")}, ${scribe("   ")}, \
 ${action(r"\\u27f2", "Reset Clock Speed", "function v3:center/reset_clocks")}, ${scribe("   ")}, \
 ${action(r">>", "Faster Clock Speed", "function v3:center/faster_clocks")}, ${scribe(r"\\n")}, \
-${scribe(r"Links:\\n   ")}, \
+${scribe(r"\\nLinks:\\n   ")}, \
 ${action(r"Home", "Starting Point", "function v3:global/go_home")}, ${scribe(r"\\n   ")}, \
 ${action(r"Photo Shoot", "Scenic View", "function v3:global/photo_shoot")}, ${scribe(r"\\n   ")}, \
-${action(r"Battle Arena", "Mob Playground", "function v3:global/arena")} \
-]" ],title:"World Control",author:"Display World",display:{Lore:["Useful controls"]}}
+${action(r"Battle Arena", "Mob Playground", "function v3:global/arena")}, \
+${scribe(r"\\n\\nMinecraft Version:\\n   1.13.2, Jan 2019")} \
+]","[\"\", \
+${scribe(r"Credits:\\n\\n")}, \
+${scribe(r"BlueMeanial:\\n", {"bold": True})}, \
+${scribe(r"  Command Blocks\\n  Software Design\\n  Programming\\n\\n")}, \
+${scribe(r"JUMBOshrimp277:\\n", {"bold": True})}, \
+${scribe(r"  World Design\\n  Testing\\n  Rubber Duck")} \
+]" \
+], \
+title:"World Control",author:"Display World",display:{Lore:["Useful controls"]}}
