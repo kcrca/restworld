@@ -8,6 +8,6 @@ scoreboard players set arena_is_grass funcs 0
 execute if block ~${x_dim} ~-1 ~${z_dim} minecraft:grass_block run scoreboard players set arena_is_grass funcs 1
 
 execute if score arena_is_grass funcs matches 0 run fill ~${x_dim} ~-1 ~${z_dim} ~${-x_dim} ~-1 ~${-z_dim} grass_block
-execute if score arena_is_grass funcs matches 0 at @e[tag=controls_home] run data merge block ~-2 ~1 ~-1 {Text4:${text("Off")}}
+execute if score arena_is_grass funcs matches 0 at @e[tag=controls_home] run data merge block ~-2 ~1 ~0 {Text3:${text("Off")}}
 execute if score arena_is_grass funcs matches 1 run clone ~${x_dim} ~-11 ~${z_dim} ~${-x_dim} ~-11 ~${-z_dim} ~${-x_dim} ~-1 ~${-z_dim}
-execute if score arena_is_grass funcs matches 1 at @e[tag=controls_home] run data merge block ~-2 ~1 ~0 {Text4:${text("On")}}
+execute if score arena_is_grass funcs matches 1 at @e[tag=controls_home] run data merge block ~-2 ~1 ~0 {Text3:${text("On")}}

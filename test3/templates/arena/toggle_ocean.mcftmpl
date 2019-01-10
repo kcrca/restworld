@@ -9,7 +9,7 @@ execute if block ~${x_dim} ~${y_dim} ~${z_dim} minecraft:water run scoreboard pl
 
 execute if score arena_is_ocean funcs matches 0 run fill ~${-x_dim} ~0 ~${-z_dim} ~${x_dim} ~${y_dim} ~${z_dim} water replace air
 execute if score arena_is_ocean funcs matches 0 at @e[tag=controls_home] run fill ~-3 ~-2 ~-2 ~-3 ~2 ~2 air replace water
-execute if score arena_is_ocean funcs matches 0 at @e[tag=controls_home] run data merge block ~-2 ~1 ~-1 {Text4:${text("Off")}}
+execute if score arena_is_ocean funcs matches 0 at @e[tag=controls_home] run data merge block ~-2 ~1 ~-1 {Text3:${text("Off")}}
 execute if score arena_is_ocean funcs matches 1 run fill ~${-x_dim} ~0 ~${-z_dim} ~${x_dim} ~${y_dim} ~${z_dim} air replace water
-execute if score arena_is_ocean funcs matches 1 at @e[tag=controls_home] run data merge block ~-2 ~1 ~-1 {Text4:${text("On")}}
+execute if score arena_is_ocean funcs matches 1 at @e[tag=controls_home] run data merge block ~-2 ~1 ~-1 {Text3:${text("On")}}
 execute if score arena_is_ocean funcs matches 0 at @e[tag=controls_home] run fill ~-3 ~-2 ~-2 ~-3 ~2 ~2 water replace air
