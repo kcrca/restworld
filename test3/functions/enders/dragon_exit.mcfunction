@@ -1,1 +1,1 @@
-tp @e[tag=dragon] @e[tag=death,limit=1]
+kill @e[type=ender_dragon]
