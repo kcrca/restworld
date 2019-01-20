@@ -1,8 +1,0 @@
-<%namespace name="base"  file="base.mcftmpl"/>\
-
-<%base:bounce collection="${range(0, 3)}" args="when,i,thing">
-${when(i)} setblock ~1 ~4 ~0 minecraft:cocoa[age=${thing},facing=west]
-${when(i)} setblock ~-1 ~4 ~0 minecraft:cocoa[age=${thing},facing=east]
-${when(i)} setblock ~0 ~4 ~1 minecraft:cocoa[age=${thing},facing=north]
-${when(i)} setblock ~0 ~4 ~-1 minecraft:cocoa[age=${thing},facing=south]
-</%base:bounce>

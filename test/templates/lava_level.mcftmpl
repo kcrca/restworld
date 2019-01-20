@@ -1,9 +1,0 @@
-<%namespace name="base"  file="base.mcftmpl"/>
-<% blocks = (Thing("Air"), Thing("Stone Slab")) %>
-
-<%base:loop collection="${blocks}" args="when,i,thing">
-${when(i)} fill ~0 ~2 ~0 ~3 ~2 ~3 ${thing.full_id()}
-% if thing.id.startswith("stone"):
-${when(i)} fill ~1 ~2 ~1 ~2 ~2 ~2 minecraft:air
-% endif
-</%base:loop>

@@ -1,6 +1,0 @@
-<%namespace name="base"  file="base.mcftmpl"/>
-
-<%base:bounce collection="${range(1, 4)}" args="when,i,thing">\
-${when(i)} setblock ~ ~3 ~ minecraft:sea_pickle[pickles=${thing}]
-${when(i)} setblock ~ ~3 ~2 minecraft:sea_pickle[waterlogged=false,pickles=${thing}]
-</%base:bounce>

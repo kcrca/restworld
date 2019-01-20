@@ -1,1 +1,0 @@
-execute if score main clocks matches 0 at @e[tag=effects_center] positioned ~ ~2 ~ run function allstuff:effects/fireworks_change

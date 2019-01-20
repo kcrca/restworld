@@ -1,4 +1,0 @@
-scoreboard objectives add funcs dummy
-% for v in vars:
-scoreboard players set ${v} vars -1
-% endfor

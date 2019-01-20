@@ -1,2 +1,0 @@
-<%namespace file="effect_base.mcftmpl" import="*"/>\
-${main_clock()} function allstuff:effects/falling_dust_change

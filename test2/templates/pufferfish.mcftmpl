@@ -1,6 +1,0 @@
-<%namespace name="base"  file="base.mcftmpl"/>\
-<%doc>TBD: This has no effect!</%doc>
-
-<%base:loop collection="${(0, 1, 2)}" args="when,i,thing">\
-${when(i)} execute as @e[tag=pufferfish] run data merge entity @s {PuffState:${thing},Age:-2000}
-</%base:loop>\

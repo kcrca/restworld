@@ -1,9 +1,0 @@
-<%namespace name="base"  file="base.mcftmpl"/>
-<%
-    materials = ("leather", "iron", "chainmail", "golden", "diamond")
-%>
-
-<%base:loop collection="${materials}" args="when,i,thing">
-${when(i, as_prefix=True)} unless score turtle_helmet funcs matches 0 run data merge entity @e[tag=armor_stand,limit=1] {CustomName:${text(thing.capitalize())},ArmorItems:[{id:${thing}_boots,Count:1},{id:${thing}_leggings,Count:1},{id:${thing}_chestplate,Count:1},{id:turtle_helmet,Count:1}]}
-${when(i, as_prefix=True)} if score turtle_helmet funcs matches 0 run data merge entity @e[tag=armor_stand,limit=1] {CustomName:${text(thing.capitalize())},ArmorItems:[{id:${thing}_boots,Count:1},{id:${thing}_leggings,Count:1},{id:${thing}_chestplate,Count:1},{id:${thing}_helmet,Count:1}]}
-</%base:loop>

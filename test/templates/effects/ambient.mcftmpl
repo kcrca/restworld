@@ -1,2 +1,0 @@
-<%namespace file="effect_base.mcftmpl" import="*"/>\
-${main_clock()} particle minecraft:ambient_entity_effect ~ ~ ~ 0.5 5 0.5 1 500

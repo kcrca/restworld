@@ -1,1 +1,0 @@
-summon minecraft:llama ~0 ~0.5 ~-1 {NoAI:True,Silent:True}

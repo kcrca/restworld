@@ -1,7 +1,0 @@
-<%namespace name="base"  file="base.mcftmpl"/>
-
-${base.increment(2)}
-${base.when(0)} fill ~0 ~2 ~0 ~2 ~2 ~4 minecraft:smooth_sandstone replace minecraft:air
-${base.when(0)} setblock ~2 ~3 ~2 wall_sign[facing=west]{Text2:${text("Which way are")},Text3:${text("they pointing?")}}
-${base.when(1)} fill ~0 ~2 ~0 ~2 ~2 ~4 minecraft:air replace minecraft:smooth_sandstone
-${base.when(1)} setblock ~2 ~3 ~2 air

@@ -1,1 +1,0 @@
-setblock ~0 ~0 ~0 minecraft:note_block

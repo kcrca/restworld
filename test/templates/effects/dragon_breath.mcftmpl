@@ -1,2 +1,0 @@
-<%namespace file="effect_base.mcftmpl" import="*"/>\
-${fast_clock()} summon minecraft:dragon_fireball ~0 ~-2 ~0 {direction:[0.0,-2.0,0.0],ExplosionPower:1}

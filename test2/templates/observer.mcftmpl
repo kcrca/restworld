@@ -1,5 +1,0 @@
-<%namespace name="base"  file="base.mcftmpl"/>
-
-<%base:loop collection="${('true', 'false')}" args="when,i,thing">\
-${when(i)} setblock ~ ~2 ~ minecraft:observer[powered=${thing},facing=east]
-</%base:loop>

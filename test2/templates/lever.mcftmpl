@@ -1,5 +1,0 @@
-<%namespace name="base"  file="base.mcftmpl"/>
-
-<%base:loop collection="${('false', 'true')}" args="when,i,thing">\
-${when(i)} setblock ~ ~3 ~ minecraft:lever[powered=${thing},face=floor]
-</%base:loop>

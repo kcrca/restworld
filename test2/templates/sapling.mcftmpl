@@ -1,8 +1,0 @@
-<%namespace name="base"  file="base.mcftmpl"/>
-<% stages = range(0, 2)  %>
-
-<%base:loop collection="${stages}" args="when,i,thing">\
-% for w in woods:
-${when(i)} setblock ~${int(loop.index / 3) * 3} ~3 ~${int(loop.index % 3) * -3} ${Thing(w).full_id()}_sapling[stage=${i}]
-% endfor
-</%base:loop>

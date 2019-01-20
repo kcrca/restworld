@@ -1,5 +1,0 @@
-<%namespace file="../base.mcftmpl" import="*"/>\
-${stop_clocks()}
-execute at @e[tag=starter] run fill ~0 ~5 ~0 ~0 ~5 ~-6 sand
-execute at @e[tag=ender] run tp @e[tag=cloner] ~0 ~2 ~0
-function v2:diy/tick
