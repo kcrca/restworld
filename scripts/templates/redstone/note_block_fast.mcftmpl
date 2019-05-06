@@ -1,6 +1,6 @@
 <%namespace name="base" file="../base.mcftmpl"/>
 <%
-    instruments = ("hat", "basedrum", "snare", "xylophone", "chime", "harp", "guitar", "bass", "flute", "bell")
+    instruments = ("hat", "basedrum", "snare", "xylophone", "chime", "harp", "guitar", "bass", "flute", "bell", "iron_xylophone", "cow_bell", "didgeridoo", "bit", "banjo", "pling")
 %>
 
 <%base:loop collection="${range(0, 25)}" args="when,i,thing">

@@ -1,10 +1,12 @@
 <%namespace name="base" file="../base.mcftmpl"/>
 <%
-    horse_armor = ("iron", "golden", "diamond")
-    materials = ("wooden", "stone") + horse_armor
-    armors = ("leather", "chainmail", "iron", "golden", "diamond")
-    blocks = (Thing("Oak Planks"), Thing("Stone"),
-              Thing("Iron Block"), Thing("Gold Block"), Thing("Diamond Block"))
+    materials = (
+        ("wooden", "leather", True, Thing("oak_planks")),
+        ("stone", "chainmail", False, Thing("stone")),
+	("iron", "iron", True, Thing("iron_block")),
+	("golden", "golden", True, Thing("gold_block")),
+	("diamond", "diamond", True, Thing("diamond_block")),
+    )
     global has_horse
     has_horse = False
 %>
@@ -12,18 +14,18 @@
 ${base.remove("tag=material_thing")}
 
 <%base:loop collection="${materials}" args="when,i,thing">
-<% armor = armors[i] %>\
-${when(i, as_prefix=True)} if score turtle_helmet funcs matches 0 run data merge entity @e[tag=armor_stand,limit=1] {CustomName:${text(thing.capitalize())},ArmorItems:[{id:${armor}_boots,Count:1},{id:${armor}_leggings,Count:1},{id:${armor}_chestplate,Count:1},{id:${armor}_helmet,Count:1}]}
-${when(i, as_prefix=True)} unless score turtle_helmet funcs matches 0 run data merge entity @e[tag=armor_stand,limit=1] {CustomName:${text(thing.capitalize())},ArmorItems:[{id:${armor}_boots,Count:1},{id:${armor}_leggings,Count:1},{id:${armor}_chestplate,Count:1},{id:turtle_helmet,Count:1}]}
-${when(i)} fill ~-3 ~2 ~2 ~-3 ~5 ~2 ${blocks[i].full_id()}
-${when(i)} setblock ~4 ~4 ~2 ${blocks[i].full_id()}
+<% material, armor, horse_armor, background = thing %>
+${when(i, as_prefix=True)} if score turtle_helmet funcs matches 0 run data merge entity @e[tag=armor_stand,limit=1] {CustomName:${text(material.capitalize())},ArmorItems:[{id:${armor}_boots,Count:1},{id:${armor}_leggings,Count:1},{id:${armor}_chestplate,Count:1},{id:${armor}_helmet,Count:1}]}
+${when(i, as_prefix=True)} unless score turtle_helmet funcs matches 0 run data merge entity @e[tag=armor_stand,limit=1] {CustomName:${text(material.capitalize())},ArmorItems:[{id:${armor}_boots,Count:1},{id:${armor}_leggings,Count:1},{id:${armor}_chestplate,Count:1},{id:turtle_helmet,Count:1}]}
+${when(i)} fill ~-3 ~2 ~2 ~-3 ~5 ~2 ${background.full_id()}
+${when(i)} setblock ~4 ~4 ~2 ${background.full_id()}
 ${when(i)}
 ${when(i)} data merge entity @e[tag=armor_boots,limit=1] {Item:{id:${armor}_boots,Count:1},ItemRotation:0}
 ${when(i)} data merge entity @e[tag=armor_leggings,limit=1] {Item:{id:${armor}_leggings,Count:1},ItemRotation:0}
 ${when(i)} data merge entity @e[tag=armor_chestplate,limit=1] {Item:{id:${armor}_chestplate,Count:1},ItemRotation:0}
 ${when(i)} data merge entity @e[tag=armor_helmet,limit=1] {Item:{id:${armor}_helmet,Count:1},ItemRotation:0}
 
-%if thing in horse_armor:
+%if horse_armor:
 ${when(i)} execute unless entity @e[tag=armor_horse,distance=..10] run summon minecraft:horse ~4.5 ~2 ~0.5 {Variant:1,Tame:True,NoAI:True,Silent:True,Tags:[armor_horse,material_static],Rotation:[180f,0f]}
 ${when(i)} data merge entity @e[tag=armor_horse,limit=1,sort=nearest] {ArmorItem:{id:${armor}_horse_armor,Count:1}}
 ${when(i)} data merge entity @e[tag=armor_horse_frame,limit=1] {Item:{id:${armor}_horse_armor,Count:1},ItemRotation:0}
@@ -33,17 +35,17 @@ ${when(i)} data merge entity @e[tag=armor_horse_frame,limit=1] {Item:{id:stone,C
 ${when(i)} execute if entity @e[tag=armor_horse,distance=..10] run teleport @e[tag=armor_horse] @e[tag=death,limit=1]
 %endif
 
-${when(i)} data merge entity @e[tag=armor_stand,limit=1] {HandItems:[{id:${thing}_sword,Count:1},{id:shield,Count:1}]}
+${when(i)} data merge entity @e[tag=armor_stand,limit=1] {HandItems:[{id:${material}_sword,Count:1},{id:shield,Count:1}]}
 <%
-    hands_raw = [None, None, "%s_shovel" % thing, "%s_pickaxe" % thing, "%s_hoe" % thing, "%s_axe" % thing, None, None]
-    if thing == "wooden":
+    hands_raw = [None, None, "%s_shovel" % material, "%s_pickaxe" % material, "%s_hoe" % material, "%s_axe" % material, None, None]
+    if material == "wooden":
 	hands_raw[1] = "bow"
 	hands_raw[6] = "fishing_rod"
-    elif thing == "iron":
+    elif material == "iron":
 	hands_raw[1] = "flint_and_steel"
 	hands_raw[6] = "shears"
 	hands_raw[7] = "compass"
-    elif thing == "golden":
+    elif material == "golden":
 	hands_raw[6] = "clock"
     hands = list("%s" % ("id:%s,Count:1" % h if h else "") for h in hands_raw)
 %>
@@ -53,5 +55,5 @@ ${when(i)} data merge entity @e[tag=material_${j},limit=1] {HandItems:[{${hands[
 %for j in range(4, 8):
 ${when(i)} data merge entity @e[tag=material_${j},limit=1] {HandItems:[{},{${hands[j]}}]}
 %endfor
-${when(i)} data merge block ~-2 ~ ~1 {name:"minecraft:material_${thing}"}
+${when(i)} data merge block ~-2 ~ ~1 {name:"minecraft:material_${material}"}
 </%base:loop>

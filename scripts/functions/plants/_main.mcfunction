@@ -1,6 +1,7 @@
 execute at @e[tag=4_crops_home] run function v3:plants/4_crops_main
 execute at @e[tag=6_crops_home] run function v3:plants/6_crops_main
 execute at @e[tag=8_crops_home] run function v3:plants/8_crops_main
+execute at @e[tag=bamboo_home] run function v3:plants/bamboo_main
 execute at @e[tag=cactus_home] run function v3:plants/cactus_main
 execute at @e[tag=cane_home] run function v3:plants/cane_main
 execute at @e[tag=cane_soil_home] run function v3:plants/cane_soil_main
@@ -12,4 +13,5 @@ execute at @e[tag=sand_home] run function v3:plants/sand_main
 execute at @e[tag=sapling_home] run function v3:plants/sapling_main
 execute at @e[tag=sea_pickles_home] run function v3:plants/sea_pickles_main
 execute at @e[tag=stems_home] run function v3:plants/stems_main
+execute at @e[tag=sweet_berry_home] run function v3:plants/sweet_berry_main
 execute at @e[tag=tulips_home] run function v3:plants/tulips_main
