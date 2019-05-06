@@ -1,5 +1,6 @@
 import glob
 import os
+import random
 import re
 import sys
 
@@ -27,12 +28,6 @@ def render_tmpl(tmpl, var_name, **kwargs):
         Color("Green", 6192150, "cactus_green"),
         Color("Red", 11546150, "rose_red"),
         Color("Black", 1908001, "ink_sac"),
-    )
-    structure_blocks = (
-        Thing("Data", "DATA"),
-        Thing("Save", "SAVE"),
-        Thing("Load", "LOAD"),
-        Thing("Corner", "CORNER"),
     )
     command_blocks = (
         CommandBlock("Command Block", True),
@@ -139,7 +134,29 @@ def render_tmpl(tmpl, var_name, **kwargs):
         "Pink",
         "White",
     )
-    professions = ("Farmer", "Librarian", "Priest", "Smith", "Butcher", "Nitwit")
+    professions = (
+        "armorer",
+        "butcher",
+        "cartographer",
+        "cleric",
+        "farmer",
+        "fisherman",
+        "fletcher",
+        "leatherworker",
+        "librarian",
+        "nitwit",
+        "unemployed",
+        "stonemason",
+        "shepherd",
+        "toolsmith",
+        "weaponsmith",
+    )
+    types = ("desert", "jungle", "plains", "savanna", "snowy", "swamp", "taiga")
+    villager_data = []
+    for t in types:
+        for p in professions:
+            villager_data += ['profession:%s,type:%s' % (p, t),]
+    random.shuffle(villager_data)
 
     return tmpl.render(
         var=var_name,
@@ -147,7 +164,6 @@ def render_tmpl(tmpl, var_name, **kwargs):
         Thing=Thing,
         Mob=Mob,
         colors=colors,
-        structure_blocks=structure_blocks,
         command_blocks=command_blocks,
         steppables=stepables,
         woods=woods,
@@ -162,9 +178,9 @@ def render_tmpl(tmpl, var_name, **kwargs):
         to_nicknamed=to_nicknamed,
         to_id=to_id,
         commas=commas,
+        villager_data=villager_data,
         **kwargs
     )
-
 
 
 class Thing:
@@ -262,11 +278,12 @@ class Effects(object, Thing):
 def text(txt):
     return r'"\"%s\""' % txt.replace('"', r'\\\"')
 
+
 def text_attrs(attrs):
     if not attrs:
         return ""
     s = ""
-    for k,v in attrs.iteritems():
+    for k, v in attrs.iteritems():
         s += r',\"%s\":\"%s\"' % (k, v)
     return s
 
