@@ -1,7 +1,7 @@
 <%namespace file="effects/effect_base.mcftmpl" import="*"/>\
 <%namespace file="sign_base.mcftmpl" import="*"/>\
 
-execute at @e[tag=signer] run setblock ^${x} ^${y} ^${z} wall_sign[facing=${wall.facing}]{\
+execute at @e[tag=signer] run setblock ^${x} ^${y} ^${z} oak_wall_sign[facing=${wall.facing}]{\
 ${sign_nbt(0, "setblock ~ ~-3 ~ redstone_block", lines[0])},\
 ${sign_nbt(1, r"data merge block ~0 ~-4 ~-2 {Command:\\\"execute at @e[tag=effects_home] positioned ~ ~2 ~ run function v3:effects/%s_init\\\"}" % subj.id, lines[1])},\
 ${sign_nbt(2, r"data merge block ~-1 ~-2 ~0 {Command:\\\"execute at @e[tag=effects_home] positioned ~ ~2 ~ run function v3:effects/%s\\\"}" % subj.id, lines[2])}\

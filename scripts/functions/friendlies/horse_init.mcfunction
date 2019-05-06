@@ -12,4 +12,4 @@ summon minecraft:horse ~1.4 ~2 ~-10 {Tags:[gray_horses,horse,kid,friendlies,sadd
 summon minecraft:horse ~-1.2 ~2 ~-10 {Tags:[gray_horses,horse,friendlies,saddle,friendlies],Variant:5,Tame:True,CustomName:"\"Gray\"",PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[270f,0f]}
 summon minecraft:horse ~1.4 ~2 ~-12 {Tags:[dark_brown_horses,horse,kid,friendlies,saddle,friendlies],Variant:6,Tame:True,IsBaby:True,Age:-2147483648,CustomName:"\"Dark Brown\"",PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[270f,0f]}
 summon minecraft:horse ~-1.2 ~2 ~-12 {Tags:[dark_brown_horses,horse,friendlies,saddle,friendlies],Variant:6,Tame:True,CustomName:"\"Dark Brown\"",PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[270f,0f]}
-execute at @e[tag=brown_horses,tag=kid] run setblock ~2 ~ ~ minecraft:wall_sign[facing=east]{Text2:"\"Variant:\""} replace
+execute at @e[tag=brown_horses,tag=kid] run setblock ~2 ~ ~ minecraft:oak_wall_sign[facing=east]{Text2:"\"Variant:\""} replace

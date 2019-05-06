@@ -166,6 +166,7 @@ def render_tmpl(tmpl, var_name, **kwargs):
     )
 
 
+
 class Thing:
     def __init__(self, name, id=None, block_state=None):
         self.text = name

@@ -1,1 +1,1 @@
-setblock ~0 ~2 ~-2 wall_sign{Text3:"\"Wither\""}
+setblock ~0 ~2 ~-2 oak_wall_sign{Text3:"\"Wither\""}

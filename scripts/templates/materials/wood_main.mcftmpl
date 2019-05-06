@@ -26,14 +26,20 @@ ${when(i)} setblock ~-1 ~2 ~-3 minecraft:stripped_${id}_log
 ${when(i)} setblock ~-1 ~3 ~-3 minecraft:stripped_${id}_log[axis=z]
 
 ${when(i)} setblock ~4 ~2 ~-3 minecraft:${id}_slab[type=double]
-${when(i)} setblock ~4 ~2 ~-1 minecraft:${id}_door[facing=east,half=lower]
-${when(i)} setblock ~4 ~3 ~-1 minecraft:${id}_door[facing=east,half=upper]
+${when(i)} setblock ~4 ~2 ~-1 minecraft:${id}_door[facing=west,half=lower]
+${when(i)} setblock ~4 ~3 ~-1 minecraft:${id}_door[facing=west,half=upper]
 ${when(i)} setblock ~3 ~2 ~0 minecraft:${id}_pressure_plate
 ${when(i)} setblock ~3 ~2 ~1 minecraft:${id}_button[face=floor]
-${when(i)} setblock ~4 ~2 ~1 minecraft:${id}_door[facing=east,half=lower]
-${when(i)} setblock ~4 ~3 ~1 minecraft:${id}_door[facing=east,half=upper]
-${when(i)} setblock ~4 ~2 ~2 minecraft:${id}_door[facing=east,half=lower,hinge=right]
-${when(i)} setblock ~4 ~3 ~2 minecraft:${id}_door[facing=east,half=upper,hinge=right]
+${when(i)} setblock ~4 ~2 ~1 minecraft:${id}_door[facing=west,half=lower,hinge=right]
+${when(i)} setblock ~4 ~3 ~1 minecraft:${id}_door[facing=west,half=upper,hinge=right]
+${when(i)} setblock ~4 ~2 ~2 minecraft:${id}_door[facing=west,half=lower]
+${when(i)} setblock ~4 ~3 ~2 minecraft:${id}_door[facing=west,half=upper]
+
+${when(i)} setblock ~3 ~2 ~3 minecraft:${id}_wall_sign[facing=south]
+${when(i)} data modify block ~3 ~2 ~3 Text2 set value ${text("A Wall Sign")}
+${when(i)} setblock ~-3 ~2 ~3 minecraft:${id}_sign[rotation=0]
+${when(i)} data modify block ~-3 ~2 ~3 Text2 set value ${text("A Sign")}
+
 ${when(i)} summon minecraft:boat ~-0.5 ~1.525 ~2 {Type:${id},CustomName:"\"${woods[i]}\"",CustomNameVisible:True,Tags:[wood_boat],Rotation:[90f,0f]}
 
 ${when(i)} setblock ~1 ~2 ~-3 minecraft:${id}_planks
