@@ -1,8 +1,10 @@
 scoreboard players add bat funcs 0
 scoreboard players add canine funcs 0
+scoreboard players add cat funcs 0
 scoreboard players add chicken funcs 0
 scoreboard players add colored_mobs funcs 0
 scoreboard players add cow funcs 0
+scoreboard players add foxes funcs 0
 scoreboard players add horse funcs 0
 scoreboard players add horse_armors funcs 0
 scoreboard players add horselike funcs 0
@@ -25,6 +27,7 @@ scoreboard players add turtle_eggs funcs 0
 scoreboard players add villager_levels funcs 0
 scoreboard players add villager_professions funcs 0
 scoreboard players add villager_types funcs 0
+scoreboard players add which_cat funcs 0
 scoreboard players add which_villagers funcs 0
 scoreboard players add zombie_professions funcs 0
 scoreboard players add zombie_types funcs 0
@@ -34,7 +37,9 @@ tp @e[tag=friendlies] @e[tag=death,limit=1]
 
 execute at @e[tag=bat_home] run function v3:friendlies/bat_init
 execute at @e[tag=canine_home] run function v3:friendlies/canine_init
+execute at @e[tag=cat_home] run function v3:friendlies/cat_init
 execute at @e[tag=chicken_home] run function v3:friendlies/chicken_init
+execute at @e[tag=foxes_home] run function v3:friendlies/foxes_init
 execute at @e[tag=horse_home] run function v3:friendlies/horse_init
 execute at @e[tag=horselike_home] run function v3:friendlies/horselike_init
 execute at @e[tag=iron_golem_home] run function v3:friendlies/iron_golem_init
@@ -54,6 +59,7 @@ execute at @e[tag=turtle_home] run function v3:friendlies/turtle_init
 execute at @e[tag=villager_levels_home] run function v3:friendlies/villager_levels_init
 execute at @e[tag=villager_professions_home] run function v3:friendlies/villager_professions_init
 execute at @e[tag=villager_types_home] run function v3:friendlies/villager_types_init
+execute at @e[tag=which_cat_home] run function v3:friendlies/which_cat_init
 execute at @e[tag=which_villagers_home] run function v3:friendlies/which_villagers_init
 execute at @e[tag=zombie_professions_home] run function v3:friendlies/zombie_professions_init
 execute at @e[tag=zombie_types_home] run function v3:friendlies/zombie_types_init
