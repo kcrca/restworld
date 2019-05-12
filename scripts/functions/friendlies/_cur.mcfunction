@@ -13,7 +13,6 @@ execute at @e[tag=sheep_home] run function v3:friendlies/sheep_cur
 execute at @e[tag=horse_home] run function v3:friendlies/horse_cur
 execute at @e[tag=zombie_professions_home] run function v3:friendlies/zombie_professions_cur
 execute at @e[tag=villager_levels_home] run function v3:friendlies/villager_levels_cur
-execute at @e[tag=which_cat_home] run function v3:friendlies/which_cat_cur
 execute at @e[tag=turtle_eggs_home] run function v3:friendlies/turtle_eggs_cur
 execute at @e[tag=snow_golem_home] run function v3:friendlies/snow_golem_cur
 execute at @e[tag=llamas_home] run function v3:friendlies/llamas_cur

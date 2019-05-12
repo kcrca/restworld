@@ -13,7 +13,6 @@ scoreboard players add sheep funcs 1
 scoreboard players add horse funcs 1
 scoreboard players add zombie_professions funcs 1
 scoreboard players add villager_levels funcs 1
-scoreboard players add which_cat funcs 1
 scoreboard players add turtle_eggs funcs 1
 scoreboard players add snow_golem funcs 1
 scoreboard players add llamas funcs 1

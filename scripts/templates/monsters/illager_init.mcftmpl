@@ -1,14 +1,4 @@
 <%namespace name="base" file="../base.mcftmpl"/>
-<%
-    illagers = (
-	Thing("Illusioner (unused)", "illusioner"),
-	Thing("Vindicator"),
-	Thing("Evoker"),
-    )
-%>
 
-${base.mobs_init(z_delta_init=2, x_init=-1, rotation_init=90, tags_init=("monsters","illagers"))}\
-% for illager in illagers:
-${base.mobs(illager.name, id=illager.id, do_adult=True)}\
-% endfor
-${base.adult(Thing("Vex"), 0, 1.5, 3, 90, nbt="LifeTicks:2147483647")}
+${base.mobs_init(x_delta_init=2, z_init=-1, rotation_init=180, tags_init=("monsters","illager"))}\
+${base.adult(Thing("Vex"), 1, 1.5, -1, 90, nbt="LifeTicks:2147483647")}

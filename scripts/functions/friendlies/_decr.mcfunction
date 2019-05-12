@@ -13,7 +13,6 @@ scoreboard players remove sheep funcs 1
 scoreboard players remove horse funcs 1
 scoreboard players remove zombie_professions funcs 1
 scoreboard players remove villager_levels funcs 1
-scoreboard players remove which_cat funcs 1
 scoreboard players remove turtle_eggs funcs 1
 scoreboard players remove snow_golem funcs 1
 scoreboard players remove llamas funcs 1

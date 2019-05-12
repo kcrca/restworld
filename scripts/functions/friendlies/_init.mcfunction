@@ -27,7 +27,6 @@ scoreboard players add turtle_eggs funcs 0
 scoreboard players add villager_levels funcs 0
 scoreboard players add villager_professions funcs 0
 scoreboard players add villager_types funcs 0
-scoreboard players add which_cat funcs 0
 scoreboard players add which_villagers funcs 0
 scoreboard players add zombie_professions funcs 0
 scoreboard players add zombie_types funcs 0
@@ -59,7 +58,6 @@ execute at @e[tag=turtle_home] run function v3:friendlies/turtle_init
 execute at @e[tag=villager_levels_home] run function v3:friendlies/villager_levels_init
 execute at @e[tag=villager_professions_home] run function v3:friendlies/villager_professions_init
 execute at @e[tag=villager_types_home] run function v3:friendlies/villager_types_init
-execute at @e[tag=which_cat_home] run function v3:friendlies/which_cat_init
 execute at @e[tag=which_villagers_home] run function v3:friendlies/which_villagers_init
 execute at @e[tag=zombie_professions_home] run function v3:friendlies/zombie_professions_init
 execute at @e[tag=zombie_types_home] run function v3:friendlies/zombie_types_init
