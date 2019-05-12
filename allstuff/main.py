@@ -135,25 +135,25 @@ def render_tmpl(tmpl, var_name, **kwargs):
         "White",
     )
     professions = (
-        "armorer",
-        "butcher",
-        "cartographer",
-        "cleric",
-        "farmer",
-        "fisherman",
-        "fletcher",
-        "leatherworker",
-        "librarian",
-        "nitwit",
-        "unemployed",
-        "stonemason",
-        "shepherd",
-        "toolsmith",
-        "weaponsmith",
+        "Armorer",
+        "Butcher",
+        "Cartographer",
+        "Cleric",
+        "Farmer",
+        "Fisherman",
+        "Fletcher",
+        "Leatherworker",
+        "Librarian",
+        "Mason",
+        "Nitwit",
+        "Shepherd",
+        "Toolsmith",
+        "Weaponsmith",
+        "Unemployed",
     )
-    types = ("desert", "jungle", "plains", "savanna", "snowy", "swamp", "taiga")
+    villager_types = ("Desert", "Jungle", "Plains", "Savanna", "Snow", "Swamp", "Taiga")
     villager_data = []
-    for t in types:
+    for t in villager_types:
         for p in professions:
             villager_data += ['profession:%s,type:%s' % (p, t),]
     random.shuffle(villager_data)
@@ -179,6 +179,7 @@ def render_tmpl(tmpl, var_name, **kwargs):
         to_id=to_id,
         commas=commas,
         villager_data=villager_data,
+        villager_types=villager_types,
         **kwargs
     )
 

@@ -1,0 +1,8 @@
+<%namespace name="base" file="../base.mcftmpl"/>
+
+<% levels = ("Stone", "Iron", "Gold", "Emerald", "Diamond")  %>
+
+<%base:loop collection="${levels}" args="when,i,thing">
+${when(i)} execute as @e[tag=villager] run data modify entity @s VillagerData.level set value ${i + 1}
+${when(i)} data modify block ~-5 ~2 ~0 Text2 set value ${text("%s Level" % thing)}
+</%base:loop>\

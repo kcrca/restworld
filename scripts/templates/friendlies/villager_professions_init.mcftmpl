@@ -1,0 +1,17 @@
+<%namespace name="base" file="../base.mcftmpl"/>
+
+${base.remove("tag=villager")}
+
+${base.mobs_init(y_init=0.3, z_init=-6, x_init=-2, z_delta_init=2, adult_z_init=0, rotation_init=90, tags_init=("friendlies","professions"))}\
+%for p in professions:
+%    if loop.index == 7:
+	${base.mobs("Child", id="villager", do_adult=True, nbt="Age:-2147483648")}\
+	${base.mobs_init(y_init=1.3, z_init=-7, x_init=-1, z_delta_init=2, adult_z_init=0, rotation_init=90, tags_init=("friendlies","professions"))}\
+%    endif
+${base.mobs(p, id="villager", do_adult=True, nbt="VillagerData:{profession:%s}" % p.lower())}\
+%endfor
+
+function v3:friendlies/villager_professions_cur
+
+setblock ~-5 ~2 ~0 oak_wall_sign[facing=west]
+data modify block ~-5 ~2 ~0 Text3 set value ${text("Villagers")}

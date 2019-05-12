@@ -1,0 +1,13 @@
+<%namespace name="base" file="../base.mcftmpl"/>
+
+<% roles = professions + ("Child",) %>
+
+<%base:loop collection="${roles}" args="when,i,thing">
+%if thing == "Child":
+## Skip over child for zombies, there are no zombie children
+${when(i)} execute as @e[tag=zombie_villager,limit=1] run scoreboard players set villager_types funcs 0
+%endif
+${when(i)} execute as @e[tag=villager] run data modify entity @s VillagerData.profession set value ${thing.lower()}
+${when(i)} execute as @e[tag=villager] run data modify entity @s Age set value ${"%d" % (-2147483648 if thing == "Child" else 21474836487)}
+${when(i)} data modify block ~-5 ~2 ~0 Text2 set value ${text(thing)}
+</%base:loop>\

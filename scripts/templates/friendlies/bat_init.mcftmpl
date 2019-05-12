@@ -1,6 +1,6 @@
 <%namespace name="base" file="../base.mcftmpl"/>\
 <% llamas = ( Thing("Creamy"), Thing("White"), Thing("Brown"), Thing("Gray")) %>
 
-${base.mobs_init(z_delta_init=2, kid_x_init=-2.2, adult_x_init=0.20, rotation_init=90, tags_init=("friendlies",))}\
+${base.mobs_init(x_delta_init=2, kid_z_init=1.2, adult_z_init=-0.80, rotation_init=0, tags_init=("friendlies",))}\
 ${base.mobs("Bat", y_add=0.5, do_kid=True)}
-${base.adult(Thing("Bat"), 0, 1.5, 0, 270, nbt="BatFlags:1", tags=("bat", "sleeping_bat"))}
+${base.adult(Thing("Bat"), 0, 1.5, -1, 0, nbt="BatFlags:1", tags=("bat", "sleeping_bat"))}

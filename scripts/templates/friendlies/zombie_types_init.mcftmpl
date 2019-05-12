@@ -1,0 +1,16 @@
+<%namespace name="base" file="../base.mcftmpl"/>
+
+${base.remove("tag=villager")}
+
+${base.mobs_init(y_init=0.3, z_init=-2, x_init=-2, z_delta_init=2, adult_z_init=0, rotation_init=90, tags_init=("friendlies","villager"))}\
+%for p in villager_types:
+% if loop.index == 3:
+    ${base.mobs_init(y_init=1.3, z_init=-3, x_init=0, z_delta_init=2, adult_z_init=0, rotation_init=90, tags_init=("friendlies","villager"))}\
+% endif
+${base.mobs(p, id="zombie_villager", do_adult=True, nbt="VillagerData:{type:%s}" % p.lower())}\
+%endfor
+
+function v3:friendlies/villager_types_cur
+
+setblock ~-5 ~2 ~0 oak_wall_sign[facing=west]
+data modify block ~-5 ~2 ~0 Text3 set value ${text("Zombie Villagers")}

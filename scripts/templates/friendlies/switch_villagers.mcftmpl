@@ -1,0 +1,27 @@
+<%namespace name="base" file="../base.mcftmpl"/>\
+
+<%def name="init_villagers(num, which)">\
+execute if score which_villagers funcs matches ${num} at @e[tag=cur_villagers_home] run function v3:friendlies/${"%s_init" % which}\
+</%def>
+<%def name="home_villagers(num, which)">\
+execute if score which_villagers funcs matches ${num} at @e[tag=which_villagers_home,limit=1] run summon armor_stand ~ ~ ~1 {Tags:[${"%s_home" % which},cur_villagers_home],Small:True,NoGravity:True}\
+</%def>
+
+scoreboard players set which_villagers funcs 0
+execute if score cur_villager_group funcs matches 1 run scoreboard players add which_villagers funcs 1
+execute if score cur_villager_zombies funcs matches 1 run scoreboard players add which_villagers funcs 2
+
+execute unless score which_villagers funcs = which_villagers_prev funcs run ${base.remove("tag=villager")}
+scoreboard players operation which_villagers_prev funcs = which_villagers funcs
+${init_villagers(0, "villager_professions")}
+${init_villagers(1, "villager_types")}
+${init_villagers(2, "zombie_professions")}
+${init_villagers(3, "zombie_types")}
+
+execute if score cur_villager_levels funcs matches 1 run scoreboard players add which_villagers funcs 4
+kill @e[tag=cur_villagers_home]
+${home_villagers(0, "villager_professions")}
+${home_villagers(1, "villager_types")}
+${home_villagers(2, "zombie_professions")}
+${home_villagers(3, "zombie_types")}
+${home_villagers("4..5", "villager_levels")}
