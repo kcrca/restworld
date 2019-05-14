@@ -12,31 +12,31 @@ blocks = (
     "Dark Oak Planks",
     "Spruce Planks",
     "Cobblestone",
-    "Mossy Cobblestone",
+    "Mossy|Cobblestone",
     "Bricks",
     "Stone Bricks",
-    "Mossy Stone Bricks",
+    "Mossy|Stone Bricks",
     "Nether Bricks",
-    "Red Nether Bricks",
+    "Red|Nether Bricks",
     "End Stone Bricks",
     "Purpur Block",
     "Sandstone",
-    "Smooth Sandstone",
-    "Red Sandstone",
-    "Smooth Red Sandstone",
+    "Smooth|Sandstone",
+    "Red|Sandstone",
+    "Smooth Red|Sandstone",
     "Prismarine",
-    "Prismarine Bricks",
-    "Dark Prismarine",
+    "Prismarine|Bricks",
+    "Dark|Prismarine",
     "Andesite",
-    "Polished Andesite",
+    "Polished|Andesite",
     "Diorite",
-    "Polished Diorite",
+    "Polished|Diorite",
     "Granite",
-    "Polished Granite",
+    "Polished|Granite",
     "Quartz Block",
-    "Smooth Quartz"
+    "Smooth|Quartz"
 )
-stairs = tuple(re.sub("(marine|ite)$", r"\1 Stairs", re.sub("stone$", "stone Stairs", f.replace("Planks", "Stairs").replace("Bricks", "Brick Stairs").replace( "Block", "Stairs").replace(" Quartz", " Quartz Stairs"))) for f in blocks)
+stairs = tuple(re.sub("(marine|ite)$", r"\1 Stairs", re.sub("stone$", "stone Stairs", f.replace("Planks", "Stairs").replace("Bricks", "Brick Stairs").replace( "Block", "Stairs").replace("|Quartz", " Quartz Stairs"))) for f in blocks)
 slabs = tuple(f.replace("Stairs", "Slab") for f in stairs)
 %>
 <%base:loop collection="${blocks}" args="when,i,thing">
@@ -53,6 +53,11 @@ ${when(i)} fill ~ ~3 ~ ~4 ~6 ~3 ${st.full_id()}[half=${t},facing=${f},shape=${s}
 %endfor
 %endfor
 %endfor
-${when(i)} data merge block ~0 ~2 ~-1 {Text2:${text(re.sub(r" [^ ]*$", "", pl.name))}}
+<%
+    sign_text = thing.strip().split('|')
+    if len(sign_text) == 1:
+	sign_text = ("", sign_text[0])
+%>
+${when(i)} data merge block ~0 ~2 ~-1 {Text1:${text(re.sub(r" [^ ]*$", "", sign_text[0]))}, Text2:${text(re.sub(r" [^ ]*$", "", sign_text[1]))}}
 
 </%base:loop>
