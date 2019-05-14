@@ -1,13 +1,11 @@
 <%namespace name="base" file="../base.mcftmpl"/>
 <%
-   blocks = to_nicknamed("Cobblestone Wall", ("", "Mossy")) + to_nicknamed( "Sandstone Wall", ("", "Red")) + [
-	Thing("Mossy Stone Brick Wall"),
-	Thing("Red Nether Brick Wall"),
-	Thing("End Stone Brick Wall"),
-	Thing("Andesite Wall"),
-	Thing("Granite Wall"),
-	Thing("Diorite Wall"),
-    ]
+   blocks = to_nicknamed("Cobblestone Wall", ("", "Mossy")) + to_nicknamed( "Stone Brick Wall", ("", "Mossy", "End")) + to_nicknamed( "Sandstone Wall", ("", "Red")) + to_nicknamed( "Nether Brick Wall", ("", "Red")) + [
+	    Thing("Andesite Wall"),
+	    Thing("Granite Wall"),
+	    Thing("Diorite Wall"),
+	    Thing("Prismarine Wall"),
+	]
 %>
 
 <%base:loop collection="${blocks}" args="when,i,thing">

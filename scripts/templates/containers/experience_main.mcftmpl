@@ -1,0 +1,13 @@
+<%namespace name="base" file="../base.mcftmpl"/>
+<%
+    thresholds = (10, 50, 100, 200)
+    xp = []
+    for i in range(0, len(thresholds)):
+	for j in range(0, 3):
+	    xp += ((i + 1, thresholds[i] * j / 3),)
+    xp += ((5, 500),)
+%>
+
+<%base:loop collection="${xp}" args="when,i,thing">
+${when(i)} data merge entity @e[tag=trading_villager,limit=1] {VillagerData:{level:${thing[0]}},Xp:${thing[1]}}
+</%base:loop>

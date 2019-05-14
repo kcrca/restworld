@@ -11,18 +11,32 @@ blocks = (
     "Oak Planks",
     "Dark Oak Planks",
     "Spruce Planks",
-    "Purpur Block",
     "Cobblestone",
+    "Mossy Cobblestone",
     "Bricks",
     "Stone Bricks",
+    "Mossy Stone Bricks",
     "Nether Bricks",
+    "Red Nether Bricks",
+    "End Stone Bricks",
+    "Purpur Block",
     "Sandstone",
+    "Smooth Sandstone",
     "Red Sandstone",
+    "Smooth Red Sandstone",
     "Prismarine",
     "Prismarine Bricks",
     "Dark Prismarine",
+    "Andesite",
+    "Polished Andesite",
+    "Diorite",
+    "Polished Diorite",
+    "Granite",
+    "Polished Granite",
+    "Quartz Block",
+    "Smooth Quartz"
 )
-stairs = tuple(re.sub("marine$", "marine Stairs", re.sub("stone$", "stone Stairs", f.replace("Planks", "Stairs").replace("Bricks", "Brick Stairs").replace( "Block", "Stairs"))) for f in blocks)
+stairs = tuple(re.sub("(marine|ite)$", r"\1 Stairs", re.sub("stone$", "stone Stairs", f.replace("Planks", "Stairs").replace("Bricks", "Brick Stairs").replace( "Block", "Stairs").replace(" Quartz", " Quartz Stairs"))) for f in blocks)
 slabs = tuple(f.replace("Stairs", "Slab") for f in stairs)
 %>
 <%base:loop collection="${blocks}" args="when,i,thing">
