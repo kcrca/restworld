@@ -1,0 +1,4 @@
+<%namespace name="base" file="../base.mcftmpl"/>\
+setblock ~ ~2 ~-1 oak_wall_sign[facing=north]
+data merge block ~ ~2 ~-1 {Text3:${text("Lantern")}}
+tag @e[tag=bell_home] add no_expansion

@@ -1,3 +1,4 @@
+execute at @e[tag=bell_home] run function v3:blocks/bell_main
 execute at @e[tag=bricks_home] run function v3:blocks/bricks_main
 execute at @e[tag=cake_home] run function v3:blocks/cake_main
 execute at @e[tag=cobble_home] run function v3:blocks/cobble_main
@@ -8,6 +9,8 @@ execute at @e[tag=dirt_home] run function v3:blocks/dirt_main
 execute at @e[tag=end_home] run function v3:blocks/end_main
 execute at @e[tag=frosted_ice_home] run function v3:blocks/frosted_ice_main
 execute at @e[tag=ice_home] run function v3:blocks/ice_main
+execute at @e[tag=job_sites_home] run function v3:blocks/job_sites_main
+execute at @e[tag=lantern_home] run function v3:blocks/lantern_main
 execute at @e[tag=music_home] run function v3:blocks/music_main
 execute at @e[tag=nether_home] run function v3:blocks/nether_main
 execute at @e[tag=ore_blocks_home] run function v3:blocks/ore_blocks_main

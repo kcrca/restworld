@@ -29,8 +29,8 @@ execute if score basic funcs matches 0 run data merge entity @e[tag=material_2,l
 execute if score basic funcs matches 0 run data merge entity @e[tag=material_3,limit=1] {HandItems:[{id:wooden_pickaxe,Count:1}]}
 execute if score basic funcs matches 0 run data merge entity @e[tag=material_4,limit=1] {HandItems:[{},{id:wooden_hoe,Count:1}]}
 execute if score basic funcs matches 0 run data merge entity @e[tag=material_5,limit=1] {HandItems:[{},{id:wooden_axe,Count:1}]}
-execute if score basic funcs matches 0 run data merge entity @e[tag=material_6,limit=1] {HandItems:[{},{id:fishing_rod,Count:1}]}
-execute if score basic funcs matches 0 run data merge entity @e[tag=material_7,limit=1] {HandItems:[{},{}]}
+execute if score basic funcs matches 0 run data merge entity @e[tag=material_6,limit=1] {HandItems:[{},{id:crossbow,Count:1}]}
+execute if score basic funcs matches 0 run data merge entity @e[tag=material_7,limit=1] {HandItems:[{},{id:fishing_rod,Count:1}]}
 execute if score basic funcs matches 0 run data merge block ~-2 ~ ~1 {name:"minecraft:material_wooden"}
 
 

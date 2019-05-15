@@ -40,7 +40,8 @@ ${when(i)} data merge entity @e[tag=armor_stand,limit=1] {HandItems:[{id:${mater
     hands_raw = [None, None, "%s_shovel" % material, "%s_pickaxe" % material, "%s_hoe" % material, "%s_axe" % material, None, None]
     if material == "wooden":
 	hands_raw[1] = "bow"
-	hands_raw[6] = "fishing_rod"
+	hands_raw[6] = "crossbow"
+	hands_raw[7] = "fishing_rod"
     elif material == "iron":
 	hands_raw[1] = "flint_and_steel"
 	hands_raw[6] = "shears"
