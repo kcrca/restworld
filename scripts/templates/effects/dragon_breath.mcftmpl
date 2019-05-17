@@ -1,4 +1,0 @@
-<%namespace name="base" file="../base.mcftmpl"/>
-<%namespace file="effect_base.mcftmpl" import="*"/>\
-
-${slow_clock()} function v3:effects/dragon_breath_run

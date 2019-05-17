@@ -1,2 +1,0 @@
-<%namespace file="effect_base.mcftmpl" import="*"/>
-${summon("llama", 0, "NoAI:True")}

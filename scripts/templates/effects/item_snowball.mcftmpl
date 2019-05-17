@@ -1,4 +1,0 @@
-<%namespace file="effect_base.mcftmpl" import="*"/>\
-${fast_clock()} replaceitem block ~0 ~2 ~-1 container.0 minecraft:snowball 1
-${fast_clock()} setblock ~0 ~3 ~-1 minecraft:stone_button[powered=true,face=floor]
-${fast_clock()} setblock ~0 ~3 ~-1 minecraft:air

@@ -1,0 +1,3 @@
+<%namespace file="particle_base.mcftmpl" import="*"/>\
+${fast_clock()} setblock ~0 ~0 ~-1 minecraft:stone_button[powered=true,facing=north]
+${fast_clock()} setblock ~0 ~0 ~-1 minecraft:air

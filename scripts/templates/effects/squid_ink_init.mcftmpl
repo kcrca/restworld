@@ -1,3 +1,0 @@
-<%namespace file="effect_base.mcftmpl" import="*"/>
-function v3:effects/ocean
-${summon("squid", 4, "NoAI:True")}

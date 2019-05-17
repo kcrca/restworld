@@ -6,10 +6,10 @@ function v3:plants/_incr
 function v3:enders/_incr
 function v3:center/_incr
 function v3:redstone/_incr
+function v3:particles/_incr
 function v3:wither/_incr
 function v3:arena/_incr
 function v3:friendlies/_incr
 function v3:containers/_incr
-function v3:effects/_incr
 function v3:global/_incr
 function v3:monsters/_incr

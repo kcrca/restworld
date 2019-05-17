@@ -264,13 +264,13 @@ class Stepable(Thing):
         self.base_id = to_id(base_id)
 
 
-class Effects(object, Thing):
+class Particles(object, Thing):
     def __init__(self, name, id=None, note=None):
         Thing.__init__(self, name, id)
         self.note = "(%s)" % note if note else None
 
     def sign_text(self):
-        t = super(Effects, self).sign_text()
+        t = super(Particles, self).sign_text()
         if self.note:
             t += self.note.split("|")
         return t
@@ -405,21 +405,23 @@ def main():
     for f in incr_funcs + ("init",):
         write_function(func_dir, "_%s" % f, "\n".join("function v3:%s/_%s" % (r, f) for r in rooms))
 
-    effect_signs(func_dir + "/effects", Template(filename="%s/effects_sign.mcftmpl" % tmpl_dir, lookup=lookup))
+    particle_signs(func_dir + "/particles", Template(filename="%s/particles_sign.mcftmpl" % tmpl_dir, lookup=lookup))
 
 
-effects = (
-    Effects("Ambient Entity|Effect", "ambient"), Effects("Angry Villager"),
-    Effects("Bubbles|and|Whirlpools", "bubbles"), Effects("Clouds", note="Evaporation"), Effects("Crit"),
-    Effects("Damage Indicator"), Effects("Dolphin"), Effects("Dragon Breath"), Effects("Dripping Lava"),
-    Effects("Dripping Water"), Effects("Dust", note="Redstone Dust"), Effects("Effect"), Effects("Elder Guardian"),
-    Effects("Enchant"), Effects("Enchanted Hit"), Effects("End Rod"), Effects("Entity Effect"), Effects("Explosion"),
-    Effects("Falling Dust"), Effects("Fireworks"), Effects("Fishing"), Effects("Flame"), Effects("Happy Villager"),
-    Effects("Heart"), Effects("Explosion Emitter", note="Large Explosion"), Effects("Instant Effect"),
-    Effects("Item Slime"), Effects("Item Snowball"), Effects("Large Smoke"), Effects("Lava"), Effects("Mycelium"),
-    Effects("Nautilus"), Effects("Note"), Effects("Poof", note="Small Explosion"), Effects("Portal"),
-    Effects("Campfire|Smoke"), Effects("Sneeze"), Effects("Smoke"), Effects("Spit"), Effects("Splash"),
-    Effects("Squid Ink"), Effects("Sweep Attack"), Effects("Totem of Undying"), Effects("Underwater"), Effects("Witch"),
+particles = (
+    Particles("Ambient Entity|Effect", "ambient"), Particles("Angry Villager"),
+    Particles("Bubbles|and|Whirlpools", "bubbles"), Particles("Clouds", note="Evaporation"), Particles("Crit"),
+    Particles("Damage Indicator"), Particles("Dolphin"), Particles("Dragon Breath"), Particles("Dripping Lava"),
+    Particles("Dripping Water"), Particles("Dust", note="Redstone Dust"), Particles("Effect"),
+    Particles("Elder Guardian"), Particles("Enchant"), Particles("Enchanted Hit"), Particles("End Rod"),
+    Particles("Entity Effect"), Particles("Explosion"), Particles("Falling Dust"), Particles("Fireworks"),
+    Particles("Fishing"), Particles("Flame"), Particles("Happy Villager"), Particles("Heart"),
+    Particles("Explosion Emitter", note="Large Explosion"), Particles("Instant Effect"), Particles("Item Slime"),
+    Particles("Item Snowball"), Particles("Large Smoke"), Particles("Lava"), Particles("Mycelium"),
+    Particles("Nautilus"), Particles("Note"), Particles("Poof", note="Small Explosion"), Particles("Portal"),
+    Particles("Campfire|Smoke"), Particles("Sneeze"), Particles("Smoke"), Particles("Spit"), Particles("Splash"),
+    Particles("Squid Ink"), Particles("Sweep Attack"), Particles("Totem of Undying"), Particles("Underwater"),
+    Particles("Witch"),
 )
 
 
@@ -439,14 +441,14 @@ class Wall:
                 self.width - 1)
 
 
-def effect_signs(func_dir, sign_tmpl):
+def particle_signs(func_dir, sign_tmpl):
     walls = (
         Wall(7, 5, "east", (-1, 0)),
         Wall(7, 5, "south", (0, -1)),
         Wall(7, 5, "west", (1, 0)),
         Wall(7, 5, "north", (0, 1)),
     )
-    room_signs(func_dir, "effects", sign_tmpl, sorted(effects), walls, (1, 1.5, -1, 90), do_off_sign=True)
+    room_signs(func_dir, "particles", sign_tmpl, sorted(particles), walls, (1, 1.5, -1, 90), do_off_sign=True)
 
 
 def room_signs(func_dir, room, sign_tmpl, subjects, walls, start, do_off_sign=False, label=None):
@@ -470,7 +472,6 @@ def room_signs(func_dir, room, sign_tmpl, subjects, walls, start, do_off_sign=Fa
         sign_text = subj.sign_text()
         lines = ["", ] + sign_text + [""] * (max(0, 3 - len(sign_text)))
         commands.append(sign_tmpl.render(room=room, subj=subj, lines=lines, x=-x, y=y, z=0, wall=wall).strip())
-        # write_function(func_dir, subj.id, effect_function(subj))
         x += 1
         if x >= wall.end:
             y -= 1
@@ -489,7 +490,7 @@ def room_signs(func_dir, room, sign_tmpl, subjects, walls, start, do_off_sign=Fa
         x = int(wall.width / 2 + 0.6)
         y = 3
         commands.append(
-            sign_tmpl.render(room=room, subj=Effects("Off"), lines=['', 'Off', '', ''], x=-x, y=y, z=2,
+            sign_tmpl.render(room=room, subj=Particles("Off"), lines=['', 'Off', '', ''], x=-x, y=y, z=2,
                              wall=wall).strip())
         commands.append(kill_command)
     write_function(func_dir, "signs", "\n".join(commands) + "\n")
