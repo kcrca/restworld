@@ -1,0 +1,2 @@
+<%namespace file="effect_base.mcftmpl" import="*"/>
+${summon("panda", 0, "NoAI:True,Age:-2147483648")}

@@ -155,7 +155,7 @@ def render_tmpl(tmpl, var_name, **kwargs):
     villager_data = []
     for t in villager_types:
         for p in professions:
-            villager_data += ['profession:%s,type:%s' % (p, t),]
+            villager_data += ['profession:%s,type:%s' % (p, t), ]
     random.shuffle(villager_data)
 
     return tmpl.render(
@@ -418,9 +418,8 @@ effects = (
     Effects("Heart"), Effects("Explosion Emitter", note="Large Explosion"), Effects("Instant Effect"),
     Effects("Item Slime"), Effects("Item Snowball"), Effects("Large Smoke"), Effects("Lava"), Effects("Mycelium"),
     Effects("Nautilus"), Effects("Note"), Effects("Poof", note="Small Explosion"), Effects("Portal"),
-    Effects("Rain|(Unimplemented)"), Effects("Smoke"), Effects("Snow|(Unimplemented)"), Effects("Spit"),
-    Effects("Splash"), Effects("Squid Ink"), Effects("Sweep Attack"), Effects("Totem of Undying"),
-    Effects("Underwater"), Effects("Witch"),
+    Effects("Campfire|Smoke"), Effects("Sneeze"), Effects("Smoke"), Effects("Spit"), Effects("Splash"),
+    Effects("Squid Ink"), Effects("Sweep Attack"), Effects("Totem of Undying"), Effects("Underwater"), Effects("Witch"),
 )
 
 
