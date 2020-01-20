@@ -12,7 +12,7 @@ execute if score colorings funcs matches 0 run fill ~-9 ~2 ~4 ~-10 ~2 ~4 minecra
 execute if score colorings funcs matches 0 run setblock ~-9 ~2 ~4 minecraft:white_bed[facing=west,part=head]
 execute if score colorings funcs matches 0 run setblock ~-8 ~2 ~4 minecraft:white_bed[facing=west,part=foot]
 
-execute if score colorings funcs matches 0 run data merge entity @e[tag=colorings_item_frame,limit=1] {Item:{id:bone_meal},Count:1,ItemRotation:0}
+execute if score colorings funcs matches 0 run data merge entity @e[tag=colorings_item_frame,limit=1] {Item:{id:white_dye},Count:1,ItemRotation:0}
 
 execute if score colorings funcs matches 0 run setblock ~-3 ~4 ~1 minecraft:white_terracotta
 execute if score colorings funcs matches 0 run setblock ~-5 ~4 ~1 minecraft:white_shulker_box
@@ -108,7 +108,7 @@ execute if score colorings funcs matches 4 run fill ~-9 ~2 ~4 ~-10 ~2 ~4 minecra
 execute if score colorings funcs matches 4 run setblock ~-9 ~2 ~4 minecraft:yellow_bed[facing=west,part=head]
 execute if score colorings funcs matches 4 run setblock ~-8 ~2 ~4 minecraft:yellow_bed[facing=west,part=foot]
 
-execute if score colorings funcs matches 4 run data merge entity @e[tag=colorings_item_frame,limit=1] {Item:{id:dandelion_yellow},Count:1,ItemRotation:0}
+execute if score colorings funcs matches 4 run data merge entity @e[tag=colorings_item_frame,limit=1] {Item:{id:yellow_dye},Count:1,ItemRotation:0}
 
 execute if score colorings funcs matches 4 run setblock ~-3 ~4 ~1 minecraft:yellow_terracotta
 execute if score colorings funcs matches 4 run setblock ~-5 ~4 ~1 minecraft:yellow_shulker_box
@@ -276,7 +276,7 @@ execute if score colorings funcs matches 11 run fill ~-9 ~2 ~4 ~-10 ~2 ~4 minecr
 execute if score colorings funcs matches 11 run setblock ~-9 ~2 ~4 minecraft:blue_bed[facing=west,part=head]
 execute if score colorings funcs matches 11 run setblock ~-8 ~2 ~4 minecraft:blue_bed[facing=west,part=foot]
 
-execute if score colorings funcs matches 11 run data merge entity @e[tag=colorings_item_frame,limit=1] {Item:{id:lapis_lazuli},Count:1,ItemRotation:0}
+execute if score colorings funcs matches 11 run data merge entity @e[tag=colorings_item_frame,limit=1] {Item:{id:blue_dye},Count:1,ItemRotation:0}
 
 execute if score colorings funcs matches 11 run setblock ~-3 ~4 ~1 minecraft:blue_terracotta
 execute if score colorings funcs matches 11 run setblock ~-5 ~4 ~1 minecraft:blue_shulker_box
@@ -300,7 +300,7 @@ execute if score colorings funcs matches 12 run fill ~-9 ~2 ~4 ~-10 ~2 ~4 minecr
 execute if score colorings funcs matches 12 run setblock ~-9 ~2 ~4 minecraft:brown_bed[facing=west,part=head]
 execute if score colorings funcs matches 12 run setblock ~-8 ~2 ~4 minecraft:brown_bed[facing=west,part=foot]
 
-execute if score colorings funcs matches 12 run data merge entity @e[tag=colorings_item_frame,limit=1] {Item:{id:cocoa_beans},Count:1,ItemRotation:0}
+execute if score colorings funcs matches 12 run data merge entity @e[tag=colorings_item_frame,limit=1] {Item:{id:brown_dye},Count:1,ItemRotation:0}
 
 execute if score colorings funcs matches 12 run setblock ~-3 ~4 ~1 minecraft:brown_terracotta
 execute if score colorings funcs matches 12 run setblock ~-5 ~4 ~1 minecraft:brown_shulker_box
@@ -324,7 +324,7 @@ execute if score colorings funcs matches 13 run fill ~-9 ~2 ~4 ~-10 ~2 ~4 minecr
 execute if score colorings funcs matches 13 run setblock ~-9 ~2 ~4 minecraft:green_bed[facing=west,part=head]
 execute if score colorings funcs matches 13 run setblock ~-8 ~2 ~4 minecraft:green_bed[facing=west,part=foot]
 
-execute if score colorings funcs matches 13 run data merge entity @e[tag=colorings_item_frame,limit=1] {Item:{id:cactus_green},Count:1,ItemRotation:0}
+execute if score colorings funcs matches 13 run data merge entity @e[tag=colorings_item_frame,limit=1] {Item:{id:green_dye},Count:1,ItemRotation:0}
 
 execute if score colorings funcs matches 13 run setblock ~-3 ~4 ~1 minecraft:green_terracotta
 execute if score colorings funcs matches 13 run setblock ~-5 ~4 ~1 minecraft:green_shulker_box
@@ -348,7 +348,7 @@ execute if score colorings funcs matches 14 run fill ~-9 ~2 ~4 ~-10 ~2 ~4 minecr
 execute if score colorings funcs matches 14 run setblock ~-9 ~2 ~4 minecraft:red_bed[facing=west,part=head]
 execute if score colorings funcs matches 14 run setblock ~-8 ~2 ~4 minecraft:red_bed[facing=west,part=foot]
 
-execute if score colorings funcs matches 14 run data merge entity @e[tag=colorings_item_frame,limit=1] {Item:{id:rose_red},Count:1,ItemRotation:0}
+execute if score colorings funcs matches 14 run data merge entity @e[tag=colorings_item_frame,limit=1] {Item:{id:red_dye},Count:1,ItemRotation:0}
 
 execute if score colorings funcs matches 14 run setblock ~-3 ~4 ~1 minecraft:red_terracotta
 execute if score colorings funcs matches 14 run setblock ~-5 ~4 ~1 minecraft:red_shulker_box
@@ -372,7 +372,7 @@ execute if score colorings funcs matches 15 run fill ~-9 ~2 ~4 ~-10 ~2 ~4 minecr
 execute if score colorings funcs matches 15 run setblock ~-9 ~2 ~4 minecraft:black_bed[facing=west,part=head]
 execute if score colorings funcs matches 15 run setblock ~-8 ~2 ~4 minecraft:black_bed[facing=west,part=foot]
 
-execute if score colorings funcs matches 15 run data merge entity @e[tag=colorings_item_frame,limit=1] {Item:{id:ink_sac},Count:1,ItemRotation:0}
+execute if score colorings funcs matches 15 run data merge entity @e[tag=colorings_item_frame,limit=1] {Item:{id:black_dye},Count:1,ItemRotation:0}
 
 execute if score colorings funcs matches 15 run setblock ~-3 ~4 ~1 minecraft:black_terracotta
 execute if score colorings funcs matches 15 run setblock ~-5 ~4 ~1 minecraft:black_shulker_box
