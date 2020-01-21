@@ -8,6 +8,7 @@ execute at @e[tag=pig_home] run function v3:friendlies/pig_cur
 execute at @e[tag=zombie_types_home] run function v3:friendlies/zombie_types_cur
 execute at @e[tag=ocelot_home] run function v3:friendlies/ocelot_cur
 execute at @e[tag=chicken_home] run function v3:friendlies/chicken_cur
+execute at @e[tag=bee_home] run function v3:friendlies/bee_cur
 execute at @e[tag=panda_home] run function v3:friendlies/panda_cur
 execute at @e[tag=sheep_home] run function v3:friendlies/sheep_cur
 execute at @e[tag=horse_home] run function v3:friendlies/horse_cur
@@ -28,6 +29,5 @@ execute at @e[tag=switch_villagers_home] run function v3:friendlies/switch_villa
 execute at @e[tag=bat_home] run function v3:friendlies/bat_cur
 execute at @e[tag=cow_home] run function v3:friendlies/cow_cur
 execute at @e[tag=parrot_home] run function v3:friendlies/parrot_cur
-execute at @e[tag=trader_home] run function v3:friendlies/trader_cur
 execute at @e[tag=cat_home] run function v3:friendlies/cat_cur
 function v3:friendlies/_finish

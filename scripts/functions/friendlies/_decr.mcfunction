@@ -8,6 +8,7 @@ scoreboard players remove pig funcs 1
 scoreboard players remove zombie_types funcs 1
 scoreboard players remove ocelot funcs 1
 scoreboard players remove chicken funcs 1
+scoreboard players remove bee funcs 1
 scoreboard players remove panda funcs 1
 scoreboard players remove sheep funcs 1
 scoreboard players remove horse funcs 1
@@ -28,6 +29,5 @@ scoreboard players remove switch_villagers funcs 1
 scoreboard players remove bat funcs 1
 scoreboard players remove cow funcs 1
 scoreboard players remove parrot funcs 1
-scoreboard players remove trader funcs 1
 scoreboard players remove cat funcs 1
 function v3:friendlies/_cur

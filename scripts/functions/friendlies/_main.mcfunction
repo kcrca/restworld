@@ -1,3 +1,4 @@
+execute at @e[tag=bee_home] run function v3:friendlies/bee_main
 execute at @e[tag=canine_home] run function v3:friendlies/canine_main
 execute at @e[tag=cat_home] run function v3:friendlies/cat_main
 execute at @e[tag=chicken_home] run function v3:friendlies/chicken_main

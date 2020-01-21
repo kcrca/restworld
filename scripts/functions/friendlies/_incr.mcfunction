@@ -8,6 +8,7 @@ scoreboard players add pig funcs 1
 scoreboard players add zombie_types funcs 1
 scoreboard players add ocelot funcs 1
 scoreboard players add chicken funcs 1
+scoreboard players add bee funcs 1
 scoreboard players add panda funcs 1
 scoreboard players add sheep funcs 1
 scoreboard players add horse funcs 1
@@ -28,6 +29,5 @@ scoreboard players add switch_villagers funcs 1
 scoreboard players add bat funcs 1
 scoreboard players add cow funcs 1
 scoreboard players add parrot funcs 1
-scoreboard players add trader funcs 1
 scoreboard players add cat funcs 1
 function v3:friendlies/_cur

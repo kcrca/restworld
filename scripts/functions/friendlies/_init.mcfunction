@@ -1,4 +1,5 @@
 scoreboard players add bat funcs 0
+scoreboard players add bee funcs 0
 scoreboard players add canine funcs 0
 scoreboard players add cat funcs 0
 scoreboard players add chicken funcs 0
@@ -20,7 +21,6 @@ scoreboard players add rabbits funcs 0
 scoreboard players add sheep funcs 0
 scoreboard players add snow_golem funcs 0
 scoreboard players add switch_villagers funcs 0
-scoreboard players add trader funcs 0
 scoreboard players add trader_llama funcs 0
 scoreboard players add turtle funcs 0
 scoreboard players add turtle_eggs funcs 0
@@ -35,6 +35,7 @@ tp @e[tag=friendlies] @e[tag=death,limit=1]
 
 
 execute at @e[tag=bat_home] run function v3:friendlies/bat_init
+execute at @e[tag=bee_home] run function v3:friendlies/bee_init
 execute at @e[tag=canine_home] run function v3:friendlies/canine_init
 execute at @e[tag=cat_home] run function v3:friendlies/cat_init
 execute at @e[tag=chicken_home] run function v3:friendlies/chicken_init
@@ -52,7 +53,6 @@ execute at @e[tag=rabbits_home] run function v3:friendlies/rabbits_init
 execute at @e[tag=sheep_home] run function v3:friendlies/sheep_init
 execute at @e[tag=snow_golem_home] run function v3:friendlies/snow_golem_init
 execute at @e[tag=switch_villagers_home] run function v3:friendlies/switch_villagers_init
-execute at @e[tag=trader_home] run function v3:friendlies/trader_init
 execute at @e[tag=trader_llama_home] run function v3:friendlies/trader_llama_init
 execute at @e[tag=turtle_home] run function v3:friendlies/turtle_init
 execute at @e[tag=villager_levels_home] run function v3:friendlies/villager_levels_init
