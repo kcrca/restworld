@@ -41,7 +41,7 @@ def cleanup(value):
     s = value.replace('_', ' ').replace('=', ' ').replace(' true', '')
     s = s.replace('has ', '')
     if ' false' in s:
-        s = 'No ' + s.replace(' false', '')
+        s = 'Not ' + s.replace(' false', '')
     return s.title()
 
 m = re.search(r'([^[]*)(?:\[([^],]*)(?:,([^]]*)\])?)?', thing)
@@ -49,6 +49,9 @@ name, attr1, attr2 = m.groups()
 if m:
     attr1 = cleanup(attr1)
     attr2 = cleanup(attr2)
+if 'Cartography' in name:
+    name = 'Cartography'
+    attr1 = 'Table'
 %>\
-${when(i)} data merge block ~0 ~2 ~-1 {Text1:${text(attr2)},Text2:${text(attr1)},Text3:${text(name)}}
+${when(i)} data merge block ~0 ~2 ~-1 {Text4:${text(attr2)},Text3:${text(attr1)},Text2:${text(name)}}
 </%base:loop>\
