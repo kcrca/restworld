@@ -1,0 +1,13 @@
+<%namespace name="base" file="../base.mcftmpl"/>
+<%namespace import="*" file="blocks_base.mcftmpl"/>
+<%
+    types = []
+    for i in range (0, 6):
+	types.append(Thing("Beehive", block_state="honey_level=%d" % i))
+%>
+
+${blocks(tuple(types))}
+
+%for i in range(0, 6):
+${base.when(i)} data merge block ~0 ~2 ~-1 {Text3:${text("Honey Level: %d" % i)}}
+%endfor

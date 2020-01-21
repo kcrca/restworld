@@ -1,7 +1,10 @@
+scoreboard players add bee_nest funcs 0
+scoreboard players add beehive funcs 0
 scoreboard players add bell funcs 0
 scoreboard players add blocks_sign funcs 0
 scoreboard players add bricks funcs 0
 scoreboard players add cake funcs 0
+scoreboard players add campfire funcs 0
 scoreboard players add cobble funcs 0
 scoreboard players add colorings funcs 0
 scoreboard players add colorings_turned funcs 0

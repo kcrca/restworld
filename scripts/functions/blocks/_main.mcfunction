@@ -1,6 +1,9 @@
+execute at @e[tag=bee_nest_home] run function v3:blocks/bee_nest_main
+execute at @e[tag=beehive_home] run function v3:blocks/beehive_main
 execute at @e[tag=bell_home] run function v3:blocks/bell_main
 execute at @e[tag=bricks_home] run function v3:blocks/bricks_main
 execute at @e[tag=cake_home] run function v3:blocks/cake_main
+execute at @e[tag=campfire_home] run function v3:blocks/campfire_main
 execute at @e[tag=cobble_home] run function v3:blocks/cobble_main
 execute at @e[tag=colorings_home] run function v3:blocks/colorings_main
 execute at @e[tag=colorings_turned_home] run function v3:blocks/colorings_turned_main
