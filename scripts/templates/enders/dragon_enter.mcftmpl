@@ -1,1 +1,1 @@
-summon minecraft:ender_dragon ~ ~5 ~-5 {CustomName:${text("EnderDragon")},NoAi:True,Silent:True,Rotation:[0f,0f],Tags:[ender,dragon]}
+summon minecraft:ender_dragon ~ ~5 ~-5 {CustomName:${text("EnderDragon")},NoAI:True,Silent:True,Rotation:[0f,0f],Tags:[ender,dragon]}
