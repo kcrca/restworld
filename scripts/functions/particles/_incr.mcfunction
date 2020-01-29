@@ -12,6 +12,7 @@ scoreboard players add underwater funcs 1
 scoreboard players add ambient funcs 1
 scoreboard players add damage_indicator funcs 1
 scoreboard players add angry_villager funcs 1
+scoreboard players add dripping_honey funcs 1
 scoreboard players add lava funcs 1
 scoreboard players add note funcs 1
 scoreboard players add enchanted_hit funcs 1
@@ -25,6 +26,7 @@ scoreboard players add spit funcs 1
 scoreboard players add mycelium funcs 1
 scoreboard players add fireworks funcs 1
 scoreboard players add effect funcs 1
+scoreboard players add bee_pollen funcs 1
 scoreboard players add portal funcs 1
 scoreboard players add dust funcs 1
 scoreboard players add bubbles funcs 1

@@ -12,6 +12,7 @@ scoreboard players remove underwater funcs 1
 scoreboard players remove ambient funcs 1
 scoreboard players remove damage_indicator funcs 1
 scoreboard players remove angry_villager funcs 1
+scoreboard players remove dripping_honey funcs 1
 scoreboard players remove lava funcs 1
 scoreboard players remove note funcs 1
 scoreboard players remove enchanted_hit funcs 1
@@ -25,6 +26,7 @@ scoreboard players remove spit funcs 1
 scoreboard players remove mycelium funcs 1
 scoreboard players remove fireworks funcs 1
 scoreboard players remove effect funcs 1
+scoreboard players remove bee_pollen funcs 1
 scoreboard players remove portal funcs 1
 scoreboard players remove dust funcs 1
 scoreboard players remove bubbles funcs 1

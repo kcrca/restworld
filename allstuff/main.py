@@ -275,6 +275,11 @@ class Particles(object, Thing):
             t += self.note.split("|")
         return t
 
+    def __cmp__(self, other):
+        my_text = ' '.join(self.sign_text())
+        other_text = ' '.join(other.sign_text())
+        return cmp(my_text, other_text)
+
 
 def text(txt):
     return r'"\"%s\""' % txt.replace('"', r'\\\"')
@@ -409,13 +414,13 @@ def main():
 
 
 particles = (
-    Particles("Ambient Entity|Effect", "ambient"), Particles("Angry Villager"),
+    Particles("Ambient Entity|Effect", "ambient"), Particles("Angry Villager"), Particles("Bee Pollen"),
     Particles("Bubbles|and|Whirlpools", "bubbles"), Particles("Clouds", note="Evaporation"), Particles("Crit"),
-    Particles("Damage Indicator"), Particles("Dolphin"), Particles("Dragon Breath"), Particles("Dripping Lava"),
-    Particles("Dripping Water"), Particles("Dust", note="Redstone Dust"), Particles("Effect"),
-    Particles("Elder Guardian"), Particles("Enchant"), Particles("Enchanted Hit"), Particles("End Rod"),
-    Particles("Entity Effect"), Particles("Explosion"), Particles("Falling Dust"), Particles("Fireworks"),
-    Particles("Fishing"), Particles("Flame"), Particles("Happy Villager"), Particles("Heart"),
+    Particles("Damage Indicator"), Particles("Dolphin"), Particles("Dragon Breath"), Particles("Dripping Honey"),
+    Particles("Dripping Lava"), Particles("Dripping Water"), Particles("Dust", note="Redstone Dust"),
+    Particles("Effect"), Particles("Elder Guardian"), Particles("Enchant"), Particles("Enchanted Hit"),
+    Particles("End Rod"), Particles("Entity Effect"), Particles("Explosion"), Particles("Falling Dust"),
+    Particles("Fireworks"), Particles("Fishing"), Particles("Flame"), Particles("Happy Villager"), Particles("Heart"),
     Particles("Explosion Emitter", note="Large Explosion"), Particles("Instant Effect"), Particles("Item Slime"),
     Particles("Item Snowball"), Particles("Large Smoke"), Particles("Lava"), Particles("Mycelium"),
     Particles("Nautilus"), Particles("Note"), Particles("Poof", note="Small Explosion"), Particles("Portal"),
@@ -439,6 +444,19 @@ class Wall:
     def to_next_wall(self):
         return "execute as @e[tag=signer] run execute at @s run teleport @s ^-%d ^0 ^0 ~90 ~" % (
                 self.width - 1)
+
+    def start_pos(self):
+        return self.start, self.y_first
+
+    def next_pos(self, x, y):
+        x += 1
+        end = self.end + 1 if self.facing == 'south' and y == self.y_first - 1 else self.end
+        if x >= end:
+            y -= 1
+            x = self.start - 1 if self.facing == 'south' and y == self.y_first - 1 else self.start
+            if y < self.y_last:
+                return None, None
+        return x, y
 
 
 def particle_signs(func_dir, sign_tmpl):
@@ -466,21 +484,17 @@ def room_signs(func_dir, room, sign_tmpl, subjects, walls, start, do_off_sign=Fa
             "execute at @e[tag=signer] run setblock ^%d ^%d ^%d wall_sign[facing=%s]{Text2:%s}" % (
                 -int(walls[0].width / 2), wall.y_first + 1, -int(walls[1].width / 2), wall.facing, text(label)),
         ]
-    x = wall.start
-    y = wall.y_first
+    x, y = wall.start_pos()
     for i, subj in enumerate(subjects):
         sign_text = subj.sign_text()
         lines = ["", ] + sign_text + [""] * (max(0, 3 - len(sign_text)))
         commands.append(sign_tmpl.render(room=room, subj=subj, lines=lines, x=-x, y=y, z=0, wall=wall).strip())
-        x += 1
-        if x >= wall.end:
-            y -= 1
-            if y < wall.y_last:
-                commands.append(wall.to_next_wall())
-                cur_wall += 1
-                wall = walls[cur_wall]
-                y = 3
-            x = wall.start
+        x, y = wall.next_pos(x, y)
+        if x is None:
+            commands.append(wall.to_next_wall())
+            cur_wall += 1
+            wall = walls[cur_wall]
+            x, y = wall.start_pos()
     if do_off_sign:
         # Get to the last wall and put the "off" sign on it
         while cur_wall < len(walls) - 1:

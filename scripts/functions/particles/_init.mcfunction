@@ -1,11 +1,13 @@
 scoreboard players add ambient funcs 0
 scoreboard players add angry_villager funcs 0
+scoreboard players add bee_pollen funcs 0
 scoreboard players add bubbles funcs 0
 scoreboard players add campfire_smoke funcs 0
 scoreboard players add crit funcs 0
 scoreboard players add damage_indicator funcs 0
 scoreboard players add dolphin funcs 0
 scoreboard players add dragon_breath funcs 0
+scoreboard players add dripping_honey funcs 0
 scoreboard players add dripping_lava funcs 0
 scoreboard players add dripping_water funcs 0
 scoreboard players add dust funcs 0
@@ -42,12 +44,14 @@ tp @e[tag=particles] @e[tag=death,limit=1]
 
 execute at @e[tag=ambient_home] run function v3:particles/ambient_init
 execute at @e[tag=angry_villager_home] run function v3:particles/angry_villager_init
+execute at @e[tag=bee_pollen_home] run function v3:particles/bee_pollen_init
 execute at @e[tag=bubbles_home] run function v3:particles/bubbles_init
 execute at @e[tag=campfire_smoke_home] run function v3:particles/campfire_smoke_init
 execute at @e[tag=crit_home] run function v3:particles/crit_init
 execute at @e[tag=damage_indicator_home] run function v3:particles/damage_indicator_init
 execute at @e[tag=dolphin_home] run function v3:particles/dolphin_init
 execute at @e[tag=dragon_breath_home] run function v3:particles/dragon_breath_init
+execute at @e[tag=dripping_honey_home] run function v3:particles/dripping_honey_init
 execute at @e[tag=dripping_lava_home] run function v3:particles/dripping_lava_init
 execute at @e[tag=dripping_water_home] run function v3:particles/dripping_water_init
 execute at @e[tag=dust_home] run function v3:particles/dust_init
