@@ -8,4 +8,4 @@ execute if score campfire funcs matches 0 run data merge block ~0 ~2 ~-1 {Text2:
 
 
 execute if score campfire funcs matches 1 run setblock ~0 ~3 ~0 minecraft:campfire[lit=false]
-execute if score campfire funcs matches 1 run data merge block ~0 ~2 ~-1 {Text2:"\"Campfire\"",Text3:"\"\"",Text4:"\"\""}
+execute if score campfire funcs matches 1 run data merge block ~0 ~2 ~-1 {Text2:"\"Campfire\"",Text3:"\"Unlit\"",Text4:"\"\""}
