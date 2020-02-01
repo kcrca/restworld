@@ -15,7 +15,7 @@
         'Grindstone')
     stages = {
 	'Barrel': list('facing=%s,open=%s' % (t[0], t[1]) for t in
-		   (('up', 'true'), ('up', 'false'), ('north', 'true'), ('south', 'false'))),
+		   (('up', 'true'), ('up', 'false'), ('north', 'true'), ('north', 'false'))),
 	'Composter': list('level=%d' % t for t in range(0, 9)),
 	'Lectern': ('has_book=false', 'has_book=true'),
 	'Cauldron': list('level=%d' % t for t in range(0, 4)),

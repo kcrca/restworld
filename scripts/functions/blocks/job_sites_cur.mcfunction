@@ -61,8 +61,8 @@ execute if score job_sites funcs matches 14 run setblock ~ ~3 ~ barrel[facing=no
 execute if score job_sites funcs matches 14 run data merge block ~0 ~2 ~-1 {Text4:"\"Open\"",Text3:"\"Facing North\"",Text2:"\"Barrel\""}
 
 
-execute if score job_sites funcs matches 15 run setblock ~ ~3 ~ barrel[facing=south,open=false]
-execute if score job_sites funcs matches 15 run data merge block ~0 ~2 ~-1 {Text4:"\"Not Open\"",Text3:"\"Facing South\"",Text2:"\"Barrel\""}
+execute if score job_sites funcs matches 15 run setblock ~ ~3 ~ barrel[facing=north,open=false]
+execute if score job_sites funcs matches 15 run data merge block ~0 ~2 ~-1 {Text4:"\"Not Open\"",Text3:"\"Facing North\"",Text2:"\"Barrel\""}
 
 
 execute if score job_sites funcs matches 16 run setblock ~ ~3 ~ fletching_table

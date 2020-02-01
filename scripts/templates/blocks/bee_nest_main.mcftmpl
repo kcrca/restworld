@@ -9,5 +9,5 @@
 ${blocks(tuple(types))}
 
 %for i in range(0, 6):
-${base.when(i)} data merge block ~0 ~2 ~-1 {Text3:${text("Honey Level: %d" % i)}}
+${base.when(i)} data merge block ~0 ~2 ~-1 {Text1:${text("Bee Nest")},Text2:${text("Honey Level: %d" % i)},Text3:${text("6 stages")},Text4:${text("(vanilla shows 2)")}}
 %endfor
