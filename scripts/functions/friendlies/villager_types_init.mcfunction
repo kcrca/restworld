@@ -14,6 +14,7 @@ summon minecraft:villager ~0 ~2 ~1 {Tags:[villager,friendlies,types,friendlies],
 summon minecraft:villager ~0 ~2 ~3 {Tags:[villager,friendlies,types,friendlies],VillagerData:{type:taiga},CustomName:"\"Taiga\"",PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[90f,0f]}
 
 function v3:friendlies/villager_types_cur
+function v3:friendlies/villager_levels_cur
 
 setblock ~-5 ~2 ~0 oak_wall_sign[facing=west]
 data modify block ~-5 ~2 ~0 Text3 set value "\"Villagers\""

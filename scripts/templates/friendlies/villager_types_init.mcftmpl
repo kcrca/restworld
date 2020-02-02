@@ -11,6 +11,7 @@ ${base.mobs(p, id="villager", do_adult=True, nbt="VillagerData:{type:%s}" % p.lo
 %endfor
 
 function v3:friendlies/villager_types_cur
+function v3:friendlies/villager_levels_cur
 
 setblock ~-5 ~2 ~0 oak_wall_sign[facing=west]
 data modify block ~-5 ~2 ~0 Text3 set value ${text("Villagers")}

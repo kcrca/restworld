@@ -23,6 +23,7 @@ summon minecraft:villager ~0 ~2 ~5 {Tags:[villager,friendlies,professions,friend
 summon minecraft:villager ~0 ~2 ~7 {Tags:[villager,friendlies,professions,friendlies],VillagerData:{profession:unemployed},CustomName:"\"Unemployed\"",PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[90f,0f]}
 
 function v3:friendlies/villager_professions_cur
+function v3:friendlies/villager_levels_cur
 
 setblock ~-5 ~2 ~0 oak_wall_sign[facing=west]
 data modify block ~-5 ~2 ~0 Text3 set value "\"Villagers\""
