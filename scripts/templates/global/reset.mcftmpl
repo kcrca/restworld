@@ -1,3 +1,5 @@
+execute positioned ~ ~-3 ~ run function v3:global/min_home
+
 kill @e[tag=homer,tag=!min_home]
 
 execute at @e[tag=min_home] run fill ~ 99 ~ ~144 99 ~160 birch_log replace redstone_block
