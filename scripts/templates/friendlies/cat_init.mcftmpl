@@ -1,4 +1,4 @@
 <%namespace name="base" file="../base.mcftmpl"/>\
 
 ${base.mobs_init(x_delta_init=2, kid_z_init=2.2, adult_z_init=-0.20, rotation_init=0, tags_init=("friendlies","collared"))}\
-${base.mobs("Cat", nbt='OwnerUUID:"08944516-039d-4b71-a969-7dafaffd5b39"')}
+${base.mobs("Cat")}
