@@ -2,6 +2,5 @@
 <%namespace name="base"  file="../base.mcftmpl"/>
 
 <%base:loop collection="${villager_data}" args="when,i,thing">
-${when(i)} say villager ${i} ${thing}
 ${when(i)} ${summon("villager", 0, "VillagerData:{%s},NoAI:True" % thing)}
 </%base:loop>
