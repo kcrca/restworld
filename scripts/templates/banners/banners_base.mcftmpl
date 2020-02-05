@@ -1,0 +1,17 @@
+<%def name="banners(renderer)"%>
+<%
+adjustments = {}
+adjustments[ 0] = (2, 0.07, 2, -1, 0.3, 0, 0, 'south', -1, +1)
+adjustments[10] = (12, -0.3, 0, 2, 0.07, 2, 90, 'west', -1, -1)
+adjustments[20] = (9, -0.07, -2, 12, -0.3, 0, 180, 'north', +1, -1)
+adjustments[30] = (-1, 0.3, 0, 9, -0.07, -2, 270, 'east', +1, +1)
+
+for i in range(0, len(patterns), 2):
+    try:
+	x, xn, xd, z, zn, zd, angle, facing, bx, bz = adjustments[i]
+    except KeyError:
+	x += xd
+	z += zd
+    render(x, xn, xd, z, zn, zd, angle, facing, bx, bz, 3.65, 5 patterns[i][0])
+    render(x, xn, xd, z, zn, zd, angle, facing, bx, bz, 1.65, 3 patterns[i + 1][0])
+%>
