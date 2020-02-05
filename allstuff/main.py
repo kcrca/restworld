@@ -151,6 +151,23 @@ def render_tmpl(tmpl, var_name, **kwargs):
         "Weaponsmith",
         "Unemployed",
     )
+    patterns = (
+        ("", "None"), ("drs", "Down Right Stripe"), ("dls", "Down Left Stripe"), ("cr", "Cross"),
+        ("bs", "Bottom Stripe"), ("ms", "Middle Stripe"), ("ts", "Top Stripe"), ("sc", "Square Cross"),
+        ("ls", "Left Stripe"), ("cs", "Center Stripe"), ("rs", "Right Stripe"), ("ss", "Small Stripes"),
+        ("ld", "Left Diagonal"), ("rud", "Right Upside-Down|Diagonal"), ("lud", "Left Upside-Down|Diagonal"),
+        ("rd", "Right Diagonal"),
+        ("vh", "Vertical Half|(Left)"), ("vhr", "Vertical Half|(Right)"), ("hhb", "Horizontal Half|(Bottom)"),
+        ("hh", "Horizontal Half|(Top)"),
+        ("bl", "Bottom Left|Corner"), ("br", "Bottom Right|Corner"), ("tl", "Top Left|Corner"),
+        ("tr", "Top Right|Corner"),
+        ("bt", "Bottom Triangle"), ("tt", "Top Triangle"), ("bts", "Bottom Triangle|Sawtooth"),
+        ("tts", "Top Triangle|Sawtooth"),
+        ("mc", "Middle Circle"), ("mr", "Middle Rhombus"), ("bo", "Border"), ("cbo", "Curly Border"),
+        ("gra", "Gradient"), ("gru", "Gradient|Upside-Down"), ("cre", "Creeper"), ("bri", "Bick"),
+        ("sku", "Skull"), ("flo", "Flower"), ("moj", "Mojang"), ("glb", "Globe"),
+    )
+
     villager_types = ("Desert", "Jungle", "Plains", "Savanna", "Snow", "Swamp", "Taiga")
     villager_data = []
     for t in villager_types:
@@ -172,6 +189,7 @@ def render_tmpl(tmpl, var_name, **kwargs):
         other_horses=other_horses,
         small_flowers=small_flowers,
         tulips=tulips,
+        patterns=patterns,
         professions=professions,
         text=text,
         text_attrs=text_attrs,
@@ -219,12 +237,16 @@ class Color(Thing):
         Thing.__init__(self, name)
         self.rgb = rgb
         self.dyes = {'1.13': dye_13, '1.14': '%s_dye' % self.id, 'default': dye_13}
+        self.id = name.replace(' ', '_').lower()
 
     def dye_name(self):
         try:
             return self.dyes[mc_version]
         except KeyError:
             return self.dyes['default']
+
+    def in_id(self):
+        return self.id
 
 
 class Horse(Thing):
