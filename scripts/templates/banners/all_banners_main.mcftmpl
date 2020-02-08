@@ -1,0 +1,24 @@
+<%namespace name="base" file="../base.mcftmpl"/>\
+
+<%
+patterns = (
+    ('blue_banner{Patterns:[{Color:0,Pattern:"bri"},{Color:11,Pattern:"hhb"},{Color:15,Pattern:"sc"},{Color:11,Pattern:"sc"},{Color:15,Pattern:"bo"},{Color:11,Pattern:"bo"}]}', 'Tardis', 'Pikachu'),
+    ('purple_banner{Patterns:[{Color:2,Pattern:"ss"},{Color:10,Pattern:"bri"},{Color:2,Pattern:"cbo"},{Color:15,Pattern:"bo"}]}', 'Portail du Nether', 'Akkta'),
+    ('white_banner{Patterns:[{Color:15,Pattern:"mr"},{Color:1,Pattern:"cbo"},{Color:1,Pattern:"mc"},{Color:1,Pattern:"cre"},{Color:1,Pattern:"tt"},{Color:1,Pattern:"tts"}]}', 'Fox', 'mr.crafteur'),
+    ('white_banner{Patterns:[{Color:15,Pattern:"mc"},{Color:0,Pattern:"flo"},{Color:15,Pattern:"tt"},{Color:0,Pattern:"cr"},{Color:15,Pattern:"cbo"},{Color:0,Pattern:"bts"}]}', 'Rabbit', 'googolplexbyte'),
+    ('light_blue_banner{Patterns:[{Color:11,Pattern:"gra"},{Color:0,Pattern:"cbo"},{Color:0,Pattern:"cr"},{Color:0,Pattern:"mc"},{Color:11,Pattern:"flo"},{Color:0,Pattern:"tt"}]}', 'Angel', 'PK?'),
+    ('white_banner{Patterns:[{Color:15,Pattern:"sc"},{Color:0,Pattern:"sc"},{Color:15,Pattern:"flo"},{Color:0,Pattern:"flo"}]}', 'Quartz sculpte', 'Pikachu'),
+    ('black_banner{Patterns:[{Color:5,Pattern:"cbo"},{Color:15,Pattern:"rs"},{Color:14,Pattern:"flo"},{Color:5,Pattern:"ms"},{Color:15,Pattern:"tt"},{Color:5,Pattern:"moj"}]}', 'DRAGON !', 'kraftime'),
+    ('white_banner{Patterns:[{Color:15,Pattern:"ts"},{Color:0,Pattern:"sc"},{Color:14,Pattern:"hhb"},{Color:0,Pattern:"bo"},{Color:0,Pattern:"bs"},{Color:4,Pattern:"ms"}]}', 'Poule', 'mish80'),
+    ('black_banner{Patterns:[{Color:14,Pattern:"gru"},{Color:14,Pattern:"bt"},{Color:0,Pattern:"bts"},{Color:0,Pattern:"tts"}]}', 'Bouche', 'entonix69'),
+    ('white_banner{Patterns:[{Color:15,Pattern:"flo"},{Color:0,Pattern:"sku"},{Color:0,Pattern:"mc"},{Color:0,Pattern:"ts"},{Color:0,Pattern:"hh"}]}', 'Owl', 'CrystalDrop'),
+    ('lime_banner{Patterns:[{Color:4,Pattern:"gra"},{Color:3,Pattern:"gru"},{Color:0,Pattern:"cbo"},{Color:0,Pattern:"cr"},{Color:0,Pattern:"mr"},{Color:5,Pattern:"mc"}]}', 'Like pls ^-^', 'Harmony'),
+)
+%>
+
+setblock ~0 ~3 ~0 air
+<%base:loop collection="${patterns}" args="when,i,thing">\
+${when(i)} setblock ~0.2 ~3 ~0.2 ${thing[0].replace('{', '[rotation=14]{', 1)}
+${when(i)} execute as @e[tag=banner_pattern_custom] run data merge entity @s {CustomName:${text(thing[1])}}
+${when(i)} execute as @e[tag=banner_pattern_custom_author] run data merge entity @s {CustomName:${text('by ' + thing[2])}}
+</%base:loop>

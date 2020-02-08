@@ -131,3 +131,9 @@ summon armor_stand ~-0.7 ~1.65 ~0.93 {Invisible:true,NoGravity:true,ShowArms:tru
 
 
 function v3:banners/switch_to_color
+function v3:banners/banner_color_cur
+
+setblock ~0.2 ~3 ~10.8 white_banner[rotation=10]{Patterns:[{Pattern:"mr",Color:9}, {Pattern:"bs",Color:8}, {Pattern:"cs",Color:7}, {Pattern:"bo",Color:8}, {Pattern:"ms",Color:15}, {Pattern:"hh",Color:8}, {Pattern:"mc",Color:8}, {Pattern:"bo",Color:15}]}
+setblock ~10.8 ~3 ~0.2 magenta_banner[rotation=2]{Patterns:[{Pattern:"bt",Color:15}, {Pattern:"tt",Color:15}]}
+summon armor_stand ~0.3 ~3.1 ~0.3 {Tags:[banner_stand,banner_pattern_custom],NoGravity:True,Invisible:True}
+summon armor_stand ~0.3 ~2.8 ~0.3 {Tags:[banner_stand,banner_pattern_custom_author],NoGravity:True,Invisible:True}

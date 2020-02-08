@@ -1,4 +1,7 @@
-fill ~-2 ~-2 ~-2 ~16 ~16 ~16 air replace #banners
+fill ~1 ~3 ~0 ~9 ~5 ~0 air replace #banners
+fill ~11 ~3 ~1 ~11 ~5 ~9 air replace #banners
+fill ~2 ~3 ~11 ~10 ~5 ~11 air replace #banners
+fill ~0 ~3 ~10 ~0 ~5 ~2 air replace #banners
 
 
 scoreboard players set banner_color max 16
