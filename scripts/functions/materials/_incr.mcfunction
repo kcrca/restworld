@@ -1,5 +1,4 @@
 scoreboard players add panes funcs 1
-scoreboard players add bannner funcs 1
 scoreboard players add fencelike funcs 1
 scoreboard players add walls funcs 1
 scoreboard players add wood funcs 1

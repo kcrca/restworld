@@ -10,196 +10,8 @@ from mako.template import Template
 mc_version = '1.14'
 
 
-def render_tmpl(tmpl, var_name, **kwargs):
-    colors = (
-        Color("White", 16383998, "bone_meal"),
-        Color("Orange", 16351261, "orange_dye"),
-        Color("Magenta", 13061821, "magenta_dye"),
-        Color("Light Blue", 3847130, "light_blue_dye"),
-        Color("Yellow", 16701501, "dandelion_yellow"),
-        Color("Lime", 8439583, "lime_dye"),
-        Color("Pink", 15961002, "pink_dye"),
-        Color("Gray", 4673362, "gray_dye"),
-        Color("Light Gray", 10329495, "light_gray_dye"),
-        Color("Cyan", 1481884, "cyan_dye"),
-        Color("Purple", 8991416, "purple_dye"),
-        Color("Blue", 3949738, "lapis_lazuli"),
-        Color("Brown", 8606770, "cocoa_beans"),
-        Color("Green", 6192150, "cactus_green"),
-        Color("Red", 11546150, "rose_red"),
-        Color("Black", 1908001, "ink_sac"),
-    )
-    command_blocks = (
-        CommandBlock("Command Block", True),
-        CommandBlock("Command Block", False),
-        CommandBlock("Chain Command Block", False),
-        CommandBlock("Chain Command Block", True),
-        CommandBlock("Repeating Command Block", True),
-        CommandBlock("Repeating Command Block", False),
-        CommandBlock("Command Block", False),
-        CommandBlock("Command Block", True),
-        CommandBlock("Chain Command Block", True),
-        CommandBlock("Chain Command Block", False),
-        CommandBlock("Repeating Command Block", False),
-        CommandBlock("Repeating Command Block", True),
-    )
-    stepables = (
-        Stepable("Sandstone", "Sand"),
-        Stepable("Red Sandstone", "Red Sand"),
-        Stepable("Quartz", "Nether Quartz Ore", block="Quartz Block"),
-        Stepable("Cobblestone", "Stone"),
-        Stepable("Stone Brick", "Stone", block="Stone Bricks"),
-        Stepable("Nether Brick", "Netherrack", block="Nether Bricks"),
-        Stepable("Brick", "Clay", block="Bricks"),
-        Stepable("Purpur", "air", block="Purpur Block"),
-        Stepable("Prismarine", "air"),
-        Stepable("Prismarine Brick", "air", block="Prismarine Bricks"),
-        Stepable("Dark Prismarine", "air"),
-    )
-    woods = ("Acacia", "Birch", "Jungle", "Oak", "Dark Oak", "Spruce")
-    fish_data = (
-        ("kob",
-         (917504, "Red-White Kob"),
-         (65536, "Orange-White Kob"),
-         ),
-        ("sunstreak",
-         (134217984, "White-Silver Sunstreak"),
-         (50790656, "Gray-Sky SunStreak"),
-         (118161664, "Blue-Gray SunStreak"),
-         ),
-        ((235340288, "Gray-Red Snooper"),),
-        ("dasher",
-         (117441280, "White-Gray Dasher"),
-         (101253888, "Teal-Rose Dasher"),
-         ),
-        ("brinely",
-         (117441536, "White-Gray Brinely"),
-         (50660352, "Line-Sky Dasher"),
-         ),
-        ("spotty",
-         (67110144, "White-Yellow Spotter"),
-         (50726144, "Rose-Sky Spotty"),
-         ),
-        ("flopper",
-         (117899265, "Gray Flopper"),
-         (67108865, "White-Yellow Flopper"),
-         ),
-        ("stripey",
-         (117506305, "Orange-Gray Stripey"),
-         (67371265, "Yellow Stripey"),
-         ),
-        ((117441025, "White-Gray Glitter"),),
-        ("blockfish",
-         (67764993, "Plum-Yellow Blockfish"),
-         (918273, "Red-White Blockfish"),
-         ),
-        ((918529, "Red-White Betty"),),
-        ("clayfish",
-         (234882305, "White-Red Clayfish"),
-         (16778497, "White-Orange Clayfish"),
-         ),
-    )
-    fishes = []
-    for f in fish_data:
-        if len(f) == 1:
-            fishes.append((re.sub(r'[- ]', '_', f[0][1].lower()), f))
-        else:
-            fishes.append((f[0], list(v for v in f[1:])))
-    horses = (
-        Horse("White", 0),
-        Horse("Creamy", 1),
-        Horse("Chestnut", 2),
-        Horse("Brown", 3),
-        Horse("Black", 4),
-        Horse("Gray", 5),
-        Horse("Dark Brown", 6),
-    )
-    other_horses = (
-        Horse("Mule"),
-        Horse("Donkey"),
-        Horse("Skeleton Horse"),
-        Horse("Zombie Horse"),
-    )
-    small_flowers = (
-        Thing("Allium"),
-        Thing("Azure Bluet"),
-        Thing("Blue Orchid"),
-        Thing("Dandelion"),
-        Thing("Oxeye Daisy"),
-        Thing("Poppy"),
-    )
-    tulips = (
-        "Red",
-        "Orange",
-        "Pink",
-        "White",
-    )
-    professions = (
-        "Armorer",
-        "Butcher",
-        "Cartographer",
-        "Cleric",
-        "Farmer",
-        "Fisherman",
-        "Fletcher",
-        "Leatherworker",
-        "Librarian",
-        "Mason",
-        "Nitwit",
-        "Shepherd",
-        "Toolsmith",
-        "Weaponsmith",
-        "Unemployed",
-    )
-    patterns = (
-        ("", "None"), ("drs", "Down Right Stripe"), ("dls", "Down Left Stripe"), ("cr", "Cross"),
-        ("bs", "Bottom Stripe"), ("ms", "Middle Stripe"), ("ts", "Top Stripe"), ("sc", "Square Cross"),
-        ("ls", "Left Stripe"), ("cs", "Center Stripe"), ("rs", "Right Stripe"), ("ss", "Small Stripes"),
-        ("ld", "Left Diagonal"), ("rud", "Right Upside-Down|Diagonal"), ("lud", "Left Upside-Down|Diagonal"),
-        ("rd", "Right Diagonal"),
-        ("vh", "Vertical Half|(Left)"), ("vhr", "Vertical Half|(Right)"), ("hhb", "Horizontal Half|(Bottom)"),
-        ("hh", "Horizontal Half|(Top)"),
-        ("bl", "Bottom Left|Corner"), ("br", "Bottom Right|Corner"), ("tl", "Top Left|Corner"),
-        ("tr", "Top Right|Corner"),
-        ("bt", "Bottom Triangle"), ("tt", "Top Triangle"), ("bts", "Bottom Triangle|Sawtooth"),
-        ("tts", "Top Triangle|Sawtooth"),
-        ("mc", "Middle Circle"), ("mr", "Middle Rhombus"), ("bo", "Border"), ("cbo", "Curly Border"),
-        ("gra", "Gradient"), ("gru", "Gradient|Upside-Down"), ("cre", "Creeper"), ("bri", "Bick"),
-        ("sku", "Skull"), ("flo", "Flower"), ("moj", "Mojang"), ("glb", "Globe"),
-    )
-
-    villager_types = ("Desert", "Jungle", "Plains", "Savanna", "Snow", "Swamp", "Taiga")
-    villager_data = []
-    for t in villager_types:
-        for p in professions:
-            villager_data += ['profession:%s,type:%s' % (p, t), ]
-    random.shuffle(villager_data)
-
-    return tmpl.render(
-        var=var_name,
-        func=var_name,
-        Thing=Thing,
-        Mob=Mob,
-        colors=colors,
-        command_blocks=command_blocks,
-        steppables=stepables,
-        woods=woods,
-        fishes=fishes,
-        horses=horses,
-        other_horses=other_horses,
-        small_flowers=small_flowers,
-        tulips=tulips,
-        patterns=patterns,
-        professions=professions,
-        text=text,
-        text_attrs=text_attrs,
-        to_nicknamed=to_nicknamed,
-        to_id=to_id,
-        commas=commas,
-        villager_data=villager_data,
-        villager_types=villager_types,
-        **kwargs
-    )
+def to_id(name):
+    return name.lower().replace(" ", "_")
 
 
 class Thing:
@@ -233,11 +45,15 @@ class Nicknamed(Thing):
 
 
 class Color(Thing):
+    next_color_num = 0
+
     def __init__(self, name, rgb, dye_13):
         Thing.__init__(self, name)
         self.rgb = rgb
         self.dyes = {'1.13': dye_13, '1.14': '%s_dye' % self.id, 'default': dye_13}
         self.id = name.replace(' ', '_').lower()
+        self.color_num = Color.next_color_num
+        Color.next_color_num += 1
 
     def dye_name(self):
         try:
@@ -303,6 +119,171 @@ class Particles(object, Thing):
         return cmp(my_text, other_text)
 
 
+colors = (
+    Color("White", 16383998, "bone_meal"),
+    Color("Orange", 16351261, "orange_dye"),
+    Color("Magenta", 13061821, "magenta_dye"),
+    Color("Light Blue", 3847130, "light_blue_dye"),
+    Color("Yellow", 16701501, "dandelion_yellow"),
+    Color("Lime", 8439583, "lime_dye"),
+    Color("Pink", 15961002, "pink_dye"),
+    Color("Gray", 4673362, "gray_dye"),
+    Color("Light Gray", 10329495, "light_gray_dye"),
+    Color("Cyan", 1481884, "cyan_dye"),
+    Color("Purple", 8991416, "purple_dye"),
+    Color("Blue", 3949738, "lapis_lazuli"),
+    Color("Brown", 8606770, "cocoa_beans"),
+    Color("Green", 6192150, "cactus_green"),
+    Color("Red", 11546150, "rose_red"),
+    Color("Black", 1908001, "ink_sac"),
+)
+command_blocks = (
+    CommandBlock("Command Block", True),
+    CommandBlock("Command Block", False),
+    CommandBlock("Chain Command Block", False),
+    CommandBlock("Chain Command Block", True),
+    CommandBlock("Repeating Command Block", True),
+    CommandBlock("Repeating Command Block", False),
+    CommandBlock("Command Block", False),
+    CommandBlock("Command Block", True),
+    CommandBlock("Chain Command Block", True),
+    CommandBlock("Chain Command Block", False),
+    CommandBlock("Repeating Command Block", False),
+    CommandBlock("Repeating Command Block", True),
+)
+stepables = (
+    Stepable("Sandstone", "Sand"),
+    Stepable("Red Sandstone", "Red Sand"),
+    Stepable("Quartz", "Nether Quartz Ore", block="Quartz Block"),
+    Stepable("Cobblestone", "Stone"),
+    Stepable("Stone Brick", "Stone", block="Stone Bricks"),
+    Stepable("Nether Brick", "Netherrack", block="Nether Bricks"),
+    Stepable("Brick", "Clay", block="Bricks"),
+    Stepable("Purpur", "air", block="Purpur Block"),
+    Stepable("Prismarine", "air"),
+    Stepable("Prismarine Brick", "air", block="Prismarine Bricks"),
+    Stepable("Dark Prismarine", "air"),
+)
+woods = ("Acacia", "Birch", "Jungle", "Oak", "Dark Oak", "Spruce")
+fish_data = (
+    ("kob",
+     (917504, "Red-White Kob"),
+     (65536, "Orange-White Kob"),
+     ),
+    ("sunstreak",
+     (134217984, "White-Silver Sunstreak"),
+     (50790656, "Gray-Sky SunStreak"),
+     (118161664, "Blue-Gray SunStreak"),
+     ),
+    ((235340288, "Gray-Red Snooper"),),
+    ("dasher",
+     (117441280, "White-Gray Dasher"),
+     (101253888, "Teal-Rose Dasher"),
+     ),
+    ("brinely",
+     (117441536, "White-Gray Brinely"),
+     (50660352, "Line-Sky Dasher"),
+     ),
+    ("spotty",
+     (67110144, "White-Yellow Spotter"),
+     (50726144, "Rose-Sky Spotty"),
+     ),
+    ("flopper",
+     (117899265, "Gray Flopper"),
+     (67108865, "White-Yellow Flopper"),
+     ),
+    ("stripey",
+     (117506305, "Orange-Gray Stripey"),
+     (67371265, "Yellow Stripey"),
+     ),
+    ((117441025, "White-Gray Glitter"),),
+    ("blockfish",
+     (67764993, "Plum-Yellow Blockfish"),
+     (918273, "Red-White Blockfish"),
+     ),
+    ((918529, "Red-White Betty"),),
+    ("clayfish",
+     (234882305, "White-Red Clayfish"),
+     (16778497, "White-Orange Clayfish"),
+     ),
+)
+fishes = []
+for f in fish_data:
+    if len(f) == 1:
+        fishes.append((re.sub(r'[- ]', '_', f[0][1].lower()), f))
+    else:
+        fishes.append((f[0], list(v for v in f[1:])))
+horses = (
+    Horse("White", 0),
+    Horse("Creamy", 1),
+    Horse("Chestnut", 2),
+    Horse("Brown", 3),
+    Horse("Black", 4),
+    Horse("Gray", 5),
+    Horse("Dark Brown", 6),
+)
+other_horses = (
+    Horse("Mule"),
+    Horse("Donkey"),
+    Horse("Skeleton Horse"),
+    Horse("Zombie Horse"),
+)
+small_flowers = (
+    Thing("Allium"),
+    Thing("Azure Bluet"),
+    Thing("Blue Orchid"),
+    Thing("Dandelion"),
+    Thing("Oxeye Daisy"),
+    Thing("Poppy"),
+)
+tulips = (
+    "Red",
+    "Orange",
+    "Pink",
+    "White",
+)
+professions = (
+    "Armorer",
+    "Butcher",
+    "Cartographer",
+    "Cleric",
+    "Farmer",
+    "Fisherman",
+    "Fletcher",
+    "Leatherworker",
+    "Librarian",
+    "Mason",
+    "Nitwit",
+    "Shepherd",
+    "Toolsmith",
+    "Weaponsmith",
+    "Unemployed",
+)
+patterns = (
+    ("", "None"), ("drs", "Down Right Stripe"), ("dls", "Down Left Stripe"), ("cr", "Cross"),
+    ("bs", "Bottom Stripe"), ("ms", "Middle Stripe"), ("ts", "Top Stripe"), ("sc", "Square Cross"),
+    ("ls", "Left Stripe"), ("cs", "Center Stripe"), ("rs", "Right Stripe"), ("ss", "Small Stripes"),
+    ("ld", "Left Diagonal"), ("rud", "Right Upside-Down|Diagonal"), ("lud", "Left Upside-Down|Diagonal"),
+    ("rd", "Right Diagonal"),
+    ("vh", "Vertical Half|(Left)"), ("vhr", "Vertical Half|(Right)"), ("hhb", "Horizontal Half|(Bottom)"),
+    ("hh", "Horizontal Half|(Top)"),
+    ("bl", "Bottom Left|Corner"), ("br", "Bottom Right|Corner"), ("tl", "Top Left|Corner"),
+    ("tr", "Top Right|Corner"),
+    ("bt", "Bottom Triangle"), ("tt", "Top Triangle"), ("bts", "Bottom Triangle|Sawtooth"),
+    ("tts", "Top Triangle|Sawtooth"),
+    ("mc", "Middle Circle"), ("mr", "Middle Rhombus"), ("bo", "Border"), ("cbo", "Curly Border"),
+    ("gra", "Gradient"), ("gru", "Gradient|Upside-Down"), ("cre", "Creeper"), ("bri", "Bick"),
+    ("sku", "Skull"), ("flo", "Flower"), ("moj", "Mojang"), ("glb", "Globe"),
+)
+
+villager_types = ("Desert", "Jungle", "Plains", "Savanna", "Snow", "Swamp", "Taiga")
+villager_data = []
+for t in villager_types:
+    for p in professions:
+        villager_data += ['profession:%s,type:%s' % (p, t), ]
+    random.shuffle(villager_data)
+
+
 def text(txt):
     return r'"\"%s\""' % txt.replace('"', r'\\\"')
 
@@ -316,10 +297,6 @@ def text_attrs(attrs):
     return s
 
 
-def to_id(name):
-    return name.lower().replace(" ", "_")
-
-
 def to_nicknamed(kind, nicknames):
     items = [Nicknamed(n, kind) for n in nicknames]
     return items
@@ -331,6 +308,34 @@ def commas(*args):
 
 def has_loop(rendered):
     return re.search(r'<%base:(loop|bounce|increment)', rendered, flags=re.MULTILINE)
+
+
+def render_tmpl(tmpl, var_name, **kwargs):
+    return tmpl.render(
+        var=var_name,
+        func=var_name,
+        Thing=Thing,
+        Mob=Mob,
+        colors=colors,
+        command_blocks=command_blocks,
+        steppables=stepables,
+        woods=woods,
+        fishes=fishes,
+        horses=horses,
+        other_horses=other_horses,
+        small_flowers=small_flowers,
+        tulips=tulips,
+        patterns=patterns,
+        professions=professions,
+        text=text,
+        text_attrs=text_attrs,
+        to_nicknamed=to_nicknamed,
+        to_id=to_id,
+        commas=commas,
+        villager_data=villager_data,
+        villager_types=villager_types,
+        **kwargs
+    )
 
 
 def main():

@@ -1,0 +1,25 @@
+<%namespace name="base" file="../base.mcftmpl"/>\
+<%namespace file="banners_base.mcftmpl" import="*"/>
+
+fill ~-2 ~-2 ~-2 ~16 ~16 ~16 air replace #banners
+
+<%base:loop collection="${colors}" args="when,i,thing">\
+
+<%def name="render_most(x, xn, xd, z, zn, zd, angle, facing, bx, bz, y_shield, y_banner, pattern, handback=None)">\
+## Banners with a set color (can't get computed value here)
+<% when, i, thing = handback %>\
+${when(i)} ${render_banner(x, xn, xd, z, zn, zd, angle, facing, bx, bz, y_banner, pattern, thing.in_id(), 9, (when, i, thing))}\
+%if i == 0:
+%endif
+</%def>
+${banners(render_most, handback=(when, i, thing))}
+
+## All shields
+${when(i)} execute as @e[tag=banner_stand] run data modify entity @s HandItems[1].tag.BlockEntityTag.Base set value ${thing.color_num}
+</%base:loop>
+
+<%def name="render_banner_ink(x, xn, xd, z, zn, zd, angle, facing, bx, bz, y_shield, y_banner, pattern, handback=None)">\
+## Replace banner ink with the current color
+execute store result block ~${x + bx} ~${y_banner} ~${z + bz} Patterns[0].Color int 1 run scoreboard players get banner_ink funcs
+</%def>
+${banners(render_banner_ink, handback=(when, i, thing))}

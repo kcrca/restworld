@@ -1,0 +1,2 @@
+<%namespace file="banners_base.mcftmpl" import="*"/>
+${switch_banners('ink')}

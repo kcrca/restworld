@@ -1,5 +1,4 @@
 scoreboard players remove panes funcs 1
-scoreboard players remove bannner funcs 1
 scoreboard players remove fencelike funcs 1
 scoreboard players remove walls funcs 1
 scoreboard players remove wood funcs 1

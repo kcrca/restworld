@@ -1,4 +1,3 @@
-scoreboard players add bannner funcs 0
 scoreboard players add basic funcs 0
 scoreboard players add fencelike funcs 0
 scoreboard players add fences funcs 0

@@ -1,5 +1,4 @@
 execute at @e[tag=panes_home] run function v3:materials/panes_cur
-execute at @e[tag=bannner_home] run function v3:materials/bannner_cur
 execute at @e[tag=fencelike_home] run function v3:materials/fencelike_cur
 execute at @e[tag=walls_home] run function v3:materials/walls_cur
 execute at @e[tag=wood_home] run function v3:materials/wood_cur

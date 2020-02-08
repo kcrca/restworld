@@ -8,6 +8,7 @@ function v3:center/_init
 function v3:redstone/_init
 function v3:particles/_init
 function v3:wither/_init
+function v3:banners/_init
 function v3:arena/_init
 function v3:friendlies/_init
 function v3:containers/_init
