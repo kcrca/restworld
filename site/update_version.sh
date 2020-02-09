@@ -4,7 +4,7 @@ set -e
 
 cd `dirname $0`
 
-ver_cur="$1"
+ver_cur="${1:-1.15.2}"
 [ x"$ver_cur" != x"" ] || (echo Must specify version ; exit 1)
 ver_old=$(sed -E -n -e 's/^<.-- version: ([^ ]*) -->/\1/p' < index.html)
 ver_old_re=$(echo "$ver_old" | sed -e 's/[.]/\\./g')
