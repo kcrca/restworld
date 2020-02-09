@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>RestWorld: A Resource Pack Testing Worlds</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <meta name="description"
+          content="RestWorld is a testing world for minecraft resource packs"/>
+    <meta name="keywords" content="minecraft resource pack texture testing world">
+</head>
+
+<!-- version: 1.15.2 -->
+
+<body>
+<div class="outer">
+
+    <div class="heading">
+        <h1>RestWorld</h1>
+        <h3>A Compact, Rich Resource Pack Testing World</h3>
+        <i>Version 1.15.2</i>
+    </div>
+
+    <div class="menu">
+        <table>
+            <tr>
+                <td class="tablinks Overview" onclick="openTab(event, 'Overview')">Overview</td>
+                <td class="tablinks Downloads" onclick="openTab(event, 'Downloads')">Downloads</td>
+                <td class="tablinks Details" onclick="openTab(event, 'Details')">Details</td>
+            </tr>
+        </table>
+    </div>
+
+    <div id="Overview" class="tabcontent">
+        <p>
+	    As Minecraft has evolved, the number of blocks has become larger and larger. There used to be
+	    a few downloadable test worlds for looking at a pack, but over time these are much more unweildly.
+	    It leaves a test world with a choice between completeness, compactness, and being able to see
+	    things with enough room.
+
+        <p>
+	RestWorld squares this circle by looping. Blocks and mobs that are similar take up a small space,
+	and withing that space, the variations are looped. For example, all the ores take up one block,
+	which changes from coal ore to iron ore to gold ore and so on. Each is shown for a couple seconds
+	(you can adjust the timing). And you can stop the looping at any time to focus on a specific ore
+	texture.
+
+	This means
+	you have all blocks and mobs within a space that you can traverse.
+	You can also compare how related blocks look. For example, if you want ores to look the same, you
+	    will notice errors much more easily when you can see the offending ore switched to from another one.
+
+	    <p>
+	    You start in the middle, where you can get a control book that allows you to stop and start the
+	    looping, as well as speeding it up or slowing it down. You can do these with buttons in the middle,
+	    but the book is a control you can carry with you.
+
+        <p>
+	A few examples may help.
+
+            <figure class="example">
+                <figcaption>Example: Villagers can be seen in many biomes and professions. Here you see all the professions
+		    of villagers in a given biome, which loops.
+                </figcaption>
+                <center>
+                    <img src="villagers.gif"/>
+                </center>
+            </figure>
+
+
+            <figure class="example">
+                <figcaption>Example: The various stages of plants are shown in sequence. In the background you can see
+		    some other plant stages looping.
+                </figcaption>
+                <img src="plants.gif"/>
+            </figure>
+
+            <figure class="example">
+                <figcaption>Example: Several different kinds of blocks.
+                </figcaption>
+                <img src="blocks.gif"/>
+            </figure>
+
+    </div>
+
+    <div id="Downloads" class="tabcontent">
+        <p>
+        <div class="menu">
+            <table class="downloads">
+                <tr>
+                    <td class="download_pack" onclick="window.location='packs/Clarity 1.15.2.zip'"><img
+                            src="restworld_thumb.png"/> Download
+                        RestWorld
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <div id="Details" class="tabcontent">
+        <p>
+	Restworld was built on a lot of commands and functions. In case you're interested, here are some details.
+
+        <ul>
+            <li> Version numbering will be the same as the Minecraft version they are built for (e.g., version 1.15.2 is
+                ready
+                for Minecraft 1.15.2).
+            <li> Each room only loops while you're in it (or not too far above it), to keep overhead down.
+            <li> RestWorld is built on a lot of functions driven from command blocks, using armor stands to give 
+		a location that is used to base the actions. This means that it is somewhat easy to relocate
+		a loop by moving where its armor stand is.
+            <li> There is a big reset button outside the main area, but your best bet is to keep a copy 
+		of the downloaded world around.
+        </ul>
+
+        <div class="heading">
+            <h1>Credits</h1>
+        </div>
+
+        <p>
+            Authors: BlueMeanial, with JUMBOshrimp277 aiding and abetting, doing most of the aesthetics and
+	    advising on the loops.
+    </div>
+
+    <div class="menu">
+        <table>
+            <tr>
+                <td class="tablinks Overview" onclick="openTab(event, 'Overview')">Overview</td>
+                <td class="tablinks Downloads" onclick="openTab(event, 'Downloads')">Downloads</td>
+                <td class="tablinks Details" onclick="openTab(event, 'Details')">Details</td>
+            </tr>
+        </table>
+    </div>
+
+    <!--CopyrightBegin -->
+<p class="license"><a rel="license" href="http://creativecommons.org/licenses/by/4.0/">
+    <img align="right"
+         alt="Creative Commons License"
+         style="border-width:0"
+         src="https://i.creativecommons.org/l/by/4.0/88x31.png"/></a>
+    <span
+            xmlns:dct="http://purl.org/dc/terms/"
+            property="dct:title">RestWorld Resource Pack Testing World</span> by <a
+            xmlns:cc="http://creativecommons.org/ns#" href="claritypack.com" property="cc:attributionName"
+            rel="cc:attributionURL">claritypack.com</a>
+    <br>is licensed under a <a rel="license"
+                               href="http://creativecommons.org/licenses/by/4.0/">Creative
+        Commons Attribution 4.0 International License</a>.
+    <br>© 2017-2020 by Ken Arnold. Based on a work at <a
+            xmlns:dct="http://purl.org/dc/terms/" href="https://github.com/kcrca/clarity" rel="dct:source">https://github.com/kcrca/restworld</a>.
+        <!--CopyrightEnd-->
+    <p class="timestamp">Page Last Edited: 8 Oct 23:21
+
+</div>
+
+<script>
+
+function openTab(evt, tabName) {
+    var i, tabcontent, tablinks;
+    tabcontent = document.getElementsByClassName("tabcontent");
+    for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+    }
+    tablinks = document.getElementsByClassName("tablinks");
+    for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
+    }
+
+    document.getElementById(tabName).style.display = "block";
+    activeButtons = document.getElementsByClassName(tabName);
+    for (i = 0; i < activeButtons.length; i++) {
+        activeButtons[i].className += " active";
+    }
+}
+
+function downloadAll(evt) {
+    dlinks = document.getElementsByClassName("download_pack");
+    function downloadNext(i) {
+	if (i >= dlinks.length) {
+	    return;
+	}
+        dlinks[i].click();
+	setTimeout(function() { downloadNext(i + 1); }, 500);
+    }
+    setTimeout(function() { downloadNext(0); }, 500);
+}
+
+tab_name = location.hash.substring(1);
+if (!tab_name) {
+    tab_name = "Overview";
+}
+
+document.addEventListener("DOMContentLoaded", function(event) { 
+    openTab(null, tab_name);
+});
+
+</script>
+</body>
+
+</html>
