@@ -1,10 +1,14 @@
 <%namespace name="base" file="../base.mcftmpl"/>
 <%
-    blocks = to_nicknamed("Cobblestone Wall", ("", "Mossy"))
+   blocks = to_nicknamed("Cobblestone Wall", ("", "Mossy")) + to_nicknamed( "Stone Brick Wall", ("", "Mossy", "End")) + to_nicknamed( "Sandstone Wall", ("", "Red")) + to_nicknamed( "Nether Brick Wall", ("", "Red")) + [
+	    Thing("Andesite Wall"),
+	    Thing("Granite Wall"),
+	    Thing("Diorite Wall"),
+	    Thing("Prismarine Wall"),
+	]
 %>
 
 <%base:loop collection="${blocks}" args="when,i,thing">
-${base.fencelike(when, i, thing.full_id(), thing.name, "Stained Glass")}\
 % try:
 ${base.fencelike(when, i, thing.full_id(), thing.nickname, thing.kind)}
 % except:

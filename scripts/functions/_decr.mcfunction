@@ -6,10 +6,11 @@ function v3:plants/_decr
 function v3:enders/_decr
 function v3:center/_decr
 function v3:redstone/_decr
+function v3:particles/_decr
 function v3:wither/_decr
+function v3:banners/_decr
 function v3:arena/_decr
 function v3:friendlies/_decr
 function v3:containers/_decr
-function v3:effects/_decr
 function v3:global/_decr
 function v3:monsters/_decr

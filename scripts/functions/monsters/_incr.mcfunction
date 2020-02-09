@@ -1,7 +1,8 @@
+scoreboard players add spider funcs 1
 scoreboard players add ghast funcs 1
 scoreboard players add skeleton funcs 1
 scoreboard players add endermite funcs 1
-scoreboard players add slime funcs 1
+scoreboard players add ravager funcs 1
 scoreboard players add fangs funcs 1
 scoreboard players add pigmen funcs 1
 scoreboard players add zombie_horse funcs 1
@@ -14,7 +15,7 @@ scoreboard players add cave_spider funcs 1
 scoreboard players add skeleton_horse funcs 1
 scoreboard players add wither_skeleton funcs 1
 scoreboard players add enderman funcs 1
-scoreboard players add spider funcs 1
+scoreboard players add slime funcs 1
 scoreboard players add zombie funcs 1
 scoreboard players add witch funcs 1
 scoreboard players add illager funcs 1

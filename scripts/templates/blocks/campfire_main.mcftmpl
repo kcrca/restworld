@@ -1,0 +1,7 @@
+<%namespace name="base" file="../base.mcftmpl"/>
+<%namespace import="*" file="blocks_base.mcftmpl"/>
+<%
+    types = (Thing("Campfire", block_state="lit=true"), Thing("Campfire|Unlit", id="campfire", block_state="lit=false"))
+%>
+
+${blocks(tuple(types))}

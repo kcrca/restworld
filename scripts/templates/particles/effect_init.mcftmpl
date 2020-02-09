@@ -1,0 +1,2 @@
+<%namespace file="particle_base.mcftmpl" import="*"/>
+${summon("evoker", 0, "NoAI:True")}

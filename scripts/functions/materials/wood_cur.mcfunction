@@ -22,14 +22,20 @@ execute if score wood funcs matches 0 run setblock ~-1 ~2 ~-3 minecraft:stripped
 execute if score wood funcs matches 0 run setblock ~-1 ~3 ~-3 minecraft:stripped_acacia_log[axis=z]
 
 execute if score wood funcs matches 0 run setblock ~4 ~2 ~-3 minecraft:acacia_slab[type=double]
-execute if score wood funcs matches 0 run setblock ~4 ~2 ~-1 minecraft:acacia_door[facing=east,half=lower]
-execute if score wood funcs matches 0 run setblock ~4 ~3 ~-1 minecraft:acacia_door[facing=east,half=upper]
+execute if score wood funcs matches 0 run setblock ~4 ~2 ~-1 minecraft:acacia_door[facing=west,half=lower]
+execute if score wood funcs matches 0 run setblock ~4 ~3 ~-1 minecraft:acacia_door[facing=west,half=upper]
 execute if score wood funcs matches 0 run setblock ~3 ~2 ~0 minecraft:acacia_pressure_plate
 execute if score wood funcs matches 0 run setblock ~3 ~2 ~1 minecraft:acacia_button[face=floor]
-execute if score wood funcs matches 0 run setblock ~4 ~2 ~1 minecraft:acacia_door[facing=east,half=lower]
-execute if score wood funcs matches 0 run setblock ~4 ~3 ~1 minecraft:acacia_door[facing=east,half=upper]
-execute if score wood funcs matches 0 run setblock ~4 ~2 ~2 minecraft:acacia_door[facing=east,half=lower,hinge=right]
-execute if score wood funcs matches 0 run setblock ~4 ~3 ~2 minecraft:acacia_door[facing=east,half=upper,hinge=right]
+execute if score wood funcs matches 0 run setblock ~4 ~2 ~1 minecraft:acacia_door[facing=west,half=lower,hinge=right]
+execute if score wood funcs matches 0 run setblock ~4 ~3 ~1 minecraft:acacia_door[facing=west,half=upper,hinge=right]
+execute if score wood funcs matches 0 run setblock ~4 ~2 ~2 minecraft:acacia_door[facing=west,half=lower]
+execute if score wood funcs matches 0 run setblock ~4 ~3 ~2 minecraft:acacia_door[facing=west,half=upper]
+
+execute if score wood funcs matches 0 run setblock ~3 ~2 ~3 minecraft:acacia_wall_sign[facing=south]
+execute if score wood funcs matches 0 run data modify block ~3 ~2 ~3 Text2 set value "\"A Wall Sign\""
+execute if score wood funcs matches 0 run setblock ~-3 ~2 ~3 minecraft:acacia_sign[rotation=0]
+execute if score wood funcs matches 0 run data modify block ~-3 ~2 ~3 Text2 set value "\"A Sign\""
+
 execute if score wood funcs matches 0 run summon minecraft:boat ~-0.5 ~1.525 ~2 {Type:acacia,CustomName:"\"Acacia\"",CustomNameVisible:True,Tags:[wood_boat],Rotation:[90f,0f]}
 
 execute if score wood funcs matches 0 run setblock ~1 ~2 ~-3 minecraft:acacia_planks
@@ -60,14 +66,20 @@ execute if score wood funcs matches 1 run setblock ~-1 ~2 ~-3 minecraft:stripped
 execute if score wood funcs matches 1 run setblock ~-1 ~3 ~-3 minecraft:stripped_birch_log[axis=z]
 
 execute if score wood funcs matches 1 run setblock ~4 ~2 ~-3 minecraft:birch_slab[type=double]
-execute if score wood funcs matches 1 run setblock ~4 ~2 ~-1 minecraft:birch_door[facing=east,half=lower]
-execute if score wood funcs matches 1 run setblock ~4 ~3 ~-1 minecraft:birch_door[facing=east,half=upper]
+execute if score wood funcs matches 1 run setblock ~4 ~2 ~-1 minecraft:birch_door[facing=west,half=lower]
+execute if score wood funcs matches 1 run setblock ~4 ~3 ~-1 minecraft:birch_door[facing=west,half=upper]
 execute if score wood funcs matches 1 run setblock ~3 ~2 ~0 minecraft:birch_pressure_plate
 execute if score wood funcs matches 1 run setblock ~3 ~2 ~1 minecraft:birch_button[face=floor]
-execute if score wood funcs matches 1 run setblock ~4 ~2 ~1 minecraft:birch_door[facing=east,half=lower]
-execute if score wood funcs matches 1 run setblock ~4 ~3 ~1 minecraft:birch_door[facing=east,half=upper]
-execute if score wood funcs matches 1 run setblock ~4 ~2 ~2 minecraft:birch_door[facing=east,half=lower,hinge=right]
-execute if score wood funcs matches 1 run setblock ~4 ~3 ~2 minecraft:birch_door[facing=east,half=upper,hinge=right]
+execute if score wood funcs matches 1 run setblock ~4 ~2 ~1 minecraft:birch_door[facing=west,half=lower,hinge=right]
+execute if score wood funcs matches 1 run setblock ~4 ~3 ~1 minecraft:birch_door[facing=west,half=upper,hinge=right]
+execute if score wood funcs matches 1 run setblock ~4 ~2 ~2 minecraft:birch_door[facing=west,half=lower]
+execute if score wood funcs matches 1 run setblock ~4 ~3 ~2 minecraft:birch_door[facing=west,half=upper]
+
+execute if score wood funcs matches 1 run setblock ~3 ~2 ~3 minecraft:birch_wall_sign[facing=south]
+execute if score wood funcs matches 1 run data modify block ~3 ~2 ~3 Text2 set value "\"A Wall Sign\""
+execute if score wood funcs matches 1 run setblock ~-3 ~2 ~3 minecraft:birch_sign[rotation=0]
+execute if score wood funcs matches 1 run data modify block ~-3 ~2 ~3 Text2 set value "\"A Sign\""
+
 execute if score wood funcs matches 1 run summon minecraft:boat ~-0.5 ~1.525 ~2 {Type:birch,CustomName:"\"Birch\"",CustomNameVisible:True,Tags:[wood_boat],Rotation:[90f,0f]}
 
 execute if score wood funcs matches 1 run setblock ~1 ~2 ~-3 minecraft:birch_planks
@@ -98,14 +110,20 @@ execute if score wood funcs matches 2 run setblock ~-1 ~2 ~-3 minecraft:stripped
 execute if score wood funcs matches 2 run setblock ~-1 ~3 ~-3 minecraft:stripped_jungle_log[axis=z]
 
 execute if score wood funcs matches 2 run setblock ~4 ~2 ~-3 minecraft:jungle_slab[type=double]
-execute if score wood funcs matches 2 run setblock ~4 ~2 ~-1 minecraft:jungle_door[facing=east,half=lower]
-execute if score wood funcs matches 2 run setblock ~4 ~3 ~-1 minecraft:jungle_door[facing=east,half=upper]
+execute if score wood funcs matches 2 run setblock ~4 ~2 ~-1 minecraft:jungle_door[facing=west,half=lower]
+execute if score wood funcs matches 2 run setblock ~4 ~3 ~-1 minecraft:jungle_door[facing=west,half=upper]
 execute if score wood funcs matches 2 run setblock ~3 ~2 ~0 minecraft:jungle_pressure_plate
 execute if score wood funcs matches 2 run setblock ~3 ~2 ~1 minecraft:jungle_button[face=floor]
-execute if score wood funcs matches 2 run setblock ~4 ~2 ~1 minecraft:jungle_door[facing=east,half=lower]
-execute if score wood funcs matches 2 run setblock ~4 ~3 ~1 minecraft:jungle_door[facing=east,half=upper]
-execute if score wood funcs matches 2 run setblock ~4 ~2 ~2 minecraft:jungle_door[facing=east,half=lower,hinge=right]
-execute if score wood funcs matches 2 run setblock ~4 ~3 ~2 minecraft:jungle_door[facing=east,half=upper,hinge=right]
+execute if score wood funcs matches 2 run setblock ~4 ~2 ~1 minecraft:jungle_door[facing=west,half=lower,hinge=right]
+execute if score wood funcs matches 2 run setblock ~4 ~3 ~1 minecraft:jungle_door[facing=west,half=upper,hinge=right]
+execute if score wood funcs matches 2 run setblock ~4 ~2 ~2 minecraft:jungle_door[facing=west,half=lower]
+execute if score wood funcs matches 2 run setblock ~4 ~3 ~2 minecraft:jungle_door[facing=west,half=upper]
+
+execute if score wood funcs matches 2 run setblock ~3 ~2 ~3 minecraft:jungle_wall_sign[facing=south]
+execute if score wood funcs matches 2 run data modify block ~3 ~2 ~3 Text2 set value "\"A Wall Sign\""
+execute if score wood funcs matches 2 run setblock ~-3 ~2 ~3 minecraft:jungle_sign[rotation=0]
+execute if score wood funcs matches 2 run data modify block ~-3 ~2 ~3 Text2 set value "\"A Sign\""
+
 execute if score wood funcs matches 2 run summon minecraft:boat ~-0.5 ~1.525 ~2 {Type:jungle,CustomName:"\"Jungle\"",CustomNameVisible:True,Tags:[wood_boat],Rotation:[90f,0f]}
 
 execute if score wood funcs matches 2 run setblock ~1 ~2 ~-3 minecraft:jungle_planks
@@ -136,14 +154,20 @@ execute if score wood funcs matches 3 run setblock ~-1 ~2 ~-3 minecraft:stripped
 execute if score wood funcs matches 3 run setblock ~-1 ~3 ~-3 minecraft:stripped_oak_log[axis=z]
 
 execute if score wood funcs matches 3 run setblock ~4 ~2 ~-3 minecraft:oak_slab[type=double]
-execute if score wood funcs matches 3 run setblock ~4 ~2 ~-1 minecraft:oak_door[facing=east,half=lower]
-execute if score wood funcs matches 3 run setblock ~4 ~3 ~-1 minecraft:oak_door[facing=east,half=upper]
+execute if score wood funcs matches 3 run setblock ~4 ~2 ~-1 minecraft:oak_door[facing=west,half=lower]
+execute if score wood funcs matches 3 run setblock ~4 ~3 ~-1 minecraft:oak_door[facing=west,half=upper]
 execute if score wood funcs matches 3 run setblock ~3 ~2 ~0 minecraft:oak_pressure_plate
 execute if score wood funcs matches 3 run setblock ~3 ~2 ~1 minecraft:oak_button[face=floor]
-execute if score wood funcs matches 3 run setblock ~4 ~2 ~1 minecraft:oak_door[facing=east,half=lower]
-execute if score wood funcs matches 3 run setblock ~4 ~3 ~1 minecraft:oak_door[facing=east,half=upper]
-execute if score wood funcs matches 3 run setblock ~4 ~2 ~2 minecraft:oak_door[facing=east,half=lower,hinge=right]
-execute if score wood funcs matches 3 run setblock ~4 ~3 ~2 minecraft:oak_door[facing=east,half=upper,hinge=right]
+execute if score wood funcs matches 3 run setblock ~4 ~2 ~1 minecraft:oak_door[facing=west,half=lower,hinge=right]
+execute if score wood funcs matches 3 run setblock ~4 ~3 ~1 minecraft:oak_door[facing=west,half=upper,hinge=right]
+execute if score wood funcs matches 3 run setblock ~4 ~2 ~2 minecraft:oak_door[facing=west,half=lower]
+execute if score wood funcs matches 3 run setblock ~4 ~3 ~2 minecraft:oak_door[facing=west,half=upper]
+
+execute if score wood funcs matches 3 run setblock ~3 ~2 ~3 minecraft:oak_wall_sign[facing=south]
+execute if score wood funcs matches 3 run data modify block ~3 ~2 ~3 Text2 set value "\"A Wall Sign\""
+execute if score wood funcs matches 3 run setblock ~-3 ~2 ~3 minecraft:oak_sign[rotation=0]
+execute if score wood funcs matches 3 run data modify block ~-3 ~2 ~3 Text2 set value "\"A Sign\""
+
 execute if score wood funcs matches 3 run summon minecraft:boat ~-0.5 ~1.525 ~2 {Type:oak,CustomName:"\"Oak\"",CustomNameVisible:True,Tags:[wood_boat],Rotation:[90f,0f]}
 
 execute if score wood funcs matches 3 run setblock ~1 ~2 ~-3 minecraft:oak_planks
@@ -174,14 +198,20 @@ execute if score wood funcs matches 4 run setblock ~-1 ~2 ~-3 minecraft:stripped
 execute if score wood funcs matches 4 run setblock ~-1 ~3 ~-3 minecraft:stripped_dark_oak_log[axis=z]
 
 execute if score wood funcs matches 4 run setblock ~4 ~2 ~-3 minecraft:dark_oak_slab[type=double]
-execute if score wood funcs matches 4 run setblock ~4 ~2 ~-1 minecraft:dark_oak_door[facing=east,half=lower]
-execute if score wood funcs matches 4 run setblock ~4 ~3 ~-1 minecraft:dark_oak_door[facing=east,half=upper]
+execute if score wood funcs matches 4 run setblock ~4 ~2 ~-1 minecraft:dark_oak_door[facing=west,half=lower]
+execute if score wood funcs matches 4 run setblock ~4 ~3 ~-1 minecraft:dark_oak_door[facing=west,half=upper]
 execute if score wood funcs matches 4 run setblock ~3 ~2 ~0 minecraft:dark_oak_pressure_plate
 execute if score wood funcs matches 4 run setblock ~3 ~2 ~1 minecraft:dark_oak_button[face=floor]
-execute if score wood funcs matches 4 run setblock ~4 ~2 ~1 minecraft:dark_oak_door[facing=east,half=lower]
-execute if score wood funcs matches 4 run setblock ~4 ~3 ~1 minecraft:dark_oak_door[facing=east,half=upper]
-execute if score wood funcs matches 4 run setblock ~4 ~2 ~2 minecraft:dark_oak_door[facing=east,half=lower,hinge=right]
-execute if score wood funcs matches 4 run setblock ~4 ~3 ~2 minecraft:dark_oak_door[facing=east,half=upper,hinge=right]
+execute if score wood funcs matches 4 run setblock ~4 ~2 ~1 minecraft:dark_oak_door[facing=west,half=lower,hinge=right]
+execute if score wood funcs matches 4 run setblock ~4 ~3 ~1 minecraft:dark_oak_door[facing=west,half=upper,hinge=right]
+execute if score wood funcs matches 4 run setblock ~4 ~2 ~2 minecraft:dark_oak_door[facing=west,half=lower]
+execute if score wood funcs matches 4 run setblock ~4 ~3 ~2 minecraft:dark_oak_door[facing=west,half=upper]
+
+execute if score wood funcs matches 4 run setblock ~3 ~2 ~3 minecraft:dark_oak_wall_sign[facing=south]
+execute if score wood funcs matches 4 run data modify block ~3 ~2 ~3 Text2 set value "\"A Wall Sign\""
+execute if score wood funcs matches 4 run setblock ~-3 ~2 ~3 minecraft:dark_oak_sign[rotation=0]
+execute if score wood funcs matches 4 run data modify block ~-3 ~2 ~3 Text2 set value "\"A Sign\""
+
 execute if score wood funcs matches 4 run summon minecraft:boat ~-0.5 ~1.525 ~2 {Type:dark_oak,CustomName:"\"Dark Oak\"",CustomNameVisible:True,Tags:[wood_boat],Rotation:[90f,0f]}
 
 execute if score wood funcs matches 4 run setblock ~1 ~2 ~-3 minecraft:dark_oak_planks
@@ -212,14 +242,20 @@ execute if score wood funcs matches 5 run setblock ~-1 ~2 ~-3 minecraft:stripped
 execute if score wood funcs matches 5 run setblock ~-1 ~3 ~-3 minecraft:stripped_spruce_log[axis=z]
 
 execute if score wood funcs matches 5 run setblock ~4 ~2 ~-3 minecraft:spruce_slab[type=double]
-execute if score wood funcs matches 5 run setblock ~4 ~2 ~-1 minecraft:spruce_door[facing=east,half=lower]
-execute if score wood funcs matches 5 run setblock ~4 ~3 ~-1 minecraft:spruce_door[facing=east,half=upper]
+execute if score wood funcs matches 5 run setblock ~4 ~2 ~-1 minecraft:spruce_door[facing=west,half=lower]
+execute if score wood funcs matches 5 run setblock ~4 ~3 ~-1 minecraft:spruce_door[facing=west,half=upper]
 execute if score wood funcs matches 5 run setblock ~3 ~2 ~0 minecraft:spruce_pressure_plate
 execute if score wood funcs matches 5 run setblock ~3 ~2 ~1 minecraft:spruce_button[face=floor]
-execute if score wood funcs matches 5 run setblock ~4 ~2 ~1 minecraft:spruce_door[facing=east,half=lower]
-execute if score wood funcs matches 5 run setblock ~4 ~3 ~1 minecraft:spruce_door[facing=east,half=upper]
-execute if score wood funcs matches 5 run setblock ~4 ~2 ~2 minecraft:spruce_door[facing=east,half=lower,hinge=right]
-execute if score wood funcs matches 5 run setblock ~4 ~3 ~2 minecraft:spruce_door[facing=east,half=upper,hinge=right]
+execute if score wood funcs matches 5 run setblock ~4 ~2 ~1 minecraft:spruce_door[facing=west,half=lower,hinge=right]
+execute if score wood funcs matches 5 run setblock ~4 ~3 ~1 minecraft:spruce_door[facing=west,half=upper,hinge=right]
+execute if score wood funcs matches 5 run setblock ~4 ~2 ~2 minecraft:spruce_door[facing=west,half=lower]
+execute if score wood funcs matches 5 run setblock ~4 ~3 ~2 minecraft:spruce_door[facing=west,half=upper]
+
+execute if score wood funcs matches 5 run setblock ~3 ~2 ~3 minecraft:spruce_wall_sign[facing=south]
+execute if score wood funcs matches 5 run data modify block ~3 ~2 ~3 Text2 set value "\"A Wall Sign\""
+execute if score wood funcs matches 5 run setblock ~-3 ~2 ~3 minecraft:spruce_sign[rotation=0]
+execute if score wood funcs matches 5 run data modify block ~-3 ~2 ~3 Text2 set value "\"A Sign\""
+
 execute if score wood funcs matches 5 run summon minecraft:boat ~-0.5 ~1.525 ~2 {Type:spruce,CustomName:"\"Spruce\"",CustomNameVisible:True,Tags:[wood_boat],Rotation:[90f,0f]}
 
 execute if score wood funcs matches 5 run setblock ~1 ~2 ~-3 minecraft:spruce_planks

@@ -1,2 +1,0 @@
-<%namespace file="effect_base.mcftmpl" import="*"/>
-${summon("witch", 0, "NoAI:True")}

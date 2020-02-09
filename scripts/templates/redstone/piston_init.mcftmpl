@@ -1,1 +1,1 @@
-setblock ~ ~3 ~ minecraft:wall_sign[facing=west]
+setblock ~ ~3 ~ minecraft:oak_wall_sign[facing=west]

@@ -1,0 +1,25 @@
+<%namespace file="banners_base.mcftmpl" import="*"/>
+
+scoreboard players set banner_color funcs 0
+scoreboard players set banner_ink funcs 9
+
+kill @e[tag=banner_stand]
+fill ~-2 ~-2 ~-2 ~16 ~16 ~16 air replace #banners
+
+<%def name="render(x, xn, xd, z, zn, zd, angle, facing, bx, bz, y_shield, y_banner, pattern, handback=None)">
+<%
+shield = '{id:shield,Count:1,tag:{Damage:0,BlockEntityTag:{Patterns:[{Pattern:"%s",Color:9}],Base:0}}}' % pattern[0]
+stand = '{Invisible:true,NoGravity:true,ShowArms:true,Pose:{LeftArm:[0.0f,90.0f,90.0f]},Rotation:[%df,0f],HandItems:[{},%s],Tags:[banner_stand,banner_stand_%s],CustomName:%s}' % (angle, shield, pattern[0], text(pattern[1]))
+%>
+summon armor_stand ~${x + xn} ~${y_shield} ~${z + zn} ${stand}
+</%def>
+
+${banners(render)}
+
+function v3:banners/switch_to_color
+function v3:banners/banner_color_cur
+
+setblock ~0.2 ~3 ~10.8 white_banner[rotation=10]{Patterns:[{Pattern:"mr",Color:9}, {Pattern:"bs",Color:8}, {Pattern:"cs",Color:7}, {Pattern:"bo",Color:8}, {Pattern:"ms",Color:15}, {Pattern:"hh",Color:8}, {Pattern:"mc",Color:8}, {Pattern:"bo",Color:15}]}
+setblock ~10.8 ~3 ~0.2 magenta_banner[rotation=2]{Patterns:[{Pattern:"bt",Color:15}, {Pattern:"tt",Color:15}]}
+summon armor_stand ~0.3 ~3.1 ~0.3 {Tags:[banner_stand,banner_pattern_custom],NoGravity:True,Invisible:True}
+summon armor_stand ~0.3 ~2.8 ~0.3 {Tags:[banner_stand,banner_pattern_custom_author],NoGravity:True,Invisible:True}

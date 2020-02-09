@@ -1,0 +1,2 @@
+<%namespace file="particle_base.mcftmpl" import="*"/>\
+${fast_clock()} particle minecraft:angry_villager ~ ~1 ~ 0.5 0.5 0.5 0 5

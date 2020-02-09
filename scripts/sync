@@ -5,6 +5,13 @@ dst_dir="/Users/kcrca/Library/Application Support/minecraft/saves/AllStuff/datap
 rm -rf functions
 mkdir functions
 /Users/kcrca/allstuff/venv/bin/python /Users/kcrca/allstuff/allstuff/main.py
+(
+    cd tags/blocks
+    for script in *.sh; do
+	echo $script
+	$script
+    done
+)
 test -d "$dst_dir" || mkdir -p "$dst_dir"
 rm -rf "$dst_dir"/functions
 test -d "$dst_dir"/tags && rm -rf "$dst_dir"/tags/*

@@ -12,8 +12,7 @@
     if isinstance(c[i], Thing):
 	t = c[i]
     else:
-	t = Thing(c[i].replace("|", " "))
-	lines = c[i].split("|")
+	t = Thing(c[i])
     lines = t.sign_text()
     signage = ()
     for j in range(0, 3):

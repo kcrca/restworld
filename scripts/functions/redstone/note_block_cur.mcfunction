@@ -11,6 +11,12 @@ execute if score note_block funcs matches 0 if score instrument funcs matches 6 
 execute if score note_block funcs matches 0 if score instrument funcs matches 7 run setblock ~0 ~3 ~0 minecraft:note_block[note=0,instrument=bass]
 execute if score note_block funcs matches 0 if score instrument funcs matches 8 run setblock ~0 ~3 ~0 minecraft:note_block[note=0,instrument=flute]
 execute if score note_block funcs matches 0 if score instrument funcs matches 9 run setblock ~0 ~3 ~0 minecraft:note_block[note=0,instrument=bell]
+execute if score note_block funcs matches 0 if score instrument funcs matches 10 run setblock ~0 ~3 ~0 minecraft:note_block[note=0,instrument=iron_xylophone]
+execute if score note_block funcs matches 0 if score instrument funcs matches 11 run setblock ~0 ~3 ~0 minecraft:note_block[note=0,instrument=cow_bell]
+execute if score note_block funcs matches 0 if score instrument funcs matches 12 run setblock ~0 ~3 ~0 minecraft:note_block[note=0,instrument=didgeridoo]
+execute if score note_block funcs matches 0 if score instrument funcs matches 13 run setblock ~0 ~3 ~0 minecraft:note_block[note=0,instrument=bit]
+execute if score note_block funcs matches 0 if score instrument funcs matches 14 run setblock ~0 ~3 ~0 minecraft:note_block[note=0,instrument=banjo]
+execute if score note_block funcs matches 0 if score instrument funcs matches 15 run setblock ~0 ~3 ~0 minecraft:note_block[note=0,instrument=pling]
 
 
 execute if score note_block funcs matches 1 if score instrument funcs matches 0 run setblock ~0 ~3 ~0 minecraft:note_block[note=1,instrument=hat]
@@ -23,6 +29,12 @@ execute if score note_block funcs matches 1 if score instrument funcs matches 6 
 execute if score note_block funcs matches 1 if score instrument funcs matches 7 run setblock ~0 ~3 ~0 minecraft:note_block[note=1,instrument=bass]
 execute if score note_block funcs matches 1 if score instrument funcs matches 8 run setblock ~0 ~3 ~0 minecraft:note_block[note=1,instrument=flute]
 execute if score note_block funcs matches 1 if score instrument funcs matches 9 run setblock ~0 ~3 ~0 minecraft:note_block[note=1,instrument=bell]
+execute if score note_block funcs matches 1 if score instrument funcs matches 10 run setblock ~0 ~3 ~0 minecraft:note_block[note=1,instrument=iron_xylophone]
+execute if score note_block funcs matches 1 if score instrument funcs matches 11 run setblock ~0 ~3 ~0 minecraft:note_block[note=1,instrument=cow_bell]
+execute if score note_block funcs matches 1 if score instrument funcs matches 12 run setblock ~0 ~3 ~0 minecraft:note_block[note=1,instrument=didgeridoo]
+execute if score note_block funcs matches 1 if score instrument funcs matches 13 run setblock ~0 ~3 ~0 minecraft:note_block[note=1,instrument=bit]
+execute if score note_block funcs matches 1 if score instrument funcs matches 14 run setblock ~0 ~3 ~0 minecraft:note_block[note=1,instrument=banjo]
+execute if score note_block funcs matches 1 if score instrument funcs matches 15 run setblock ~0 ~3 ~0 minecraft:note_block[note=1,instrument=pling]
 
 
 execute if score note_block funcs matches 2 if score instrument funcs matches 0 run setblock ~0 ~3 ~0 minecraft:note_block[note=2,instrument=hat]
@@ -35,6 +47,12 @@ execute if score note_block funcs matches 2 if score instrument funcs matches 6 
 execute if score note_block funcs matches 2 if score instrument funcs matches 7 run setblock ~0 ~3 ~0 minecraft:note_block[note=2,instrument=bass]
 execute if score note_block funcs matches 2 if score instrument funcs matches 8 run setblock ~0 ~3 ~0 minecraft:note_block[note=2,instrument=flute]
 execute if score note_block funcs matches 2 if score instrument funcs matches 9 run setblock ~0 ~3 ~0 minecraft:note_block[note=2,instrument=bell]
+execute if score note_block funcs matches 2 if score instrument funcs matches 10 run setblock ~0 ~3 ~0 minecraft:note_block[note=2,instrument=iron_xylophone]
+execute if score note_block funcs matches 2 if score instrument funcs matches 11 run setblock ~0 ~3 ~0 minecraft:note_block[note=2,instrument=cow_bell]
+execute if score note_block funcs matches 2 if score instrument funcs matches 12 run setblock ~0 ~3 ~0 minecraft:note_block[note=2,instrument=didgeridoo]
+execute if score note_block funcs matches 2 if score instrument funcs matches 13 run setblock ~0 ~3 ~0 minecraft:note_block[note=2,instrument=bit]
+execute if score note_block funcs matches 2 if score instrument funcs matches 14 run setblock ~0 ~3 ~0 minecraft:note_block[note=2,instrument=banjo]
+execute if score note_block funcs matches 2 if score instrument funcs matches 15 run setblock ~0 ~3 ~0 minecraft:note_block[note=2,instrument=pling]
 
 
 execute if score note_block funcs matches 3 if score instrument funcs matches 0 run setblock ~0 ~3 ~0 minecraft:note_block[note=3,instrument=hat]
@@ -47,6 +65,12 @@ execute if score note_block funcs matches 3 if score instrument funcs matches 6 
 execute if score note_block funcs matches 3 if score instrument funcs matches 7 run setblock ~0 ~3 ~0 minecraft:note_block[note=3,instrument=bass]
 execute if score note_block funcs matches 3 if score instrument funcs matches 8 run setblock ~0 ~3 ~0 minecraft:note_block[note=3,instrument=flute]
 execute if score note_block funcs matches 3 if score instrument funcs matches 9 run setblock ~0 ~3 ~0 minecraft:note_block[note=3,instrument=bell]
+execute if score note_block funcs matches 3 if score instrument funcs matches 10 run setblock ~0 ~3 ~0 minecraft:note_block[note=3,instrument=iron_xylophone]
+execute if score note_block funcs matches 3 if score instrument funcs matches 11 run setblock ~0 ~3 ~0 minecraft:note_block[note=3,instrument=cow_bell]
+execute if score note_block funcs matches 3 if score instrument funcs matches 12 run setblock ~0 ~3 ~0 minecraft:note_block[note=3,instrument=didgeridoo]
+execute if score note_block funcs matches 3 if score instrument funcs matches 13 run setblock ~0 ~3 ~0 minecraft:note_block[note=3,instrument=bit]
+execute if score note_block funcs matches 3 if score instrument funcs matches 14 run setblock ~0 ~3 ~0 minecraft:note_block[note=3,instrument=banjo]
+execute if score note_block funcs matches 3 if score instrument funcs matches 15 run setblock ~0 ~3 ~0 minecraft:note_block[note=3,instrument=pling]
 
 
 execute if score note_block funcs matches 4 if score instrument funcs matches 0 run setblock ~0 ~3 ~0 minecraft:note_block[note=4,instrument=hat]
@@ -59,6 +83,12 @@ execute if score note_block funcs matches 4 if score instrument funcs matches 6 
 execute if score note_block funcs matches 4 if score instrument funcs matches 7 run setblock ~0 ~3 ~0 minecraft:note_block[note=4,instrument=bass]
 execute if score note_block funcs matches 4 if score instrument funcs matches 8 run setblock ~0 ~3 ~0 minecraft:note_block[note=4,instrument=flute]
 execute if score note_block funcs matches 4 if score instrument funcs matches 9 run setblock ~0 ~3 ~0 minecraft:note_block[note=4,instrument=bell]
+execute if score note_block funcs matches 4 if score instrument funcs matches 10 run setblock ~0 ~3 ~0 minecraft:note_block[note=4,instrument=iron_xylophone]
+execute if score note_block funcs matches 4 if score instrument funcs matches 11 run setblock ~0 ~3 ~0 minecraft:note_block[note=4,instrument=cow_bell]
+execute if score note_block funcs matches 4 if score instrument funcs matches 12 run setblock ~0 ~3 ~0 minecraft:note_block[note=4,instrument=didgeridoo]
+execute if score note_block funcs matches 4 if score instrument funcs matches 13 run setblock ~0 ~3 ~0 minecraft:note_block[note=4,instrument=bit]
+execute if score note_block funcs matches 4 if score instrument funcs matches 14 run setblock ~0 ~3 ~0 minecraft:note_block[note=4,instrument=banjo]
+execute if score note_block funcs matches 4 if score instrument funcs matches 15 run setblock ~0 ~3 ~0 minecraft:note_block[note=4,instrument=pling]
 
 
 execute if score note_block funcs matches 5 if score instrument funcs matches 0 run setblock ~0 ~3 ~0 minecraft:note_block[note=5,instrument=hat]
@@ -71,6 +101,12 @@ execute if score note_block funcs matches 5 if score instrument funcs matches 6 
 execute if score note_block funcs matches 5 if score instrument funcs matches 7 run setblock ~0 ~3 ~0 minecraft:note_block[note=5,instrument=bass]
 execute if score note_block funcs matches 5 if score instrument funcs matches 8 run setblock ~0 ~3 ~0 minecraft:note_block[note=5,instrument=flute]
 execute if score note_block funcs matches 5 if score instrument funcs matches 9 run setblock ~0 ~3 ~0 minecraft:note_block[note=5,instrument=bell]
+execute if score note_block funcs matches 5 if score instrument funcs matches 10 run setblock ~0 ~3 ~0 minecraft:note_block[note=5,instrument=iron_xylophone]
+execute if score note_block funcs matches 5 if score instrument funcs matches 11 run setblock ~0 ~3 ~0 minecraft:note_block[note=5,instrument=cow_bell]
+execute if score note_block funcs matches 5 if score instrument funcs matches 12 run setblock ~0 ~3 ~0 minecraft:note_block[note=5,instrument=didgeridoo]
+execute if score note_block funcs matches 5 if score instrument funcs matches 13 run setblock ~0 ~3 ~0 minecraft:note_block[note=5,instrument=bit]
+execute if score note_block funcs matches 5 if score instrument funcs matches 14 run setblock ~0 ~3 ~0 minecraft:note_block[note=5,instrument=banjo]
+execute if score note_block funcs matches 5 if score instrument funcs matches 15 run setblock ~0 ~3 ~0 minecraft:note_block[note=5,instrument=pling]
 
 
 execute if score note_block funcs matches 6 if score instrument funcs matches 0 run setblock ~0 ~3 ~0 minecraft:note_block[note=6,instrument=hat]
@@ -83,6 +119,12 @@ execute if score note_block funcs matches 6 if score instrument funcs matches 6 
 execute if score note_block funcs matches 6 if score instrument funcs matches 7 run setblock ~0 ~3 ~0 minecraft:note_block[note=6,instrument=bass]
 execute if score note_block funcs matches 6 if score instrument funcs matches 8 run setblock ~0 ~3 ~0 minecraft:note_block[note=6,instrument=flute]
 execute if score note_block funcs matches 6 if score instrument funcs matches 9 run setblock ~0 ~3 ~0 minecraft:note_block[note=6,instrument=bell]
+execute if score note_block funcs matches 6 if score instrument funcs matches 10 run setblock ~0 ~3 ~0 minecraft:note_block[note=6,instrument=iron_xylophone]
+execute if score note_block funcs matches 6 if score instrument funcs matches 11 run setblock ~0 ~3 ~0 minecraft:note_block[note=6,instrument=cow_bell]
+execute if score note_block funcs matches 6 if score instrument funcs matches 12 run setblock ~0 ~3 ~0 minecraft:note_block[note=6,instrument=didgeridoo]
+execute if score note_block funcs matches 6 if score instrument funcs matches 13 run setblock ~0 ~3 ~0 minecraft:note_block[note=6,instrument=bit]
+execute if score note_block funcs matches 6 if score instrument funcs matches 14 run setblock ~0 ~3 ~0 minecraft:note_block[note=6,instrument=banjo]
+execute if score note_block funcs matches 6 if score instrument funcs matches 15 run setblock ~0 ~3 ~0 minecraft:note_block[note=6,instrument=pling]
 
 
 execute if score note_block funcs matches 7 if score instrument funcs matches 0 run setblock ~0 ~3 ~0 minecraft:note_block[note=7,instrument=hat]
@@ -95,6 +137,12 @@ execute if score note_block funcs matches 7 if score instrument funcs matches 6 
 execute if score note_block funcs matches 7 if score instrument funcs matches 7 run setblock ~0 ~3 ~0 minecraft:note_block[note=7,instrument=bass]
 execute if score note_block funcs matches 7 if score instrument funcs matches 8 run setblock ~0 ~3 ~0 minecraft:note_block[note=7,instrument=flute]
 execute if score note_block funcs matches 7 if score instrument funcs matches 9 run setblock ~0 ~3 ~0 minecraft:note_block[note=7,instrument=bell]
+execute if score note_block funcs matches 7 if score instrument funcs matches 10 run setblock ~0 ~3 ~0 minecraft:note_block[note=7,instrument=iron_xylophone]
+execute if score note_block funcs matches 7 if score instrument funcs matches 11 run setblock ~0 ~3 ~0 minecraft:note_block[note=7,instrument=cow_bell]
+execute if score note_block funcs matches 7 if score instrument funcs matches 12 run setblock ~0 ~3 ~0 minecraft:note_block[note=7,instrument=didgeridoo]
+execute if score note_block funcs matches 7 if score instrument funcs matches 13 run setblock ~0 ~3 ~0 minecraft:note_block[note=7,instrument=bit]
+execute if score note_block funcs matches 7 if score instrument funcs matches 14 run setblock ~0 ~3 ~0 minecraft:note_block[note=7,instrument=banjo]
+execute if score note_block funcs matches 7 if score instrument funcs matches 15 run setblock ~0 ~3 ~0 minecraft:note_block[note=7,instrument=pling]
 
 
 execute if score note_block funcs matches 8 if score instrument funcs matches 0 run setblock ~0 ~3 ~0 minecraft:note_block[note=8,instrument=hat]
@@ -107,6 +155,12 @@ execute if score note_block funcs matches 8 if score instrument funcs matches 6 
 execute if score note_block funcs matches 8 if score instrument funcs matches 7 run setblock ~0 ~3 ~0 minecraft:note_block[note=8,instrument=bass]
 execute if score note_block funcs matches 8 if score instrument funcs matches 8 run setblock ~0 ~3 ~0 minecraft:note_block[note=8,instrument=flute]
 execute if score note_block funcs matches 8 if score instrument funcs matches 9 run setblock ~0 ~3 ~0 minecraft:note_block[note=8,instrument=bell]
+execute if score note_block funcs matches 8 if score instrument funcs matches 10 run setblock ~0 ~3 ~0 minecraft:note_block[note=8,instrument=iron_xylophone]
+execute if score note_block funcs matches 8 if score instrument funcs matches 11 run setblock ~0 ~3 ~0 minecraft:note_block[note=8,instrument=cow_bell]
+execute if score note_block funcs matches 8 if score instrument funcs matches 12 run setblock ~0 ~3 ~0 minecraft:note_block[note=8,instrument=didgeridoo]
+execute if score note_block funcs matches 8 if score instrument funcs matches 13 run setblock ~0 ~3 ~0 minecraft:note_block[note=8,instrument=bit]
+execute if score note_block funcs matches 8 if score instrument funcs matches 14 run setblock ~0 ~3 ~0 minecraft:note_block[note=8,instrument=banjo]
+execute if score note_block funcs matches 8 if score instrument funcs matches 15 run setblock ~0 ~3 ~0 minecraft:note_block[note=8,instrument=pling]
 
 
 execute if score note_block funcs matches 9 if score instrument funcs matches 0 run setblock ~0 ~3 ~0 minecraft:note_block[note=9,instrument=hat]
@@ -119,6 +173,12 @@ execute if score note_block funcs matches 9 if score instrument funcs matches 6 
 execute if score note_block funcs matches 9 if score instrument funcs matches 7 run setblock ~0 ~3 ~0 minecraft:note_block[note=9,instrument=bass]
 execute if score note_block funcs matches 9 if score instrument funcs matches 8 run setblock ~0 ~3 ~0 minecraft:note_block[note=9,instrument=flute]
 execute if score note_block funcs matches 9 if score instrument funcs matches 9 run setblock ~0 ~3 ~0 minecraft:note_block[note=9,instrument=bell]
+execute if score note_block funcs matches 9 if score instrument funcs matches 10 run setblock ~0 ~3 ~0 minecraft:note_block[note=9,instrument=iron_xylophone]
+execute if score note_block funcs matches 9 if score instrument funcs matches 11 run setblock ~0 ~3 ~0 minecraft:note_block[note=9,instrument=cow_bell]
+execute if score note_block funcs matches 9 if score instrument funcs matches 12 run setblock ~0 ~3 ~0 minecraft:note_block[note=9,instrument=didgeridoo]
+execute if score note_block funcs matches 9 if score instrument funcs matches 13 run setblock ~0 ~3 ~0 minecraft:note_block[note=9,instrument=bit]
+execute if score note_block funcs matches 9 if score instrument funcs matches 14 run setblock ~0 ~3 ~0 minecraft:note_block[note=9,instrument=banjo]
+execute if score note_block funcs matches 9 if score instrument funcs matches 15 run setblock ~0 ~3 ~0 minecraft:note_block[note=9,instrument=pling]
 
 
 execute if score note_block funcs matches 10 if score instrument funcs matches 0 run setblock ~0 ~3 ~0 minecraft:note_block[note=10,instrument=hat]
@@ -131,6 +191,12 @@ execute if score note_block funcs matches 10 if score instrument funcs matches 6
 execute if score note_block funcs matches 10 if score instrument funcs matches 7 run setblock ~0 ~3 ~0 minecraft:note_block[note=10,instrument=bass]
 execute if score note_block funcs matches 10 if score instrument funcs matches 8 run setblock ~0 ~3 ~0 minecraft:note_block[note=10,instrument=flute]
 execute if score note_block funcs matches 10 if score instrument funcs matches 9 run setblock ~0 ~3 ~0 minecraft:note_block[note=10,instrument=bell]
+execute if score note_block funcs matches 10 if score instrument funcs matches 10 run setblock ~0 ~3 ~0 minecraft:note_block[note=10,instrument=iron_xylophone]
+execute if score note_block funcs matches 10 if score instrument funcs matches 11 run setblock ~0 ~3 ~0 minecraft:note_block[note=10,instrument=cow_bell]
+execute if score note_block funcs matches 10 if score instrument funcs matches 12 run setblock ~0 ~3 ~0 minecraft:note_block[note=10,instrument=didgeridoo]
+execute if score note_block funcs matches 10 if score instrument funcs matches 13 run setblock ~0 ~3 ~0 minecraft:note_block[note=10,instrument=bit]
+execute if score note_block funcs matches 10 if score instrument funcs matches 14 run setblock ~0 ~3 ~0 minecraft:note_block[note=10,instrument=banjo]
+execute if score note_block funcs matches 10 if score instrument funcs matches 15 run setblock ~0 ~3 ~0 minecraft:note_block[note=10,instrument=pling]
 
 
 execute if score note_block funcs matches 11 if score instrument funcs matches 0 run setblock ~0 ~3 ~0 minecraft:note_block[note=11,instrument=hat]
@@ -143,6 +209,12 @@ execute if score note_block funcs matches 11 if score instrument funcs matches 6
 execute if score note_block funcs matches 11 if score instrument funcs matches 7 run setblock ~0 ~3 ~0 minecraft:note_block[note=11,instrument=bass]
 execute if score note_block funcs matches 11 if score instrument funcs matches 8 run setblock ~0 ~3 ~0 minecraft:note_block[note=11,instrument=flute]
 execute if score note_block funcs matches 11 if score instrument funcs matches 9 run setblock ~0 ~3 ~0 minecraft:note_block[note=11,instrument=bell]
+execute if score note_block funcs matches 11 if score instrument funcs matches 10 run setblock ~0 ~3 ~0 minecraft:note_block[note=11,instrument=iron_xylophone]
+execute if score note_block funcs matches 11 if score instrument funcs matches 11 run setblock ~0 ~3 ~0 minecraft:note_block[note=11,instrument=cow_bell]
+execute if score note_block funcs matches 11 if score instrument funcs matches 12 run setblock ~0 ~3 ~0 minecraft:note_block[note=11,instrument=didgeridoo]
+execute if score note_block funcs matches 11 if score instrument funcs matches 13 run setblock ~0 ~3 ~0 minecraft:note_block[note=11,instrument=bit]
+execute if score note_block funcs matches 11 if score instrument funcs matches 14 run setblock ~0 ~3 ~0 minecraft:note_block[note=11,instrument=banjo]
+execute if score note_block funcs matches 11 if score instrument funcs matches 15 run setblock ~0 ~3 ~0 minecraft:note_block[note=11,instrument=pling]
 
 
 execute if score note_block funcs matches 12 if score instrument funcs matches 0 run setblock ~0 ~3 ~0 minecraft:note_block[note=12,instrument=hat]
@@ -155,6 +227,12 @@ execute if score note_block funcs matches 12 if score instrument funcs matches 6
 execute if score note_block funcs matches 12 if score instrument funcs matches 7 run setblock ~0 ~3 ~0 minecraft:note_block[note=12,instrument=bass]
 execute if score note_block funcs matches 12 if score instrument funcs matches 8 run setblock ~0 ~3 ~0 minecraft:note_block[note=12,instrument=flute]
 execute if score note_block funcs matches 12 if score instrument funcs matches 9 run setblock ~0 ~3 ~0 minecraft:note_block[note=12,instrument=bell]
+execute if score note_block funcs matches 12 if score instrument funcs matches 10 run setblock ~0 ~3 ~0 minecraft:note_block[note=12,instrument=iron_xylophone]
+execute if score note_block funcs matches 12 if score instrument funcs matches 11 run setblock ~0 ~3 ~0 minecraft:note_block[note=12,instrument=cow_bell]
+execute if score note_block funcs matches 12 if score instrument funcs matches 12 run setblock ~0 ~3 ~0 minecraft:note_block[note=12,instrument=didgeridoo]
+execute if score note_block funcs matches 12 if score instrument funcs matches 13 run setblock ~0 ~3 ~0 minecraft:note_block[note=12,instrument=bit]
+execute if score note_block funcs matches 12 if score instrument funcs matches 14 run setblock ~0 ~3 ~0 minecraft:note_block[note=12,instrument=banjo]
+execute if score note_block funcs matches 12 if score instrument funcs matches 15 run setblock ~0 ~3 ~0 minecraft:note_block[note=12,instrument=pling]
 
 
 execute if score note_block funcs matches 13 if score instrument funcs matches 0 run setblock ~0 ~3 ~0 minecraft:note_block[note=13,instrument=hat]
@@ -167,6 +245,12 @@ execute if score note_block funcs matches 13 if score instrument funcs matches 6
 execute if score note_block funcs matches 13 if score instrument funcs matches 7 run setblock ~0 ~3 ~0 minecraft:note_block[note=13,instrument=bass]
 execute if score note_block funcs matches 13 if score instrument funcs matches 8 run setblock ~0 ~3 ~0 minecraft:note_block[note=13,instrument=flute]
 execute if score note_block funcs matches 13 if score instrument funcs matches 9 run setblock ~0 ~3 ~0 minecraft:note_block[note=13,instrument=bell]
+execute if score note_block funcs matches 13 if score instrument funcs matches 10 run setblock ~0 ~3 ~0 minecraft:note_block[note=13,instrument=iron_xylophone]
+execute if score note_block funcs matches 13 if score instrument funcs matches 11 run setblock ~0 ~3 ~0 minecraft:note_block[note=13,instrument=cow_bell]
+execute if score note_block funcs matches 13 if score instrument funcs matches 12 run setblock ~0 ~3 ~0 minecraft:note_block[note=13,instrument=didgeridoo]
+execute if score note_block funcs matches 13 if score instrument funcs matches 13 run setblock ~0 ~3 ~0 minecraft:note_block[note=13,instrument=bit]
+execute if score note_block funcs matches 13 if score instrument funcs matches 14 run setblock ~0 ~3 ~0 minecraft:note_block[note=13,instrument=banjo]
+execute if score note_block funcs matches 13 if score instrument funcs matches 15 run setblock ~0 ~3 ~0 minecraft:note_block[note=13,instrument=pling]
 
 
 execute if score note_block funcs matches 14 if score instrument funcs matches 0 run setblock ~0 ~3 ~0 minecraft:note_block[note=14,instrument=hat]
@@ -179,6 +263,12 @@ execute if score note_block funcs matches 14 if score instrument funcs matches 6
 execute if score note_block funcs matches 14 if score instrument funcs matches 7 run setblock ~0 ~3 ~0 minecraft:note_block[note=14,instrument=bass]
 execute if score note_block funcs matches 14 if score instrument funcs matches 8 run setblock ~0 ~3 ~0 minecraft:note_block[note=14,instrument=flute]
 execute if score note_block funcs matches 14 if score instrument funcs matches 9 run setblock ~0 ~3 ~0 minecraft:note_block[note=14,instrument=bell]
+execute if score note_block funcs matches 14 if score instrument funcs matches 10 run setblock ~0 ~3 ~0 minecraft:note_block[note=14,instrument=iron_xylophone]
+execute if score note_block funcs matches 14 if score instrument funcs matches 11 run setblock ~0 ~3 ~0 minecraft:note_block[note=14,instrument=cow_bell]
+execute if score note_block funcs matches 14 if score instrument funcs matches 12 run setblock ~0 ~3 ~0 minecraft:note_block[note=14,instrument=didgeridoo]
+execute if score note_block funcs matches 14 if score instrument funcs matches 13 run setblock ~0 ~3 ~0 minecraft:note_block[note=14,instrument=bit]
+execute if score note_block funcs matches 14 if score instrument funcs matches 14 run setblock ~0 ~3 ~0 minecraft:note_block[note=14,instrument=banjo]
+execute if score note_block funcs matches 14 if score instrument funcs matches 15 run setblock ~0 ~3 ~0 minecraft:note_block[note=14,instrument=pling]
 
 
 execute if score note_block funcs matches 15 if score instrument funcs matches 0 run setblock ~0 ~3 ~0 minecraft:note_block[note=15,instrument=hat]
@@ -191,6 +281,12 @@ execute if score note_block funcs matches 15 if score instrument funcs matches 6
 execute if score note_block funcs matches 15 if score instrument funcs matches 7 run setblock ~0 ~3 ~0 minecraft:note_block[note=15,instrument=bass]
 execute if score note_block funcs matches 15 if score instrument funcs matches 8 run setblock ~0 ~3 ~0 minecraft:note_block[note=15,instrument=flute]
 execute if score note_block funcs matches 15 if score instrument funcs matches 9 run setblock ~0 ~3 ~0 minecraft:note_block[note=15,instrument=bell]
+execute if score note_block funcs matches 15 if score instrument funcs matches 10 run setblock ~0 ~3 ~0 minecraft:note_block[note=15,instrument=iron_xylophone]
+execute if score note_block funcs matches 15 if score instrument funcs matches 11 run setblock ~0 ~3 ~0 minecraft:note_block[note=15,instrument=cow_bell]
+execute if score note_block funcs matches 15 if score instrument funcs matches 12 run setblock ~0 ~3 ~0 minecraft:note_block[note=15,instrument=didgeridoo]
+execute if score note_block funcs matches 15 if score instrument funcs matches 13 run setblock ~0 ~3 ~0 minecraft:note_block[note=15,instrument=bit]
+execute if score note_block funcs matches 15 if score instrument funcs matches 14 run setblock ~0 ~3 ~0 minecraft:note_block[note=15,instrument=banjo]
+execute if score note_block funcs matches 15 if score instrument funcs matches 15 run setblock ~0 ~3 ~0 minecraft:note_block[note=15,instrument=pling]
 
 
 execute if score note_block funcs matches 16 if score instrument funcs matches 0 run setblock ~0 ~3 ~0 minecraft:note_block[note=16,instrument=hat]
@@ -203,6 +299,12 @@ execute if score note_block funcs matches 16 if score instrument funcs matches 6
 execute if score note_block funcs matches 16 if score instrument funcs matches 7 run setblock ~0 ~3 ~0 minecraft:note_block[note=16,instrument=bass]
 execute if score note_block funcs matches 16 if score instrument funcs matches 8 run setblock ~0 ~3 ~0 minecraft:note_block[note=16,instrument=flute]
 execute if score note_block funcs matches 16 if score instrument funcs matches 9 run setblock ~0 ~3 ~0 minecraft:note_block[note=16,instrument=bell]
+execute if score note_block funcs matches 16 if score instrument funcs matches 10 run setblock ~0 ~3 ~0 minecraft:note_block[note=16,instrument=iron_xylophone]
+execute if score note_block funcs matches 16 if score instrument funcs matches 11 run setblock ~0 ~3 ~0 minecraft:note_block[note=16,instrument=cow_bell]
+execute if score note_block funcs matches 16 if score instrument funcs matches 12 run setblock ~0 ~3 ~0 minecraft:note_block[note=16,instrument=didgeridoo]
+execute if score note_block funcs matches 16 if score instrument funcs matches 13 run setblock ~0 ~3 ~0 minecraft:note_block[note=16,instrument=bit]
+execute if score note_block funcs matches 16 if score instrument funcs matches 14 run setblock ~0 ~3 ~0 minecraft:note_block[note=16,instrument=banjo]
+execute if score note_block funcs matches 16 if score instrument funcs matches 15 run setblock ~0 ~3 ~0 minecraft:note_block[note=16,instrument=pling]
 
 
 execute if score note_block funcs matches 17 if score instrument funcs matches 0 run setblock ~0 ~3 ~0 minecraft:note_block[note=17,instrument=hat]
@@ -215,6 +317,12 @@ execute if score note_block funcs matches 17 if score instrument funcs matches 6
 execute if score note_block funcs matches 17 if score instrument funcs matches 7 run setblock ~0 ~3 ~0 minecraft:note_block[note=17,instrument=bass]
 execute if score note_block funcs matches 17 if score instrument funcs matches 8 run setblock ~0 ~3 ~0 minecraft:note_block[note=17,instrument=flute]
 execute if score note_block funcs matches 17 if score instrument funcs matches 9 run setblock ~0 ~3 ~0 minecraft:note_block[note=17,instrument=bell]
+execute if score note_block funcs matches 17 if score instrument funcs matches 10 run setblock ~0 ~3 ~0 minecraft:note_block[note=17,instrument=iron_xylophone]
+execute if score note_block funcs matches 17 if score instrument funcs matches 11 run setblock ~0 ~3 ~0 minecraft:note_block[note=17,instrument=cow_bell]
+execute if score note_block funcs matches 17 if score instrument funcs matches 12 run setblock ~0 ~3 ~0 minecraft:note_block[note=17,instrument=didgeridoo]
+execute if score note_block funcs matches 17 if score instrument funcs matches 13 run setblock ~0 ~3 ~0 minecraft:note_block[note=17,instrument=bit]
+execute if score note_block funcs matches 17 if score instrument funcs matches 14 run setblock ~0 ~3 ~0 minecraft:note_block[note=17,instrument=banjo]
+execute if score note_block funcs matches 17 if score instrument funcs matches 15 run setblock ~0 ~3 ~0 minecraft:note_block[note=17,instrument=pling]
 
 
 execute if score note_block funcs matches 18 if score instrument funcs matches 0 run setblock ~0 ~3 ~0 minecraft:note_block[note=18,instrument=hat]
@@ -227,6 +335,12 @@ execute if score note_block funcs matches 18 if score instrument funcs matches 6
 execute if score note_block funcs matches 18 if score instrument funcs matches 7 run setblock ~0 ~3 ~0 minecraft:note_block[note=18,instrument=bass]
 execute if score note_block funcs matches 18 if score instrument funcs matches 8 run setblock ~0 ~3 ~0 minecraft:note_block[note=18,instrument=flute]
 execute if score note_block funcs matches 18 if score instrument funcs matches 9 run setblock ~0 ~3 ~0 minecraft:note_block[note=18,instrument=bell]
+execute if score note_block funcs matches 18 if score instrument funcs matches 10 run setblock ~0 ~3 ~0 minecraft:note_block[note=18,instrument=iron_xylophone]
+execute if score note_block funcs matches 18 if score instrument funcs matches 11 run setblock ~0 ~3 ~0 minecraft:note_block[note=18,instrument=cow_bell]
+execute if score note_block funcs matches 18 if score instrument funcs matches 12 run setblock ~0 ~3 ~0 minecraft:note_block[note=18,instrument=didgeridoo]
+execute if score note_block funcs matches 18 if score instrument funcs matches 13 run setblock ~0 ~3 ~0 minecraft:note_block[note=18,instrument=bit]
+execute if score note_block funcs matches 18 if score instrument funcs matches 14 run setblock ~0 ~3 ~0 minecraft:note_block[note=18,instrument=banjo]
+execute if score note_block funcs matches 18 if score instrument funcs matches 15 run setblock ~0 ~3 ~0 minecraft:note_block[note=18,instrument=pling]
 
 
 execute if score note_block funcs matches 19 if score instrument funcs matches 0 run setblock ~0 ~3 ~0 minecraft:note_block[note=19,instrument=hat]
@@ -239,6 +353,12 @@ execute if score note_block funcs matches 19 if score instrument funcs matches 6
 execute if score note_block funcs matches 19 if score instrument funcs matches 7 run setblock ~0 ~3 ~0 minecraft:note_block[note=19,instrument=bass]
 execute if score note_block funcs matches 19 if score instrument funcs matches 8 run setblock ~0 ~3 ~0 minecraft:note_block[note=19,instrument=flute]
 execute if score note_block funcs matches 19 if score instrument funcs matches 9 run setblock ~0 ~3 ~0 minecraft:note_block[note=19,instrument=bell]
+execute if score note_block funcs matches 19 if score instrument funcs matches 10 run setblock ~0 ~3 ~0 minecraft:note_block[note=19,instrument=iron_xylophone]
+execute if score note_block funcs matches 19 if score instrument funcs matches 11 run setblock ~0 ~3 ~0 minecraft:note_block[note=19,instrument=cow_bell]
+execute if score note_block funcs matches 19 if score instrument funcs matches 12 run setblock ~0 ~3 ~0 minecraft:note_block[note=19,instrument=didgeridoo]
+execute if score note_block funcs matches 19 if score instrument funcs matches 13 run setblock ~0 ~3 ~0 minecraft:note_block[note=19,instrument=bit]
+execute if score note_block funcs matches 19 if score instrument funcs matches 14 run setblock ~0 ~3 ~0 minecraft:note_block[note=19,instrument=banjo]
+execute if score note_block funcs matches 19 if score instrument funcs matches 15 run setblock ~0 ~3 ~0 minecraft:note_block[note=19,instrument=pling]
 
 
 execute if score note_block funcs matches 20 if score instrument funcs matches 0 run setblock ~0 ~3 ~0 minecraft:note_block[note=20,instrument=hat]
@@ -251,6 +371,12 @@ execute if score note_block funcs matches 20 if score instrument funcs matches 6
 execute if score note_block funcs matches 20 if score instrument funcs matches 7 run setblock ~0 ~3 ~0 minecraft:note_block[note=20,instrument=bass]
 execute if score note_block funcs matches 20 if score instrument funcs matches 8 run setblock ~0 ~3 ~0 minecraft:note_block[note=20,instrument=flute]
 execute if score note_block funcs matches 20 if score instrument funcs matches 9 run setblock ~0 ~3 ~0 minecraft:note_block[note=20,instrument=bell]
+execute if score note_block funcs matches 20 if score instrument funcs matches 10 run setblock ~0 ~3 ~0 minecraft:note_block[note=20,instrument=iron_xylophone]
+execute if score note_block funcs matches 20 if score instrument funcs matches 11 run setblock ~0 ~3 ~0 minecraft:note_block[note=20,instrument=cow_bell]
+execute if score note_block funcs matches 20 if score instrument funcs matches 12 run setblock ~0 ~3 ~0 minecraft:note_block[note=20,instrument=didgeridoo]
+execute if score note_block funcs matches 20 if score instrument funcs matches 13 run setblock ~0 ~3 ~0 minecraft:note_block[note=20,instrument=bit]
+execute if score note_block funcs matches 20 if score instrument funcs matches 14 run setblock ~0 ~3 ~0 minecraft:note_block[note=20,instrument=banjo]
+execute if score note_block funcs matches 20 if score instrument funcs matches 15 run setblock ~0 ~3 ~0 minecraft:note_block[note=20,instrument=pling]
 
 
 execute if score note_block funcs matches 21 if score instrument funcs matches 0 run setblock ~0 ~3 ~0 minecraft:note_block[note=21,instrument=hat]
@@ -263,6 +389,12 @@ execute if score note_block funcs matches 21 if score instrument funcs matches 6
 execute if score note_block funcs matches 21 if score instrument funcs matches 7 run setblock ~0 ~3 ~0 minecraft:note_block[note=21,instrument=bass]
 execute if score note_block funcs matches 21 if score instrument funcs matches 8 run setblock ~0 ~3 ~0 minecraft:note_block[note=21,instrument=flute]
 execute if score note_block funcs matches 21 if score instrument funcs matches 9 run setblock ~0 ~3 ~0 minecraft:note_block[note=21,instrument=bell]
+execute if score note_block funcs matches 21 if score instrument funcs matches 10 run setblock ~0 ~3 ~0 minecraft:note_block[note=21,instrument=iron_xylophone]
+execute if score note_block funcs matches 21 if score instrument funcs matches 11 run setblock ~0 ~3 ~0 minecraft:note_block[note=21,instrument=cow_bell]
+execute if score note_block funcs matches 21 if score instrument funcs matches 12 run setblock ~0 ~3 ~0 minecraft:note_block[note=21,instrument=didgeridoo]
+execute if score note_block funcs matches 21 if score instrument funcs matches 13 run setblock ~0 ~3 ~0 minecraft:note_block[note=21,instrument=bit]
+execute if score note_block funcs matches 21 if score instrument funcs matches 14 run setblock ~0 ~3 ~0 minecraft:note_block[note=21,instrument=banjo]
+execute if score note_block funcs matches 21 if score instrument funcs matches 15 run setblock ~0 ~3 ~0 minecraft:note_block[note=21,instrument=pling]
 
 
 execute if score note_block funcs matches 22 if score instrument funcs matches 0 run setblock ~0 ~3 ~0 minecraft:note_block[note=22,instrument=hat]
@@ -275,6 +407,12 @@ execute if score note_block funcs matches 22 if score instrument funcs matches 6
 execute if score note_block funcs matches 22 if score instrument funcs matches 7 run setblock ~0 ~3 ~0 minecraft:note_block[note=22,instrument=bass]
 execute if score note_block funcs matches 22 if score instrument funcs matches 8 run setblock ~0 ~3 ~0 minecraft:note_block[note=22,instrument=flute]
 execute if score note_block funcs matches 22 if score instrument funcs matches 9 run setblock ~0 ~3 ~0 minecraft:note_block[note=22,instrument=bell]
+execute if score note_block funcs matches 22 if score instrument funcs matches 10 run setblock ~0 ~3 ~0 minecraft:note_block[note=22,instrument=iron_xylophone]
+execute if score note_block funcs matches 22 if score instrument funcs matches 11 run setblock ~0 ~3 ~0 minecraft:note_block[note=22,instrument=cow_bell]
+execute if score note_block funcs matches 22 if score instrument funcs matches 12 run setblock ~0 ~3 ~0 minecraft:note_block[note=22,instrument=didgeridoo]
+execute if score note_block funcs matches 22 if score instrument funcs matches 13 run setblock ~0 ~3 ~0 minecraft:note_block[note=22,instrument=bit]
+execute if score note_block funcs matches 22 if score instrument funcs matches 14 run setblock ~0 ~3 ~0 minecraft:note_block[note=22,instrument=banjo]
+execute if score note_block funcs matches 22 if score instrument funcs matches 15 run setblock ~0 ~3 ~0 minecraft:note_block[note=22,instrument=pling]
 
 
 execute if score note_block funcs matches 23 if score instrument funcs matches 0 run setblock ~0 ~3 ~0 minecraft:note_block[note=23,instrument=hat]
@@ -287,6 +425,12 @@ execute if score note_block funcs matches 23 if score instrument funcs matches 6
 execute if score note_block funcs matches 23 if score instrument funcs matches 7 run setblock ~0 ~3 ~0 minecraft:note_block[note=23,instrument=bass]
 execute if score note_block funcs matches 23 if score instrument funcs matches 8 run setblock ~0 ~3 ~0 minecraft:note_block[note=23,instrument=flute]
 execute if score note_block funcs matches 23 if score instrument funcs matches 9 run setblock ~0 ~3 ~0 minecraft:note_block[note=23,instrument=bell]
+execute if score note_block funcs matches 23 if score instrument funcs matches 10 run setblock ~0 ~3 ~0 minecraft:note_block[note=23,instrument=iron_xylophone]
+execute if score note_block funcs matches 23 if score instrument funcs matches 11 run setblock ~0 ~3 ~0 minecraft:note_block[note=23,instrument=cow_bell]
+execute if score note_block funcs matches 23 if score instrument funcs matches 12 run setblock ~0 ~3 ~0 minecraft:note_block[note=23,instrument=didgeridoo]
+execute if score note_block funcs matches 23 if score instrument funcs matches 13 run setblock ~0 ~3 ~0 minecraft:note_block[note=23,instrument=bit]
+execute if score note_block funcs matches 23 if score instrument funcs matches 14 run setblock ~0 ~3 ~0 minecraft:note_block[note=23,instrument=banjo]
+execute if score note_block funcs matches 23 if score instrument funcs matches 15 run setblock ~0 ~3 ~0 minecraft:note_block[note=23,instrument=pling]
 
 
 execute if score note_block funcs matches 24 if score instrument funcs matches 0 run setblock ~0 ~3 ~0 minecraft:note_block[note=24,instrument=hat]
@@ -299,3 +443,9 @@ execute if score note_block funcs matches 24 if score instrument funcs matches 6
 execute if score note_block funcs matches 24 if score instrument funcs matches 7 run setblock ~0 ~3 ~0 minecraft:note_block[note=24,instrument=bass]
 execute if score note_block funcs matches 24 if score instrument funcs matches 8 run setblock ~0 ~3 ~0 minecraft:note_block[note=24,instrument=flute]
 execute if score note_block funcs matches 24 if score instrument funcs matches 9 run setblock ~0 ~3 ~0 minecraft:note_block[note=24,instrument=bell]
+execute if score note_block funcs matches 24 if score instrument funcs matches 10 run setblock ~0 ~3 ~0 minecraft:note_block[note=24,instrument=iron_xylophone]
+execute if score note_block funcs matches 24 if score instrument funcs matches 11 run setblock ~0 ~3 ~0 minecraft:note_block[note=24,instrument=cow_bell]
+execute if score note_block funcs matches 24 if score instrument funcs matches 12 run setblock ~0 ~3 ~0 minecraft:note_block[note=24,instrument=didgeridoo]
+execute if score note_block funcs matches 24 if score instrument funcs matches 13 run setblock ~0 ~3 ~0 minecraft:note_block[note=24,instrument=bit]
+execute if score note_block funcs matches 24 if score instrument funcs matches 14 run setblock ~0 ~3 ~0 minecraft:note_block[note=24,instrument=banjo]
+execute if score note_block funcs matches 24 if score instrument funcs matches 15 run setblock ~0 ~3 ~0 minecraft:note_block[note=24,instrument=pling]

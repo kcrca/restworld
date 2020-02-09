@@ -1,0 +1,10 @@
+<%namespace name="base" file="../base.mcftmpl"/>\
+
+<%base:loop collection="${range(0, 2)}" args="when,i,thing">
+${when(0)} setblock ~ ~3 ~ lantern[hanging=false]
+${when(0)} setblock ~ ~4 ~ air
+${when(0)} data merge block ~ ~2 ~-1 {Text2:${text("")}}
+${when(1)} setblock ~ ~3 ~ lantern[hanging=true]
+${when(1)} setblock ~ ~4 ~ stone_slab
+${when(1)} data merge block ~ ~2 ~-1 {Text2:${text("Hanging")}}
+</%base:loop>

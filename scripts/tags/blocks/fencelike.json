@@ -8,8 +8,6 @@
     "minecraft:dark_oak_fence",
     "minecraft:spruce_fence",
     "minecraft:nether_brick_fence",
-    "minecraft:cobblestone_wall",
-    "minecraft:mossy_cobblestone_wall",
     "minecraft:glass_pane",
     "minecraft:white_stained_glass_pane",
     "minecraft:orange_stained_glass_pane",
@@ -27,6 +25,20 @@
     "minecraft:green_stained_glass_pane",
     "minecraft:red_stained_glass_pane",
     "minecraft:black_stained_glass_pane",
-    "minecraft:iron_bars"
+    "minecraft:iron_bars",
+
+    "minecraft:cobblestone_wall",
+    "minecraft:mossy_cobblestone_wall",
+    "minecraft:stone_brick_wall",
+    "minecraft:mossy_stone_brick_wall",
+    "minecraft:end_stone_brick_wall",
+    "minecraft:sandstone_wall",
+    "minecraft:red_sandstone_wall",
+    "minecraft:nether_brick_wall",
+    "minecraft:red_nether_brick_wall",
+    "minecraft:andesite_wall",
+    "minecraft:granite_wall",
+    "minecraft:diorite_wall",
+    "minecraft:prismarine_wall"
   ]
 }

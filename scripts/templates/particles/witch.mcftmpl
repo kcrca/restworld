@@ -1,0 +1,2 @@
+<%namespace file="particle_base.mcftmpl" import="*"/>\
+${fast_clock()} particle minecraft:witch ~ ~2.3 ~ 0.3 0.3 0.3 0 6

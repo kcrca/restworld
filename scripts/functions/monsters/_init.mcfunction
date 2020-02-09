@@ -10,6 +10,7 @@ scoreboard players add illager funcs 0
 scoreboard players add magma_cube funcs 0
 scoreboard players add phantom funcs 0
 scoreboard players add pigmen funcs 0
+scoreboard players add ravager funcs 0
 scoreboard players add shulker funcs 0
 scoreboard players add silverfish funcs 0
 scoreboard players add skeleton funcs 0
@@ -34,6 +35,7 @@ execute at @e[tag=illager_home] run function v3:monsters/illager_init
 execute at @e[tag=magma_cube_home] run function v3:monsters/magma_cube_init
 execute at @e[tag=phantom_home] run function v3:monsters/phantom_init
 execute at @e[tag=pigmen_home] run function v3:monsters/pigmen_init
+execute at @e[tag=ravager_home] run function v3:monsters/ravager_init
 execute at @e[tag=shulker_home] run function v3:monsters/shulker_init
 execute at @e[tag=silverfish_home] run function v3:monsters/silverfish_init
 execute at @e[tag=skeleton_horse_home] run function v3:monsters/skeleton_horse_init

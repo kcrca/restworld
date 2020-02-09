@@ -6,4 +6,4 @@ execute if score slabs funcs matches 0 run data merge block ~0 ~2 ~-1 {Text2:"\"
 
 
 execute if score slabs funcs matches 1 run setblock ~0 ~3 ~0 minecraft:petrified_oak_slab
-execute if score slabs funcs matches 1 run data merge block ~0 ~2 ~-1 {Text2:"\"Petrified Oak Slab\"",Text3:"\"\"",Text4:"\"\""}
+execute if score slabs funcs matches 1 run data merge block ~0 ~2 ~-1 {Text2:"\"Petrified Oak\"",Text3:"\"Slab\"",Text4:"\"\""}

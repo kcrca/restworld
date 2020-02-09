@@ -1,7 +1,0 @@
-<%namespace file="effect_base.mcftmpl" import="*"/>
-<%namespace name="base"  file="../base.mcftmpl"/>
-<% animals = (Thing("ocelot"), Thing("Horse"), Thing("Llama")) %>
-
-<%base:loop collection="${animals}" args="when,i,thing">
-${when(i)} ${summon(thing.id, 0, "CatType:1,NoAI:True")}
-</%base:loop>

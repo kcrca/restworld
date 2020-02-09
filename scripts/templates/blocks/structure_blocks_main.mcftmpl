@@ -1,4 +1,6 @@
 <%namespace name="base" file="../base.mcftmpl"/>
+<% structure_blocks = [Thing("Data", "DATA"), Thing("Save", "SAVE"), Thing("Load", "LOAD"), Thing("Corner", "CORNER")] %>
+
 
 <%base:loop collection="${structure_blocks}" args="when,i,thing">
 ${when(i)} data merge block ~ ~3 ~ {mode:${thing.id.upper()}}
