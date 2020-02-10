@@ -2,8 +2,8 @@ setblock ~0 ~3 ~0 air
 
 execute unless score all_banners funcs matches 0.. run function all_banners_init
 scoreboard players add all_banners funcs 1
-scoreboard players set all_banners max 11
-execute unless score all_banners funcs matches 0..10 run scoreboard players operation all_banners funcs %= all_banners max
+scoreboard players set all_banners max 10
+execute unless score all_banners funcs matches 0..9 run scoreboard players operation all_banners funcs %= all_banners max
 execute if score all_banners funcs matches 0 run setblock ~0.2 ~3 ~0.2 blue_banner[rotation=14]{Patterns:[{Color:0,Pattern:"bri"},{Color:11,Pattern:"hhb"},{Color:15,Pattern:"sc"},{Color:11,Pattern:"sc"},{Color:15,Pattern:"bo"},{Color:11,Pattern:"bo"}]}
 execute if score all_banners funcs matches 0 run execute as @e[tag=banner_pattern_custom] run data merge entity @s {CustomName:"\"Tardis\""}
 execute if score all_banners funcs matches 0 run execute as @e[tag=banner_pattern_custom_author] run data merge entity @s {CustomName:"\"by Pikachu\""}
@@ -40,10 +40,6 @@ execute if score all_banners funcs matches 8 run setblock ~0.2 ~3 ~0.2 black_ban
 execute if score all_banners funcs matches 8 run execute as @e[tag=banner_pattern_custom] run data merge entity @s {CustomName:"\"Bouche\""}
 execute if score all_banners funcs matches 8 run execute as @e[tag=banner_pattern_custom_author] run data merge entity @s {CustomName:"\"by entonix69\""}
 
-execute if score all_banners funcs matches 9 run setblock ~0.2 ~3 ~0.2 white_banner[rotation=14]{Patterns:[{Color:15,Pattern:"flo"},{Color:0,Pattern:"sku"},{Color:0,Pattern:"mc"},{Color:0,Pattern:"ts"},{Color:0,Pattern:"hh"}]}
-execute if score all_banners funcs matches 9 run execute as @e[tag=banner_pattern_custom] run data merge entity @s {CustomName:"\"Owl\""}
-execute if score all_banners funcs matches 9 run execute as @e[tag=banner_pattern_custom_author] run data merge entity @s {CustomName:"\"by CrystalDrop\""}
-
-execute if score all_banners funcs matches 10 run setblock ~0.2 ~3 ~0.2 lime_banner[rotation=14]{Patterns:[{Color:4,Pattern:"gra"},{Color:3,Pattern:"gru"},{Color:0,Pattern:"cbo"},{Color:0,Pattern:"cr"},{Color:0,Pattern:"mr"},{Color:5,Pattern:"mc"}]}
-execute if score all_banners funcs matches 10 run execute as @e[tag=banner_pattern_custom] run data merge entity @s {CustomName:"\"Like pls ^-^\""}
-execute if score all_banners funcs matches 10 run execute as @e[tag=banner_pattern_custom_author] run data merge entity @s {CustomName:"\"by Harmony\""}
+execute if score all_banners funcs matches 9 run setblock ~0.2 ~3 ~0.2 lime_banner[rotation=14]{Patterns:[{Color:4,Pattern:"gra"},{Color:3,Pattern:"gru"},{Color:0,Pattern:"cbo"},{Color:0,Pattern:"cr"},{Color:0,Pattern:"mr"},{Color:5,Pattern:"mc"}]}
+execute if score all_banners funcs matches 9 run execute as @e[tag=banner_pattern_custom] run data merge entity @s {CustomName:"\"Like pls ^-^\""}
+execute if score all_banners funcs matches 9 run execute as @e[tag=banner_pattern_custom_author] run data merge entity @s {CustomName:"\"by Harmony\""}
