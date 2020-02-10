@@ -48,37 +48,37 @@ summon armor_stand ~11.7 ~1.65 ~2.07 {Invisible:true,NoGravity:true,ShowArms:tru
 summon armor_stand ~11.7 ~3.65 ~4.07 {Invisible:true,NoGravity:true,ShowArms:true,Pose:{LeftArm:[0.0f,90.0f,90.0f]},Rotation:[90f,0f],HandItems:[{},{id:shield,Count:1,tag:{Damage:0,BlockEntityTag:{Patterns:[{Pattern:"ld",Color:9}],Base:0}}}],Tags:[banner_stand,banner_stand_ld],CustomName:"\"Left Diagonal\""}
 
 
-summon armor_stand ~11.7 ~1.65 ~4.07 {Invisible:true,NoGravity:true,ShowArms:true,Pose:{LeftArm:[0.0f,90.0f,90.0f]},Rotation:[90f,0f],HandItems:[{},{id:shield,Count:1,tag:{Damage:0,BlockEntityTag:{Patterns:[{Pattern:"rud",Color:9}],Base:0}}}],Tags:[banner_stand,banner_stand_rud],CustomName:"\"Right Upside-Down|Diagonal\""}
+summon armor_stand ~11.7 ~1.65 ~4.07 {Invisible:true,NoGravity:true,ShowArms:true,Pose:{LeftArm:[0.0f,90.0f,90.0f]},Rotation:[90f,0f],HandItems:[{},{id:shield,Count:1,tag:{Damage:0,BlockEntityTag:{Patterns:[{Pattern:"rud",Color:9}],Base:0}}}],Tags:[banner_stand,banner_stand_rud],CustomName:"\"Right Upside-Down Diagonal\""}
 
 
-summon armor_stand ~11.7 ~3.65 ~6.07 {Invisible:true,NoGravity:true,ShowArms:true,Pose:{LeftArm:[0.0f,90.0f,90.0f]},Rotation:[90f,0f],HandItems:[{},{id:shield,Count:1,tag:{Damage:0,BlockEntityTag:{Patterns:[{Pattern:"lud",Color:9}],Base:0}}}],Tags:[banner_stand,banner_stand_lud],CustomName:"\"Left Upside-Down|Diagonal\""}
+summon armor_stand ~11.7 ~3.65 ~6.07 {Invisible:true,NoGravity:true,ShowArms:true,Pose:{LeftArm:[0.0f,90.0f,90.0f]},Rotation:[90f,0f],HandItems:[{},{id:shield,Count:1,tag:{Damage:0,BlockEntityTag:{Patterns:[{Pattern:"lud",Color:9}],Base:0}}}],Tags:[banner_stand,banner_stand_lud],CustomName:"\"Left Upside-Down Diagonal\""}
 
 
 summon armor_stand ~11.7 ~1.65 ~6.07 {Invisible:true,NoGravity:true,ShowArms:true,Pose:{LeftArm:[0.0f,90.0f,90.0f]},Rotation:[90f,0f],HandItems:[{},{id:shield,Count:1,tag:{Damage:0,BlockEntityTag:{Patterns:[{Pattern:"rd",Color:9}],Base:0}}}],Tags:[banner_stand,banner_stand_rd],CustomName:"\"Right Diagonal\""}
 
 
-summon armor_stand ~11.7 ~3.65 ~8.07 {Invisible:true,NoGravity:true,ShowArms:true,Pose:{LeftArm:[0.0f,90.0f,90.0f]},Rotation:[90f,0f],HandItems:[{},{id:shield,Count:1,tag:{Damage:0,BlockEntityTag:{Patterns:[{Pattern:"vh",Color:9}],Base:0}}}],Tags:[banner_stand,banner_stand_vh],CustomName:"\"Vertical Half|(Left)\""}
+summon armor_stand ~11.7 ~3.65 ~8.07 {Invisible:true,NoGravity:true,ShowArms:true,Pose:{LeftArm:[0.0f,90.0f,90.0f]},Rotation:[90f,0f],HandItems:[{},{id:shield,Count:1,tag:{Damage:0,BlockEntityTag:{Patterns:[{Pattern:"vh",Color:9}],Base:0}}}],Tags:[banner_stand,banner_stand_vh],CustomName:"\"Vertical Half (Left)\""}
 
 
-summon armor_stand ~11.7 ~1.65 ~8.07 {Invisible:true,NoGravity:true,ShowArms:true,Pose:{LeftArm:[0.0f,90.0f,90.0f]},Rotation:[90f,0f],HandItems:[{},{id:shield,Count:1,tag:{Damage:0,BlockEntityTag:{Patterns:[{Pattern:"vhr",Color:9}],Base:0}}}],Tags:[banner_stand,banner_stand_vhr],CustomName:"\"Vertical Half|(Right)\""}
+summon armor_stand ~11.7 ~1.65 ~8.07 {Invisible:true,NoGravity:true,ShowArms:true,Pose:{LeftArm:[0.0f,90.0f,90.0f]},Rotation:[90f,0f],HandItems:[{},{id:shield,Count:1,tag:{Damage:0,BlockEntityTag:{Patterns:[{Pattern:"vhr",Color:9}],Base:0}}}],Tags:[banner_stand,banner_stand_vhr],CustomName:"\"Vertical Half (Right)\""}
 
 
-summon armor_stand ~11.7 ~3.65 ~10.07 {Invisible:true,NoGravity:true,ShowArms:true,Pose:{LeftArm:[0.0f,90.0f,90.0f]},Rotation:[90f,0f],HandItems:[{},{id:shield,Count:1,tag:{Damage:0,BlockEntityTag:{Patterns:[{Pattern:"hhb",Color:9}],Base:0}}}],Tags:[banner_stand,banner_stand_hhb],CustomName:"\"Horizontal Half|(Bottom)\""}
+summon armor_stand ~11.7 ~3.65 ~10.07 {Invisible:true,NoGravity:true,ShowArms:true,Pose:{LeftArm:[0.0f,90.0f,90.0f]},Rotation:[90f,0f],HandItems:[{},{id:shield,Count:1,tag:{Damage:0,BlockEntityTag:{Patterns:[{Pattern:"hhb",Color:9}],Base:0}}}],Tags:[banner_stand,banner_stand_hhb],CustomName:"\"Horizontal Half (Bottom)\""}
 
 
-summon armor_stand ~11.7 ~1.65 ~10.07 {Invisible:true,NoGravity:true,ShowArms:true,Pose:{LeftArm:[0.0f,90.0f,90.0f]},Rotation:[90f,0f],HandItems:[{},{id:shield,Count:1,tag:{Damage:0,BlockEntityTag:{Patterns:[{Pattern:"hh",Color:9}],Base:0}}}],Tags:[banner_stand,banner_stand_hh],CustomName:"\"Horizontal Half|(Top)\""}
+summon armor_stand ~11.7 ~1.65 ~10.07 {Invisible:true,NoGravity:true,ShowArms:true,Pose:{LeftArm:[0.0f,90.0f,90.0f]},Rotation:[90f,0f],HandItems:[{},{id:shield,Count:1,tag:{Damage:0,BlockEntityTag:{Patterns:[{Pattern:"hh",Color:9}],Base:0}}}],Tags:[banner_stand,banner_stand_hh],CustomName:"\"Horizontal Half (Top)\""}
 
 
-summon armor_stand ~8.93 ~3.65 ~11.7 {Invisible:true,NoGravity:true,ShowArms:true,Pose:{LeftArm:[0.0f,90.0f,90.0f]},Rotation:[180f,0f],HandItems:[{},{id:shield,Count:1,tag:{Damage:0,BlockEntityTag:{Patterns:[{Pattern:"bl",Color:9}],Base:0}}}],Tags:[banner_stand,banner_stand_bl],CustomName:"\"Bottom Left|Corner\""}
+summon armor_stand ~8.93 ~3.65 ~11.7 {Invisible:true,NoGravity:true,ShowArms:true,Pose:{LeftArm:[0.0f,90.0f,90.0f]},Rotation:[180f,0f],HandItems:[{},{id:shield,Count:1,tag:{Damage:0,BlockEntityTag:{Patterns:[{Pattern:"bl",Color:9}],Base:0}}}],Tags:[banner_stand,banner_stand_bl],CustomName:"\"Bottom Left Corner\""}
 
 
-summon armor_stand ~8.93 ~1.65 ~11.7 {Invisible:true,NoGravity:true,ShowArms:true,Pose:{LeftArm:[0.0f,90.0f,90.0f]},Rotation:[180f,0f],HandItems:[{},{id:shield,Count:1,tag:{Damage:0,BlockEntityTag:{Patterns:[{Pattern:"br",Color:9}],Base:0}}}],Tags:[banner_stand,banner_stand_br],CustomName:"\"Bottom Right|Corner\""}
+summon armor_stand ~8.93 ~1.65 ~11.7 {Invisible:true,NoGravity:true,ShowArms:true,Pose:{LeftArm:[0.0f,90.0f,90.0f]},Rotation:[180f,0f],HandItems:[{},{id:shield,Count:1,tag:{Damage:0,BlockEntityTag:{Patterns:[{Pattern:"br",Color:9}],Base:0}}}],Tags:[banner_stand,banner_stand_br],CustomName:"\"Bottom Right Corner\""}
 
 
-summon armor_stand ~6.93 ~3.65 ~11.7 {Invisible:true,NoGravity:true,ShowArms:true,Pose:{LeftArm:[0.0f,90.0f,90.0f]},Rotation:[180f,0f],HandItems:[{},{id:shield,Count:1,tag:{Damage:0,BlockEntityTag:{Patterns:[{Pattern:"tl",Color:9}],Base:0}}}],Tags:[banner_stand,banner_stand_tl],CustomName:"\"Top Left|Corner\""}
+summon armor_stand ~6.93 ~3.65 ~11.7 {Invisible:true,NoGravity:true,ShowArms:true,Pose:{LeftArm:[0.0f,90.0f,90.0f]},Rotation:[180f,0f],HandItems:[{},{id:shield,Count:1,tag:{Damage:0,BlockEntityTag:{Patterns:[{Pattern:"tl",Color:9}],Base:0}}}],Tags:[banner_stand,banner_stand_tl],CustomName:"\"Top Left Corner\""}
 
 
-summon armor_stand ~6.93 ~1.65 ~11.7 {Invisible:true,NoGravity:true,ShowArms:true,Pose:{LeftArm:[0.0f,90.0f,90.0f]},Rotation:[180f,0f],HandItems:[{},{id:shield,Count:1,tag:{Damage:0,BlockEntityTag:{Patterns:[{Pattern:"tr",Color:9}],Base:0}}}],Tags:[banner_stand,banner_stand_tr],CustomName:"\"Top Right|Corner\""}
+summon armor_stand ~6.93 ~1.65 ~11.7 {Invisible:true,NoGravity:true,ShowArms:true,Pose:{LeftArm:[0.0f,90.0f,90.0f]},Rotation:[180f,0f],HandItems:[{},{id:shield,Count:1,tag:{Damage:0,BlockEntityTag:{Patterns:[{Pattern:"tr",Color:9}],Base:0}}}],Tags:[banner_stand,banner_stand_tr],CustomName:"\"Top Right Corner\""}
 
 
 summon armor_stand ~4.93 ~3.65 ~11.7 {Invisible:true,NoGravity:true,ShowArms:true,Pose:{LeftArm:[0.0f,90.0f,90.0f]},Rotation:[180f,0f],HandItems:[{},{id:shield,Count:1,tag:{Damage:0,BlockEntityTag:{Patterns:[{Pattern:"bt",Color:9}],Base:0}}}],Tags:[banner_stand,banner_stand_bt],CustomName:"\"Bottom Triangle\""}
@@ -87,10 +87,10 @@ summon armor_stand ~4.93 ~3.65 ~11.7 {Invisible:true,NoGravity:true,ShowArms:tru
 summon armor_stand ~4.93 ~1.65 ~11.7 {Invisible:true,NoGravity:true,ShowArms:true,Pose:{LeftArm:[0.0f,90.0f,90.0f]},Rotation:[180f,0f],HandItems:[{},{id:shield,Count:1,tag:{Damage:0,BlockEntityTag:{Patterns:[{Pattern:"tt",Color:9}],Base:0}}}],Tags:[banner_stand,banner_stand_tt],CustomName:"\"Top Triangle\""}
 
 
-summon armor_stand ~2.93 ~3.65 ~11.7 {Invisible:true,NoGravity:true,ShowArms:true,Pose:{LeftArm:[0.0f,90.0f,90.0f]},Rotation:[180f,0f],HandItems:[{},{id:shield,Count:1,tag:{Damage:0,BlockEntityTag:{Patterns:[{Pattern:"bts",Color:9}],Base:0}}}],Tags:[banner_stand,banner_stand_bts],CustomName:"\"Bottom Triangle|Sawtooth\""}
+summon armor_stand ~2.93 ~3.65 ~11.7 {Invisible:true,NoGravity:true,ShowArms:true,Pose:{LeftArm:[0.0f,90.0f,90.0f]},Rotation:[180f,0f],HandItems:[{},{id:shield,Count:1,tag:{Damage:0,BlockEntityTag:{Patterns:[{Pattern:"bts",Color:9}],Base:0}}}],Tags:[banner_stand,banner_stand_bts],CustomName:"\"Bottom Triangle Sawtooth\""}
 
 
-summon armor_stand ~2.93 ~1.65 ~11.7 {Invisible:true,NoGravity:true,ShowArms:true,Pose:{LeftArm:[0.0f,90.0f,90.0f]},Rotation:[180f,0f],HandItems:[{},{id:shield,Count:1,tag:{Damage:0,BlockEntityTag:{Patterns:[{Pattern:"tts",Color:9}],Base:0}}}],Tags:[banner_stand,banner_stand_tts],CustomName:"\"Top Triangle|Sawtooth\""}
+summon armor_stand ~2.93 ~1.65 ~11.7 {Invisible:true,NoGravity:true,ShowArms:true,Pose:{LeftArm:[0.0f,90.0f,90.0f]},Rotation:[180f,0f],HandItems:[{},{id:shield,Count:1,tag:{Damage:0,BlockEntityTag:{Patterns:[{Pattern:"tts",Color:9}],Base:0}}}],Tags:[banner_stand,banner_stand_tts],CustomName:"\"Top Triangle Sawtooth\""}
 
 
 summon armor_stand ~0.93 ~3.65 ~11.7 {Invisible:true,NoGravity:true,ShowArms:true,Pose:{LeftArm:[0.0f,90.0f,90.0f]},Rotation:[180f,0f],HandItems:[{},{id:shield,Count:1,tag:{Damage:0,BlockEntityTag:{Patterns:[{Pattern:"mc",Color:9}],Base:0}}}],Tags:[banner_stand,banner_stand_mc],CustomName:"\"Middle Circle\""}
@@ -108,7 +108,7 @@ summon armor_stand ~-0.7 ~1.65 ~8.93 {Invisible:true,NoGravity:true,ShowArms:tru
 summon armor_stand ~-0.7 ~3.65 ~6.93 {Invisible:true,NoGravity:true,ShowArms:true,Pose:{LeftArm:[0.0f,90.0f,90.0f]},Rotation:[270f,0f],HandItems:[{},{id:shield,Count:1,tag:{Damage:0,BlockEntityTag:{Patterns:[{Pattern:"gra",Color:9}],Base:0}}}],Tags:[banner_stand,banner_stand_gra],CustomName:"\"Gradient\""}
 
 
-summon armor_stand ~-0.7 ~1.65 ~6.93 {Invisible:true,NoGravity:true,ShowArms:true,Pose:{LeftArm:[0.0f,90.0f,90.0f]},Rotation:[270f,0f],HandItems:[{},{id:shield,Count:1,tag:{Damage:0,BlockEntityTag:{Patterns:[{Pattern:"gru",Color:9}],Base:0}}}],Tags:[banner_stand,banner_stand_gru],CustomName:"\"Gradient|Upside-Down\""}
+summon armor_stand ~-0.7 ~1.65 ~6.93 {Invisible:true,NoGravity:true,ShowArms:true,Pose:{LeftArm:[0.0f,90.0f,90.0f]},Rotation:[270f,0f],HandItems:[{},{id:shield,Count:1,tag:{Damage:0,BlockEntityTag:{Patterns:[{Pattern:"gru",Color:9}],Base:0}}}],Tags:[banner_stand,banner_stand_gru],CustomName:"\"Gradient Upside-Down\""}
 
 
 summon armor_stand ~-0.7 ~3.65 ~4.93 {Invisible:true,NoGravity:true,ShowArms:true,Pose:{LeftArm:[0.0f,90.0f,90.0f]},Rotation:[270f,0f],HandItems:[{},{id:shield,Count:1,tag:{Damage:0,BlockEntityTag:{Patterns:[{Pattern:"cre",Color:9}],Base:0}}}],Tags:[banner_stand,banner_stand_cre],CustomName:"\"Creeper\""}
@@ -135,5 +135,13 @@ function v3:banners/banner_color_cur
 
 setblock ~0.2 ~3 ~10.8 white_banner[rotation=10]{Patterns:[{Pattern:"mr",Color:9}, {Pattern:"bs",Color:8}, {Pattern:"cs",Color:7}, {Pattern:"bo",Color:8}, {Pattern:"ms",Color:15}, {Pattern:"hh",Color:8}, {Pattern:"mc",Color:8}, {Pattern:"bo",Color:15}]}
 setblock ~10.8 ~3 ~0.2 magenta_banner[rotation=2]{Patterns:[{Pattern:"bt",Color:15}, {Pattern:"tt",Color:15}]}
+
+
+
+
 summon armor_stand ~0.3 ~3.1 ~0.3 {Tags:[banner_stand,banner_pattern_custom],NoGravity:True,Invisible:True}
 summon armor_stand ~0.3 ~2.8 ~0.3 {Tags:[banner_stand,banner_pattern_custom_author],NoGravity:True,Invisible:True}
+
+
+summon armor_stand ~10.7 ~3.1 ~10.7 {Tags:[banner_stand,banner_pattern_custom],NoGravity:True,Invisible:True}
+summon armor_stand ~10.7 ~2.8 ~10.7 {Tags:[banner_stand,banner_pattern_custom_author],NoGravity:True,Invisible:True}
