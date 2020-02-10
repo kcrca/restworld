@@ -13,6 +13,8 @@ scoreboard players add dirt funcs 0
 scoreboard players add end funcs 0
 scoreboard players add expand funcs 0
 scoreboard players add frosted_ice funcs 0
+scoreboard players add glazed_1 funcs 0
+scoreboard players add glazed_2 funcs 0
 scoreboard players add ice funcs 0
 scoreboard players add job_sites funcs 0
 scoreboard players add lantern funcs 0
@@ -44,6 +46,8 @@ execute at @e[tag=cake_home] run function v3:blocks/cake_init
 execute at @e[tag=colorings_home] run function v3:blocks/colorings_init
 execute at @e[tag=colorings_turned_home] run function v3:blocks/colorings_turned_init
 execute at @e[tag=command_blocks_home] run function v3:blocks/command_blocks_init
+execute at @e[tag=glazed_1_home] run function v3:blocks/glazed_1_init
+execute at @e[tag=glazed_2_home] run function v3:blocks/glazed_2_init
 execute at @e[tag=job_sites_home] run function v3:blocks/job_sites_init
 execute at @e[tag=lantern_home] run function v3:blocks/lantern_init
 execute at @e[tag=stepable_home] run function v3:blocks/stepable_init

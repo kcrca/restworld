@@ -17,9 +17,10 @@ scoreboard players add music funcs 1
 scoreboard players add soil funcs 1
 scoreboard players add purpur funcs 1
 scoreboard players add colorings_turned funcs 1
+scoreboard players add glazed_2 funcs 1
 scoreboard players add stepable funcs 1
 scoreboard players add slabs funcs 1
-scoreboard players add pumpkin funcs 1
+scoreboard players add glazed_1 funcs 1
 scoreboard players add quartz funcs 1
 scoreboard players add dirt funcs 1
 scoreboard players add frosted_ice funcs 1
@@ -33,5 +34,6 @@ scoreboard players add ore_blocks funcs 1
 scoreboard players add nether funcs 1
 scoreboard players add beehive funcs 1
 scoreboard players add cake funcs 1
+scoreboard players add pumpkin funcs 1
 scoreboard players add lantern funcs 1
 function v3:blocks/_cur

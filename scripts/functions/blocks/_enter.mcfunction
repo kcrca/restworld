@@ -13,6 +13,8 @@ scoreboard players add dirt funcs 0
 scoreboard players add end funcs 0
 scoreboard players add expand funcs 0
 scoreboard players add frosted_ice funcs 0
+scoreboard players add glazed_1 funcs 0
+scoreboard players add glazed_2 funcs 0
 scoreboard players add ice funcs 0
 scoreboard players add job_sites funcs 0
 scoreboard players add lantern funcs 0

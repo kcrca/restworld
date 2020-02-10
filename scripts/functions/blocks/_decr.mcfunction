@@ -17,9 +17,10 @@ scoreboard players remove music funcs 1
 scoreboard players remove soil funcs 1
 scoreboard players remove purpur funcs 1
 scoreboard players remove colorings_turned funcs 1
+scoreboard players remove glazed_2 funcs 1
 scoreboard players remove stepable funcs 1
 scoreboard players remove slabs funcs 1
-scoreboard players remove pumpkin funcs 1
+scoreboard players remove glazed_1 funcs 1
 scoreboard players remove quartz funcs 1
 scoreboard players remove dirt funcs 1
 scoreboard players remove frosted_ice funcs 1
@@ -33,5 +34,6 @@ scoreboard players remove ore_blocks funcs 1
 scoreboard players remove nether funcs 1
 scoreboard players remove beehive funcs 1
 scoreboard players remove cake funcs 1
+scoreboard players remove pumpkin funcs 1
 scoreboard players remove lantern funcs 1
 function v3:blocks/_cur
