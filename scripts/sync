@@ -1,7 +1,8 @@
 #!/bin/sh
 cd `dirname $0`
 set -e
-dst_dir="/Users/kcrca/Library/Application Support/minecraft/saves/RestWorld/datapacks/restworld/data/v3"
+world=${1:RestWorld}
+dst_dir="/Users/kcrca/Library/Application Support/minecraft/saves/$world/datapacks/restworld/data/v3"
 rm -rf functions
 mkdir functions
 /Users/kcrca/restworld/venv/bin/python /Users/kcrca/restworld/restworld/main.py

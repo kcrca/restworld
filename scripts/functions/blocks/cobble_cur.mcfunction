@@ -1,3 +1,8 @@
+say hi
+
+
+
+
 scoreboard players set cobble max 2
 execute unless score cobble funcs matches 0..1 run scoreboard players operation cobble funcs %= cobble max
 

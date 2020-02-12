@@ -1,3 +1,8 @@
+say hi
+
+
+
+
 execute unless score cobble funcs matches 0.. run function cobble_init
 scoreboard players add cobble funcs 1
 scoreboard players set cobble max 2
