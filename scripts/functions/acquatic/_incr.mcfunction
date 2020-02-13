@@ -1,4 +1,6 @@
 scoreboard players add elder_guardian funcs 1
+scoreboard players add conduit funcs 1
+scoreboard players add clock_sign funcs 1
 scoreboard players add guardian funcs 1
 scoreboard players add 3_fish funcs 1
 scoreboard players add fishies funcs 1
