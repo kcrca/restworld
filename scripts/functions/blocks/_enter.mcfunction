@@ -5,10 +5,12 @@ scoreboard players add blocks_sign funcs 0
 scoreboard players add bricks funcs 0
 scoreboard players add cake funcs 0
 scoreboard players add campfire funcs 0
+scoreboard players add cauldron funcs 0
 scoreboard players add cobble funcs 0
 scoreboard players add colorings funcs 0
 scoreboard players add colorings_turned funcs 0
 scoreboard players add command_blocks funcs 0
+scoreboard players add composter funcs 0
 scoreboard players add dirt funcs 0
 scoreboard players add end funcs 0
 scoreboard players add expand funcs 0
@@ -17,6 +19,8 @@ scoreboard players add glazed_1 funcs 0
 scoreboard players add glazed_2 funcs 0
 scoreboard players add ice funcs 0
 scoreboard players add job_sites funcs 0
+scoreboard players add job_sites_1 funcs 0
+scoreboard players add job_sites_2 funcs 0
 scoreboard players add lantern funcs 0
 scoreboard players add music funcs 0
 scoreboard players add nether funcs 0

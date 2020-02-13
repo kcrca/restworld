@@ -3,11 +3,11 @@
 <%
     types = []
     for i in range (0, 6):
-	types.append(Thing("Beehive", block_state="honey_level=%d" % i))
+	types.append(Thing("Beehive", block_state="facing=south,honey_level=%d" % i))
 %>
 
 ${blocks(tuple(types))}
 
 %for i in range(0, 6):
-${base.when(i)} data merge block ~0 ~2 ~-1 {Text1:${text("Beehive")},Text2:${text("Honey Level: %d" % i)},Text3:${text("6 stages")},Text4:${text("(vanilla shows 2)")}}
+${base.when(i)} data merge block ~0 ~2 ~1 {Text1:${text("Beehive")},Text2:${text("Honey Level: %d" % i)},Text3:${text("6 stages")},Text4:${text("(vanilla shows 2)")}}
 %endfor

@@ -3,7 +3,9 @@ scoreboard players add bell funcs 1
 scoreboard players add bricks funcs 1
 scoreboard players add blocks_sign funcs 1
 scoreboard players add command_blocks funcs 1
+scoreboard players add job_sites_1 funcs 1
 scoreboard players add cobble funcs 1
+scoreboard players add cauldron funcs 1
 scoreboard players add sponge funcs 1
 scoreboard players add wood_blocks funcs 1
 scoreboard players add skulls funcs 1
@@ -11,7 +13,7 @@ scoreboard players add end funcs 1
 scoreboard players add sandstone funcs 1
 scoreboard players add snow funcs 1
 scoreboard players add ice funcs 1
-scoreboard players add stone_bricks funcs 1
+scoreboard players add job_sites_2 funcs 1
 scoreboard players add campfire funcs 1
 scoreboard players add music funcs 1
 scoreboard players add soil funcs 1
@@ -25,9 +27,11 @@ scoreboard players add quartz funcs 1
 scoreboard players add dirt funcs 1
 scoreboard players add frosted_ice funcs 1
 scoreboard players add bee_nest funcs 1
+scoreboard players add composter funcs 1
 scoreboard players add expand funcs 1
 scoreboard players add stone funcs 1
 scoreboard players add colorings funcs 1
+scoreboard players add stone_bricks funcs 1
 scoreboard players add structure_blocks funcs 1
 scoreboard players add prismarine funcs 1
 scoreboard players add ore_blocks funcs 1
