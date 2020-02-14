@@ -2,7 +2,7 @@
 set -e
 cd `dirname $0`
 set -e
-world=${1:RestWorld}
+world=${1:-RestWorld}
 dst_dir="/Users/kcrca/Library/Application Support/minecraft/saves/$world/datapacks/restworld/data/v3"
 rm -rf functions
 mkdir functions
