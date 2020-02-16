@@ -17,8 +17,8 @@ execute if score colorings funcs matches 0 run data merge block ~-7 ~0 ~3 {name:
 
 fill ~-8 ~2 ~3 ~-11 ~2 ~2 air
 
-execute if score colorings funcs matches 0 run setblock ~-8 ~2 ~2 minecraft:white_bed[facing=north,part=head]
-execute if score colorings funcs matches 0 run setblock ~-8 ~2 ~3 minecraft:white_bed[facing=north,part=foot]
+execute if score colorings funcs matches 0 run setblock ~-9 ~2 ~2 minecraft:white_bed[facing=north,part=head]
+execute if score colorings funcs matches 0 run setblock ~-9 ~2 ~3 minecraft:white_bed[facing=north,part=foot]
 
 execute if score colorings funcs matches 0 run data merge entity @e[tag=colorings_item_frame,limit=1] {Item:{id:white_dye},Count:1,ItemRotation:0}
 
@@ -41,8 +41,8 @@ execute if score colorings funcs matches 1 run fill ~1 ~2 ~5 ~-11 ~4 ~-1 minecra
 execute if score colorings funcs matches 1 run data merge block ~-7 ~0 ~3 {name:"restworld:orange_terra"}
 
 
-execute if score colorings funcs matches 1 run setblock ~-8 ~2 ~2 minecraft:orange_bed[facing=north,part=head]
-execute if score colorings funcs matches 1 run setblock ~-8 ~2 ~3 minecraft:orange_bed[facing=north,part=foot]
+execute if score colorings funcs matches 1 run setblock ~-9 ~2 ~2 minecraft:orange_bed[facing=north,part=head]
+execute if score colorings funcs matches 1 run setblock ~-9 ~2 ~3 minecraft:orange_bed[facing=north,part=foot]
 
 execute if score colorings funcs matches 1 run data merge entity @e[tag=colorings_item_frame,limit=1] {Item:{id:orange_dye},Count:1,ItemRotation:0}
 
@@ -65,8 +65,8 @@ execute if score colorings funcs matches 2 run fill ~1 ~2 ~5 ~-11 ~4 ~-1 minecra
 execute if score colorings funcs matches 2 run data merge block ~-7 ~0 ~3 {name:"restworld:magenta_terra"}
 
 
-execute if score colorings funcs matches 2 run setblock ~-8 ~2 ~2 minecraft:magenta_bed[facing=north,part=head]
-execute if score colorings funcs matches 2 run setblock ~-8 ~2 ~3 minecraft:magenta_bed[facing=north,part=foot]
+execute if score colorings funcs matches 2 run setblock ~-9 ~2 ~2 minecraft:magenta_bed[facing=north,part=head]
+execute if score colorings funcs matches 2 run setblock ~-9 ~2 ~3 minecraft:magenta_bed[facing=north,part=foot]
 
 execute if score colorings funcs matches 2 run data merge entity @e[tag=colorings_item_frame,limit=1] {Item:{id:magenta_dye},Count:1,ItemRotation:0}
 
@@ -89,8 +89,8 @@ execute if score colorings funcs matches 3 run fill ~1 ~2 ~5 ~-11 ~4 ~-1 minecra
 execute if score colorings funcs matches 3 run data merge block ~-7 ~0 ~3 {name:"restworld:light_blue_terra"}
 
 
-execute if score colorings funcs matches 3 run setblock ~-8 ~2 ~2 minecraft:light_blue_bed[facing=north,part=head]
-execute if score colorings funcs matches 3 run setblock ~-8 ~2 ~3 minecraft:light_blue_bed[facing=north,part=foot]
+execute if score colorings funcs matches 3 run setblock ~-9 ~2 ~2 minecraft:light_blue_bed[facing=north,part=head]
+execute if score colorings funcs matches 3 run setblock ~-9 ~2 ~3 minecraft:light_blue_bed[facing=north,part=foot]
 
 execute if score colorings funcs matches 3 run data merge entity @e[tag=colorings_item_frame,limit=1] {Item:{id:light_blue_dye},Count:1,ItemRotation:0}
 
@@ -113,8 +113,8 @@ execute if score colorings funcs matches 4 run fill ~1 ~2 ~5 ~-11 ~4 ~-1 minecra
 execute if score colorings funcs matches 4 run data merge block ~-7 ~0 ~3 {name:"restworld:yellow_terra"}
 
 
-execute if score colorings funcs matches 4 run setblock ~-8 ~2 ~2 minecraft:yellow_bed[facing=north,part=head]
-execute if score colorings funcs matches 4 run setblock ~-8 ~2 ~3 minecraft:yellow_bed[facing=north,part=foot]
+execute if score colorings funcs matches 4 run setblock ~-9 ~2 ~2 minecraft:yellow_bed[facing=north,part=head]
+execute if score colorings funcs matches 4 run setblock ~-9 ~2 ~3 minecraft:yellow_bed[facing=north,part=foot]
 
 execute if score colorings funcs matches 4 run data merge entity @e[tag=colorings_item_frame,limit=1] {Item:{id:yellow_dye},Count:1,ItemRotation:0}
 
@@ -137,8 +137,8 @@ execute if score colorings funcs matches 5 run fill ~1 ~2 ~5 ~-11 ~4 ~-1 minecra
 execute if score colorings funcs matches 5 run data merge block ~-7 ~0 ~3 {name:"restworld:lime_terra"}
 
 
-execute if score colorings funcs matches 5 run setblock ~-8 ~2 ~2 minecraft:lime_bed[facing=north,part=head]
-execute if score colorings funcs matches 5 run setblock ~-8 ~2 ~3 minecraft:lime_bed[facing=north,part=foot]
+execute if score colorings funcs matches 5 run setblock ~-9 ~2 ~2 minecraft:lime_bed[facing=north,part=head]
+execute if score colorings funcs matches 5 run setblock ~-9 ~2 ~3 minecraft:lime_bed[facing=north,part=foot]
 
 execute if score colorings funcs matches 5 run data merge entity @e[tag=colorings_item_frame,limit=1] {Item:{id:lime_dye},Count:1,ItemRotation:0}
 
@@ -161,8 +161,8 @@ execute if score colorings funcs matches 6 run fill ~1 ~2 ~5 ~-11 ~4 ~-1 minecra
 execute if score colorings funcs matches 6 run data merge block ~-7 ~0 ~3 {name:"restworld:pink_terra"}
 
 
-execute if score colorings funcs matches 6 run setblock ~-8 ~2 ~2 minecraft:pink_bed[facing=north,part=head]
-execute if score colorings funcs matches 6 run setblock ~-8 ~2 ~3 minecraft:pink_bed[facing=north,part=foot]
+execute if score colorings funcs matches 6 run setblock ~-9 ~2 ~2 minecraft:pink_bed[facing=north,part=head]
+execute if score colorings funcs matches 6 run setblock ~-9 ~2 ~3 minecraft:pink_bed[facing=north,part=foot]
 
 execute if score colorings funcs matches 6 run data merge entity @e[tag=colorings_item_frame,limit=1] {Item:{id:pink_dye},Count:1,ItemRotation:0}
 
@@ -185,8 +185,8 @@ execute if score colorings funcs matches 7 run fill ~1 ~2 ~5 ~-11 ~4 ~-1 minecra
 execute if score colorings funcs matches 7 run data merge block ~-7 ~0 ~3 {name:"restworld:gray_terra"}
 
 
-execute if score colorings funcs matches 7 run setblock ~-8 ~2 ~2 minecraft:gray_bed[facing=north,part=head]
-execute if score colorings funcs matches 7 run setblock ~-8 ~2 ~3 minecraft:gray_bed[facing=north,part=foot]
+execute if score colorings funcs matches 7 run setblock ~-9 ~2 ~2 minecraft:gray_bed[facing=north,part=head]
+execute if score colorings funcs matches 7 run setblock ~-9 ~2 ~3 minecraft:gray_bed[facing=north,part=foot]
 
 execute if score colorings funcs matches 7 run data merge entity @e[tag=colorings_item_frame,limit=1] {Item:{id:gray_dye},Count:1,ItemRotation:0}
 
@@ -209,8 +209,8 @@ execute if score colorings funcs matches 8 run fill ~1 ~2 ~5 ~-11 ~4 ~-1 minecra
 execute if score colorings funcs matches 8 run data merge block ~-7 ~0 ~3 {name:"restworld:light_gray_terra"}
 
 
-execute if score colorings funcs matches 8 run setblock ~-8 ~2 ~2 minecraft:light_gray_bed[facing=north,part=head]
-execute if score colorings funcs matches 8 run setblock ~-8 ~2 ~3 minecraft:light_gray_bed[facing=north,part=foot]
+execute if score colorings funcs matches 8 run setblock ~-9 ~2 ~2 minecraft:light_gray_bed[facing=north,part=head]
+execute if score colorings funcs matches 8 run setblock ~-9 ~2 ~3 minecraft:light_gray_bed[facing=north,part=foot]
 
 execute if score colorings funcs matches 8 run data merge entity @e[tag=colorings_item_frame,limit=1] {Item:{id:light_gray_dye},Count:1,ItemRotation:0}
 
@@ -233,8 +233,8 @@ execute if score colorings funcs matches 9 run fill ~1 ~2 ~5 ~-11 ~4 ~-1 minecra
 execute if score colorings funcs matches 9 run data merge block ~-7 ~0 ~3 {name:"restworld:cyan_terra"}
 
 
-execute if score colorings funcs matches 9 run setblock ~-8 ~2 ~2 minecraft:cyan_bed[facing=north,part=head]
-execute if score colorings funcs matches 9 run setblock ~-8 ~2 ~3 minecraft:cyan_bed[facing=north,part=foot]
+execute if score colorings funcs matches 9 run setblock ~-9 ~2 ~2 minecraft:cyan_bed[facing=north,part=head]
+execute if score colorings funcs matches 9 run setblock ~-9 ~2 ~3 minecraft:cyan_bed[facing=north,part=foot]
 
 execute if score colorings funcs matches 9 run data merge entity @e[tag=colorings_item_frame,limit=1] {Item:{id:cyan_dye},Count:1,ItemRotation:0}
 
@@ -257,8 +257,8 @@ execute if score colorings funcs matches 10 run fill ~1 ~2 ~5 ~-11 ~4 ~-1 minecr
 execute if score colorings funcs matches 10 run data merge block ~-7 ~0 ~3 {name:"restworld:purple_terra"}
 
 
-execute if score colorings funcs matches 10 run setblock ~-8 ~2 ~2 minecraft:purple_bed[facing=north,part=head]
-execute if score colorings funcs matches 10 run setblock ~-8 ~2 ~3 minecraft:purple_bed[facing=north,part=foot]
+execute if score colorings funcs matches 10 run setblock ~-9 ~2 ~2 minecraft:purple_bed[facing=north,part=head]
+execute if score colorings funcs matches 10 run setblock ~-9 ~2 ~3 minecraft:purple_bed[facing=north,part=foot]
 
 execute if score colorings funcs matches 10 run data merge entity @e[tag=colorings_item_frame,limit=1] {Item:{id:purple_dye},Count:1,ItemRotation:0}
 
@@ -281,8 +281,8 @@ execute if score colorings funcs matches 11 run fill ~1 ~2 ~5 ~-11 ~4 ~-1 minecr
 execute if score colorings funcs matches 11 run data merge block ~-7 ~0 ~3 {name:"restworld:blue_terra"}
 
 
-execute if score colorings funcs matches 11 run setblock ~-8 ~2 ~2 minecraft:blue_bed[facing=north,part=head]
-execute if score colorings funcs matches 11 run setblock ~-8 ~2 ~3 minecraft:blue_bed[facing=north,part=foot]
+execute if score colorings funcs matches 11 run setblock ~-9 ~2 ~2 minecraft:blue_bed[facing=north,part=head]
+execute if score colorings funcs matches 11 run setblock ~-9 ~2 ~3 minecraft:blue_bed[facing=north,part=foot]
 
 execute if score colorings funcs matches 11 run data merge entity @e[tag=colorings_item_frame,limit=1] {Item:{id:blue_dye},Count:1,ItemRotation:0}
 
@@ -305,8 +305,8 @@ execute if score colorings funcs matches 12 run fill ~1 ~2 ~5 ~-11 ~4 ~-1 minecr
 execute if score colorings funcs matches 12 run data merge block ~-7 ~0 ~3 {name:"restworld:brown_terra"}
 
 
-execute if score colorings funcs matches 12 run setblock ~-8 ~2 ~2 minecraft:brown_bed[facing=north,part=head]
-execute if score colorings funcs matches 12 run setblock ~-8 ~2 ~3 minecraft:brown_bed[facing=north,part=foot]
+execute if score colorings funcs matches 12 run setblock ~-9 ~2 ~2 minecraft:brown_bed[facing=north,part=head]
+execute if score colorings funcs matches 12 run setblock ~-9 ~2 ~3 minecraft:brown_bed[facing=north,part=foot]
 
 execute if score colorings funcs matches 12 run data merge entity @e[tag=colorings_item_frame,limit=1] {Item:{id:brown_dye},Count:1,ItemRotation:0}
 
@@ -329,8 +329,8 @@ execute if score colorings funcs matches 13 run fill ~1 ~2 ~5 ~-11 ~4 ~-1 minecr
 execute if score colorings funcs matches 13 run data merge block ~-7 ~0 ~3 {name:"restworld:green_terra"}
 
 
-execute if score colorings funcs matches 13 run setblock ~-8 ~2 ~2 minecraft:green_bed[facing=north,part=head]
-execute if score colorings funcs matches 13 run setblock ~-8 ~2 ~3 minecraft:green_bed[facing=north,part=foot]
+execute if score colorings funcs matches 13 run setblock ~-9 ~2 ~2 minecraft:green_bed[facing=north,part=head]
+execute if score colorings funcs matches 13 run setblock ~-9 ~2 ~3 minecraft:green_bed[facing=north,part=foot]
 
 execute if score colorings funcs matches 13 run data merge entity @e[tag=colorings_item_frame,limit=1] {Item:{id:green_dye},Count:1,ItemRotation:0}
 
@@ -353,8 +353,8 @@ execute if score colorings funcs matches 14 run fill ~1 ~2 ~5 ~-11 ~4 ~-1 minecr
 execute if score colorings funcs matches 14 run data merge block ~-7 ~0 ~3 {name:"restworld:red_terra"}
 
 
-execute if score colorings funcs matches 14 run setblock ~-8 ~2 ~2 minecraft:red_bed[facing=north,part=head]
-execute if score colorings funcs matches 14 run setblock ~-8 ~2 ~3 minecraft:red_bed[facing=north,part=foot]
+execute if score colorings funcs matches 14 run setblock ~-9 ~2 ~2 minecraft:red_bed[facing=north,part=head]
+execute if score colorings funcs matches 14 run setblock ~-9 ~2 ~3 minecraft:red_bed[facing=north,part=foot]
 
 execute if score colorings funcs matches 14 run data merge entity @e[tag=colorings_item_frame,limit=1] {Item:{id:red_dye},Count:1,ItemRotation:0}
 
@@ -377,8 +377,8 @@ execute if score colorings funcs matches 15 run fill ~1 ~2 ~5 ~-11 ~4 ~-1 minecr
 execute if score colorings funcs matches 15 run data merge block ~-7 ~0 ~3 {name:"restworld:black_terra"}
 
 
-execute if score colorings funcs matches 15 run setblock ~-8 ~2 ~2 minecraft:black_bed[facing=north,part=head]
-execute if score colorings funcs matches 15 run setblock ~-8 ~2 ~3 minecraft:black_bed[facing=north,part=foot]
+execute if score colorings funcs matches 15 run setblock ~-9 ~2 ~2 minecraft:black_bed[facing=north,part=head]
+execute if score colorings funcs matches 15 run setblock ~-9 ~2 ~3 minecraft:black_bed[facing=north,part=foot]
 
 execute if score colorings funcs matches 15 run data merge entity @e[tag=colorings_item_frame,limit=1] {Item:{id:black_dye},Count:1,ItemRotation:0}
 
