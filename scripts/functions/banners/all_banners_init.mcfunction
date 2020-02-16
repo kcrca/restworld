@@ -120,7 +120,7 @@ summon armor_stand ~-0.7 ~1.65 ~4.93 {Invisible:true,NoGravity:true,ShowArms:tru
 summon armor_stand ~-0.7 ~3.65 ~2.93 {Invisible:true,NoGravity:true,ShowArms:true,Pose:{LeftArm:[0.0f,90.0f,90.0f]},Rotation:[270f,0f],HandItems:[{},{id:shield,Count:1,tag:{Damage:0,BlockEntityTag:{Patterns:[{Pattern:"sku",Color:9}],Base:0}}}],Tags:[banner_stand,banner_stand_sku],CustomName:"\"Skull\""}
 
 
-summon armor_stand ~-0.7 ~1.65 ~2.93 {Invisible:true,NoGravity:true,ShowArms:true,Pose:{LeftArm:[0.0f,90.0f,90.0f]},Rotation:[270f,0f],HandItems:[{},{id:shield,Count:1,tag:{Damage:0,BlockEntityTag:{Patterns:[{Pattern:"flo5",Color:9}],Base:0}}}],Tags:[banner_stand,banner_stand_flo5],CustomName:"\"Flower\""}
+summon armor_stand ~-0.7 ~1.65 ~2.93 {Invisible:true,NoGravity:true,ShowArms:true,Pose:{LeftArm:[0.0f,90.0f,90.0f]},Rotation:[270f,0f],HandItems:[{},{id:shield,Count:1,tag:{Damage:0,BlockEntityTag:{Patterns:[{Pattern:"flo",Color:9}],Base:0}}}],Tags:[banner_stand,banner_stand_flo],CustomName:"\"Flower\""}
 
 
 summon armor_stand ~-0.7 ~3.65 ~0.93 {Invisible:true,NoGravity:true,ShowArms:true,Pose:{LeftArm:[0.0f,90.0f,90.0f]},Rotation:[270f,0f],HandItems:[{},{id:shield,Count:1,tag:{Damage:0,BlockEntityTag:{Patterns:[{Pattern:"moj",Color:9}],Base:0}}}],Tags:[banner_stand,banner_stand_moj],CustomName:"\"Mojang\""}

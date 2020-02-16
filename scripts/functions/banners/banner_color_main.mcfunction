@@ -48,7 +48,7 @@ execute if score banner_color funcs matches 0 run setblock ~0 ~3 ~8 white_wall_b
 execute if score banner_color funcs matches 0 run setblock ~0 ~5 ~6 white_wall_banner[facing=east]{Patterns:[{Pattern:"cre",Color:9}]} destroy
 execute if score banner_color funcs matches 0 run setblock ~0 ~3 ~6 white_wall_banner[facing=east]{Patterns:[{Pattern:"bri",Color:9}]} destroy
 execute if score banner_color funcs matches 0 run setblock ~0 ~5 ~4 white_wall_banner[facing=east]{Patterns:[{Pattern:"sku",Color:9}]} destroy
-execute if score banner_color funcs matches 0 run setblock ~0 ~3 ~4 white_wall_banner[facing=east]{Patterns:[{Pattern:"flo5",Color:9}]} destroy
+execute if score banner_color funcs matches 0 run setblock ~0 ~3 ~4 white_wall_banner[facing=east]{Patterns:[{Pattern:"flo",Color:9}]} destroy
 execute if score banner_color funcs matches 0 run setblock ~0 ~5 ~2 white_wall_banner[facing=east]{Patterns:[{Pattern:"moj",Color:9}]} destroy
 execute if score banner_color funcs matches 0 run setblock ~0 ~3 ~2 white_wall_banner[facing=east]{Patterns:[{Pattern:"glb",Color:9}]} destroy
 
@@ -96,7 +96,7 @@ execute if score banner_color funcs matches 1 run setblock ~0 ~3 ~8 orange_wall_
 execute if score banner_color funcs matches 1 run setblock ~0 ~5 ~6 orange_wall_banner[facing=east]{Patterns:[{Pattern:"cre",Color:9}]} destroy
 execute if score banner_color funcs matches 1 run setblock ~0 ~3 ~6 orange_wall_banner[facing=east]{Patterns:[{Pattern:"bri",Color:9}]} destroy
 execute if score banner_color funcs matches 1 run setblock ~0 ~5 ~4 orange_wall_banner[facing=east]{Patterns:[{Pattern:"sku",Color:9}]} destroy
-execute if score banner_color funcs matches 1 run setblock ~0 ~3 ~4 orange_wall_banner[facing=east]{Patterns:[{Pattern:"flo5",Color:9}]} destroy
+execute if score banner_color funcs matches 1 run setblock ~0 ~3 ~4 orange_wall_banner[facing=east]{Patterns:[{Pattern:"flo",Color:9}]} destroy
 execute if score banner_color funcs matches 1 run setblock ~0 ~5 ~2 orange_wall_banner[facing=east]{Patterns:[{Pattern:"moj",Color:9}]} destroy
 execute if score banner_color funcs matches 1 run setblock ~0 ~3 ~2 orange_wall_banner[facing=east]{Patterns:[{Pattern:"glb",Color:9}]} destroy
 
@@ -144,7 +144,7 @@ execute if score banner_color funcs matches 2 run setblock ~0 ~3 ~8 magenta_wall
 execute if score banner_color funcs matches 2 run setblock ~0 ~5 ~6 magenta_wall_banner[facing=east]{Patterns:[{Pattern:"cre",Color:9}]} destroy
 execute if score banner_color funcs matches 2 run setblock ~0 ~3 ~6 magenta_wall_banner[facing=east]{Patterns:[{Pattern:"bri",Color:9}]} destroy
 execute if score banner_color funcs matches 2 run setblock ~0 ~5 ~4 magenta_wall_banner[facing=east]{Patterns:[{Pattern:"sku",Color:9}]} destroy
-execute if score banner_color funcs matches 2 run setblock ~0 ~3 ~4 magenta_wall_banner[facing=east]{Patterns:[{Pattern:"flo5",Color:9}]} destroy
+execute if score banner_color funcs matches 2 run setblock ~0 ~3 ~4 magenta_wall_banner[facing=east]{Patterns:[{Pattern:"flo",Color:9}]} destroy
 execute if score banner_color funcs matches 2 run setblock ~0 ~5 ~2 magenta_wall_banner[facing=east]{Patterns:[{Pattern:"moj",Color:9}]} destroy
 execute if score banner_color funcs matches 2 run setblock ~0 ~3 ~2 magenta_wall_banner[facing=east]{Patterns:[{Pattern:"glb",Color:9}]} destroy
 
@@ -192,7 +192,7 @@ execute if score banner_color funcs matches 3 run setblock ~0 ~3 ~8 light_blue_w
 execute if score banner_color funcs matches 3 run setblock ~0 ~5 ~6 light_blue_wall_banner[facing=east]{Patterns:[{Pattern:"cre",Color:9}]} destroy
 execute if score banner_color funcs matches 3 run setblock ~0 ~3 ~6 light_blue_wall_banner[facing=east]{Patterns:[{Pattern:"bri",Color:9}]} destroy
 execute if score banner_color funcs matches 3 run setblock ~0 ~5 ~4 light_blue_wall_banner[facing=east]{Patterns:[{Pattern:"sku",Color:9}]} destroy
-execute if score banner_color funcs matches 3 run setblock ~0 ~3 ~4 light_blue_wall_banner[facing=east]{Patterns:[{Pattern:"flo5",Color:9}]} destroy
+execute if score banner_color funcs matches 3 run setblock ~0 ~3 ~4 light_blue_wall_banner[facing=east]{Patterns:[{Pattern:"flo",Color:9}]} destroy
 execute if score banner_color funcs matches 3 run setblock ~0 ~5 ~2 light_blue_wall_banner[facing=east]{Patterns:[{Pattern:"moj",Color:9}]} destroy
 execute if score banner_color funcs matches 3 run setblock ~0 ~3 ~2 light_blue_wall_banner[facing=east]{Patterns:[{Pattern:"glb",Color:9}]} destroy
 
@@ -240,7 +240,7 @@ execute if score banner_color funcs matches 4 run setblock ~0 ~3 ~8 yellow_wall_
 execute if score banner_color funcs matches 4 run setblock ~0 ~5 ~6 yellow_wall_banner[facing=east]{Patterns:[{Pattern:"cre",Color:9}]} destroy
 execute if score banner_color funcs matches 4 run setblock ~0 ~3 ~6 yellow_wall_banner[facing=east]{Patterns:[{Pattern:"bri",Color:9}]} destroy
 execute if score banner_color funcs matches 4 run setblock ~0 ~5 ~4 yellow_wall_banner[facing=east]{Patterns:[{Pattern:"sku",Color:9}]} destroy
-execute if score banner_color funcs matches 4 run setblock ~0 ~3 ~4 yellow_wall_banner[facing=east]{Patterns:[{Pattern:"flo5",Color:9}]} destroy
+execute if score banner_color funcs matches 4 run setblock ~0 ~3 ~4 yellow_wall_banner[facing=east]{Patterns:[{Pattern:"flo",Color:9}]} destroy
 execute if score banner_color funcs matches 4 run setblock ~0 ~5 ~2 yellow_wall_banner[facing=east]{Patterns:[{Pattern:"moj",Color:9}]} destroy
 execute if score banner_color funcs matches 4 run setblock ~0 ~3 ~2 yellow_wall_banner[facing=east]{Patterns:[{Pattern:"glb",Color:9}]} destroy
 
@@ -288,7 +288,7 @@ execute if score banner_color funcs matches 5 run setblock ~0 ~3 ~8 lime_wall_ba
 execute if score banner_color funcs matches 5 run setblock ~0 ~5 ~6 lime_wall_banner[facing=east]{Patterns:[{Pattern:"cre",Color:9}]} destroy
 execute if score banner_color funcs matches 5 run setblock ~0 ~3 ~6 lime_wall_banner[facing=east]{Patterns:[{Pattern:"bri",Color:9}]} destroy
 execute if score banner_color funcs matches 5 run setblock ~0 ~5 ~4 lime_wall_banner[facing=east]{Patterns:[{Pattern:"sku",Color:9}]} destroy
-execute if score banner_color funcs matches 5 run setblock ~0 ~3 ~4 lime_wall_banner[facing=east]{Patterns:[{Pattern:"flo5",Color:9}]} destroy
+execute if score banner_color funcs matches 5 run setblock ~0 ~3 ~4 lime_wall_banner[facing=east]{Patterns:[{Pattern:"flo",Color:9}]} destroy
 execute if score banner_color funcs matches 5 run setblock ~0 ~5 ~2 lime_wall_banner[facing=east]{Patterns:[{Pattern:"moj",Color:9}]} destroy
 execute if score banner_color funcs matches 5 run setblock ~0 ~3 ~2 lime_wall_banner[facing=east]{Patterns:[{Pattern:"glb",Color:9}]} destroy
 
@@ -336,7 +336,7 @@ execute if score banner_color funcs matches 6 run setblock ~0 ~3 ~8 pink_wall_ba
 execute if score banner_color funcs matches 6 run setblock ~0 ~5 ~6 pink_wall_banner[facing=east]{Patterns:[{Pattern:"cre",Color:9}]} destroy
 execute if score banner_color funcs matches 6 run setblock ~0 ~3 ~6 pink_wall_banner[facing=east]{Patterns:[{Pattern:"bri",Color:9}]} destroy
 execute if score banner_color funcs matches 6 run setblock ~0 ~5 ~4 pink_wall_banner[facing=east]{Patterns:[{Pattern:"sku",Color:9}]} destroy
-execute if score banner_color funcs matches 6 run setblock ~0 ~3 ~4 pink_wall_banner[facing=east]{Patterns:[{Pattern:"flo5",Color:9}]} destroy
+execute if score banner_color funcs matches 6 run setblock ~0 ~3 ~4 pink_wall_banner[facing=east]{Patterns:[{Pattern:"flo",Color:9}]} destroy
 execute if score banner_color funcs matches 6 run setblock ~0 ~5 ~2 pink_wall_banner[facing=east]{Patterns:[{Pattern:"moj",Color:9}]} destroy
 execute if score banner_color funcs matches 6 run setblock ~0 ~3 ~2 pink_wall_banner[facing=east]{Patterns:[{Pattern:"glb",Color:9}]} destroy
 
@@ -384,7 +384,7 @@ execute if score banner_color funcs matches 7 run setblock ~0 ~3 ~8 gray_wall_ba
 execute if score banner_color funcs matches 7 run setblock ~0 ~5 ~6 gray_wall_banner[facing=east]{Patterns:[{Pattern:"cre",Color:9}]} destroy
 execute if score banner_color funcs matches 7 run setblock ~0 ~3 ~6 gray_wall_banner[facing=east]{Patterns:[{Pattern:"bri",Color:9}]} destroy
 execute if score banner_color funcs matches 7 run setblock ~0 ~5 ~4 gray_wall_banner[facing=east]{Patterns:[{Pattern:"sku",Color:9}]} destroy
-execute if score banner_color funcs matches 7 run setblock ~0 ~3 ~4 gray_wall_banner[facing=east]{Patterns:[{Pattern:"flo5",Color:9}]} destroy
+execute if score banner_color funcs matches 7 run setblock ~0 ~3 ~4 gray_wall_banner[facing=east]{Patterns:[{Pattern:"flo",Color:9}]} destroy
 execute if score banner_color funcs matches 7 run setblock ~0 ~5 ~2 gray_wall_banner[facing=east]{Patterns:[{Pattern:"moj",Color:9}]} destroy
 execute if score banner_color funcs matches 7 run setblock ~0 ~3 ~2 gray_wall_banner[facing=east]{Patterns:[{Pattern:"glb",Color:9}]} destroy
 
@@ -432,7 +432,7 @@ execute if score banner_color funcs matches 8 run setblock ~0 ~3 ~8 light_gray_w
 execute if score banner_color funcs matches 8 run setblock ~0 ~5 ~6 light_gray_wall_banner[facing=east]{Patterns:[{Pattern:"cre",Color:9}]} destroy
 execute if score banner_color funcs matches 8 run setblock ~0 ~3 ~6 light_gray_wall_banner[facing=east]{Patterns:[{Pattern:"bri",Color:9}]} destroy
 execute if score banner_color funcs matches 8 run setblock ~0 ~5 ~4 light_gray_wall_banner[facing=east]{Patterns:[{Pattern:"sku",Color:9}]} destroy
-execute if score banner_color funcs matches 8 run setblock ~0 ~3 ~4 light_gray_wall_banner[facing=east]{Patterns:[{Pattern:"flo5",Color:9}]} destroy
+execute if score banner_color funcs matches 8 run setblock ~0 ~3 ~4 light_gray_wall_banner[facing=east]{Patterns:[{Pattern:"flo",Color:9}]} destroy
 execute if score banner_color funcs matches 8 run setblock ~0 ~5 ~2 light_gray_wall_banner[facing=east]{Patterns:[{Pattern:"moj",Color:9}]} destroy
 execute if score banner_color funcs matches 8 run setblock ~0 ~3 ~2 light_gray_wall_banner[facing=east]{Patterns:[{Pattern:"glb",Color:9}]} destroy
 
@@ -480,7 +480,7 @@ execute if score banner_color funcs matches 9 run setblock ~0 ~3 ~8 cyan_wall_ba
 execute if score banner_color funcs matches 9 run setblock ~0 ~5 ~6 cyan_wall_banner[facing=east]{Patterns:[{Pattern:"cre",Color:9}]} destroy
 execute if score banner_color funcs matches 9 run setblock ~0 ~3 ~6 cyan_wall_banner[facing=east]{Patterns:[{Pattern:"bri",Color:9}]} destroy
 execute if score banner_color funcs matches 9 run setblock ~0 ~5 ~4 cyan_wall_banner[facing=east]{Patterns:[{Pattern:"sku",Color:9}]} destroy
-execute if score banner_color funcs matches 9 run setblock ~0 ~3 ~4 cyan_wall_banner[facing=east]{Patterns:[{Pattern:"flo5",Color:9}]} destroy
+execute if score banner_color funcs matches 9 run setblock ~0 ~3 ~4 cyan_wall_banner[facing=east]{Patterns:[{Pattern:"flo",Color:9}]} destroy
 execute if score banner_color funcs matches 9 run setblock ~0 ~5 ~2 cyan_wall_banner[facing=east]{Patterns:[{Pattern:"moj",Color:9}]} destroy
 execute if score banner_color funcs matches 9 run setblock ~0 ~3 ~2 cyan_wall_banner[facing=east]{Patterns:[{Pattern:"glb",Color:9}]} destroy
 
@@ -528,7 +528,7 @@ execute if score banner_color funcs matches 10 run setblock ~0 ~3 ~8 purple_wall
 execute if score banner_color funcs matches 10 run setblock ~0 ~5 ~6 purple_wall_banner[facing=east]{Patterns:[{Pattern:"cre",Color:9}]} destroy
 execute if score banner_color funcs matches 10 run setblock ~0 ~3 ~6 purple_wall_banner[facing=east]{Patterns:[{Pattern:"bri",Color:9}]} destroy
 execute if score banner_color funcs matches 10 run setblock ~0 ~5 ~4 purple_wall_banner[facing=east]{Patterns:[{Pattern:"sku",Color:9}]} destroy
-execute if score banner_color funcs matches 10 run setblock ~0 ~3 ~4 purple_wall_banner[facing=east]{Patterns:[{Pattern:"flo5",Color:9}]} destroy
+execute if score banner_color funcs matches 10 run setblock ~0 ~3 ~4 purple_wall_banner[facing=east]{Patterns:[{Pattern:"flo",Color:9}]} destroy
 execute if score banner_color funcs matches 10 run setblock ~0 ~5 ~2 purple_wall_banner[facing=east]{Patterns:[{Pattern:"moj",Color:9}]} destroy
 execute if score banner_color funcs matches 10 run setblock ~0 ~3 ~2 purple_wall_banner[facing=east]{Patterns:[{Pattern:"glb",Color:9}]} destroy
 
@@ -576,7 +576,7 @@ execute if score banner_color funcs matches 11 run setblock ~0 ~3 ~8 blue_wall_b
 execute if score banner_color funcs matches 11 run setblock ~0 ~5 ~6 blue_wall_banner[facing=east]{Patterns:[{Pattern:"cre",Color:9}]} destroy
 execute if score banner_color funcs matches 11 run setblock ~0 ~3 ~6 blue_wall_banner[facing=east]{Patterns:[{Pattern:"bri",Color:9}]} destroy
 execute if score banner_color funcs matches 11 run setblock ~0 ~5 ~4 blue_wall_banner[facing=east]{Patterns:[{Pattern:"sku",Color:9}]} destroy
-execute if score banner_color funcs matches 11 run setblock ~0 ~3 ~4 blue_wall_banner[facing=east]{Patterns:[{Pattern:"flo5",Color:9}]} destroy
+execute if score banner_color funcs matches 11 run setblock ~0 ~3 ~4 blue_wall_banner[facing=east]{Patterns:[{Pattern:"flo",Color:9}]} destroy
 execute if score banner_color funcs matches 11 run setblock ~0 ~5 ~2 blue_wall_banner[facing=east]{Patterns:[{Pattern:"moj",Color:9}]} destroy
 execute if score banner_color funcs matches 11 run setblock ~0 ~3 ~2 blue_wall_banner[facing=east]{Patterns:[{Pattern:"glb",Color:9}]} destroy
 
@@ -624,7 +624,7 @@ execute if score banner_color funcs matches 12 run setblock ~0 ~3 ~8 brown_wall_
 execute if score banner_color funcs matches 12 run setblock ~0 ~5 ~6 brown_wall_banner[facing=east]{Patterns:[{Pattern:"cre",Color:9}]} destroy
 execute if score banner_color funcs matches 12 run setblock ~0 ~3 ~6 brown_wall_banner[facing=east]{Patterns:[{Pattern:"bri",Color:9}]} destroy
 execute if score banner_color funcs matches 12 run setblock ~0 ~5 ~4 brown_wall_banner[facing=east]{Patterns:[{Pattern:"sku",Color:9}]} destroy
-execute if score banner_color funcs matches 12 run setblock ~0 ~3 ~4 brown_wall_banner[facing=east]{Patterns:[{Pattern:"flo5",Color:9}]} destroy
+execute if score banner_color funcs matches 12 run setblock ~0 ~3 ~4 brown_wall_banner[facing=east]{Patterns:[{Pattern:"flo",Color:9}]} destroy
 execute if score banner_color funcs matches 12 run setblock ~0 ~5 ~2 brown_wall_banner[facing=east]{Patterns:[{Pattern:"moj",Color:9}]} destroy
 execute if score banner_color funcs matches 12 run setblock ~0 ~3 ~2 brown_wall_banner[facing=east]{Patterns:[{Pattern:"glb",Color:9}]} destroy
 
@@ -672,7 +672,7 @@ execute if score banner_color funcs matches 13 run setblock ~0 ~3 ~8 green_wall_
 execute if score banner_color funcs matches 13 run setblock ~0 ~5 ~6 green_wall_banner[facing=east]{Patterns:[{Pattern:"cre",Color:9}]} destroy
 execute if score banner_color funcs matches 13 run setblock ~0 ~3 ~6 green_wall_banner[facing=east]{Patterns:[{Pattern:"bri",Color:9}]} destroy
 execute if score banner_color funcs matches 13 run setblock ~0 ~5 ~4 green_wall_banner[facing=east]{Patterns:[{Pattern:"sku",Color:9}]} destroy
-execute if score banner_color funcs matches 13 run setblock ~0 ~3 ~4 green_wall_banner[facing=east]{Patterns:[{Pattern:"flo5",Color:9}]} destroy
+execute if score banner_color funcs matches 13 run setblock ~0 ~3 ~4 green_wall_banner[facing=east]{Patterns:[{Pattern:"flo",Color:9}]} destroy
 execute if score banner_color funcs matches 13 run setblock ~0 ~5 ~2 green_wall_banner[facing=east]{Patterns:[{Pattern:"moj",Color:9}]} destroy
 execute if score banner_color funcs matches 13 run setblock ~0 ~3 ~2 green_wall_banner[facing=east]{Patterns:[{Pattern:"glb",Color:9}]} destroy
 
@@ -720,7 +720,7 @@ execute if score banner_color funcs matches 14 run setblock ~0 ~3 ~8 red_wall_ba
 execute if score banner_color funcs matches 14 run setblock ~0 ~5 ~6 red_wall_banner[facing=east]{Patterns:[{Pattern:"cre",Color:9}]} destroy
 execute if score banner_color funcs matches 14 run setblock ~0 ~3 ~6 red_wall_banner[facing=east]{Patterns:[{Pattern:"bri",Color:9}]} destroy
 execute if score banner_color funcs matches 14 run setblock ~0 ~5 ~4 red_wall_banner[facing=east]{Patterns:[{Pattern:"sku",Color:9}]} destroy
-execute if score banner_color funcs matches 14 run setblock ~0 ~3 ~4 red_wall_banner[facing=east]{Patterns:[{Pattern:"flo5",Color:9}]} destroy
+execute if score banner_color funcs matches 14 run setblock ~0 ~3 ~4 red_wall_banner[facing=east]{Patterns:[{Pattern:"flo",Color:9}]} destroy
 execute if score banner_color funcs matches 14 run setblock ~0 ~5 ~2 red_wall_banner[facing=east]{Patterns:[{Pattern:"moj",Color:9}]} destroy
 execute if score banner_color funcs matches 14 run setblock ~0 ~3 ~2 red_wall_banner[facing=east]{Patterns:[{Pattern:"glb",Color:9}]} destroy
 
@@ -768,7 +768,7 @@ execute if score banner_color funcs matches 15 run setblock ~0 ~3 ~8 black_wall_
 execute if score banner_color funcs matches 15 run setblock ~0 ~5 ~6 black_wall_banner[facing=east]{Patterns:[{Pattern:"cre",Color:9}]} destroy
 execute if score banner_color funcs matches 15 run setblock ~0 ~3 ~6 black_wall_banner[facing=east]{Patterns:[{Pattern:"bri",Color:9}]} destroy
 execute if score banner_color funcs matches 15 run setblock ~0 ~5 ~4 black_wall_banner[facing=east]{Patterns:[{Pattern:"sku",Color:9}]} destroy
-execute if score banner_color funcs matches 15 run setblock ~0 ~3 ~4 black_wall_banner[facing=east]{Patterns:[{Pattern:"flo5",Color:9}]} destroy
+execute if score banner_color funcs matches 15 run setblock ~0 ~3 ~4 black_wall_banner[facing=east]{Patterns:[{Pattern:"flo",Color:9}]} destroy
 execute if score banner_color funcs matches 15 run setblock ~0 ~5 ~2 black_wall_banner[facing=east]{Patterns:[{Pattern:"moj",Color:9}]} destroy
 execute if score banner_color funcs matches 15 run setblock ~0 ~3 ~2 black_wall_banner[facing=east]{Patterns:[{Pattern:"glb",Color:9}]} destroy
 
