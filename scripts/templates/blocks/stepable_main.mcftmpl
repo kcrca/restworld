@@ -41,15 +41,16 @@ slabs = tuple(f.replace("Stairs", "Slab") for f in stairs)
 %>
 <%base:loop collection="${blocks}" args="when,i,thing">
 
+<% fill = 'fill ~0 ~3 ~0 ~5 ~6 ~4' %>\
 <% pl, sl, st = Thing(thing), Thing(slabs[i]), Thing(stairs[i]) %>\
-${when(i)} fill ~ ~3 ~ ~4 ~6 ~3 ${pl.full_id()} replace #v3:stepable_planks
-${when(i)} fill ~ ~3 ~ ~4 ~6 ~3 ${sl.full_id()}[type=double] replace #v3:stepable_slabs[type=double]
+${when(i)} ${fill} ${pl.full_id()} replace #v3:stepable_planks
+${when(i)} ${fill} ${sl.full_id()}[type=double] replace #v3:stepable_slabs[type=double]
 %for t in ("top", "bottom"):
-${when(i)} fill ~ ~3 ~ ~4 ~6 ~3 ${sl.full_id()}[type=${t}] replace #v3:stepable_slabs[type=${t}]
+${when(i)} ${fill} ${sl.full_id()}[type=${t}] replace #v3:stepable_slabs[type=${t}]
 %for f in ("north", "east", "west", "south"):
-${when(i)} fill ~ ~3 ~ ~4 ~6 ~3 ${st.full_id()}[half=${t},facing=${f}] replace #v3:stepable_stairs[half=${t},facing=${f}]
+${when(i)} ${fill} ${st.full_id()}[half=${t},facing=${f}] replace #v3:stepable_stairs[half=${t},facing=${f}]
 %for s in ("inner_left", "inner_right", "outer_left", "outer_right"):
-${when(i)} fill ~ ~3 ~ ~4 ~6 ~3 ${st.full_id()}[half=${t},facing=${f},shape=${s}] replace #v3:stepable_stairs[half=${t},facing=${f},shape=${s}]
+${when(i)} ${fill} ${st.full_id()}[half=${t},facing=${f},shape=${s}] replace #v3:stepable_stairs[half=${t},facing=${f},shape=${s}]
 %endfor
 %endfor
 %endfor

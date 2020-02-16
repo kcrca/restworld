@@ -1,6 +1,7 @@
+scoreboard players remove infested funcs 1
 scoreboard players remove job_sites funcs 1
 scoreboard players remove bell funcs 1
-scoreboard players remove bricks funcs 1
+scoreboard players remove brewing_stand funcs 1
 scoreboard players remove blocks_sign funcs 1
 scoreboard players remove command_blocks funcs 1
 scoreboard players remove job_sites_1 funcs 1
@@ -8,12 +9,16 @@ scoreboard players remove cobble funcs 1
 scoreboard players remove cauldron funcs 1
 scoreboard players remove sponge funcs 1
 scoreboard players remove wood_blocks funcs 1
+scoreboard players remove job_sites_2 funcs 1
 scoreboard players remove skulls funcs 1
 scoreboard players remove end funcs 1
+scoreboard players remove scaffolding funcs 1
+scoreboard players remove anvil funcs 1
+scoreboard players remove grindstone funcs 1
 scoreboard players remove sandstone funcs 1
 scoreboard players remove snow funcs 1
 scoreboard players remove ice funcs 1
-scoreboard players remove job_sites_2 funcs 1
+scoreboard players remove bricks funcs 1
 scoreboard players remove campfire funcs 1
 scoreboard players remove music funcs 1
 scoreboard players remove soil funcs 1
@@ -28,6 +33,7 @@ scoreboard players remove dirt funcs 1
 scoreboard players remove frosted_ice funcs 1
 scoreboard players remove bee_nest funcs 1
 scoreboard players remove composter funcs 1
+scoreboard players remove spawner funcs 1
 scoreboard players remove expand funcs 1
 scoreboard players remove stone funcs 1
 scoreboard players remove colorings funcs 1

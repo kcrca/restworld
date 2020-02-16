@@ -450,10 +450,10 @@ particles = (
     Particles("Fireworks"), Particles("Fishing"), Particles("Flame"), Particles("Happy Villager"), Particles("Heart"),
     Particles("Explosion Emitter", note="Large Explosion"), Particles("Instant Effect"), Particles("Item Slime"),
     Particles("Item Snowball"), Particles("Large Smoke"), Particles("Lava"), Particles("Mycelium"),
-    Particles("Nautilus", note="with Conduit"), Particles("Note"), Particles("Poof", note="Small Explosion"), Particles("Portal"),
-    Particles("Campfire|Smoke"), Particles("Sneeze"), Particles("Smoke"), Particles("Spit"), Particles("Splash"),
-    Particles("Squid Ink"), Particles("Sweep Attack"), Particles("Totem of Undying"), Particles("Underwater"),
-    Particles("Witch"),
+    Particles("Nautilus", note="with Conduit"), Particles("Note"), Particles("Poof", note="Small Explosion"),
+    Particles("Portal"), Particles("Campfire|Smoke"), Particles("Sneeze"), Particles("Smoke"), Particles("Spit"),
+    Particles("Splash"), Particles("Squid Ink"), Particles("Sweep Attack"), Particles("Totem of Undying"),
+    Particles("Underwater"), Particles("Witch"),
 )
 
 

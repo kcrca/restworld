@@ -34,6 +34,5 @@ if 'Cartography' in name:
     attr1 = 'Table'
 %>\
 ${when(i)} data merge block ~0 ~2 ~-1 {Text4:${text(attr2)},Text3:${text(attr1)},Text2:${text(name)}}
-${when(i)} say ${thing}
 </%base:loop>\
 </%def>

@@ -1,12 +1,14 @@
 kill @e[tag=${var}_item]
+say hi
 
-summon minecraft:item_frame ~-6 ~3 ~2 {Facing:3,Tags:[${var}_item_frame,${var}_item],Item:{id:stone,Count:1}}
-summon minecraft:armor_stand ~-9.75 ~2 ~2.5 {Tags:[${var}_armor_stand,${var}_item],Rotation:[-45f,0f]}
-summon minecraft:horse ~-11.5 ~2 ~5 {Tags:[${var}_horse,${var}_item],ArmorItem:{id:leather_horse_armor,Count:1},Rotation:[-135f,0f],Tame:true,NoAI:true,Silent:true}
-summon minecraft:llama ~1.2 ~2 ~4 {Tags:[${var}_llama,${var}_item],Variant:1,Tame:true,NoAI:true,Silent:true,Rotation:[160f,0f],Leashed:true}
+summon minecraft:item_frame ~-4.5 ~4 ~0.5 {Facing:3,Tags:[${var}_item_frame,${var}_item],Item:{id:stone,Count:1}}
+summon minecraft:horse ~-10.2 ~2 ~4.8 {Tags:[${var}_horse,${var}_item],ArmorItem:{id:leather_horse_armor,Count:1},Rotation:[-155f,0f],Tame:true,NoAI:true,Silent:true}
+summon minecraft:armor_stand ~-0.1 ~2 ~3 {Tags:[${var}_armor_stand,${var}_item],Rotation:[45f,0f]}
+summon minecraft:llama ~1.2 ~2 ~5 {Tags:[${var}_llama,${var}_item],Variant:1,Tame:true,NoAI:true,Silent:true,Rotation:[160f,0f],Leashed:true}
 
-setblock ~-3 ~3 ~1 oak_wall_sign[facing=south]{Text2:${text("Terracotta")}}
-setblock ~-5 ~3 ~1 oak_wall_sign[facing=south]{Text2:${text("Shulker Box")}}
-setblock ~-7 ~3 ~1 oak_wall_sign[facing=south]{Text2:${text("Concrete")}}
+setblock ~-1 ~3 ~1 oak_wall_sign[facing=south]{Text2:${text("Terracotta")}} destroy
+setblock ~-3 ~3 ~1 oak_wall_sign[facing=south]{Text2:${text("Shulker Box")}} destroy
+setblock ~-5 ~3 ~1 oak_wall_sign[facing=south]{Text2:${text("Concrete")}} destroy
+setblock ~-7 ~3 ~1 oak_wall_sign[facing=south]{Text2:${text("Glass")}} destroy
 
-setblock ~-5 ~2 ~4 oak_wall_sign[facing=south]
+setblock ~-4 ~2 ~4 oak_wall_sign[facing=south]

@@ -1,7 +1,9 @@
+scoreboard players add anvil funcs 0
 scoreboard players add bee_nest funcs 0
 scoreboard players add beehive funcs 0
 scoreboard players add bell funcs 0
 scoreboard players add blocks_sign funcs 0
+scoreboard players add brewing_stand funcs 0
 scoreboard players add bricks funcs 0
 scoreboard players add cake funcs 0
 scoreboard players add campfire funcs 0
@@ -17,7 +19,9 @@ scoreboard players add expand funcs 0
 scoreboard players add frosted_ice funcs 0
 scoreboard players add glazed_1 funcs 0
 scoreboard players add glazed_2 funcs 0
+scoreboard players add grindstone funcs 0
 scoreboard players add ice funcs 0
+scoreboard players add infested funcs 0
 scoreboard players add job_sites funcs 0
 scoreboard players add job_sites_1 funcs 0
 scoreboard players add job_sites_2 funcs 0
@@ -30,10 +34,12 @@ scoreboard players add pumpkin funcs 0
 scoreboard players add purpur funcs 0
 scoreboard players add quartz funcs 0
 scoreboard players add sandstone funcs 0
+scoreboard players add scaffolding funcs 0
 scoreboard players add skulls funcs 0
 scoreboard players add slabs funcs 0
 scoreboard players add snow funcs 0
 scoreboard players add soil funcs 0
+scoreboard players add spawner funcs 0
 scoreboard players add sponge funcs 0
 scoreboard players add stepable funcs 0
 scoreboard players add stone funcs 0

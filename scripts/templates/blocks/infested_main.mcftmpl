@@ -1,0 +1,7 @@
+<%namespace import="*" file="blocks_base.mcftmpl"/>
+<%
+    types = ('Infested|Chiseled Stone|Bricks', 'Infested|Cobblestone',
+             'Infested|Cracked Stone|Bricks', 'Infested|Mossy Stone|Bricks',
+	     'Infested|Stone', 'Infested|Stone Bricks')
+%>
+${blocks(types)}

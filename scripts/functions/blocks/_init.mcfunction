@@ -1,7 +1,9 @@
+scoreboard players add anvil funcs 0
 scoreboard players add bee_nest funcs 0
 scoreboard players add beehive funcs 0
 scoreboard players add bell funcs 0
 scoreboard players add blocks_sign funcs 0
+scoreboard players add brewing_stand funcs 0
 scoreboard players add bricks funcs 0
 scoreboard players add cake funcs 0
 scoreboard players add campfire funcs 0
@@ -17,7 +19,9 @@ scoreboard players add expand funcs 0
 scoreboard players add frosted_ice funcs 0
 scoreboard players add glazed_1 funcs 0
 scoreboard players add glazed_2 funcs 0
+scoreboard players add grindstone funcs 0
 scoreboard players add ice funcs 0
+scoreboard players add infested funcs 0
 scoreboard players add job_sites funcs 0
 scoreboard players add job_sites_1 funcs 0
 scoreboard players add job_sites_2 funcs 0
@@ -30,10 +34,12 @@ scoreboard players add pumpkin funcs 0
 scoreboard players add purpur funcs 0
 scoreboard players add quartz funcs 0
 scoreboard players add sandstone funcs 0
+scoreboard players add scaffolding funcs 0
 scoreboard players add skulls funcs 0
 scoreboard players add slabs funcs 0
 scoreboard players add snow funcs 0
 scoreboard players add soil funcs 0
+scoreboard players add spawner funcs 0
 scoreboard players add sponge funcs 0
 scoreboard players add stepable funcs 0
 scoreboard players add stone funcs 0
@@ -44,15 +50,25 @@ scoreboard players add wood_blocks funcs 0
 tp @e[tag=blocks] @e[tag=death,limit=1]
 
 
+execute at @e[tag=anvil_home] run function v3:blocks/anvil_init
 execute at @e[tag=bell_home] run function v3:blocks/bell_init
 execute at @e[tag=blocks_sign_home] run function v3:blocks/blocks_sign_init
+execute at @e[tag=brewing_stand_home] run function v3:blocks/brewing_stand_init
 execute at @e[tag=cake_home] run function v3:blocks/cake_init
+execute at @e[tag=campfire_home] run function v3:blocks/campfire_init
+execute at @e[tag=cauldron_home] run function v3:blocks/cauldron_init
 execute at @e[tag=colorings_home] run function v3:blocks/colorings_init
 execute at @e[tag=colorings_turned_home] run function v3:blocks/colorings_turned_init
 execute at @e[tag=command_blocks_home] run function v3:blocks/command_blocks_init
+execute at @e[tag=composter_home] run function v3:blocks/composter_init
+execute at @e[tag=frosted_ice_home] run function v3:blocks/frosted_ice_init
 execute at @e[tag=glazed_1_home] run function v3:blocks/glazed_1_init
 execute at @e[tag=glazed_2_home] run function v3:blocks/glazed_2_init
+execute at @e[tag=grindstone_home] run function v3:blocks/grindstone_init
+execute at @e[tag=job_sites_1_home] run function v3:blocks/job_sites_1_init
+execute at @e[tag=job_sites_2_home] run function v3:blocks/job_sites_2_init
 execute at @e[tag=job_sites_home] run function v3:blocks/job_sites_init
 execute at @e[tag=lantern_home] run function v3:blocks/lantern_init
+execute at @e[tag=spawner_home] run function v3:blocks/spawner_init
 execute at @e[tag=stepable_home] run function v3:blocks/stepable_init
 execute at @e[tag=structure_blocks_home] run function v3:blocks/structure_blocks_init
