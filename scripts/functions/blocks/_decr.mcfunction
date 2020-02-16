@@ -29,7 +29,9 @@ scoreboard players remove stepable funcs 1
 scoreboard players remove slabs funcs 1
 scoreboard players remove glazed_1 funcs 1
 scoreboard players remove quartz funcs 1
+scoreboard players remove item_frame funcs 1
 scoreboard players remove dirt funcs 1
+scoreboard players remove lights funcs 1
 scoreboard players remove frosted_ice funcs 1
 scoreboard players remove bee_nest funcs 1
 scoreboard players remove composter funcs 1

@@ -29,7 +29,9 @@ scoreboard players add stepable funcs 1
 scoreboard players add slabs funcs 1
 scoreboard players add glazed_1 funcs 1
 scoreboard players add quartz funcs 1
+scoreboard players add item_frame funcs 1
 scoreboard players add dirt funcs 1
+scoreboard players add lights funcs 1
 scoreboard players add frosted_ice funcs 1
 scoreboard players add bee_nest funcs 1
 scoreboard players add composter funcs 1

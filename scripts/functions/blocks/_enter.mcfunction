@@ -21,10 +21,12 @@ scoreboard players add glazed_2 funcs 0
 scoreboard players add grindstone funcs 0
 scoreboard players add ice funcs 0
 scoreboard players add infested funcs 0
+scoreboard players add item_frame funcs 0
 scoreboard players add job_sites funcs 0
 scoreboard players add job_sites_1 funcs 0
 scoreboard players add job_sites_2 funcs 0
 scoreboard players add lantern funcs 0
+scoreboard players add lights funcs 0
 scoreboard players add music funcs 0
 scoreboard players add nether funcs 0
 scoreboard players add ore_blocks funcs 0

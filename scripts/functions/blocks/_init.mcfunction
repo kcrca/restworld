@@ -21,10 +21,12 @@ scoreboard players add glazed_2 funcs 0
 scoreboard players add grindstone funcs 0
 scoreboard players add ice funcs 0
 scoreboard players add infested funcs 0
+scoreboard players add item_frame funcs 0
 scoreboard players add job_sites funcs 0
 scoreboard players add job_sites_1 funcs 0
 scoreboard players add job_sites_2 funcs 0
 scoreboard players add lantern funcs 0
+scoreboard players add lights funcs 0
 scoreboard players add music funcs 0
 scoreboard players add nether funcs 0
 scoreboard players add ore_blocks funcs 0
@@ -63,6 +65,7 @@ execute at @e[tag=frosted_ice_home] run function v3:blocks/frosted_ice_init
 execute at @e[tag=glazed_1_home] run function v3:blocks/glazed_1_init
 execute at @e[tag=glazed_2_home] run function v3:blocks/glazed_2_init
 execute at @e[tag=grindstone_home] run function v3:blocks/grindstone_init
+execute at @e[tag=item_frame_home] run function v3:blocks/item_frame_init
 execute at @e[tag=job_sites_1_home] run function v3:blocks/job_sites_1_init
 execute at @e[tag=job_sites_2_home] run function v3:blocks/job_sites_2_init
 execute at @e[tag=job_sites_home] run function v3:blocks/job_sites_init
