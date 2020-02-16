@@ -13,7 +13,7 @@ execute if score colorings funcs matches 0 run fill ~1 ~2 ~5 ~-11 ~4 ~-1 minecra
 
 execute if score colorings funcs matches 0 run data merge block ~-7 ~0 ~3 {name:"restworld:white_terra"}
 
-fill ~-8 ~2 ~3 ~-11 ~2 ~2 air
+fill ~-9 ~2 ~3 ~-9 ~2 ~2 air
 
 execute if score colorings funcs matches 0 run setblock ~-9 ~2 ~2 minecraft:white_bed[facing=north,part=head]
 execute if score colorings funcs matches 0 run setblock ~-9 ~2 ~3 minecraft:white_bed[facing=north,part=foot]
@@ -24,6 +24,30 @@ execute if score colorings funcs matches 0 run data merge entity @e[tag=coloring
 execute if score colorings funcs matches 0 run data merge entity @e[tag=colorings_horse,limit=1] {ArmorItem:{id:leather_horse_armor,Count:1,tag:{display:{color:16383998}}}}
 execute if score colorings funcs matches 0 run data merge entity @e[tag=colorings_llama,limit=1] {DecorItem:{id:white_carpet,Count:1},CustomNameVisible:True,CustomName:"\"White\""}
 execute if score colorings funcs matches 0 run data merge block ~-4 ~2 ~4 {Text2:"\"White\""}
+
+
+
+
+
+execute if score colorings funcs matches 0 run data merge block ~-11 ~2 ~2 {Color:white,Text4:"\"White\""}
+
+
+execute if score colorings funcs matches 0 run data merge block ~-10 ~2 ~1 {Color:white,Text4:"\"White\""}
+
+
+execute if score colorings funcs matches 0 run data merge block ~-9 ~2 ~0 {Color:white,Text4:"\"White\""}
+
+
+execute if score colorings funcs matches 0 run data merge block ~-11 ~3 ~2 {Color:white,Text4:"\"White\""}
+
+
+execute if score colorings funcs matches 0 run data merge block ~-10 ~3 ~1 {Color:white,Text4:"\"White\""}
+
+
+execute if score colorings funcs matches 0 run data merge block ~-9 ~3 ~0 {Color:white,Text4:"\"White\""}
+
+
+
 
 
 execute if score colorings funcs matches 1 run fill ~1 ~2 ~5 ~-11 ~4 ~-1 minecraft:orange_stained_glass replace #v3:stained_glass
@@ -50,6 +74,30 @@ execute if score colorings funcs matches 1 run data merge entity @e[tag=coloring
 execute if score colorings funcs matches 1 run data merge block ~-4 ~2 ~4 {Text2:"\"Orange\""}
 
 
+
+
+
+execute if score colorings funcs matches 1 run data merge block ~-11 ~2 ~2 {Color:orange,Text4:"\"Orange\""}
+
+
+execute if score colorings funcs matches 1 run data merge block ~-10 ~2 ~1 {Color:orange,Text4:"\"Orange\""}
+
+
+execute if score colorings funcs matches 1 run data merge block ~-9 ~2 ~0 {Color:orange,Text4:"\"Orange\""}
+
+
+execute if score colorings funcs matches 1 run data merge block ~-11 ~3 ~2 {Color:orange,Text4:"\"Orange\""}
+
+
+execute if score colorings funcs matches 1 run data merge block ~-10 ~3 ~1 {Color:orange,Text4:"\"Orange\""}
+
+
+execute if score colorings funcs matches 1 run data merge block ~-9 ~3 ~0 {Color:orange,Text4:"\"Orange\""}
+
+
+
+
+
 execute if score colorings funcs matches 2 run fill ~1 ~2 ~5 ~-11 ~4 ~-1 minecraft:magenta_stained_glass replace #v3:stained_glass
 execute if score colorings funcs matches 2 run fill ~1 ~2 ~5 ~-11 ~4 ~-1 minecraft:magenta_stained_glass_pane replace #v3:stained_glass_pane
 execute if score colorings funcs matches 2 run fill ~1 ~2 ~5 ~-11 ~4 ~-1 minecraft:magenta_wool replace #v3:wool
@@ -72,6 +120,30 @@ execute if score colorings funcs matches 2 run data merge entity @e[tag=coloring
 execute if score colorings funcs matches 2 run data merge entity @e[tag=colorings_horse,limit=1] {ArmorItem:{id:leather_horse_armor,Count:1,tag:{display:{color:13061821}}}}
 execute if score colorings funcs matches 2 run data merge entity @e[tag=colorings_llama,limit=1] {DecorItem:{id:magenta_carpet,Count:1},CustomNameVisible:True,CustomName:"\"Magenta\""}
 execute if score colorings funcs matches 2 run data merge block ~-4 ~2 ~4 {Text2:"\"Magenta\""}
+
+
+
+
+
+execute if score colorings funcs matches 2 run data merge block ~-11 ~2 ~2 {Color:magenta,Text4:"\"Magenta\""}
+
+
+execute if score colorings funcs matches 2 run data merge block ~-10 ~2 ~1 {Color:magenta,Text4:"\"Magenta\""}
+
+
+execute if score colorings funcs matches 2 run data merge block ~-9 ~2 ~0 {Color:magenta,Text4:"\"Magenta\""}
+
+
+execute if score colorings funcs matches 2 run data merge block ~-11 ~3 ~2 {Color:magenta,Text4:"\"Magenta\""}
+
+
+execute if score colorings funcs matches 2 run data merge block ~-10 ~3 ~1 {Color:magenta,Text4:"\"Magenta\""}
+
+
+execute if score colorings funcs matches 2 run data merge block ~-9 ~3 ~0 {Color:magenta,Text4:"\"Magenta\""}
+
+
+
 
 
 execute if score colorings funcs matches 3 run fill ~1 ~2 ~5 ~-11 ~4 ~-1 minecraft:light_blue_stained_glass replace #v3:stained_glass
@@ -98,6 +170,30 @@ execute if score colorings funcs matches 3 run data merge entity @e[tag=coloring
 execute if score colorings funcs matches 3 run data merge block ~-4 ~2 ~4 {Text2:"\"Light Blue\""}
 
 
+
+
+
+execute if score colorings funcs matches 3 run data merge block ~-11 ~2 ~2 {Color:light_blue,Text4:"\"Light Blue\""}
+
+
+execute if score colorings funcs matches 3 run data merge block ~-10 ~2 ~1 {Color:light_blue,Text4:"\"Light Blue\""}
+
+
+execute if score colorings funcs matches 3 run data merge block ~-9 ~2 ~0 {Color:light_blue,Text4:"\"Light Blue\""}
+
+
+execute if score colorings funcs matches 3 run data merge block ~-11 ~3 ~2 {Color:light_blue,Text4:"\"Light Blue\""}
+
+
+execute if score colorings funcs matches 3 run data merge block ~-10 ~3 ~1 {Color:light_blue,Text4:"\"Light Blue\""}
+
+
+execute if score colorings funcs matches 3 run data merge block ~-9 ~3 ~0 {Color:light_blue,Text4:"\"Light Blue\""}
+
+
+
+
+
 execute if score colorings funcs matches 4 run fill ~1 ~2 ~5 ~-11 ~4 ~-1 minecraft:yellow_stained_glass replace #v3:stained_glass
 execute if score colorings funcs matches 4 run fill ~1 ~2 ~5 ~-11 ~4 ~-1 minecraft:yellow_stained_glass_pane replace #v3:stained_glass_pane
 execute if score colorings funcs matches 4 run fill ~1 ~2 ~5 ~-11 ~4 ~-1 minecraft:yellow_wool replace #v3:wool
@@ -120,6 +216,30 @@ execute if score colorings funcs matches 4 run data merge entity @e[tag=coloring
 execute if score colorings funcs matches 4 run data merge entity @e[tag=colorings_horse,limit=1] {ArmorItem:{id:leather_horse_armor,Count:1,tag:{display:{color:16701501}}}}
 execute if score colorings funcs matches 4 run data merge entity @e[tag=colorings_llama,limit=1] {DecorItem:{id:yellow_carpet,Count:1},CustomNameVisible:True,CustomName:"\"Yellow\""}
 execute if score colorings funcs matches 4 run data merge block ~-4 ~2 ~4 {Text2:"\"Yellow\""}
+
+
+
+
+
+execute if score colorings funcs matches 4 run data merge block ~-11 ~2 ~2 {Color:yellow,Text4:"\"Yellow\""}
+
+
+execute if score colorings funcs matches 4 run data merge block ~-10 ~2 ~1 {Color:yellow,Text4:"\"Yellow\""}
+
+
+execute if score colorings funcs matches 4 run data merge block ~-9 ~2 ~0 {Color:yellow,Text4:"\"Yellow\""}
+
+
+execute if score colorings funcs matches 4 run data merge block ~-11 ~3 ~2 {Color:yellow,Text4:"\"Yellow\""}
+
+
+execute if score colorings funcs matches 4 run data merge block ~-10 ~3 ~1 {Color:yellow,Text4:"\"Yellow\""}
+
+
+execute if score colorings funcs matches 4 run data merge block ~-9 ~3 ~0 {Color:yellow,Text4:"\"Yellow\""}
+
+
+
 
 
 execute if score colorings funcs matches 5 run fill ~1 ~2 ~5 ~-11 ~4 ~-1 minecraft:lime_stained_glass replace #v3:stained_glass
@@ -146,6 +266,30 @@ execute if score colorings funcs matches 5 run data merge entity @e[tag=coloring
 execute if score colorings funcs matches 5 run data merge block ~-4 ~2 ~4 {Text2:"\"Lime\""}
 
 
+
+
+
+execute if score colorings funcs matches 5 run data merge block ~-11 ~2 ~2 {Color:lime,Text4:"\"Lime\""}
+
+
+execute if score colorings funcs matches 5 run data merge block ~-10 ~2 ~1 {Color:lime,Text4:"\"Lime\""}
+
+
+execute if score colorings funcs matches 5 run data merge block ~-9 ~2 ~0 {Color:lime,Text4:"\"Lime\""}
+
+
+execute if score colorings funcs matches 5 run data merge block ~-11 ~3 ~2 {Color:lime,Text4:"\"Lime\""}
+
+
+execute if score colorings funcs matches 5 run data merge block ~-10 ~3 ~1 {Color:lime,Text4:"\"Lime\""}
+
+
+execute if score colorings funcs matches 5 run data merge block ~-9 ~3 ~0 {Color:lime,Text4:"\"Lime\""}
+
+
+
+
+
 execute if score colorings funcs matches 6 run fill ~1 ~2 ~5 ~-11 ~4 ~-1 minecraft:pink_stained_glass replace #v3:stained_glass
 execute if score colorings funcs matches 6 run fill ~1 ~2 ~5 ~-11 ~4 ~-1 minecraft:pink_stained_glass_pane replace #v3:stained_glass_pane
 execute if score colorings funcs matches 6 run fill ~1 ~2 ~5 ~-11 ~4 ~-1 minecraft:pink_wool replace #v3:wool
@@ -168,6 +312,30 @@ execute if score colorings funcs matches 6 run data merge entity @e[tag=coloring
 execute if score colorings funcs matches 6 run data merge entity @e[tag=colorings_horse,limit=1] {ArmorItem:{id:leather_horse_armor,Count:1,tag:{display:{color:15961002}}}}
 execute if score colorings funcs matches 6 run data merge entity @e[tag=colorings_llama,limit=1] {DecorItem:{id:pink_carpet,Count:1},CustomNameVisible:True,CustomName:"\"Pink\""}
 execute if score colorings funcs matches 6 run data merge block ~-4 ~2 ~4 {Text2:"\"Pink\""}
+
+
+
+
+
+execute if score colorings funcs matches 6 run data merge block ~-11 ~2 ~2 {Color:pink,Text4:"\"Pink\""}
+
+
+execute if score colorings funcs matches 6 run data merge block ~-10 ~2 ~1 {Color:pink,Text4:"\"Pink\""}
+
+
+execute if score colorings funcs matches 6 run data merge block ~-9 ~2 ~0 {Color:pink,Text4:"\"Pink\""}
+
+
+execute if score colorings funcs matches 6 run data merge block ~-11 ~3 ~2 {Color:pink,Text4:"\"Pink\""}
+
+
+execute if score colorings funcs matches 6 run data merge block ~-10 ~3 ~1 {Color:pink,Text4:"\"Pink\""}
+
+
+execute if score colorings funcs matches 6 run data merge block ~-9 ~3 ~0 {Color:pink,Text4:"\"Pink\""}
+
+
+
 
 
 execute if score colorings funcs matches 7 run fill ~1 ~2 ~5 ~-11 ~4 ~-1 minecraft:gray_stained_glass replace #v3:stained_glass
@@ -194,6 +362,30 @@ execute if score colorings funcs matches 7 run data merge entity @e[tag=coloring
 execute if score colorings funcs matches 7 run data merge block ~-4 ~2 ~4 {Text2:"\"Gray\""}
 
 
+
+
+
+execute if score colorings funcs matches 7 run data merge block ~-11 ~2 ~2 {Color:gray,Text4:"\"Gray\""}
+
+
+execute if score colorings funcs matches 7 run data merge block ~-10 ~2 ~1 {Color:gray,Text4:"\"Gray\""}
+
+
+execute if score colorings funcs matches 7 run data merge block ~-9 ~2 ~0 {Color:gray,Text4:"\"Gray\""}
+
+
+execute if score colorings funcs matches 7 run data merge block ~-11 ~3 ~2 {Color:gray,Text4:"\"Gray\""}
+
+
+execute if score colorings funcs matches 7 run data merge block ~-10 ~3 ~1 {Color:gray,Text4:"\"Gray\""}
+
+
+execute if score colorings funcs matches 7 run data merge block ~-9 ~3 ~0 {Color:gray,Text4:"\"Gray\""}
+
+
+
+
+
 execute if score colorings funcs matches 8 run fill ~1 ~2 ~5 ~-11 ~4 ~-1 minecraft:light_gray_stained_glass replace #v3:stained_glass
 execute if score colorings funcs matches 8 run fill ~1 ~2 ~5 ~-11 ~4 ~-1 minecraft:light_gray_stained_glass_pane replace #v3:stained_glass_pane
 execute if score colorings funcs matches 8 run fill ~1 ~2 ~5 ~-11 ~4 ~-1 minecraft:light_gray_wool replace #v3:wool
@@ -216,6 +408,30 @@ execute if score colorings funcs matches 8 run data merge entity @e[tag=coloring
 execute if score colorings funcs matches 8 run data merge entity @e[tag=colorings_horse,limit=1] {ArmorItem:{id:leather_horse_armor,Count:1,tag:{display:{color:10329495}}}}
 execute if score colorings funcs matches 8 run data merge entity @e[tag=colorings_llama,limit=1] {DecorItem:{id:light_gray_carpet,Count:1},CustomNameVisible:True,CustomName:"\"Light Gray\""}
 execute if score colorings funcs matches 8 run data merge block ~-4 ~2 ~4 {Text2:"\"Light Gray\""}
+
+
+
+
+
+execute if score colorings funcs matches 8 run data merge block ~-11 ~2 ~2 {Color:light_gray,Text4:"\"Light Gray\""}
+
+
+execute if score colorings funcs matches 8 run data merge block ~-10 ~2 ~1 {Color:light_gray,Text4:"\"Light Gray\""}
+
+
+execute if score colorings funcs matches 8 run data merge block ~-9 ~2 ~0 {Color:light_gray,Text4:"\"Light Gray\""}
+
+
+execute if score colorings funcs matches 8 run data merge block ~-11 ~3 ~2 {Color:light_gray,Text4:"\"Light Gray\""}
+
+
+execute if score colorings funcs matches 8 run data merge block ~-10 ~3 ~1 {Color:light_gray,Text4:"\"Light Gray\""}
+
+
+execute if score colorings funcs matches 8 run data merge block ~-9 ~3 ~0 {Color:light_gray,Text4:"\"Light Gray\""}
+
+
+
 
 
 execute if score colorings funcs matches 9 run fill ~1 ~2 ~5 ~-11 ~4 ~-1 minecraft:cyan_stained_glass replace #v3:stained_glass
@@ -242,6 +458,30 @@ execute if score colorings funcs matches 9 run data merge entity @e[tag=coloring
 execute if score colorings funcs matches 9 run data merge block ~-4 ~2 ~4 {Text2:"\"Cyan\""}
 
 
+
+
+
+execute if score colorings funcs matches 9 run data merge block ~-11 ~2 ~2 {Color:cyan,Text4:"\"Cyan\""}
+
+
+execute if score colorings funcs matches 9 run data merge block ~-10 ~2 ~1 {Color:cyan,Text4:"\"Cyan\""}
+
+
+execute if score colorings funcs matches 9 run data merge block ~-9 ~2 ~0 {Color:cyan,Text4:"\"Cyan\""}
+
+
+execute if score colorings funcs matches 9 run data merge block ~-11 ~3 ~2 {Color:cyan,Text4:"\"Cyan\""}
+
+
+execute if score colorings funcs matches 9 run data merge block ~-10 ~3 ~1 {Color:cyan,Text4:"\"Cyan\""}
+
+
+execute if score colorings funcs matches 9 run data merge block ~-9 ~3 ~0 {Color:cyan,Text4:"\"Cyan\""}
+
+
+
+
+
 execute if score colorings funcs matches 10 run fill ~1 ~2 ~5 ~-11 ~4 ~-1 minecraft:purple_stained_glass replace #v3:stained_glass
 execute if score colorings funcs matches 10 run fill ~1 ~2 ~5 ~-11 ~4 ~-1 minecraft:purple_stained_glass_pane replace #v3:stained_glass_pane
 execute if score colorings funcs matches 10 run fill ~1 ~2 ~5 ~-11 ~4 ~-1 minecraft:purple_wool replace #v3:wool
@@ -264,6 +504,30 @@ execute if score colorings funcs matches 10 run data merge entity @e[tag=colorin
 execute if score colorings funcs matches 10 run data merge entity @e[tag=colorings_horse,limit=1] {ArmorItem:{id:leather_horse_armor,Count:1,tag:{display:{color:8991416}}}}
 execute if score colorings funcs matches 10 run data merge entity @e[tag=colorings_llama,limit=1] {DecorItem:{id:purple_carpet,Count:1},CustomNameVisible:True,CustomName:"\"Purple\""}
 execute if score colorings funcs matches 10 run data merge block ~-4 ~2 ~4 {Text2:"\"Purple\""}
+
+
+
+
+
+execute if score colorings funcs matches 10 run data merge block ~-11 ~2 ~2 {Color:purple,Text4:"\"Purple\""}
+
+
+execute if score colorings funcs matches 10 run data merge block ~-10 ~2 ~1 {Color:purple,Text4:"\"Purple\""}
+
+
+execute if score colorings funcs matches 10 run data merge block ~-9 ~2 ~0 {Color:purple,Text4:"\"Purple\""}
+
+
+execute if score colorings funcs matches 10 run data merge block ~-11 ~3 ~2 {Color:purple,Text4:"\"Purple\""}
+
+
+execute if score colorings funcs matches 10 run data merge block ~-10 ~3 ~1 {Color:purple,Text4:"\"Purple\""}
+
+
+execute if score colorings funcs matches 10 run data merge block ~-9 ~3 ~0 {Color:purple,Text4:"\"Purple\""}
+
+
+
 
 
 execute if score colorings funcs matches 11 run fill ~1 ~2 ~5 ~-11 ~4 ~-1 minecraft:blue_stained_glass replace #v3:stained_glass
@@ -290,6 +554,30 @@ execute if score colorings funcs matches 11 run data merge entity @e[tag=colorin
 execute if score colorings funcs matches 11 run data merge block ~-4 ~2 ~4 {Text2:"\"Blue\""}
 
 
+
+
+
+execute if score colorings funcs matches 11 run data merge block ~-11 ~2 ~2 {Color:blue,Text4:"\"Blue\""}
+
+
+execute if score colorings funcs matches 11 run data merge block ~-10 ~2 ~1 {Color:blue,Text4:"\"Blue\""}
+
+
+execute if score colorings funcs matches 11 run data merge block ~-9 ~2 ~0 {Color:blue,Text4:"\"Blue\""}
+
+
+execute if score colorings funcs matches 11 run data merge block ~-11 ~3 ~2 {Color:blue,Text4:"\"Blue\""}
+
+
+execute if score colorings funcs matches 11 run data merge block ~-10 ~3 ~1 {Color:blue,Text4:"\"Blue\""}
+
+
+execute if score colorings funcs matches 11 run data merge block ~-9 ~3 ~0 {Color:blue,Text4:"\"Blue\""}
+
+
+
+
+
 execute if score colorings funcs matches 12 run fill ~1 ~2 ~5 ~-11 ~4 ~-1 minecraft:brown_stained_glass replace #v3:stained_glass
 execute if score colorings funcs matches 12 run fill ~1 ~2 ~5 ~-11 ~4 ~-1 minecraft:brown_stained_glass_pane replace #v3:stained_glass_pane
 execute if score colorings funcs matches 12 run fill ~1 ~2 ~5 ~-11 ~4 ~-1 minecraft:brown_wool replace #v3:wool
@@ -312,6 +600,30 @@ execute if score colorings funcs matches 12 run data merge entity @e[tag=colorin
 execute if score colorings funcs matches 12 run data merge entity @e[tag=colorings_horse,limit=1] {ArmorItem:{id:leather_horse_armor,Count:1,tag:{display:{color:8606770}}}}
 execute if score colorings funcs matches 12 run data merge entity @e[tag=colorings_llama,limit=1] {DecorItem:{id:brown_carpet,Count:1},CustomNameVisible:True,CustomName:"\"Brown\""}
 execute if score colorings funcs matches 12 run data merge block ~-4 ~2 ~4 {Text2:"\"Brown\""}
+
+
+
+
+
+execute if score colorings funcs matches 12 run data merge block ~-11 ~2 ~2 {Color:brown,Text4:"\"Brown\""}
+
+
+execute if score colorings funcs matches 12 run data merge block ~-10 ~2 ~1 {Color:brown,Text4:"\"Brown\""}
+
+
+execute if score colorings funcs matches 12 run data merge block ~-9 ~2 ~0 {Color:brown,Text4:"\"Brown\""}
+
+
+execute if score colorings funcs matches 12 run data merge block ~-11 ~3 ~2 {Color:brown,Text4:"\"Brown\""}
+
+
+execute if score colorings funcs matches 12 run data merge block ~-10 ~3 ~1 {Color:brown,Text4:"\"Brown\""}
+
+
+execute if score colorings funcs matches 12 run data merge block ~-9 ~3 ~0 {Color:brown,Text4:"\"Brown\""}
+
+
+
 
 
 execute if score colorings funcs matches 13 run fill ~1 ~2 ~5 ~-11 ~4 ~-1 minecraft:green_stained_glass replace #v3:stained_glass
@@ -338,6 +650,30 @@ execute if score colorings funcs matches 13 run data merge entity @e[tag=colorin
 execute if score colorings funcs matches 13 run data merge block ~-4 ~2 ~4 {Text2:"\"Green\""}
 
 
+
+
+
+execute if score colorings funcs matches 13 run data merge block ~-11 ~2 ~2 {Color:green,Text4:"\"Green\""}
+
+
+execute if score colorings funcs matches 13 run data merge block ~-10 ~2 ~1 {Color:green,Text4:"\"Green\""}
+
+
+execute if score colorings funcs matches 13 run data merge block ~-9 ~2 ~0 {Color:green,Text4:"\"Green\""}
+
+
+execute if score colorings funcs matches 13 run data merge block ~-11 ~3 ~2 {Color:green,Text4:"\"Green\""}
+
+
+execute if score colorings funcs matches 13 run data merge block ~-10 ~3 ~1 {Color:green,Text4:"\"Green\""}
+
+
+execute if score colorings funcs matches 13 run data merge block ~-9 ~3 ~0 {Color:green,Text4:"\"Green\""}
+
+
+
+
+
 execute if score colorings funcs matches 14 run fill ~1 ~2 ~5 ~-11 ~4 ~-1 minecraft:red_stained_glass replace #v3:stained_glass
 execute if score colorings funcs matches 14 run fill ~1 ~2 ~5 ~-11 ~4 ~-1 minecraft:red_stained_glass_pane replace #v3:stained_glass_pane
 execute if score colorings funcs matches 14 run fill ~1 ~2 ~5 ~-11 ~4 ~-1 minecraft:red_wool replace #v3:wool
@@ -362,6 +698,30 @@ execute if score colorings funcs matches 14 run data merge entity @e[tag=colorin
 execute if score colorings funcs matches 14 run data merge block ~-4 ~2 ~4 {Text2:"\"Red\""}
 
 
+
+
+
+execute if score colorings funcs matches 14 run data merge block ~-11 ~2 ~2 {Color:red,Text4:"\"Red\""}
+
+
+execute if score colorings funcs matches 14 run data merge block ~-10 ~2 ~1 {Color:red,Text4:"\"Red\""}
+
+
+execute if score colorings funcs matches 14 run data merge block ~-9 ~2 ~0 {Color:red,Text4:"\"Red\""}
+
+
+execute if score colorings funcs matches 14 run data merge block ~-11 ~3 ~2 {Color:red,Text4:"\"Red\""}
+
+
+execute if score colorings funcs matches 14 run data merge block ~-10 ~3 ~1 {Color:red,Text4:"\"Red\""}
+
+
+execute if score colorings funcs matches 14 run data merge block ~-9 ~3 ~0 {Color:red,Text4:"\"Red\""}
+
+
+
+
+
 execute if score colorings funcs matches 15 run fill ~1 ~2 ~5 ~-11 ~4 ~-1 minecraft:black_stained_glass replace #v3:stained_glass
 execute if score colorings funcs matches 15 run fill ~1 ~2 ~5 ~-11 ~4 ~-1 minecraft:black_stained_glass_pane replace #v3:stained_glass_pane
 execute if score colorings funcs matches 15 run fill ~1 ~2 ~5 ~-11 ~4 ~-1 minecraft:black_wool replace #v3:wool
@@ -384,5 +744,29 @@ execute if score colorings funcs matches 15 run data merge entity @e[tag=colorin
 execute if score colorings funcs matches 15 run data merge entity @e[tag=colorings_horse,limit=1] {ArmorItem:{id:leather_horse_armor,Count:1,tag:{display:{color:1908001}}}}
 execute if score colorings funcs matches 15 run data merge entity @e[tag=colorings_llama,limit=1] {DecorItem:{id:black_carpet,Count:1},CustomNameVisible:True,CustomName:"\"Black\""}
 execute if score colorings funcs matches 15 run data merge block ~-4 ~2 ~4 {Text2:"\"Black\""}
+
+
+
+
+
+execute if score colorings funcs matches 15 run data merge block ~-11 ~2 ~2 {Color:black,Text4:"\"Black\""}
+
+
+execute if score colorings funcs matches 15 run data merge block ~-10 ~2 ~1 {Color:black,Text4:"\"Black\""}
+
+
+execute if score colorings funcs matches 15 run data merge block ~-9 ~2 ~0 {Color:black,Text4:"\"Black\""}
+
+
+execute if score colorings funcs matches 15 run data merge block ~-11 ~3 ~2 {Color:black,Text4:"\"Black\""}
+
+
+execute if score colorings funcs matches 15 run data merge block ~-10 ~3 ~1 {Color:black,Text4:"\"Black\""}
+
+
+execute if score colorings funcs matches 15 run data merge block ~-9 ~3 ~0 {Color:black,Text4:"\"Black\""}
+
+
+
 setblock ~-7 ~-1 ~3 minecraft:redstone_torch
 setblock ~-7 ~-1 ~3 air

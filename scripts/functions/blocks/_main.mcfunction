@@ -9,7 +9,6 @@ execute at @e[tag=campfire_home] run function v3:blocks/campfire_main
 execute at @e[tag=cauldron_home] run function v3:blocks/cauldron_main
 execute at @e[tag=cobble_home] run function v3:blocks/cobble_main
 execute at @e[tag=colorings_home] run function v3:blocks/colorings_main
-execute at @e[tag=colorings_turned_home] run function v3:blocks/colorings_turned_main
 execute at @e[tag=command_blocks_home] run function v3:blocks/command_blocks_main
 execute at @e[tag=composter_home] run function v3:blocks/composter_main
 execute at @e[tag=dirt_home] run function v3:blocks/dirt_main

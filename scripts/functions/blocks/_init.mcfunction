@@ -10,7 +10,6 @@ scoreboard players add campfire funcs 0
 scoreboard players add cauldron funcs 0
 scoreboard players add cobble funcs 0
 scoreboard players add colorings funcs 0
-scoreboard players add colorings_turned funcs 0
 scoreboard players add command_blocks funcs 0
 scoreboard players add composter funcs 0
 scoreboard players add dirt funcs 0
@@ -58,7 +57,6 @@ execute at @e[tag=cake_home] run function v3:blocks/cake_init
 execute at @e[tag=campfire_home] run function v3:blocks/campfire_init
 execute at @e[tag=cauldron_home] run function v3:blocks/cauldron_init
 execute at @e[tag=colorings_home] run function v3:blocks/colorings_init
-execute at @e[tag=colorings_turned_home] run function v3:blocks/colorings_turned_init
 execute at @e[tag=command_blocks_home] run function v3:blocks/command_blocks_init
 execute at @e[tag=composter_home] run function v3:blocks/composter_init
 execute at @e[tag=frosted_ice_home] run function v3:blocks/frosted_ice_init

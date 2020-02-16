@@ -11,4 +11,21 @@ setblock ~-3 ~3 ~1 oak_wall_sign[facing=south]{Text2:"\"Shulker Box\""} destroy
 setblock ~-5 ~3 ~1 oak_wall_sign[facing=south]{Text2:"\"Concrete\""} destroy
 setblock ~-7 ~3 ~1 oak_wall_sign[facing=south]{Text2:"\"Glass\""} destroy
 
+
+
+
+
+setblock ~-11 ~2 ~2 acacia_sign[rotation=14]{Text2:"\"Acacia\"",Text3:"\"With Text Colored\"",Text4:"\"Black\""} destroy
+
+setblock ~-10 ~2 ~1 birch_sign[rotation=14]{Text2:"\"Birch\"",Text3:"\"With Text Colored\"",Text4:"\"Black\""} destroy
+
+setblock ~-9 ~2 ~0 jungle_sign[rotation=14]{Text2:"\"Jungle\"",Text3:"\"With Text Colored\"",Text4:"\"Black\""} destroy
+
+setblock ~-11 ~3 ~2 oak_sign[rotation=14]{Text2:"\"Oak\"",Text3:"\"With Text Colored\"",Text4:"\"Black\""} destroy
+
+setblock ~-10 ~3 ~1 dark_oak_sign[rotation=14]{Text2:"\"Dark Oak\"",Text3:"\"With Text Colored\"",Text4:"\"Black\""} destroy
+
+setblock ~-9 ~3 ~0 spruce_sign[rotation=14]{Text2:"\"Spruce\"",Text3:"\"With Text Colored\"",Text4:"\"Black\""} destroy
+
+
 setblock ~-4 ~2 ~4 oak_wall_sign[facing=south]

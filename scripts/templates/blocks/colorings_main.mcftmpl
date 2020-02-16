@@ -1,4 +1,6 @@
 <%namespace name="base" file="../base.mcftmpl"/>
+<%namespace import="*" file="blocks_base.mcftmpl"/>
+
 <% fill = 'fill ~1 ~2 ~5 ~-11 ~4 ~-1' %>
 
 <%base:loop collection="${colors}" args="when,i,thing">
@@ -7,10 +9,10 @@
 ${when(i)} ${fill} ${thing.full_id()}_${which}${state} replace #v3:${which}
 %endfor
 
-${when(i)} data merge block ~-7 ~0 ~3 {name:"${'restworld:%s_terra' % thing.in_id()}"}
+${when(i)} data merge block ~-7 ~0 ~3 {name:"${'restworld:%s_terra' % thing.id}"}
 
 %if i == 0:
-fill ~-8 ~2 ~3 ~-11 ~2 ~2 air
+fill ~-9 ~2 ~3 ~-9 ~2 ~2 air
 %endif
 
 ${when(i)} setblock ~-9 ~2 ~2 ${thing.full_id()}_bed[facing=north,part=head]
@@ -22,6 +24,12 @@ ${when(i)} data merge entity @e[tag=colorings_armor_stand,limit=1] {CustomName:"
 ${when(i)} data merge entity @e[tag=colorings_horse,limit=1] {ArmorItem:{id:leather_horse_armor,Count:1,tag:{display:{color:${thing.rgb}}}}}
 ${when(i)} data merge entity @e[tag=colorings_llama,limit=1] {DecorItem:{id:${thing.id}_carpet,Count:1},CustomNameVisible:True,CustomName:"\"${thing.name}\""}
 ${when(i)} data merge block ~-4 ~2 ~4 {Text2:${text(thing.name)}}
+
+<%def name="render_signs(x, y, z, color, wood, when, i, thing)">
+${when(i)} data merge block ~${x} ~${y} ~${z} {Color:${color.id},Text4:${text(color.name)}}
+</%def>
+${colored_signs(thing, render_signs, when, i, thing)}
+
 %if i == len(colors) - 1:
 setblock ~-7 ~-1 ~3 minecraft:redstone_torch
 setblock ~-7 ~-1 ~3 air

@@ -23,7 +23,7 @@ scoreboard players remove campfire funcs 1
 scoreboard players remove music funcs 1
 scoreboard players remove soil funcs 1
 scoreboard players remove purpur funcs 1
-scoreboard players remove colorings_turned funcs 1
+scoreboard players remove colorings funcs 1
 scoreboard players remove glazed_2 funcs 1
 scoreboard players remove stepable funcs 1
 scoreboard players remove slabs funcs 1
@@ -36,7 +36,6 @@ scoreboard players remove composter funcs 1
 scoreboard players remove spawner funcs 1
 scoreboard players remove expand funcs 1
 scoreboard players remove stone funcs 1
-scoreboard players remove colorings funcs 1
 scoreboard players remove stone_bricks funcs 1
 scoreboard players remove structure_blocks funcs 1
 scoreboard players remove prismarine funcs 1
