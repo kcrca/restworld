@@ -31,5 +31,5 @@ setblock ~0 ~3 ~0 air
 setblock ~11 ~3 ~11 air
 <%base:loop collection="${patterns[:half]}" args="when,i,thing">\
 ${custom(when, i, thing, 0.2, 0.2, 14)}\
-${custom(when, i, patterns[i + half], 10.8, 10.8, 6)}\
+${custom(when, i, patterns[i + half], 11.8, 11.8, 6)}\
 </%base:loop>
