@@ -10,6 +10,7 @@ scoreboard players add campfire funcs 0
 scoreboard players add cauldron funcs 0
 scoreboard players add chest funcs 0
 scoreboard players add cobble funcs 0
+scoreboard players add colored_beam funcs 0
 scoreboard players add colorings funcs 0
 scoreboard players add command_blocks funcs 0
 scoreboard players add composter funcs 0

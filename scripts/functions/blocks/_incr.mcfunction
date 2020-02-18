@@ -11,6 +11,7 @@ scoreboard players add sponge funcs 1
 scoreboard players add wood_blocks funcs 1
 scoreboard players add job_sites_2 funcs 1
 scoreboard players add skulls funcs 1
+scoreboard players add nether funcs 1
 scoreboard players add end funcs 1
 scoreboard players add scaffolding funcs 1
 scoreboard players add anvil funcs 1
@@ -43,7 +44,7 @@ scoreboard players add stone_bricks funcs 1
 scoreboard players add structure_blocks funcs 1
 scoreboard players add prismarine funcs 1
 scoreboard players add ore_blocks funcs 1
-scoreboard players add nether funcs 1
+scoreboard players add colored_beam funcs 1
 scoreboard players add beehive funcs 1
 scoreboard players add cake funcs 1
 scoreboard players add pumpkin funcs 1

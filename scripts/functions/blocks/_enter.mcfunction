@@ -10,6 +10,7 @@ scoreboard players add campfire funcs 0
 scoreboard players add cauldron funcs 0
 scoreboard players add chest funcs 0
 scoreboard players add cobble funcs 0
+scoreboard players add colored_beam funcs 0
 scoreboard players add colorings funcs 0
 scoreboard players add command_blocks funcs 0
 scoreboard players add composter funcs 0
@@ -51,3 +52,4 @@ scoreboard players add wood_blocks funcs 0
 
 
 execute at @e[tag=campfire_home] run function v3:blocks/campfire_enter
+execute at @e[tag=colored_beam_home] run function v3:blocks/colored_beam_enter

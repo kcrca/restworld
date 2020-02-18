@@ -11,6 +11,7 @@ scoreboard players remove sponge funcs 1
 scoreboard players remove wood_blocks funcs 1
 scoreboard players remove job_sites_2 funcs 1
 scoreboard players remove skulls funcs 1
+scoreboard players remove nether funcs 1
 scoreboard players remove end funcs 1
 scoreboard players remove scaffolding funcs 1
 scoreboard players remove anvil funcs 1
@@ -43,7 +44,7 @@ scoreboard players remove stone_bricks funcs 1
 scoreboard players remove structure_blocks funcs 1
 scoreboard players remove prismarine funcs 1
 scoreboard players remove ore_blocks funcs 1
-scoreboard players remove nether funcs 1
+scoreboard players remove colored_beam funcs 1
 scoreboard players remove beehive funcs 1
 scoreboard players remove cake funcs 1
 scoreboard players remove pumpkin funcs 1
