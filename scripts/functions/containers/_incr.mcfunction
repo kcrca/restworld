@@ -1,5 +1,4 @@
 scoreboard players add trades funcs 1
-scoreboard players add anvil funcs 1
 scoreboard players add survival funcs 1
 scoreboard players add brewing funcs 1
 scoreboard players add experience funcs 1

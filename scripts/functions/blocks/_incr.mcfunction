@@ -19,6 +19,7 @@ scoreboard players add sandstone funcs 1
 scoreboard players add snow funcs 1
 scoreboard players add ice funcs 1
 scoreboard players add bricks funcs 1
+scoreboard players add chest funcs 1
 scoreboard players add campfire funcs 1
 scoreboard players add music funcs 1
 scoreboard players add soil funcs 1
@@ -31,9 +32,9 @@ scoreboard players add glazed_1 funcs 1
 scoreboard players add quartz funcs 1
 scoreboard players add item_frame funcs 1
 scoreboard players add dirt funcs 1
-scoreboard players add lights funcs 1
 scoreboard players add frosted_ice funcs 1
 scoreboard players add bee_nest funcs 1
+scoreboard players add lighting funcs 1
 scoreboard players add composter funcs 1
 scoreboard players add spawner funcs 1
 scoreboard players add expand funcs 1

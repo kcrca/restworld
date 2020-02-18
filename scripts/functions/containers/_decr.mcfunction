@@ -1,5 +1,4 @@
 scoreboard players remove trades funcs 1
-scoreboard players remove anvil funcs 1
 scoreboard players remove survival funcs 1
 scoreboard players remove brewing funcs 1
 scoreboard players remove experience funcs 1

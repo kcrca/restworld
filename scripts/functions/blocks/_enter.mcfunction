@@ -8,6 +8,7 @@ scoreboard players add bricks funcs 0
 scoreboard players add cake funcs 0
 scoreboard players add campfire funcs 0
 scoreboard players add cauldron funcs 0
+scoreboard players add chest funcs 0
 scoreboard players add cobble funcs 0
 scoreboard players add colorings funcs 0
 scoreboard players add command_blocks funcs 0
@@ -26,7 +27,7 @@ scoreboard players add job_sites funcs 0
 scoreboard players add job_sites_1 funcs 0
 scoreboard players add job_sites_2 funcs 0
 scoreboard players add lantern funcs 0
-scoreboard players add lights funcs 0
+scoreboard players add lighting funcs 0
 scoreboard players add music funcs 0
 scoreboard players add nether funcs 0
 scoreboard players add ore_blocks funcs 0

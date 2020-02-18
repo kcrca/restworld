@@ -8,6 +8,7 @@ scoreboard players add bricks funcs 0
 scoreboard players add cake funcs 0
 scoreboard players add campfire funcs 0
 scoreboard players add cauldron funcs 0
+scoreboard players add chest funcs 0
 scoreboard players add cobble funcs 0
 scoreboard players add colorings funcs 0
 scoreboard players add command_blocks funcs 0
@@ -26,7 +27,7 @@ scoreboard players add job_sites funcs 0
 scoreboard players add job_sites_1 funcs 0
 scoreboard players add job_sites_2 funcs 0
 scoreboard players add lantern funcs 0
-scoreboard players add lights funcs 0
+scoreboard players add lighting funcs 0
 scoreboard players add music funcs 0
 scoreboard players add nether funcs 0
 scoreboard players add ore_blocks funcs 0
@@ -58,6 +59,7 @@ execute at @e[tag=brewing_stand_home] run function v3:blocks/brewing_stand_init
 execute at @e[tag=cake_home] run function v3:blocks/cake_init
 execute at @e[tag=campfire_home] run function v3:blocks/campfire_init
 execute at @e[tag=cauldron_home] run function v3:blocks/cauldron_init
+execute at @e[tag=chest_home] run function v3:blocks/chest_init
 execute at @e[tag=colorings_home] run function v3:blocks/colorings_init
 execute at @e[tag=command_blocks_home] run function v3:blocks/command_blocks_init
 execute at @e[tag=composter_home] run function v3:blocks/composter_init

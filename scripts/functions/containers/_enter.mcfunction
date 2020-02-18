@@ -1,4 +1,3 @@
-scoreboard players add anvil funcs 0
 scoreboard players add beam_colors funcs 0
 scoreboard players add brewing funcs 0
 scoreboard players add experience funcs 0
