@@ -1,7 +1,0 @@
-<%namespace name="base"  file="../base.mcftmpl"/>
-<% mobs = ("Pig", "Zombie", "Skeleton", "Spider", "Cave Spider", "Blaze") %>
-
-<%base:loop collection="${mobs}" args="when,i,thing">
-${when(i)} data merge block ~0 ~3 ~0 {SpawnData:{id:"${Thing(thing).full_id()}"}}
-${when(i)} data merge block ~0 ~2 ~1 {Text2:${text(thing)}}
-</%base:loop>

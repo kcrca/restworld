@@ -273,7 +273,7 @@ patterns = (
     ("tts", "Top Triangle|Sawtooth"),
     ("mc", "Middle Circle"), ("mr", "Middle Rhombus"), ("bo", "Border"), ("cbo", "Curly Border"),
     ("gra", "Gradient"), ("gru", "Gradient|Upside-Down"), ("cre", "Creeper"), ("bri", "Bick"),
-    ("sku", "Skull"), ("flo5", "Flower"), ("moj", "Mojang"), ("glb", "Globe"),
+    ("sku", "Skull"), ("flo", "Flower"), ("moj", "Mojang"), ("glb", "Globe"),
 )
 
 villager_types = ("Desert", "Jungle", "Plains", "Savanna", "Snow", "Swamp", "Taiga")
@@ -282,6 +282,8 @@ for t in villager_types:
     for p in professions:
         villager_data += ['profession:%s,type:%s' % (p, t), ]
     random.shuffle(villager_data)
+
+used_names = {}
 
 
 def text(txt):
@@ -373,6 +375,7 @@ def main():
             var = m.group(2)
             if var == self.name:
                 raise NameError("Cannot name script the same as room name: %s" % var)
+            used_names[var] = self.name
             which = m.group(3)
             func = m.group(1)
             tmpl = Template(filename=tmpl_path, lookup=lookup)
@@ -382,6 +385,9 @@ def main():
             # The effects room is just special
             if room.name == 'effects':
                 return
+
+            if var in used_names and used_names[var] != self.name:
+                raise NameError("Name collision in two rooms: %s in %s, %s" % (var, self.name, used_names[var]))
 
             write_function(self.func_dir, "%s_home" % var, tmpls["home"].render(var=var, room=self.name))
             if which in speeds and not os.path.exists(tmpl_path.replace("_%s." % which, "_cur.")):
@@ -450,10 +456,10 @@ particles = (
     Particles("Fireworks"), Particles("Fishing"), Particles("Flame"), Particles("Happy Villager"), Particles("Heart"),
     Particles("Explosion Emitter", note="Large Explosion"), Particles("Instant Effect"), Particles("Item Slime"),
     Particles("Item Snowball"), Particles("Large Smoke"), Particles("Lava"), Particles("Mycelium"),
-    Particles("Nautilus", note="with Conduit"), Particles("Note"), Particles("Poof", note="Small Explosion"), Particles("Portal"),
-    Particles("Campfire|Smoke"), Particles("Sneeze"), Particles("Smoke"), Particles("Spit"), Particles("Splash"),
-    Particles("Squid Ink"), Particles("Sweep Attack"), Particles("Totem of Undying"), Particles("Underwater"),
-    Particles("Witch"),
+    Particles("Nautilus", note="with Conduit"), Particles("Note"), Particles("Poof", note="Small Explosion"),
+    Particles("Portal"), Particles("Campfire|Smoke"), Particles("Sneeze"), Particles("Smoke"), Particles("Spit"),
+    Particles("Splash"), Particles("Squid Ink"), Particles("Sweep Attack"), Particles("Totem of Undying"),
+    Particles("Underwater"), Particles("Witch"),
 )
 
 

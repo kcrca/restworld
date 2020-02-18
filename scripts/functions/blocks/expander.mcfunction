@@ -1,4 +1,4 @@
-execute if block ~0 ~3 ~0 #minecraft:sand run fill ~-1 ~2 ~-1 ~1 ~2 ~1 barrier replace air
+execute if block ~0 ~3 ~0 #v3:sand run fill ~-1 ~2 ~-1 ~1 ~2 ~1 barrier replace air
 
 execute unless block ~0 ~4 ~0 minecraft:snow run fill ~-1 ~4 ~-1 ~1 ~4 ~1 air
 clone ~0 ~4 ~0 ~0 ~3 ~0 ~-1 ~3 ~0

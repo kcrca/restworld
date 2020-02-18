@@ -1,0 +1,25 @@
+<%namespace name="base" file="../base.mcftmpl"/>\
+
+<%base:bounce collection="${range(0, 5)}" args="when,i,thing">
+<%
+    y = min(thing, 2)
+    z = max(0, thing - 2)
+%>\
+%if i == 0:
+${when(i)} setblock ~0 ~4 ~0 scaffolding
+%elif i == 1:
+${when(i)} setblock ~0 ~5 ~0 scaffolding
+%elif i == 2:
+${when(i)} setblock ~0 ~5 ~-1 scaffolding[distance=1]
+%elif i == 3:
+${when(i)} setblock ~0 ~5 ~-2 scaffolding[distance=2]
+%elif i == 4:
+${when(i)} setblock ~0 ~5 ~-2 air
+%elif i == 5:
+${when(i)} setblock ~0 ~5 ~-1 air
+%elif i == 6:
+${when(i)} setblock ~0 ~5 ~0 air
+%elif i == 7:
+${when(i)} setblock ~0 ~4 ~0 air
+%endif
+</%base:bounce>

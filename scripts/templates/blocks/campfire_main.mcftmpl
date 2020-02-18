@@ -4,4 +4,4 @@
     types = (Thing("Campfire", block_state="lit=true"), Thing("Campfire|Unlit", id="campfire", block_state="lit=false"))
 %>
 
-${blocks(tuple(types))}
+${blocks(types, sign=1)}

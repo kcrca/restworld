@@ -1,13 +1,21 @@
+<%namespace name="base" file="../base.mcftmpl"/>
+<%namespace import="*" file="blocks_base.mcftmpl"/>
+
 kill @e[tag=${var}_item]
 
-summon minecraft:item_frame ~-6 ~3 ~2 {Facing:3,Tags:[${var}_item_frame,${var}_item],Item:{id:stone,Count:1}}
-summon minecraft:armor_stand ~-9 ~2 ~2 {Tags:[${var}_armor_stand,${var}_item],Rotation:[-45f,0f]}
-summon minecraft:horse ~-11.5 ~2 ~4 {Tags:[${var}_horse,${var}_item],ArmorItem:{id:leather_horse_armor,Count:1},Rotation:[-135f,0f],Tame:true,NoAI:true,Silent:true}
-summon minecraft:llama ~1.2 ~2 ~4 {Tags:[${var}_llama,${var}_item],Variant:1,Tame:true,NoAI:true,Silent:true,Rotation:[160f,0f],Leashed:true}
+summon minecraft:item_frame ~-4.5 ~4 ~0.5 {Facing:3,Tags:[${var}_item_frame,${var}_item],Item:{id:stone,Count:1}}
+summon minecraft:horse ~-10.7 ~2 ~4.8 {Tags:[${var}_horse,${var}_item],ArmorItem:{id:leather_horse_armor,Count:1},Rotation:[-155f,0f],Tame:true,NoAI:true,Silent:true}
+summon minecraft:armor_stand ~-0.1 ~2 ~3 {Tags:[${var}_armor_stand,${var}_item],Rotation:[45f,0f]}
+summon minecraft:llama ~1.2 ~2 ~5 {Tags:[${var}_llama,${var}_item],Variant:1,Tame:true,NoAI:true,Silent:true,Rotation:[160f,0f],Leashed:true}
 
-setblock ~-5 ~3 ~2 oak_wall_sign[facing=south]
-setblock ~-3 ~3 ~2 oak_wall_sign[facing=south]
-setblock ~-5 ~3 ~0 oak_wall_sign[facing=south]
-data merge block ~-5 ~3 ~2 {Text2:${text("Shulker Box")}}
-data merge block ~-3 ~3 ~2 {Text2:${text("Terracotta")}}
-data merge block ~-5 ~3 ~0 {Text2:${text("Banner")}}
+setblock ~-1 ~3 ~1 oak_wall_sign[facing=south]{Text2:${text("Terracotta")}} destroy
+setblock ~-3 ~3 ~1 oak_wall_sign[facing=south]{Text2:${text("Shulker Box")}} destroy
+setblock ~-5 ~3 ~1 oak_wall_sign[facing=south]{Text2:${text("Concrete")}} destroy
+setblock ~-7 ~3 ~1 oak_wall_sign[facing=south]{Text2:${text("Glass")}} destroy
+
+<%def name="render_signs(x, y, z, color, wood, when, i, thing)">
+setblock ~${x} ~${y} ~${z} ${wood.id}_sign[rotation=14]{Text2:${text(wood.name)},Text3:${text("With Text Colored")},Text4:${text(color.name)}} destroy\
+</%def>
+${colored_signs(Thing('Black'), render_signs)}
+
+setblock ~-4 ~2 ~4 oak_wall_sign[facing=south]

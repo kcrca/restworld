@@ -1,0 +1,12 @@
+<%namespace import="*" file="job_sites_base.mcftmpl"/>
+
+<%
+    sites = (
+	'Cauldron',
+    )
+    stages = {
+	'Cauldron': list('level=%d' % t for t in range(0, 4)),
+    }
+%>
+
+${job_sites(sites, stages)}

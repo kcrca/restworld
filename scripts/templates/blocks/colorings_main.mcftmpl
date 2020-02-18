@@ -1,26 +1,37 @@
 <%namespace name="base" file="../base.mcftmpl"/>
+<%namespace import="*" file="blocks_base.mcftmpl"/>
+
+<% fill = 'fill ~1 ~2 ~5 ~-11 ~4 ~-1' %>
 
 <%base:loop collection="${colors}" args="when,i,thing">
-${when(i)} fill ~0 ~2 ~3 ~-1 ~2 ~3 ${thing.full_id()}_stained_glass_pane
-${when(i)} setblock ~0 ~3 ~3 ${thing.full_id()}_stained_glass_pane
-${when(i)} setblock ~-1 ~2 ~2 ${thing.full_id()}_stained_glass
-${when(i)} fill ~-2 ~2 ~1 ~-3 ~2 ~0 ${thing.full_id()}_wool
-${when(i)} setblock ~-4 ~2 ~0 ${thing.full_id()}_banner[rotation=0]
-${when(i)} fill ~-4 ~2 ~1 ~-6 ~2 ~1 ${thing.full_id()}_carpet
-${when(i)} setblock ~-7 ~2 ~1 ${thing.full_id()}_concrete
-${when(i)} fill ~-9 ~2 ~4 ~-10 ~2 ~4 minecraft:air
-${when(i)} setblock ~-9 ~2 ~4 ${thing.full_id()}_bed[facing=west,part=head]
-${when(i)} setblock ~-8 ~2 ~4 ${thing.full_id()}_bed[facing=west,part=foot]
+%for which in ('stained_glass', 'stained_glass_pane', 'wool', 'banner', 'shulker_box', 'carpet', 'concrete', 'concrete_powder', 'terracotta'):
+<% state = '[rotation=2]' if which == 'banner' else '' %>\
+${when(i)} ${fill} ${thing.full_id()}_${which}${state} replace #v3:${which}
+%endfor
+
+${when(i)} data merge block ~-7 ~0 ~3 {name:"${'restworld:%s_terra' % thing.id}"}
+
+%if i == 0:
+fill ~-9 ~2 ~3 ~-9 ~2 ~2 air
+%endif
+
+${when(i)} setblock ~-9 ~2 ~2 ${thing.full_id()}_bed[facing=north,part=head]
+${when(i)} setblock ~-9 ~2 ~3 ${thing.full_id()}_bed[facing=north,part=foot]
 
 ${when(i)} data merge entity @e[tag=colorings_item_frame,limit=1] {Item:{id:${thing.dye_name()}},Count:1,ItemRotation:0}
-
-${when(i)} setblock ~-3 ~4 ~1 ${thing.full_id()}_terracotta
-${when(i)} setblock ~-5 ~4 ~1 ${thing.full_id()}_shulker_box
-${when(i)} setblock ~-7 ~4 ~1 ${thing.full_id()}_concrete_powder
-
-${when(i)} data merge entity @e[tag=colorings_armor_stand,limit=1] {Item:{id:cocoa_beans},Count:1,ItemRotation:0}
 
 ${when(i)} data merge entity @e[tag=colorings_armor_stand,limit=1] {CustomName:"\"${thing.name}\"",CustomNameVisible:True,ArmorItems:[{id:leather_boots,Count:1,tag:{Variant:2,display:{color:${thing.rgb}}}},{id:leather_leggings,Count:1,tag:{Variant:2,display:{color:${thing.rgb}}}},{id:leather_chestplate,Count:1,tag:{Variant:2,display:{color:${thing.rgb}}}},{id:leather_helmet,Count:1,tag:{Variant:2,display:{color:${thing.rgb}}}}]}
 ${when(i)} data merge entity @e[tag=colorings_horse,limit=1] {ArmorItem:{id:leather_horse_armor,Count:1,tag:{display:{color:${thing.rgb}}}}}
 ${when(i)} data merge entity @e[tag=colorings_llama,limit=1] {DecorItem:{id:${thing.id}_carpet,Count:1},CustomNameVisible:True,CustomName:"\"${thing.name}\""}
+${when(i)} data merge block ~-4 ~2 ~4 {Text2:${text(thing.name)}}
+
+<%def name="render_signs(x, y, z, color, wood, when, i, thing)">
+${when(i)} data merge block ~${x} ~${y} ~${z} {Color:${color.id},Text4:${text(color.name)}}
+</%def>
+${colored_signs(thing, render_signs, when, i, thing)}
+
+%if i == len(colors) - 1:
+setblock ~-7 ~-1 ~3 minecraft:redstone_torch
+setblock ~-7 ~-1 ~3 air
+%endif
 </%base:loop>

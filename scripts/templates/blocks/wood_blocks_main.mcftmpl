@@ -3,7 +3,7 @@ ${blocks(
     tuple("%s Planks" % f for f in woods),
     tuple("Stripped|%s Log" % f for f in woods),
     tuple("%s Log" % f for f in woods),
+    tuple("%s Wood" % f for f in woods),
     tuple("%s Leaves" % f for f in woods),
     tuple("Stripped|%s Wood" % f for f in woods),
-    tuple("%s Wood" % f for f in woods),
-    dx=-3, dz=-3, sign=1, size=3)}
+    dx=-3, dz=-3, sign=1, size=2)}
