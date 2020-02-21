@@ -6,4 +6,4 @@
 ##${prefix} setblock ~${x} ~ ~${z} air
 ##</%def>\
 ##
-##${loaders(renderer)}
+##${loaders('dummy', renderer)}

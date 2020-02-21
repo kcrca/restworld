@@ -1,5 +1,33 @@
-<%def name="loaders(renderer)">
+<%namespace file="../sign_base.mcftmpl" import="*"/>
+
+<%def name="load_biome(renderer, biome)">
 %for i in range(0, 4):
-${renderer('execute at @e[tag=biome_base_home] position ~ ~2 ~ run', i, 32 * (i / 2), 32 * (i % 2))}
+${renderer(biome, 'execute at @e[tag=switch_biome_home] run', i, 32 * (i / 2), 32 * (i % 2))}
+%endfor
+</%def>
+
+<%def name="group_signs(group, x)">
+${categories()}
+
+%for biome in biome_groups[group]:
+setblock ~${9 - loop.index} ~2 ~9 birch_wall_sign{\
+${sign_nbt(0, 'scoreboard objectives remove biome', '')},\
+${sign_nbt(1, 'scoreboard objectives add biome dummy', biome)},\
+${sign_nbt(2, 'scoreboard players set %s biome 1' % Thing(biome).id, '')},\
+${sign_nbt(3, 'execute at @e[tag=switch_biome_home] run function v3:biomes/switch_biome', '')}\
+}
+%endfor
+
+setblock ~${9 - x} ~1 ~9 birch_wall_sign{${sign_nbt(1, 'function v3:biomes/category', group, name='category')},Text3:${text("Biomes")}}
+</%def>
+
+<%def name='category_sign(category, x, biomes)'>
+setblock ~${x} ~1 ~9 oak_wall_sign{Text2:${text(category)},${sign_nbt(2, 'function v3:biomes/%s_signs' % category.lower(), "Biomes", name='category')}} replace
+</%def>
+
+<%def name="categories()">
+fill ~9 ~2 ~9 ~0 ~1 ~9 air
+%for group in biome_groups:
+${category_sign(group, 9 - loop.index, biome_groups[group])}
 %endfor
 </%def>

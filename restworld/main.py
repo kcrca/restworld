@@ -1,3 +1,4 @@
+import collections
 import glob
 import os
 import random
@@ -283,6 +284,9 @@ for t in villager_types:
         villager_data += ['profession:%s,type:%s' % (p, t), ]
     random.shuffle(villager_data)
 
+biome_groups = collections.OrderedDict()
+biome_groups['Snowy'] = ('Snowy Tundra', 'Ice Spikes', 'Snowy Tiaga')
+biome_groups['Cold'] = ('Tiaga', 'Stone Shore')
 used_names = {}
 
 
@@ -336,6 +340,7 @@ def render_tmpl(tmpl, var_name, **kwargs):
         commas=commas,
         villager_data=villager_data,
         villager_types=villager_types,
+        biome_groups=biome_groups,
         **kwargs
     )
 

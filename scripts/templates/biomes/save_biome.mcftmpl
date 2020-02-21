@@ -1,0 +1,9 @@
+<%namespace file="biome_base.mcftmpl" import="*"/>
+
+<%def name="save(biome, prefix, i, x, z)">
+${prefix} data merge block ~${x} ~1 ~${z} {mode:SAVE}
+${prefix} setblock ~${x} ~ ~${z} redstone_torch
+${prefix} setblock ~${x} ~ ~${z} air
+${prefix} data merge block ~${x} ~1 ~${z} {mode:LOAD}
+</%def>
+${load_biome(save, 'save')}
