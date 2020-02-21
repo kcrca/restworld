@@ -5,6 +5,7 @@ function v3:diy/_finish
 function v3:plants/_finish
 function v3:enders/_finish
 function v3:center/_finish
+function v3:biomes/_finish
 function v3:redstone/_finish
 function v3:particles/_finish
 function v3:wither/_finish

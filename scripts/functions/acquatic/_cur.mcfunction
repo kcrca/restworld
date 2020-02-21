@@ -1,6 +1,5 @@
 execute at @e[tag=elder_guardian_home] run function v3:acquatic/elder_guardian_cur
 execute at @e[tag=conduit_home] run function v3:acquatic/conduit_cur
-execute at @e[tag=clock_sign_home] run function v3:acquatic/clock_sign_cur
 execute at @e[tag=guardian_home] run function v3:acquatic/guardian_cur
 execute at @e[tag=3_fish_home] run function v3:acquatic/3_fish_cur
 execute at @e[tag=fishies_home] run function v3:acquatic/fishies_cur

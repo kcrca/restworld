@@ -5,6 +5,7 @@ function v3:diy/_cur
 function v3:plants/_cur
 function v3:enders/_cur
 function v3:center/_cur
+function v3:biomes/_cur
 function v3:redstone/_cur
 function v3:particles/_cur
 function v3:wither/_cur

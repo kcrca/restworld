@@ -1,0 +1,11 @@
+<%namespace file="../sign_base.mcftmpl" import="*"/>
+
+fill ~9 ~2 ~9 ~0 ~2 ~9 air
+%for biome in ('Snowy Tundra', 'Ice Spikes', 'Snowy Tiaga'):
+say ${biome}
+setblock ~${9 - loop.index} ~2 ~9 birch_wall_sign{\
+${sign_nbt(1, 'say %s' % biome, biome)},\
+${sign_nbt(2, 'say %s' % biome, '')}\
+}
+%endfor
+setblock ~9 ~1 ~9 birch_wall_sign{${sign_nbt(1, 'function v3:biomes/category', 'Cold')},Text3:${text("Biomes")}}

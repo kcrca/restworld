@@ -5,6 +5,7 @@ function v3:diy/_decr
 function v3:plants/_decr
 function v3:enders/_decr
 function v3:center/_decr
+function v3:biomes/_decr
 function v3:redstone/_decr
 function v3:particles/_decr
 function v3:wither/_decr

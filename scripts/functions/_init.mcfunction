@@ -5,6 +5,7 @@ function v3:diy/_init
 function v3:plants/_init
 function v3:enders/_init
 function v3:center/_init
+function v3:biomes/_init
 function v3:redstone/_init
 function v3:particles/_init
 function v3:wither/_init

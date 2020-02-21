@@ -5,6 +5,7 @@ function v3:diy/_incr
 function v3:plants/_incr
 function v3:enders/_incr
 function v3:center/_incr
+function v3:biomes/_incr
 function v3:redstone/_incr
 function v3:particles/_incr
 function v3:wither/_incr

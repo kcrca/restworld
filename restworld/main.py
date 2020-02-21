@@ -404,10 +404,11 @@ def main():
 
         def generate(self):
             """
-            Generate all the files for a single room (directory). First consume all the files, then generate all the
-            room-wide files.
+            Generate all the files for a single room (directory). First generate any specified templates. Next
+            consume all the files, then generate all the room-wide files.
             :return:
             """
+            self.run_shell_scripts()
             for tmpl_path in sorted(glob.glob(os.path.join(self.room_dir, "*%s" % tmpl_suffix))):
                 self.consume(tmpl_path)
             on_tick = []
@@ -434,6 +435,18 @@ def main():
             rendered = tmpls["home"].render(var="finis", room=self.name)
             write_function(func_dir, "finish_home", rendered)
 
+        def run_shell_scripts(self):
+            """
+            Run any shell scripts in the dir before generating templates. This is used to work around the fact that
+            Minecraft equates one function per file, so to generate multiple functions, I have to generate multiple
+            files. This seemed like a job for shell scripts.
+
+            I thought of doing this using mako to generate mako templates, but the quoting issues....
+            """
+            for script in glob.glob(os.path.join(self.room_dir, "*.py]")):
+                if execfile(script) != 0:
+                    sys.exit(-1)
+
     rooms = []
     for room_dir in glob.glob(os.path.join(tmpl_dir, '*/')):
         room = Room(room_dir)
@@ -443,7 +456,8 @@ def main():
     for f in incr_funcs + ("init",):
         write_function(func_dir, "_%s" % f, "\n".join("function v3:%s/_%s" % (r, f) for r in rooms))
 
-    particle_signs(func_dir + "/particles", Template(filename="%s/particles_sign.mcftmpl" % tmpl_dir, lookup=lookup))
+    particle_signs(func_dir + "/particles",
+                   Template(filename="%s/particles_sign%s" % (tmpl_dir, tmpl_suffix), lookup=lookup))
 
 
 particles = (

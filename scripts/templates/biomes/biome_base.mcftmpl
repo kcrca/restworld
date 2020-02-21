@@ -1,0 +1,5 @@
+<%def name="loaders(renderer)">
+%for i in range(0, 4):
+${renderer('execute at @e[tag=biome_base_home] position ~ ~2 ~ run', i, 32 * (i / 2), 32 * (i % 2))}
+%endfor
+</%def>
