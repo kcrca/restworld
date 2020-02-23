@@ -4,6 +4,5 @@
 ${prefix} data merge block ~${x} ~1 ~${z} {mode:SAVE}
 ${prefix} setblock ~${x} ~ ~${z} redstone_torch
 ${prefix} setblock ~${x} ~ ~${z} air
-${prefix} data merge block ~${x} ~1 ~${z} {mode:LOAD}
 </%def>
 ${load_biome(save, 'save')}

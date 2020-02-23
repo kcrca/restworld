@@ -289,7 +289,9 @@ biome_groups['Snowy'] = ('Snowy Tundra', 'Ice Spikes', 'Snowy Tiaga')
 biome_groups['Cold'] = ('Tiaga', 'Stone Shore')
 biome_groups['Temperate'] = (
     'Plains', 'Forest', 'Flower Forest', 'Birch Forest', 'Dark Forest', 'Swamp', 'Jungle', 'Mushroom Field')
-biome_groups['The End'] = ('The End', 'End Island')
+biome_groups['Warm'] = ('Desert', 'Savanna', 'Badlands')
+biome_groups['Ocean'] = ('Warm Ocean', 'Ocean', 'Frozen Ocean')
+biome_groups['End and Nether'] = ('The End', 'End Island', 'Nether')
 used_names = {}
 
 

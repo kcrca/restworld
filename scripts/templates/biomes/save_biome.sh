@@ -1,5 +1,4 @@
 #!/bin/zsh
-set -x
 if [[ -z "${1}" ]]; then
     echo usage: $0 biome
     exit 0

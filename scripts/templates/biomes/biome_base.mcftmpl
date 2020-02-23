@@ -9,8 +9,9 @@ ${renderer(biome, 'execute at @e[tag=switch_biome_home] run', i, 32 * (i / 2), 3
 <%def name="group_signs(group, x)">
 ${categories()}
 
+<% offset = biome_groups.keys().index(group) %>
 %for biome in biome_groups[group]:
-setblock ~${9 - loop.index} ~2 ~9 birch_wall_sign{\
+setblock ~${9 - loop.index - offset} ~2 ~9 birch_wall_sign{\
 ${sign_nbt(0, 'scoreboard objectives remove biome', '')},\
 ${sign_nbt(1, 'scoreboard objectives add biome dummy', biome)},\
 ${sign_nbt(2, 'scoreboard players set %s biome 1' % Thing(biome).id, '')},\

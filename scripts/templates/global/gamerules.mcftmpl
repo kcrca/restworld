@@ -1,0 +1,12 @@
+gamerule commandBlockOutput false
+gamerule disableRaids true
+gamerule doDaylightCycle false
+gamerule doFireTick false
+gamerule doInsomnia false
+gamerule doMobSpawning false
+gamerule doPatrolSpawning false
+gamerule doTraderSpawning false
+gamerule doWeatherCycle false
+gamerule keepInventory true
+gamerule mobGriefing false
+gamerule randomTickSpeed 0

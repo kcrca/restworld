@@ -1,6 +1,11 @@
 execute positioned ~ ~-4 ~ run kill @e[type=!player,tag=!homer,dx=64,dy=40,dz=64]
+execute positioned ~ ~-4 ~ run kill @e[type=item,dx=64,dy=40,dz=64]
 fill ~-1 81 ~-1 ~66 87 ~66 air
 fill ~-1 88 ~-1 ~66 94 ~66 air
+fill ~-2 ~-4 ~-2 ~-1 ~42 ~68 air replace #v3:liquid
+fill ~-2 ~-4 ~-2 ~68 ~42 ~-1 air replace #v3:liquid
+fill ~-2 ~-4 ~68 ~68 ~42 ~67 air replace #v3:liquid
+fill ~68 ~42 ~67 ~-2 ~-4 ~68 air replace #v3:liquid
 
 
 execute if score snowy_tundra biome matches 1 run say switching to biome Snowy Tundra
@@ -94,6 +99,48 @@ execute at @e[tag=switch_biome_home] run execute if score mushroom_field biome m
 execute at @e[tag=switch_biome_home] run execute if score mushroom_field biome matches 1 run data merge block ~32 ~1 ~0 {name:"mushroom_field_3",mode:LOAD}
 execute at @e[tag=switch_biome_home] run execute if score mushroom_field biome matches 1 run data merge block ~32 ~1 ~32 {name:"mushroom_field_4",mode:LOAD}
 
+execute if score desert biome matches 1 run say switching to biome Desert
+
+execute at @e[tag=switch_biome_home] run execute if score desert biome matches 1 run data merge block ~0 ~1 ~0 {name:"desert_1",mode:LOAD}
+execute at @e[tag=switch_biome_home] run execute if score desert biome matches 1 run data merge block ~0 ~1 ~32 {name:"desert_2",mode:LOAD}
+execute at @e[tag=switch_biome_home] run execute if score desert biome matches 1 run data merge block ~32 ~1 ~0 {name:"desert_3",mode:LOAD}
+execute at @e[tag=switch_biome_home] run execute if score desert biome matches 1 run data merge block ~32 ~1 ~32 {name:"desert_4",mode:LOAD}
+
+execute if score savanna biome matches 1 run say switching to biome Savanna
+
+execute at @e[tag=switch_biome_home] run execute if score savanna biome matches 1 run data merge block ~0 ~1 ~0 {name:"savanna_1",mode:LOAD}
+execute at @e[tag=switch_biome_home] run execute if score savanna biome matches 1 run data merge block ~0 ~1 ~32 {name:"savanna_2",mode:LOAD}
+execute at @e[tag=switch_biome_home] run execute if score savanna biome matches 1 run data merge block ~32 ~1 ~0 {name:"savanna_3",mode:LOAD}
+execute at @e[tag=switch_biome_home] run execute if score savanna biome matches 1 run data merge block ~32 ~1 ~32 {name:"savanna_4",mode:LOAD}
+
+execute if score badlands biome matches 1 run say switching to biome Badlands
+
+execute at @e[tag=switch_biome_home] run execute if score badlands biome matches 1 run data merge block ~0 ~1 ~0 {name:"badlands_1",mode:LOAD}
+execute at @e[tag=switch_biome_home] run execute if score badlands biome matches 1 run data merge block ~0 ~1 ~32 {name:"badlands_2",mode:LOAD}
+execute at @e[tag=switch_biome_home] run execute if score badlands biome matches 1 run data merge block ~32 ~1 ~0 {name:"badlands_3",mode:LOAD}
+execute at @e[tag=switch_biome_home] run execute if score badlands biome matches 1 run data merge block ~32 ~1 ~32 {name:"badlands_4",mode:LOAD}
+
+execute if score warm_ocean biome matches 1 run say switching to biome Warm Ocean
+
+execute at @e[tag=switch_biome_home] run execute if score warm_ocean biome matches 1 run data merge block ~0 ~1 ~0 {name:"warm_ocean_1",mode:LOAD}
+execute at @e[tag=switch_biome_home] run execute if score warm_ocean biome matches 1 run data merge block ~0 ~1 ~32 {name:"warm_ocean_2",mode:LOAD}
+execute at @e[tag=switch_biome_home] run execute if score warm_ocean biome matches 1 run data merge block ~32 ~1 ~0 {name:"warm_ocean_3",mode:LOAD}
+execute at @e[tag=switch_biome_home] run execute if score warm_ocean biome matches 1 run data merge block ~32 ~1 ~32 {name:"warm_ocean_4",mode:LOAD}
+
+execute if score ocean biome matches 1 run say switching to biome Ocean
+
+execute at @e[tag=switch_biome_home] run execute if score ocean biome matches 1 run data merge block ~0 ~1 ~0 {name:"ocean_1",mode:LOAD}
+execute at @e[tag=switch_biome_home] run execute if score ocean biome matches 1 run data merge block ~0 ~1 ~32 {name:"ocean_2",mode:LOAD}
+execute at @e[tag=switch_biome_home] run execute if score ocean biome matches 1 run data merge block ~32 ~1 ~0 {name:"ocean_3",mode:LOAD}
+execute at @e[tag=switch_biome_home] run execute if score ocean biome matches 1 run data merge block ~32 ~1 ~32 {name:"ocean_4",mode:LOAD}
+
+execute if score frozen_ocean biome matches 1 run say switching to biome Frozen Ocean
+
+execute at @e[tag=switch_biome_home] run execute if score frozen_ocean biome matches 1 run data merge block ~0 ~1 ~0 {name:"frozen_ocean_1",mode:LOAD}
+execute at @e[tag=switch_biome_home] run execute if score frozen_ocean biome matches 1 run data merge block ~0 ~1 ~32 {name:"frozen_ocean_2",mode:LOAD}
+execute at @e[tag=switch_biome_home] run execute if score frozen_ocean biome matches 1 run data merge block ~32 ~1 ~0 {name:"frozen_ocean_3",mode:LOAD}
+execute at @e[tag=switch_biome_home] run execute if score frozen_ocean biome matches 1 run data merge block ~32 ~1 ~32 {name:"frozen_ocean_4",mode:LOAD}
+
 execute if score the_end biome matches 1 run say switching to biome The End
 
 execute at @e[tag=switch_biome_home] run execute if score the_end biome matches 1 run data merge block ~0 ~1 ~0 {name:"the_end_1",mode:LOAD}
@@ -107,6 +154,13 @@ execute at @e[tag=switch_biome_home] run execute if score end_island biome match
 execute at @e[tag=switch_biome_home] run execute if score end_island biome matches 1 run data merge block ~0 ~1 ~32 {name:"end_island_2",mode:LOAD}
 execute at @e[tag=switch_biome_home] run execute if score end_island biome matches 1 run data merge block ~32 ~1 ~0 {name:"end_island_3",mode:LOAD}
 execute at @e[tag=switch_biome_home] run execute if score end_island biome matches 1 run data merge block ~32 ~1 ~32 {name:"end_island_4",mode:LOAD}
+
+execute if score nether biome matches 1 run say switching to biome Nether
+
+execute at @e[tag=switch_biome_home] run execute if score nether biome matches 1 run data merge block ~0 ~1 ~0 {name:"nether_1",mode:LOAD}
+execute at @e[tag=switch_biome_home] run execute if score nether biome matches 1 run data merge block ~0 ~1 ~32 {name:"nether_2",mode:LOAD}
+execute at @e[tag=switch_biome_home] run execute if score nether biome matches 1 run data merge block ~32 ~1 ~0 {name:"nether_3",mode:LOAD}
+execute at @e[tag=switch_biome_home] run execute if score nether biome matches 1 run data merge block ~32 ~1 ~32 {name:"nether_4",mode:LOAD}
 
 
 
