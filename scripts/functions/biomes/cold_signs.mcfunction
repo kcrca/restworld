@@ -6,6 +6,12 @@ setblock ~9 ~1 ~9 oak_wall_sign{Text2:"\"Snowy\"",Text3:"{\"text\":\"Biomes\",\"
 setblock ~8 ~1 ~9 oak_wall_sign{Text2:"\"Cold\"",Text3:"{\"text\":\"Biomes\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"execute at @e[tag=category_home] positioned ~ ~2 ~ run function v3:biomes/cold_signs\"}}"} replace
 
 
+setblock ~7 ~1 ~9 oak_wall_sign{Text2:"\"Temperate\"",Text3:"{\"text\":\"Biomes\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"execute at @e[tag=category_home] positioned ~ ~2 ~ run function v3:biomes/temperate_signs\"}}"} replace
+
+
+setblock ~6 ~1 ~9 oak_wall_sign{Text2:"\"The End\"",Text3:"{\"text\":\"Biomes\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"execute at @e[tag=category_home] positioned ~ ~2 ~ run function v3:biomes/the_end_signs\"}}"} replace
+
+
 
 setblock ~9 ~2 ~9 birch_wall_sign{Text1:"{\"text\":\"\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"execute at @e[tag=biomes_home] positioned ~ ~2 ~ run scoreboard objectives remove biome\"}}",Text2:"{\"text\":\"Tiaga\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"execute at @e[tag=biomes_home] positioned ~ ~2 ~ run scoreboard objectives add biome dummy\"}}",Text3:"{\"text\":\"\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"execute at @e[tag=biomes_home] positioned ~ ~2 ~ run scoreboard players set tiaga biome 1\"}}",Text4:"{\"text\":\"\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"execute at @e[tag=biomes_home] positioned ~ ~2 ~ run execute at @e[tag=switch_biome_home] run function v3:biomes/switch_biome\"}}"}
 setblock ~8 ~2 ~9 birch_wall_sign{Text1:"{\"text\":\"\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"execute at @e[tag=biomes_home] positioned ~ ~2 ~ run scoreboard objectives remove biome\"}}",Text2:"{\"text\":\"Stone Shore\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"execute at @e[tag=biomes_home] positioned ~ ~2 ~ run scoreboard objectives add biome dummy\"}}",Text3:"{\"text\":\"\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"execute at @e[tag=biomes_home] positioned ~ ~2 ~ run scoreboard players set stone_shore biome 1\"}}",Text4:"{\"text\":\"\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"execute at @e[tag=biomes_home] positioned ~ ~2 ~ run execute at @e[tag=switch_biome_home] run function v3:biomes/switch_biome\"}}"}

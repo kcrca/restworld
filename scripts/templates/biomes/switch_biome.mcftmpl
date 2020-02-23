@@ -1,7 +1,8 @@
 <%namespace file="biome_base.mcftmpl" import="*"/>
 
 execute positioned ~ ~-4 ~ run kill @e[type=!player,tag=!homer,dx=64,dy=40,dz=64]
-fill ~ ~2 ~ ~64 ~34 ~64 air
+fill ~-1 81 ~-1 ~66 87 ~66 air
+fill ~-1 88 ~-1 ~66 94 ~66 air
 
 <%def name="setup(biome, prefix, i, x, z)">\
 <% thing = Thing(biome) %>\
