@@ -28,7 +28,8 @@ setblock ~${x} ~ ~${z} air\
 
 <%def name='category_sign(category, x)'>
 <% biomes =  biome_groups[category] %>
-setblock ~${x} ~1 ~9 oak_wall_sign{Text2:${text(category)},${sign_nbt(2, 'function v3:biomes/%s_signs' % Thing(category).id, "Biomes", name='category')}} replace
+<% text3 = '' if category == 'Structures' else 'Biomes' %>
+setblock ~${x} ~1 ~9 oak_wall_sign{Text2:${text(category)},${sign_nbt(2, 'function v3:biomes/%s_signs' % Thing(category).id, text3, name='category')}} replace
 </%def>
 
 <%def name="categories()">

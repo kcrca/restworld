@@ -9,4 +9,7 @@ if [[ $#files < 4 ]]; then
     ls $files
     exit 1
 fi
+cd $(dirname $0)
+set -x
 cp $files ~/clarity/home/saves/RestWorld/generated/minecraft/structures/
+cp $files .

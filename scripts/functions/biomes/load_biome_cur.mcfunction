@@ -1,5 +1,5 @@
-scoreboard players set load_biome max 22
-execute unless score load_biome funcs matches 0..21 run scoreboard players operation load_biome funcs %= load_biome max
+scoreboard players set load_biome max 24
+execute unless score load_biome funcs matches 0..23 run scoreboard players operation load_biome funcs %= load_biome max
 execute if score load_biome funcs matches 0 run say Switching to biome Plains
 
 execute if score load_biome funcs matches 0 run data merge block ~0 ~1 ~0 {name:"plains_1",mode:LOAD}
@@ -240,6 +240,28 @@ execute if score load_biome funcs matches 21 run data merge block ~0 ~1 ~32 {nam
 execute if score load_biome funcs matches 21 run data merge block ~32 ~1 ~0 {name:"nether_3",mode:LOAD}
 
 execute if score load_biome funcs matches 21 run data merge block ~32 ~1 ~32 {name:"nether_4",mode:LOAD}
+
+
+execute if score load_biome funcs matches 22 run say Switching to biome Mineshaft
+
+execute if score load_biome funcs matches 22 run data merge block ~0 ~1 ~0 {name:"mineshaft_1",mode:LOAD}
+
+execute if score load_biome funcs matches 22 run data merge block ~0 ~1 ~32 {name:"mineshaft_2",mode:LOAD}
+
+execute if score load_biome funcs matches 22 run data merge block ~32 ~1 ~0 {name:"mineshaft_3",mode:LOAD}
+
+execute if score load_biome funcs matches 22 run data merge block ~32 ~1 ~32 {name:"mineshaft_4",mode:LOAD}
+
+
+execute if score load_biome funcs matches 23 run say Switching to biome Monument
+
+execute if score load_biome funcs matches 23 run data merge block ~0 ~1 ~0 {name:"monument_1",mode:LOAD}
+
+execute if score load_biome funcs matches 23 run data merge block ~0 ~1 ~32 {name:"monument_2",mode:LOAD}
+
+execute if score load_biome funcs matches 23 run data merge block ~32 ~1 ~0 {name:"monument_3",mode:LOAD}
+
+execute if score load_biome funcs matches 23 run data merge block ~32 ~1 ~32 {name:"monument_4",mode:LOAD}
 
 
 
