@@ -1,1 +1,0 @@
-summon minecraft:armor_stand ~-0.5 ~5 ~0 {Invisible:true,Small:true,NoGravity:true,Tags:[ghast,monsters,growing,monsters],PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[180f,0f],Passengers:[{id:"minecraft:ghast",Tags:[ghast,monsters,growing,monsters,passenger],CustomName:"\"Ghast\"",PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[180f,0f]}]}
