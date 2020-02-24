@@ -6,12 +6,12 @@ ${renderer(biome, 'execute at @e[tag=biome_loading_home] run', i, 32 * (i / 2), 
 %endfor
 </%def>
 
-<%def name="group_signs(group, x)">
+<%def name="group_signs(group)">
 ${categories()}
 
-<% offset = biome_groups.keys().index(group) %>
+<% x = biome_groups.keys().index(group) %>
 %for biome in biome_groups[group]:
-setblock ~${9 - loop.index - offset} ~2 ~9 birch_wall_sign{\
+setblock ~${9 - loop.index - x} ~0 ~9 birch_wall_sign{\
 ${sign_nbt(0, 'execute at @e[tag=biome_loading_home] run function v3:biomes/clear_biome', '', raised=False, name='biome_loading')},\
 ${sign_nbt(1, 'scoreboard players set load_biome funcs %d' % biomes.index(biome), biome, raised=False, name='biome_loading')},\
 ${sign_nbt(2, 'execute at @e[tag=biome_loading_home] run function v3:biomes/load_biome_cur', '', raised=False, name='biome_loading')},\
@@ -26,13 +26,14 @@ setblock ~${x} ~ ~${z} redstone_torch
 setblock ~${x} ~ ~${z} air\
 </%def>
 
-<%def name='category_sign(category, x, biomes)'>
+<%def name='category_sign(category, x)'>
+<% biomes =  biome_groups[category] %>
 setblock ~${x} ~1 ~9 oak_wall_sign{Text2:${text(category)},${sign_nbt(2, 'function v3:biomes/%s_signs' % Thing(category).id, "Biomes", name='category')}} replace
 </%def>
 
 <%def name="categories()">
-fill ~9 ~2 ~9 ~0 ~1 ~9 air
+fill ~9 ~0 ~9 ~0 ~1 ~9 air
 %for group in biome_groups:
-${category_sign(group, 9 - loop.index, biome_groups[group])}
+${category_sign(group, 9 - loop.index)}
 %endfor
 </%def>

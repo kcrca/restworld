@@ -1,179 +1,179 @@
 scoreboard players set load_biome max 22
 execute unless score load_biome funcs matches 0..21 run scoreboard players operation load_biome funcs %= load_biome max
-execute if score load_biome funcs matches 0 run say Switching to biome Snowy Tundra
+execute if score load_biome funcs matches 0 run say Switching to biome Plains
 
-execute if score load_biome funcs matches 0 run data merge block ~0 ~1 ~0 {name:"snowy_tundra_1",mode:LOAD}
+execute if score load_biome funcs matches 0 run data merge block ~0 ~1 ~0 {name:"plains_1",mode:LOAD}
 
-execute if score load_biome funcs matches 0 run data merge block ~0 ~1 ~32 {name:"snowy_tundra_2",mode:LOAD}
+execute if score load_biome funcs matches 0 run data merge block ~0 ~1 ~32 {name:"plains_2",mode:LOAD}
 
-execute if score load_biome funcs matches 0 run data merge block ~32 ~1 ~0 {name:"snowy_tundra_3",mode:LOAD}
+execute if score load_biome funcs matches 0 run data merge block ~32 ~1 ~0 {name:"plains_3",mode:LOAD}
 
-execute if score load_biome funcs matches 0 run data merge block ~32 ~1 ~32 {name:"snowy_tundra_4",mode:LOAD}
+execute if score load_biome funcs matches 0 run data merge block ~32 ~1 ~32 {name:"plains_4",mode:LOAD}
 
 
-execute if score load_biome funcs matches 1 run say Switching to biome Ice Spikes
+execute if score load_biome funcs matches 1 run say Switching to biome Forest
 
-execute if score load_biome funcs matches 1 run data merge block ~0 ~1 ~0 {name:"ice_spikes_1",mode:LOAD}
+execute if score load_biome funcs matches 1 run data merge block ~0 ~1 ~0 {name:"forest_1",mode:LOAD}
 
-execute if score load_biome funcs matches 1 run data merge block ~0 ~1 ~32 {name:"ice_spikes_2",mode:LOAD}
+execute if score load_biome funcs matches 1 run data merge block ~0 ~1 ~32 {name:"forest_2",mode:LOAD}
 
-execute if score load_biome funcs matches 1 run data merge block ~32 ~1 ~0 {name:"ice_spikes_3",mode:LOAD}
+execute if score load_biome funcs matches 1 run data merge block ~32 ~1 ~0 {name:"forest_3",mode:LOAD}
 
-execute if score load_biome funcs matches 1 run data merge block ~32 ~1 ~32 {name:"ice_spikes_4",mode:LOAD}
+execute if score load_biome funcs matches 1 run data merge block ~32 ~1 ~32 {name:"forest_4",mode:LOAD}
 
 
-execute if score load_biome funcs matches 2 run say Switching to biome Snowy Tiaga
+execute if score load_biome funcs matches 2 run say Switching to biome Flower Forest
 
-execute if score load_biome funcs matches 2 run data merge block ~0 ~1 ~0 {name:"snowy_tiaga_1",mode:LOAD}
+execute if score load_biome funcs matches 2 run data merge block ~0 ~1 ~0 {name:"flower_forest_1",mode:LOAD}
 
-execute if score load_biome funcs matches 2 run data merge block ~0 ~1 ~32 {name:"snowy_tiaga_2",mode:LOAD}
+execute if score load_biome funcs matches 2 run data merge block ~0 ~1 ~32 {name:"flower_forest_2",mode:LOAD}
 
-execute if score load_biome funcs matches 2 run data merge block ~32 ~1 ~0 {name:"snowy_tiaga_3",mode:LOAD}
+execute if score load_biome funcs matches 2 run data merge block ~32 ~1 ~0 {name:"flower_forest_3",mode:LOAD}
 
-execute if score load_biome funcs matches 2 run data merge block ~32 ~1 ~32 {name:"snowy_tiaga_4",mode:LOAD}
+execute if score load_biome funcs matches 2 run data merge block ~32 ~1 ~32 {name:"flower_forest_4",mode:LOAD}
 
 
-execute if score load_biome funcs matches 3 run say Switching to biome Tiaga
+execute if score load_biome funcs matches 3 run say Switching to biome Birch Forest
 
-execute if score load_biome funcs matches 3 run data merge block ~0 ~1 ~0 {name:"tiaga_1",mode:LOAD}
+execute if score load_biome funcs matches 3 run data merge block ~0 ~1 ~0 {name:"birch_forest_1",mode:LOAD}
 
-execute if score load_biome funcs matches 3 run data merge block ~0 ~1 ~32 {name:"tiaga_2",mode:LOAD}
+execute if score load_biome funcs matches 3 run data merge block ~0 ~1 ~32 {name:"birch_forest_2",mode:LOAD}
 
-execute if score load_biome funcs matches 3 run data merge block ~32 ~1 ~0 {name:"tiaga_3",mode:LOAD}
+execute if score load_biome funcs matches 3 run data merge block ~32 ~1 ~0 {name:"birch_forest_3",mode:LOAD}
 
-execute if score load_biome funcs matches 3 run data merge block ~32 ~1 ~32 {name:"tiaga_4",mode:LOAD}
+execute if score load_biome funcs matches 3 run data merge block ~32 ~1 ~32 {name:"birch_forest_4",mode:LOAD}
 
 
-execute if score load_biome funcs matches 4 run say Switching to biome Stone Shore
+execute if score load_biome funcs matches 4 run say Switching to biome Dark Forest
 
-execute if score load_biome funcs matches 4 run data merge block ~0 ~1 ~0 {name:"stone_shore_1",mode:LOAD}
+execute if score load_biome funcs matches 4 run data merge block ~0 ~1 ~0 {name:"dark_forest_1",mode:LOAD}
 
-execute if score load_biome funcs matches 4 run data merge block ~0 ~1 ~32 {name:"stone_shore_2",mode:LOAD}
+execute if score load_biome funcs matches 4 run data merge block ~0 ~1 ~32 {name:"dark_forest_2",mode:LOAD}
 
-execute if score load_biome funcs matches 4 run data merge block ~32 ~1 ~0 {name:"stone_shore_3",mode:LOAD}
+execute if score load_biome funcs matches 4 run data merge block ~32 ~1 ~0 {name:"dark_forest_3",mode:LOAD}
 
-execute if score load_biome funcs matches 4 run data merge block ~32 ~1 ~32 {name:"stone_shore_4",mode:LOAD}
+execute if score load_biome funcs matches 4 run data merge block ~32 ~1 ~32 {name:"dark_forest_4",mode:LOAD}
 
 
-execute if score load_biome funcs matches 5 run say Switching to biome Plains
+execute if score load_biome funcs matches 5 run say Switching to biome Swamp
 
-execute if score load_biome funcs matches 5 run data merge block ~0 ~1 ~0 {name:"plains_1",mode:LOAD}
+execute if score load_biome funcs matches 5 run data merge block ~0 ~1 ~0 {name:"swamp_1",mode:LOAD}
 
-execute if score load_biome funcs matches 5 run data merge block ~0 ~1 ~32 {name:"plains_2",mode:LOAD}
+execute if score load_biome funcs matches 5 run data merge block ~0 ~1 ~32 {name:"swamp_2",mode:LOAD}
 
-execute if score load_biome funcs matches 5 run data merge block ~32 ~1 ~0 {name:"plains_3",mode:LOAD}
+execute if score load_biome funcs matches 5 run data merge block ~32 ~1 ~0 {name:"swamp_3",mode:LOAD}
 
-execute if score load_biome funcs matches 5 run data merge block ~32 ~1 ~32 {name:"plains_4",mode:LOAD}
+execute if score load_biome funcs matches 5 run data merge block ~32 ~1 ~32 {name:"swamp_4",mode:LOAD}
 
 
-execute if score load_biome funcs matches 6 run say Switching to biome Forest
+execute if score load_biome funcs matches 6 run say Switching to biome Jungle
 
-execute if score load_biome funcs matches 6 run data merge block ~0 ~1 ~0 {name:"forest_1",mode:LOAD}
+execute if score load_biome funcs matches 6 run data merge block ~0 ~1 ~0 {name:"jungle_1",mode:LOAD}
 
-execute if score load_biome funcs matches 6 run data merge block ~0 ~1 ~32 {name:"forest_2",mode:LOAD}
+execute if score load_biome funcs matches 6 run data merge block ~0 ~1 ~32 {name:"jungle_2",mode:LOAD}
 
-execute if score load_biome funcs matches 6 run data merge block ~32 ~1 ~0 {name:"forest_3",mode:LOAD}
+execute if score load_biome funcs matches 6 run data merge block ~32 ~1 ~0 {name:"jungle_3",mode:LOAD}
 
-execute if score load_biome funcs matches 6 run data merge block ~32 ~1 ~32 {name:"forest_4",mode:LOAD}
+execute if score load_biome funcs matches 6 run data merge block ~32 ~1 ~32 {name:"jungle_4",mode:LOAD}
 
 
-execute if score load_biome funcs matches 7 run say Switching to biome Flower Forest
+execute if score load_biome funcs matches 7 run say Switching to biome Mushroom Field
 
-execute if score load_biome funcs matches 7 run data merge block ~0 ~1 ~0 {name:"flower_forest_1",mode:LOAD}
+execute if score load_biome funcs matches 7 run data merge block ~0 ~1 ~0 {name:"mushroom_field_1",mode:LOAD}
 
-execute if score load_biome funcs matches 7 run data merge block ~0 ~1 ~32 {name:"flower_forest_2",mode:LOAD}
+execute if score load_biome funcs matches 7 run data merge block ~0 ~1 ~32 {name:"mushroom_field_2",mode:LOAD}
 
-execute if score load_biome funcs matches 7 run data merge block ~32 ~1 ~0 {name:"flower_forest_3",mode:LOAD}
+execute if score load_biome funcs matches 7 run data merge block ~32 ~1 ~0 {name:"mushroom_field_3",mode:LOAD}
 
-execute if score load_biome funcs matches 7 run data merge block ~32 ~1 ~32 {name:"flower_forest_4",mode:LOAD}
+execute if score load_biome funcs matches 7 run data merge block ~32 ~1 ~32 {name:"mushroom_field_4",mode:LOAD}
 
 
-execute if score load_biome funcs matches 8 run say Switching to biome Birch Forest
+execute if score load_biome funcs matches 8 run say Switching to biome Desert
 
-execute if score load_biome funcs matches 8 run data merge block ~0 ~1 ~0 {name:"birch_forest_1",mode:LOAD}
+execute if score load_biome funcs matches 8 run data merge block ~0 ~1 ~0 {name:"desert_1",mode:LOAD}
 
-execute if score load_biome funcs matches 8 run data merge block ~0 ~1 ~32 {name:"birch_forest_2",mode:LOAD}
+execute if score load_biome funcs matches 8 run data merge block ~0 ~1 ~32 {name:"desert_2",mode:LOAD}
 
-execute if score load_biome funcs matches 8 run data merge block ~32 ~1 ~0 {name:"birch_forest_3",mode:LOAD}
+execute if score load_biome funcs matches 8 run data merge block ~32 ~1 ~0 {name:"desert_3",mode:LOAD}
 
-execute if score load_biome funcs matches 8 run data merge block ~32 ~1 ~32 {name:"birch_forest_4",mode:LOAD}
+execute if score load_biome funcs matches 8 run data merge block ~32 ~1 ~32 {name:"desert_4",mode:LOAD}
 
 
-execute if score load_biome funcs matches 9 run say Switching to biome Dark Forest
+execute if score load_biome funcs matches 9 run say Switching to biome Savanna
 
-execute if score load_biome funcs matches 9 run data merge block ~0 ~1 ~0 {name:"dark_forest_1",mode:LOAD}
+execute if score load_biome funcs matches 9 run data merge block ~0 ~1 ~0 {name:"savanna_1",mode:LOAD}
 
-execute if score load_biome funcs matches 9 run data merge block ~0 ~1 ~32 {name:"dark_forest_2",mode:LOAD}
+execute if score load_biome funcs matches 9 run data merge block ~0 ~1 ~32 {name:"savanna_2",mode:LOAD}
 
-execute if score load_biome funcs matches 9 run data merge block ~32 ~1 ~0 {name:"dark_forest_3",mode:LOAD}
+execute if score load_biome funcs matches 9 run data merge block ~32 ~1 ~0 {name:"savanna_3",mode:LOAD}
 
-execute if score load_biome funcs matches 9 run data merge block ~32 ~1 ~32 {name:"dark_forest_4",mode:LOAD}
+execute if score load_biome funcs matches 9 run data merge block ~32 ~1 ~32 {name:"savanna_4",mode:LOAD}
 
 
-execute if score load_biome funcs matches 10 run say Switching to biome Swamp
+execute if score load_biome funcs matches 10 run say Switching to biome Badlands
 
-execute if score load_biome funcs matches 10 run data merge block ~0 ~1 ~0 {name:"swamp_1",mode:LOAD}
+execute if score load_biome funcs matches 10 run data merge block ~0 ~1 ~0 {name:"badlands_1",mode:LOAD}
 
-execute if score load_biome funcs matches 10 run data merge block ~0 ~1 ~32 {name:"swamp_2",mode:LOAD}
+execute if score load_biome funcs matches 10 run data merge block ~0 ~1 ~32 {name:"badlands_2",mode:LOAD}
 
-execute if score load_biome funcs matches 10 run data merge block ~32 ~1 ~0 {name:"swamp_3",mode:LOAD}
+execute if score load_biome funcs matches 10 run data merge block ~32 ~1 ~0 {name:"badlands_3",mode:LOAD}
 
-execute if score load_biome funcs matches 10 run data merge block ~32 ~1 ~32 {name:"swamp_4",mode:LOAD}
+execute if score load_biome funcs matches 10 run data merge block ~32 ~1 ~32 {name:"badlands_4",mode:LOAD}
 
 
-execute if score load_biome funcs matches 11 run say Switching to biome Jungle
+execute if score load_biome funcs matches 11 run say Switching to biome Tiaga
 
-execute if score load_biome funcs matches 11 run data merge block ~0 ~1 ~0 {name:"jungle_1",mode:LOAD}
+execute if score load_biome funcs matches 11 run data merge block ~0 ~1 ~0 {name:"tiaga_1",mode:LOAD}
 
-execute if score load_biome funcs matches 11 run data merge block ~0 ~1 ~32 {name:"jungle_2",mode:LOAD}
+execute if score load_biome funcs matches 11 run data merge block ~0 ~1 ~32 {name:"tiaga_2",mode:LOAD}
 
-execute if score load_biome funcs matches 11 run data merge block ~32 ~1 ~0 {name:"jungle_3",mode:LOAD}
+execute if score load_biome funcs matches 11 run data merge block ~32 ~1 ~0 {name:"tiaga_3",mode:LOAD}
 
-execute if score load_biome funcs matches 11 run data merge block ~32 ~1 ~32 {name:"jungle_4",mode:LOAD}
+execute if score load_biome funcs matches 11 run data merge block ~32 ~1 ~32 {name:"tiaga_4",mode:LOAD}
 
 
-execute if score load_biome funcs matches 12 run say Switching to biome Mushroom Field
+execute if score load_biome funcs matches 12 run say Switching to biome Stone Shore
 
-execute if score load_biome funcs matches 12 run data merge block ~0 ~1 ~0 {name:"mushroom_field_1",mode:LOAD}
+execute if score load_biome funcs matches 12 run data merge block ~0 ~1 ~0 {name:"stone_shore_1",mode:LOAD}
 
-execute if score load_biome funcs matches 12 run data merge block ~0 ~1 ~32 {name:"mushroom_field_2",mode:LOAD}
+execute if score load_biome funcs matches 12 run data merge block ~0 ~1 ~32 {name:"stone_shore_2",mode:LOAD}
 
-execute if score load_biome funcs matches 12 run data merge block ~32 ~1 ~0 {name:"mushroom_field_3",mode:LOAD}
+execute if score load_biome funcs matches 12 run data merge block ~32 ~1 ~0 {name:"stone_shore_3",mode:LOAD}
 
-execute if score load_biome funcs matches 12 run data merge block ~32 ~1 ~32 {name:"mushroom_field_4",mode:LOAD}
+execute if score load_biome funcs matches 12 run data merge block ~32 ~1 ~32 {name:"stone_shore_4",mode:LOAD}
 
 
-execute if score load_biome funcs matches 13 run say Switching to biome Desert
+execute if score load_biome funcs matches 13 run say Switching to biome Snowy Tundra
 
-execute if score load_biome funcs matches 13 run data merge block ~0 ~1 ~0 {name:"desert_1",mode:LOAD}
+execute if score load_biome funcs matches 13 run data merge block ~0 ~1 ~0 {name:"snowy_tundra_1",mode:LOAD}
 
-execute if score load_biome funcs matches 13 run data merge block ~0 ~1 ~32 {name:"desert_2",mode:LOAD}
+execute if score load_biome funcs matches 13 run data merge block ~0 ~1 ~32 {name:"snowy_tundra_2",mode:LOAD}
 
-execute if score load_biome funcs matches 13 run data merge block ~32 ~1 ~0 {name:"desert_3",mode:LOAD}
+execute if score load_biome funcs matches 13 run data merge block ~32 ~1 ~0 {name:"snowy_tundra_3",mode:LOAD}
 
-execute if score load_biome funcs matches 13 run data merge block ~32 ~1 ~32 {name:"desert_4",mode:LOAD}
+execute if score load_biome funcs matches 13 run data merge block ~32 ~1 ~32 {name:"snowy_tundra_4",mode:LOAD}
 
 
-execute if score load_biome funcs matches 14 run say Switching to biome Savanna
+execute if score load_biome funcs matches 14 run say Switching to biome Ice Spikes
 
-execute if score load_biome funcs matches 14 run data merge block ~0 ~1 ~0 {name:"savanna_1",mode:LOAD}
+execute if score load_biome funcs matches 14 run data merge block ~0 ~1 ~0 {name:"ice_spikes_1",mode:LOAD}
 
-execute if score load_biome funcs matches 14 run data merge block ~0 ~1 ~32 {name:"savanna_2",mode:LOAD}
+execute if score load_biome funcs matches 14 run data merge block ~0 ~1 ~32 {name:"ice_spikes_2",mode:LOAD}
 
-execute if score load_biome funcs matches 14 run data merge block ~32 ~1 ~0 {name:"savanna_3",mode:LOAD}
+execute if score load_biome funcs matches 14 run data merge block ~32 ~1 ~0 {name:"ice_spikes_3",mode:LOAD}
 
-execute if score load_biome funcs matches 14 run data merge block ~32 ~1 ~32 {name:"savanna_4",mode:LOAD}
+execute if score load_biome funcs matches 14 run data merge block ~32 ~1 ~32 {name:"ice_spikes_4",mode:LOAD}
 
 
-execute if score load_biome funcs matches 15 run say Switching to biome Badlands
+execute if score load_biome funcs matches 15 run say Switching to biome Snowy Tiaga
 
-execute if score load_biome funcs matches 15 run data merge block ~0 ~1 ~0 {name:"badlands_1",mode:LOAD}
+execute if score load_biome funcs matches 15 run data merge block ~0 ~1 ~0 {name:"snowy_tiaga_1",mode:LOAD}
 
-execute if score load_biome funcs matches 15 run data merge block ~0 ~1 ~32 {name:"badlands_2",mode:LOAD}
+execute if score load_biome funcs matches 15 run data merge block ~0 ~1 ~32 {name:"snowy_tiaga_2",mode:LOAD}
 
-execute if score load_biome funcs matches 15 run data merge block ~32 ~1 ~0 {name:"badlands_3",mode:LOAD}
+execute if score load_biome funcs matches 15 run data merge block ~32 ~1 ~0 {name:"snowy_tiaga_3",mode:LOAD}
 
-execute if score load_biome funcs matches 15 run data merge block ~32 ~1 ~32 {name:"badlands_4",mode:LOAD}
+execute if score load_biome funcs matches 15 run data merge block ~32 ~1 ~32 {name:"snowy_tiaga_4",mode:LOAD}
 
 
 execute if score load_biome funcs matches 16 run say Switching to biome Warm Ocean
