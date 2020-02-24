@@ -1,1 +1,0 @@
-function v3:friendlies/villager_levels_cur

@@ -1,1 +1,0 @@
-summon minecraft:armor_stand ~0 ~2 ~0 {Invisible:true,Small:true,NoGravity:true,Tags:[magma_cube,monsters,growing,monsters],PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[180f,0f],Passengers:[{id:"minecraft:magma_cube",Tags:[magma_cube,monsters,growing,monsters,passenger],CustomName:"\"Magma Cube\"",PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[180f,0f]}]}
