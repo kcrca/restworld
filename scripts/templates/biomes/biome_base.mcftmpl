@@ -1,8 +1,8 @@
 <%namespace file="../sign_base.mcftmpl" import="*"/>
 
-<%def name="load_biome(renderer, biome)">
+<%def name="load_biome(renderer, biome, handback=None)">
 %for i in range(0, 4):
-${renderer(biome, 'execute at @e[tag=switch_biome_home] run', i, 32 * (i / 2), 32 * (i % 2))}
+${renderer(biome, 'execute at @e[tag=biome_loading_home] run', i, 32 * (i / 2), 32 * (i % 2), handback)}
 %endfor
 </%def>
 
@@ -12,14 +12,18 @@ ${categories()}
 <% offset = biome_groups.keys().index(group) %>
 %for biome in biome_groups[group]:
 setblock ~${9 - loop.index - offset} ~2 ~9 birch_wall_sign{\
-${sign_nbt(0, 'scoreboard objectives remove biome', '')},\
-${sign_nbt(1, 'scoreboard objectives add biome dummy', biome)},\
-${sign_nbt(2, 'scoreboard players set %s biome 1' % Thing(biome).id, '')},\
-${sign_nbt(3, 'execute at @e[tag=switch_biome_home] run function v3:biomes/switch_biome', '')}\
+${sign_nbt(0, 'execute at @e[tag=biome_loading_home] run function v3:biomes/clear_biome', '', raised=False, name='biome_loading')},\
+${sign_nbt(1, 'scoreboard players set load_biome funcs %d' % biomes.index(biome), biome, raised=False, name='biome_loading')},\
+${sign_nbt(2, 'execute at @e[tag=biome_loading_home] run function v3:biomes/load_biome_cur', '', raised=False, name='biome_loading')},\
 }
 %endfor
 
 setblock ~${9 - x} ~1 ~9 birch_wall_sign{${sign_nbt(1, 'function v3:biomes/category', group, name='category')},Text3:${text("Biomes")}}
+</%def>
+
+<%def name="trigger(biome, prefix, i, x, z, handback)">
+setblock ~${x} ~ ~${z} redstone_torch
+setblock ~${x} ~ ~${z} air\
 </%def>
 
 <%def name='category_sign(category, x, biomes)'>

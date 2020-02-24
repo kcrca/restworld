@@ -1,5 +1,9 @@
 <%namespace file="base.mcftmpl" import="*"/>\
 
-<%def name="at_center(name)">at @e[tag=${name}_home] positioned ~ ~2 ~</%def>
-<%def name="sign_nbt(i, action, txt, name=None)">Text${i+1}:"{\"text\":\"${txt}\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"execute ${at_center(name if name else room)} run ${action}\"}}"</%def>
+<%def name="at_center(name, raised)">\
+%if raised:
+at @e[tag=${name}_home] positioned ~ ~2 ~ \
+%endif
+</%def>\
+<%def name="sign_nbt(i, action, txt, raised=True, name=None)">Text${i+1}:"{\"text\":\"${txt}\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"execute ${at_center(name if name else room, raised)}run ${action}\"}}"</%def>
 <%def name="sign_local_nbt(i, action, txt)">Text${i+1}:"{\"text\":\"${txt}\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"${action}\"}}"</%def>

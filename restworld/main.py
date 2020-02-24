@@ -292,6 +292,8 @@ biome_groups['Temperate'] = (
 biome_groups['Warm'] = ('Desert', 'Savanna', 'Badlands')
 biome_groups['Ocean'] = ('Warm Ocean', 'Ocean', 'Frozen Ocean')
 biome_groups['End and Nether'] = ('The End', 'End Island', 'Nether')
+biomes = [item for sublist in biome_groups.values() for item in sublist]
+
 used_names = {}
 
 
@@ -346,6 +348,7 @@ def render_tmpl(tmpl, var_name, **kwargs):
         villager_data=villager_data,
         villager_types=villager_types,
         biome_groups=biome_groups,
+        biomes=biomes,
         **kwargs
     )
 
