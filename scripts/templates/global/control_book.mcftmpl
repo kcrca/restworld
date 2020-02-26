@@ -14,6 +14,7 @@ ${action(r">>", "Faster Clock Speed", "function v3:center/faster_clocks")}, ${sc
 ${scribe(r"\\nLinks:\\n   ")}, \
 ${action(r"Home", "Starting Point", "function v3:global/go_home")}, ${scribe(r"\\n   ")}, \
 ${action(r"Photo Shoot", "Scenic View", "function v3:global/photo_shoot")}, ${scribe(r"\\n   ")}, \
+${action(r"Biomes", "Biome Samples", "function v3:global/see_biomes")}, ${scribe(r"\\n   ")}, \
 ${action(r"Battle Arena", "Mob Playground", "function v3:global/arena")}, \
 ${scribe(r"\\n\\nMinecraft Version:\\n   1.13.2, Jan 2019")} \
 ]","[\"\", \
