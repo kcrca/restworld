@@ -9,4 +9,5 @@ gamerule doTraderSpawning false
 gamerule doWeatherCycle false
 gamerule keepInventory true
 gamerule mobGriefing false
+gamerule spawnRadius 0
 gamerule randomTickSpeed 0

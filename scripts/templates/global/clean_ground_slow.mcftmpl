@@ -1,0 +1,4 @@
+<%namespace name="base" file="../base.mcftmpl"/>\
+
+execute at @e[tag=clean_ground_home] positioned ~ ~1 ~ run ${base.remove('type=!player,dx=-152,dy=3,dz=-170')}
+execute at @e[tag=clean_ground_home] positioned ~ ~1 ~ run ${base.remove('type=item,dx=-152,dy=2,dz=-170')}
