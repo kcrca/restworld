@@ -18,7 +18,7 @@ ${sign_nbt(2, 'execute at @e[tag=biome_loading_home] run function v3:biomes/load
 }
 %endfor
 
-setblock ~${9 - x} ~1 ~9 birch_wall_sign{${sign_nbt(1, 'function v3:biomes/category', group, name='category')},Text3:${text("Biomes")}}
+setblock ~${9 - x} ~1 ~9 birch_wall_sign{${sign_nbt(1, 'execute at @e[tag=category_home] run function v3:biomes/category', group, name='category')},Text3:${text("Biomes")}}
 </%def>
 
 <%def name="trigger(biome, prefix, i, x, z, handback)">
@@ -29,7 +29,7 @@ setblock ~${x} ~ ~${z} air\
 <%def name='category_sign(category, x)'>
 <% biomes =  biome_groups[category] %>
 <% text3 = '' if category == 'Structures' else 'Biomes' %>
-setblock ~${x} ~1 ~9 oak_wall_sign{Text2:${text(category)},${sign_nbt(2, 'function v3:biomes/%s_signs' % Thing(category).id, text3, name='category')}} replace
+setblock ~${x} ~1 ~9 oak_wall_sign{Text2:${text(category)},${sign_nbt(2, 'execute at @e[tag=category_home] run function v3:biomes/%s_signs' % Thing(category).id, text3, name='category')}} replace
 </%def>
 
 <%def name="categories()">
