@@ -1,5 +1,5 @@
 <%namespace file="../sign_base.mcftmpl" import="*"/>
 
 <%def name="arena_sign(y, z, title, script)">
-setblock ~-2 ~${y} ~${z} wall_sign[facing=west]{${sign_nbt(1, "function v3:arena/%s" % script, title, "arena_mid")},Text3:${text("Off" if "toggle" in script else "")}} replace
+setblock ~-2 ~${y} ~${z} oak_wall_sign[facing=west]{${sign_nbt(1, "function v3:arena/%s" % script, title, name="arena_mid")},Text3:${text("Off" if "toggle" in script else "")}} replace
 </%def>
