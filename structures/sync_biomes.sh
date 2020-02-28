@@ -1,7 +1,7 @@
 #!/bin/sh
 src=$(dirname $0)/
 rwd=$HOME/clarity/home/saves/RestWorld/generated/minecraft/structures/
-bio=$HOME/clarity/home/saves/Biomes1.15.2/generated/minecraft/structures/
+bio=$HOME/clarity/home/saves/RestWorld_old/generated/minecraft/structures/
 args="$@"
 test ${#args} = 0
 
