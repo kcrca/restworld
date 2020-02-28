@@ -1,0 +1,4 @@
+<%namespace file="../sign_base.mcftmpl" import="*"/>
+<%namespace file="biome_base.mcftmpl" import="*"/>
+
+${categories()}
