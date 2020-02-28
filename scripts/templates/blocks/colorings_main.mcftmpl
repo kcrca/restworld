@@ -25,6 +25,12 @@ ${when(i)} data merge entity @e[tag=colorings_horse,limit=1] {ArmorItem:{id:leat
 ${when(i)} data merge entity @e[tag=colorings_llama,limit=1] {DecorItem:{id:${thing.id}_carpet,Count:1},CustomNameVisible:True,CustomName:"\"${thing.name}\""}
 ${when(i)} data merge block ~-4 ~2 ~4 {Text2:${text(thing.name)}}
 
+${when(i)} data merge block ~0 ~0 ~-1 {name:"${'restworld:%s_terra' % thing.in_id()}"}
+${when(i)} data merge block ~1 ~2 ~-0 {Text1:${text(thing.name)}}
+
+setblock ~0 ~-1 ~-1 redstone_torch
+setblock ~0 ~-1 ~-1 air
+
 <%def name="render_signs(x, y, z, color, wood, when, i, thing)">
 ${when(i)} data merge block ~${x} ~${y} ~${z} {Color:${color.id},Text4:${text(color.name)}}
 </%def>
