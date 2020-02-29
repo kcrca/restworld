@@ -1,5 +1,5 @@
 <%def name="summoner(pos, tag)">
-summon minecraft:armor_stand ${pos} {Tags:[${tag},customizer],NoGravity:True,Small:True,ArmorItems:[{},{},{},{id:turtle_helmet,Count:1}],Rotation:[180f,0f]}
+summon armor_stand ${pos} {Tags:[${tag},customizer],NoGravity:True,Small:True,ArmorItems:[{},{},{},{id:turtle_helmet,Count:1}],Rotation:[180f,0f]}
 </%def>
 kill @e[tag=customizer]
 <%doc>

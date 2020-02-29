@@ -56,5 +56,5 @@ ${when(i)} data merge entity @e[tag=material_${j},limit=1] {HandItems:[{${hands[
 %for j in range(4, 8):
 ${when(i)} data merge entity @e[tag=material_${j},limit=1] {HandItems:[{},{${hands[j]}}]}
 %endfor
-${when(i)} data merge block ~-2 ~ ~1 {name:"minecraft:material_${material}"}
+${when(i)} data merge block ~-2 ~ ~1 {name:"restworld:material_${material}"}
 </%base:loop>
