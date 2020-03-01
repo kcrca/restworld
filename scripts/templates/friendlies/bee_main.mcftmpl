@@ -2,8 +2,8 @@
 
 <%base:loop collection="${range(0, 4)}" args="when,i,thing">\
 %if i == 0:
-    ${when(0)} execute at @e[tag=bee_home] run setblock ~2 ~3 ~ beehive[facing=west] replace
-    ${when(2)} execute at @e[tag=bee_home] run setblock ~2 ~3 ~ bee_nest[facing=west] replace
+    ${when(0)} execute at @e[tag=bee_home] run setblock ~2 ~2 ~ beehive[facing=west] replace
+    ${when(2)} execute at @e[tag=bee_home] run setblock ~2 ~2 ~ bee_nest[facing=west] replace
 %endif
 ${when(i)} execute as @e[tag=bee] run data merge entity @s {Anger:${(i % 2) * 100000},CustomName:${text("Bee") if i % 2 == 0 else text("Angry Bee")}}
 </%base:loop>\

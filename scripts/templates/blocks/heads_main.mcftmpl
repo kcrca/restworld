@@ -1,0 +1,3 @@
+<%namespace import="*" file="blocks_base.mcftmpl"/>
+<% types = list(b + '[rotation=8]' for b in ('Player Head', 'Zombie Head', 'Creeper Head', 'Skeleton Skull', 'Wither Skeleton Skull')) %>
+${blocks(types, sign=1)}
