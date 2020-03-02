@@ -1,7 +1,7 @@
 #!/bin/sh
 src=$(dirname $0)/
 rwd=$HOME/clarity/home/saves/RestWorld/generated/
-bio=$HOME/clarity/home/saves/RestWorld_old/generated/
+bio=$HOME/clarity/home/saves/RestWorldFull/generated/
 args="$@"
 test ${#args} = 0
 
