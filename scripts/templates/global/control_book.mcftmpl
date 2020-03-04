@@ -16,14 +16,15 @@ ${action(r"Home", "Starting Point", "function v3:global/go_home")}, ${scribe(r"\
 ${action(r"Photo Shoot", "Scenic View", "function v3:global/photo_shoot")}, ${scribe(r"\\n   ")}, \
 ${action(r"Biome Sampler", "Biome Sampler", "function v3:global/see_biomes")}, ${scribe(r"\\n   ")}, \
 ${action(r"Battle Arena", "Mob Playground", "function v3:global/arena")}, ${scribe(r"\\n   ")}, \
-${action(r"Nether Home", "Nether Starting Point", "function v3:global/go_nether_home")}, \
-${scribe(r"\\nMinecraft Version:\\n   1.15.2, Feb 2020")} \
+${action(r"Nether Home", "Nether Starting Point", "function v3:global/go_nether_home")}, ${scribe(r"\\n   ")}, \
+${action(r"End Home", "End Starting Point", "function v3:global/go_end_home")}, ${scribe(r"\\n   ")} \
 ]","[\"\", \
 ${scribe(r"Credits:\\n\\n")}, \
 ${scribe(r"BlueMeanial:\\n", {"bold": True})}, \
 ${scribe(r"  Command Blocks\\n  Software Design\\n  Programming\\n\\n")}, \
 ${scribe(r"JUMBOshrimp277:\\n", {"bold": True})}, \
-${scribe(r"  World Design\\n  Testing\\n  Rubber Duck")} \
+${scribe(r"  World Design\\n  Testing\\n  Rubber Duck\\n")}, \
+${scribe(r"\\nMinecraft Version:\\n   1.15.2, Feb 2020")} \
 ]" \
 ], \
 title:"World Control",author:"Display World",display:{Lore:["Useful controls"]}}
