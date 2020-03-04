@@ -9,6 +9,7 @@ ${when(i)} setblock ~0 ~3 ~0 minecraft:${thing.id}
 ${when(i)} setblock ~0 ~3 ~1 minecraft:${thing.id}_fan
 ${when(i)} setblock ~-1 ~2 ~1 minecraft:${thing.id}_wall_fan[facing=west]
 
+## TODO: Should be waterlogged, but a bug makes that not display new sign text
 ${when(i)} setblock ~0 ~2 ~2 minecraft:oak_wall_sign[facing=west,waterlogged=false]{Text2:${text(thing.name)}}
 
 ${when(i)} fill ~0 ~2 ~3 ~0 ~2 ~4 minecraft:dead_${thing.id}_block

@@ -1,13 +1,13 @@
 <%namespace name="base" file="../base.mcftmpl"/>
 
 <%def name="blocks(collection, *others, **kwargs)">${do_blocks((collection,) + others, **kwargs)}</%def>
-<%def name="do_blocks(collections, sign=-1, dx=0, dz=0, size=0, destroy=False)">
-<%base:loop collection="${collections[0]}" args="when,i,thing">\
+<%def name="do_blocks(collection, sign=-1, dx=0, dz=0, size=0, destroy=False)">
+<%base:loop collection="${collection[0]}" args="when,i,thing">\
 <%
   x = z = 0
   x_size = 0
 %>\
-%for c in collections:
+%for c in collection:
 <%
     if isinstance(c[i], Thing):
 	t = c[i]

@@ -17,7 +17,7 @@ ${when(i)} fill ~4 ~3 ~2 ~0 ~2 ~0 ${thing.full_id() if "Quartz" not in thing.nam
 ${when(i)} data merge block ~2 ~2 ~3 {Text2:${text(thing.name)}}
 %if thing.name == "Nether Quartz":
 ${when(i)} fill ~4 ~3 ~2 ~0 ~2 ~0 netherrack replace stone
-%elif thing.name == "Gold":
+%else:
 ${when(i)} fill ~4 ~3 ~2 ~0 ~2 ~0 stone replace netherrack
 %endif
 </%base:loop>

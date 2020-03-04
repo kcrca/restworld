@@ -281,7 +281,7 @@ villager_types = ("Desert", "Jungle", "Plains", "Savanna", "Snow", "Swamp", "Tai
 villager_data = []
 for t in villager_types:
     for p in professions:
-        villager_data += ['profession:%s,type:%s' % (p, t), ]
+        villager_data += ['profession:%s,type:%s' % (p.lower(), t.lower()), ]
     random.shuffle(villager_data)
 
 biome_groups = collections.OrderedDict()
