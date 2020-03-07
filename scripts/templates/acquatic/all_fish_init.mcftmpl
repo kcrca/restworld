@@ -1,10 +1,13 @@
-<% import re %>
+<%namespace name="base" file="../base.mcftmpl"/>\
 
+setblock ~0 ~2 ~0 oak_wall_sign[facing=west,waterlogged=true]{Text2:${text("All Possible")},Text3:${text("Tropical Fish")},Text4:${text("-------->")}} destroy
+
+${base.mobs_init(z_delta_init=-1, y_init=2, kid_x_init=-1.6, adult_x_init=1.8, rotation_init=90, tags_init=("acquatic",))}
 % for i in range(0, 12):
-summon minecraft:tropical_fish ~${i / 6} ~3.2 ~${int(i % 6)} {Tags:[fish${i},acquatic],NoAI:True,Silent:True,Rotation:[90f,0f]}
-% if i == 0:
-setblock ~${i / 6} ~2 ~${int(i % 6)} oak_wall_sign[facing=west,waterlogged=true]{Text2:${text("All Possible")},Text3:${text("Tropical Fish")},Text4:${text("-------->")}} destroy
-% endif
+% if i == 6:
+${base.mobs_init(z_delta_init=-1, y_init=2, kid_x_init=-1.6, adult_x_init=1.8, rotation_init=90, tags_init=("acquatic",))}
+%endif
+${base.mobs("Tropical Fish", nbt="Invulnerable:True", tags=("fish%d" % i,), do_adult=True)}
 % endfor
 
 scoreboard objectives remove fish
@@ -14,3 +17,4 @@ scoreboard players set body fish 0
 scoreboard players set pattern fish 0
 scoreboard players set BODY_SCALE fish 65536
 scoreboard players set PATTERN_SCALE fish 16777216
+
