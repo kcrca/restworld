@@ -23,6 +23,7 @@ ${when(i)} data merge entity @e[tag=colorings_item_frame,limit=1] {Item:{id:${th
 ${when(i)} data merge entity @e[tag=colorings_armor_stand,limit=1] {ArmorItems:[{id:leather_boots,Count:1,tag:{Variant:2,display:{color:${thing.rgb}}}},{id:leather_leggings,Count:1,tag:{Variant:2,display:{color:${thing.rgb}}}},{id:leather_chestplate,Count:1,tag:{Variant:2,display:{color:${thing.rgb}}}},{id:leather_helmet,Count:1,tag:{Variant:2,display:{color:${thing.rgb}}}}]}
 ${when(i)} data merge entity @e[tag=colorings_horse,limit=1] {ArmorItem:{id:leather_horse_armor,Count:1,tag:{display:{color:${thing.rgb}}}},CustomName:"\"${thing.name}\"",CustomNameVisible:True}
 ${when(i)} data merge entity @e[tag=colorings_llama,limit=1] {DecorItem:{id:${thing.id}_carpet,Count:1},CustomNameVisible:True,CustomName:"\"${thing.name}\""}
+${when(i)} data merge entity @e[tag=colorings_sheep,limit=1] {Color:${i}}
 ${when(i)} data merge block ~-4 ~2 ~4 {Text2:${text(thing.name)}}
 
 ${when(i)} data merge block ~0 ~0 ~-1 {name:"${'restworld:%s_terra' % thing.in_id()}"}
