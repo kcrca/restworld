@@ -5,8 +5,8 @@
 give @p written_book{pages:[ "[\"\", \
 ${scribe(r"Clock State:\\n      ")}, \
 ${action(r"|\\u25c0\\u25c0", "Previous", "function v3:_decr")}, ${scribe("  ")}, \
-${action(r"||", "Play/Pause", "setblock 1 1 1 stone destroy", {"bold": True})}, \
-${action(r"/\\u25b6", "Play/Pause", "setblock 1 1 1 stone destroy")}, ${scribe("  ")}, \
+${action(r"||", "Play/Pause", "function v3:global/clock_toggle", {"bold": True})}, \
+${action(r"/\\u25b6", "Play/Pause", "function v3:global/clock_toggle")}, ${scribe("  ")}, \
 ${action(r"\\u25b6\\u25b6|", "Next", "function v3:_incr")}, ${scribe(r"\\n")}, \
 ${scribe(r"\\nClock Speed:\\n      ")}, \
 ${action(r"<<", "Slower Clock Speed", "function v3:center/slower_clocks")}, ${scribe("   ")}, \
