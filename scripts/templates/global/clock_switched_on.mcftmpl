@@ -1,0 +1,2 @@
+<%namespace file="clock_base.mcftmpl" import="*"/>\
+${clock_lights(True)}

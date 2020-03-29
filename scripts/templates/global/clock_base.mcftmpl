@@ -1,0 +1,9 @@
+<%def name="clock_lights(turn_on)">
+<%
+    lights = ('red_concrete', 'lime_concrete')
+    before = lights[int(turn_on)]
+    after = lights[1- int(turn_on)]
+%>
+execute at @e[tag=min_home] run fill ~ 102 ~ ~156 102 ~156 ${after} replace ${before}
+setblock 102 107 -7 ${after}
+</%def>

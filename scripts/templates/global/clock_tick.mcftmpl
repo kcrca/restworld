@@ -1,0 +1,11 @@
+scoreboard players add clock clocks 1
+execute if score clock clocks matches ..-1 run scoreboard players set clock clocks 0
+
+scoreboard players operation main clocks = clock clocks
+scoreboard players operation slow clocks = clock clocks
+scoreboard players operation fast clocks = clock clocks
+scoreboard players operation main clocks %= SPEED_MAIN clocks
+scoreboard players operation slow clocks %= SPEED_SLOW clocks
+scoreboard players operation fast clocks %= SPEED_FAST clocks
+
+function v3:global/kill_em
