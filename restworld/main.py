@@ -76,7 +76,6 @@ class Horse(Thing):
             self.tag = "%ss" % self.id
         self.variant = variant
 
-
 class Mob(Thing):
     def __init__(self, name, id=None, nbt=None, can_fly=False, acquatic=False):
         Thing.__init__(self, name, id=id)
