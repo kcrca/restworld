@@ -29,6 +29,6 @@ setblock ~${x + bx} ~${y} ~${z + bz} ${color}_wall_banner[facing=${facing}]{Patt
 
 <%def name='switch_banners(which)'>
 kill @e[tag=banners_which]
-execute at @e[tag=all_banners_home] positioned ~ ~-0.5 ~ run function v3:banners/banner_${which}_home
+execute at @e[tag=all_banners_home] positioned ~ ~-0.5 ~ run function restworld:banners/banner_${which}_home
 tag @e[tag=banner_${which}_home] add banners_which
 </%def>

@@ -1,2 +1,2 @@
 setblock ~-2 ~ ~ redstone_block
-function v3:materials/materials_cur
+function restworld:materials/materials_cur

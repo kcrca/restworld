@@ -5,4 +5,4 @@ summon item ~0 ~3 ~ {Item:{id:iron_pickaxe,Count:1},PickupDelay:2147483647,Tags:
 
 ${base.increment(16)}
 execute if score ${var} funcs matches 0 run kill @e[tag=plate_items]
-execute if score ${var} funcs matches 1..15 run function v3:redstone/pressure_plate_add
+execute if score ${var} funcs matches 1..15 run function restworld:redstone/pressure_plate_add

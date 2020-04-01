@@ -1,4 +1,4 @@
 %for v in vars:
 scoreboard players remove ${v} funcs 1
 %endfor
-function v3:${room}/_cur
+function restworld:${room}/_cur

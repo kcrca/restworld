@@ -1,7 +1,7 @@
 <%namespace name="base" file="../base.mcftmpl"/>\
 
 <%def name="init_villagers(num, which)">\
-execute if score which_villagers funcs matches ${num} at @e[tag=cur_villagers_home] run function v3:friendlies/${"%s_init" % which}\
+execute if score which_villagers funcs matches ${num} at @e[tag=cur_villagers_home] run function restworld:friendlies/${"%s_init" % which}\
 </%def>
 <%def name="home_villagers(num, which)">\
 execute if score which_villagers funcs matches ${num} at @e[tag=which_villagers_home,limit=1] run summon armor_stand ~ ~ ~1 {Tags:[${"%s_home" % which},cur_villagers_home],Small:True,NoGravity:True}\

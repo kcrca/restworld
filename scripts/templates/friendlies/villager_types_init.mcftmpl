@@ -10,8 +10,8 @@ ${base.mobs_init(z_init=-2, x_init=-2, z_delta_init=2, adult_z_init=0, rotation_
 ${base.mobs(p, id="villager", do_adult=True, nbt="VillagerData:{type:%s}" % p.lower())}\
 %endfor
 
-function v3:friendlies/villager_types_cur
-function v3:friendlies/villager_levels_cur
+function restworld:friendlies/villager_types_cur
+function restworld:friendlies/villager_levels_cur
 
 setblock ~-5 ~2 ~0 oak_wall_sign[facing=west]
 data modify block ~-5 ~2 ~0 Text3 set value ${text("Villagers")}

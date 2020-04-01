@@ -9,7 +9,7 @@ inv_times = [
 inv_times = list(reversed(inv_times)) + inv_times[1:-1]
 %>
 
-execute at @e[tag=daylight_detector_setup_home] run function v3:redstone/daylight_detector_setup
+execute at @e[tag=daylight_detector_setup_home] run function restworld:redstone/daylight_detector_setup
 fill ~3 ~${height} ~3 ~-3 ~${height} ~-3 minecraft:air
 
 <%base:loop collection="${day_times}" args="when,i,thing">\

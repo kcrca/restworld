@@ -4,19 +4,19 @@
 
 give @p written_book{pages:[ "[\"\", \
 ${scribe(r"Clock State:\\n      ")}, \
-${action(r"|\\u25c0\\u25c0", "Previous", "function v3:_decr")}, ${scribe("  ")}, \
-${action(r"||", "Play/Pause", "function v3:global/clock_toggle", {"bold": True})}, \
-${action(r"/\\u25b6", "Play/Pause", "function v3:global/clock_toggle")}, ${scribe("  ")}, \
-${action(r"\\u25b6\\u25b6|", "Next", "function v3:_incr")}, ${scribe(r"\\n")}, \
+${action(r"|\\u25c0\\u25c0", "Previous", "function restworld:_decr")}, ${scribe("  ")}, \
+${action(r"||", "Play/Pause", "function restworld:global/clock_toggle", {"bold": True})}, \
+${action(r"/\\u25b6", "Play/Pause", "function restworld:global/clock_toggle")}, ${scribe("  ")}, \
+${action(r"\\u25b6\\u25b6|", "Next", "function restworld:_incr")}, ${scribe(r"\\n")}, \
 ${scribe(r"\\nClock Speed:\\n      ")}, \
-${action(r"<<", "Slower Clock Speed", "function v3:center/slower_clocks")}, ${scribe("   ")}, \
-${action(r"\\u27f2", "Reset Clock Speed", "function v3:center/reset_clocks")}, ${scribe("   ")}, \
-${action(r">>", "Faster Clock Speed", "function v3:center/faster_clocks")}, ${scribe(r"\\n")}, \
+${action(r"<<", "Slower Clock Speed", "function restworld:center/slower_clocks")}, ${scribe("   ")}, \
+${action(r"\\u27f2", "Reset Clock Speed", "function restworld:center/reset_clocks")}, ${scribe("   ")}, \
+${action(r">>", "Faster Clock Speed", "function restworld:center/faster_clocks")}, ${scribe(r"\\n")}, \
 ${scribe(r"\\nLinks:\\n   ")}, \
-${action(r"Home", "Starting Point", "function v3:global/go_home")}, ${scribe(r"\\n   ")}, \
-${action(r"Photo Shoot", "Scenic View", "function v3:global/photo_shoot")}, ${scribe(r"\\n   ")}, \
-${action(r"Biomes", "Biome Samples", "function v3:global/see_biomes")}, ${scribe(r"\\n   ")}, \
-${action(r"Battle Arena", "Mob Playground", "function v3:global/arena")}, \
+${action(r"Home", "Starting Point", "function restworld:global/go_home")}, ${scribe(r"\\n   ")}, \
+${action(r"Photo Shoot", "Scenic View", "function restworld:global/photo_shoot")}, ${scribe(r"\\n   ")}, \
+${action(r"Biomes", "Biome Samples", "function restworld:global/see_biomes")}, ${scribe(r"\\n   ")}, \
+${action(r"Battle Arena", "Mob Playground", "function restworld:global/arena")}, \
 ${scribe(r"\\n\\nMinecraft Version:\\n   1.15.2, Feb 2020")} \
 ]","[\"\", \
 ${scribe(r"Biomes:\\n")}, \

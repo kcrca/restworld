@@ -2,5 +2,5 @@
 
 ${base.remove("tag=cat")}
 
-execute at @e[tag=cat_home] run function v3:friendlies/cat_init
-execute at @e[tag=cat_home] run function v3:friendlies/cat_cur
+execute at @e[tag=cat_home] run function restworld:friendlies/cat_init
+execute at @e[tag=cat_home] run function restworld:friendlies/cat_cur

@@ -126,6 +126,6 @@ setblock 0 1 0 redstone_block
 </%def>
 
 <%def name="fencelike(when, i, id, text2, text3='')">\
-${when(i)} fill ~6 ~3 ~4 ~0 ~2 ~0 ${id} replace #v3:fencelike
+${when(i)} fill ~6 ~3 ~4 ~0 ~2 ~0 ${id} replace #restworld:fencelike
 ${when(i)} data merge block ~5 ~2 ~0 {Text2:${text(text2)},Text3:${text(text3)}}
 </%def>

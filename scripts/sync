@@ -3,7 +3,7 @@ set -e
 cd `dirname $0`
 set -e
 world=${1:-RestWorld}
-dst_dir="/Users/kcrca/Library/Application Support/minecraft/saves/$world/datapacks/restworld/data/v3"
+dst_dir="/Users/kcrca/Library/Application Support/minecraft/saves/$world/datapacks/restworld/data/restworld"
 rm -rf functions
 mkdir functions
 /Users/kcrca/restworld/venv/bin/python /Users/kcrca/restworld/restworld/main.py

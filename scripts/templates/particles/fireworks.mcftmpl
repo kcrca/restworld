@@ -1,2 +1,2 @@
 <%namespace file="particle_base.mcftmpl" import="*"/>\
-${main_clock()} function v3:particles/fireworks_change
+${main_clock()} function restworld:particles/fireworks_change

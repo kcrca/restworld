@@ -6,7 +6,7 @@
 <%base:loop collection="${colors}" args="when,i,thing">
 %for which in ('stained_glass', 'stained_glass_pane', 'wool', 'banner', 'shulker_box', 'carpet', 'concrete', 'concrete_powder', 'terracotta'):
 <% state = '[rotation=2]' if which == 'banner' else '' %>\
-${when(i)} ${fill} ${thing.full_id()}_${which}${state} replace #v3:${which}
+${when(i)} ${fill} ${thing.full_id()}_${which}${state} replace #restworld:${which}
 %endfor
 
 ${when(i)} data merge block ~-7 ~0 ~3 {name:"${'restworld:%s_terra' % thing.id}"}

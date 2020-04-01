@@ -1,7 +1,7 @@
 <%namespace name="base" file="../base.mcftmpl"/>
 <%namespace file="../sign_base.mcftmpl" import="*"/>\
 
-function v3:banners/banner_controls_remove
+function restworld:banners/banner_controls_remove
 setblock -1 2 0 redstone_block
 setblock -1 2 0 air
 
@@ -18,11 +18,11 @@ setblock -1 2 0 air
 
 setblock ~${x} ~${y} ~${z} oak_wall_sign[facing=south]{\
 ${sign_nbt(0, "scoreboard players set banner_color funcs %s" % loop.index, name='banner_color')},\
-${sign_nbt(1, "function v3:banners/banner_color_cur", c.name, name='banner_color', raised=False)},\
+${sign_nbt(1, "function restworld:banners/banner_color_cur", c.name, name='banner_color', raised=False)},\
 ${sign_nbt(2, "scoreboard players set banner_ink funcs %s" % loop.index, name='banner_ink')},\
-${sign_nbt(3, "function v3:banners/banner_ink_cur", name='banner_ink', raised=False)}\
+${sign_nbt(3, "function restworld:banners/banner_ink_cur", name='banner_ink', raised=False)}\
 }
 %endfor
 
-setblock ~4 ~3 ~1 dark_oak_wall_sign[facing=south]{Color:white,${sign_nbt(1, "function v3:banners/switch_to_color", "Set Banner")},Text3:${text("Color")}}
-setblock ~4 ~2 ~2 dark_oak_wall_sign[facing=south]{Color:white,${sign_nbt(1, "function v3:banners/switch_to_ink", "Set Ink")},Text3:${text("Color")}}
+setblock ~4 ~3 ~1 dark_oak_wall_sign[facing=south]{Color:white,${sign_nbt(1, "function restworld:banners/switch_to_color", "Set Banner")},Text3:${text("Color")}}
+setblock ~4 ~2 ~2 dark_oak_wall_sign[facing=south]{Color:white,${sign_nbt(1, "function restworld:banners/switch_to_ink", "Set Ink")},Text3:${text("Color")}}

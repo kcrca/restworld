@@ -5,5 +5,5 @@
 <%def name="switch_to_fencelike(which)">\
 kill @e[tag=which_fencelike_home]
 execute at @e[tag=fencelike_home] run summon armor_stand ~1 ~ ~ {Tags:[${"%s_home" % which},which_fencelike_home],Small:True,NoGravity:True}
-execute at @e[tag=${"%s_home" % which}] run function v3:materials/${which}_cur
+execute at @e[tag=${"%s_home" % which}] run function restworld:materials/${which}_cur
 </%def>

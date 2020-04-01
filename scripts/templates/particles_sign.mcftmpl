@@ -3,8 +3,8 @@
 
 execute at @e[tag=signer] run setblock ^${x} ^${y} ^${z} oak_wall_sign[facing=${wall.facing}]{\
 ${sign_nbt(0, "setblock ~ ~-3 ~ redstone_block", lines[0])},\
-${sign_nbt(1, r"data merge block ~0 ~-4 ~-2 {Command:\\\"execute at @e[tag=particles_home] positioned ~ ~2 ~ run function v3:particles/%s_init\\\"}" % subj.id, lines[1])},\
-${sign_nbt(2, r"data merge block ~-1 ~-2 ~0 {Command:\\\"execute at @e[tag=particles_home] positioned ~ ~2 ~ run function v3:particles/%s\\\"}" % subj.id, lines[2])}\
+${sign_nbt(1, r"data merge block ~0 ~-4 ~-2 {Command:\\\"execute at @e[tag=particles_home] positioned ~ ~2 ~ run function restworld:particles/%s_init\\\"}" % subj.id, lines[1])},\
+${sign_nbt(2, r"data merge block ~-1 ~-2 ~0 {Command:\\\"execute at @e[tag=particles_home] positioned ~ ~2 ~ run function restworld:particles/%s\\\"}" % subj.id, lines[2])}\
 %if subj.name != "Off":
 ,${sign_local_nbt(3, "setblock ^%d ^0 ^%d emerald_block" % (wall.block_at[0], wall.block_at[1]), lines[3])}\
 %endif

@@ -5,10 +5,10 @@ data merge block ~${x} ~1 ~${z} {name:"air",mode:LOAD}
 </%def>
 
 execute positioned ~-5 ~-5 ~-5 run tp @e[type=!player,tag=!homer,dx=74,dy=70,dz=74] @e[tag=reaper_home,limit=1]
-fill ~-2 ~-4 ~-2 ~-1 ~42 ~66 air replace #v3:liquid
-fill ~-2 ~-4 ~-2 ~66 ~42 ~-1 air replace #v3:liquid
-fill ~-2 ~-4 ~65 ~65 ~42 ~64 air replace #v3:liquid
-fill ~64 ~-4 ~-2 ~65 ~42 ~65 air replace #v3:liquid
+fill ~-2 ~-4 ~-2 ~-1 ~42 ~66 air replace #restworld:liquid
+fill ~-2 ~-4 ~-2 ~66 ~42 ~-1 air replace #restworld:liquid
+fill ~-2 ~-4 ~65 ~65 ~42 ~64 air replace #restworld:liquid
+fill ~64 ~-4 ~-2 ~65 ~42 ~65 air replace #restworld:liquid
 
 ${load_biome(clear, 'clear')}
 ${load_biome(trigger, 'trigger')}

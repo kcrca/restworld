@@ -1,4 +1,4 @@
 %for v in vars:
-execute at @e[tag=${v}_home] run function v3:${room}/${v}_cur
+execute at @e[tag=${v}_home] run function restworld:${room}/${v}_cur
 %endfor
-function v3:${room}/_finish
+function restworld:${room}/_finish

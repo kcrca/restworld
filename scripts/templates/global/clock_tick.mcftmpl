@@ -8,4 +8,4 @@ scoreboard players operation main clocks %= SPEED_MAIN clocks
 scoreboard players operation slow clocks %= SPEED_SLOW clocks
 scoreboard players operation fast clocks %= SPEED_FAST clocks
 
-function v3:global/kill_em
+function restworld:global/kill_em

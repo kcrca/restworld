@@ -1,7 +1,7 @@
 #!/bin/sh
 cd $(dirname $0)
 world=${1:-RestWorld}
-target="$HOME/clarity/home/saves/$world/datapacks/restworld/data/v3/functions"
+target="$HOME/clarity/home/saves/$world/datapacks/restworld/data/restworld/functions"
 if [ ! -d "$target" ]; then
     echo No such directory: $target 1>&2
     exit 1
