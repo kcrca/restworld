@@ -1,6 +1,6 @@
 scoreboard objectives remove clocks
-scoreboard players operation main clocks %= SPEED_MAIN clocks
-scoreboard players operation fast clocks = clock clocks
+scoreboard objectives add clocks dummy
 scoreboard players set SPEED_SLOW clocks 90
+scoreboard players set SPEED_MAIN clocks 60
 scoreboard players set SPEED_FAST clocks 15
 function v3:global/clock_start

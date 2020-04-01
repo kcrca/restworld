@@ -4,11 +4,14 @@
     wall_torches = (Thing("Wall Torch"), Thing("Redstone Wall Torch"), Thing("Redstone Wall Torch"))
 %>\
 
-setblock ~0 ~2 ~0 barrier
-setblock ~0 ~3 ~1 air
+execute unless score wall_torches funcs matches 0.. run function wall_torches_init
 
 execute if score wall_torches funcs matches 0 run data merge block ~0 ~2 ~-1 {Text3:${text("Torch")}}
 execute if score wall_torches funcs matches 1 run data merge block ~0 ~2 ~-1 {Text3:${text("Wall Torch")}}
+
+setblock ~0 ~3 ~0 air
+execute unless block ~0 ~3 ~1 air run setblock ~0 ~3 ~1 air
+execute unless block ~0 ~2 ~0 air run setblock ~0 ~2 ~0 barrier
 
 <%base:loop collection="${torches}" args="when,i,thing">
 %if i == 0:
@@ -17,10 +20,12 @@ ${when(1)} data merge block ~0 ~2 ~-1 {Text2:${text("Redstone")},Text4:${text("(
 ${when(2)} data merge block ~0 ~2 ~-1 {Text2:${text("Redstone")},Text4:${text("(Off)")}}
 %endif
 
-${when(i)} execute if score wall_torches funcs matches 0 run setblock ~0 ~3 ~0 ${thing.id}
-${when(i)} execute if score wall_torches funcs matches 1 run setblock ~0 ~3 ~0 ${wall_torches[i].id}
 %if i == 2:
 ${when(2)} execute if score wall_torches funcs matches 0 run setblock ~0 ~2 ~0 redstone_block
 ${when(2)} execute if score wall_torches funcs matches 1 run setblock ~0 ~3 ~1 redstone_block
 %endif
+
+${when(i)} execute if score wall_torches funcs matches 0 run setblock ~0 ~3 ~0 ${thing.id}
+${when(i)} execute if score wall_torches funcs matches 1 run setblock ~0 ~3 ~0 ${wall_torches[i].id}
+
 </%base:loop>
