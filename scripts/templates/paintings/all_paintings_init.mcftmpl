@@ -1,0 +1,40 @@
+kill @e[tag=painting]
+
+<%def name="painting(id, facing, x, z, sx=0, sy=0, sz=0)">\
+<%
+    thing = Thing(id)
+    px, pz = ((-1, 0), (0, -1), (1, 0), (0, 1))[facing]
+    px += sx
+    pz += sz
+    dir = ('south', 'west', 'north', 'east')[facing]
+%>\
+summon painting ~${x} ~3 ~${z} {Motive:${thing.id},Facing:${facing},Tags:[painting]}
+setblock ~${x + px} ~${2 + sy} ~${z + pz} oak_wall_sign[facing=${dir}]{Text2:${text(thing.name)}}\
+</%def>
+
+${painting('Burning Skull', 0, 0, 0, sx=-1)}
+${painting('Pointer', 0, 11, 0, sx=4, sy=1)}
+${painting('Pigscene', 1, 14, 2, sz=-1)}
+${painting('Skull and Roses', 1, 14, 6)}
+${painting('Bust', 1, 14, 9)}
+${painting('Void', 1, 14, 12)}
+${painting('Match', 2, 12, 14)}
+${painting('Wither', 2, 9, 14)}
+${painting('Stage', 2, 6, 14)}
+${painting('Fighters', 2, 2, 14, sx=1)}
+${painting('Graham', 3, -2, 13)}
+${painting('Wanderer', 3, -2, 11)}
+${painting('Donkey Kong', 3, -2, 8, sz=1)}
+${painting('Skeleton', 3, -2, 3, sz=1)}
+${painting('Wasteland', 1, 2, 5, sz=1)}
+${painting('Aztec2', 2, 4, 4)}
+${painting('Kebab', 2, 6, 4)}
+${painting('Alban', 2, 8, 4)}
+${painting('Aztec', 3, 10, 5, sz=-1)}
+${painting('Bomb', 0, 9, 6)}
+${painting('Plant', 0, 7, 6)}
+${painting('Sunset', 0, 4, 6)}
+${painting('Creebet', 2, 5, 9)}
+${painting('Courbet', 2, 8, 9)}
+${painting('Pool', 0, 7, 11)}
+${painting('Sea', 0, 4, 11)}

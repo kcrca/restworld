@@ -1,0 +1,4 @@
+<% dist = 20 %>
+tag @p[tag=!immortal] add immortal
+execute at @e[tag=!immortal,distance=..${dist}] run data merge entity @s {DeathTime:-1200}
+kill @e[tag=!immortal,distance=..${dist}]

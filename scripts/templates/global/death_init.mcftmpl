@@ -1,0 +1,2 @@
+tag @e[tag=death_home] add death
+tag @e[tag=death_home] add immortal

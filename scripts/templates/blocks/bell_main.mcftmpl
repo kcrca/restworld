@@ -4,8 +4,9 @@
     facing = ("north", "west", "north", "west")
 %>\
 
+setblock ~0 ~3 ~0 air
+
 <%base:loop collection="${attachments}" args="when,i,thing">
-${when(i)} setblock ~0 ~3 ~0 bell[attachment=${thing},facing=${facing[i]}]
 
 ${when(0)} setblock ~-1 ~3 ~0 air
 ${when(0)} setblock ~1 ~3 ~0 air
@@ -22,4 +23,6 @@ ${when(2)} setblock ~0 ~4 ~0 air
 ${when(3)} setblock ~-1 ~3 ~0 stone_stairs[facing=east]
 ${when(3)} setblock ~1 ~3 ~0 stone_stairs[facing=west]
 ${when(3)} setblock ~0 ~4 ~0 air
+
+${when(i)} setblock ~0 ~3 ~0 bell[attachment=${thing},facing=${facing[i]}]
 </%base:loop>
