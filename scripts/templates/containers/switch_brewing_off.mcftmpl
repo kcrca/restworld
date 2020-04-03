@@ -1,0 +1,2 @@
+<%namespace file="brewing_base.mcftmpl" import="*"/>
+${switch_brewing(False)}

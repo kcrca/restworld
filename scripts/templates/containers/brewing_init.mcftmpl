@@ -1,1 +1,1 @@
-setblock ~ ~2 ~ minecraft:brewing_stand
+function restworld:containers/switch_brewing_off

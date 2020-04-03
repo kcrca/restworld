@@ -1,0 +1,6 @@
+<%def name="switch_brewing(on)">
+<% which = 'brewing_run' if on else 'brewing_rotate' %>
+say switch brewing on = ${on}
+kill @e[tag=brewing_control]
+execute at @e[tag=brewing_home] run summon armor_stand ~0 ~0 ~0 {Tags:[${which}_home,brewing_control],NoGravity:True}
+</%def>

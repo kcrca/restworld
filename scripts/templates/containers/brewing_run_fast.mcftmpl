@@ -1,0 +1,5 @@
+replaceitem block ~ ~2 ~ container.0 potion{Potion:"minecraft:water"}
+replaceitem block ~ ~2 ~ container.1 air
+replaceitem block ~ ~2 ~ container.2 potion{Potion:"minecraft:water"}
+replaceitem block ~ ~2 ~ container.3 nether_wart
+replaceitem block ~ ~2 ~ container.4 blaze_powder

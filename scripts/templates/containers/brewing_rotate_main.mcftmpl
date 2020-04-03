@@ -11,6 +11,9 @@
 	(0,1,2),
     )
 %>
+replaceitem block ~ ~2 ~ container.3 air
+replaceitem block ~ ~2 ~ container.4 air
+data merge block ~ ~2 ~ {BrewTime:0,Fuel:0}
 
 <%base:loop collection="${bottles}" args="when,i,where">
 % for j in range(0, 3):
