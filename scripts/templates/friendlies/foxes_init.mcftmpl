@@ -2,3 +2,5 @@
 
 ${base.mobs_init(z_delta_init=-2, kid_x_init=1.4, adult_x_init=-1.2, rotation_init=270, tags_init=("friendlies",))}\
 ${base.mobs("Fox", tags=("fox",))}
+
+setblock ~3 ~2 ~0 oak_wall_sign[facing=east]

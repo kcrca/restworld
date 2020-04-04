@@ -1,5 +1,7 @@
 <%namespace name="base" file="../base.mcftmpl"/>\
 
+${base.remove('tag=saddle')}
+
 %for which in ("horselike", "horse"):
 execute at @e[tag=${which}_home] run function restworld:friendlies/${which}_init
 execute at @e[tag=${which}_home] run function restworld:friendlies/${which}_cur
