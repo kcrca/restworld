@@ -12,12 +12,13 @@
 %>
 
 <%base:loop collection="${blocks}" args="when,i,thing">
-${when(i)} fill ~4 ~3 ~2 ~0 ~2 ~0 ${thing.full_id()}_ore replace #restworld:ores
-${when(i)} fill ~4 ~3 ~2 ~0 ~2 ~0 ${thing.full_id() if "Quartz" not in thing.name else "quartz"}_block replace #restworld:ore_blocks
-${when(i)} data merge block ~2 ~2 ~3 {Text2:${text(thing.name)}}
+<% fill = 'fill ~4 ~3 ~6 ~0 ~2 ~0' %>
+${when(i)} ${fill} ${thing.full_id()}_ore replace #restworld:ores
+${when(i)} ${fill} ${thing.full_id() if "Quartz" not in thing.name else "quartz"}_block replace #restworld:ore_blocks
+${when(i)} data merge block ~2 ~2 ~7 {Text2:${text(thing.name)}}
 %if thing.name == "Nether Quartz":
-${when(i)} fill ~4 ~3 ~2 ~0 ~2 ~0 netherrack replace stone
+${when(i)} ${fill} netherrack replace stone
 %else:
-${when(i)} fill ~4 ~3 ~2 ~0 ~2 ~0 stone replace netherrack
+${when(i)} ${fill} stone replace netherrack
 %endif
 </%base:loop>
