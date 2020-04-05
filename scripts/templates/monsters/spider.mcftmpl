@@ -4,6 +4,5 @@
 
 ${base.remove("tag=spider")}
 ${base.mobs_init(y_init=0.5, kid_x_init=1.4, adult_x_init=-0.2, rotation_init=270, tags_init=("monsters",))}\
-${base.increment(2)}
 ${base.when(0)} ${base.mobs("Spider", do_adult=True)}
 ${base.when(1)} ${base.mobs("Spider", do_adult=True, nbt='Passengers:[{id:"minecraft:skeleton",Tags:[monsters],%s,Rotation:[270f,0f],Facing:east,PersistenceRequired:True,NoAI:True,Silent:True}]' % bow)}
