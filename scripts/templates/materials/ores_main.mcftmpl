@@ -15,7 +15,7 @@
 <% fill = 'fill ~4 ~3 ~6 ~0 ~2 ~0' %>
 ${when(i)} ${fill} ${thing.full_id()}_ore replace #restworld:ores
 ${when(i)} ${fill} ${thing.full_id() if "Quartz" not in thing.name else "quartz"}_block replace #restworld:ore_blocks
-${when(i)} data merge block ~2 ~2 ~7 {Text2:${text(thing.name)}}
+${when(i)} data merge block ~2 ~2 ~6 {Text2:${text(thing.name)}}
 %if thing.name == "Nether Quartz":
 ${when(i)} ${fill} netherrack replace stone
 %else:

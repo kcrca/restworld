@@ -1,5 +1,5 @@
 <%namespace name="base" file="../base.mcftmpl"/>\
-<% postures = ('Sitting', 'Crouching', 'Sleeping') %>
+<% postures = ('Crouching', 'Sitting', 'Sleeping') %>
 
 <%base:loop collection="${('',) + postures}" args="when,i,thing">\
 <% values = ','.join('%s:%s' % (x, str(thing == x)) for x in postures) %>
