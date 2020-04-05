@@ -6,7 +6,7 @@ if [ ! -d "$target" ]; then
     echo No such directory: $target 1>&2
     exit 1
 fi
-rm */.f
+rm -f .f */.f
 for f in *; do
     if [ -d $f -a -d $target/$f ]; then
 	echo + ln -s $target/$f $f/.f

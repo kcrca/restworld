@@ -1,3 +1,4 @@
+gamerule announceAdvancements false
 gamerule commandBlockOutput false
 gamerule disableRaids true
 gamerule doDaylightCycle false
@@ -9,5 +10,5 @@ gamerule doTraderSpawning false
 gamerule doWeatherCycle false
 gamerule keepInventory true
 gamerule mobGriefing false
-gamerule spawnRadius 0
 gamerule randomTickSpeed 0
+gamerule spawnRadius 0

@@ -1,0 +1,2 @@
+execute at @e[tag=llamas_home] positioned ~-1 ~-0.5 ~0 run function restworld:friendlies/llamas_carpets_home
+execute at @e[tag=llamas_carpets_home] run function restworld:friendlies/llamas_carpets_cur

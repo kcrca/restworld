@@ -1,0 +1,10 @@
+<%namespace name="base" file="../base.mcftmpl"/>
+
+<%def name="plate(heavy)">
+<% which = 'Heavy' if heavy else 'Light' %>
+execute at @e[tag=pressure_plate_home] run setblock ~0 ~3 ~0 minecraft:${which.lower()}_weighted_pressure_plate
+scoreboard players set plate_heavy funcs ${int(heavy)}
+data merge block ~-4 ~4 ~0 {Text1:${text(which)}}
+kill @e[tag=plate_items]
+scoreboard players set pressure_plate funcs 0
+</%def>
