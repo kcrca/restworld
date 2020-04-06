@@ -1,1 +1,1 @@
-execute in overworld as @p at @e[tag=lights_home] run tp @s ~ ~3 ~
+tp @p 0 101 0 facing 0 101 10

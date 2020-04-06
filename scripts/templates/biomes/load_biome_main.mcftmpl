@@ -8,7 +8,7 @@
     when, index, t = handback
     thing = Thing(t)
 %>
-${when(index)} data merge block ~${x} ~1 ~${z} {name:"${thing.id}_${i + 1}",mode:LOAD}\
+${when(index)} data merge block ~${x} ~1 ~${z} {name:"restworld:${thing.id}_${i + 1}",mode:LOAD}\
 </%def>\
 ${when(i)} say Switching to biome ${thing}\
 ${load_biome(setup, thing, handback=(when, i, thing))}

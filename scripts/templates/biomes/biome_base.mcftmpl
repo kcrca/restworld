@@ -11,14 +11,14 @@ ${categories()}
 
 <% x = biome_groups.keys().index(group) %>
 %for biome in biome_groups[group]:
-setblock ~${9 - loop.index - x} ~0 ~9 birch_wall_sign{\
-${sign_nbt(0, 'execute at @e[tag=biome_loading_home] run function restworld:biomes/clear_biome', '', raised=False, name='biome_loading')},\
+setblock ~${6 - loop.index - x} ~0 ~6 birch_wall_sign{\
+${sign_nbt(0, 'function restworld:biomes/clear_biome', '', raised=False, name='biome_loading')},\
 ${sign_nbt(1, 'scoreboard players set load_biome funcs %d' % biomes.index(biome), biome, raised=False, name='biome_loading')},\
 ${sign_nbt(2, 'execute at @e[tag=biome_loading_home] run function restworld:biomes/load_biome_cur', '', raised=False, name='biome_loading')},\
 }
 %endfor
 
-setblock ~${9 - x} ~1 ~9 birch_wall_sign{${sign_nbt(1, 'execute at @e[tag=category_home] run function restworld:biomes/category', group, name='category')},Text3:${text("Biomes")}}
+setblock ~${6 - x} ~1 ~6 birch_wall_sign{${sign_nbt(1, 'execute at @e[tag=category_home] run function restworld:biomes/category', group, name='category')},Text3:${text("Biomes")}}
 </%def>
 
 <%def name="trigger(biome, prefix, i, x, z, handback)">
@@ -29,12 +29,12 @@ setblock ~${x} ~ ~${z} air\
 <%def name='category_sign(category, x)'>
 <% biomes =  biome_groups[category] %>
 <% text3 = '' if category == 'Structures' else 'Biomes' %>
-setblock ~${x} ~1 ~9 oak_wall_sign{Text2:${text(category)},${sign_nbt(2, 'execute at @e[tag=category_home] run function restworld:biomes/%s_signs' % Thing(category).id, text3, name='category')}} replace
+setblock ~${x} ~1 ~6 oak_wall_sign{Text2:${text(category)},${sign_nbt(2, 'execute at @e[tag=category_home] run function restworld:biomes/%s_signs' % Thing(category).id, text3, name='category')}} replace
 </%def>
 
 <%def name="categories()">
-fill ~9 ~0 ~9 ~0 ~1 ~9 air
+fill ~9 ~0 ~6 ~0 ~-9 ~6 air
 %for group in biome_groups:
-${category_sign(group, 9 - loop.index)}
+${category_sign(group, 6 - loop.index)}
 %endfor
 </%def>

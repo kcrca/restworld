@@ -1,0 +1,12 @@
+<%namespace name="base" file="../base.mcftmpl"/>
+setblock ~1 101 ~4 oak_wall_sign[facing=north]{Text1:${text("This world lets")},Text2:${text("you test how")},Text3:${text("your resource")},Text4:${text("pack looks.")}} destroy
+setblock ~-1 101 ~4 oak_wall_sign[facing=north]{Text1:${text("Everything")},Text2:${text("is here:")},Text3:${text("blocks, mobs,")},Text4:${text("particles, UI, ...")}} destroy
+
+setblock ~-4 101 ~1 oak_wall_sign[facing=east]{Text1:${text("Much of it runs")},Text2:${text("on clocks that")},Text3:${text("switch the")},Text4:${text("variant shown.")}} destroy
+setblock ~-4 101 ~-1 oak_wall_sign[facing=east]{Text1:${text("This uses")},Text2:${text("less space")},Text3:${text("so things can")},Text4:${text("be closer together.")}} destroy
+
+setblock ~-1 101 ~-4 oak_wall_sign[facing=south]{Text1:${text("You can also")},Text2:${text("compare things")},Text3:${text("that you may want")},Text4:${text("to make similar.")}} destroy
+setblock ~1 101 ~-4 oak_wall_sign[facing=south]{Text1:${text("For example,")},Text2:${text("wools may be the")},Text3:${text("same pattern with")},Text4:${text("different colors.")}} destroy
+
+setblock ~4 101 ~-1 oak_wall_sign[facing=west]{Text1:${text("The control book")},Text2:${text("lets you change")},Text3:${text("clock speeds")},Text4:${text("and step it.")}} destroy
+setblock ~4 101 ~1 oak_wall_sign[facing=west]{Text1:${text("The color of the")},Text2:${text("floor blocks under")},Text3:${text("buttons show if")},Text4:${text("clocks are on.")}} destroy
