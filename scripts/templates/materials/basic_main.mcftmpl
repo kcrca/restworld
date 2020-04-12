@@ -11,6 +11,23 @@
     has_horse = False
 %>
 
+<%def name="enchant(on)">
+<%
+if on:
+    value, act, arg = 1, 'modify', 'merge value {Enchantments:[{id:"minecraft:mending"}]}'
+else:
+    value, act, arg = 0, 'remove', ''
+%>
+execute if score enchanted funcs matches ${value} as @e[tag=armor_frame] run data ${act} entity @s Item.tag ${arg}
+execute if score enchanted funcs matches ${value} as @e[tag=armor_horse] run data ${act} entity @s ArmorItem.tag ${arg}
+%for a in range(0, 4):
+execute if score enchanted funcs matches ${value} as @e[tag=material_static] run data ${act} entity @s ArmorItems[${a}].tag ${arg}
+%if a < 2:
+execute if score enchanted funcs matches ${value} as @e[tag=material_static] run data ${act} entity @s HandItems[${a}].tag ${arg}
+%endif
+%endfor
+</%def>
+
 fill ~2 ~2 ~2 ~-2 ~5 ~4 air
 ${base.remove("tag=material_thing")}
 
@@ -58,5 +75,10 @@ ${when(i)} data merge entity @e[tag=material_${j},limit=1] {HandItems:[{${hands[
 %for j in range(4, 8):
 ${when(i)} data merge entity @e[tag=material_${j},limit=1] {HandItems:[{},{${hands[j]}}]}
 %endfor
-${when(i)} data merge block ~-2 ~ ~1 {name:"restworld:material_${material}"}
+${when(i)} data merge block ~-2 ~ ~1 {name:"restworld:material_${material}",mode:"LOAD"}
+
+%if i == len(materials) - 1:
+${enchant(False)}
+${enchant(True)}
+%endif
 </%base:loop>
