@@ -49,7 +49,7 @@ ${when(i)} data merge entity @e[tag=armor_horse,limit=1,sort=nearest] {ArmorItem
 ${when(i)} data merge entity @e[tag=armor_horse_frame,limit=1] {Item:{id:${armor}_horse_armor,Count:1},ItemRotation:0}
 ${when(i)} execute if score horse_saddle funcs matches 1 run data merge entity @e[tag=armor_horse,limit=1,sort=nearest] {SaddleItem:{id:saddle,Count:1}}
 %else:
-${when(i)} data merge entity @e[tag=armor_horse_frame,limit=1] {Item:{id:stone,Count:0},ItemRotation:0}
+${when(i)} data merge entity @e[tag=armor_horse_frame,limit=1] {Item:{id:air,Count:1}}
 ${when(i)} execute if entity @e[tag=armor_horse,distance=..10] run teleport @e[tag=armor_horse] @e[tag=death,limit=1]
 %endif
 

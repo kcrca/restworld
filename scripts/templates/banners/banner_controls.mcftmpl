@@ -2,8 +2,7 @@
 <%namespace file="../sign_base.mcftmpl" import="*"/>\
 
 function restworld:banners/banner_controls_remove
-setblock -1 2 0 redstone_block
-setblock -1 2 0 air
+function restworld:global/clock_off
 
 %for c in colors:
 <%
