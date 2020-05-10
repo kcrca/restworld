@@ -1,0 +1,8 @@
+<%namespace name="base" file="../base.mcftmpl"/>\
+<%
+    genes = ("Aggressive", "Lazy", "Weak", "Worried", "Playful", "Normal", "Brown")
+%>
+
+<%base:loop collection="${genes}" args="when,i,thing">\
+${when(i)} execute as @e[type=panda] run data merge entity @s {CustomName:${text("%s Panda" % thing)},MainGene:${thing.lower()},HiddenGene:${thing.lower()}}
+</%base:loop>
