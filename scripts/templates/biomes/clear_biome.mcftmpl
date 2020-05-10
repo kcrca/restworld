@@ -4,7 +4,6 @@
 data merge block ~${x} ~1 ~${z} {name:"air",mode:LOAD}
 </%def>
 
-say clear
 fill ~-2 ~-4 ~-2 ~-1 ~42 ~66 air replace #restworld:liquid
 fill ~-2 ~-4 ~-2 ~66 ~42 ~-1 air replace #restworld:liquid
 fill ~-2 ~-4 ~65 ~65 ~42 ~64 air replace #restworld:liquid

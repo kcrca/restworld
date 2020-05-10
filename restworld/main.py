@@ -467,7 +467,7 @@ def main():
         rooms += [room.name, ]
 
     for f in incr_funcs + ("init",):
-        write_function(func_dir, "_%s" % f, "\n".join("function v3:%s/_%s" % (r, f) for r in rooms))
+        write_function(func_dir, "_%s" % f, "\n".join("function restworld:%s/_%s" % (r, f) for r in rooms))
 
     particle_signs(func_dir + "/particles",
                    Template(filename="%s/particles_sign%s" % (tmpl_dir, tmpl_suffix), lookup=lookup))

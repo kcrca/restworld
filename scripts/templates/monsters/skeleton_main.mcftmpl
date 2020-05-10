@@ -4,7 +4,7 @@
 
 ${base.remove("tag=skeletal")}
 
-${base.mobs_init(kid_x_init=1.4, adult_x_init=0.8, rotation_init=270, tags_init=("monsters","skeletal"))}\
+${base.mobs_init(adult_x_init=-0.2, rotation_init=90, tags_init=("skeletal",))}\
 ${base.increment(2)}
 ${base.mobs("Skeleton", do_adult=True, nbt=bow, when=base.when, i=0)}
 ${base.mobs("Stray", do_adult=True, nbt=bow, when=base.when, i=1)}

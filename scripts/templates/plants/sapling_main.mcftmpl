@@ -3,6 +3,12 @@
 
 <%base:loop collection="${stages}" args="when,i,thing">\
 % for w in woods:
-${when(i)} setblock ~${int(loop.index / 3) * 3} ~3 ~${int(loop.index % 3) * -3} ${Thing(w).full_id()}_sapling[stage=${i}]
+<%
+    x = int(loop.index / 2) * 3
+    z = int(loop.index % 2) * -3
+    tree = Thing(w)
+%>
+${when(i)} setblock ~${x} ~3 ~${z} ${tree.full_id()}_sapling[stage=${i}]
+${when(i)} data merge block ~${x + 1} ~2 ~${z} {Text1:${text("%s Sapling" % tree.name)},Text3:${text("2 stages")},Text4:${text("(vanilla shows 1)")}}
 % endfor
 </%base:loop>

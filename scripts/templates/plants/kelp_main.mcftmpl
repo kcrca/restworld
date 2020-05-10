@@ -1,0 +1,12 @@
+<%namespace name="base" file="../base.mcftmpl"/>
+
+<%base:bounce collection="${range(0, 5)}" args="when,i,thing">
+%for x in range(0, 3):
+%if thing < 4:
+${when(i)} setblock ~${x} ~${2 + thing + 1} ~0 water
+%endif
+%if thing > 0:
+${when(i)} setblock ~${x} ~${2 + thing} ~0 kelp
+%endif
+%endfor
+</%base:bounce>
