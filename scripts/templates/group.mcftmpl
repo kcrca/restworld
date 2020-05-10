@@ -12,7 +12,10 @@ ${base.remove("tag=%s" % room)}
 %endif
 
 %for f in funcs:
-execute at @e[tag=${f}_home] run function restworld:${room}/${f}_${which}
+%if not (f == 'death' and which == 'init'):
+execute at @e[tag=${f}_home] run \
+%endif
+function restworld:${room}/${f}_${which}
 %endfor
 
 %if which == "exit":

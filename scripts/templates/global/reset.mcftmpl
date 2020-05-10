@@ -1,10 +1,14 @@
 <%namespace file="global_base.mcftmpl" import="*"/>
 
+function restworld:global/clock_off
 execute positioned ~ ~-3 ~ run function restworld:global/min_home
 
 kill @e[tag=homer,tag=!min_home]
 
 ${use_min_fill(97, 'redstone_block replace dried_kelp_block')}
 ${use_min_fill(97, 'dried_kelp_block replace redstone_block')}
+${use_min_fill(98, 'redstone_block replace pumpkin')}
+${use_min_fill(98, 'pumpkin replace redstone_block')}
+
 function restworld:_init
 function restworld:_cur
