@@ -33,7 +33,7 @@ setblock ~${x} ~1 ~6 oak_wall_sign{Text2:${text(category)},${sign_nbt(2, 'execut
 </%def>
 
 <%def name="categories()">
-fill ~9 ~0 ~6 ~0 ~-9 ~6 air
+fill ~6 ~0 ~6 ~-2 ~-1 ~6 air
 %for group in biome_groups:
 ${category_sign(group, 6 - loop.index)}
 %endfor

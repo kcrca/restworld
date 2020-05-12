@@ -15,7 +15,6 @@ ${scribe(r"\\nLinks:\\n   ")}, \
 ${action(r"Home", "Starting Point", "function restworld:global/go_home")}, ${scribe(r"\\n   ")}, \
 ${action(r"Photo Shoot", "Scenic View", "function restworld:global/photo_shoot")}, ${scribe(r"\\n   ")}, \
 ${action(r"Biome Sampler", "Biome Sampler", "function restworld:global/see_biomes")}, ${scribe(r"\\n   ")}, \
-${action(r"Battle Arena", "Mob Playground", "function restworld:global/arena")}, ${scribe(r"\\n   ")}, \
 ${action(r"Nether Home", "Nether Starting Point", "function restworld:global/go_nether_home")}, ${scribe(r"\\n   ")}, \
 ${action(r"End Home", "End Starting Point", "function restworld:global/go_end_home")}, ${scribe(r"\\n   ")} \
 ]","[\"\", \
@@ -28,3 +27,5 @@ ${scribe(r"\\nMinecraft Version:\\n   1.15.2, Feb 2020")} \
 ]" \
 ], \
 title:"World Control",author:"Display World",display:{Lore:["Useful controls"]}}
+
+##${action(r"Battle Arena", "Mob Playground", "function restworld:global/arena")}, ${scribe(r"\\n   ")}, \

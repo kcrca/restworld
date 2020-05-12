@@ -1,9 +1,1 @@
-<%namespace import="*" file="biome_base.mcftmpl"/>
 
-##<%def name="renderer(prefix, i, x, z)">\
-##${prefix} data merge block ~${x} ~1 ~${z} {name:"tiaga_${i + 1}"}
-##${prefix} setblock ~${x} ~ ~${z} redstone_torch
-##${prefix} setblock ~${x} ~ ~${z} air
-##</%def>\
-##
-##${loaders('dummy', renderer)}
