@@ -14,7 +14,8 @@ ${categories()}
 setblock ~${6 - loop.index - x} ~0 ~6 birch_wall_sign{\
 ${sign_nbt(0, 'function restworld:biomes/clear_biome', '', raised=False, name='biome_loading')},\
 ${sign_nbt(1, 'scoreboard players set load_biome funcs %d' % biomes.index(biome), biome, raised=False, name='biome_loading')},\
-${sign_nbt(2, 'execute at @e[tag=biome_loading_home] run function restworld:biomes/load_biome_cur', '', raised=False, name='biome_loading')},\
+${sign_nbt(2, 'function restworld:biomes/load_biome_cur', '', raised=False, name='biome_loading')},\
+${sign_nbt(3, 'function restworld:biomes/cleanup_biome', '', raised=False, name='biome_loading')},\
 }
 %endfor
 

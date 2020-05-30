@@ -1,7 +1,7 @@
 <%namespace file="biome_base.mcftmpl" import="*"/>
 
 <%def name="clear(biome, prefix, i, x, z, handback)">
-data merge block ~${x} ~1 ~${z} {name:"air",mode:LOAD}
+data merge block ~${x} ~1 ~${z} {name:"restworld:air",mode:LOAD}
 </%def>
 
 fill ~-2 ~-4 ~-2 ~-1 ~42 ~66 air replace #restworld:liquid
@@ -13,4 +13,4 @@ ${load_biome(clear, 'clear')}
 ${load_biome(trigger, 'trigger')}
 
 execute at @e[tag=biome_loading_home] positioned ~-5 ~-5 ~-5 run kill @e[type=!player,tag=!homer,dx=74,dy=42,dz=74]
-execute at @e[tag=biome_loading_home] positioned ~-5 ~-5 ~-5 run kill @e[type=item]
+kill @e[type=item]
