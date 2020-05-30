@@ -1,0 +1,4 @@
+%for i in range(0, 8):
+setblock ~0 ~1 ~${i} farmland[moisture=${7 - i}]
+setblock ~0 ~1 ~-${i} farmland[moisture=${7 - i}]
+%endfor

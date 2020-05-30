@@ -1,0 +1,9 @@
+<%namespace import="*" file="blocks_base.mcftmpl"/>
+<%
+    types = (
+	Thing("Red|Mushroom Block", block_state="west=false,north=false"),
+	Thing("Brown|Mushroom Block", block_state="west=false,north=false"),
+	"Mushroom Stem")
+%>
+${blocks(types)}
+
