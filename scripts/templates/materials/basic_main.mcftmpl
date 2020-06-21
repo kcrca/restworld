@@ -6,7 +6,6 @@
 	("iron", "iron", True, Thing("iron_block")),
 	("golden", "golden", True, Thing("gold_block")),
 	("diamond", "diamond", True, Thing("diamond_block")),
-	("netherite", "netherite", False, Thing("netherite_block")),
     )
     global has_horse
     has_horse = False
