@@ -58,9 +58,9 @@ ${when(i)} setblock ~4 ~2 ~2 minecraft:${id}_door[facing=west,half=lower]
 ${when(i)} setblock ~4 ~3 ~2 minecraft:${id}_door[facing=west,half=upper]
 
 ${when(i)} setblock ~3 ~2 ~3 minecraft:${id}_wall_sign[facing=south]
-${when(i)} data modify block ~3 ~2 ~3 Text2 set value ${text("A Wall Sign")}
+${when(i)} data merge block ~3 ~2 ~3 {Text2:${text(woods[i])},Text3:${text("Sign")}}
 ${when(i)} setblock ~-3 ~2 ~3 minecraft:${id}_sign[rotation=0]
-${when(i)} data modify block ~-3 ~2 ~3 Text2 set value ${text("A Sign")}
+${when(i)} data merge block ~-3 ~2 ~3 {Text2:${text(woods[i])},Text3:${text("Wall Sign")}}
 
 %if log == 'log':
 ${when(i)} summon minecraft:boat ~-0.5 ~1.525 ~2 {Type:${id},CustomName:"\"${woods[i]}\"",CustomNameVisible:True,Tags:[wood_boat],Rotation:[90f,0f]}
