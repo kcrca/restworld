@@ -178,7 +178,7 @@ stepables = (
     Stepable("Prismarine Brick", "air", block="Prismarine Bricks"),
     Stepable("Dark Prismarine", "air"),
 )
-woods = ("Acacia", "Birch", "Jungle", "Oak", "Dark Oak", "Spruce")
+woods = ("Acacia", "Birch", "Jungle", "Oak", "Dark Oak", "Spruce", "Warped", "Crimson")
 fish_data = (
     ("kob",
      (917504, "Red-White Kob"),
