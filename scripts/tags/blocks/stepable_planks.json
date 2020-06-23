@@ -29,7 +29,12 @@
     "minecraft:polished_diorite",
     "minecraft:granite",
     "minecraft:polished_granite",
+    "minecraft:blackstone",
+    "minecraft:polished_blackstone",
+    "minecraft:polished_blackstone_bricks",
     "minecraft:quartz_block",
-    "minecraft:smooth_quartz"
+    "minecraft:smooth_quartz",
+    "minecraft:warped_planks",
+    "minecraft:crimson_planks"
   ]
 }
