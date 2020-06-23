@@ -178,7 +178,8 @@ stepables = (
     Stepable("Prismarine Brick", "air", block="Prismarine Bricks"),
     Stepable("Dark Prismarine", "air"),
 )
-woods = ("Acacia", "Birch", "Jungle", "Oak", "Dark Oak", "Spruce", "Warped", "Crimson")
+woods = ("Acacia", "Birch", "Jungle", "Oak", "Dark Oak", "Spruce")
+stems = ("Warped", "Crimson")
 fish_data = (
     ("kob",
      (917504, "Red-White Kob"),
@@ -347,6 +348,7 @@ def render_tmpl(tmpl, var_name, **kwargs):
         command_blocks=command_blocks,
         steppables=stepables,
         woods=woods,
+        stems=stems,
         fishes=fishes,
         horses=horses,
         other_horses=other_horses,
