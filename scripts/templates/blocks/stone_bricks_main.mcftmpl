@@ -1,3 +1,11 @@
 <%namespace import="*" file="blocks_base.mcftmpl"/>
-<% types = ("Stone Bricks", "Mossy Stone|Bricks", "Cracked Stone|Bricks", "Chiseled Stone|Bricks") %>
+<%
+    types = (
+	"Stone Bricks", "Mossy Stone|Bricks",
+	"Cracked Stone|Bricks", "Chiseled Stone|Bricks",
+	"Polished|Blackstone Bricks",
+	"Cracked Polished|Blackstone Bricks",
+	'End Stone|Bricks'
+    )
+%>
 ${blocks(types)}
