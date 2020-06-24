@@ -13,11 +13,7 @@
 	t = c[i]
     else:
 	t = Thing(c[i])
-    lines = t.sign_text()
-    signage = ()
-    for j in range(0, 3):
-	txt = lines[j] if j < len(lines) else ""
-	signage += ("Text%d:%s" % (j + 2, text(txt)),)
+    signage = t.sign_text()
     try:
 	nbt = "{%s}" % t.nbt
     except AttributeError:
@@ -27,7 +23,7 @@
     ${when(i)} setblock ~${x} ~3 ~${z} minecraft:air destroy
 %endif
 ${when(i)} setblock ~${x} ~3 ~${z} ${t.full_id()}${nbt}${" destroy" if destroy else ""}
-${when(i)} data merge block ~${x} ~2 ~${z + sign} {${",".join(signage)}}
+${when(i)} data merge block ~${x} ~2 ~${z + sign} {${signage}}
 <%
     x += dx
     x_size += 1
@@ -43,9 +39,8 @@ ${when(i)} data merge block ~${x} ~2 ~${z + sign} {${",".join(signage)}}
 </%def>\
 
 <%def name="colored_signs(color, render, when=None, i=None, thing=None)">
-<% color_split = len(woods) / 2 %>
-%for wood in woods:
-##${render(-11 + loop.index % color_split, 3 + loop.index / color_split, 0, color, Thing(wood), when, i, thing)}
-${render(-11 + loop.index % color_split, 2 + loop.index / color_split, 2 - loop.index % color_split, color, Thing(wood), when, i, thing)}
+<% color_split = len(woods + stems) / 2 %>
+%for wood in woods + stems:
+${render(-12 + loop.index % color_split, 2 + loop.index / color_split, 3 - loop.index % color_split, color, Thing(wood), when, i, thing)}
 %endfor
 </%def>

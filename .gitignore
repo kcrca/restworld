@@ -8,3 +8,4 @@
 *.pyc
 *.zip
 /build/
+scripts/functions

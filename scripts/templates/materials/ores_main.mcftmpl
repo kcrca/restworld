@@ -8,15 +8,24 @@
        Thing("Diamond"),
        Thing("Emerald"),
        Thing("Nether Quartz"),
+       Thing("Nether Gold"),
    )
 %>
 
 <%base:loop collection="${blocks}" args="when,i,thing">
 <% fill = 'fill ~4 ~3 ~6 ~0 ~2 ~0' %>
 ${when(i)} ${fill} ${thing.full_id()}_ore replace #restworld:ores
-${when(i)} ${fill} ${thing.full_id() if "Quartz" not in thing.name else "quartz"}_block replace #restworld:ore_blocks
+<%
+if 'nether_gold' in thing.full_id():
+    block_name = 'gold'
+elif 'quartz' in thing.full_id():
+    block_name = 'quartz'
+else:
+    block_name = thing.full_id()
+%>
+${when(i)} ${fill} ${block_name}_block replace #restworld:ore_blocks
 ${when(i)} data merge block ~2 ~2 ~6 {Text2:${text(thing.name)}}
-%if thing.name == "Nether Quartz":
+%if 'Nether' in thing.name:
 ${when(i)} ${fill} netherrack replace stone
 %else:
 ${when(i)} ${fill} stone replace netherrack

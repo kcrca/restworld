@@ -1,7 +1,7 @@
 <%namespace name="base" file="../base.mcftmpl"/>\
 <%
-    torches = (Thing("Torch"), Thing("Redstone Torch"), Thing("Redstone Torch"))
-    wall_torches = (Thing("Wall Torch"), Thing("Redstone Wall Torch"), Thing("Redstone Wall Torch"))
+    torches = (Thing("Torch"), Thing("Soul Torch"), Thing("Redstone Torch"), Thing("Redstone Torch"))
+    wall_torches = (Thing("Wall Torch"), Thing("Soul Wall Torch"), Thing("Redstone Wall Torch"), Thing("Redstone Wall Torch"))
 %>\
 
 execute unless score wall_torches funcs matches 0.. run function wall_torches_init
@@ -16,13 +16,14 @@ execute unless block ~0 ~2 ~0 air run setblock ~0 ~2 ~0 barrier
 <%base:loop collection="${torches}" args="when,i,thing">
 %if i == 0:
 ${when(0)} data merge block ~0 ~2 ~-1 {Text2:${text("")},Text4:${text("")}}
-${when(1)} data merge block ~0 ~2 ~-1 {Text2:${text("Redstone")},Text4:${text("(On)")}}
-${when(2)} data merge block ~0 ~2 ~-1 {Text2:${text("Redstone")},Text4:${text("(Off)")}}
+${when(1)} data merge block ~0 ~2 ~-1 {Text2:${text("Soul")},Text4:${text("")}}
+${when(2)} data merge block ~0 ~2 ~-1 {Text2:${text("Redstone")},Text4:${text("(On)")}}
+${when(3)} data merge block ~0 ~2 ~-1 {Text2:${text("Redstone")},Text4:${text("(Off)")}}
 %endif
 
-%if i == 2:
-${when(2)} execute if score wall_torches funcs matches 0 run setblock ~0 ~2 ~0 redstone_block
-${when(2)} execute if score wall_torches funcs matches 1 run setblock ~0 ~3 ~1 redstone_block
+%if i == len(torches) - 1:
+${when(i)} execute if score wall_torches funcs matches 0 run setblock ~0 ~2 ~0 redstone_block
+${when(i)} execute if score wall_torches funcs matches 1 run setblock ~0 ~3 ~1 redstone_block
 %endif
 
 ${when(i)} execute if score wall_torches funcs matches 0 run setblock ~0 ~3 ~0 ${thing.id}

@@ -41,6 +41,9 @@
     "minecraft:andesite_wall",
     "minecraft:granite_wall",
     "minecraft:diorite_wall",
-    "minecraft:prismarine_wall"
+    "minecraft:prismarine_wall",
+    "minecraft:blackstone_wall",
+    "minecraft:polished_blackstone_wall",
+    "minecraft:polished_blackstone_brick_wall"
   ]
 }

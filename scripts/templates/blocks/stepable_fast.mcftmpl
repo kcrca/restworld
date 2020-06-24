@@ -5,36 +5,20 @@
 import re
 
 blocks = (
-    "Acacia Planks",
-    "Birch Planks",
-    "Jungle Planks",
-    "Oak Planks",
-    "Dark Oak Planks",
-    "Spruce Planks",
-    "Cobblestone",
-    "Mossy|Cobblestone",
-    "Bricks",
-    "Stone Bricks",
-    "Mossy|Stone Bricks",
-    "Nether Bricks",
-    "Red|Nether Bricks",
-    "End Stone Bricks",
-    "Purpur Block",
-    "Sandstone",
-    "Smooth|Sandstone",
-    "Red|Sandstone",
-    "Smooth Red|Sandstone",
-    "Prismarine",
-    "Prismarine|Bricks",
-    "Dark|Prismarine",
-    "Andesite",
-    "Polished|Andesite",
-    "Diorite",
-    "Polished|Diorite",
-    "Granite",
-    "Polished|Granite",
-    "Quartz Block",
-    "Smooth|Quartz"
+    "Cobblestone", "Mossy|Cobblestone",
+    "Bricks", "Stone Bricks", "Mossy|Stone Bricks",
+    "Sandstone", "Smooth|Sandstone", "Red|Sandstone", "Smooth Red|Sandstone",
+    "Andesite", "Polished|Andesite",
+    "Diorite", "Polished|Diorite",
+    "Granite", "Polished|Granite",
+    "Prismarine", "Prismarine|Bricks", "Dark|Prismarine",
+    "Acacia Planks", "Birch Planks", "Jungle Planks",
+    "Oak Planks", "Dark Oak Planks", "Spruce Planks",
+    "Warped Planks", "Crimson Planks",
+    "Nether Bricks", "Red|Nether Bricks",
+    "Blackstone", "Polished|Blackstone",
+    "Polished|Blackstone Bricks", "Quartz Block", "Smooth|Quartz",
+    "End Stone Bricks", "Purpur Block",
 )
 stairs = tuple(re.sub("(marine|ite)$", r"\1 Stairs", re.sub("stone$", "stone Stairs", f.replace("Planks", "Stairs").replace("Bricks", "Brick Stairs").replace( "Block", "Stairs").replace("|Quartz", " Quartz Stairs"))) for f in blocks)
 slabs = tuple(f.replace("Stairs", "Slab") for f in stairs)
@@ -55,10 +39,13 @@ ${when(i)} ${fill} ${st.full_id()}[half=${t},facing=${f},shape=${s}] replace #re
 %endfor
 %endfor
 <%
-    sign_text = thing.strip().split('|')
-    if len(sign_text) == 1:
-	sign_text = ("", sign_text[0])
+    sign_text = list(thing.strip().split('|'))
+    if len(sign_text) != 4:
+	sign_text = ["", ] + sign_text
+    while len(sign_text) < 4:
+	sign_text += ["", ]
+    sign_text = ','.join("Text%d:%s" % (i + 1, text(t)) for i, t in enumerate(sign_text));
 %>
-${when(i)} data merge block ~0 ~2 ~-1 {Text1:${text(re.sub(r" [^ ]*$", "", sign_text[0]))}, Text2:${text(re.sub(r" [^ ]*$", "", sign_text[1]))}}
+${when(i)} data merge block ~1 ~2 ~-1 {${sign_text}}
 
 </%base:loop>

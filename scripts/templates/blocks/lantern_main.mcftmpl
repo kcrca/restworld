@@ -1,10 +1,15 @@
 <%namespace name="base" file="../base.mcftmpl"/>\
 
-<%base:loop collection="${range(0, 2)}" args="when,i,thing">
-${when(0)} setblock ~ ~3 ~ lantern[hanging=false]
-${when(0)} setblock ~ ~4 ~ air
-${when(0)} data merge block ~ ~2 ~-1 {Text2:${text("")}}
-${when(1)} setblock ~ ~3 ~ lantern[hanging=true]
-${when(1)} setblock ~ ~4 ~ stone_slab
-${when(1)} data merge block ~ ~2 ~-1 {Text2:${text("Hanging")}}
+<%base:loop collection="${range(0, 4)}" args="when,i,thing">
+<% lantern = Thing('Lantern') if i < 2 else Thing('Soul Lantern') %>
+%if i % 2 == 0:
+${when(i)} setblock ~0 ~3 ~0 ${lantern.full_id()}[hanging=false]
+${when(i)} setblock ~0 ~4 ~0 air
+${when(i)} data merge block ~0 ~2 ~-1 {Text2:${text("")},Text4:${text("")}}
+%else:
+${when(i)} setblock ~0 ~3 ~0 ${lantern.full_id()}[hanging=true]
+${when(i)} setblock ~0 ~4 ~0 chain
+${when(i)} data merge block ~0 ~2 ~-1 {Text2:${text("Hanging")},Text4:${text("and Chain")}}
+%endif
+${when(i)} data merge block ~0 ~2 ~-1 {Text3:${text(lantern.name)}}
 </%base:loop>

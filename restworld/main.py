@@ -35,7 +35,20 @@ class Thing:
         return id
 
     def sign_text(self):
-        return self.text.split("|")
+        lines = self.to_sign_text()
+        if len(lines) == 4:
+            start = 0
+        else:
+            start = 1
+            lines = ["",] + lines
+        while len(lines) < 4:
+            lines += ("",)
+        s = ','.join(["Text%d:%s" % (i + 1, text(lines[i])) for i in range(0, 4)])
+        return s
+
+    def to_sign_text(self):
+        lines = self.text.split("|")
+        return lines
 
 
 class Nicknamed(Thing):
@@ -76,6 +89,7 @@ class Horse(Thing):
             self.tag = "%ss" % self.id
         self.variant = variant
 
+
 class Mob(Thing):
     def __init__(self, name, id=None, nbt=None, can_fly=False, acquatic=False):
         Thing.__init__(self, name, id=id)
@@ -107,15 +121,15 @@ class Particles(object, Thing):
         Thing.__init__(self, name, id)
         self.note = "(%s)" % note if note else None
 
-    def sign_text(self):
-        t = super(Particles, self).sign_text()
+    def to_sign_text(self):
+        t = super(Particles, self).to_sign_text()
         if self.note:
             t += self.note.split("|")
         return t
 
     def __cmp__(self, other):
-        my_text = ' '.join(self.sign_text())
-        other_text = ' '.join(other.sign_text())
+        my_text = ' '.join(self.to_sign_text())
+        other_text = ' '.join(other.to_sign_text())
         return cmp(my_text, other_text)
 
 
@@ -165,6 +179,7 @@ stepables = (
     Stepable("Dark Prismarine", "air"),
 )
 woods = ("Acacia", "Birch", "Jungle", "Oak", "Dark Oak", "Spruce")
+stems = ("Warped", "Crimson")
 fish_data = (
     ("kob",
      (917504, "Red-White Kob"),
@@ -333,6 +348,7 @@ def render_tmpl(tmpl, var_name, **kwargs):
         command_blocks=command_blocks,
         steppables=stepables,
         woods=woods,
+        stems=stems,
         fishes=fishes,
         horses=horses,
         other_horses=other_horses,
@@ -546,7 +562,7 @@ def room_signs(func_dir, room, sign_tmpl, subjects, walls, start, do_off_sign=Fa
         ]
     x, y = wall.start_pos()
     for i, subj in enumerate(subjects):
-        sign_text = subj.sign_text()
+        sign_text = subj.to_sign_text()
         lines = ["", ] + sign_text + [""] * (max(0, 3 - len(sign_text)))
         commands.append(sign_tmpl.render(room=room, subj=subj, lines=lines, x=-x, y=y, z=0, wall=wall).strip())
         x, y = wall.next_pos(x, y)

@@ -29,7 +29,12 @@
     "minecraft:polished_diorite_stairs",
     "minecraft:granite_stairs",
     "minecraft:polished_granite_stairs",
+    "minecraft:blackstone_stairs",
+    "minecraft:polished_blackstone_stairs",
+    "minecraft:polished_blackstone_brick_stairs",
     "minecraft:quartz_stairs",
-    "minecraft:smooth_quartz_stairs"
+    "minecraft:smooth_quartz_stairs",
+    "minecraft:warped_stairs",
+    "minecraft:crimson_stairs"
   ]
 }
