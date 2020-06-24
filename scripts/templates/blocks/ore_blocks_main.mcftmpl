@@ -1,6 +1,8 @@
 <%namespace import="*" file="blocks_base.mcftmpl"/>
 <%
-    types = ("Coal", "Iron", "Gold", "Diamond", "Lapis", "Emerald", "Redstone", "Nether Quartz", "Nether Gold")
-    ore_blocks = ["%s Block" % x for x in filter(lambda x: not 'Nether' in x, types)] + ["Quartz Block", "Gold Block"]
+    basic = ["Coal", "Iron", "Gold", "Diamond", "Lapis", "Emerald", "Redstone"]
+    odder = ["Nether Quartz", "Nether Gold"]
+    types = basic + odder
+    ore_blocks = ["%s Block" % x for x in basic] + ["Quartz Block", "Gold Block",]
 %>
-${blocks(tuple("%s Ore" % t for t in types), ore_blocks, dz=3)}
+${blocks(list("%s Ore" % t for t in types) + ["Ancient Debris",] , ore_blocks + ["Netherite Block",], dz=3)}

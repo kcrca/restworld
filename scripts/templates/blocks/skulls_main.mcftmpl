@@ -4,7 +4,7 @@
 
 <%base:loop collection="${skulls}" args="when,i,thing">
 ${when(i)} setblock ~ ~3 ~ ${Thing(thing).full_id()}
-${when(i)} setblock ~ ~3 ~1 ${Thing(thing.replace("Skull", "Wall Skull").replace("Head", "Wall Head")).full_id()}
+##${when(i)} setblock ~ ~3 ~1 ${Thing(thing.replace("Skull", "Wall Skull").replace("Head", "Wall Head")).full_id()}
 ${when(i)} data merge block ~ ~2 ~-1 {Text2:${text(thing)}}
 %if "Wither" in thing:
 ${when(i)} data merge block ~ ~2 ~-1 {Text3:${text("Skull")}}

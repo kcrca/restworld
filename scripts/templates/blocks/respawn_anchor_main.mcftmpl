@@ -1,0 +1,8 @@
+<%namespace name="base" file="../base.mcftmpl"/>
+<%namespace import="*" file="blocks_base.mcftmpl"/>
+
+<% types = [Thing("Respawn Anchor", block_state="charges=%d" % x) for x in range(0, 5)] %>
+${blocks(types, sign=-1)}
+%for i in range(0, 5):
+${base.when(i)} data merge block ~0 ~2 ~-1 {Text3:${text("Charge: %d" % i)}}
+%endfor

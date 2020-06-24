@@ -26,3 +26,7 @@ function restworld:${room}/${f}_${which}
 </%doc>
 execute at @e[type=!player] run data merge entity @s {PersistenceRequired:True}
 %endif
+
+%if which == "init":
+kill @e[type=item]
+%endif

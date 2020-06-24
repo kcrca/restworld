@@ -1,8 +1,0 @@
-<%namespace import="*" file="blocks_base.mcftmpl"/>
-<%
-    heads = ('Player|Head', 'Zombie|Head', 'Creeper|Head', 'Skeleton|Skull', 'Wither Skeleton|Skull')
-    floor_heads = tuple(Thing(x, block_state='rotation=8') for x in heads)
-    wall_heads = tuple(Thing(x.replace('|', '|Wall ', 1), block_state='facing=south') for x in heads)
-    types = floor_heads + wall_heads
-%>
-${blocks(types, sign=1)}
