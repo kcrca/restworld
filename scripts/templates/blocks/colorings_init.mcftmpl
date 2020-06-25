@@ -21,3 +21,5 @@ setblock ~${x} ~${y} ~${z} ${wood.id}_sign[rotation=14]{Text1:${text(wood.name)}
 ${colored_signs(Thing('Black'), render_signs)}
 
 setblock ~-4 ~2 ~4 oak_wall_sign[facing=south]
+
+kill @e[type=item]
