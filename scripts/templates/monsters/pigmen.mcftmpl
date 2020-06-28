@@ -1,7 +1,0 @@
-<%namespace name="base" file="../base.mcftmpl"/>\
-
-${base.remove("tag=pigman")}
-${base.mobs_init(kid_z_init=-1.6, adult_z_init=0.8, rotation_init=180, tags_init=("monsters","pigman"))}
-${base.when(0)} ${base.mobs("Zombie Pigman")}
-${base.when(0)} ${base.mobs("Zombie Pigman", do_adult=True)}
-${base.when(1)} ${base.mobs("Chicken", do_kid=True, nbt='Passengers:[{id:"minecraft:zombie_pigman",IsBaby:True,Age:-2147483648,Tags:[monsters],Rotation:[180f,0f],Facing:north,PersistenceRequired:True,NoAI:True,Silent:True}]')}

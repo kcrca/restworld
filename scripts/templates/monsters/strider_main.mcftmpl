@@ -1,0 +1,6 @@
+<%namespace name="base" file="../base.mcftmpl"/>\
+
+<%base:loop collection="${('lava', 'netherrack')}" args="when,i,thing">
+${when(i)} setblock ~0 ~1 ~-2 ${thing}
+${when(i)} setblock ~0 ~1 ~1 ${thing}
+</%base:loop>
