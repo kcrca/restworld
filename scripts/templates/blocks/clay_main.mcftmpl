@@ -1,0 +1,4 @@
+<%namespace import="*" file="blocks_base.mcftmpl"/>
+<% types = ('Clay', 'Terracotta') %>
+${blocks(types)}
+
