@@ -40,7 +40,7 @@ class Thing:
             start = 0
         else:
             start = 1
-            lines = ["",] + lines
+            lines = ["", ] + lines
         while len(lines) < 4:
             lines += ("",)
         s = ','.join(["Text%d:%s" % (i + 1, text(lines[i])) for i in range(0, 4)])
@@ -500,10 +500,11 @@ particles = (
     Particles("Explosion Emitter", note="Large Explosion"), Particles("Instant Effect"), Particles("Item Slime"),
     Particles("Item Snowball"), Particles("Large Smoke"), Particles("Lava"), Particles("Mycelium"),
     Particles("Nautilus", note="with Conduit"), Particles("Note"), Particles("Poof", note="Small Explosion"),
-    Particles("Portal"), Particles("Campfire|Smoke"), Particles("Sneeze"), Particles("Smoke"), Particles("Spit"),
-    Particles("Splash"), Particles("Squid Ink"), Particles("Sweep Attack"), Particles("Totem of Undying"),
-    Particles("Underwater"), Particles("Witch"),
+    Particles("Portal"), Particles("Rain"), Particles("Campfire|Smoke"), Particles("Sneeze"), Particles("Smoke"),
+    Particles("Soul"), Particles("Spit"), Particles("Splash"), Particles("Squid Ink"), Particles("Sweep Attack"),
+    Particles("Totem of Undying"), Particles("Underwater"), Particles("Witch"),
 )
+particles = sorted(particles, key=lambda x: x.note)
 
 
 class Wall:
@@ -526,10 +527,10 @@ class Wall:
 
     def next_pos(self, x, y):
         x += 1
-        end = self.end + 1 if self.facing == 'south' and y == self.y_first - 1 else self.end
+        end = self.end + 1 if self.facing == 'south' and y in (self.y_first - 1, self.y_first - 2) else self.end
         if x >= end:
             y -= 1
-            x = self.start - 1 if self.facing == 'south' and y == self.y_first - 1 else self.start
+            x = self.start - 1 if self.facing == 'south' and y in (self.y_first - 1, self.y_first - 2) else self.start
             if y < self.y_last:
                 return None, None
         return x, y
@@ -542,7 +543,7 @@ def particle_signs(func_dir, sign_tmpl):
         Wall(7, 5, "west", (1, 0)),
         Wall(7, 5, "north", (0, 1)),
     )
-    room_signs(func_dir, "particles", sign_tmpl, sorted(particles), walls, (1, 1.5, -1, 90), do_off_sign=True)
+    room_signs(func_dir, "particles", sign_tmpl, sorted(particles), walls, (1, 1.5, -1, 90))
 
 
 def room_signs(func_dir, room, sign_tmpl, subjects, walls, start, do_off_sign=False, label=None):
@@ -582,7 +583,7 @@ def room_signs(func_dir, room, sign_tmpl, subjects, walls, start, do_off_sign=Fa
         commands.append(
             sign_tmpl.render(room=room, subj=Particles("Off"), lines=['', 'Off', '', ''], x=-x, y=y, z=2,
                              wall=wall).strip())
-        commands.append(kill_command)
+    commands.append(kill_command)
     write_function(func_dir, "signs", "\n".join(commands) + "\n")
 
 
