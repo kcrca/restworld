@@ -305,8 +305,9 @@ biome_groups['Warm'] = ('Desert', 'Savanna', 'Badlands')
 biome_groups['Cold'] = ('Tiaga', 'Stone Shore')
 biome_groups['Snowy'] = ('Snowy Tundra', 'Ice Spikes', 'Snowy Tiaga')
 biome_groups['Ocean'] = ('Warm Ocean', 'Ocean', 'Frozen Ocean')
-biome_groups['End and Nether'] = ('The End', 'End Island', 'Nether')
-biome_groups['Structures'] = ('Mineshaft', 'Monument')
+biome_groups['Nether'] = ('Nether Wastes', 'Soul Sand Valley', 'Crimson Forest', 'Warped Forest', 'Basalt Deltas')
+biome_groups['End'] = ('The End', 'End Island')
+biome_groups['Structures'] = ('Mineshaft', 'Monument', 'Bastion Remnant')
 biomes = [item for sublist in biome_groups.values() for item in sublist]
 
 used_names = {}
