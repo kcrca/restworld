@@ -3,7 +3,7 @@
 
 <%base:loop collection="${colors}" args="when,i,thing">\
 
-<%def name="render(x, xn, xd, z, zn, zd, angle, facing, bx, bz, y_banner, y_shield, pattern, handback=None)">\
+<%def name="render(x, xn, z, zn, angle, facing, bx, bz, y_banner, y_shield, pattern, handback=None)">\
 <% when, i, thing = handback %>\
 ${when(i)} data modify block ~${x + bx} ~${y_banner} ~${z + bz} Patterns[0] merge value {Color:${thing.color_num}}
 </%def>

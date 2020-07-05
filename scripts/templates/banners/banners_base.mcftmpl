@@ -2,6 +2,7 @@
 <%
 adjustments = {}
 ## [xz]n: Adjustments (nudge) for shield's armor stand
+## b[xz]: Adjustments for banner position
 ##                  x     xn  xd   z     zn  zd                bx  bz
 adjustments[ 0] = ( 1,  0.07,  1, -1,  0.30,  0,   0, 'south',  0, +1)
 adjustments[11] = (13, -0.30,  0,  1,  0.07,  1,  90, 'west',  -1,  0)
@@ -17,7 +18,7 @@ for i in range(0, len(patterns)):
     if i > 10 and i % 10 == 6:
 	x += xd
 	z += zd
-    render(x, xn, xd, z, zn, zd, angle, facing, bx, bz, 3.65, 3.65, patterns[i], handback)
+    render(x, xn, z, zn, angle, facing, bx, bz, 3.65, 3.65, patterns[i], handback)
 %>
 </%def>
 
