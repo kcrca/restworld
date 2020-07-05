@@ -6,7 +6,7 @@ scoreboard players set banner_ink funcs 9
 kill @e[tag=banner_stand]
 fill ~-2 ~-2 ~-2 ~16 ~16 ~16 air replace #banners
 
-<%def name="render(x, xn, xd, z, zn, zd, angle, facing, bx, bz, y_shield, y_banner, pattern, handback=None)">
+<%def name="armor_stands(x, xn, xd, z, zn, zd, angle, facing, bx, bz, y_banner, y_shield, pattern, handback=None)">
 <%
 shield = '{id:shield,Count:1,tag:{Damage:0,BlockEntityTag:{Patterns:[{Pattern:"%s",Color:9}],Base:0}}}' % pattern[0]
 stand = '{Invisible:True,NoGravity:true,ShowArms:true,Pose:{LeftArm:[0.0f,90.0f,90.0f]},Rotation:[%df,0f],HandItems:[{},%s],Tags:[banner_stand,banner_stand_%s],CustomName:%s}' % (angle, shield, pattern[0], text(pattern[1].replace('|', ' ')))
@@ -14,7 +14,7 @@ stand = '{Invisible:True,NoGravity:true,ShowArms:true,Pose:{LeftArm:[0.0f,90.0f,
 summon armor_stand ~${x + xn} ~${y_shield} ~${z + zn} ${stand}
 </%def>
 
-${banners(render)}
+${banners(armor_stands)}
 
 function restworld:banners/switch_to_color
 function restworld:banners/banner_color_cur

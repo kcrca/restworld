@@ -1,34 +1,28 @@
 <%def name="banners(render, handback=None)">
 <%
 adjustments = {}
-adjustments[ 0] = (2, 0.07, 2, -1, 0.3, 0, 0, 'south', -1, +1)
-adjustments[10] = (13, -0.3, 0, 2, 0.07, 2, 90, 'west', -1, -1)
-adjustments[20] = (10, -0.07, -2, 13, -0.3, 0, 180, 'north', +1, -1)
-adjustments[30] = (-1, 0.3, 0, 10, -0.07, -2, 270, 'east', +1, +1)
+## [xz]n: Adjustments (nudge) for shield's armor stand
+##                  x     xn  xd   z     zn  zd                bx  bz
+adjustments[ 0] = ( 1,  0.07,  1, -1,  0.30,  0,   0, 'south',  0, +1)
+adjustments[11] = (13, -0.30,  0,  1,  0.07,  1,  90, 'west',  -1,  0)
+adjustments[21] = (11, -0.07, -1, 13, -0.30,  0, 180, 'north',  0, -1)
+adjustments[31] = (-1,  0.30,  0, 11, -0.07, -1, 270, 'east',  +1,  0)
 
-for i in range(0, len(patterns), 2):
+for i in range(0, len(patterns)):
     try:
 	x, xn, xd, z, zn, zd, angle, facing, bx, bz = adjustments[i]
     except KeyError:
 	x += xd
 	z += zd
-    x_adj = z_adj = 0
-    if i % 10 == 4:
-	x_adj = xd / 2
-	z_adj = zd / 2
-    render(x, xn + x_adj, xd, z, zn + z_adj, zd, angle, facing, bx, bz, 3.65, 5, patterns[i], handback)
-    render(x, xn + x_adj, xd, z, zn + z_adj, zd, angle, facing, bx, bz, 1.65, 3, patterns[i + 1], handback)
-    x += x_adj
-    z += z_adj
+    if i > 10 and i % 10 == 6:
+	x += xd
+	z += zd
+    render(x, xn, xd, z, zn, zd, angle, facing, bx, bz, 3.65, 3.65, patterns[i], handback)
 %>
 </%def>
 
-<%def name="render_banner(x, xn, xd, z, zn, zd, angle, facing, bx, bz, y, pattern, color, ink, handback=None)">\
-setblock ~${x + bx} ~${y} ~${z + bz} ${color}_wall_banner[facing=${facing}]{Patterns:[{Pattern:"${pattern[0]}",Color:${ink}}]} destroy
-</%def>
-
 <%def name='switch_banners(which)'>
-kill @e[tag=banners_which]
-execute at @e[tag=all_banners_home] positioned ~ ~-0.5 ~ run function restworld:banners/banner_${which}_home
-tag @e[tag=banner_${which}_home] add banners_which
+tag @e[tag=all_banners_home] remove banner_color_home
+tag @e[tag=all_banners_home] remove banner_ink_home
+tag @e[tag=all_banners_home] add banner_${which}_home
 </%def>
