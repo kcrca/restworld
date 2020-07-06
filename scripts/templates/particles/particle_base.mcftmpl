@@ -25,3 +25,7 @@ scoreboard players operation random funcs %= random_range funcs
 execute if score random funcs matches ${loop.index} run ${cmd}
 %endfor
 </%def>
+
+<%def name="floor(block)">
+fill ~-3 ~-1 ~-3 ~3 ~-1 ~3 ${block}
+</%def>

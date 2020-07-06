@@ -491,21 +491,59 @@ def main():
 
 
 particles = (
-    Particles("Ambient Entity|Effect", "ambient"), Particles("Angry Villager"), Particles("Bee Pollen"),
-    Particles("Bubbles|and|Whirlpools", "bubbles"), Particles("Clouds", note="Evaporation"), Particles("Crit"),
-    Particles("Damage Indicator"), Particles("Dolphin"), Particles("Dragon Breath"), Particles("Dripping Honey"),
-    Particles("Dripping Lava"), Particles("Dripping Water"), Particles("Dust", note="Redstone Dust"),
-    Particles("Effect"), Particles("Elder Guardian"), Particles("Enchant"), Particles("Enchanted Hit"),
-    Particles("End Rod"), Particles("Entity Effect"), Particles("Explosion"), Particles("Falling Dust"),
-    Particles("Fireworks"), Particles("Fishing"), Particles("Flame"), Particles("Happy Villager"), Particles("Heart"),
-    Particles("Explosion Emitter", note="Large Explosion"), Particles("Instant Effect"), Particles("Item Slime"),
-    Particles("Item Snowball"), Particles("Large Smoke"), Particles("Lava"), Particles("Mycelium"),
-    Particles("Nautilus", note="with Conduit"), Particles("Note"), Particles("Poof", note="Small Explosion"),
-    Particles("Portal"), Particles("Rain"), Particles("Campfire|Smoke"), Particles("Sneeze"), Particles("Smoke"),
-    Particles("Soul"), Particles("Spit"), Particles("Splash"), Particles("Squid Ink"), Particles("Sweep Attack"),
-    Particles("Totem of Undying"), Particles("Underwater"), Particles("Witch"),
+    Particles("Ambient Entity|Effect", "ambient"),
+    Particles("Angry Villager"),
+    Particles("Ash"),
+    Particles("Barrier"),
+    Particles("Bubbles|and|Whirlpools", "bubbles"),
+    Particles("Clouds", note="Evaporation"),
+    Particles("Crimson Spore"),
+    Particles("Crit"),
+    Particles("Damage Indicator"),
+    Particles("Dolphin"),
+    Particles("Dragon Breath"),
+    Particles("Dripping Lava", note="Falling, Landing"),
+    Particles("Dripping Water", note="Falling"),
+    Particles("Dripping|Obsidian Tear", note="Falling, Landing"),
+    Particles("Dripping Honey", note="Falling, Landing"),
+    Particles("Dust", note="Redstone Dust"),
+    Particles("Effect"),
+    Particles("Enchant"),
+    Particles("Enchanted Hit"),
+    Particles("End Rod"),
+    Particles("Entity Effect"),
+    Particles("Explosion Emitter", note="Large Explosion"),
+    Particles("Explosion"),
+    Particles("Falling Dust"),
+    Particles("Falling Nectar"),
+    Particles("Fireworks", note="and Flash"),
+    Particles("Fishing"),
+    Particles("Flame"),
+    Particles("Happy Villager"),
+    Particles("Heart"),
+    Particles("Instant Effect"),
+    Particles("Item Slime"),
+    Particles("Item Snowball"),
+    Particles("Large Smoke"),
+    Particles("Lava"),
+    Particles("Mycelium"),
+    Particles("Nautilus", note="with Conduit"),
+    Particles("Note"),
+    Particles("Poof", note="Small Explosion"),
+    Particles("Portal"),
+    Particles("Smoke"),
+    Particles("Sneeze"),
+    Particles("Soul"),
+    Particles("Spit"),
+    Particles("Splash"),
+    Particles("Squid Ink"),
+    Particles("Sweep Attack"),
+    Particles("Totem of Undying"),
+    Particles("Underwater"),
+    Particles("Warped Spore"),
+    Particles("Witch"),
 )
-particles = sorted(particles, key=lambda x: x.note)
+particles = sorted(particles, key=lambda x: x.name.replace('|', ' '))
 
 
 class Wall:
@@ -528,10 +566,9 @@ class Wall:
 
     def next_pos(self, x, y):
         x += 1
-        end = self.end + 1 if self.facing == 'south' and y in (self.y_first - 1, self.y_first - 2) else self.end
-        if x >= end:
+        if x >= self.end:
             y -= 1
-            x = self.start - 1 if self.facing == 'south' and y in (self.y_first - 1, self.y_first - 2) else self.start
+            x = self.start
             if y < self.y_last:
                 return None, None
         return x, y
@@ -540,7 +577,7 @@ class Wall:
 def particle_signs(func_dir, sign_tmpl):
     walls = (
         Wall(7, 5, "east", (-1, 0)),
-        Wall(7, 5, "south", (0, -1)),
+        Wall(7, 7, "south", (0, -1)),
         Wall(7, 5, "west", (1, 0)),
         Wall(7, 5, "north", (0, 1)),
     )

@@ -1,2 +1,2 @@
 <%namespace file="particle_base.mcftmpl" import="*"/>\
-${fast_clock()} particle flame ~ ~1 ~ 0.5 0.5 0.5 0.01 8
+${main_clock()} function restworld:particles/flame_change

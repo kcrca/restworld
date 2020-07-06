@@ -1,1 +1,2 @@
-fill ~-1 ~0 ~-1 ~1 ~0 ~1 soul_sand
+<%namespace file="particle_base.mcftmpl" import="*"/>\
+${floor('soul_soil')}
