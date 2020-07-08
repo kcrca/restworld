@@ -178,6 +178,11 @@ stepables = (
     Stepable("Prismarine Brick", "air", block="Prismarine Bricks"),
     Stepable("Dark Prismarine", "air"),
 )
+materials = (
+    'Iron', 'Coal', 'Gold', 'Diamond', 'Emerald', 'Chainmail', 'Redstone', 'Lapis Lazuli', 'Granite', 'Andesite',
+    'Diorite', 'Netherite', 'Blackstone', 'Stone', 'Cobblestone', 'End Stone', 'Sandstone', 'Red Sandstone', 'Bone',
+    'Honey', 'Honeycomb', 'Grass', 'Sticky', 'Nether')
+corals = ('Horn', 'Tube', 'Fire', 'Bubble', 'Brain')
 woods = ("Acacia", "Birch", "Jungle", "Oak", "Dark Oak", "Spruce")
 stems = ("Warped", "Crimson")
 fish_data = (
@@ -310,6 +315,53 @@ biome_groups['End'] = ('The End', 'End Island')
 biome_groups['Structures'] = ('Mineshaft', 'Monument', 'Stronghold', 'Bastion Remnant', 'Fortress')
 biomes = [item for sublist in biome_groups.values() for item in sublist]
 
+
+def get_normal_blocks():
+    modifiers = tuple(c.name for c in colors) + woods + stems + materials + tuple(s.name for s in stepables) + corals
+    modifiers = tuple(sorted(set(modifiers), key=lambda x: len(x), reverse=True))
+    mod_re = re.compile(r'^(.*? ?)(\b(?:Mossy )?%s\b)($| (.*))' % '|'.join(modifiers))
+    block_re = re.compile(r'Block of (.*)')
+    command_re = re.compile(r'(.*)Command Block')
+    with open(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'some_blocks')) as f:
+        lines = f.readlines()
+    blocks = {}
+    for block in lines:
+        if block[0] == '#':
+            continue
+        block = block.strip()
+        block = block_re.sub(r'\1 Block', block)  # "Block of Foo" -> "Foo Block"
+        m = mod_re.match(block)
+        if not m:
+            m = command_re.match(block)
+            if not m:
+                name = block
+            else:
+                name = 'Command Block'
+        else:
+            name = (m.group(1) + m.group(3))
+        name = name.replace('  ', ' ').strip()
+
+        # Special cases to force grouping and sometimes placement.
+        if 'Coral' in name:
+            name = 'E-Coral ' + name
+        elif name in ('Dropper', 'Dispenser', 'Furnace', 'Observer'):
+            name = 'Furnace '  + name
+        elif name in ('Crafting Table', 'Cartography Table', 'Smithing Table', 'Fletching Table', 'Smoker', 'Blast Furnace', 'Cauldron'):
+            name = 'Profession ' + name
+        elif 'Glass' in name:
+            # "M" to move it away from corals so the water trough behind the coral doesn't overlap
+            name = 'MGlass ' + name
+            
+        if name not in blocks:
+            blocks[name] = []
+        blocks[name] += (block,)
+    for b in sorted(blocks):
+        for w in sorted(blocks[b]):
+            yield w.lower().replace(' ', '_').replace('_lazuli', '').replace('bale', 'block')
+
+
+normal_blocks = get_normal_blocks()
+
 used_names = {}
 
 
@@ -366,6 +418,7 @@ def render_tmpl(tmpl, var_name, **kwargs):
         villager_types=villager_types,
         biome_groups=biome_groups,
         biomes=biomes,
+        normal_blocks=normal_blocks,
         **kwargs
     )
 

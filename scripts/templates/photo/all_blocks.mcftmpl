@@ -1,0 +1,30 @@
+<% coral_stage = 0 %>
+<% line_length = 21 %>
+fill ~0 ~-1 ~0 ~${line_length} ~-20 ~2 air
+%for b in normal_blocks:
+<%
+    x = loop.index % line_length
+    y = -(int(loop.index / line_length) + 1)
+    dir = y % 2 == 0
+    if dir == 0:
+	x = line_length - x - 1
+    if '_log' in b or 'basalt' in b or 'stem' in b:
+	b += '[axis=z]'
+    elif b == 'observer':
+	b += '[facing=north]'
+%>
+setblock ~${x} ~${y} ~0 ${b}
+%if 'coral' in b and 'dead' not in b:
+%if coral_stage == 0:
+setblock ~${x - 1 if dir == 1 else x + 1} ~${y} ~1 stone
+<% coral_stage += 1 %>
+%endif
+setblock ~${x} ~${y} ~1 water
+setblock ~${x} ~${y} ~2 stone
+setblock ~${x} ~${y - 1} ~1 stone
+setblock ~${x} ~${y - 2} ~1 stone_slab[type=top]
+%elif coral_stage == 1:
+setblock ~${x} ~${y} ~1 stone
+<% coral_stage += 1 %>
+%endif
+%endfor

@@ -1,2 +1,2 @@
 tp @p @e[tag=photo_quilt_view,limit=1]
-execute at @e[tag=photo_quilt_view,limit=1] run tp @p ~ ~ ~ facing 4 109.25 -121
+execute at @e[tag=photo_quilt_view,limit=1] run tp @p ~ ~ ~ facing -1000 101.3 1016
