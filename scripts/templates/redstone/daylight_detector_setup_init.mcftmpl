@@ -1,0 +1,2 @@
+setblock ~0 ~2 ~0 oak_wall_sign[facing="east"]
+execute at @e[tag=daylight_detector_setup_home] run function restword:redstone/daylight_detector_setup.mcfunction

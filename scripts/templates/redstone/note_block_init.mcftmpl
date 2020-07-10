@@ -35,6 +35,7 @@ execute at @e[tag=note_block_home,limit=1] run setblock ~0 ~2 ~0 minecraft:grass
     y = 3 - i / row_len
     row = i / len(instruments) / 2
 %>
+setblock ~${x} ~${y} ~1 air
 setblock ~${x} ~${y} ~1 oak_wall_sign[facing=south]{\
 ${sign_nbt(1, 'scoreboard players set instrument funcs %d' % i, thing[0], name='note_block')},\
 ${sign_nbt(2, 'execute at @e[tag=note_block_home] run setblock ~0 ~2 ~0 %s' % thing[1].id, '(%s)' % thing[1].name, name='note_block')}\

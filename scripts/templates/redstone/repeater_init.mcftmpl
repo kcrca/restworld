@@ -1,0 +1,1 @@
+setblock ~0 ~3 ~0 oak_wall_sign[facing=west]{Text2:${text("Comparator")},Text3:${text("and Repeater")}}

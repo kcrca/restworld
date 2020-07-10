@@ -3,5 +3,5 @@
 scoreboard players set daylight_inv funcs 0
 execute if block ~0 ~2 ~1 daylight_detector[inverted=true] run scoreboard players set daylight_inv funcs 1
 
-execute if score daylight_inv funcs matches 0 run data merge block ~0 ~2 ~0 {Text1:${text("Daylight Detector")},Text2:${text("")}}
-execute if score daylight_inv funcs matches 1 run data merge block ~0 ~2 ~0 {Text1:${text("Inverted")},Text2:${text("Daylight Detector")}}
+execute if score daylight_inv funcs matches 0 run data merge block ~0 ~2 ~0 {Text2:${text("Daylight Detector")},Text3:${text("")}}
+execute if score daylight_inv funcs matches 1 run data merge block ~0 ~2 ~0 {Text2:${text("Inverted")},Text3:${text("Daylight Detector")}}
