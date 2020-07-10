@@ -29,3 +29,5 @@ summon armor_stand ~${x + nudge} ~2.8 ~${z + nudge} {Tags:[banner_stand,banner_p
 
 ${custom(0.2, 0.2, 0.1, 14)}
 ${custom(11.8, 11.8, -0.1, 6)}
+
+function restworld:banners/switch_to_color
