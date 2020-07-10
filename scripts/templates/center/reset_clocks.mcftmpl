@@ -1,1 +1,3 @@
-setblock 2 1 -5 minecraft:redstone_block destroy
+scoreboard players set SPEED_MAIN clocks 60
+scoreboard players set SPEED_FAST clocks 15
+scoreboard players set SPEED_SLOW clocks 90
