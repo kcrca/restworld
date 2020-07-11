@@ -11,5 +11,5 @@
 %>
 <%base:loop collection="${settings}" args="when,i,thing">
 <% name, flying, variant = thing %>\
-${when(i, as_prefix=True)} as @e[tag=parrot] run data merge entity @s {CustomName:${text(name)},Variant:${variant},OnGround:${flying}}\
+${when(i, as_prefix=True)} as @e[tag=parrot] run data merge entity @s {CustomName:${text(name)},Variant:${variant},OnGround:${flying},Sitting:${flying}}\
 </%base:loop>\
