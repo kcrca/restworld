@@ -1,3 +1,0 @@
-<%namespace name="base" file="../base.mcftmpl"/>
-setblock ~0 ~0 ~1 snow_block
-${base.remove("tag=trigger_minecart")}
