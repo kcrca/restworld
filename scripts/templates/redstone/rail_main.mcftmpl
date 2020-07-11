@@ -9,16 +9,14 @@
 %>
 
 <%base:loop collection="${blocks}" args="when,i,thing">\
-%if not powered[i] or thing.name.startswith("Detector"):
 <% power = ",powered=true" if powered[i] else "" %>
-${when(i)} fill ~1 ~0 ~-1 ~1 ~0 ~-2 minecraft:air
-${when(i)} setblock ~1 ~2 ~-1 ${thing.full_id(block_state="shape=east_west" + power)}
-${when(i)} setblock ~2 ~2 ~-1 ${thing.full_id(block_state="shape=ascending_east" + power)}
-${when(i)} setblock ~3 ~3 ~-1 ${thing.full_id(block_state="shape=east_west" + power)}
-${when(i)} setblock ~1 ~2 ~-2 ${thing.full_id(block_state="shape=north_south" + power)}
-${when(i)} data merge block ~2 ~2 ~-2 {Text2:${text(thing.name)},Text3:${text("")}}
+%for shape in ('east_west', 'north_south') + tuple('ascending_%s' % dir for dir in ('east', 'west', 'north', 'south')):
+${when(i)} fill ~0 ~2 ~0 ~3 ~3 ~-3 ${thing.full_id(block_state="shape=" + shape + power)} replace #restworld:rail[shape=${shape}]
+%endfor
+%if powered[i]:
+${when(i)} fill ~0 ~0 ~0 ~3 ~0 ~-3 minecraft:redstone_torch replace minecraft:glass
 %else:
-${when(i)} fill ~1 ~0 ~-1 ~1 ~0 ~-2 minecraft:redstone_torch
+${when(i)} fill ~0 ~0 ~0 ~3 ~0 ~-3 minecraft:glass replace minecraft:redstone_torch
 %endif
-${when(i)} data merge block ~2 ~2 ~-2 {Text3:${text("(Powered)" if powered[i] else "")}}
+${when(i)} data merge block ~1 ~2 ~-2 {Text2:${text(thing.name)},Text3:${text("(Powered)" if powered[i] else "")}}
 </%base:loop>
