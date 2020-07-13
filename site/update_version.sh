@@ -12,7 +12,7 @@ ver_old_re=$(echo "$ver_old" | sed -e 's/[.]/\\./g')
 ts_cur=$(stat -f '%Sm' index.html)
 
 rm -f index.html.new
-ex index.html <<EOF
+ex index.html <<EOF || true
 g/\\<$ver_old_re\\>/s//$ver_cur/g
 /CopyrightBegin/+,/CopyrightEnd/-d
 /CopyrightBegin/r ../License.html
