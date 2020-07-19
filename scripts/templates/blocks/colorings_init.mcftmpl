@@ -16,7 +16,7 @@ setblock ~-5 ~3 ~1 oak_wall_sign[facing=south]{Text2:${text("Concrete")}} destro
 setblock ~-7 ~3 ~1 oak_wall_sign[facing=south]{Text2:${text("Glass")}} destroy
 
 <%def name="render_signs(x, y, z, color, wood, when, i, thing)">
-setblock ~${x} ~${y} ~${z} ${wood.id}_sign[rotation=14]{Text1:${text(wood.name)},Text2:${text('Sign With')},Text3:${text("Text Colored")},Text4:${text(color.name)}} destroy\
+setblock ~${x} ~${y} ~${z} ${wood.id}_sign[rotation=14]{Text1:${text(wood.name)},Text2:${text('Sign With')},Text3:${text(color.name)},Text4:${text("Text")}} destroy\
 </%def>
 ${colored_signs(Thing('Black'), render_signs)}
 

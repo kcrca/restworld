@@ -33,7 +33,7 @@ setblock ~0 ~-1 ~-1 redstone_torch
 setblock ~0 ~-1 ~-1 air
 
 <%def name="render_signs(x, y, z, color, wood, when, i, thing)">
-${when(i)} data merge block ~${x} ~${y} ~${z} {Color:${color.id},Text4:${text(color.name)}}
+${when(i)} data merge block ~${x} ~${y} ~${z} {Color:${color.id},Text3:${text(color.name)}}
 </%def>
 ${colored_signs(thing, render_signs, when, i, thing)}
 
