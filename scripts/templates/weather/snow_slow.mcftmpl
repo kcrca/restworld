@@ -1,0 +1,21 @@
+<%namespace name="base" file="../base.mcftmpl"/>
+
+<%
+import random
+
+spots = []
+for x in range(-6, 1):
+    for z in range(-5, 6):
+	y = 2 if abs(z) <= 1 and x >= -1 else 3 if abs(z) <= 3 and x >= -4 else 4
+	spots.append((x, y, z))
+random.shuffle(spots)
+%>
+
+<%base:loop collection="${spots}" args="when,i,thing">\
+<% pos = ' '.join('~%d' % i for i in thing) %>
+%if thing[1] == 2:
+${when(i)} execute if block ${pos} ice run setblock ${pos} water
+%else:
+${when(i)} execute if block ${pos} snow run setblock ${pos} air
+%endif
+</%base:loop>\

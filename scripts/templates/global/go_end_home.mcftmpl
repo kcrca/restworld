@@ -1,1 +1,2 @@
 execute in the_end run tp @p 100 49 0 facing 95 50 0
+weather clear

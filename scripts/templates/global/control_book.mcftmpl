@@ -14,6 +14,7 @@ ${action(r">>", "Faster Clock Speed", "function restworld:center/faster_clocks")
 ${scribe(r"\\nLinks:\\n   ")}, \
 ${action(r"Home", "Starting Point", "function restworld:global/go_home")}, ${scribe(r"\\n   ")}, \
 ${action(r"Photo Shoot", "Scenic View", "function restworld:photo/photo_example_view")}, ${scribe(r"\\n   ")}, \
+${action(r"Snow and Rain", "Snow and Rain", "function restworld:global/go_weather")}, ${scribe(r"\\n   ")}, \
 ${action(r"Biome Sampler", "Biome Sampler", "function restworld:global/see_biomes")}, ${scribe(r"\\n   ")}, \
 ${action(r"Nether Home", "Nether Starting Point", "function restworld:global/go_nether_home")}, ${scribe(r"\\n   ")}, \
 ${action(r"End Home", "End Starting Point", "function restworld:global/go_end_home")}, ${scribe(r"\\n   ")} \
