@@ -1,1 +1,1 @@
-weather rain
+execute in overworld run weather rain

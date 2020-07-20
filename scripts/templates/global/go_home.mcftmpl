@@ -1,2 +1,14 @@
-tp @p 0 101 0 facing 0 101 10
-weather clear
+<%def name="if_user_in(world)">\
+execute in minecraft:${world} run execute as @p[sort=nearest,distance=..100,limit=1] in overworld run\
+</%def>\
+
+## In the overworld, go to the middle
+${if_user_in('overworld')} tp @p 0 101 0 facing 0 101 10
+
+## In the nether, go directly in front of the nether portal
+${if_user_in('the_nether')} tp @p 54 101 0 facing 50 102 0
+
+## In the end, go to the end portals
+${if_user_in('the_end')} tp @p 5 101 83 facing 8 102 83
+
+execute in overworld run weather clear

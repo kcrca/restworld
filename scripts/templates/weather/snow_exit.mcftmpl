@@ -1,1 +1,1 @@
-weather clear
+execute in overworld run weather clear
