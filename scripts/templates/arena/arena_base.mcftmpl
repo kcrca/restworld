@@ -1,0 +1,24 @@
+<%namespace file="../sign_base.mcftmpl" import="*"/>
+
+<%def name="arena_sign(y, z, title, script)">
+setblock ~-2 ~${y} ~${z} oak_wall_sign[facing=west]{${sign_nbt(1, "function restworld:arena/%s" % script, title, name="controls")},Text3:${text("Off" if "toggle" in script else "")}} replace
+</%def>
+
+<%def name="battle(attacker, victim, attacker_nbt=None, victim_nbt=None)">
+say ${Thing(attacker).name} vs. ${Thing(victim).name}
+execute at @e[tag=attacker_home] run data merge block ~1 ~0 ~0 {Command:""}
+execute at @e[tag=victim_home] run data merge block ~1 ~0 ~0 {Command:""}
+kill @e[tag=battler,distance=..30]
+kill @e[type=vex,distance=..30]
+kill @e[type=item,distance=..30]
+<%
+attacker_cmd = 'execute at @e[tag=attacker_home] run summon %s ~0 ~2.5 ~0 {Rotation:[180,0],Health:1000,Tags:[battler,attacker]%s}' % (attacker, ',%s' % attacker_nbt if attacker_nbt else '')
+victim_cmd = 'execute at @e[tag=victim_home] run summon %s ~0 ~2.5 ~0 {Health:1000,Tags:[battler,victim]%s}' % (victim, ',%s' % victim_nbt if victim_nbt else '')
+%>
+
+${attacker_cmd}
+${victim_cmd}
+execute at @e[tag=attacker_home] run tp @e[tag=attacker] ~0 ~2 ~0 facing ~0 ~2 ~-10
+execute at @e[tag=attacker_home] run data merge block ~1 ~0 ~0 {Command:"execute unless entity @e[tag=attacker] run ${attacker_cmd}"}
+execute at @e[tag=victim_home] run data merge block ~1 ~0 ~0 {Command:"execute unless entity @e[tag=victim] run ${victim_cmd}"}
+</%def>

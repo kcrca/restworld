@@ -1,7 +1,0 @@
-<%
-    x_dim = 20
-    y_dim = 16
-    z_dim = 20
-%>
-
-execute positioned ~${-(x_dim + 2)} ~-1 ~${-(z_dim + 2)} run kill @e[type=!player,dx=${2 * x_dim + 3},dy=${y_dim + 1},dz=${2 * z_dim + 3}]
