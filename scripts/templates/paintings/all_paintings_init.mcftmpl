@@ -1,4 +1,5 @@
 kill @e[tag=painting]
+say hi
 
 <%def name="painting(id, facing, x, z, sx=0, sy=0, sz=0)">\
 <%
