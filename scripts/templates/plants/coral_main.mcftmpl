@@ -4,16 +4,15 @@
 <%doc>The wallsign should be watterlogged, but currently (1.13.2) that means
       the sign contents do not change. Try again later.</%doc>\
 <%base:loop collection="${corals}" args="when,i,thing">\
-${when(i)} fill ~0 ~2 ~0 ~0 ~2 ~1 minecraft:${thing.id}_block
+${when(i)} fill ~0 ~2 ~0 ~0 ~2 ~-1 minecraft:${thing.id}_block
 ${when(i)} setblock ~0 ~3 ~0 minecraft:${thing.id}
-${when(i)} setblock ~0 ~3 ~1 minecraft:${thing.id}_fan
-${when(i)} setblock ~-1 ~2 ~1 minecraft:${thing.id}_wall_fan[facing=west]
+${when(i)} setblock ~0 ~3 ~-1 minecraft:${thing.id}_fan
+${when(i)} setblock ~-1 ~2 ~-1 minecraft:${thing.id}_wall_fan[facing=west]
 
-## TODO: Should be waterlogged, but a bug makes that not display new sign text
-${when(i)} data merge block ~0 ~2 ~2 {Text2:${text(thing.name)}}
+${when(i)} data merge block ~0 ~2 ~-2 {Text2:${text(thing.name)}}
 
-${when(i)} fill ~0 ~2 ~3 ~0 ~2 ~4 minecraft:dead_${thing.id}_block
-${when(i)} setblock ~0 ~3 ~3 minecraft:dead_${thing.id}
-${when(i)} setblock ~0 ~3 ~4 minecraft:dead_${thing.id}_fan
-${when(i)} setblock ~-1 ~2 ~4 minecraft:dead_${thing.id}_wall_fan[facing=west]
+${when(i)} fill ~0 ~2 ~-3 ~0 ~2 ~-4 minecraft:dead_${thing.id}_block
+${when(i)} setblock ~0 ~3 ~-3 minecraft:dead_${thing.id}
+${when(i)} setblock ~0 ~3 ~-4 minecraft:dead_${thing.id}_fan
+${when(i)} setblock ~-1 ~2 ~-4 minecraft:dead_${thing.id}_wall_fan[facing=west]
 </%base:loop>

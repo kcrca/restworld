@@ -1,9 +1,0 @@
-<%namespace name="base" file="../base.mcftmpl"/>
-## Should be an odd number since there are two mushrooms; don't want the same
-## mushroom on the same soil
-<% soils = (Thing("Mycelium"), Thing("Podzol"), Thing("Glowstone")) %>
-
-<%base:loop collection="${soils}" args="when,i,thing">\
-${when(i)} setblock ~ ~3 ~-1 air
-${when(i)} setblock ~ ~2 ~-1 ${soils[i].full_id()}
-</%base:loop>

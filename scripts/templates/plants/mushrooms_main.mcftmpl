@@ -1,8 +1,16 @@
 <%namespace name="base" file="../base.mcftmpl"/>
-<% mushrooms = (Thing("Red Mushroom"), Thing("Brown Mushroom")) %>
+<%
+    mushrooms = (Thing("Red Mushroom"), Thing("Brown Mushroom"))
+    soils = (Thing("Mycelium"), Thing("Podzol"), Thing("Glowstone"))
+%>
 
-<%base:loop collection="${mushrooms}" args="when,i,thing">\
-${when(i)} setblock ~ ~3 ~ air
-${when(i)} setblock ~ ~3 ~ ${thing.full_id()}
-${when(i)} data merge block ~1 ~2 ~ {Text2:${text(thing.name)}}
+setblock ~0 ~3 ~0 air
+<%base:loop collection="${range(0, len(mushrooms) * len(soils))}" args="when,i,thing">\
+<%
+    mushroom = mushrooms[i % len(mushrooms)]
+    soil = soils[i % len(soils)]
+%>
+${when(i)} setblock ~0 ~2 ~0 ${soil.full_id()}
+${when(i)} setblock ~0 ~3 ~0 ${mushroom.full_id()}
+${when(i)} data merge block ~-1 ~2 ~0 {Text2:${text(mushroom.name)}}
 </%base:loop>
