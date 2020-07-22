@@ -2,10 +2,11 @@
 
 fill ~-2 ~1 ~1 ~-2 ~-1 ~-1 air
 
-${arena_sign( 1, -1, "Wolf", "wolf_battle")}
-${arena_sign( 1,  0, "Skeleton", "skeleton_battle")}
-${arena_sign( 1,  1, "Ravager", "ravager_battle")}
-${arena_sign( 0, -1, "Illusioner", "illusioner_battle")}
-${arena_sign( 0,  0, "Evoker", "evoker_battle")}
-${arena_sign( 0,  1, "Vindicator", "vindicator_battle")}
+${arena_sign( 1, -1, "Illusioner", "illusioner_battle")}
+${arena_sign( 1,  0, "Evoker", "evoker_battle")}
+${arena_sign( 1,  1, "Vindicator", "vindicator_battle")}
+${arena_sign( 0, -1, "Wolf", "wolf_battle")}
+${arena_sign( 0,  1, "Ravager", "ravager_battle")}
+${arena_sign(-1, -1, "Skeleton", "skeleton_battle")}
 ${arena_sign(-1,  0, "Wither", "wither_battle")}
+${arena_sign(-1,  1, "Cat", "cat_battle")}

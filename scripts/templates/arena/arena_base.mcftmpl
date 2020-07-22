@@ -6,8 +6,6 @@ setblock ~-2 ~${y} ~${z} oak_wall_sign[facing=west]{${sign_nbt(1, "function rest
 
 <%def name="battle(attacker, victim, attacker_nbt=None, victim_nbt=None)">
 say ${Thing(attacker).name} vs. ${Thing(victim).name}
-execute at @e[tag=attacker_home] run data merge block ~1 ~0 ~0 {Command:""}
-execute at @e[tag=victim_home] run data merge block ~1 ~0 ~0 {Command:""}
 kill @e[tag=battler,distance=..30]
 kill @e[type=vex,distance=..30]
 kill @e[type=item,distance=..30]
@@ -18,7 +16,9 @@ victim_cmd = 'execute at @e[tag=victim_home] run summon %s ~0 ~2.5 ~0 {Health:10
 
 ${attacker_cmd}
 ${victim_cmd}
-execute at @e[tag=attacker_home] run tp @e[tag=attacker] ~0 ~2 ~0 facing ~0 ~2 ~-10
-execute at @e[tag=attacker_home] run data merge block ~1 ~0 ~0 {Command:"execute unless entity @e[tag=attacker] run ${attacker_cmd}"}
-execute at @e[tag=victim_home] run data merge block ~1 ~0 ~0 {Command:"execute unless entity @e[tag=victim] run ${victim_cmd}"}
+execute at @e[tag=attacker_home] run tp @e[tag=attacker] ~0 ~2 ~0
+execute at @e[tag=monitor_home] run data merge block ~2 ~0 ~0 {Command:"execute unless entity @e[tag=attacker] run ${attacker_cmd}"}
+execute at @e[tag=monitor_home] run data merge block ~3 ~0 ~0 {Command:"execute unless entity @e[tag=victim] run ${victim_cmd}"}
+execute at @e[tag=monitor_home] run say data merge block ~2 ~0 ~0 ...
+execute at @e[tag=monitor_home] run say data merge block ~3 ~0 ~0 ...
 </%def>

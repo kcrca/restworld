@@ -1,0 +1,3 @@
+execute unless entity @e[tag=attacker] at @e[tag=victim_home] run tp @e[tag=victim] ~0 ~2 ~0 facing ~0 ~2 ~10
+execute unless entity @e[tag=victim] at @e[tag=attacker_home] run tp @e[tag=attacker] ~0 ~2 ~0 facing ~0 ~2 ~-10
+kill @e[type=item]
