@@ -1,0 +1,4 @@
+<%namespace name="base" file="../base.mcftmpl"/>\
+
+${base.remove('tag=particler')}
+execute in overworld run weather clear

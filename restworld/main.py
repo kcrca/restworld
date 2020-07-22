@@ -345,13 +345,15 @@ def get_normal_blocks():
         if 'Coral' in name:
             name = 'E-Coral ' + name
         elif name in ('Dropper', 'Dispenser', 'Furnace', 'Observer'):
-            name = 'Furnace '  + name
-        elif name in ('Crafting Table', 'Cartography Table', 'Smithing Table', 'Fletching Table', 'Smoker', 'Blast Furnace', 'Cauldron'):
+            name = 'Furnace ' + name
+        elif name in (
+        'Crafting Table', 'Cartography Table', 'Smithing Table', 'Fletching Table', 'Smoker', 'Blast Furnace',
+        'Cauldron'):
             name = 'Profession ' + name
         elif 'Glass' in name:
             # "M" to move it away from corals so the water trough behind the coral doesn't overlap
             name = 'MGlass ' + name
-            
+
         if name not in blocks:
             blocks[name] = []
         blocks[name] += (block,)
@@ -550,6 +552,7 @@ particles = (
     Particles("Barrier"),
     Particles("Bubbles|and|Whirlpools", "bubbles"),
     Particles("Clouds", note="Evaporation"),
+    Particles("Composter"),
     Particles("Crimson Spore"),
     Particles("Crit"),
     Particles("Damage Indicator"),
@@ -586,6 +589,7 @@ particles = (
     Particles("Portal"),
     Particles("Smoke"),
     Particles("Sneeze"),
+    Particles("Snow and Rain"),
     Particles("Soul"),
     Particles("Spit"),
     Particles("Splash"),
@@ -618,6 +622,9 @@ class Wall:
         return self.start, self.y_first
 
     def next_pos(self, x, y):
+        # The top row is sparse
+        if y == 4 and x == 0:
+            return self.end - 1, y
         x += 1
         if x >= self.end:
             y -= 1
@@ -630,7 +637,7 @@ class Wall:
 def particle_signs(func_dir, sign_tmpl):
     walls = (
         Wall(7, 5, "east", (-1, 0)),
-        Wall(7, 7, "south", (0, -1)),
+        Wall(7, 7, "south", (0, -1), y_first=4),
         Wall(7, 5, "west", (1, 0)),
         Wall(7, 5, "north", (0, 1)),
     )
@@ -641,11 +648,15 @@ def room_signs(func_dir, room, sign_tmpl, subjects, walls, start, do_off_sign=Fa
     cur_wall = 0
     wall = walls[cur_wall]
     kill_command = "kill @e[tag=signer]"
+    top = walls[0].y_first + 1
+    depth = walls[1].width - 1
+    width = walls[0].width - 1
     commands = [
         kill_command,
         "summon minecraft:armor_stand ~%f ~%f ~%f {Tags:[signer],Rotation:[%df,0f],ArmorItems:[{},{},{},{id:turtle_helmet,Count:1}]}" % start,
         "execute at @e[tag=signer] run fill ^0 ^0 ^0 ^%d ^%d ^%d air" % (
-            -(walls[0].width - 1), wall.y_first + 1, -(walls[1].width - 1)),
+            -depth, top, -width),
+        "execute at @e[tag=signer] run setblock ^%d ^%d ^%d stone_button[facing=south]" % (-depth, top, -width / 2),
     ]
     if label:
         commands += [
