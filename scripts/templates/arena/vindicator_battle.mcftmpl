@@ -1,3 +1,0 @@
-<%namespace import="*" file="arena_base.mcftmpl"/>
-
-${battle('vindicator', 'iron_golem', attacker_nbt="HandItems:[{id:iron_axe,Count:1}]")}

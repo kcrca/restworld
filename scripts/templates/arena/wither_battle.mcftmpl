@@ -1,3 +1,0 @@
-<%namespace import="*" file="arena_base.mcftmpl"/>
-
-${battle('wither', 'iron_golem')}
