@@ -2,6 +2,7 @@
 
 fill ~-2 ~1 ~1 ~-2 ~-1 ~-1 air
 
+${arena_sign( 1, -2, 'Zombie', 'Wandering Trader')}
 ${arena_sign( 1, -1, 'Illusioner', 'Iron Golem')}
 ${arena_sign( 1,  0, 'Evoker', 'Iron Golem')}
 ${arena_sign( 1,  1, 'Vindicator', 'Iron Golem')}
