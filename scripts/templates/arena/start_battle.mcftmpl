@@ -1,2 +1,2 @@
-kill @e[type=vex,distance=..30]
-kill @e[tag=battler,distance=..30]
+kill @e[type=vex,distance=..100]
+kill @e[tag=battler,distance=..100]

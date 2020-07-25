@@ -1,16 +1,45 @@
 <%namespace import="*" file="arena_base.mcftmpl"/>
 
-fill ~-2 ~1 ~1 ~-2 ~-1 ~-1 air
+<%
+    battles = (
+	('Evoker', 'Iron Golem'),
+	('Vindicator', 'Snow Golem', 'HandItems:[{id:iron_axe,Count:1},{}]'),
+	('Pillager', 'Snow Golem', 'HandItems:[{id:crossbow,Count:1},{}]'),
+	('Illusioner', 'Snow Golem'),
+	('Drowned', 'Snow Golem', 'HandItems:[{id:trident,Count:1}]'),
+	('Husk', 'Snow Golem'),
+	('Wither Skeleton', 'Piglin', 'HandItems:[{id:stone_sword,Count:1},{}]', 'IsImmuneToZombification:True,HandItems:[{id:golden_sword,Count:1},{}]'),
 
-${arena_sign( 1, -2, 'Zombie', 'Wandering Trader')}
-${arena_sign( 1, -1, 'Illusioner', 'Iron Golem')}
-${arena_sign( 1,  0, 'Evoker', 'Iron Golem')}
-${arena_sign( 1,  1, 'Vindicator', 'Iron Golem')}
-${arena_sign( 0, -2, 'Polar Bear', 'Fox')}
-${arena_sign( 0, -1, 'Wolf', 'Sheep')}
-${arena_sign( 0,  0, 'Wither', 'Iron Golem')}
-${arena_sign( 0,  1, 'Ravager', 'Iron Golem')}
-${arena_sign( 0,  2, 'Fox', 'Chicken')}
-${arena_sign(-1, -1, 'Skeleton', 'Iron Golem', hunter_nbt="HandItems:[{id:bow,Count:1}]")}
-${arena_sign(-1,  0, 'Ocelot', 'Chicken')}
-${arena_sign(-1,  1, 'Cat', 'Rabbit')}
+	('Skeleton', 'Iron Golem', 'HandItems:[{id:bow,Count:1}],ArmorItems:[{id:iron_boots,Count:1},{id:iron_leggings,Count:1},{},{id:iron_helmet,Count:1}]'),
+	('Zombie', 'Snow Golem'),
+	None,
+	('Peace', ''),
+	None,
+	('Wither', 'Evoker'),
+	('Hoglin', 'Snow Golem', 'IsImmuneToZombification:True'),
+
+	('Wolf', 'Sheep'),
+	('Ravager', 'Iron Golem'),
+	('Fox', 'Chicken'),
+	('Blaze', 'Snow Golem'),
+	('Ocelot', 'Chicken'),
+	('Cat', 'Rabbit'),
+	('Polar Bear', 'Fox'),
+    )
+%>
+
+fill ~3 ~1 ~1 ~-3 ~-1 ~-1 air replace oak_wall_sign
+
+<% y, z = 1, -3 %>
+%for b in battles:
+%if b is not None:
+    <% args = b + (None,) * (4 - len(b)) %>
+    ${arena_sign(y, z, args[0], args[1], hunter_nbt=args[2], victim_nbt=args[3])}
+%endif
+    <%
+    z += 1
+    if z > 3:
+	y -= 1
+	z = -3
+    %>
+%endfor

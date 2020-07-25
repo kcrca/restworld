@@ -4,12 +4,15 @@
 <%
 hunter_cmd = 'execute at @e[tag=hunter_home] run summon %s ~0 ~2.5 ~0 {Tags:[battler,hunter]%s}' % (Thing(hunter).id, ',%s' % hunter_nbt if hunter_nbt else '')
 victim_cmd = 'execute at @e[tag=victim_home] run summon %s ~0 ~2.5 ~0 {Tags:[battler,victim]%s}' % (Thing(victim).id, ',%s' % victim_nbt if victim_nbt else '')
+vs = 'vs.'
+if hunter == 'Peace':
+    hunter_cmd = victim_cmd = vs = ''
 %>
 setblock ~-2 ~${y} ~${z} air
 setblock ~-2 ~${y} ~${z} oak_wall_sign[facing=west]{\
     ${sign_nbt(0, '', '', name='controls')},\
     ${sign_nbt(1, 'execute at @e[tag=monitor_home] run data merge block ~2 ~0 ~0 {Command:"execute unless entity @e[tag=hunter] run %s"}' % hunter_cmd, hunter, name='controls')},\
-    ${sign_nbt(2, 'execute at @e[tag=monitor_home] run data merge block ~3 ~0 ~0 {Command:"execute unless entity @e[tag=victim] run %s"}' % victim_cmd, 'vs.', name='controls')},\
+    ${sign_nbt(2, 'execute at @e[tag=monitor_home] run data merge block ~3 ~0 ~0 {Command:"execute unless entity @e[tag=victim] run %s"}' % victim_cmd, vs, name='controls')},\
     ${sign_nbt(3, 'function restworld:arena/start_battle', victim, name='controls')}\
 }
 </%def>
