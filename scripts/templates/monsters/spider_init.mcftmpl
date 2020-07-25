@@ -1,5 +1,0 @@
-<%namespace name="base" file="../base.mcftmpl"/>\
-
-${base.remove("tag=spider")}
-${base.mobs_init(z_delta_init=-2, y_init=0.5, kid_x_init=1.4, adult_x_init=-0.2, rotation_init=270, tags_init=("monsters",))}\
-${base.mobs("Spider", do_adult=True)}
