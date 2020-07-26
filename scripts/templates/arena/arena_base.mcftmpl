@@ -31,7 +31,7 @@ battles = (
     ('Wither Skeleton', 'Piglin', 'HandItems:[{id:stone_sword,Count:1},{}]', 'IsImmuneToZombification:True,HandItems:[{id:golden_sword,Count:1},{}]'),
     ('Skeleton', 'Iron Golem', 'HandItems:[{id:bow,Count:1}],ArmorItems:[{id:iron_boots,Count:1,tag:{RepairCost:1,Enchantments:[{lvl:9,id:protection}]}},{},{},{}]'),
     ('Stray', 'Iron Golem', 'HandItems:[{id:bow,Count:1}],ArmorItems:[{id:iron_boots,Count:1,tag:{RepairCost:1,Enchantments:[{lvl:9,id:protection}]}},{},{},{}]'),
-    ('Wither', 'Evoker'),
+    ('Wither', 'Iron Golem'),
     ('Blaze', 'Snow Golem'),
     ('Hoglin', 'Snow Golem', 'IsImmuneToZombification:True'),
     ('Witch', 'Snow Golem'),
