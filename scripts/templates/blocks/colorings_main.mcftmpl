@@ -18,13 +18,15 @@ fill ~-9 ~2 ~2 ~-9 ~2 ~3 air
 ${when(i)} setblock ~-9 ~2 ~2 ${thing.full_id()}_bed[facing=north,part=head]
 ${when(i)} setblock ~-9 ~2 ~3 ${thing.full_id()}_bed[facing=north,part=foot]
 
-${when(i)} data merge entity @e[tag=colorings_item_frame,limit=1] {Item:{id:${thing.dye_name()}},Count:1,ItemRotation:0}
+${when(i)} data merge entity @e[tag=${var}_item_frame,limit=1] {Item:{id:${thing.dye_name()}},Count:1,ItemRotation:0}
 
-${when(i)} data merge entity @e[tag=colorings_armor_stand,limit=1] {ArmorItems:[{id:leather_boots,Count:1,tag:{Variant:2,display:{color:${thing.rgb}}}},{id:leather_leggings,Count:1,tag:{Variant:2,display:{color:${thing.rgb}}}},{id:leather_chestplate,Count:1,tag:{Variant:2,display:{color:${thing.rgb}}}},{id:leather_helmet,Count:1,tag:{Variant:2,display:{color:${thing.rgb}}}}]}
-${when(i)} data merge entity @e[tag=colorings_horse,limit=1] {ArmorItem:{id:leather_horse_armor,Count:1,tag:{display:{color:${thing.rgb}}}},CustomName:"\"${thing.name}\"",CustomNameVisible:True}
-${when(i)} data merge entity @e[tag=colorings_llama,limit=1] {DecorItem:{id:${thing.id}_carpet,Count:1},CustomNameVisible:True,CustomName:"\"${thing.name}\""}
-${when(i)} data merge entity @e[tag=colorings_sheep,limit=1] {Color:${i}}
+${when(i)} data merge entity @e[tag=${var}_armor_stand,limit=1] {ArmorItems:[{id:leather_boots,Count:1,tag:{Variant:2,display:{color:${thing.rgb}}}},{id:leather_leggings,Count:1,tag:{Variant:2,display:{color:${thing.rgb}}}},{id:leather_chestplate,Count:1,tag:{Variant:2,display:{color:${thing.rgb}}}},{id:leather_helmet,Count:1,tag:{Variant:2,display:{color:${thing.rgb}}}}]}
+${when(i)} data merge entity @e[tag=${var}_horse,limit=1] {ArmorItem:{id:leather_horse_armor,Count:1,tag:{display:{color:${thing.rgb}}}}}
+${when(i)} data merge entity @e[tag=${var}_llama,limit=1] {DecorItem:{id:${thing.id}_carpet,Count:1}}
+${when(i)} data merge entity @e[tag=${var}_sheep,limit=1] {Color:${i}}
+
 ${when(i)} data merge block ~-4 ~2 ~4 {Text2:${text(thing.name)}}
+${when(i)} execute as @e[tag=${var}_names] run data merge entity @s {CustomName:"\"${thing.name}\""}
 
 ${when(i)} data merge block ~0 ~0 ~-1 {name:"${'restworld:%s_terra' % thing.in_id()}"}
 ${when(i)} data merge block ~1 ~2 ~-0 {Text1:${text(thing.name)}}

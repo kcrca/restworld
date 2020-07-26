@@ -1,0 +1,1 @@
+execute as @e[tag=${var}_names] run data merge entity @s {CustomNameVisible:False}
