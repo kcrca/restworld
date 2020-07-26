@@ -2,17 +2,71 @@
 
 <%def name="arena_sign(y, z, hunter, victim, hunter_nbt=None, victim_nbt=None)">
 <%
-hunter_cmd = 'execute at @e[tag=hunter_home] run summon %s ~0 ~2.5 ~0 {Tags:[battler,hunter]%s}' % (Thing(hunter).id, ',%s' % hunter_nbt if hunter_nbt else '')
-victim_cmd = 'execute at @e[tag=victim_home] run summon %s ~0 ~2.5 ~0 {Tags:[battler,victim]%s}' % (Thing(victim).id, ',%s' % victim_nbt if victim_nbt else '')
+hunter_cmd = 'execute at @e[tag=hunter_home] run summon %s ~0 ~2 ~0 {Tags:[battler,hunter]%s}' % (Thing(hunter).id, ',%s' % hunter_nbt if hunter_nbt else '')
+victim_cmd = 'execute at @e[tag=victim_home] run summon %s ~0 ~2 ~0 {Tags:[battler,victim]%s}' % (Thing(victim).id, ',%s' % victim_nbt if victim_nbt else '')
 vs = 'vs.'
 if hunter == 'Peace':
     hunter_cmd = victim_cmd = vs = ''
 %>
 setblock ~-2 ~${y} ~${z} air
-setblock ~-2 ~${y} ~${z} oak_wall_sign[facing=west]{\
+setblock ~-2 ~${y} ~${z} oak_wall_sign[facing=east]{\
     ${sign_nbt(0, '', '', name='controls')},\
     ${sign_nbt(1, 'execute at @e[tag=monitor_home] run data merge block ~2 ~0 ~0 {Command:"execute unless entity @e[tag=hunter] run %s"}' % hunter_cmd, hunter, name='controls')},\
     ${sign_nbt(2, 'execute at @e[tag=monitor_home] run data merge block ~3 ~0 ~0 {Command:"execute unless entity @e[tag=victim] run %s"}' % victim_cmd, vs, name='controls')},\
     ${sign_nbt(3, 'function restworld:arena/start_battle', victim, name='controls')}\
 }
+</%def>
+
+<%def name="arena_page(page)">
+<%
+import sys
+
+row_length = 5
+battles = (
+    ('Evoker', 'Iron Golem'),
+    ('Vindicator', 'Snow Golem', 'HandItems:[{id:iron_axe,Count:1},{}]'),
+    ('Pillager', 'Snow Golem', 'HandItems:[{id:crossbow,Count:1},{}]'),
+    ('Illusioner', 'Snow Golem'),
+    ('Drowned', 'Snow Golem', 'HandItems:[{id:trident,Count:1}]'),
+    ('Wither Skeleton', 'Piglin', 'HandItems:[{id:stone_sword,Count:1},{}]', 'IsImmuneToZombification:True,HandItems:[{id:golden_sword,Count:1},{}]'),
+    ('Skeleton', 'Iron Golem', 'HandItems:[{id:bow,Count:1}],ArmorItems:[{id:iron_boots,Count:1,tag:{RepairCost:1,Enchantments:[{lvl:9,id:protection}]}},{},{},{}]'),
+    ('Stray', 'Iron Golem', 'HandItems:[{id:bow,Count:1}],ArmorItems:[{id:iron_boots,Count:1,tag:{RepairCost:1,Enchantments:[{lvl:9,id:protection}]}},{},{},{}]'),
+    ('Wither', 'Evoker'),
+    ('Blaze', 'Snow Golem'),
+    ('Hoglin', 'Snow Golem', 'IsImmuneToZombification:True'),
+    ('Witch', 'Snow Golem'),
+    ('Wolf', 'Sheep'),
+    ('Ravager', 'Iron Golem'),
+    ('Fox', 'Chicken'),
+    ('Ocelot', 'Chicken'),
+    ('Cat', 'Rabbit'),
+    ('Polar Bear', 'Fox'),
+    ('Zoglin', 'Snow Golem'),
+    ('Zombified Piglin', 'Snow Golem', 'HandItems:[{id:golden_sword,Count:1}]'),
+)
+peace = ('Peace', ''),
+if len(battles) % row_length != 0:
+    sys.exit(1)
+
+num_pages = int(len(battles) / row_length)
+pos = page * row_length
+signs = battles[pos:pos + row_length]
+end = int(row_length / 2) + 1
+x = -2
+%>
+
+fill ~${x} ~3 ~${-end} ~${x} ~3 ~${end} air
+
+%for which_dir in (-1, 1):
+<%
+    to = ((page + which_dir + num_pages) % num_pages)
+    text, z = ('<--', +end) if which_dir == -1 else ('-->', -end)
+%>
+setblock ~${x} ~3 ~${z} oak_wall_sign[facing=east]{${sign_nbt(1, 'execute at @e[tag=controls_home] run function restworld:arena/arena_signs_%d' % to, text)}}
+%endfor
+
+%for i in range(0, row_length):
+    <% args = signs[i] + (None,) * (4 - len(signs[i])) %>
+    ${arena_sign(3, -end + 1 + i, args[0], args[1], hunter_nbt=args[2], victim_nbt=args[3])}
+%endfor
 </%def>
