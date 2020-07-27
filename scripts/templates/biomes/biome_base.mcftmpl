@@ -2,15 +2,15 @@
 
 <%def name="load_biome(renderer, biome, handback=None)">
 %for i in range(0, 4):
-${renderer(biome, 'execute at @e[tag=biome_loading_home] run', i, 32 * (i / 2), 32 * (i % 2), handback)}
+${renderer(biome, 'execute at @e[tag=biome_loading_home] run', i, 32 * int(i / 2), 32 * int(i % 2), handback)}
 %endfor
 </%def>
 
 <%def name="group_signs(group)">
 ${categories()}
 
-<% x = biome_groups.keys().index(group) %>
-%for biome in biome_groups[group]:
+<% x = list(biome_groups.keys()).index(group) %>
+%for biome in list(biome_groups[group]):
 setblock ~${6 - loop.index - x} ~0 ~6 birch_wall_sign{\
 ${sign_nbt(0, 'function restworld:biomes/clear_biome', '', raised=False, name='biome_loading')},\
 ${sign_nbt(1, 'scoreboard players set load_biome funcs %d' % biomes.index(biome), biome, raised=False, name='biome_loading')},\

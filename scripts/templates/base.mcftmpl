@@ -37,9 +37,9 @@ ${caller.body(when, loop.index, thing)}
 
 <%def name="bounce(collection)">
 <%
-    backwards = collection[1:-1]
+    backwards = list(collection[1:-1])
     backwards.reverse()
-    merged = collection + backwards 
+    merged = list(collection) + backwards 
 %>\
 ${increment(len(merged))}\
 % for thing in merged:

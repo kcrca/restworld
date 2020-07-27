@@ -10,7 +10,7 @@ function restworld:global/clock_off
     # Leave room for the middle signs
     if x >= 4:
 	x += 1
-    row = loop.index / 8
+    row = int(loop.index / 8)
     y = 3 if row == 0 else 2
     z = 1 if row == 0 else 2
 %>

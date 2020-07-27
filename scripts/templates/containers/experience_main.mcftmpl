@@ -4,7 +4,7 @@
     xp = []
     for i in range(0, len(thresholds)):
 	for j in range(0, 3):
-	    xp += ((i + 1, thresholds[i] * j / 3),)
+	    xp += ((i + 1, int(thresholds[i] * j / 3)),)
     xp += ((5, 500),)
 %>
 

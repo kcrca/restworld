@@ -28,5 +28,3 @@ ${scribe(r"\\nMinecraft Version:\\n   1.15.2, Feb 2020")} \
 ]" \
 ], \
 title:"World Control",author:"Display World",display:{Lore:["Useful controls"]}}
-
-##${action(r"Battle Arena", "Mob Playground", "function restworld:global/arena")}, ${scribe(r"\\n   ")}, \

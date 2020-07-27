@@ -32,7 +32,8 @@ execute at @e[tag=note_block_home,limit=1] run setblock ~0 ~2 ~0 minecraft:grass
     if x >= row_len / 2:
 	x += 1
     x -= row_len / 2;
-    y = 3 - i / row_len
+    x = int(x)
+    y = 3 - int(i / row_len)
     row = i / len(instruments) / 2
 %>
 setblock ~${x} ~${y} ~1 air

@@ -45,6 +45,6 @@ ${when(i)} data merge block ~${x} ~2 ~${z + sign} {${",".join(signage)}}
 <%def name="colored_signs(color, render, when=None, i=None, thing=None)">
 <% color_split = len(woods + stems) / 2 %>
 %for wood in woods + stems:
-${render(-12 + loop.index % color_split, 2 + loop.index / color_split, 3 - loop.index % color_split, color, Thing(wood), when, i, thing)}
+${render(-12 + int(loop.index % color_split), 2 + int(loop.index / color_split), 3 - int(loop.index % color_split), color, Thing(wood), when, i, thing)}
 %endfor
 </%def>

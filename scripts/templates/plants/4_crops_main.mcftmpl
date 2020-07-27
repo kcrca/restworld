@@ -1,5 +1,5 @@
 <%namespace name="base" file="../base.mcftmpl"/>
-<% stages = range(0, 4) + [3, 3] %>
+<% stages = list(range(0, 4)) + [3, 3] %>
 
 <%base:loop collection="${stages}" args="when,i,thing">\
 ${base.crop(stages, "beetroots", 0, 3, 0, when, i, thing)}\

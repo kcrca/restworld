@@ -116,7 +116,7 @@ class Stepable(Thing):
         self.base_id = to_id(base_id)
 
 
-class Particles(object, Thing):
+class Particles(Thing):
     def __init__(self, name, id=None, note=None):
         Thing.__init__(self, name, id)
         self.note = "(%s)" % note if note else None
@@ -313,7 +313,7 @@ biome_groups['Ocean'] = ('Warm Ocean', 'Ocean', 'Frozen Ocean')
 biome_groups['Nether'] = ('Nether Wastes', 'Soul Sand Valley', 'Crimson Forest', 'Warped Forest', 'Basalt Deltas')
 biome_groups['End'] = ('The End', 'End Island')
 biome_groups['Structures'] = ('Mineshaft', 'Monument', 'Stronghold', 'Bastion Remnant', 'Fortress')
-biomes = [item for sublist in biome_groups.values() for item in sublist]
+biomes = [item for sublist in list(biome_groups.values()) for item in sublist]
 
 
 def get_normal_blocks():
@@ -347,8 +347,8 @@ def get_normal_blocks():
         elif name in ('Dropper', 'Dispenser', 'Furnace', 'Observer'):
             name = 'Furnace ' + name
         elif name in (
-        'Crafting Table', 'Cartography Table', 'Smithing Table', 'Fletching Table', 'Smoker', 'Blast Furnace',
-        'Cauldron'):
+                'Crafting Table', 'Cartography Table', 'Smithing Table', 'Fletching Table', 'Smoker', 'Blast Furnace',
+                'Cauldron'):
             name = 'Profession ' + name
         elif 'Glass' in name:
             # "M" to move it away from corals so the water trough behind the coral doesn't overlap
@@ -375,7 +375,7 @@ def text_attrs(attrs):
     if not attrs:
         return ""
     s = ""
-    for k, v in attrs.iteritems():
+    for k, v in attrs.items():
         s += r',\"%s\":\"%s\"' % (k, v)
     return s
 
@@ -529,7 +529,7 @@ def main():
             I thought of doing this using mako to generate mako templates, but the quoting issues....
             """
             for script in glob.glob(os.path.join(self.room_dir, "*.py]")):
-                if execfile(script) != 0:
+                if exec(compile(open(script, "rb").read(), script, 'exec')) != 0:
                     sys.exit(-1)
 
     rooms = []
@@ -609,7 +609,7 @@ class Wall:
         self.used = used
         self.facing = facing
         self.block_at = block_at
-        self.start = (width - used) / 2
+        self.start = int((width - used) / 2)
         self.end = width - self.start
         self.y_first = y_first
         self.y_last = y_last
@@ -641,7 +641,7 @@ def particle_signs(func_dir, sign_tmpl):
         Wall(7, 5, "west", (1, 0)),
         Wall(7, 5, "north", (0, 1)),
     )
-    room_signs(func_dir, "particles", sign_tmpl, sorted(particles), walls, (1, 1.5, -1, 90))
+    room_signs(func_dir, "particles", sign_tmpl, sorted(particles, key=lambda x: x.name), walls, (1, 1.5, -1, 90))
 
 
 def room_signs(func_dir, room, sign_tmpl, subjects, walls, start, do_off_sign=False, label=None):
