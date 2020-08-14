@@ -1,7 +1,7 @@
 <%namespace file="global_base.mcftmpl" import="*"/>
 
 function restworld:global/clock_off
-execute positioned ~ ~-3 ~ run function restworld:global/min_home
+execute positioned ~0 ~-3 ~0 run function restworld:global/min_home
 
 kill @e[tag=homer,tag=!min_home]
 

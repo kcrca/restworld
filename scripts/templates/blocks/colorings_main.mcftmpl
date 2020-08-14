@@ -40,7 +40,7 @@ ${when(i)} data merge block ~${x} ~${y} ~${z} {Color:${color.id},Text3:${text(co
 ${colored_signs(thing, render_signs, when, i, thing)}
 
 %if i == len(colors) - 1:
-setblock ~-7 ~-1 ~3 minecraft:redstone_torch
+setblock ~-7 ~-1 ~3 redstone_torch
 setblock ~-7 ~-1 ~3 air
 %endif
 </%base:loop>

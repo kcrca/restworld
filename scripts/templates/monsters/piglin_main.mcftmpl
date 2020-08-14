@@ -3,7 +3,7 @@
 <%
     piglins = ("Piglin", "Zombified Piglin")
     hoglins = ("Hoglin", "Zoglin")
-    rider_tmpl = 'id:"minecraft:piglin",Passengers:[{%s}],IsBaby:True,Tags:[monsters,passenger,kid],Rotation:[180f,0f],Facing:north,PersistenceRequired:True,NoAI:True,Silent:True'
+    rider_tmpl = 'id:"piglin",Passengers:[{%s}],IsBaby:True,Tags:[monsters,passenger,kid],Rotation:[180f,0f],Facing:north,PersistenceRequired:True,NoAI:True,Silent:True'
     num_riders = 1
 %>
 

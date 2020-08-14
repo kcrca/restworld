@@ -1,5 +1,5 @@
 <%def name="if_user_in(world)">\
-execute in minecraft:${world} run execute as @p[sort=nearest,distance=..100,limit=1] in overworld run\
+execute in ${world} run execute as @p[sort=nearest,distance=..100,limit=1] in overworld run\
 </%def>\
 
 ## In the overworld, go to the middle

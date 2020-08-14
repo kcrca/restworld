@@ -1,2 +1,2 @@
-summon minecraft:ender_dragon ~0 ~3 ~-5 {CustomName:${text("EnderDragon")},NoAI:True,Silent:True,Rotation:[0f,0f],Tags:[ender,dragon,dragon_thing]}
-summon minecraft:dragon_fireball ~0 ~3 ~-14 {CustomName:${text("Dragon Fireball")},direction:[0.0,0.0,0.0],ExplosionPower:0,tags:[ender,dragon_thing]}
+summon ender_dragon ~0 ~3 ~-5 {CustomName:${text("EnderDragon")},NoAI:True,Silent:True,Rotation:[0f,0f],Tags:[ender,dragon,dragon_thing]}
+summon dragon_fireball ~0 ~3 ~-14 {CustomName:${text("Dragon Fireball")},direction:[0.0,0.0,0.0],ExplosionPower:0,tags:[ender,dragon_thing]}

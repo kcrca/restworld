@@ -2,5 +2,5 @@ setblock ~0 ~-2 ~0 structure_block{ignoreEntities:true,name:"restworld:sequence"
 setblock ~0 ~-4 ~0 redstone_torch
 setblock ~0 ~-4 ~0 air
 setblock ~0 ~-2 ~0 stone
-execute at @e[tag=diy_starter] run setblock ~ ~-2 ~ redstone_torch
-execute at @e[tag=diy_starter] run setblock ~ ~-2 ~ air
+execute at @e[tag=diy_starter] run setblock ~0 ~-2 ~0 redstone_torch
+execute at @e[tag=diy_starter] run setblock ~0 ~-2 ~0 air

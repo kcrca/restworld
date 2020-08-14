@@ -5,5 +5,5 @@
 ${when(i)} setblock ~0 ~2 ~0 ${thing.full_id()}[facing=up]
 ${when(i)} setblock ~0 ~4 ~0 ${thing.full_id()}[facing=west]
 ${when(i)} setblock ~0 ~6 ~0 ${thing.full_id()}[facing=down]
-${when(i)} data merge block ~ ~3 ~ {Text2:${text(thing.name)}}
+${when(i)} data merge block ~0 ~3 ~0 {Text2:${text(thing.name)}}
 </%base:loop>

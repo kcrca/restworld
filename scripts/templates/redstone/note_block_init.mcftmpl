@@ -23,7 +23,7 @@
 %>
 
 scoreboard players set instrument funcs 0
-execute at @e[tag=note_block_home,limit=1] run setblock ~0 ~2 ~0 minecraft:grass_block
+execute at @e[tag=note_block_home,limit=1] run setblock ~0 ~2 ~0 grass_block
 
 %for i, thing in enumerate(instruments):
 <%

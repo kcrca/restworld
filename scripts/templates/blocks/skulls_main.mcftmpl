@@ -3,12 +3,12 @@
 <% skulls = ("Skeleton Skull", "Wither Skeleton Skull", "Player Head", "Zombie Head", "Creeper Head") %>
 
 <%base:loop collection="${skulls}" args="when,i,thing">
-${when(i)} setblock ~ ~3 ~ ${Thing(thing).full_id()}
-##${when(i)} setblock ~ ~3 ~1 ${Thing(thing.replace("Skull", "Wall Skull").replace("Head", "Wall Head")).full_id()}
-${when(i)} data merge block ~ ~2 ~-1 {Text2:${text(thing)}}
+${when(i)} setblock ~0 ~3 ~0 ${Thing(thing).full_id()}
+##${when(i)} setblock ~0 ~3 ~1 ${Thing(thing.replace("Skull", "Wall Skull").replace("Head", "Wall Head")).full_id()}
+${when(i)} data merge block ~0 ~2 ~-1 {Text2:${text(thing)}}
 %if "Wither" in thing:
-${when(i)} data merge block ~ ~2 ~-1 {Text3:${text("Skull")}}
+${when(i)} data merge block ~0 ~2 ~-1 {Text3:${text("Skull")}}
 %else:
-${when(i)} data merge block ~ ~2 ~-1 {Text3:${text("")}}
+${when(i)} data merge block ~0 ~2 ~-1 {Text3:${text("")}}
 %endif
 </%base:loop>

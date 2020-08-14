@@ -28,7 +28,7 @@ class Thing:
         return self.name
 
     def full_id(self, block_state=""):
-        id = "minecraft:%s" % self.id
+        id = "%s" % self.id
         state = self.block_state + ("," if block_state and self.block_state else "") + block_state
         if state:
             id += "[%s]" % state
@@ -653,7 +653,7 @@ def room_signs(func_dir, room, sign_tmpl, subjects, walls, start, do_off_sign=Fa
     width = walls[0].width - 1
     commands = [
         kill_command,
-        "summon minecraft:armor_stand ~%f ~%f ~%f {Tags:[signer],Rotation:[%df,0f],ArmorItems:[{},{},{},{id:turtle_helmet,Count:1}]}" % start,
+        "summon armor_stand ~%f ~%f ~%f {Tags:[signer],Rotation:[%df,0f],ArmorItems:[{},{},{},{id:turtle_helmet,Count:1}]}" % start,
         "execute at @e[tag=signer] run fill ^0 ^0 ^0 ^%d ^%d ^%d air" % (
             -depth, top, -width),
         "execute at @e[tag=signer] run setblock ^%d ^%d ^%d stone_button[facing=south]" % (-depth, top, -width / 2),

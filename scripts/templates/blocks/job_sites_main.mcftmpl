@@ -31,7 +31,7 @@
 %>\
 
 <%base:loop collection="${all}" args="when,i,thing">
-${when(i)} setblock ~ ~3 ~ ${Thing(thing).id}
+${when(i)} setblock ~0 ~3 ~0 ${Thing(thing).id}
 <%
 import re
 

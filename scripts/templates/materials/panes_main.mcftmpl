@@ -3,7 +3,7 @@
 
 <%base:loop collection="${blocks}" args="when,i,thing">
 % if thing in colors:
-${base.fencelike(when, i, "minecraft:%s_stained_glass_pane" % thing.id, thing.name, "Stained Glass")}\
+${base.fencelike(when, i, "%s_stained_glass_pane" % thing.id, thing.name, "Stained Glass")}\
 % else:
 ${base.fencelike(when, i, thing.full_id(), thing.name, "")}\
 % endif

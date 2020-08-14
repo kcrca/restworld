@@ -10,7 +10,7 @@ ${base.mobs_init(kid_x_init=1.7, adult_x_init=0.20, rotation_init=270, tags_init
 <%base:loop collection="${zombies}" args="when,i,thing">
 execute if score zombie_jockey funcs matches 0 run ${base.mobs(thing, when=when, i=i)}
 execute if score zombie_jockey funcs matches 1 run ${base.mobs(thing, when=when, i=i, do_adult=True)}
-execute if score zombie_jockey funcs matches 1 run ${base.mobs("Chicken", do_kid=True, when=when, i=i, nbt='Passengers:[{id:"minecraft:%s",Tags:[zombie,kid,monsters],IsBaby:True,Age:-2147483648,Rotation:[270f,0f],PersistenceRequired:True,NoAI:True,Silent:True}]' % Thing(thing).id)}
+execute if score zombie_jockey funcs matches 1 run ${base.mobs("Chicken", do_kid=True, when=when, i=i, nbt='Passengers:[{id:"%s",Tags:[zombie,kid,monsters],IsBaby:True,Age:-2147483648,Rotation:[270f,0f],PersistenceRequired:True,NoAI:True,Silent:True}]' % Thing(thing).id)}
 %if thing == "Drowned":
 ${when(i)} execute as @e[tag=zombieish,tag=!kid] run data merge entity @s {HandItems:[{id:trident,Count:1}]}
 %endif

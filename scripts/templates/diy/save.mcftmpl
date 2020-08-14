@@ -2,5 +2,5 @@ execute at @e[tag=diy_ender] run setblock ~0 ~-1 ~0 structure_block{ignoreEntiti
 execute at @e[tag=diy_ender] run setblock ~0 ~-2 ~0 redstone_torch
 execute at @e[tag=diy_ender] run setblock ~0 ~-2 ~0 air
 execute at @e[tag=diy_ender] run setblock ~0 ~-1 ~0 stone
-setblock ~ ~-4 ~ redstone_torch
-setblock ~ ~-4 ~ air
+setblock ~0 ~-4 ~0 redstone_torch
+setblock ~0 ~-4 ~0 air

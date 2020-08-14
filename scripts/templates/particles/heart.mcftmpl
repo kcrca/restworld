@@ -1,2 +1,2 @@
 <%namespace file="particle_base.mcftmpl" import="*"/>\
-${fast_clock()} particle minecraft:heart ~ ~1.5 ~ 0.5 0.2 0.5 0 5
+${fast_clock()} particle heart ~0 ~1.5 ~0 0.5 0.2 0.5 0 5

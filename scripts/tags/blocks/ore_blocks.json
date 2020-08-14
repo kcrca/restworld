@@ -1,13 +1,13 @@
 {
   "replace": false,
   "values": [
-    "minecraft:coal_block",
-    "minecraft:iron_block",
-    "minecraft:gold_block",
-    "minecraft:diamond_block",
-    "minecraft:lapis_block",
-    "minecraft:redstone_block",
-    "minecraft:emerald_block",
-    "minecraft:quartz_block"
+    "coal_block",
+    "iron_block",
+    "gold_block",
+    "diamond_block",
+    "lapis_block",
+    "redstone_block",
+    "emerald_block",
+    "quartz_block"
   ]
 }

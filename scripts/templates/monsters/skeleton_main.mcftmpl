@@ -1,6 +1,6 @@
 <%namespace name="base"  file="../base.mcftmpl"/>
 
-<% bow = 'HandItems:[{id:"minecraft:bow",Count:1b},{}]' %>
+<% bow = 'HandItems:[{id:"bow",Count:1b},{}]' %>
 
 ${base.remove("tag=skeletal")}
 

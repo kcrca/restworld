@@ -1,4 +1,4 @@
-replaceitem block ~ ~2 ~ container.3 air
-replaceitem block ~ ~2 ~ container.4 air
-data merge block ~ ~2 ~ {Fuel:0}
+replaceitem block ~0 ~2 ~0 container.3 air
+replaceitem block ~0 ~2 ~0 container.4 air
+data merge block ~0 ~2 ~0 {Fuel:0}
 kill @e[tag=brewing_run_home]

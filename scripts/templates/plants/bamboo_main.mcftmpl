@@ -8,8 +8,8 @@
 
 <%base:loop collection="${range(0, 2 * max + 1)}" args="when,i,thing">\
 %if thing == 0:
-${when(i)} setblock ~ ~3 ~ ${Thing("bamboo_sapling").full_id()}
-${when(i)} fill ~ ~${3 + top} ~ ~ ~4 ~ ${Thing("air").full_id()}
+${when(i)} setblock ~0 ~3 ~0 ${Thing("bamboo_sapling").full_id()}
+${when(i)} fill ~0 ~${3 + top} ~0 ~0 ~4 ~0 ${Thing("air").full_id()}
 %else:
 <%
     if thing < max:
@@ -21,15 +21,15 @@ ${when(i)} fill ~ ~${3 + top} ~ ~ ~4 ~ ${Thing("air").full_id()}
     fi
     age = 0 if i <= max else 1
 %>\
-${when(i)} fill ~ ~3 ~ ~ ~${3 + height - 1} ~ ${Thing("bamboo").full_id()}[age=${age},leaves=none]
+${when(i)} fill ~0 ~3 ~0 ~0 ~${3 + height - 1} ~0 ${Thing("bamboo").full_id()}[age=${age},leaves=none]
 %if height < max:
-${when(i)} fill ~ ~${3 + max - 1} ~ ~ ~${3 + height} ~ ${Thing("air").full_id()}
+${when(i)} fill ~0 ~${3 + max - 1} ~0 ~0 ~${3 + height} ~0 ${Thing("air").full_id()}
 %endif
 %if height == 2:
-${when(i)} setblock ~ ~${3 + height - 1} ~ ${Thing("bamboo").full_id()}[age=${age},leaves=small]
+${when(i)} setblock ~0 ~${3 + height - 1} ~0 ${Thing("bamboo").full_id()}[age=${age},leaves=small]
 %elif height >= 3:
-${when(i)} setblock ~ ~${3 + height - 2} ~ ${Thing("bamboo").full_id()}[age=${age},leaves=large]
-${when(i)} setblock ~ ~${3 + height - 1} ~ ${Thing("bamboo").full_id()}[age=${age},leaves=small]
+${when(i)} setblock ~0 ~${3 + height - 2} ~0 ${Thing("bamboo").full_id()}[age=${age},leaves=large]
+${when(i)} setblock ~0 ~${3 + height - 1} ~0 ${Thing("bamboo").full_id()}[age=${age},leaves=small]
 %endif
 %endif
 </%base:loop>

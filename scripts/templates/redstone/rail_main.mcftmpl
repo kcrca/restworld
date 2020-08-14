@@ -14,9 +14,9 @@
 ${when(i)} fill ~0 ~2 ~0 ~3 ~3 ~-3 ${thing.full_id(block_state="shape=" + shape + power)} replace #restworld:rail[shape=${shape}]
 %endfor
 %if powered[i]:
-${when(i)} fill ~0 ~0 ~0 ~3 ~0 ~-3 minecraft:redstone_torch replace minecraft:glass
+${when(i)} fill ~0 ~0 ~0 ~3 ~0 ~-3 redstone_torch replace glass
 %else:
-${when(i)} fill ~0 ~0 ~0 ~3 ~0 ~-3 minecraft:glass replace minecraft:redstone_torch
+${when(i)} fill ~0 ~0 ~0 ~3 ~0 ~-3 glass replace redstone_torch
 %endif
 ${when(i)} data merge block ~1 ~2 ~-2 {Text2:${text(thing.name)},Text3:${text("(Powered)" if powered[i] else "")}}
 </%base:loop>

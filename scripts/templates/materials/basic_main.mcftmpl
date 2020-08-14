@@ -15,7 +15,7 @@
 <%def name="enchant(on)">
 <%
 if on:
-    value, act, arg = 1, 'modify', 'merge value {Enchantments:[{id:"minecraft:mending"}]}'
+    value, act, arg = 1, 'modify', 'merge value {Enchantments:[{id:"mending"}]}'
 else:
     value, act, arg = 0, 'remove', ''
 %>
@@ -45,7 +45,7 @@ ${when(i)} data merge entity @e[tag=armor_chestplate,limit=1] {Item:{id:${armor}
 ${when(i)} data merge entity @e[tag=armor_helmet,limit=1] {Item:{id:${armor}_helmet,Count:1},ItemRotation:0}
 
 %if horse_armor:
-${when(i)} execute unless entity @e[tag=armor_horse,distance=..10] run summon minecraft:horse ~4.5 ~2 ~0.5 {Variant:1,Tame:True,NoAI:True,Silent:True,Tags:[armor_horse,material_static],Rotation:[180f,0f]}
+${when(i)} execute unless entity @e[tag=armor_horse,distance=..10] run summon horse ~4.5 ~2 ~0.5 {Variant:1,Tame:True,NoAI:True,Silent:True,Tags:[armor_horse,material_static],Rotation:[180f,0f]}
 ${when(i)} data merge entity @e[tag=armor_horse,limit=1,sort=nearest] {ArmorItem:{id:${armor}_horse_armor,Count:1}}
 ${when(i)} data merge entity @e[tag=armor_horse_frame,limit=1] {Item:{id:${armor}_horse_armor,Count:1},ItemRotation:0}
 ${when(i)} execute if score horse_saddle funcs matches 1 run data merge entity @e[tag=armor_horse,limit=1,sort=nearest] {SaddleItem:{id:saddle,Count:1}}
@@ -76,7 +76,7 @@ ${when(i)} data merge entity @e[tag=material_${j},limit=1] {HandItems:[{${hands[
 %for j in range(4, 8):
 ${when(i)} data merge entity @e[tag=material_${j},limit=1] {HandItems:[{},{${hands[j]}}]}
 %endfor
-${when(i)} data merge block ~-2 ~ ~1 {name:"restworld:material_${material}",mode:"LOAD"}
+${when(i)} data merge block ~-2 ~0 ~1 {name:"restworld:material_${material}",mode:"LOAD"}
 
 %if i == len(materials) - 1:
 ${enchant(False)}

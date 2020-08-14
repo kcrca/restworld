@@ -3,6 +3,6 @@
 
 
 <%base:loop collection="${structure_blocks}" args="when,i,thing">
-${when(i)} data merge block ~ ~3 ~ {mode:${thing.id.upper()}}
-${when(i)} data merge block ~ ~2 ~1 {Text2:${text(thing.name)}}
+${when(i)} data merge block ~0 ~3 ~0 {mode:${thing.id.upper()}}
+${when(i)} data merge block ~0 ~2 ~1 {Text2:${text(thing.name)}}
 </%base:loop>

@@ -1,6 +1,6 @@
 <%namespace name="base" file="../base.mcftmpl"/>
 <%def name="one_item()">\
-summon item ~0 ~3 ~ {Item:{id:iron_pickaxe,Count:1},PickupDelay:2147483647,Tags:[plate_items]}\
+summon item ~0 ~3 ~0 {Item:{id:iron_pickaxe,Count:1},PickupDelay:2147483647,Tags:[plate_items]}\
 </%def>
 
 ${base.increment(16)}

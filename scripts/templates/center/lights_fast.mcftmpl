@@ -1,1 +1,1 @@
-setblock ~0 ~1 ~0 minecraft:redstone_block
+setblock ~0 ~1 ~0 redstone_block

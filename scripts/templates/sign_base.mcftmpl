@@ -3,7 +3,7 @@
 <%def name="at_center(name, raised)">\
 at @e[tag=${name}_home] \
 %if raised:
-positioned ~ ~2 ~ \
+positioned ~0 ~2 ~0 \
 %endif
 </%def>\
 <%def name="sign_nbt(i, action, txt='', raised=True, name=None)">Text${i+1}:"{\"text\":\"${txt}\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"execute ${at_center(name if name else room, raised)}run ${action.replace('"', r'\\\"')}\"}}"</%def>

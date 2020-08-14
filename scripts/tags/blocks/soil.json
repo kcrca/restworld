@@ -1,10 +1,10 @@
 {
   "replace": false,
   "values": [
-    "minecraft:grass_block",
-    "minecraft:mycelium",
-    "minecraft:podzol",
-    "minecraft:grass_path",
-    "minecraft:farmland"
+    "grass_block",
+    "mycelium",
+    "podzol",
+    "grass_path",
+    "farmland"
   ]
 }

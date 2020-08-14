@@ -2,12 +2,12 @@
 <%invisible="True"%>
 
 ${base.remove("tag=material_static")}
-summon armor_stand ~ ~2.0 ~ {CustomNameVisible:True,Tags:[armor_stand,material_static],Rotation:[180f,0f],ShowArms:True,NoGravity:true}
+summon armor_stand ~0 ~2.0 ~0 {CustomNameVisible:True,Tags:[armor_stand,material_static],Rotation:[180f,0f],ShowArms:True,NoGravity:true}
 <% num = 0 %>
 %for i in range(0, 5):
-summon armor_stand ~-${0.8 + i * 0.7} ~2.0 ~ {Tags:[material_${4+i},material_static],Rotation:[180f,0f],ShowArms:True,Invisible:${invisible},NoGravity:True}
+summon armor_stand ~-${0.8 + i * 0.7} ~2.0 ~0 {Tags:[material_${4+i},material_static],Rotation:[180f,0f],ShowArms:True,Invisible:${invisible},NoGravity:True}
 %if i < 4:
-summon armor_stand ~${+0.6 + i * 0.7} ~2.0 ~ {Tags:[material_${3-i},material_static],Rotation:[180f,0f],ShowArms:True,Invisible:${invisible},NoGravity:True}
+summon armor_stand ~${+0.6 + i * 0.7} ~2.0 ~0 {Tags:[material_${3-i},material_static],Rotation:[180f,0f],ShowArms:True,Invisible:${invisible},NoGravity:True}
 %endif
 %endfor
 

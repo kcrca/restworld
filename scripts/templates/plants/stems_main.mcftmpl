@@ -3,16 +3,16 @@
 
 <%base:loop collection="${stages}" args="when,i,thing">\
 % if i == 0:
-${when(i)} setblock ~0 ~3 ~-2 minecraft:air
-${when(i)} setblock ~2 ~3 ~-2 minecraft:air
+${when(i)} setblock ~0 ~3 ~-2 air
+${when(i)} setblock ~2 ~3 ~-2 air
 % endif
 % if i < 8:
-${when(i)} setblock ~0 ~3 ~-1 minecraft:pumpkin_stem[age=${i}]
-${when(i)} setblock ~2 ~3 ~-1 minecraft:melon_stem[age=${i}]
+${when(i)} setblock ~0 ~3 ~-1 pumpkin_stem[age=${i}]
+${when(i)} setblock ~2 ~3 ~-1 melon_stem[age=${i}]
 % else:
-${when(i)} setblock ~0 ~3 ~-2 minecraft:pumpkin
-${when(i)} setblock ~2 ~3 ~-2 minecraft:melon
-${when(i)} setblock ~0 ~3 ~-1 minecraft:attached_pumpkin_stem[facing=north]
-${when(i)} setblock ~2 ~3 ~-1 minecraft:attached_melon_stem[facing=north]
+${when(i)} setblock ~0 ~3 ~-2 pumpkin
+${when(i)} setblock ~2 ~3 ~-2 melon
+${when(i)} setblock ~0 ~3 ~-1 attached_pumpkin_stem[facing=north]
+${when(i)} setblock ~2 ~3 ~-1 attached_melon_stem[facing=north]
 % endif
 </%base:loop>

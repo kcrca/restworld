@@ -10,7 +10,7 @@ inv_times = list(reversed(inv_times)) + inv_times[1:-1]
 %>
 
 execute at @e[tag=daylight_detector_setup_home] run function restworld:redstone/daylight_detector_setup
-fill ~3 ~${height} ~3 ~-3 ~${height} ~-3 minecraft:air
+fill ~3 ~${height} ~3 ~-3 ~${height} ~-3 air
 
 <%base:loop collection="${day_times}" args="when,i,thing">\
 
@@ -20,6 +20,6 @@ ${when(i)} execute if score daylight_inv funcs matches 0 run time set ${day_time
 ${when(i)} execute if score daylight_inv funcs matches 1 run time set ${inv}
 %else:
 ${when(i)} execute if score daylight_inv funcs matches 1 run time set 22300
-${when(i)} execute if score daylight_inv funcs matches 1 run fill ~${inv} ~${height} ~${inv} ~${-inv} ~${height} ~${-inv} minecraft:stone
+${when(i)} execute if score daylight_inv funcs matches 1 run fill ~${inv} ~${height} ~${inv} ~${-inv} ~${height} ~${-inv} stone
 %endif
 </%base:loop>

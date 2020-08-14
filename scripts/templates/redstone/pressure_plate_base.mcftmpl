@@ -2,7 +2,7 @@
 
 <%def name="plate(heavy)">
 <% which = 'Heavy' if heavy else 'Light' %>
-execute at @e[tag=pressure_plate_home] run setblock ~0 ~3 ~0 minecraft:${which.lower()}_weighted_pressure_plate
+execute at @e[tag=pressure_plate_home] run setblock ~0 ~3 ~0 ${which.lower()}_weighted_pressure_plate
 execute at @e[tag=pressure_plate_home] run data merge block ~1 ~2 ~0 {Text2:${text(which)},Text3:${text("Pressure Plate")}}
 scoreboard players set plate_heavy funcs ${int(heavy)}
 kill @e[tag=plate_items]

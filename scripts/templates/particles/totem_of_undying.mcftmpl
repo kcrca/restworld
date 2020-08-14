@@ -1,2 +1,2 @@
 <%namespace file="particle_base.mcftmpl" import="*"/>\
-${main_clock()} particle minecraft:totem_of_undying ~ ~2 ~ 0.5 1 0.5 0.5 50
+${main_clock()} particle totem_of_undying ~0 ~2 ~0 0.5 1 0.5 0.5 50

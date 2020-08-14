@@ -5,5 +5,5 @@
 ${when(i)} setblock ~0 ~2 ~0 ${thing.full_id()}[facing=west]
 ${when(i)} setblock ~0 ~2 ~1 ${thing.full_id()}[facing=west,extended=true]
 ${when(i)} setblock ~-1 ~2 ~1 piston_head[facing=west,type=${"sticky" if "sticky" in thing.id else "normal"}]
-${when(i)} data merge block ~ ~3 ~ {Text2:${text(thing.name)}}
+${when(i)} data merge block ~0 ~3 ~0 {Text2:${text(thing.name)}}
 </%base:loop>

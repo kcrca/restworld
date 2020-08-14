@@ -17,12 +17,12 @@ execute unless score ${var} funcs matches 0..${count - 1} run scoreboard players
 <%def name="up_down(which, count, x=0, y=4, z=0)">
 ${increment(2 * count)}\
 <% id = Thing(which).full_id() %>
-fill ~ ~4 ~ ~ ~${4 + count} ~ minecraft:air
+fill ~0 ~4 ~0 ~0 ~${4 + count} ~0 air
 %for i in range(1, count + 1):
-${when(i)} fill ~ ~3 ~ ~ ~${3 + i} ~ ${id}
+${when(i)} fill ~0 ~3 ~0 ~0 ~${3 + i} ~0 ${id}
 %endfor
 %for i in range(count + 1, 2 * count):
-${when(i)} fill ~ ~3 ~ ~ ~${3 + (i - count)} ~ ${id}
+${when(i)} fill ~0 ~3 ~0 ~0 ~${3 + (i - count)} ~0 ${id}
 %endfor
 <%doc> Need this kill because sometimes lopping off a thing (sugar_cane) drops an item </%doc>
 kill @e[type=item,distance=..10,nbt={Item:{id:"${id}"}}]
@@ -81,7 +81,7 @@ ${caller.body(when, loop.index, thing)}\
 ${when(i)} \
 %endif
 %if on_stand:
-summon minecraft:armor_stand ~${at_x} ~${2 + y_add - 1} ~${at_z} {Invisible:true,Small:true,NoGravity:true,Tags:[${",".join(tags)}],PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[${at_rotation}f,0f],Passengers:[{id:"${thing.full_id()}",Tags:[${",".join(tags)},passenger]${nbt},PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[${at_rotation}f,0f]}]}
+summon armor_stand ~${at_x} ~${2 + y_add - 1} ~${at_z} {Invisible:true,Small:true,NoGravity:true,Tags:[${",".join(tags)}],PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[${at_rotation}f,0f],Passengers:[{id:"${thing.full_id()}",Tags:[${",".join(tags)},passenger]${nbt},PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[${at_rotation}f,0f]}]}
 %else:
 summon ${thing.full_id()} ~${at_x} ~${2 + y_add} ~${at_z} {Tags:[${",".join(tags)}]${nbt},PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[${at_rotation}f,0f]}
 %endif
@@ -117,7 +117,7 @@ ${_mob(thing, x, y_add, z, rotation, commas(nbt, "CustomName:%s" % text(thing.na
 
 <%def name="crop(stages, which, x, y, z, when, i, thing, name='age')">\
 % for s in range(0, 3):
-${when(i)} fill ~${x} ~${y} ~${z - s} ~${x + 2} ~${y} ~${z - s} minecraft:${which}[${name}=${stages[(i + s + len(stages)) % len(stages)]}]
+${when(i)} fill ~${x} ~${y} ~${z - s} ~${x + 2} ~${y} ~${z - s} ${which}[${name}=${stages[(i + s + len(stages)) % len(stages)]}]
 % endfor
 </%def>
 

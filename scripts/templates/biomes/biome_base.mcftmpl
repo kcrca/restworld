@@ -23,8 +23,8 @@ setblock ~${6 - x} ~1 ~6 birch_wall_sign{${sign_nbt(1, 'execute at @e[tag=catego
 </%def>
 
 <%def name="trigger(biome, prefix, i, x, z, handback)">
-setblock ~${x} ~ ~${z} redstone_torch
-setblock ~${x} ~ ~${z} air\
+setblock ~${x} ~0 ~${z} redstone_torch
+setblock ~${x} ~0 ~${z} air\
 </%def>
 
 <%def name='category_sign(category, x)'>

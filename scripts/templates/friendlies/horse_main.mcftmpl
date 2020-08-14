@@ -6,5 +6,5 @@
 % for horse in horses:
 ${when(i, as_prefix=True)} as @e[tag=${horse.tag}] run data merge entity @s {Variant:${i * 256 + loop.index}}
 % endfor
-${when(i, as_prefix=True)} at @e[tag=${horses[3].tag},tag=kid] run data merge block ~2 ~ ~ {Text3:${text(variants[i])}}
+${when(i, as_prefix=True)} at @e[tag=${horses[3].tag},tag=kid] run data merge block ~2 ~0 ~0 {Text3:${text(variants[i])}}
 </%base:loop>

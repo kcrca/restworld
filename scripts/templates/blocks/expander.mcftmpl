@@ -2,7 +2,7 @@ execute if block ~0 ~3 ~0 #restworld:sand run fill ~-1 ~2 ~-1 ~1 ~2 ~1 barrier r
 <%doc>We want to clone up the snow topper, if it exists. If it doesn't, we need that layer
       to be cleared (it might have something from a previous expansion). And snow is the
       only thing that is normally placed on that level. </%doc>
-execute unless block ~0 ~4 ~0 minecraft:snow run fill ~-1 ~4 ~-1 ~1 ~4 ~1 air
+execute unless block ~0 ~4 ~0 snow run fill ~-1 ~4 ~-1 ~1 ~4 ~1 air
 clone ~0 ~4 ~0 ~0 ~3 ~0 ~-1 ~3 ~0
 clone ~0 ~4 ~0 ~0 ~3 ~0 ~1 ~3 ~0
 clone ~1 ~4 ~0 ~-1 ~3 ~0 ~-1 ~3 ~-1

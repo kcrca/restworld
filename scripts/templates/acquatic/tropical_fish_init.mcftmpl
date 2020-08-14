@@ -1,6 +1,6 @@
 % for i in range(0, 12):
 <% tag, variants = fishes[i] %>\
-summon minecraft:tropical_fish ~${int(i / 6)} ~3.2 ~${int(i % 6)} {Tags:[acquatic,${tag}],Variant:${variants[0][0]},CustomName:${text(variants[0][1])},NoAI:True,Silent:True,Rotation:[90f,0f]}
+summon tropical_fish ~${int(i / 6)} ~3.2 ~${int(i % 6)} {Tags:[acquatic,${tag}],Variant:${variants[0][0]},CustomName:${text(variants[0][1])},NoAI:True,Silent:True,Rotation:[90f,0f]}
 % if i == len(fishes) - 1:
 setblock ~${int(i / 6) - 1} ~2 ~${int(i % 6)} oak_wall_sign[facing=west,waterlogged=true]{Text1:${text("Naturally")},Text2:${text("Occurring")},Text3:${text("Tropical Fish")},Text4:${text("<--------")}} destroy
 % endif

@@ -1,2 +1,2 @@
 <%namespace file="particle_base.mcftmpl" import="*"/>\
-${main_clock()} particle minecraft:explosion_emitter ~ ~1 ~ 0.5 0.5 0.5 0.2 1
+${main_clock()} particle explosion_emitter ~0 ~1 ~0 0.5 0.5 0.5 0.2 1
