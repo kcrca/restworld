@@ -34,7 +34,7 @@ battles = (
     ('Wither', 'Iron Golem'),
     ('Blaze', 'Snow Golem'),
     ('Hoglin', 'Snow Golem', 'IsImmuneToZombification:True'),
-    ('Hoglin Brute', 'Snow Golem', 'IsImmuneToZombification:True'),
+    ('Piglin Brute', 'Snow Golem', 'HandItems:[{id:golden_axe,Count:1}],IsImmuneToZombification:True'),
     ('Witch', 'Snow Golem'),
     ('Wolf', 'Sheep'),
     ('Ravager', 'Iron Golem'),
