@@ -21,7 +21,7 @@ setblock ~-2 ~${y} ~${z} oak_wall_sign[facing=east]{\
 <%
 import sys
 
-row_length = 5
+row_length = 7
 battles = (
     ('Evoker', 'Iron Golem'),
     ('Vindicator', 'Snow Golem', 'HandItems:[{id:iron_axe,Count:1},{}]'),
@@ -34,6 +34,7 @@ battles = (
     ('Wither', 'Iron Golem'),
     ('Blaze', 'Snow Golem'),
     ('Hoglin', 'Snow Golem', 'IsImmuneToZombification:True'),
+    ('Hoglin Brute', 'Snow Golem', 'IsImmuneToZombification:True'),
     ('Witch', 'Snow Golem'),
     ('Wolf', 'Sheep'),
     ('Ravager', 'Iron Golem'),
