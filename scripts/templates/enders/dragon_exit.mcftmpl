@@ -1,4 +1,0 @@
-<%namespace name="base"  file="../base.mcftmpl"/>
-
-kill @e[tag=dragon_thing]
-kill @e[type=dragon_fireball]
