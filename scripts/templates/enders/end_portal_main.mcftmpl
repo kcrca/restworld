@@ -3,7 +3,7 @@
 
 <%base:loop collection="${on_off}" args="when,i,thing">
 <% before = 'end_portal' if thing == 'true' else 'air' %>
-<% after = 'air' if before == 'end_portal' else 'end_portal' %>
+<% after = 'air' if before != 'end_portal' else 'end_portal' %>
 ${when(i)} fill ~2 ~2 ~1 ~2 ~2 ~-1 end_portal_frame[facing=west,eye=${thing}]
 ${when(i)} fill ~1 ~2 ~2 ~-1 ~2 ~2 end_portal_frame[facing=north,eye=${thing}]
 ${when(i)} fill ~-2 ~2 ~1 ~-2 ~2 ~-1 end_portal_frame[facing=east,eye=${thing}]
