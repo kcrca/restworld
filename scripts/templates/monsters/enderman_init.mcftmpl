@@ -1,4 +1,1 @@
-<%namespace name="base" file="../base.mcftmpl"/>\
-
-${base.mobs_init(adult_z_init=0, rotation_init=0, tags_init=("monsters",))}\
-${base.mobs("Enderman", do_adult=True)}
+function restworld:monsters/enderman_enter
