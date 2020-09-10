@@ -1,8 +1,8 @@
 <%namespace import="*" file="blocks_base.mcftmpl"/>
 <%
-    basic = ["Coal", "Iron", "Gold", "Diamond", "Lapis", "Emerald", "Redstone"]
+    basic = ["Coal", "Iron", "Gold", "Lapis", "Redstone", "Diamond", "Emerald"]
     odder = ["Nether Quartz", "Nether Gold"]
-    types = basic + odder
-    ore_blocks = ["%s Block" % x for x in basic] + ["Quartz Block", "Gold Block",]
+    ores = list("%s Ore" % t for t in basic + odder) + ["Ancient Debris",]
+    ore_blocks = ["%s Block" % x for x in basic + ["Quartz", "Gold"]] + ["Netherite Block",]
 %>
-${blocks(list("%s Ore" % t for t in types) + ["Ancient Debris",] , ore_blocks + ["Netherite Block",], dz=3)}
+${blocks(ores, ore_blocks, dz=3)}
