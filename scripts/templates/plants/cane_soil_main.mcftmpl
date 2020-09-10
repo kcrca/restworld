@@ -11,5 +11,5 @@
 %>
 
 <%base:bounce collection="${blocks}" args="when,i,thing">
-${when(i)} setblock ~0 ~2 ~-1 ${thing.full_id()}
+${when(i)} setblock ~0 ~2 ~1 ${thing.full_id()}
 </%base:bounce>
