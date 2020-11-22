@@ -1,7 +1,7 @@
 <%namespace file="particles/particle_base.mcftmpl" import="*"/>\
 <%namespace file="sign_base.mcftmpl" import="*"/>\
 
-execute at @e[tag=signer] run setblock ^${x} ^${y} ^${z} oak_wall_sign[facing=${wall.facing}]{\
+execute at @e[tag=particles_signer] run setblock ^${x} ^${y} ^${z} oak_wall_sign[facing=${wall.facing}]{\
 ${sign_nbt(0, "setblock ~0 ~-4 ~0 redstone_block", lines[0])},\
 ${sign_nbt(1, r'data merge block ~0 ~-4 ~-2 {Command:"execute at @e[tag=particles_home] positioned ~0 ~2 ~0 run function restworld:particles/%s_init"}' % subj.id, lines[1])},\
 ${sign_nbt(2, r'data merge block ~-1 ~-2 ~0 {Command:"execute at @e[tag=particles_home] positioned ~0 ~2 ~0 run function restworld:particles/%s"}' % subj.id, lines[2])}\

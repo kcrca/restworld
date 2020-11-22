@@ -7,5 +7,5 @@
     after = lights[1- int(turn_on)]
 %>
 ${use_min_fill(100, '%s replace %s' % (after, before))}
-execute at @e[tag=min_home] run setblock 0 105 -75 ${after}
+execute at @e[tag=min_home] run setblock 5 105 -78 ${after}
 </%def>

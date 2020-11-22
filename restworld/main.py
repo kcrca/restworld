@@ -116,13 +116,13 @@ class Stepable(Thing):
         self.base_id = to_id(base_id)
 
 
-class Particles(Thing):
+class ActionSign(Thing):
     def __init__(self, name, id=None, note=None):
         Thing.__init__(self, name, id)
         self.note = "(%s)" % note if note else None
 
     def to_sign_text(self):
-        t = super(Particles, self).to_sign_text()
+        t = super(ActionSign, self).to_sign_text()
         if self.note:
             t += self.note.split("|")
         return t
@@ -421,6 +421,7 @@ def render_tmpl(tmpl, var_name, **kwargs):
         biome_groups=biome_groups,
         biomes=biomes,
         normal_blocks=normal_blocks,
+        effects=effects,
         **kwargs
     )
 
@@ -466,10 +467,6 @@ def main():
             tmpl = Template(filename=tmpl_path, lookup=lookup)
             rendered = render_tmpl(tmpl, var, room=self.name)
             write_function(self.func_dir, func, rendered)
-
-            # The effects room is just special
-            if room.name == 'effects':
-                return
 
             if var in used_names and used_names[var] != self.name:
                 raise NameError("Name collision in two rooms: %s in %s, %s" % (var, self.name, used_names[var]))
@@ -541,82 +538,153 @@ def main():
     for f in incr_funcs + ("init",):
         write_function(func_dir, "_%s" % f, "\n".join("function restworld:%s/_%s" % (r, f) for r in rooms))
 
-    particle_signs(func_dir + "/particles",
-                   Template(filename="%s/particles_sign%s" % (tmpl_dir, tmpl_suffix), lookup=lookup))
+    def sign_room(name, things, walls, button=False):
+        return room_signs('%s/%s' % (func_dir, name),
+                   name,
+                   Template(filename="%s/%s_sign%s" % (tmpl_dir, name, tmpl_suffix), lookup=lookup),
+                   sorted(things, key=lambda x: x.name.replace('|', ' ')),
+                   walls,
+                   (1, 1.5, -1),
+                   button)
+
+    sign_room("particles", particles, (
+        Wall(7, 5, "east", (-1, 0)),
+        Wall(7, 7, "south", (0, -1), y_first=4),
+        Wall(7, 5, "west", (1, 0)),
+        Wall(7, 5, "north", (0, 1)),
+    ), button=True)
+    commands = sign_room("effects", effects, (
+        Wall(7, 5, "east", (-1, 0), used_widths=(3, 5, 3)),
+        Wall(7, 5, "south", (0, -1), used_widths=(5, 5), y_first=2),
+        Wall(7, 5, "west", (1, 0), used_widths=(3, 5, 3)),
+        Wall(7, 5, "north", (0, 1)),
+    ))
+    all_effects = []
+    for c in commands:
+        if " air " in c:
+            continue
+        elif " oak_wall_sign" in c:
+            all_effects.append(re.sub("oak_wall_sign.*", "emerald_block", c).replace(" ^0 ", " ^1 "))
+        else:
+            all_effects.append(c)
+    write_function("%s/%s" % (func_dir, "effects"), "effects_all_shown", "\n".join(all_effects) + "\n")
+
 
 
 particles = (
-    Particles("Ambient Entity|Effect", "ambient"),
-    Particles("Angry Villager"),
-    Particles("Ash"),
-    Particles("Barrier"),
-    Particles("Bubbles|and|Whirlpools", "bubbles"),
-    Particles("Clouds", note="Evaporation"),
-    Particles("Composter"),
-    Particles("Crimson Spore"),
-    Particles("Crit"),
-    Particles("Damage Indicator"),
-    Particles("Dolphin"),
-    Particles("Dragon Breath"),
-    Particles("Dripping Lava", note="Falling, Landing"),
-    Particles("Dripping Water", note="Falling"),
-    Particles("Dripping|Obsidian Tear", note="Falling, Landing"),
-    Particles("Dripping Honey", note="Falling, Landing"),
-    Particles("Dust", note="Redstone Dust"),
-    Particles("Effect"),
-    Particles("Enchant"),
-    Particles("Enchanted Hit"),
-    Particles("End Rod"),
-    Particles("Entity Effect"),
-    Particles("Explosion Emitter", note="Large Explosion"),
-    Particles("Explosion"),
-    Particles("Falling Dust"),
-    Particles("Falling Nectar"),
-    Particles("Fireworks", note="and Flash"),
-    Particles("Fishing"),
-    Particles("Flame"),
-    Particles("Happy Villager"),
-    Particles("Heart"),
-    Particles("Instant Effect"),
-    Particles("Item Slime"),
-    Particles("Item Snowball"),
-    Particles("Large Smoke"),
-    Particles("Lava"),
-    Particles("Mycelium"),
-    Particles("Nautilus", note="with Conduit"),
-    Particles("Note"),
-    Particles("Poof", note="Small Explosion"),
-    Particles("Portal"),
-    Particles("Smoke"),
-    Particles("Sneeze"),
-    Particles("Snow and Rain"),
-    Particles("Soul"),
-    Particles("Spit"),
-    Particles("Splash"),
-    Particles("Squid Ink"),
-    Particles("Sweep Attack"),
-    Particles("Totem of Undying"),
-    Particles("Underwater"),
-    Particles("Warped Spore"),
-    Particles("Witch"),
+    ActionSign("Ambient Entity|Effect", "ambient"),
+    ActionSign("Angry Villager"),
+    ActionSign("Ash"),
+    ActionSign("Barrier"),
+    ActionSign("Bubbles|and|Whirlpools", "bubbles"),
+    ActionSign("Clouds", note="Evaporation"),
+    ActionSign("Composter"),
+    ActionSign("Crimson Spore"),
+    ActionSign("Crit"),
+    ActionSign("Damage Indicator"),
+    ActionSign("Dolphin"),
+    ActionSign("Dragon Breath"),
+    ActionSign("Dripping Lava", note="Falling, Landing"),
+    ActionSign("Dripping Water", note="Falling"),
+    ActionSign("Dripping|Obsidian Tear", note="Falling, Landing"),
+    ActionSign("Dripping Honey", note="Falling, Landing"),
+    ActionSign("Dust", note="Redstone Dust"),
+    ActionSign("Effect"),
+    ActionSign("Enchant"),
+    ActionSign("Enchanted Hit"),
+    ActionSign("End Rod"),
+    ActionSign("Entity Effect"),
+    ActionSign("Explosion Emitter", note="Large Explosion"),
+    ActionSign("Explosion"),
+    ActionSign("Falling Dust"),
+    ActionSign("Falling Nectar"),
+    ActionSign("Fireworks", note="and Flash"),
+    ActionSign("Fishing"),
+    ActionSign("Flame"),
+    ActionSign("Happy Villager"),
+    ActionSign("Heart"),
+    ActionSign("Instant Effect"),
+    ActionSign("Item Slime"),
+    ActionSign("Item Snowball"),
+    ActionSign("Large Smoke"),
+    ActionSign("Lava"),
+    ActionSign("Mycelium"),
+    ActionSign("Nautilus", note="with Conduit"),
+    ActionSign("Note"),
+    ActionSign("Poof", note="Small Explosion"),
+    ActionSign("Portal"),
+    ActionSign("Smoke"),
+    ActionSign("Sneeze"),
+    ActionSign("Snow and Rain"),
+    ActionSign("Soul"),
+    ActionSign("Spit"),
+    ActionSign("Splash"),
+    ActionSign("Squid Ink"),
+    ActionSign("Sweep Attack"),
+    ActionSign("Totem of Undying"),
+    ActionSign("Underwater"),
+    ActionSign("Warped Spore"),
+    ActionSign("Witch"),
 )
-particles = sorted(particles, key=lambda x: x.name.replace('|', ' '))
+
+effects = (
+    ActionSign("Speed"),
+    ActionSign("Slowness"),
+    ActionSign("Haste"),
+    ActionSign("Mining Fatigue"),
+    ActionSign("Strength"),
+    ActionSign("Instant Health"),
+    ActionSign("Instant Damage"),
+    ActionSign("Jump Boost"),
+    ActionSign("Nausea"),
+    ActionSign("Regeneration"),
+    ActionSign("Resistance"),
+    ActionSign("Fire Resistance"),
+    ActionSign("Water Breathing"),
+    ActionSign("Invisibility"),
+    ActionSign("Blindness"),
+    ActionSign("Night Vision"),
+    ActionSign("Hunger"),
+    ActionSign("Weakness"),
+    ActionSign("Poison"),
+    ActionSign("Wither"),
+    ActionSign("Health Boost"),
+    ActionSign("Absorption"),
+    ActionSign("Saturation"),
+    ActionSign("Glowing"),
+    ActionSign("Levitation"),
+    ActionSign("Luck"),
+    ActionSign("Bad Luck", id='unluck'),
+    ActionSign("Slow Falling"),
+    ActionSign("Conduit Power"),
+    ActionSign("Dolphin's Grace", id='dolphins_grace'),
+    ActionSign("Bad Omen"),
+    ActionSign("Hero of the Village"),
+)
 
 
 class Wall:
-    def __init__(self, width, used, facing, block_at, y_first=3, y_last=1):
+    def __init__(self, width, used, facing, block_at, y_first=3, y_last=1, used_widths=None):
         self.width = width
-        self.used = used
         self.facing = facing
         self.block_at = block_at
         self.start = int((width - used) / 2)
         self.end = width - self.start
         self.y_first = y_first
         self.y_last = y_last
+        if used_widths is None:
+            used_widths = (used,) * 10
+        self.used_widths = used_widths
+        self.line = 0
+        self.set_line_range()
 
-    def to_next_wall(self):
-        return "execute as @e[tag=signer] run execute at @s run teleport @s ^-%d ^0 ^0 ~90 ~" % (
-                self.width - 1)
+    def set_line_range(self):
+        self.start = int((self.width - self.used_widths[self.line]) / 2)
+        self.end = self.width - self.start
+
+    def to_next_wall(self, tag):
+        return "execute as @e[tag=%s] run execute at @s run teleport @s ^-%d ^0 ^0 ~90 ~" % (
+            tag, self.width - 1)
 
     def start_pos(self):
         return self.start, self.y_first
@@ -627,6 +695,10 @@ class Wall:
             return self.end - 1, y
         x += 1
         if x >= self.end:
+            self.line += 1
+            if self.line >= len(self.used_widths):
+                return None, None
+            self.set_line_range()
             y -= 1
             x = self.start
             if y < self.y_last:
@@ -634,35 +706,24 @@ class Wall:
         return x, y
 
 
-def particle_signs(func_dir, sign_tmpl):
-    walls = (
-        Wall(7, 5, "east", (-1, 0)),
-        Wall(7, 7, "south", (0, -1), y_first=4),
-        Wall(7, 5, "west", (1, 0)),
-        Wall(7, 5, "north", (0, 1)),
-    )
-    room_signs(func_dir, "particles", sign_tmpl, sorted(particles, key=lambda x: x.name), walls, (1, 1.5, -1, 90))
-
-
-def room_signs(func_dir, room, sign_tmpl, subjects, walls, start, do_off_sign=False, label=None):
+def room_signs(func_dir, room, sign_tmpl, subjects, walls, start, button=False):
     cur_wall = 0
     wall = walls[cur_wall]
-    kill_command = "kill @e[tag=signer]"
+    tag = '%s_signer' % room
+    kill_command = "kill @e[tag=%s]" % tag
     top = walls[0].y_first + 1
     depth = walls[1].width - 1
     width = walls[0].width - 1
     commands = [
         kill_command,
-        "summon armor_stand ~%f ~%f ~%f {Tags:[signer],Rotation:[%df,0f],ArmorItems:[{},{},{},{id:turtle_helmet,Count:1}]}" % start,
-        "execute at @e[tag=signer] run fill ^0 ^0 ^0 ^%d ^%d ^%d air" % (
-            -depth, top, -width),
-        "execute at @e[tag=signer] run setblock ^%d ^%d ^%d stone_button[facing=south]" % (-depth, top, -width / 2),
+        "summon armor_stand ~%f ~%f ~%f {Tags:[%s],Rotation:[90f,0f],ArmorItems:[{},{},{},{id:turtle_helmet,Count:1}]}" % tuple(
+            start + (tag,)),
+        "execute at @e[tag=%s] run fill ^0 ^0 ^0 ^%d ^%d ^%d air replace oak_wall_sign" % (
+            tag, -depth, top, -width),
     ]
-    if label:
-        commands += [
-            "execute at @e[tag=signer] run setblock ^%d ^%d ^%d wall_sign[facing=%s]{Text2:%s}" % (
-                -int(walls[0].width / 2), wall.y_first + 1, -int(walls[1].width / 2), wall.facing, text(label)),
-        ]
+    if button:
+        commands.append("execute at @e[tag=%s] run setblock ^%d ^%d ^%d stone_button[facing=south]" % (
+            tag, -depth, top, -width / 2))
     x, y = wall.start_pos()
     for i, subj in enumerate(subjects):
         sign_text = subj.to_sign_text()
@@ -670,23 +731,13 @@ def room_signs(func_dir, room, sign_tmpl, subjects, walls, start, do_off_sign=Fa
         commands.append(sign_tmpl.render(room=room, subj=subj, lines=lines, x=-x, y=y, z=0, wall=wall).strip())
         x, y = wall.next_pos(x, y)
         if x is None:
-            commands.append(wall.to_next_wall())
+            commands.append(wall.to_next_wall(tag))
             cur_wall += 1
             wall = walls[cur_wall]
             x, y = wall.start_pos()
-    if do_off_sign:
-        # Get to the last wall and put the "off" sign on it
-        while cur_wall < len(walls) - 1:
-            commands.append(wall.to_next_wall())
-            cur_wall += 1
-            wall = walls[cur_wall]
-        x = int(wall.width / 2 + 0.6)
-        y = 3
-        commands.append(
-            sign_tmpl.render(room=room, subj=Particles("Off"), lines=['', 'Off', '', ''], x=-x, y=y, z=2,
-                             wall=wall).strip())
     commands.append(kill_command)
     write_function(func_dir, "signs", "\n".join(commands) + "\n")
+    return commands
 
 
 def write_function(func_dir, func_name, rendered):

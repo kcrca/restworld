@@ -7,7 +7,7 @@ if [ ! -d "$target" ]; then
     exit 1
 fi
 rm -f .f */.f
-for f in *; do
+for f in $(find . type d); do
     if [ -d $f -a -d $target/$f ]; then
 	echo + ln -s $target/$f $f/.f
 	ln -s $target/$f $f/.f
