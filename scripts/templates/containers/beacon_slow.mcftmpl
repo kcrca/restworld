@@ -1,0 +1,12 @@
+<%namespace name="base" file="../base.mcftmpl"/>
+<% levels = range(0, 5) %>
+
+<%base:bounce collection="${levels}" args="when,i,thing">
+${when(i)} say ${thing}
+%if thing != 0:
+${when(i)} fill ~4 ~2 ~4 ~-4 ~${2 + thing - 1} ~-4 coarse_dirt replace gold_block
+%endif
+%if thing != len(levels) - 1:
+${when(i)} fill ~4 ~5 ~4 ~-4 ~${5 - (len(levels) - thing - 2)} ~-4 gold_block replace coarse_dirt
+%endif
+</%base:bounce>
