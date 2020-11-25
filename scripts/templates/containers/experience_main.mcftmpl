@@ -9,5 +9,5 @@
 %>
 
 <%base:loop collection="${xp}" args="when,i,thing">
-${when(i)} data merge entity @e[tag=trading_villager,limit=1] {VillagerData:{level:${thing[0]}},Xp:${thing[1]}}
+${when(i)} data merge entity @e[tag=trades,limit=1] {VillagerData:{level:${thing[0]}},Xp:${thing[1]}}
 </%base:loop>

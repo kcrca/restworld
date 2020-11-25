@@ -21,5 +21,5 @@
 %>
 
 <%base:bounce collection="${counts}" args="when,i,thing">
-${when(i)} data merge entity @e[tag=trading_villager,limit=1] {Offers:Recipes:[${','.join(printf(*t) for t in trades[:thing])}]}
+${when(i)} data merge entity @e[tag=trades,limit=1] {Offers:Recipes:[${','.join(printf(*t) for t in trades[:thing])}]}
 </%base:bounce>
