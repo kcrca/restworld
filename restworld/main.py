@@ -659,7 +659,7 @@ effects = (
     ActionSign("Conduit Power"),
     ActionSign("Dolphin's Grace", id="dolphins_grace"),
     ActionSign("Bad Omen", note="Negative"),
-    ActionSign("Hero of the Village"),
+    ActionSign("Hero|of the Village"),
 )
 
 
