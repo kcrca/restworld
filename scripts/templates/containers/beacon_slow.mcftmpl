@@ -19,3 +19,5 @@ ${when(i)} data merge block ~0 ~6 ~0 {Secondary:-1}
 ${when(i)} data merge block ~0 ~6 ~0 {Secondary:10}
 %endif
 </%base:loop>
+
+execute unless entity @e[tag=big_award] run summon item ~-4 ~3 ~-4 {Item:{id:totem_of_undying,Count:1},Age:-32768,PickupDelay:2147483647,Tags:[big_award]}
