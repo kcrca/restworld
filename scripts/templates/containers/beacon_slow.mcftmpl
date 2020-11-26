@@ -7,10 +7,10 @@
     end_dirt = (4 - thing - 1)
 %>\
 %if end_dirt >= 0:
-${when(i)} fill ~4 ~2 ~4 ~-4 ~${2 + end_dirt} ~-4 coarse_dirt replace gold_block
+${when(i)} fill ~4 ~2 ~4 ~-4 ~${2 + end_dirt} ~-4 chiseled_quartz_block replace gold_block
 %endif
 %if start_gold >= 0:
-${when(i)} fill ~4 ~5 ~4 ~-4 ~${5 - start_gold} ~-4 gold_block replace coarse_dirt
+${when(i)} fill ~4 ~5 ~4 ~-4 ~${5 - start_gold} ~-4 gold_block replace chiseled_quartz_block
 %endif
 
 %if i == 4:
@@ -19,5 +19,3 @@ ${when(i)} data merge block ~0 ~6 ~0 {Secondary:-1}
 ${when(i)} data merge block ~0 ~6 ~0 {Secondary:10}
 %endif
 </%base:loop>
-
-execute unless entity @e[tag=big_award] run summon item ~-4 ~3 ~-4 {Item:{id:totem_of_undying,Count:1},Age:-32768,PickupDelay:2147483647,Tags:[big_award]}
