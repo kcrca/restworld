@@ -1,12 +1,21 @@
 <%namespace name="base" file="../base.mcftmpl"/>
-<% levels = range(0, 5) %>
+<% levels = (0, 1, 2, 3, 4, 4, 3, 2, 1) %>
 
-<%base:bounce collection="${levels}" args="when,i,thing">
-${when(i)} say ${thing}
-%if thing != 0:
-${when(i)} fill ~4 ~2 ~4 ~-4 ~${2 + thing - 1} ~-4 coarse_dirt replace gold_block
+<%base:loop collection="${levels}" args="when,i,thing">
+<%
+    start_gold = (thing - 1)
+    end_dirt = (4 - thing - 1)
+%>\
+%if end_dirt >= 0:
+${when(i)} fill ~4 ~2 ~4 ~-4 ~${2 + end_dirt} ~-4 coarse_dirt replace gold_block
 %endif
-%if thing != len(levels) - 1:
-${when(i)} fill ~4 ~5 ~4 ~-4 ~${5 - (len(levels) - thing - 2)} ~-4 gold_block replace coarse_dirt
+%if start_gold >= 0:
+${when(i)} fill ~4 ~5 ~4 ~-4 ~${5 - start_gold} ~-4 gold_block replace coarse_dirt
 %endif
-</%base:bounce>
+
+%if i == 4:
+${when(i)} data merge block ~0 ~6 ~0 {Secondary:-1}
+%elif i == 5:
+${when(i)} data merge block ~0 ~6 ~0 {Secondary:10}
+%endif
+</%base:loop>
