@@ -1,2 +1,1 @@
-tp @p @e[tag=photo_quilt_view,limit=1]
-execute at @e[tag=photo_quilt_view,limit=1] run tp @p ~0 ~0 ~0 facing -1000 101.3 1016
+execute in overworld run tp @p -998 100 1005 facing -998 101 1016
