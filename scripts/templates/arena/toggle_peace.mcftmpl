@@ -1,7 +1,6 @@
 <%namespace name="base" file="../base.mcftmpl"/>\
 
 <%base:loop collection="${(True, False)}" args="when,i,thing">
-${when(i)} say ${i}, ${thing}
 ${when(i)} execute at @e[tag=monitor_home] run fill ~2 ~-1 ~0 ~3 ~-1 ~0 ${'redstone_torch' if thing else 'air'}
 ${when(i)} setblock ~0 ~1 ~0 ${'%s_concrete' % ('lime' if thing else 'red')}
 </%base:loop>\
