@@ -21,10 +21,11 @@ setblock ~-2 ~${y} ~${z} oak_wall_sign[facing=east]{\
 <%
 import sys
 
+armed_johnny = 'Johnny:True,HandItems:[{id:iron_axe,Count:1},{}]'
 row_length = 5
 battles = (
     ('Evoker', 'Iron Golem'),
-    ('Vindicator', 'Snow Golem', 'HandItems:[{id:iron_axe,Count:1},{}]'),
+    ('Vindicator', 'Snow Golem', armed_johnny),
     ('Pillager', 'Snow Golem', 'HandItems:[{id:crossbow,Count:1},{}]'),
     ('Illusioner', 'Snow Golem'),
     ('Drowned', 'Snow Golem', 'HandItems:[{id:trident,Count:1}]'),
@@ -33,17 +34,17 @@ battles = (
     ('Stray', 'Iron Golem', 'HandItems:[{id:bow,Count:1}],ArmorItems:[{id:iron_boots,Count:1,tag:{RepairCost:1,Enchantments:[{lvl:9,id:protection}]}},{},{},{}]'),
     ('Wither', 'Iron Golem'),
     ('Blaze', 'Snow Golem'),
-    ('Piglin Brute', 'Vindicator', 'HandItems:[{id:golden_axe,Count:1}],IsImmuneToZombification:True', 'Johnny:True'),
+    ('Piglin Brute', 'Vindicator', 'HandItems:[{id:golden_axe,Count:1}],IsImmuneToZombification:True', armed_johnny),
     ('Witch', 'Snow Golem'),
     ('Wolf', 'Sheep'),
     ('Ravager', 'Iron Golem'),
     ('Fox', 'Chicken'),
     ('Ocelot', 'Chicken'),
     ('Cat', 'Rabbit'),
-    ('Polar Bear', 'Vindicator', '', 'Johnny:True'),
-    ('Hoglin', 'Vindicator', 'IsImmuneToZombification:True', 'Johnny:True'),
-    ('Zoglin', 'Vindicator', '', 'Johnny:True'),
-    ('Zombified Piglin', 'Vindicator', 'HandItems:[{id:golden_sword,Count:1}]', 'Johnny:True'),
+    ('Polar Bear', 'Vindicator', '', armed_johnny),
+    ('Hoglin', 'Vindicator', 'IsImmuneToZombification:True', armed_johnny),
+    ('Zoglin', 'Vindicator', '', armed_johnny),
+    ('Zombified Piglin', 'Vindicator', 'HandItems:[{id:golden_sword,Count:1}]', armed_johnny),
     ('Panda', 'Vindicator', 'MainGene:aggressive', 'Johnny:True'),
     ('Spider', 'Vindicator', '', 'Johnny:True'),
     ('Cave Spider', 'Vindicator', '', 'Johnny:True'),
