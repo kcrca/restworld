@@ -21,7 +21,7 @@ setblock ~-2 ~${y} ~${z} oak_wall_sign[facing=east]{\
 <%
 import sys
 
-row_length = 7
+row_length = 5
 battles = (
     ('Evoker', 'Iron Golem'),
     ('Vindicator', 'Snow Golem', 'HandItems:[{id:iron_axe,Count:1},{}]'),
@@ -44,10 +44,16 @@ battles = (
     ('Hoglin', 'Vindicator', 'IsImmuneToZombification:True', 'Johnny:True'),
     ('Zoglin', 'Vindicator', '', 'Johnny:True'),
     ('Zombified Piglin', 'Vindicator', 'HandItems:[{id:golden_sword,Count:1}]', 'Johnny:True'),
+    ('Panda', 'Vindicator', 'MainGene:aggressive', 'Johnny:True'),
+    ('Spider', 'Vindicator', '', 'Johnny:True'),
+    ('Cave Spider', 'Vindicator', '', 'Johnny:True'),
+    ('Parrot', 'Vindicator', '', 'Johnny:True'),
 )
-peace = ('Peace', ''),
 if len(battles) % row_length != 0:
+    sys.stderr.write('Row length (%d) is not a multiple of battle count (%d)\n' % (row_length, len(battles)))
     sys.exit(1)
+
+peace = ('Peace', ''),
 
 num_pages = int(len(battles) / row_length)
 pos = page * row_length
