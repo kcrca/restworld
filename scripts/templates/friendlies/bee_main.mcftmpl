@@ -5,5 +5,11 @@
     ${when(0)} execute at @e[tag=bee_home] run setblock ~2 ~2 ~0 beehive[facing=west] replace
     ${when(2)} execute at @e[tag=bee_home] run setblock ~2 ~2 ~0 bee_nest[facing=west] replace
 %endif
-${when(i)} execute as @e[tag=bee] run data merge entity @s {AngerTime:${(i % 2) * 100000},CustomName:${text("Bee") if i % 2 == 0 else text("Angry Bee")}}
+<%
+    on_ground = i < 2
+    base = 'iron_bars' if on_ground else 'air'
+%>
+${when(i)} execute as @e[tag=bee] run data merge entity @s {OnGround:${on_ground},AngerTime:${(i % 2) * 100000},CustomName:${text("Bee") if i % 2 == 0 else text("Angry Bee")}}
+${when(i)} setblock ~0 ~2 ~0 ${base}
+${when(i)} setblock ~-2 ~2 ~0 ${base}
 </%base:loop>\
