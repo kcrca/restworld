@@ -538,26 +538,27 @@ def main():
     for f in incr_funcs + ("init",):
         write_function(func_dir, "_%s" % f, "\n".join("function restworld:%s/_%s" % (r, f) for r in rooms))
 
-    def sign_room(name, things, walls, button=False):
+    def sign_room(name, things, start_rotation, walls, button=False):
         return room_signs('%s/%s' % (func_dir, name),
-                   name,
-                   Template(filename="%s/%s_sign%s" % (tmpl_dir, name, tmpl_suffix), lookup=lookup),
-                   sorted(things, key=lambda x: x.name.replace('|', ' ')),
-                   walls,
-                   (1, 1.5, -1),
-                   button)
+                          name,
+                          Template(filename="%s/%s_sign%s" % (tmpl_dir, name, tmpl_suffix), lookup=lookup),
+                          start_rotation,
+                          sorted(things, key=lambda x: x.name.replace('|', ' ')),
+                          walls,
+                          (1, 1.5, -1),
+                          button)
 
-    sign_room("particles", particles, (
+    sign_room("particles", particles, 90, (
         Wall(7, 5, "east", (-1, 0)),
         Wall(7, 7, "south", (0, -1), y_first=4),
         Wall(7, 5, "west", (1, 0)),
         Wall(7, 5, "north", (0, 1)),
     ), button=True)
-    commands = sign_room("effects", effects, (
-        Wall(7, 5, "east", (-1, 0), used_widths=(3, 5, 3)),
-        Wall(7, 5, "south", (0, -1), used_widths=(5, 5), y_first=2),
-        Wall(7, 5, "west", (1, 0), used_widths=(3, 5, 3)),
-        Wall(7, 5, "north", (0, 1)),
+    commands = sign_room("effects", effects, 180, (
+        Wall(7, 5, "south", (0, -1), used_widths=(3, 5, 3)),
+        Wall(7, 5, "west", (1, 0), used_widths=(5, 5), y_first=2),
+        Wall(7, 5, "north", (0, 1), used_widths=(3, 5, 3)),
+        Wall(7, 5, "east", (-1, 0)),
     ))
     all_effects = []
     for c in commands:
@@ -568,7 +569,6 @@ def main():
         else:
             all_effects.append(c)
     write_function("%s/%s" % (func_dir, "effects"), "effects_all_shown", "\n".join(all_effects) + "\n")
-
 
 
 particles = (
@@ -706,7 +706,7 @@ class Wall:
         return x, y
 
 
-def room_signs(func_dir, room, sign_tmpl, subjects, walls, start, button=False):
+def room_signs(func_dir, room, sign_tmpl, start_rotation, subjects, walls, start, button=False):
     cur_wall = 0
     wall = walls[cur_wall]
     tag = '%s_signer' % room
@@ -716,8 +716,8 @@ def room_signs(func_dir, room, sign_tmpl, subjects, walls, start, button=False):
     width = walls[0].width - 1
     commands = [
         kill_command,
-        "summon armor_stand ~%f ~%f ~%f {Tags:[%s],Rotation:[90f,0f],ArmorItems:[{},{},{},{id:turtle_helmet,Count:1}]}" % tuple(
-            start + (tag,)),
+        "summon armor_stand ~%f ~%f ~%f {Tags:[%s],Rotation:[%df,0f],ArmorItems:[{},{},{},{id:turtle_helmet,Count:1}]}" % tuple(
+            start + (tag, start_rotation)),
         "execute at @e[tag=%s] run fill ^0 ^0 ^0 ^%d ^%d ^%d air replace oak_wall_sign" % (
             tag, -depth, top, -width),
     ]

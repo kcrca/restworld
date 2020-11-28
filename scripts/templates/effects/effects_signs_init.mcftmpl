@@ -1,5 +1,5 @@
 <%namespace file="../sign_base.mcftmpl" import="*"/>
 
 execute positioned ~ ~1 ~ run function restworld:effects/signs
-execute at @e[tag=effects_global_home] run setblock ~0 ~5 ~0 oak_wall_sign[facing=south]{${sign_local_nbt(1, "function restworld:effects/effects_all", "All Effects")}}
-execute at @e[tag=effects_global_home] run setblock ~2 ~5 ~0 oak_wall_sign[facing=south]{${sign_local_nbt(1, "function restworld:effects/effects_none", "No Effects")}}
+execute at @e[tag=effects_global_home] run setblock ~0 ~5 ~0 oak_wall_sign[facing=west]{${sign_local_nbt(1, "function restworld:effects/effects_all", "All Effects")}}
+execute at @e[tag=effects_global_home] run setblock ~0 ~5 ~2 oak_wall_sign[facing=west]{${sign_local_nbt(1, "function restworld:effects/effects_none", "No Effects")}}
