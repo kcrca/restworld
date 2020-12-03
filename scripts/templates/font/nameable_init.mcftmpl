@@ -1,5 +1,6 @@
 <%namespace name="base" file="../base.mcftmpl"/>\
 
+<%base:remove who="tag=font"/>
 ${base.mobs_init(rotation_init=0)}\
 ${base.mobs("Rabbit", do_adult=True)}
-data merge entity @e[tag=font,tag=rabbit,limit=1] {CustomName:${text("")}}
+data merge entity @e[tag=font,tag=rabbit,limit=1] {CustomName:${text("")},CustomNameVisible:True}
