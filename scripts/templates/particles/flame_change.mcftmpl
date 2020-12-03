@@ -1,8 +1,0 @@
-<%namespace file="particle_base.mcftmpl" import="*"/>\
-<%namespace name="base"  file="../base.mcftmpl"/>\
-
-<%base:loop collection="${'torch', 'soul_torch'}" args="when,i,thing">
-${when(i)} fill ~-1 ~0 ~-1 ~1 ~0 ~1 ${thing}
-${when(i)} setblock ~0 ~0 ~0 air
-${when(i)} particle ${thing.replace('torch', 'flame').replace('soul', 'soul_fire')} ~0 ~1 ~0 0.5 0.5 0.5 0.01 8
-</%base:loop>
