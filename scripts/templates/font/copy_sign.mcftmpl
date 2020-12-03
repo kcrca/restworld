@@ -1,0 +1,16 @@
+<%namespace name="base" file="../base.mcftmpl"/>\
+<%
+    materials = tuple(Thing(m) for m in woods + stems)
+%>
+
+%for thing in materials:
+<%
+    x, y = loop.index % 3 -1, 5 - int(loop.index / 3)
+    if loop.index == 7:
+	x += 1
+%>
+<%base.ensure("~%d ~%d ~-1" % (x, y), "%s_wall_sign[facing=south]" % thing.id, "Text2:%s" % text("%d" % loop.index))%>
+%for path in ("Color",) + tuple("Text%d" % i for i in range(1, 5)):
+data modify block ~${x} ~${y} ~-1 ${path} set from block ~0 ~3 ~-1 ${path}
+%endfor
+%endfor
