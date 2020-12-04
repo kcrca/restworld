@@ -6,7 +6,7 @@ scoreboard players add zombie_jockey funcs 0
 
 ${base.remove("tag=zombieish")}
 
-${base.mobs_init(kid_x_init=1.7, adult_x_init=0.20, rotation_init=270, tags_init=("zombieish","monsters"))}\
+${base.mobs_init(kid_x_init=1.7, adult_x_init=0.20, rotation_init=270, tags_init=("zombieish",))}\
 <%base:loop collection="${zombies}" args="when,i,thing">
 execute if score zombie_jockey funcs matches 0 run ${base.mobs(thing, when=when, i=i)}
 execute if score zombie_jockey funcs matches 1 run ${base.mobs(thing, when=when, i=i, do_adult=True)}

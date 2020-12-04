@@ -1,4 +1,4 @@
 <%namespace name="base" file="../base.mcftmpl"/>\
 
-${base.mobs_init(adult_x_init=1, rotation_init=270, tags_init=("monsters",))}\
+${base.mobs_init(adult_x_init=1, rotation_init=270)}\
 ${base.mobs("Ravager", do_adult=True)}

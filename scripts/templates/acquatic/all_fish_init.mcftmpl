@@ -2,10 +2,10 @@
 
 setblock ~0 ~2 ~0 oak_wall_sign[facing=west,waterlogged=true]{Text2:${text("All Possible")},Text3:${text("Tropical Fish")},Text4:${text("-------->")}} destroy
 
-${base.mobs_init(z_delta_init=1, y_init=1.2, kid_x_init=-1.6, adult_x_init=0, rotation_init=90, tags_init=("acquatic",))}
+${base.mobs_init(z_delta_init=1, y_init=1.2, kid_x_init=-1.6, adult_x_init=0, rotation_init=90)}
 % for i in range(0, 12):
 % if i == 6:
-${base.mobs_init(z_delta_init=1, y_init=1.2, kid_x_init=-1.6, adult_x_init=1, rotation_init=90, tags_init=("acquatic",))}
+${base.mobs_init(z_delta_init=1, y_init=1.2, kid_x_init=-1.6, adult_x_init=1, rotation_init=90)}
 %endif
 ${base.mobs("Tropical Fish", nbt="Invulnerable:True", tags=("fish%d" % i,), do_adult=True)}
 % endfor

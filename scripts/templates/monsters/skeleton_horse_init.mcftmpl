@@ -1,4 +1,4 @@
 <%namespace name="base" file="../base.mcftmpl"/>\
 
-${base.mobs_init(y_init=0, kid_x_init=2.2, adult_x_init=0.2, rotation_init=270, tags_init=("monsters",))}\
+${base.mobs_init(y_init=0, kid_x_init=2.2, adult_x_init=0.2, rotation_init=270)}\
 ${base.mobs("Skeleton Horse")}
