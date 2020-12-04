@@ -2,10 +2,10 @@
 
 ${base.remove("tag=villager")}
 
-${base.mobs_init(z_init=-6, x_init=-2, z_delta_init=2, adult_z_init=0, rotation_init=90, tags_init=("friendlies","villager"))}\
+${base.mobs_init(z_init=-6, x_init=-2, z_delta_init=2, adult_z_init=0, rotation_init=90, tags_init=("villager",))}\
 %for p in professions:
 %    if loop.index == 7:
-	${base.mobs_init(z_init=-7, x_init=0, z_delta_init=2, adult_z_init=0, rotation_init=90, tags_init=("friendlies","villager"))}\
+	${base.mobs_init(z_init=-7, x_init=0, z_delta_init=2, adult_z_init=0, rotation_init=90, tags_init=("villager",))}\
 %    endif
 ${base.mobs(p, id="zombie_villager", do_adult=True, nbt="VillagerData:{profession:%s}" % p.lower())}\
 %endfor

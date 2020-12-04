@@ -1,7 +1,7 @@
 <%namespace name="base" file="../base.mcftmpl"/>\
 <% llamas = ( Thing("Creamy"), Thing("White"), Thing("Brown"), Thing("Gray")) %>
 
-${base.mobs_init(x_delta_init=-2, kid_z_init=-2.2, adult_x_init=0.20, rotation_init=180, tags_init=("friendlies",))}\
+${base.mobs_init(x_delta_init=-2, kid_z_init=-2.2, adult_x_init=0.20, rotation_init=180)}\
 % for llama in llamas:
 ${base.mobs(llama.name, id="llama", nbt="Variant:%d" % loop.index)}\
 % endfor
