@@ -16,3 +16,4 @@ data modify block ~${x} ~${y} ~-1 ${path} set from block ~0 ~3 ~-1 ${path}
 %endfor
 
 data modify entity @e[tag=font,tag=rabbit,limit=1] CustomName set from block ~0 ~3 ~-1 Text1
+data modify entity @e[tag=font,tag=rabbit,limit=1] CustomNameVisible set value True
