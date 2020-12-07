@@ -1,0 +1,2 @@
+scoreboard players set time funcs 5000
+time set 5000
