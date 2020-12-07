@@ -1,5 +1,9 @@
-fill -990 100 990 -1010 100 1010 air replace oak_wall_sign
-setblock -996 100 1001 oak_wall_sign[facing=west]{Text2:${text("Go Home")}}
-setblock -996 100 1003 oak_wall_sign[facing=west]{Text2:${text("Quilt View")}}
-setblock -1000 100 1003 oak_wall_sign[facing=east]{Text2:${text("Go Home")}}
-setblock -1000 100 1001 oak_wall_sign[facing=east]{Text2:${text("Sample View")}}
+fill ~-1 ~11 ~-1 ~1 ~11 ~1 air
+setblock ~-1 ~11 ~-1 oak_wall_sign[facing=north]{Text2:${text("Go Home")}}
+setblock ~1 ~11 ~-1 oak_wall_sign[facing=north]{Text2:${text("Reset Photo")}}
+setblock ~1 ~11 ~1 oak_wall_sign[facing=south]{Text2:${text("Go Home")}}
+setblock ~-1 ~11 ~1 oak_wall_sign[facing=south]{Text2:${text("Reset Photo")}}
+
+kill @e[tag=photo_view]
+summon armor_stand ~0 ~10 ~-3 {Tags:[photo_view,photo_example_view],NoGravity:true,Small:True,PersistenceRequired:True,Invisible:True}
+summon armor_stand ~0 ~10 ~3 {Tags:[photo_view,photo_quilt_view],NoGravity:true,Small:True,PersistenceRequired:True,Invisible:True}
