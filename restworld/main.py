@@ -296,14 +296,14 @@ patterns = (
     ("sku", "Skull"), ("flo", "Flower"), ("moj", "Mojang"), ("glb", "Globe"), ("pig", "Pig"),
 )
 moon_phases = (
-    (214000, "Full"),
-    (46000, "Waning Gibbous"),
-    (70000, "Three Quarters"),
-    (94000, "Waning Crescent"),
-    (118000, "New"),
-    (142000, "Waxing Crescent"),
-    (166000, "First Quarter"),
-    (190000, "Waxing Gibbous"),
+    (206000, "Full"),
+    (38000, "Waning Gibbous"),
+    (62000, "Three Quarters"),
+    (86000, "Waning Crescent"),
+    (110000, "New"),
+    (134000, "Waxing Crescent"),
+    (158000, "First Quarter"),
+    (182000, "Waxing Gibbous"),
 )
 
 villager_types = ("Desert", "Jungle", "Plains", "Savanna", "Snow", "Swamp", "Taiga")

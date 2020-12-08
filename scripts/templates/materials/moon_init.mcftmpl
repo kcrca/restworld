@@ -1,22 +1,24 @@
 <%namespace file="../sign_base.mcftmpl" import="*"/>
 
-<%def name="flat_frame(x, y, z, rot, item, name)">
-<% tag = name.replace(' ', '_') if name else 'moon_pointer'%>
-summon item_frame ~${x} ~${y} ~${z} {Facing:5, Item:{Count:1,id:${item},tag:{display:{Name:'{"text":"${name}"}'}}},ItemRotation:${rot},Tags:[${tag},${var}_frame], Fixed:True}
-</%def>
+<% barriers = 'fill ~1 ~8 ~0 ~1 ~8 ~8 barrier' %>
 
-<%def name="moon_frame(x, y, z, time, name)">
-setblock ~${x} ~${y} ~${z} oak_wall_sign[facing=east]{\
-    ${sign_local_nbt(0, 'execute at @e[tag=moon_home] run fill ~-1 ~7 ~2 ~-1 ~8 ~-1 barrier', '')},\
+<%def name="moon_sign(x, y, z, time, name)">
+setblock ~${x} ~${y} ~${z} oak_wall_sign[facing=west]{\
+    ${sign_local_nbt(0, 'execute at @e[tag=moon_home] run %s' % barriers, '')},\
     ${sign_local_nbt(1, 'time set %d' % time, name)},\
-    ${sign_local_nbt(2, 'setblock ~-1 ~0 ~0 emerald_block', '')}\
+    ${sign_local_nbt(2, 'setblock ~1 ~0 ~0 emerald_block', 'Moon')}\
 }
 </%def>
 
-fill ~-1 ~7 ~2 ~-1 ~8 ~-1 barrier
-fill ~0 ~7 ~2 ~0 ~8 ~-1 air
+fill ~1 ~8 ~0 ~0 ~8 ~8 air
+${barriers}
+
 %for phase in moon_phases:
-${moon_frame(0, 8 - int(loop.index / 4), 2 - loop.index % 4, *phase)}
+${moon_sign(0, 8, loop.index + (1 if loop.index > 3 else 0), *phase)}
 %endfor
+
+kill @e[tag=${var}_frame]
+summon item_frame ~0 ~8 ~4 {Facing:4, Item:{Count:1,id:clock,Tags:[${var}_frame]}, Fixed:True}
+summon item_frame ~-9 ~8 ~4 {Facing:5, Item:{Count:1,id:clock,Tags:[${var}_frame]}, Fixed:True}
 
 scoreboard players set ${var} funcs 0
