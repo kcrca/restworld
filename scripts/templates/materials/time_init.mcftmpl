@@ -1,0 +1,2 @@
+scoreboard players set ${var}_forward funcs 1
+time set noon

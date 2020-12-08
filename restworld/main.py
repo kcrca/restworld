@@ -295,6 +295,16 @@ patterns = (
     ("gra", "Gradient"), ("gru", "Gradient|Upside-Down"), ("cre", "Creeper"), ("bri", "Brick"),
     ("sku", "Skull"), ("flo", "Flower"), ("moj", "Mojang"), ("glb", "Globe"), ("pig", "Pig"),
 )
+moon_phases = (
+    (214000, "Full"),
+    (46000, "Waning Gibbous"),
+    (70000, "Three Quarters"),
+    (94000, "Waning Crescent"),
+    (118000, "New"),
+    (142000, "Waxing Crescent"),
+    (166000, "First Quarter"),
+    (190000, "Waxing Gibbous"),
+)
 
 villager_types = ("Desert", "Jungle", "Plains", "Savanna", "Snow", "Swamp", "Taiga")
 villager_data = []
@@ -422,6 +432,7 @@ def render_tmpl(tmpl, var_name, **kwargs):
         biomes=biomes,
         normal_blocks=normal_blocks,
         effects=effects,
+        moon_phases=moon_phases,
         **kwargs
     )
 
@@ -540,12 +551,12 @@ def main():
 
     def sign_room(name, things, walls, button=False):
         return room_signs('%s/%s' % (func_dir, name),
-                   name,
-                   Template(filename="%s/%s_sign%s" % (tmpl_dir, name, tmpl_suffix), lookup=lookup),
-                   sorted(things, key=lambda x: x.name.replace('|', ' ')),
-                   walls,
-                   (1, 1.5, -1),
-                   button)
+                          name,
+                          Template(filename="%s/%s_sign%s" % (tmpl_dir, name, tmpl_suffix), lookup=lookup),
+                          sorted(things, key=lambda x: x.name.replace('|', ' ')),
+                          walls,
+                          (1, 1.5, -1),
+                          button)
 
     sign_room("particles", particles, (
         Wall(7, 5, "east", (-1, 0)),
@@ -568,7 +579,6 @@ def main():
         else:
             all_effects.append(c)
     write_function("%s/%s" % (func_dir, "effects"), "effects_all_shown", "\n".join(all_effects) + "\n")
-
 
 
 particles = (

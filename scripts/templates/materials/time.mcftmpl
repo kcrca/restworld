@@ -1,0 +1,18 @@
+<%
+    slow, norm = 3, 30
+    morn = "21900..24600"
+    even = "11500..14200"
+    noon = 6000
+    day = 24000
+%>
+execute unless score ${var}_forward funcs matches 0.. run function time_init
+execute store result score ${var} funcs run time query daytime
+execute if score ${var} funcs matches ..${noon} run scoreboard players add ${var} funcs 24000
+
+execute if score ${var} funcs matches ${morn} if score ${var}_forward funcs matches 1.. run time add ${slow}
+execute if score ${var} funcs matches ${even} if score ${var}_forward funcs matches 1.. run time add ${slow}
+execute unless score ${var} funcs matches ${even} unless score ${var} funcs matches ${morn} if score ${var}_forward funcs matches 1.. run time add ${norm}
+
+execute if score ${var} funcs matches ${morn} unless score ${var}_forward funcs matches 1.. run time add ${day - slow}
+execute if score ${var} funcs matches ${even} unless score ${var}_forward funcs matches 1.. run time add ${day - slow}
+execute unless score ${var} funcs matches ${even} unless score ${var} funcs matches ${morn} unless score ${var}_forward funcs matches 1.. run time add ${day - norm}

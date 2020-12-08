@@ -1,9 +1,6 @@
 Show the two kinds of invisible blocks shown during "save" for
 structure blocks
 
-Show "barrier" in an item frame. Possibly also the two kinds of
-invisible blocks.
-
 Environment: Phases of the moon, maybe daytime cycle (pan the user
 to be always looking at the sun/moon while it's sped up?)
     Moon:
@@ -21,6 +18,8 @@ on them. Also, item frames can be invisible. So we can name a very
 small thing (button?), put it in an invisible item frame on the
 floor over a button or switch to label what it does.  This would
 avoid the "signs everywhere" or "say nothing" choice.
+
+Show "barrier" in an item frame. Possibly also structure void.
 
 Items in frames, like everyone else? The creative menu is missing
 a few things (command blocks, structure blocks, structure void,
