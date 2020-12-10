@@ -1,0 +1,28 @@
+<%namespace name="base" file="../base.mcftmpl"/>\
+
+<%
+def color_text(color):
+    return r'{text:\"Lorem ipsum dolor\\n\",color:\"%s\",hoverEvent:{action:show_text,value:%s}}' % (color, color)
+
+colors = ('black', 'dark_blue', 'dark_green', 'dark_aqua', 'dark_red', 'dark_purple',
+          'gold', 'gray', 'dark_gray', 'blue', 'green', 'aqua', 'red', 'light_purple', 'yellow', 'white',)
+
+book = r'{pages:[ ' \
+       r'"[\"\",'\
+       r'{text:\"Named text colors\\n\",underlined:true},{text:\"    (hover for names)\\n\\n\",color:reset},' +\
+       ', '.join(color_text(c) for c in colors[:8]) +\
+       r']",'\
+       r'"[\"\",'\
+       r'{text:\"Named text colors\\n\",underlined:true},{text:\"    (hover for names)\\n\\n\",color:reset},' +\
+       ', '.join(color_text(c) for c in colors[8:]) +\
+       r']",'\
+       r'"[\"\",'\
+       r'{text:\"Text Formatting\",underlined:true},{text:\"\\n\\n\",color:reset},'\
+       r'{text:\"Bold Text\",bold:true},{text:\"\\n\",color:reset},'\
+       r'{text:\"Obfuscated Text\",obfuscated:true},{text:\"\\n\",color:reset},'\
+       r'{text:\"Strikethrough Text\",strikethrough:true},{text:\"\\n\",color:reset},'\
+       r'{text:\"Underline Text\",underlined:true},{text:\"\\n\",color:reset},'\
+       r'{text:\"Italic Text\",italic:true}]"],'\
+       r'title:"Text Formatting", author:BlueMeanial }'
+%>
+<%base.ensure("~0 ~2 ~0", 'lectern[facing=west,has_book=true]', nbt='Book:{id:"minecraft:written_book", Count:1, tag: %s}' % book)%>
