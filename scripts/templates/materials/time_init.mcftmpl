@@ -6,3 +6,5 @@ setblock ~1 ~7 ~-1 oak_wall_sign[facing=west]{Text2:${text("Move the Time")}}
 setblock ~1 ~7 ~1 oak_wall_sign[facing=west]{Text2:${text("... Forward")},Text3:${text("or Back")}}
 setblock ~0 ~7 ~1 lever[face=floor,facing=west]
 setblock ~0 ~7 ~-1 lever[face=floor,facing=west]
+data merge block ~0 ~5 ~-1 {powered:0}
+clone ~2 ~3 ~1 ~0 ~3 ~1 ~0 ~5 ~1 replace force
