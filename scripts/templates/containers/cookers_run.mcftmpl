@@ -1,0 +1,11 @@
+replaceitem block ~0 ~2 ~0 container.1 minecraft:stick 64
+replaceitem block ~0 ~2 ~0 container.0 minecraft:stone 64
+replaceitem block ~0 ~2 ~0 container.2 air 1
+
+replaceitem block ~3 ~2 ~0 container.1 minecraft:stick 64
+replaceitem block ~3 ~2 ~0 container.0 minecraft:gold_ore 64
+replaceitem block ~3 ~2 ~0 container.2 air 1
+
+replaceitem block ~0 ~2 ~3 container.1 minecraft:stick 64
+replaceitem block ~0 ~2 ~3 container.0 minecraft:beef 64
+replaceitem block ~0 ~2 ~3 container.2 air 1
