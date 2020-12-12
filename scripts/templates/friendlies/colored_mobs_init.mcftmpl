@@ -1,0 +1,4 @@
+<%namespace name="base" file="../base.mcftmpl"/>
+
+${base.label(0, 2, -1, "Glow")}
+${base.label(0, 2, 3, "Change Height")}

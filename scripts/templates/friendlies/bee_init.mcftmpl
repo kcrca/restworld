@@ -2,3 +2,6 @@
 
 ${base.mobs_init(y_init=1, kid_x_init=-2, x_delta_init=-2, rotation_init=90)}\
 ${base.mobs("Bee", tags=("bee",))}
+
+${base.label(-2, 2, -1, "Stinger")}
+${base.label(-2, 2, 1, "Pollen")}

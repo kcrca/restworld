@@ -8,3 +8,6 @@ ${base.mobs(llama.name, id="llama", nbt="Variant:%d" % loop.index)}\
 summon llama_spit ~-3 ~3.5 ~-3 {CustomName:"\"Llama Spit\"",Tags:[friendlies,llama,llama_spit],TXD:0,TYD:0,TZD:0,Steps:0,NoAI:True,Motion:[0,0,0],NoGravity:True}
 setblock ~-3 ~2 ~-3 oak_wall_sign[facing=north]
 data modify block ~-3 ~2 ~-3 Text2 set value ${text("Llama Spit")}
+
+${base.label(-1, 2, -2, "Carpets")}
+${base.label(-5, 2, -2, "Chests")}

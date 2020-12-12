@@ -1,0 +1,5 @@
+<%namespace name="base" file="../base.mcftmpl"/>
+
+${base.label(5, 2, 4, "Banner / Ink")}
+${base.label(3, 2, 4, "Labels")}
+${base.label(4, 2, 3, "Controls")}

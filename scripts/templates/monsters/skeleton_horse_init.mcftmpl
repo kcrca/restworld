@@ -2,3 +2,5 @@
 
 ${base.mobs_init(y_init=0, kid_x_init=2.2, adult_x_init=0.2, rotation_init=270)}\
 ${base.mobs("Skeleton Horse")}
+
+${base.label(3, 2, 0, "Rider")}

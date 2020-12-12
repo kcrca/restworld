@@ -2,3 +2,6 @@
 
 ${base.mobs_init(kid_z_init=-1.8, adult_z_init=0.8, rotation_init=180)}
 ${base.mobs("Strider")}
+
+${base.label(-1, 2, -3, "Saddles")}
+${base.label(2, 2, -6, "Change Height")}

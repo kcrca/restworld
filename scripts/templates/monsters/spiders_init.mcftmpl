@@ -11,3 +11,6 @@ ${base.mobs_init(z_delta_init=-2.5, z_init=-0.2, y_init=0.5, adult_x_init=-0.2, 
 ${base.when(i)} ${base.mobs(s, do_adult=True, tags=('spiders',), nbt=None if i == 0 else skeleton)}
 %endfor
 %endfor
+
+${base.label(2, 2, 0, "Rider")}
+${base.label(5, 2, -2, "Change Height")}

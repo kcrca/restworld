@@ -1,9 +1,10 @@
-fill ~-1 ~11 ~-1 ~1 ~11 ~1 air
-setblock ~-1 ~11 ~-1 oak_wall_sign[facing=north]{Text2:${text("Go Home")}}
-setblock ~1 ~11 ~-1 oak_wall_sign[facing=north]{Text2:${text("Reset Photo")}}
-setblock ~1 ~11 ~1 oak_wall_sign[facing=south]{Text2:${text("Go Home")}}
-setblock ~-1 ~11 ~1 oak_wall_sign[facing=south]{Text2:${text("Reset Photo")}}
+<%namespace name="base" file="../base.mcftmpl"/>
 
 kill @e[tag=photo_view]
 summon armor_stand ~0 ~10 ~-3 {Tags:[photo_view,photo_example_view],NoGravity:true,Small:True,PersistenceRequired:True,Invisible:True}
 summon armor_stand ~0 ~10 ~3 {Tags:[photo_view,photo_quilt_view],NoGravity:true,Small:True,PersistenceRequired:True,Invisible:True}
+
+${base.label(-1, 10, -1, "Go Home")}
+${base.label(1, 10, -1, "Reset Photo")}
+${base.label(1, 10, 1, "Go Home")}
+${base.label(-1, 10, 1, "Reset Photo")}

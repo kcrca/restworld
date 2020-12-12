@@ -1,2 +1,8 @@
+<%namespace name="base" file="../base.mcftmpl"/>\
+
 setblock ~6 ~2 ~0 oak_wall_sign[facing=north]{Text3:"{\"text\":\"Stained Glass\"}"} replace
 function restworld:materials/panes_cur
+${base.label(6, 2, -1, "Change Height")}
+${base.label(4, 2, -1, "Glass Panes")}
+${base.label(3, 2, -1, "Walls")}
+${base.label(2, 2, -1, "Fences")}
