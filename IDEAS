@@ -1,25 +1,12 @@
-Show the two kinds of invisible blocks shown during "save" for
-structure blocks
-
-Environment: Phases of the moon, maybe daytime cycle (pan the user
-to be always looking at the sun/moon while it's sped up?)
-    Moon:
-	    3rd quarter		time set 70000
-	    waning crescent	time set 94000
-	    new			time set 118000
-	    waxing crescent	time set 142000
-	    1st quarter		time set 166000
-	    waxing gibbous	time set 190000
-	    full		time set 214000
-	    waning gibbous	time set 46000
+[x] No, these aren't texturable.
+    Show the two kinds of invisible blocks shown during "save" for
+    structure blocks
 
 Named items in item frames display their names when the cursor is
 on them. Also, item frames can be invisible. So we can name a very
 small thing (button?), put it in an invisible item frame on the
 floor over a button or switch to label what it does.  This would
 avoid the "signs everywhere" or "say nothing" choice.
-
-Show "barrier" in an item frame. Possibly also structure void.
 
 Items in frames, like everyone else? The creative menu is missing
 a few things (command blocks, structure blocks, structure void,
