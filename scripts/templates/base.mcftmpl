@@ -141,5 +141,5 @@ ${when(i)} data merge block ~5 ~2 ~0 {${thing.sign_text()}}
 
 <%def name="label(x, y, z, txt)">
 execute positioned ~${x} ~${y} ~${z} run kill @e[type=item_frame,tag=label,sort=nearest,limit=1,distance=..0.5]
-summon item_frame ~${x} ~${y} ~${z} {Invisible:True,Facing:1,Tags:[label],${named_frame_item(Thing("stone_button"), txt)}}
+summon item_frame ~${x} ~${y} ~${z} {Invisible:True,Facing:1,Tags:[label,${room}],${named_frame_item(Thing("stone_button"), txt)}}
 </%def>

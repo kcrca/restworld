@@ -305,6 +305,22 @@ moon_phases = (
     (158000, "First Quarter"),
     (182000, "Waxing Gibbous"),
 )
+non_inventory = tuple(Thing(s) for s in (
+    "Command Block",
+    "Command Block Minecart",
+    "Jigsaw",
+
+    "Structure Block",
+    "Structure Void",
+    "Barrier",
+
+    "Spawner",
+    "Dragon Egg",
+    "Knowledge Book",
+
+    "Debug Stick",
+    "Suspicious Stew",
+    "Firework Star"))
 
 villager_types = ("Desert", "Jungle", "Plains", "Savanna", "Snow", "Swamp", "Taiga")
 villager_data = []
@@ -433,6 +449,7 @@ def render_tmpl(tmpl, var_name, **kwargs):
         normal_blocks=normal_blocks,
         effects=effects,
         moon_phases=moon_phases,
+        non_inventory=non_inventory,
         **kwargs
     )
 
@@ -472,15 +489,17 @@ def main():
             var = m.group(2)
             if var == self.name:
                 raise NameError("Cannot name script the same as room name: %s" % var)
-            used_names[var] = self.name
             which = m.group(3)
             func = m.group(1)
             tmpl = Template(filename=tmpl_path, lookup=lookup)
             rendered = render_tmpl(tmpl, var, room=self.name)
             write_function(self.func_dir, func, rendered)
 
-            if var in used_names and used_names[var] != self.name:
-                raise NameError("Name collision in two rooms: %s in %s, %s" % (var, self.name, used_names[var]))
+            # particle room is just different
+            if self.name != 'particles':
+                if var in used_names and used_names[var] != self.name:
+                    raise NameError("Name collision in two rooms: %s in %s, %s" % (var, self.name, used_names[var]))
+                used_names[var] = self.name
 
             write_function(self.func_dir, "%s_home" % var, tmpls["home"].render(var=var, room=self.name))
             if which in speeds and not os.path.exists(tmpl_path.replace("_%s." % which, "_cur.")):

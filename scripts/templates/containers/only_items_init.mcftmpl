@@ -1,32 +1,14 @@
 <%namespace name="base" file="../base.mcftmpl"/>\
 
-<%
-    things = tuple(Thing(s) for s in (
-	"Command Block",
-	"Command Block Minecart",
-	"Jigsaw",
-
-	"Structure Block",
-	"Structure Void",
-	"Barrier",
-
-	"Spawner",
-	"Dragon Egg",
-	"Knowledge Book",
-
-	"Debug Stick",
-	"Suspicious Stew",
-	"Firework Star",
-    ))
-%>
-
 <%def name="only_item_contents(thing, id)">data merge entity @e[tag=only_item_frame_${id},limit=1] {${base.named_frame_item(thing)}}</%def>
 
 kill @e[tag=only_item_frame]
-%for t in things:
-summon item_frame ~${-(loop.index % (len(things) / 4))} ~2 ~${int(loop.index / (len(things) / 4)) * 2} {Facing:2,Tags:[only_item_frame,only_item_frame_${t.id}]}
+%for t in non_inventory:
+summon item_frame ~${-(loop.index % (len(non_inventory) / 4))} ~2 ~${int(loop.index / (len(non_inventory) / 4)) * 2} {Facing:2,Tags:[only_item_frame,only_item_frame_${t.id}]}
 %endfor
 
-%for t in things:
+%for t in non_inventory:
 ${only_item_contents(t, t.id)}
 %endfor
+
+${base.label(-1, 2, 0, "Give")}
