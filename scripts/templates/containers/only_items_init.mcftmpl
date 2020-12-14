@@ -11,4 +11,4 @@ summon item_frame ~${-(loop.index % (len(non_inventory) / 4))} ~2 ~${int(loop.in
 ${only_item_contents(t, t.id)}
 %endfor
 
-${base.label(-1, 2, 0, "Give")}
+${base.label(0, 2, -1, "Give")}

@@ -1,0 +1,8 @@
+<%namespace file="only_items_init.mcftmpl" import="*"/>
+
+give @p chain_command_block
+give @p repeating_command_block
+%for t in non_inventory:
+give @p ${t.id}
+%endfor
+give @p firework_rocket
