@@ -11,4 +11,4 @@ clone ~2 ~3 ~1 ~0 ~3 ~1 ~0 ~5 ~1 replace force
 
 ${base.label(0, 7, -1, "Time Running")}
 ${base.label(0, 7,  1, "Time Direction")}
-${base.label(-3, 7,  -3, "Reset")}
+${base.label(-3, 7, 0, "Reset")}

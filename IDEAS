@@ -2,21 +2,6 @@
     Show the two kinds of invisible blocks shown during "save" for
     structure blocks
 
-Named items in item frames display their names when the cursor is
-on them. Also, item frames can be invisible. So we can name a very
-small thing (button?), put it in an invisible item frame on the
-floor over a button or switch to label what it does.  This would
-avoid the "signs everywhere" or "say nothing" choice.
-
-Items in frames, like everyone else? The creative menu is missing
-a few things (command blocks, structure blocks, structure void,
-barrier). Maybe just them?
-
-	Barrier is already a bit hard because we can't show the
-	block easily, although anyone who knows about it can just
-	give themselves one, hold it, and see them all over the
-	block room.
-
 All the standard structures? Seems like a lot of work, and the only
 advantage is that you could see how your textures look in (say) a
 particular manision room. But that seems not very important to how
