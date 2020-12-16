@@ -18,6 +18,10 @@ execute at @e[tag=${f}_home] run \
 function restworld:${room}/${f}_${which}
 %endfor
 
+%if which == 'init':
+function restworld:${room}/_cur
+%endif
+
 %if which == "exit":
 <%doc>
     Need to set this on everything, "exiting room" seems the lowest-frequency
