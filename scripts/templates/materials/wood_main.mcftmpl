@@ -80,4 +80,7 @@ ${when(i)} setblock ~2 ~2 ~-3 ${id}_stairs[facing=north]
 ${when(i)} setblock ~3 ~2 ~-3 ${id}_stairs[facing=east,shape=inner_right]
 ${when(i)} setblock ~3 ~2 ~-2 ${id}_stairs[facing=east,shape=outer_left]
 ${when(i)} setblock ~4 ~2 ~-2 ${id}_stairs[facing=north]
+
+${when(i)} execute as @e[tag=wood_sign_frame] run data merge entity @s {Item:{id:${id}_sign,Count:1}}
+${when(i)} execute as @e[tag=wood_boat_frame] run data merge entity @s {Item:{id:${id}_boat,Count:1}}
 </%base:loop>

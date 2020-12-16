@@ -1,5 +1,4 @@
 <%namespace name="base" file="../base.mcftmpl"/>\
 
-${base.remove("tag=wood_static")}
-
-summon item_frame ~4 ~3 ~-2 {Tags:[wood_static],Facing:4,Fixed:True}
+summon item_frame ~2 ~3 ~-3 {Tags:[wood_boat_frame,${room}],Facing:3,Fixed:True,Item:{id:stone,Count:1}}
+summon item_frame ~3 ~3 ~-3 {Tags:[wood_sign_frame,${room}],Facing:3,Fixed:True,Item:{id:stone,Count:1}}
