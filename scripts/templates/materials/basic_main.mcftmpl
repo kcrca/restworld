@@ -1,12 +1,12 @@
 <%namespace name="base" file="../base.mcftmpl"/>
 <%
     materials = (
-        ("wooden", "leather", True, Thing("oak_planks")),
-        ("stone", "chainmail", False, Thing("stone")),
-	("iron", "iron", True, Thing("iron_block")),
-	("golden", "golden", True, Thing("gold_block")),
-	("diamond", "diamond", True, Thing("diamond_block")),
-	("netherite", "netherite", False, Thing("netherite_block")),
+        ("wooden", "leather", True, Thing("oak_planks"), "oak_sign"),
+        ("stone", "chainmail", False, Thing("stone"), "stone"),
+	("iron", "iron", True, Thing("iron_block"), "iron_ingot"),
+	("golden", "golden", True, Thing("gold_block"), "gold_ingot"),
+	("diamond", "diamond", True, Thing("diamond_block"), "diamond"),
+	("netherite", "netherite", False, Thing("netherite_block"), "netherite_ingot"),
     )
     global has_horse
     has_horse = False
@@ -33,16 +33,18 @@ fill ~2 ~2 ~2 ~-2 ~5 ~4 air
 ${base.remove("tag=material_thing")}
 
 <%base:loop collection="${materials}" args="when,i,thing">
-<% material, armor, horse_armor, background = thing %>
+<% material, armor, horse_armor, background, gem = thing %>
 ${when(i, as_prefix=True)} if score turtle_helmet funcs matches 0 run data merge entity @e[tag=armor_stand,limit=1] {CustomName:${text(material.capitalize())},ArmorItems:[{id:${armor}_boots,Count:1},{id:${armor}_leggings,Count:1},{id:${armor}_chestplate,Count:1},{id:${armor}_helmet,Count:1}]}
 ${when(i, as_prefix=True)} unless score turtle_helmet funcs matches 0 run data merge entity @e[tag=armor_stand,limit=1] {CustomName:${text(material.capitalize())},ArmorItems:[{id:${armor}_boots,Count:1},{id:${armor}_leggings,Count:1},{id:${armor}_chestplate,Count:1},{id:turtle_helmet,Count:1}]}
 ${when(i)} fill ~-3 ~2 ~2 ~-3 ~5 ~2 ${background.full_id()}
+${when(i)} setblock ~3 ~2 ~2 ${background.full_id()}
 ${when(i)} setblock ~4 ~4 ~2 ${background.full_id()}
 
 ${when(i)} data merge entity @e[tag=armor_boots,limit=1] {Item:{id:${armor}_boots,Count:1},ItemRotation:0}
 ${when(i)} data merge entity @e[tag=armor_leggings,limit=1] {Item:{id:${armor}_leggings,Count:1},ItemRotation:0}
 ${when(i)} data merge entity @e[tag=armor_chestplate,limit=1] {Item:{id:${armor}_chestplate,Count:1},ItemRotation:0}
 ${when(i)} data merge entity @e[tag=armor_helmet,limit=1] {Item:{id:${armor}_helmet,Count:1},ItemRotation:0}
+${when(i)} data merge entity @e[tag=armor_gem,limit=1] {Item:{id:${gem},Count:1},ItemRotation:0}
 
 %if horse_armor:
 ${when(i)} execute unless entity @e[tag=armor_horse,distance=..10] run summon horse ~4.5 ~2 ~0.5 {Variant:1,Tame:True,NoAI:True,Silent:True,Tags:[armor_horse,material_static],Rotation:[180f,0f]}
