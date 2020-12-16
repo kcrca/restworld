@@ -18,8 +18,8 @@ ${moon_sign(0, 8, loop.index + (1 if loop.index > 3 else 0), *phase)}
 %endfor
 
 kill @e[tag=${var}_frame]
-summon item_frame ~0 ~8 ~4 {Facing:4, Item:{Count:1,id:clock,Tags:[${var}_frame]}, Fixed:True}
-summon item_frame ~-9 ~8 ~4 {Facing:5, Item:{Count:1,id:clock,Tags:[${var}_frame]}, Fixed:True}
-summon item_frame ~-10 ~8 ~4 {Facing:4, Item:{Count:1,id:clock,Tags:[${var}_frame]}, Fixed:True}
+summon item_frame ~0 ~8 ~4 {Facing:4, Item:{Count:1,id:clock},Tags:[${var}_frame,${room}], Fixed:True}
+summon item_frame ~-9 ~8 ~4 {Facing:5, Item:{Count:1,id:clock},Tags:[${var}_frame,${room}], Fixed:True}
+summon item_frame ~-10 ~8 ~4 {Facing:4, Item:{Count:1,id:clock},Tags:[${var}_frame,${room}], Fixed:True}
 
 scoreboard players set ${var} funcs 0
