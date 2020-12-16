@@ -1,33 +1,37 @@
 <%namespace name="base"file="../base.mcftmpl"/>
 <% blocks = (
-       Thing("Coal"),
-       Thing("Iron"),
-       Thing("Gold"),
-       Thing("Lapis"),
-       Thing("Redstone"),
-       Thing("Diamond"),
-       Thing("Emerald"),
-       Thing("Nether Quartz"),
-       Thing("Nether Gold"),
+       ("Coal Ore", "Coal Block", "Coal"),
+       ("Iron Ore", "Iron Block", "Iron Ingot"),
+       ("Gold Ore", "Gold Block", "Gold Ingot"),
+       ("Redstone Ore", "Redstone Block", "Redstone"),
+       ("Lapis Ore", "Lapis Block", "Lapis Lazuli"),
+       ("Diamond Ore", "Diamond Block", "Diamond"),
+       ("Emerald Ore", "Emerald Block", "Emerald"),
+       ("Nether Gold Ore", "Gold Block", "Gold Nugget"),
+       ("Nether Quartz Ore", "Quartz Block", "Quartz"),
+       ("Ancient Debris", "Netherite Block", "Netherite Ingot"),
    )
+scrap_frame = 'netherite_scrap_frame'
 %>
 
+kill @e[tag=${scrap_frame}]
+data merge block ~2 ~2 ~6 {Text3:${text("")}}
+
+<% fill = 'fill ~4 ~5 ~6 ~0 ~2 ~0' %>
 <%base:loop collection="${blocks}" args="when,i,thing">
-<% fill = 'fill ~4 ~3 ~6 ~0 ~2 ~0' %>
-${when(i)} ${fill} ${thing.full_id()}_ore replace #restworld:ores
-<%
-if 'nether_gold' in thing.full_id():
-    block_name = 'gold'
-elif 'quartz' in thing.full_id():
-    block_name = 'quartz'
-else:
-    block_name = thing.full_id()
-%>
-${when(i)} ${fill} ${block_name}_block replace #restworld:ore_blocks
-${when(i)} data merge block ~2 ~2 ~6 {Text2:${text(thing.name)}}
-%if 'Nether' in thing.name:
+<% ore, block, item = (Thing(s) for s in thing) %>
+${when(i)} ${fill} ${ore.id} replace #restworld:ores
+${when(i)} ${fill} ${block.id} replace #restworld:ore_blocks
+${when(i)} data merge block ~2 ~2 ~6 {Text2:${text(ore.name.replace(" Ore", ""))}}
+%if 'Nether' in ore.name or 'Ancient' in ore.name:
 ${when(i)} ${fill} netherrack replace stone
 %else:
 ${when(i)} ${fill} stone replace netherrack
 %endif
+
+%if "Netherite" in item.name:
+${when(i)} summon item_frame ~3 ~4 ~4 {Facing:3,Tags:[${scrap_frame},${room}],Item:{id:netherite_scrap,Count:1},Fixed:True}
+${when(i)} data merge block ~2 ~2 ~6 {Text3:${text("/ Netherite")}}
+%endif
+${when(i)} execute as @e[type=item_frame,tag=!${scrap_frame},dx=8,dy=5,dz=8] run data merge entity @s {Item:{id:${item.id},Count:1}}
 </%base:loop>

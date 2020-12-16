@@ -8,6 +8,7 @@
     "lapis_block",
     "redstone_block",
     "emerald_block",
-    "quartz_block"
+    "quartz_block",
+    "netherite_block"
   ]
 }
