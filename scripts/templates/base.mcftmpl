@@ -137,9 +137,9 @@ ${when(i)} fill ~6 ~3 ~4 ~0 ~2 ~0 ${thing.id} replace #restworld:fencelike
 ${when(i)} data merge block ~5 ~2 ~0 {${thing.sign_text()}}
 </%def>
 
-<%def name="named_frame_item(thing, name=None)">Item:{id:${thing.full_id()},Count:1,tag:{display:{Name:'{"text":"${name if name else thing.name}"}'}}},Fixed:True</%def>
+<%def name="named_frame_item(thing, name=None)">Item:{id:${thing.id},Count:1,tag:{display:{Name:'{"text":"${name if name else thing.name}"}'}}},Fixed:True</%def>
 
-<%def name="label(x, y, z, txt)">
+<%def name="label(x, y, z, txt, item='stone_button')">
 execute positioned ~${x} ~${y} ~${z} run kill @e[type=item_frame,tag=label,sort=nearest,limit=1,distance=..0.5]
-summon item_frame ~${x} ~${y} ~${z} {Invisible:True,Facing:1,Tags:[label,${room}],${named_frame_item(Thing("stone_button"), txt)}}
+summon item_frame ~${x} ~${y} ~${z} {Invisible:True,Facing:1,Tags:[label,${room}],${named_frame_item(Thing(item), txt)}}
 </%def>

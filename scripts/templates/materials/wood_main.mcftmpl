@@ -10,8 +10,8 @@ fill ~4 ~2 ~1 ~4 ~3 ~2 air
 ${base.remove("tag=wood_boat")}
 
 <%base:loop collection="${wood_ids}" args="when,i,thing">
-<% id = thing.lower().replace(" " ,"_") %>
 <%
+    id = thing.lower().replace(" " ,"_")
     if thing in ('warped', 'crimson'):
 	log = 'stem'
 	wood = 'hyphae'
