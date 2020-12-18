@@ -1,7 +1,6 @@
 <%namespace name="base" file="../base.mcftmpl"/>\
 
-setblock ~0 ~2 ~-1 oak_wall_sign[facing=north]
-data merge block ~0 ~2 ~-1 {Text3:${text("Torch")}}
+${base.sign('~0 ~2 ~-1', 'north', 3, "Torch")}
 tag @e[tag=${var}_home] add no_expansion
 
 ${base.label(-1, 2, 0, "Wall-ness")}

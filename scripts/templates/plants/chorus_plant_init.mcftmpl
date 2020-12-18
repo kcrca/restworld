@@ -1,1 +1,3 @@
-setblock ~1 ~2 ~0 oak_wall_sign[facing=east]{Text2:${text("Chorus Plant")}}
+<%namespace name="base" file="../base.mcftmpl"/>
+
+${base.sign('~1 ~2 ~0', 'east', 2, 'Chorus Plant')}

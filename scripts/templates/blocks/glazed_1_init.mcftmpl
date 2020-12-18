@@ -1,3 +1,3 @@
 <%namespace name="base" file="../base.mcftmpl"/>\
 
-setblock ~1 ~2 ~-0 oak_wall_sign[facing=south]{Text2:${text("Glazed")},Text3:${text("Terracotta")}}
+${base.sign('~1 ~2 ~-0', 'south', 2, ("Glazed", "Terracotta"))}

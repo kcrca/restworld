@@ -1,6 +1,6 @@
 <%namespace name="base" file="../base.mcftmpl"/>\
 
-setblock ~0 ~2 ~0 oak_wall_sign[facing=west,waterlogged=true]{Text2:${text("All Possible")},Text3:${text("Tropical Fish")},Text4:${text("-------->")}} destroy
+${base.sign('~0 ~2 ~0', 'west', 2, ("All Possible", "Tropical Fish", "-------->"), water=True)}
 
 ${base.mobs_init(z_delta_init=1, y_init=1.2, kid_x_init=-1.6, adult_x_init=0, rotation_init=90)}
 % for i in range(0, 12):

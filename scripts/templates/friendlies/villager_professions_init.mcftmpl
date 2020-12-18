@@ -14,5 +14,5 @@ ${base.mobs(p, id="villager", do_adult=True, nbt="VillagerData:{profession:%s}" 
 function restworld:friendlies/villager_professions_cur
 function restworld:friendlies/villager_levels_cur
 
-setblock ~-5 ~2 ~0 oak_wall_sign[facing=west]
+${base.sign('~-5 ~2 ~0', 'west')}
 data modify block ~-5 ~2 ~0 Text3 set value ${text("Villagers")}

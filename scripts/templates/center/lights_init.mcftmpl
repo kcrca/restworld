@@ -1,12 +1,13 @@
 <%namespace name="base" file="../base.mcftmpl"/>
-setblock ~1 101 ~4 oak_wall_sign[facing=north]{Text1:${text("This world lets")},Text2:${text("you test how")},Text3:${text("your resource")},Text4:${text("pack looks.")}} destroy
-setblock ~-1 101 ~4 oak_wall_sign[facing=north]{Text1:${text("Everything")},Text2:${text("is here:")},Text3:${text("blocks, mobs,")},Text4:${text("particles, UI, ...")}} destroy
 
-setblock ~-4 101 ~1 oak_wall_sign[facing=east]{Text1:${text("Much of it runs")},Text2:${text("on clocks that")},Text3:${text("switch the")},Text4:${text("variant shown.")}} destroy
-setblock ~-4 101 ~-1 oak_wall_sign[facing=east]{Text1:${text("This uses")},Text2:${text("less space")},Text3:${text("so things can")},Text4:${text("be closer together.")}} destroy
+${base.sign('~1 101 ~4', 'north', 1, ("This world lets", "you test how", "your resource", "pack looks."))}
+${base.sign('~-1 101 ~4', 'north', 1, ("Everything", "is here:", "blocks, mobs,", "particles, UI, ..."))}
 
-setblock ~-1 101 ~-4 oak_wall_sign[facing=south]{Text1:${text("You can also")},Text2:${text("compare things")},Text3:${text("that you may want")},Text4:${text("to make similar.")}} destroy
-setblock ~1 101 ~-4 oak_wall_sign[facing=south]{Text1:${text("For example,")},Text2:${text("wools may be the")},Text3:${text("same pattern with")},Text4:${text("different colors.")}} destroy
+${base.sign('~-4 101 ~1', 'east', 1, ("Much of it runs", "on clocks that", "switch the", "variant shown."))}
+${base.sign('~-4 101 ~-1', 'east', 1, ("This uses", "less space", "so things can", "be closer together."))}
 
-setblock ~4 101 ~-1 oak_wall_sign[facing=west]{Text1:${text("The control book")},Text2:${text("lets you change")},Text3:${text("clock speeds")},Text4:${text("and step it.")}} destroy
-setblock ~4 101 ~1 oak_wall_sign[facing=west]{Text1:${text("The color of the")},Text2:${text("floor blocks under")},Text3:${text("buttons show if")},Text4:${text("clocks are on.")}} destroy
+${base.sign('~-1 101 ~-4', 'south', 1, ("You can also", "compare things", "that you may want", "to make similar."))}
+${base.sign('~1 101 ~-4', 'south', 1, ("For example,", "wools may be the", "same pattern with", "different colors."))}
+
+${base.sign('~4 101 ~-1', 'west', 1, ("The control book", "lets you change", "clock speeds", "and step it."))}
+${base.sign('~4 101 ~1', 'west', 1, ("The color of the", "floor blocks under", "buttons show if", "clocks are on."))}

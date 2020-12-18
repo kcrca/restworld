@@ -1,6 +1,5 @@
 <%namespace name="base" file="../base.mcftmpl"/>
 
-setblock ~0 ~2 ~-2 oak_wall_sign{Text3:${text("Wither")}}
+${base.sign('~0 ~2 ~-2', 'north', 3, "Wither")}
 
 ${base.label(0, 2, -8, "Change Height")}
-say hi

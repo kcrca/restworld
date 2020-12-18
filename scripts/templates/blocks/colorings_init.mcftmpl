@@ -11,17 +11,17 @@ summon sheep ~-2.2 ~2 ~4.5 {Tags:[${var}_sheep,${var}_item],Variant:1,NoAI:true,
 
 execute as @e[tag=${var}_names] run data merge entity @s {CustomNameVisible:True}
 
-setblock ~-1 ~3 ~1 oak_wall_sign[facing=south]{Text2:${text("Terracotta")}} destroy
-setblock ~-3 ~3 ~1 oak_wall_sign[facing=south]{Text2:${text("Shulker Box")}} destroy
-setblock ~-4 ~3 ~1 oak_wall_sign[facing=south]{Text2:${text("Dye")}} destroy
-setblock ~-5 ~3 ~1 oak_wall_sign[facing=south]{Text2:${text("Concrete")}} destroy
-setblock ~-7 ~3 ~1 oak_wall_sign[facing=south]{Text2:${text("Glass")}} destroy
+${base.sign('~-1 ~3 ~1', 'south', 2, "Terracotta")}
+${base.sign('~-3 ~3 ~1', 'south', 2, "Shulker Box")}
+${base.sign('~-4 ~3 ~1', 'south', 2, "Dye")}
+${base.sign('~-5 ~3 ~1', 'south', 2, "Concrete")}
+${base.sign('~-7 ~3 ~1', 'south', 2, "Glass")}
 
 <%def name="render_signs(x, y, z, color, wood, when, i, thing)">
 setblock ~${x} ~${y} ~${z} ${wood.id}_sign[rotation=14]{Text1:${text(wood.name)},Text2:${text('Sign With')},Text3:${text(color.name)},Text4:${text("Text")}} destroy\
 </%def>
 ${colored_signs(Thing('Black'), render_signs)}
 
-setblock ~-4 ~2 ~4 oak_wall_sign[facing=south]
+${base.sign('~-4 ~2 ~4', 'south')}
 
 kill @e[type=item]

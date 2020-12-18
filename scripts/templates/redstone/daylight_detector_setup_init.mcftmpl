@@ -1,6 +1,6 @@
 <%namespace name="base" file="../base.mcftmpl"/>
 
-setblock ~0 ~2 ~0 oak_wall_sign[facing="east"]
+${base.sign('~0 ~2 ~0', '"east"')}
 execute at @e[tag=daylight_detector_setup_home] run function restword:redstone/daylight_detector_setup.mcfunction
 
 ${base.label(2, 2, 2, "Daylight Changing")}

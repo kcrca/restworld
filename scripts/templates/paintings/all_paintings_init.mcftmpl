@@ -1,3 +1,5 @@
+<%namespace name="base" file="../base.mcftmpl"/>
+
 kill @e[tag=painting]
 
 <%def name="painting(id, facing, x, z, sx=0, sy=0, sz=0)">\
@@ -9,7 +11,7 @@ kill @e[tag=painting]
     dir = ('south', 'west', 'north', 'east')[facing]
 %>\
 summon painting ~${x} ~3 ~${z} {Motive:${thing.id},Facing:${facing},Tags:[painting]}
-setblock ~${x + px} ~${2 + sy} ~${z + pz} oak_wall_sign[facing=${dir}]{Text2:${text(thing.name)}}\
+${base.sign('~%d ~%d ~%d' % (x + px, 2 + sy, z + pz), dir, 2, thing.name)}\
 </%def>
 
 ${painting('Burning Skull', 0, 0, 0, sx=-1)}

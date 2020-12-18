@@ -2,5 +2,4 @@
 
 ${base.remove("type=wither_skull")}
 ${base.adult(Thing("Wither Skull"), 0, 1, 0)}
-setblock ~0 ~2 ~-1 air
-setblock ~0 ~2 ~-1 oak_wall_sign[facing=north]{Text2:${text("Wither Skull")}}
+${base.sign('~0 ~2 ~-1', 'north', 2, "Wither Skull")}
