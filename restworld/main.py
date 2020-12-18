@@ -503,7 +503,7 @@ def main():
 
             write_function(self.func_dir, "%s_home" % var, tmpls["home"].render(var=var, room=self.name))
             if which in speeds and not os.path.exists(tmpl_path.replace("_%s." % which, "_cur.")):
-                rendered = render_tmpl(tmpl, var, suppress_loop=True, room=self.name)
+                rendered = render_tmpl(tmpl, var, current_loop=True, room=self.name)
                 write_function(self.func_dir, "%s_cur" % var, rendered)
 
             if which and which not in misc:

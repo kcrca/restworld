@@ -3,7 +3,7 @@ tp @e[${who}] @e[tag=death,limit=1]
 </%def>
 
 <%def name="increment(count)">\
-% if not suppress_loop and var == func:
+% if not current_loop and var == func:
 execute unless score ${var} funcs matches 0.. run function ${var}_init
 scoreboard players add ${var} funcs 1
 % endif
@@ -32,6 +32,10 @@ kill @e[type=item,distance=..10,nbt={Item:{id:"${id}"}}]
 
 <%def name="loop(collection)">
 ${increment(len(collection))}\
+%if not current_loop:
+function restworld:${room}/${var}_cur
+<% return STOP_RENDERING %>
+%endif
 % for thing in collection:
 ${caller.body(when, loop.index, thing)}
 % endfor
