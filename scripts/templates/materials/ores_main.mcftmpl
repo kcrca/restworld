@@ -30,7 +30,7 @@ ${when(i)} ${fill} stone replace netherrack
 %endif
 
 %if "Netherite" in item.name:
-${when(i)} summon item_frame ~3 ~4 ~4 {Facing:3,Tags:[${scrap_frame},${room}],Item:{id:netherite_scrap,Count:1},Fixed:True}
+${when(i)} summon item_frame ~3 ~4 ~4 {Facing:3,Tags:[${scrap_frame},${room}],${base.named_frame_item(Thing("Netherite Scrap"))},Fixed:True}
 ${when(i)} data merge block ~2 ~2 ~6 {Text3:${text("/ Netherite")}}
 %endif
 ${when(i)} execute as @e[type=item_frame,tag=!${scrap_frame},dx=8,dy=5,dz=8] run data merge entity @s {Item:{id:${item.id},Count:1}}
