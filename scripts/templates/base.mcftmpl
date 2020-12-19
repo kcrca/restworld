@@ -162,5 +162,5 @@ setblock ${pos} oak_wall_sign[facing=${facing}${',waterlogged=true' if water els
 <%def name="room_sign(facing, start, lines)">
 <% pos = { "north": "~0 ~6 ~-1", "south": "~0 ~6 ~1", "east": "~1 ~6 ~0", "west": "~-1 ~6 ~0" }[facing] %>
 setblock ${pos} air
-setblock ${pos} oak_wall_sign[facing=${facing}]{${','.join("Text%d:'%s'" % (i + start, rich_text('<b>%s</b>' % lines[i])) for i in range(0, len(lines)))}}
+setblock ${pos} oak_wall_sign[facing=${facing}]{${','.join("Text%d:'%s'" % (i + start, rich_text('<b><i>%s</i></b>' % lines[i])) for i in range(0, len(lines)))}}
 </%def>
