@@ -7,4 +7,9 @@ ${base.fencelike(when, i, thing.full_id(), thing.nickname, thing.kind)}
 % except:
 ${base.fencelike(when, i, thing.full_id(), thing.name)}
 % endtry
+% if thing.id.replace('_fence', '').replace('_', ' ') in (s.lower() for s in woods + stems):
+% for dir in ('north', 'east', 'west', 'south'):
+${when(i)} fill ~8 ~3 ~6 ~0 ~2 ~0 ${thing.id + "_gate"}[facing=${dir}] replace #restworld:gatelike[facing=${dir}]
+% endfor
+% endif
 </%base:loop>
