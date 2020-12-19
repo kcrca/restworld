@@ -1,9 +1,11 @@
 import collections
 import glob
+import json
 import os
 import random
 import re
 import sys
+from html.parser import HTMLParser
 
 from mako.lookup import TemplateLookup
 from mako.template import Template
@@ -397,6 +399,36 @@ def text(txt):
     return r'"\"%s\""' % txt.replace('"', r'\\\"')
 
 
+def rich_text(txt):
+    class ToMinecraftText(HTMLParser):
+        def __init__(self):
+            super().__init__()
+            self.attr_for = {'b': 'bold', 'i': 'italic', 'u': 'underlined', 'strike': 'strikethrough'}
+            self.attrs = []
+            self.out = []
+
+        def handle_starttag(self, tag, attrs):
+            self.attrs.append(self.attr_for[tag])
+
+        def handle_endtag(self, tag):
+            self.attrs.remove(self.attr_for[tag])
+
+        def handle_data(self, data):
+            node = {'text': '%s' % data}
+            for a in self.attrs:
+                node[a] = "true"
+            self.out.append(node)
+
+        def result(self):
+            return json.dumps(self.out)
+
+    parser = ToMinecraftText()
+    parser.feed(txt)
+    parser.close()
+    s = parser.result()
+    return s
+
+
 def text_attrs(attrs):
     if not attrs:
         return ""
@@ -438,6 +470,7 @@ def render_tmpl(tmpl, var_name, **kwargs):
         patterns=patterns,
         professions=professions,
         text=text,
+        rich_text=rich_text,
         text_attrs=text_attrs,
         to_nicknamed=to_nicknamed,
         to_id=to_id,
