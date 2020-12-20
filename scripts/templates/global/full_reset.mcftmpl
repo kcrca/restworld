@@ -9,6 +9,3 @@ ${use_min_fill(97, 'redstone_block replace dried_kelp_block')}
 ${use_min_fill(97, 'dried_kelp_block replace redstone_block')}
 ${use_min_fill(98, 'redstone_block replace pumpkin')}
 ${use_min_fill(98, 'pumpkin replace redstone_block')}
-
-function restworld:_init
-function restworld:_cur
