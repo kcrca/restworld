@@ -1,6 +1,8 @@
 <%namespace name="base" file="../base.mcftmpl"/>
 
 scoreboard players set bool max 2
+scoreboard players set cur_villager_group funcs 0
+scoreboard players set cur_villager_zombies funcs 0
 function restworld:friendlies/switch_villagers
 
 ${base.label(-3, 2, 0, "Biome / Profession")}

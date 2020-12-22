@@ -1,13 +1,12 @@
 <%namespace name="base" file="base.mcftmpl"/>
 
 %if which in ("init", "enter"):
-<%doc> Adding 0 to a score creates it if it doesn't exist </%doc>
 %for v in sorted(vars):
-scoreboard players add ${v} funcs 0
+scoreboard players set ${v} funcs 0
 %endfor
 
 %if which == "init":
-${base.remove("tag=%s" % room)}
+kill @e[tag=${room}]
 %endif
 %endif
 
@@ -17,10 +16,6 @@ execute at @e[tag=${f}_home] run \
 %endif
 function restworld:${room}/${f}_${which}
 %endfor
-
-%if which == 'init':
-function restworld:${room}/_cur
-%endif
 
 %if which == "exit":
 <%doc>

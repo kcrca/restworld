@@ -1,5 +1,7 @@
 <%namespace name="base"  file="../base.mcftmpl"/>
 
+## Snow golem can melt away with rain, for example.
+execute unless entity @e[type=snow_golem] run function restworld:${room}/${var}_init
 ${base.increment(2)}
 ${base.when(0)} execute as @e[tag=snow_golem] run data merge entity @s {Pumpkin:1}
 ${base.when(1)} execute as @e[tag=snow_golem] run data merge entity @s {Pumpkin:0}

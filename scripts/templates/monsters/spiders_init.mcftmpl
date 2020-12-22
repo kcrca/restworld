@@ -3,7 +3,7 @@
     bow = 'HandItems:[{id:"bow",Count:1b},{}]'
     skeleton = 'Passengers:[{id:"skeleton",Tags:[monsters],%s,Rotation:[270f,0f],Facing:east,PersistenceRequired:True,NoAI:True,Silent:True}]' % bow
 %>
-${base.remove("tag=spiders")}
+kill @e[tag=spiders]
 
 %for i in range(0, 2):
 ${base.mobs_init(z_delta_init=-2.5, z_init=-0.2, y_init=0.5, adult_x_init=-0.2, rotation_init=270)}

@@ -5,7 +5,7 @@ ${base.mobs_init(x_delta_init=-2, kid_z_init=-2.2, adult_x_init=0.20, rotation_i
 % for llama in llamas:
 ${base.mobs(llama.name, id="llama", nbt="Variant:%d" % loop.index)}\
 % endfor
-summon llama_spit ~-3 ~3.5 ~-3 {CustomName:"\"Llama Spit\"",Tags:[friendlies,llama,llama_spit],TXD:0,TYD:0,TZD:0,Steps:0,NoAI:True,Motion:[0,0,0],NoGravity:True}
+summon llama_spit ~-3 ~3.5 ~-3 {Tags:[friendlies,llama,llama_spit],TXD:0,TYD:0,TZD:0,Steps:0,NoAI:True,Motion:[0,0,0],NoGravity:True}
 ${base.sign('~-3 ~2 ~-3', 'north')}
 data modify block ~-3 ~2 ~-3 Text2 set value ${text("Llama Spit")}
 

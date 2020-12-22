@@ -1,7 +1,7 @@
 <%namespace file="base.mcftmpl" import="*"/>\
 
 <%def name="at_center(name, raised)">\
-at @e[tag=${name}_home] \
+at @e[tag=${name}_action_home] \
 %if raised:
 positioned ~0 ~2 ~0 \
 %endif

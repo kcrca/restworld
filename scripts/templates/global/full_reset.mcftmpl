@@ -5,6 +5,9 @@ execute positioned ~0 ~-3 ~0 run function restworld:global/min_home
 
 kill @e[tag=homer,tag=!min_home]
 
+## Death must be ready before any other initialization
+function restworld:global/death_init
+
 ${use_min_fill(97, 'redstone_block replace dried_kelp_block')}
 ${use_min_fill(97, 'dried_kelp_block replace redstone_block')}
 ${use_min_fill(98, 'redstone_block replace pumpkin')}

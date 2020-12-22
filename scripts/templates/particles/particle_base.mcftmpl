@@ -3,7 +3,7 @@
 <%def name="fast_clock()">${clock("fast")}</%def>
 <%def name="main_clock()">${clock("main")}</%def>
 <%def name="slow_clock()">${clock("slow")}</%def>
-<%def name="at_center()">at @e[tag=${room}_home] positioned ~0 ~2 ~</%def>
+<%def name="at_center()">at @e[tag=${room}_action_home] positioned ~0 ~2 ~</%def>
 <%def name="clock(which)">execute if score ${which} clocks matches 0 ${at_center()} run</%def>
 <%def name="centered()">execute ${at_center()} run</%def>
 

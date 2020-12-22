@@ -1,5 +1,5 @@
 <%namespace name="base" file="../base.mcftmpl"/>
 
-${base.remove("type=wither_skull")}
+kill @e[type=wither_skull]
 ${base.adult(Thing("Wither Skull"), 0, 1, 0)}
 ${base.sign('~0 ~2 ~-1', 'north', 2, "Wither Skull")}

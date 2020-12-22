@@ -1,7 +1,7 @@
 <%namespace name="base" file="../base.mcftmpl"/>\
-<%invisible="True"%>
+<% invisible=True %>
 
-${base.remove("tag=material_static")}
+kill @e[tag=material_static]
 summon armor_stand ~0 ~2.0 ~0 {CustomNameVisible:True,Tags:[armor_stand,material_static],Rotation:[180f,0f],ShowArms:True,NoGravity:true}
 <% num = 0 %>
 %for i in range(0, 5):
@@ -13,16 +13,14 @@ summon armor_stand ~${+0.6 + i * 0.7} ~2.0 ~0 {Tags:[material_${3-i},material_st
 
 fill ~-3 ~2 ~2 ~-3 ~5 ~2 stone
 
-${base.remove("tag=armor_frame")}
-summon item_frame ~-3 ~2 ~1 {Facing:2,Tags:[armor_boots,armor_frame],Item:{id:stone,Count:1},temRotation:0}
-summon item_frame ~-3 ~3 ~1 {Facing:2,Tags:[armor_leggings,armor_frame],Item:{id:jungle_leaves,Count:1},temRotation:0}
-summon item_frame ~-3 ~4 ~1 {Facing:2,Tags:[armor_chestplate,armor_frame],Item:{id:acacia_leaves,Count:1},temRotation:0}
-summon item_frame ~-3 ~5 ~1 {Facing:2,Tags:[armor_helmet,armor_frame],Item:{id:oak_leaves,Count:1},temRotation:0}
-summon item_frame ~3 ~2 ~1 {Facing:2,Tags:[armor_gem,armor_frame],Item:{id:oak_leaves,Count:1},temRotation:0}
-summon item_frame ~4 ~4 ~1 {Facing:2,Tags:[armor_horse_frame,armor_frame],Item:{id:oak_leaves,Count:1},temRotation:0}
+kill @e[tag=armor_frame]
+summon item_frame ~-3 ~2 ~1 {Facing:2,Tags:[armor_boots,armor_frame]}
+summon item_frame ~-3 ~3 ~1 {Facing:2,Tags:[armor_leggings,armor_frame]}
+summon item_frame ~-3 ~4 ~1 {Facing:2,Tags:[armor_chestplate,armor_frame]}
+summon item_frame ~-3 ~5 ~1 {Facing:2,Tags:[armor_helmet,armor_frame]}
+summon item_frame ~3 ~2 ~1 {Facing:2,Tags:[armor_gem,armor_frame]}
+summon item_frame ~4 ~4 ~1 {Facing:2,Tags:[armor_horse_frame,armor_frame]}
 
 ${base.label(5, 2, -2, "Toggle Saddle")}
 ${base.label(1, 2, -2, "Turtle Helmet")}
 ${base.label(-1, 2, -2, "Enchanted")}
-
-function restworld:materials/materials_cur
