@@ -29,3 +29,6 @@ execute at @e[type=!player] run data merge entity @s {PersistenceRequired:True}
 %if which == 'enter' and room != 'weather':
 weather clear
 %endif
+%if which == "init":
+kill @e[type=item]
+%endif

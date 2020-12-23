@@ -1,4 +1,6 @@
 <%namespace name="base" file="../base.mcftmpl"/>\
 
+## Slime leaves behind slime, have to move it away
+${base.remove("type=slime")}
 ${base.mobs_init(y_init=1, rotation_init=90, tags_init=("growing",))}\
 ${base.mobs("Slime", do_adult=True, on_stand=True)}
