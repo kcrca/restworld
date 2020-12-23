@@ -1,4 +1,0 @@
-## Setting up the example stuff in the background seems to need to be done a tick later.
-fill ~-2 ~2 ~2 ~2 ~4 ~4 air
-setblock ~-2 ~0 ~0 redstone_block
-execute positioned ~-2 ~0 ~2 run kill @e[type=item,dx=5,dy=3,dz=4]
