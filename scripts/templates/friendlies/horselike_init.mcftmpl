@@ -4,4 +4,4 @@ ${base.mobs_init(x_delta_init=2, kid_z_init=2.2, adult_z_init=-0.20, rotation_in
 ${base.mobs("Mule")}
 ${base.mobs("Donkey")}
 
-${base.label(1, 2, 2, "Saddles")}
+${base.label(1, 2, 2, "Chests")}
