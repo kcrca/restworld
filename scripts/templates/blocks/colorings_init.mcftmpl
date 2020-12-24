@@ -25,3 +25,4 @@ ${colored_signs(Thing('Black'), render_signs)}
 ${base.sign('~-4 ~2 ~4', 'south')}
 
 kill @e[type=item]
+tag @e[tag=${var}_home] add no_expansion

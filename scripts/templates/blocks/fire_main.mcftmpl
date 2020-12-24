@@ -1,0 +1,15 @@
+<%namespace name="base" file="../base.mcftmpl"/>
+
+<% blocks = ('oak_log', 'oak_log', 'soul_soil') %>
+
+<%base:loop collection="${blocks}" args="when,i,thing">\
+${when(i)} setblock ~0 ~3 ~0 ${thing}
+%if i == 0:
+${when(i)} setblock ~0 ~4 ~0 air
+${when(i)} setblock ~0 ~3 ~-1 fire[north=true]
+%else:
+${when(i)} setblock ~0 ~4 ~0 ${'soul_fire' if thing == 'soul_soil' else 'fire'}
+${when(i)} setblock ~0 ~3 ~-1 air
+%endif
+${when(i)} data merge block ~0 ~2 ~-1 {Text2:${text("Soul Fire" if thing == 'soul_soil' else 'Fire')}}
+</%base:loop>\
