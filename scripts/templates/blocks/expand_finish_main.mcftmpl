@@ -1,1 +1,2 @@
+## Run expansion at every currently-expanding homer
 execute at @e[tag=expander,tag=!generic_home] run function restworld:blocks/expander
