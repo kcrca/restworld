@@ -1,3 +1,0 @@
-<%namespace name="base" file="../base.mcftmpl"/>
-
-<%base:up_down which="Sugar Cane" count="${2}"/>

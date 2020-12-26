@@ -1,3 +1,0 @@
-<%namespace name="base" file="../base.mcftmpl"/>
-
-scoreboard players operation cane funcs = cactus funcs
