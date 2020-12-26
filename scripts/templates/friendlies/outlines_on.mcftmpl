@@ -1,3 +1,3 @@
-%for room in ('friendlies', 'monsters', 'wither', 'ender', 'acquatic'):
+%for room in ('friendlies', 'monsters', 'wither', 'ender', 'aquatic'):
 execute as @e[tag=!homer,tag=${room},type=!item_frame] run data merge entity @s {Glowing:True}
 %endfor

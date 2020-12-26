@@ -1,6 +1,6 @@
 <%namespace name="base" file="../base.mcftmpl"/>\
 
-<% rooms = ("friendlies", "monsters", "acquatic", "wither") %>
+<% rooms = ("friendlies", "monsters", "aquatic", "wither") %>
 
 ${base.increment(2)}
 
