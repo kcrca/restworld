@@ -1,4 +1,4 @@
-This is designed to be expandle and entirely using relative coordinates.
+This is designed to be expandable and entirely using relative coordinates.
 
 It works by using structure blocks to save and restore parts. This allows transfer between places
 without knowing the specific distances involved.

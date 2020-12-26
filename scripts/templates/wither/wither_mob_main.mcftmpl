@@ -2,7 +2,7 @@
 
 ${base.increment(3)}
 ${base.when(0)} data merge entity @e[tag=wither_mob,limit=1] {Health:300,Invul:100}
-${base.when(0)} data merge block ~0 ~2 ~-2 {Text2:${text("Inulverable (New)")}}
+${base.when(0)} data merge block ~0 ~2 ~-2 {Text2:${text("Invulnerable (New)")}}
 ${base.when(1)} data merge entity @e[tag=wither_mob,limit=1] {Health:300,Invul:0}
 ${base.when(1)} data merge block ~0 ~2 ~-2 {Text2:${text("Healthy")}}
 ${base.when(2)} data merge entity @e[tag=wither_mob,limit=1] {Health:140,Invul:0}

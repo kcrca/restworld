@@ -1,7 +1,7 @@
 <%namespace name="base" file="../base.mcftmpl"/>
 
 ${base.sign('~0 ~2 ~0', '"east"')}
-execute at @e[tag=daylight_detector_setup_home] run function restword:redstone/daylight_detector_setup.mcfunction
+execute at @e[tag=daylight_detector_setup_home] run function restworld:redstone/daylight_detector_setup
 
 ${base.label(2, 2, 2, "Daylight Changing")}
 ${base.label(2, 2, 0, "Invert Detector")}

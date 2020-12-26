@@ -1,7 +1,7 @@
 <%namespace name="base" file="../base.mcftmpl"/>
 <% corals = list(Thing("%s Coral" % c) for c in ("Brain", "Bubble", "Fire", "Horn", "Tube")) %>
 
-<%doc>The wallsign should be watterlogged, but currently (1.13.2) that means
+<%doc>The wall sign should be watterlogged, but currently (1.13.2) that means
       the sign contents do not change. Try again later.</%doc>\
 <%base:loop collection="${corals}" args="when,i,thing">\
 ${when(i)} fill ~0 ~2 ~0 ~0 ~2 ~-1 ${thing.id}_block

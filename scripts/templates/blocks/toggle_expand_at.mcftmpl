@@ -1,7 +1,7 @@
 ## There are two possible cases: Either this homer is already
 ## expanding or it is not.  We need to swap that.
 
-## If it's an expander, add a teporary "to be stopped" tag to it
+## If it's an expander, add a temporary "to be stopped" tag to it
 execute as @e[tag=expander,distance=..1] run tag @s add stop_expanding
 execute as @e[tag=expander,tag=fire_home,distance=..1] run say tag @s add stop_expanding
 execute as @e[tag=expander,tag=soul_home,distance=..1] run say tag @s add stop_expanding

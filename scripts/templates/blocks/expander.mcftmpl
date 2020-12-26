@@ -19,7 +19,7 @@ Expanding or contracting all simply runs this script on all expanding
 homers. Which means, frankly, that it doesn't "expand all" it
 "toggles all".
 
-Homers that handle mulitiple blcoks are helped by 'just_expand'
+Homers that handle multiple blocks are helped by 'just_expand'
 armor stands under the blocks it manages. These are expander homers
 that do nothing but the expansion work for the blocks above them.
 So if homer X puts up blocks X and Y, a regular homer will be under
