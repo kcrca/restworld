@@ -1,3 +1,8 @@
+<%namespace name="base" file="../base.mcftmpl"/>
+
 <%namespace import="*" file="blocks_base.mcftmpl"/>
-<% types = ("Note Block", "Jukebox") %>
+<%
+    types = (Thing("Note Block"), Thing("Jukebox"), Thing("Jukebox", block_state='has_record=true'))
+    types[2].text = 'Jukebox|Playing'
+%>
 ${blocks(types, sign=1)}
