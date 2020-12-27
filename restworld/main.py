@@ -119,7 +119,7 @@ class Stepable(Thing):
 
 
 class ActionSign(Thing):
-    def __init__(self, name, id=None, note=None):
+    def __init__(self, name, id=None, note=None, priority=None, comment=None):
         Thing.__init__(self, name, id)
         self.note = "(%s)" % note if note else None
 
@@ -612,7 +612,7 @@ def main():
 
     sign_room("particles", particles, (
         Wall(7, 5, "east", (-1, 0)),
-        Wall(7, 7, "south", (0, -1), y_first=4),
+        Wall(7, 7, "south", (0, -1)),
         Wall(7, 5, "west", (1, 0)),
         Wall(7, 5, "north", (0, 1)),
     ), button=True)
@@ -637,7 +637,7 @@ particles = (
     ActionSign("Ambient Entity|Effect", "ambient"),
     ActionSign("Angry Villager"),
     ActionSign("Ash"),
-    ActionSign("Barrier"),
+    ActionSign("Barrier", priority=2, comment="not hard to find"),
     ActionSign("Bubbles|and|Whirlpools", "bubbles"),
     ActionSign("Clouds", note="Evaporation"),
     ActionSign("Composter"),
@@ -659,23 +659,21 @@ particles = (
     ActionSign("Explosion Emitter", note="Large Explosion"),
     ActionSign("Explosion"),
     ActionSign("Falling Dust"),
-    ActionSign("Falling Nectar"),
+    ActionSign("Falling Nectar", priority=2, comment="shown with bees"),
     ActionSign("Fireworks", note="and Flash"),
     ActionSign("Fishing"),
-    ActionSign("Flame"),
+    ActionSign("Flame", priority=2, comment="seen with blocks"),
     ActionSign("Happy Villager"),
     ActionSign("Heart"),
     ActionSign("Instant Effect"),
     ActionSign("Item Slime"),
     ActionSign("Item Snowball"),
     ActionSign("Large Smoke"),
-    ActionSign("Lava"),
-    ActionSign("Mycelium"),
+    ActionSign("Lava", priority=2, comment="seen in materials, with ores"),
+    ActionSign("Mycelium", priority=2, comment="seen in plants"),
     ActionSign("Nautilus", note="with Conduit"),
-    ActionSign("Note"),
     ActionSign("Poof", note="Small Explosion"),
-    ActionSign("Portal"),
-    ActionSign("Smoke"),
+    ActionSign("Smoke", priority=2, comment="seen with items in blocks"),
     ActionSign("Sneeze"),
     ActionSign("Snow and Rain"),
     ActionSign("Soul"),
