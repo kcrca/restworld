@@ -9,10 +9,12 @@ ${when(i)} setblock ~2 ~3 ~-2 air
 % if i < 8:
 ${when(i)} setblock ~0 ~3 ~-1 pumpkin_stem[age=${i}]
 ${when(i)} setblock ~2 ~3 ~-1 melon_stem[age=${i}]
+${when(i)} data merge block ~3 ~2 ~-1 {Text2:${text("Stage: %d" % i)}}
 % else:
 ${when(i)} setblock ~0 ~3 ~-2 pumpkin
 ${when(i)} setblock ~2 ~3 ~-2 melon
 ${when(i)} setblock ~0 ~3 ~-1 attached_pumpkin_stem[facing=north]
 ${when(i)} setblock ~2 ~3 ~-1 attached_melon_stem[facing=north]
+${when(i)} data merge block ~3 ~2 ~-1 {Text2:${text("Stage: Attached")}}
 % endif
 </%base:loop>

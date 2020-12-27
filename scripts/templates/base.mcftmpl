@@ -119,8 +119,9 @@ ${_mob(thing, x, y_add, z, rotation, commas(nbt, "CustomName:%s" % text(thing.na
 
 <%def name="crop(stages, which, x, y, z, when, i, thing, name='age')">\
 % for s in range(0, 3):
-${when(i)} fill ~${x} ~${y} ~${z - s} ~${x + 2} ~${y} ~${z - s} ${which}[${name}=${stages[(i + s + len(stages)) % len(stages)]}]
+${when(i)} fill ~${x} ~${y} ~${z - s} ~${x + 2} ~${y} ~${z - s} ${which}[${name}=${stages[(i + s) % len(stages)]}]
 % endfor
+${when(i)} data merge block ~${x + 3} ~2 ~${z - 1} {Text2:${text("Stage: %d" % stages[(i + 1) % len(stages)])}}
 </%def>
 
 <%def name="stop_clocks()">
