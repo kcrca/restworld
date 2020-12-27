@@ -8,7 +8,7 @@
 %>
 
 <%base:loop collection="${range(0, 2 * max + 1)}" args="when,i,thing">\
-%if thing == 0:
+%if i == 0:
 ${when(i)} setblock ~0 ~3 ~0 ${Thing("bamboo_sapling").full_id()}
 ${when(i)} fill ~0 ~${3 + top} ~0 ~0 ~4 ~0 ${Thing("air").full_id()}
 %else:
@@ -22,6 +22,7 @@ ${when(i)} fill ~0 ~${3 + top} ~0 ~0 ~4 ~0 ${Thing("air").full_id()}
     fi
     age = 0 if i <= max else 1
 %>\
+${when(i)} data merge block ~1 ~2 ~0 {Text3:${text("Shoot" if i == 0 else "Age: %d" % age)}}
 ${when(i)} fill ~0 ~3 ~0 ~0 ~${3 + height - 1} ~0 ${Thing("bamboo").full_id()}[age=${age},leaves=none]
 %if height < max:
 ${when(i)} fill ~0 ~${3 + max - 1} ~0 ~0 ~${3 + height} ~0 ${Thing("air").full_id()}
@@ -34,5 +35,4 @@ ${when(i)} setblock ~0 ~${3 + height - 2} ~0 ${Thing("bamboo").full_id()}[age=${
 %endif
 %endif
 
-${when(i)} data merge block ~1 ~2 ~0 {Text3:${text("Shoot" if i == 0 else "Age: %d" % age)}}
 </%base:loop>

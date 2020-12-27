@@ -5,4 +5,5 @@ ${when(i)} setblock ~1 ~4 ~0 cocoa[age=${thing},facing=west]
 ${when(i)} setblock ~-1 ~4 ~0 cocoa[age=${thing},facing=east]
 ${when(i)} setblock ~0 ~4 ~1 cocoa[age=${thing},facing=north]
 ${when(i)} setblock ~0 ~4 ~-1 cocoa[age=${thing},facing=south]
+${when(i)} data merge block ~1 ~2 ~0 {Text2:${text("Stage: %d" % i)}}
 </%base:bounce>
