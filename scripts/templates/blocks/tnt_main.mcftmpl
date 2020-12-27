@@ -1,0 +1,13 @@
+<%namespace name="base" file="../base.mcftmpl"/>
+
+<%base:loop collection="${range(0, 3)}" args="when,i,thing">\
+%if i < 2:
+${when(i)} kill @e[type=tnt,distance=..10]
+${when(i)} setblock ~0 ~3 ~0 tnt[unstable=${'true' if i == 1 else 'false'}]
+${when(i)} data merge block ~0 ~2 ~-1 {Text3:${text('Unstable' if i == 1 else 'Stable')}}
+%else:
+${when(i)} setblock ~0 ~3 ~0 air
+${when(i)} summon tnt ~-0 ~3 ~-0 {Fuse:10000}
+${when(i)} data merge block ~0 ~2 ~-1 {Text3:${text('Primed')}}
+%endif
+</%base:loop>
