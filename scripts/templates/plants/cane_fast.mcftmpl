@@ -1,6 +1,0 @@
-<%namespace name="base" file="../base.mcftmpl"/>
-
-<%base:loop collection="${range(0, 16)}" args="when,i,thing">\
-${when(i)} fill ~0 ~3 ~0 ~0 ~5 ~0 sugar_cane[age=${i}]
-${when(i)} data merge block ~1 ~2 ~0 {Text2:${text("Stage: %d" % i)}}
-</%base:loop>

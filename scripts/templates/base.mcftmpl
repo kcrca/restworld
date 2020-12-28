@@ -17,14 +17,19 @@ execute unless score ${var} funcs matches 0..${count - 1} run scoreboard players
 <%def name="ensure(pos, block, nbt=None)">execute unless block ${pos} ${block} run setblock ${pos} ${block}${'{%s}' % nbt if nbt else ''}</%def>
 
 <%def name="up_down(which, count, x=0, y=4, z=0)">
-${increment(2 * count)}\
+${increment(2 * count + 1)}\
 <% id = Thing(which).full_id() %>
 fill ~0 ~4 ~0 ~0 ~${4 + count} ~0 air
 %for i in range(1, count + 1):
-${when(i)} fill ~0 ~3 ~0 ~0 ~${3 + i} ~0 ${id}
+${when(i)} fill ~0 ~3 ~0 ~0 ~${3 + i} ~0 ${id}[age=1]
+${when(i)} data merge block ~1 ~2 ~0 {Text2:${text("Top Stage: 1")}}
 %endfor
-%for i in range(count + 1, 2 * count):
-${when(i)} fill ~0 ~3 ~0 ~0 ~${3 + (i - count)} ~0 ${id}
+${when(count + 1)} fill ~0 ~3 ~0 ~0 ~${3 + count} ~0 ${id}[age=1]
+${when(count + 1)} setblock ~0 ~${3 + count} ~0 ${id}[age=15]
+${when(count + 1)} data merge block ~1 ~2 ~0 {Text2:${text("Top Stage: 15")}}
+%for i in range(count + 2, 2 * count + 1):
+${when(i)} fill ~0 ~3 ~0 ~0 ~${3 + (i - count - 1)} ~0 ${id}[age=1]
+${when(i)} data merge block ~1 ~2 ~0 {Text2:${text("Top Stage: 1")}}
 %endfor
 <%doc> Need this kill because sometimes lopping off a thing (sugar_cane) drops an item </%doc>
 kill @e[type=item,distance=..10,nbt={Item:{id:"${id}"}}]
