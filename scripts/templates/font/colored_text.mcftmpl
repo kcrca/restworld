@@ -19,7 +19,7 @@ book = r'{pages:[ ' \
        r'"[\"\",'\
        r'{text:\"Text Formatting\",underlined:true},{text:\"\\n\\n\",color:reset},'\
        r'{text:\"Bold Text\",bold:true},{text:\"\\n\",color:reset},'\
-       r'{text:\"Obfuscated Text\",obfuscated:true},{text:\"\\n\",color:reset},'\
+       r'{text:\"Obfuscated Text\",obfuscated:true,hoverEvent:{action:show_text,value:Obfuscated}},{text:\"\\n\",color:reset},'\
        r'{text:\"Strikethrough Text\",strikethrough:true},{text:\"\\n\",color:reset},'\
        r'{text:\"Underline Text\",underlined:true},{text:\"\\n\",color:reset},'\
        r'{text:\"Italic Text\",italic:true}]"],'\
