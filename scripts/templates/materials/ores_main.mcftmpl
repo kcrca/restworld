@@ -15,7 +15,7 @@ scrap_frame = 'netherite_scrap_frame'
 %>
 
 kill @e[tag=${scrap_frame}]
-data merge block ~2 ~2 ~6 {Text3:${text("")}}
+data merge block ~3 ~2 ~6 {Text3:${text("")}}
 
 <% fill = 'fill ~7 ~5 ~6 ~0 ~2 ~0' %>
 <%base:loop collection="${blocks}" args="when,i,thing">

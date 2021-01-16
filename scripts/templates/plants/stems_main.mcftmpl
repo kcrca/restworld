@@ -1,11 +1,9 @@
 <%namespace name="base" file="../base.mcftmpl"/>
 <% stages = range(0, 9) %>
 
+setblock ~0 ~3 ~-2 air
+setblock ~2 ~3 ~-2 air
 <%base:loop collection="${stages}" args="when,i,thing">\
-% if i == 0:
-${when(i)} setblock ~0 ~3 ~-2 air
-${when(i)} setblock ~2 ~3 ~-2 air
-% endif
 % if i < 8:
 ${when(i)} setblock ~0 ~3 ~-1 pumpkin_stem[age=${i}]
 ${when(i)} setblock ~2 ~3 ~-1 melon_stem[age=${i}]
