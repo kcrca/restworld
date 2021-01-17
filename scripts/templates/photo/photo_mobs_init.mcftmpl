@@ -1,0 +1,54 @@
+<%
+import enum
+import math
+
+class Mob:
+    def __init__(self, dist, degrees, mob, nbt='', y=0):
+	radians = math.radians(degrees)
+	self.x = format(dist * math.cos(radians), '.4f')
+	self.z = format(dist * math.sin(radians), '.4f')
+	self.rotation = degrees + 90 + 50
+	self.y = 8 + y
+	self.mob = mob
+	self.nbt = nbt
+  
+mobs = (
+    Mob( 3.5,  -42, 'parrot'),
+    Mob( 3,  -25, 'cat'),
+    Mob( 3,    0, 'turtle'),
+    Mob( 3,  +25, 'ocelot'),
+    Mob( 3,  +40, 'fox'),
+
+    Mob( 4.9,  -45, 'rabbit'),
+    Mob( 4.3,  -33, 'bee'),
+    Mob( 4.5,  -20, 'chicken'),
+    Mob( 5.0,    0, 'spider'),
+    Mob( 4.7,  +22, 'cave_spider', y=0.2),
+    Mob( 4.5,  +42, 'wolf'),
+
+    Mob( 7.0,  -42, 'mooshroom'),
+    Mob( 7.0,  -27, 'cow'),
+    Mob( 7.0,  -13, 'pig'),
+    Mob( 7.0,   -1, 'sheep', nbt='Color:3'),
+    Mob( 7.0,  +14, 'donkey'),
+    Mob( 7.0,  +29, 'mule'),
+    Mob( 7.0,  +43, 'horse', nbt='Variant:513'),
+
+    Mob( 8.7,  -35, 'polar_bear', y=1.5),
+    Mob( 8.7,  -17, 'panda', y=1.5, nbt='MainGene:playful'),
+    Mob( 8.7,   +7, 'creeper', y=1.5),
+    Mob( 8.7,  +15, 'villager', y=1.5, nbt='VillagerData:{profession:weaponsmith}'),
+    Mob( 8.7,  +22, 'piglin_brute', y=1.5, nbt='LeftHanded:True,HandItems:[{id:"golden_axe",Count:1b},{}]'),
+    Mob( 8.7,  +30, 'witch', y=1.5),
+    Mob( 8.7,  +37, 'enderman', y=1.5),
+
+    Mob(17.0,    0, 'ghast', y=1.5),
+)
+%>
+
+tp @e[tag=photo_mob] ~0 ~15 ~0
+kill @e[tag=photo_mob]
+kill @e[type=item]
+%for m in mobs:
+summon ${m.mob} ~${m.x} ~${m.y} ~${m.z} {NoAI:True, Silent:True, PersistenceRequired:True, Rotation:[${m.rotation}f,0f], Tags:[photo_mob], OnGround:True, ${m.nbt}}
+%endfor
