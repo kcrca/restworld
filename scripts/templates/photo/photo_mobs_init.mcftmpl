@@ -16,8 +16,8 @@ mobs = (
     Mob( 3.5,  -42, 'parrot'),
     Mob( 3,  -25, 'cat'),
     Mob( 3,    0, 'turtle'),
-    Mob( 3,  +25, 'ocelot'),
-    Mob( 3,  +40, 'fox'),
+    Mob( 3,  +29, 'ocelot'),
+    Mob( 3.2,  +47, 'fox'),
 
     Mob( 4.9,  -45, 'rabbit'),
     Mob( 4.3,  -33, 'bee'),
@@ -34,13 +34,15 @@ mobs = (
     Mob( 7.0,  +29, 'mule'),
     Mob( 7.0,  +43, 'horse', nbt='Variant:513'),
 
-    Mob( 8.7,  -35, 'polar_bear', y=1.5),
+    Mob( 8.7,  -38, 'llama', y=1.5),
+    Mob( 8.7,  -27, 'polar_bear', y=1.5),
     Mob( 8.7,  -17, 'panda', y=1.5, nbt='MainGene:playful'),
-    Mob( 8.7,   +7, 'creeper', y=1.5),
-    Mob( 8.7,  +15, 'villager', y=1.5, nbt='VillagerData:{profession:weaponsmith}'),
-    Mob( 8.7,  +22, 'piglin_brute', y=1.5, nbt='LeftHanded:True,HandItems:[{id:"golden_axe",Count:1b},{}]'),
-    Mob( 8.7,  +30, 'witch', y=1.5),
-    Mob( 8.7,  +37, 'enderman', y=1.5),
+    Mob( 8.7,   +5, 'creeper', y=1.5),
+    Mob( 8.7,  +12, 'villager', y=1.5, nbt='VillagerData:{profession:weaponsmith}'),
+    Mob( 8.7,  +19, 'piglin_brute', y=1.5, nbt='LeftHanded:True,HandItems:[{id:"golden_axe",Count:1b},{}]'),
+    Mob( 8.7,  +26, 'witch', y=1.5),
+    Mob( 8.7,  +33.5, 'iron_golem', y=1.5),
+    Mob( 8.7,  +41, 'enderman', y=1.5),
 
     Mob(17.0,    0, 'ghast', y=1.5),
 )
