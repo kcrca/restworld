@@ -1,2 +1,0 @@
-
-execute as @e[tag=photo_mob,limit=1,type=chicken] run data merge entity @s {EggLayTime:65535}
