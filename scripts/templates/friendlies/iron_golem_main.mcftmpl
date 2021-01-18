@@ -2,5 +2,5 @@
 
 <%base:bounce collection="${range(4, 0, -1)}" args="when,i,thing">\
 ${when(i)} execute as @e[tag=iron_golem] run data merge entity @s {Health:${int(thing) * 25 - 5}}
-${when(i)} data merge block ~2 ~2 ~0 {Text3:${text("Damage: %d" % i)}}
+${when(i)} data merge block ~2 ~2 ~0 {Text3:${text("Damage: %d" % (i if i < 4 else 3 - (i - 3)))}}
 </%base:bounce>
