@@ -12,5 +12,5 @@ ${base.when(i)} ${base.mobs(s, do_adult=True, tags=('spiders',), nbt=None if i =
 %endfor
 %endfor
 
-${base.label(2, 2, 0, "Rider")}
+${base.label(2, 2, -2, "Jockey")}
 ${base.label(5, 2, -2, "Change Height")}
