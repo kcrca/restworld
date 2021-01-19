@@ -1,8 +1,26 @@
-[x] No, these aren't texturable.
-    Show the two kinds of invisible blocks shown during "save" for
-    structure blocks
+Ghast about to fire?
+
+Ghast fireball? Is it a separate texture?
+
+Mob states (have a looping button, a "put all mobs permanently in this state" switch? A "do it once" button"?)
+    HurtTime
+    TicksFrozen
+    Sleeping
+    Brain:admiring_item for piglins
+
+Is there a way to show arrows (esp. non-standard ones) in the air, travelling slowly?
+
+----- Probably not
 
 All the standard structures? Seems like a lot of work, and the only
 advantage is that you could see how your textures look in (say) a
 particular manision room. But that seems not very important to how
 they look in the world at large. So proably not?
+
+LeftHanded? It seems like a lot of work to make sure all newly spawned items are left-handed, though maybe that
+could be done on a clock or _finish?
+
+----- No, kept for the memory
+    Show the two kinds of invisible blocks shown during "save" for
+    structure blocks
+    -- No, these aren't texturable.
