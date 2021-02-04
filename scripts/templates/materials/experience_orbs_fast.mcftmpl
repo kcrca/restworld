@@ -1,0 +1,21 @@
+<%namespace name="base" file="../base.mcftmpl"/>\
+
+<%
+import math
+
+points = (2, 6, 16, 36, 72, 148, 306, 616, 1236, 2476, 32767)
+each = 2 * math.pi / len(points)
+radius = 4
+%>
+
+<%base:loop collection="${points}" args="when,i,thing">
+<%
+    p = points[i]
+    angle = i * each
+    x = radius * math.cos(angle)
+    z = radius * math.sin(angle)
+    f = -32768 if i == 0 else points[i - 1]
+%>\
+${when(i)} summon experience_orb ~0 ~3 ~0 {Value:${p},Age:${6000-40}}
+${when(i)} data merge block ~-1 ~3 ~0 {Text3:${text("Size: %d" % (i + 1))},Text4:${text("%d - %d" % (f, p))}}
+</%base:loop>
