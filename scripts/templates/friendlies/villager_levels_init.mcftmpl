@@ -1,1 +1,5 @@
+execute if score which_villagers funcs matches 4 run function restworld:friendlies/villager_professions_init
+execute if score which_villagers funcs matches 5 run function restworld:friendlies/villager_types_init
+execute if score which_villagers funcs matches 6 run function restworld:friendlies/zombie_professions_init
+execute if score which_villagers funcs matches 7 run function restworld:friendlies/zombie_types_init
 function restworld:friendlies/villager_levels_cur
