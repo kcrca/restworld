@@ -11,3 +11,5 @@ ${when(i)} execute as @e[tag=villager] run data modify entity @s VillagerData.pr
 ${when(i)} execute as @e[tag=villager] run data modify entity @s Age set value ${"%d" % (-2147483648 if thing == "Child" else 21474836487)}
 ${when(i)} data modify block ~-5 ~2 ~0 Text2 set value ${text(thing)}
 </%base:loop>\
+
+execute as @e[tag=villager] run execute at @s as @s align xyz run tp @s ~0.5 ~0.0 ~0.5
