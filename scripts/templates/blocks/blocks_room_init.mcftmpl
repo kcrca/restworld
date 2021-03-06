@@ -1,3 +1,4 @@
 <%namespace name="base" file="../base.mcftmpl"/>
 
+tag @e[tag=${var}_home] add no_expansion
 ${base.room_sign('east', 1, ('Blocks,','Paintings,', 'Banners,', 'DIY'))}
