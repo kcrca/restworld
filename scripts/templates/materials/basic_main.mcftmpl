@@ -25,6 +25,7 @@ execute if score enchanted funcs matches ${value} as @e[tag=armor_horse] run dat
 execute if score enchanted funcs matches ${value} as @e[tag=material_static] run data ${act} entity @s ArmorItems[${a}].tag ${arg}
 %if a < 2:
 execute if score enchanted funcs matches ${value} as @e[tag=material_static] run data ${act} entity @s HandItems[${a}].tag ${arg}
+execute if score enchanted funcs matches ${value} as @e[tag=material_static] run data ${act} entity @s ArmorItem.tag ${arg}
 %endif
 %endfor
 </%def>

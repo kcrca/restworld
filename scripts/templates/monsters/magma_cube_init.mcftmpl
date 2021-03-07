@@ -1,6 +1,6 @@
 <%namespace name="base" file="../base.mcftmpl"/>\
 
 ## Magma Cube leaves behind Magma Cube, have to move it away
-${base.remove("type=magma_cube")}
+${base.remove("tag=magma_cube")}
 ${base.mobs_init(y_init=1, rotation_init=0, tags_init=("growing",))}\
 ${base.mobs("Magma Cube", do_adult=True, on_stand=True)}

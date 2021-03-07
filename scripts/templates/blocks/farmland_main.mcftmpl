@@ -1,0 +1,6 @@
+<%namespace import="*" file="blocks_base.mcftmpl"/>
+# Loop through farmland or when expanded, it turns to dirt.
+<% types = ("Farmland", 'Farmland') %>
+# Make sure the block above is air so it doesn't turn to dirt instantly.
+setblock ~0 ~4 ~0 air
+${blocks(types, sign=1)}

@@ -1,6 +1,3 @@
-## This expands for almost all blocks (blocks/expander chooses which)
-execute if entity @e[tag=soul_home,distance=..1] run say expand_generic
-
 ## Sand blocks will fall if they aren't supported, so we place barriers under them
 execute if block ~0 ~3 ~0 #restworld:sand run fill ~-1 ~2 ~-1 ~1 ~2 ~1 barrier replace air
 
