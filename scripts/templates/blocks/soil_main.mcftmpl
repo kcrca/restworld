@@ -1,5 +1,5 @@
 <%namespace import="*" file="blocks_base.mcftmpl"/>
-<% types = ("Grass Block", "Podzol", "Mycelium", "Grass Path") %>
-# Make sure the block above is air so it doesn't turn grass path to dirt instantly.
+<% types = ("Grass Block", "Podzol", "Mycelium", "Dirt Path") %>
+# Make sure the block above is air so it doesn't turn dirt path to dirt instantly.
 setblock ~0 ~4 ~0 air
 ${blocks(types, sign=1)}
