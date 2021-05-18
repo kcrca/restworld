@@ -1,4 +1,0 @@
-<%namespace name="base" file="../base.mcftmpl"/>\
-setblock ~0 ~2 ~-1 oak_wall_sign
-data merge block ~0 ~2 ~-1 {Text2:${text("Bell")}}
-tag @e[tag=job_sites_home] add no_expansion

@@ -3,9 +3,13 @@
 <%
     sites = (
 	'Cauldron',
+	'Water Cauldron',
+	'Lava Cauldron',
+	'Powder Snow Cauldron',
     )
     stages = {
-	'Cauldron': list('level=%d' % t for t in range(0, 4)),
+	'Water Cauldron': list('level=%d' % t for t in range(1, 4)),
+	'Powder Snow Cauldron': list('level=%d' % t for t in range(3, 0, -1)),
     }
 %>
 
