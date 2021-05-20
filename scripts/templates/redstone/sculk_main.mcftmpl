@@ -1,0 +1,5 @@
+<%namespace name="base" file="../base.mcftmpl"/>
+
+${base.increment(4)}
+${base.when(0)} setblock ~0 ~1 ~0 redstone_torch
+${base.when(2)} setblock ~0 ~1 ~0 smooth_sandstone
