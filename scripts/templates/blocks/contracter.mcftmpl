@@ -1,4 +1,2 @@
-execute if entity @e[tag=fire_home,distance=..1] run say [fire, contracter] function restworld:blocks/contract_fire
 execute if entity @e[tag=fire_home,distance=..1] run function restworld:blocks/contract_fire
-execute unless entity @e[tag=fire_home,distance=..1] run execute if entity @e[tag=soul_home,distance=..1] run say [soul, contracter] function restworld:blocks/contract_generic
 execute unless entity @e[tag=fire_home,distance=..1] run function restworld:blocks/contract_generic
