@@ -6,3 +6,5 @@ ${when(i)} setblock ~-1 ~-1 ~-1 redstone_block
 ${when(i)} setblock ~-1 ~-1 ~-1 air
 ${when(i)} setblock ~1 ~2 ~7 minecraft:oak_wall_sign[facing=west]{Text2:"\"${thing} Trees\""} replace
 </%base:loop>
+
+${base.sign("~4 ~2 ~15", "west", 2, "Lilly")}
