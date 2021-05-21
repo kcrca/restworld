@@ -2,6 +2,6 @@
 
 <%base:loop collection="${('crimson', 'warped')}" args="when,i,thing">\
 ${when(i)} data merge block ~-1 ~0 ~-1 {mode:"LOAD",name:"restworld:${thing}_shroom"}
-${when(i)} setblock ~-1 ~-1 ~-1 redstone_torch
+${when(i)} setblock ~-1 ~-1 ~-1 redstone_block
 ${when(i)} setblock ~-1 ~-1 ~-1 air
 </%base:loop>
