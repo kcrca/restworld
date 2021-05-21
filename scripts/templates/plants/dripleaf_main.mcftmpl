@@ -1,0 +1,9 @@
+<%namespace name="base" file="../base.mcftmpl"/>
+
+<% dripleaves = (Thing('Small Dripleaf'), Thing('Large Dripleaf')) %>
+
+fill ~0 ~3 ~0 ~0 ~4 ~0 air
+<%base.increment(2)%>
+${base.when(0)} setblock ~0 ~3 ~0 small_dripleaf
+${base.when(1)} setblock ~0 ~3 ~0 big_dripleaf_stem
+${base.when(1)} setblock ~0 ~4 ~0 big_dripleaf
