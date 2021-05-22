@@ -2,6 +2,7 @@
 <% blocks = (
        ("Coal Ore", "Coal Block", "Coal"),
        ("Iron Ore", "Iron Block", "Iron Ingot"),
+       ("Copper Ore", "Copper Block", "Copper Ingot"),
        ("Gold Ore", "Gold Block", "Gold Ingot"),
        ("Redstone Ore", "Redstone Block", "Redstone"),
        ("Lapis Ore", "Lapis Block", "Lapis Lazuli"),

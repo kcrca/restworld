@@ -3,6 +3,7 @@
   "values": [
     "coal_block",
     "iron_block",
+    "copper_block",
     "gold_block",
     "diamond_block",
     "lapis_block",
