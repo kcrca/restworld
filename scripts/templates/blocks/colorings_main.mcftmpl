@@ -4,7 +4,7 @@
 <% fill = 'fill ~1 ~2 ~6 ~-11 ~4 ~-1' %>
 
 <%base:loop collection="${colors}" args="when,i,thing">
-%for which in ('stained_glass', 'stained_glass_pane', 'wool', 'banner', 'shulker_box', 'carpet', 'concrete', 'concrete_powder', 'terracotta', 'candle_cake'):
+%for which in ('stained_glass', 'stained_glass_pane', 'wool', 'banner', 'shulker_box', 'carpet', 'concrete', 'concrete_powder', 'terracotta', 'candle_cake[lit=true]', 'candle[candles=1]', 'candle[candles=2]', 'candle[candles=3]', 'candle[candles=4]'):
 <% state = '[rotation=2]' if which == 'banner' else '' %>\
 ${when(i)} ${fill} ${thing.full_id()}_${which}${state} replace #restworld:${which}
 %endfor
