@@ -1,10 +1,15 @@
 <%namespace name="base" file="../base.mcftmpl"/>
 <%namespace import="*" file="blocks_base.mcftmpl"/>
 
-<% fill = 'fill ~1 ~2 ~6 ~-11 ~4 ~-1' %>
+<%
+    fill = 'fill ~1 ~2 ~6 ~-11 ~4 ~-1'
+    fills = ['stained_glass', 'stained_glass_pane', 'wool', 'banner', 'shulker_box', 'carpet', 'concrete', 'concrete_powder', 'terracotta']
+    fills.extend(('candle_cake[lit=%s]' % lit for lit in ('true', 'false')))
+    fills.extend('candle[lit=%s,candles=%d]' % (lit, x) for lit in ('true', 'false') for x in range(1, 5))
+%>
 
 <%base:loop collection="${colors}" args="when,i,thing">
-%for which in ('stained_glass', 'stained_glass_pane', 'wool', 'banner', 'shulker_box', 'carpet', 'concrete', 'concrete_powder', 'terracotta', 'candle_cake[lit=true]', 'candle[candles=1]', 'candle[candles=2]', 'candle[candles=3]', 'candle[candles=4]'):
+%for which in fills:
 <% state = '[rotation=2]' if which == 'banner' else '' %>\
 ${when(i)} ${fill} ${thing.full_id()}_${which}${state} replace #restworld:${which}
 %endfor
