@@ -4,7 +4,4 @@ ${base.label(5, 2, 4, "Banner / Ink")}
 ${base.label(3, 2, 4, "Labels")}
 ${base.label(4, 2, 3, "Controls")}
 
-tag @e[tag=all_banners_home] add 
-
 function restworld:banners/switch_to_color
-tag @e[tag=all_banners_home] add banner_color_action_home
