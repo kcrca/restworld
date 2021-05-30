@@ -36,6 +36,14 @@
     "quartz_stairs",
     "smooth_quartz_stairs",
     "warped_stairs",
-    "crimson_stairs"
+    "crimson_stairs",
+    "cobbled_deepslate_stairs",
+    "polished_deepslate_stairs",
+    "deepslate_brick_stairs",
+    "deepslate_tile_stairs",
+    "cut_copper_stairs",
+    "exposed_cut_copper_stairs",
+    "weathered_cut_copper_stairs",
+    "oxidized_cut_copper_stairs"
   ]
 }
