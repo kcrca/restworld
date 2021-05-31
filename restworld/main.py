@@ -308,21 +308,23 @@ moon_phases = (
     (182000, "Waxing Gibbous"),
 )
 non_inventory = tuple(Thing(s) for s in (
-    "Command Block",
-    "Command Block Minecart",
-    "Jigsaw",
+    "Knowledge Book",
+    "Debug Stick",
+    "Suspicious Stew",
+    "Firework Star",
 
+    "Jigsaw",
     "Structure Block",
     "Structure Void",
     "Barrier",
-
-    "Spawner",
+    "Light",
     "Dragon Egg",
-    "Knowledge Book",
 
-    "Debug Stick",
-    "Suspicious Stew",
-    "Firework Star"))
+    "Command Block",
+    "Command Block Minecart",
+    "Sculk Sensor",
+    "Spawner",
+))
 
 villager_types = ("Desert", "Jungle", "Plains", "Savanna", "Snow", "Swamp", "Taiga")
 villager_data = []
