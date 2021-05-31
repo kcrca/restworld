@@ -33,7 +33,7 @@ slabs = tuple(f.replace("Stairs", "Slab") for f in stairs)
 %>
 <%base:loop collection="${blocks}" args="when,i,thing">
 
-<% fill = 'fill ~0 ~2 ~0 ~5 ~6 ~4' %>\
+<% fill = 'fill ~0 ~2 ~0 ~3 ~6 ~6' %>\
 <% pl, sl, st = Thing(thing), Thing(slabs[i]), Thing(stairs[i]) %>\
 ${when(i)} ${fill} ${pl.full_id()} replace #restworld:stepable_planks
 ${when(i)} ${fill} ${sl.full_id()}[type=double] replace #restworld:stepable_slabs[type=double]
