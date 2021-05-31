@@ -21,13 +21,24 @@ data merge block ~3 ~2 ~6 {Text3:${text("")}}
 <% fill = 'fill ~7 ~5 ~6 ~0 ~2 ~0' %>
 <%base:loop collection="${blocks}" args="when,i,thing">
 <% ore, block, item, raw = (Thing(s) if s else None for s in thing) %>
-${when(i)} ${fill} ${ore.id} replace #restworld:ores
 ${when(i)} ${fill} ${block.id} replace #restworld:ore_blocks
 ${when(i)} data merge block ~3 ~2 ~6 {Text2:${text(ore.name.replace(" Ore", ""))}}
 %if 'Nether' in ore.name or 'Ancient' in ore.name:
-${when(i)} ${fill} netherrack replace stone
+${when(i)} ${fill} ${ore.id} replace #restworld:ores
+${when(i)} ${fill} netherrack replace #restworld:ore_background
+${when(i)} ${fill} soul_sand replace dirt
+${when(i)} ${fill} soul_soil replace andesite
+${when(i)} ${fill} blackstone replace diorite
+${when(i)} ${fill} basalt replace granite
 %else:
-${when(i)} ${fill} stone replace netherrack
+${when(i)} execute if score deepslate_materials funcs matches 0 run ${fill} ${ore.id} replace #restworld:ores
+${when(i)} execute if score deepslate_materials funcs matches 0 run ${fill} stone replace #restworld:ore_background
+${when(i)} execute if score deepslate_materials funcs matches 1 run ${fill} deepslate_${ore.id} replace #restworld:ores
+${when(i)} execute if score deepslate_materials funcs matches 1 run ${fill} deepslate replace #restworld:ore_background
+${when(i)} ${fill} dirt replace soul_sand
+${when(i)} ${fill} andesite replace soul_soil
+${when(i)} ${fill} diorite replace blackstone
+${when(i)} ${fill} granite replace basalt
 %endif
 
 %if "Netherite" in item.name:
