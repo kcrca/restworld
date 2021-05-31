@@ -26,3 +26,6 @@ ${base.sign('~-4 ~2 ~4', 'south')}
 
 kill @e[type=item]
 tag @e[tag=${var}_home] add no_expansion
+
+${base.label(-1, 2, 7, "Lit Candles")}
+${base.label(-11, 2, 3, "Glowing")}
