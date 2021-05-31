@@ -1,0 +1,3 @@
+<%namespace import="*" file="blocks_base.mcftmpl"/>
+<% types = ("Copper Block", "Exposed Copper", "Weathered Copper", "Oxidized Copper") %>
+${blocks(types, list(x.replace('Copper', 'Cut Copper').replace(' Block', '').replace(' Cut', '|Cut') for x in types), dx=-3)}

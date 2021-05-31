@@ -11,6 +11,14 @@ blocks = (
     "Andesite", "Polished|Andesite",
     "Diorite", "Polished|Diorite",
     "Granite", "Polished|Granite",
+    "Cobbled|Deepslate",
+    "Polished|Deepslate",
+    "Deepslate|Bricks",
+    "Deepslate|Tiles",
+    "Cut Copper",
+    "Exposed Cut Copper",
+    "Weathered Cut Copper",
+    "Oxidized Cut Copper",
     "Prismarine", "Prismarine|Bricks", "Dark|Prismarine",
     "Acacia Planks", "Birch Planks", "Jungle Planks",
     "Oak Planks", "Dark Oak Planks", "Spruce Planks",
@@ -20,7 +28,7 @@ blocks = (
     "Polished|Blackstone Bricks", "Quartz Block", "Smooth|Quartz",
     "End Stone Bricks", "Purpur Block",
 )
-stairs = tuple(re.sub("(marine|ite)$", r"\1 Stairs", re.sub("[Ss]tone$", "stone Stairs", f.replace("Planks", "Stairs").replace("Bricks", "Brick Stairs").replace( "Block", "Stairs").replace("|Quartz", " Quartz Stairs"))) for f in blocks)
+stairs = tuple(re.sub("(marine|ite)$", r"\1 Stairs", re.sub("[Ss]tone$", "stone Stairs", f.replace("Planks", "Stairs").replace("Tiles", "Tile Stairs").replace("Copper", "Copper Stairs").replace("Bricks", "Brick Stairs").replace("Block", "Stairs").replace("|Quartz", " Quartz Stairs").replace('|Deepslate', '|Deepslate Stairs'))) for f in blocks)
 slabs = tuple(f.replace("Stairs", "Slab") for f in stairs)
 %>
 <%base:loop collection="${blocks}" args="when,i,thing">

@@ -2,7 +2,11 @@
 <%
     basic = ["Coal", "Iron", "Gold", "Lapis", "Redstone", "Diamond", "Emerald"]
     odder = ["Nether Quartz", "Nether Gold"]
+
     ores = list("%s Ore" % t for t in basic + odder) + ["Ancient Debris",]
+    slate_ores = list("Deepslate|%s Ore" % t for t in basic)
+    slate_ores.extend(ores[len(slate_ores):])
+
     ore_blocks = ["%s Block" % x for x in basic + ["Quartz", "Gold"]] + ["Netherite Block",]
 %>
-${blocks(ores, ore_blocks, dz=3)}
+${blocks(ores, slate_ores, ore_blocks, dz=3, prefixes=('execute if score deepslate_ores funcs matches 0 run', 'execute if score deepslate_ores funcs matches 1 run', None))}

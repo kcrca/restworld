@@ -5,7 +5,7 @@
 	"Cracked|Stone Bricks", "Chiseled|Stone Bricks",
 	"Polished|Blackstone Bricks",
 	"Cracked Polished|Blackstone Bricks",
-	'End Stone|Bricks'
+	'End Stone|Bricks',
     )
 %>
 ${blocks(types)}

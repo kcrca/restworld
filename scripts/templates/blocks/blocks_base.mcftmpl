@@ -1,11 +1,11 @@
 <%namespace name="base" file="../base.mcftmpl"/>
 
 <%def name="blocks(collection, *others, **kwargs)">${do_blocks((collection,) + others, **kwargs)}</%def>
-<%def name="do_blocks(collection, sign=-1, dx=0, dz=0, size=0, destroy=False)">
+<%def name="do_blocks(collection, sign=-1, dx=0, dz=0, size=0, prefixes=None)">
 <%base:loop collection="${collection[0]}" args="when,i,thing">\
 <%
-  x = z = 0
-  x_size = 0
+    x = z = 0
+    x_size = 0
 %>\
 %for c in collection:
 <%
@@ -22,21 +22,20 @@
 	nbt = "{%s}" % t.nbt
     except AttributeError:
 	nbt = ""
+    cmd_prefix = '' if prefixes is None or prefixes[loop.index] is None else prefixes[loop.index] + ' '
 %>
-%if destroy:
-    ${when(i)} setblock ~${x} ~3 ~${z} air destroy
-%endif
-${when(i)} setblock ~${x} ~3 ~${z} ${t.full_id()}${nbt}${" destroy" if destroy else ""}
-${when(i)} data merge block ~${x} ~2 ~${z + sign} {${",".join(signage)}}
+${when(i)} ${cmd_prefix}setblock ~${x} ~3 ~${z} ${t.full_id()}${nbt}
+${when(i)} ${cmd_prefix}data merge block ~${x} ~2 ~${z + sign} {${",".join(signage)}}
 <%
-    x += dx
-    x_size += 1
-    if size == 0:
-	z += dz
-    elif x_size >= size:
-	x = 0
-	z += dz
-	x_size = 0
+    if prefixes is None or (loop.index < len(prefixes) - 1 and prefixes[loop.index + 1] is None):
+	x += dx
+	x_size += 1
+	if size == 0:
+	    z += dz
+	elif x_size >= size:
+	    x = 0
+	    z += dz
+	    x_size = 0
 %>\
 %endfor
 </%base:loop>

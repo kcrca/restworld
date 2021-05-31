@@ -2,6 +2,7 @@
 <% types = (
     'Bricks', 'Quartz Bricks', 'Red|Nether Bricks', 'Nether Bricks',
     'Cracked|Nether Bricks', 'Chiseled|Nether Bricks',
-     'Prismarine Bricks'
+    "Deepslate Bricks",
+    'Prismarine Bricks',
 ) %>
 ${blocks(types)}
