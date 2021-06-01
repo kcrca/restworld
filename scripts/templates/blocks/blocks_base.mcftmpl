@@ -6,9 +6,12 @@
 <%
     x = z = 0
     x_size = 0
+    which_prefix = 0
+    in_prefix = 0
 %>\
 %for c in collection:
 <%
+    cur_prefixes = None if prefixes is None else prefixes[which_prefix]
     if isinstance(c[i], Thing):
 	t = c[i]
     else:
@@ -22,12 +25,15 @@
 	nbt = "{%s}" % t.nbt
     except AttributeError:
 	nbt = ""
-    cmd_prefix = '' if prefixes is None or prefixes[loop.index] is None else prefixes[loop.index] + ' '
+    cmd_prefix = '' if prefixes is None or cur_prefixes[in_prefix] is None else cur_prefixes[in_prefix] + ' '
 %>
 ${when(i)} ${cmd_prefix}setblock ~${x} ~3 ~${z} ${t.full_id()}${nbt}
 ${when(i)} ${cmd_prefix}data merge block ~${x} ~2 ~${z + sign} {${",".join(signage)}}
 <%
-    if prefixes is None or (loop.index < len(prefixes) - 1 and prefixes[loop.index + 1] is None):
+    in_prefix += 1
+    if prefixes is None or in_prefix >= len(cur_prefixes):
+	which_prefix += 1
+	in_prefix = 0
 	x += dx
 	x_size += 1
 	if size == 0:

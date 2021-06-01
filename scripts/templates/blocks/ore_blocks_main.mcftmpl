@@ -9,4 +9,4 @@
 
     ore_blocks = ["%s Block" % x for x in basic + ["Quartz", "Gold"]] + ["Netherite Block",]
 %>
-${blocks(ores, slate_ores, ore_blocks, dz=3, prefixes=('execute if score deepslate_ores funcs matches 0 run', 'execute if score deepslate_ores funcs matches 1 run', None))}
+${blocks(ores, slate_ores, ore_blocks, dz=3, prefixes=(('execute if score deepslate_ores funcs matches 0 run', 'execute if score deepslate_ores funcs matches 1 run'), (None,)))}
