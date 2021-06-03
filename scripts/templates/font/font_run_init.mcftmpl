@@ -1,8 +1,26 @@
 <%namespace name="base" file="../base.mcftmpl"/>
+<%namespace file="../sign_base.mcftmpl" import="*"/>
+tag @e[tag=font_run_home] add font_action_home
 
 fill ~-1 ~5 ~-3 ~1 ~3 ~-3 air
 ${base.sign('~0 ~3 ~-3', 'south', 1, ("Lorem ipsum", "dolor sit amet,", "consectetur", "adipiscing elit."))}
 execute positioned ~0 ~0 ~-2 run function restworld:font/copy_sign
+
+setblock ~0 ~-3 ~-3 air
+setblock ~0 ~-3 ~-3 oak_wall_sign[facing=south]{Color:black,Text2:${text("Color Holder")}}
+
+%for c in colors:
+<%
+    x = int(loop.index / 4) - 3
+    if x > -2:
+	x += 3
+    y = 5 - loop.index % 4
+%>
+setblock ~${x} ~${y} ~-3 air
+setblock ~${x} ~${y} ~-3 oak_wall_sign[facing=south]{Color:${c.id},Text2:${text("Use")},Text3:${text(c.name)},Text4:${text("Text")},\
+${sign_nbt(0, 'data modify block ~0 ~-3 ~-3 Color set value %s' % c.id, raised=False)}\
+}
+%endfor
 
 ${base.label(0, 2, -1, "Reset")}
 ${base.label(0, 6, -3, "Glowing", facing=3)}

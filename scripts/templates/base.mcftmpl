@@ -149,16 +149,17 @@ execute positioned ~${x} ~${y} ~${z} run kill @e[type=item_frame,tag=label,sort=
 summon item_frame ~${x} ~${y} ~${z} {Invisible:True,Facing:${facing},Tags:[label,${room}],${named_frame_item(Thing(item), txt)}}
 </%def>
 
-<%def name="sign(pos, facing, start=0, lines=(), water=False)">
+<%def name="sign(pos, facing, start=0, lines=(), water=False, nbt=None)">
 <%
 if isinstance(lines, str):
     lines = (lines,)
+nbt_add = ',' + nbt if nbt else ''
 %>
 setblock ${pos} air
 %if water:
 setblock ${pos} water
 %endif
-setblock ${pos} oak_wall_sign[facing=${facing}${',waterlogged=true' if water else ''}]{${','.join('Text%d:%s' % (i + start, text(lines[i])) for i in range(0, len(lines)))}}
+setblock ${pos} oak_wall_sign[facing=${facing}${',waterlogged=true' if water else ''}]{${','.join('Text%d:%s' % (i + start, text(lines[i])) for i in range(0, len(lines)))}${nbt_add}}
 </%def>
 
 <%def name="room_sign(facing, start, lines)">
