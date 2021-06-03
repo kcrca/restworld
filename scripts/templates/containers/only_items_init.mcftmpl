@@ -21,7 +21,7 @@ kill @e[tag=only_item_frame]
 <% z, end = rows.pop(0) %>
 %for i in range(0, end):
 <% t = items.pop(0) %>
-summon item_frame ~${x} ~2 ~${z} {Facing:5,Tags:[only_item_frame,only_item_frame_${t.id}]}
+summon item_frame ~${x} ~2 ~${5 - z} {Facing:5,Tags:[only_item_frame,only_item_frame_${t.id}]}
 <% z += dz %>
 %endfor
 <%

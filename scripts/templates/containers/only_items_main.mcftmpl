@@ -5,6 +5,6 @@
 <% fireworks = ('Firework Star', 'Firework Rocket') * 3 %>
 
 <%base:loop collection="${('', 'Chain ', 'Repeating ')}" args="when,i,thing">\
-${when(i)} ${only_item_contents(Thing('%sCommand Block' % thing), 'command_block')}
-${when(i)} ${only_item_contents(Thing(fireworks[i]), 'firework_star')}
+${when(i)} ${only_item_contents(Thing('%sCommand Block' % thing), i)}
+${when(i)} ${only_item_contents(Thing(fireworks[i]), i)}
 </%base:loop>
