@@ -6,7 +6,9 @@
 	Thing("Cactus"),
 	Thing("Dead Bush"),
 	Thing("Fern"),
-    ] + [Thing("%s Roots" % x) for x in stems] + [Thing("%s Fungus" % x) for x in stems]
+	Thing("Azalea Bush"), Thing("Flowering Azalea Bush"),
+    ] + [Thing("%s Roots" % x) for x in stems] + [Thing("%s Fungus" % x) for x in stems
+    ] + [Thing("Wither Rose"), ]
 %>
 
 <%base:loop collection="${potables}" args="when,i,thing">\
