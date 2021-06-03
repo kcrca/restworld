@@ -1,4 +1,0 @@
-kill @e[tag=center_mobs_east]
-summon llama ~0 ~2 ~0 {Variant:2,Tags:[center_mobs,center_mobs_east],PersistenceRequired:true}
-summon cow ~0 ~2 ~0 {Tags:[center_mobs,center_mobs_east],PersistenceRequired:true}
-summon chicken ~0 ~2 ~0 {Tags:[center_mobs,center_mobs_east],PersistenceRequired:true}

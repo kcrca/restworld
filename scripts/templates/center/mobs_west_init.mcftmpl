@@ -1,4 +1,0 @@
-kill @e[tag=center_mobs_west]
-summon sheep ~0 ~2 ~0 {Tags:[center_mobs,center_mobs_west],PersistenceRequired:true}
-summon horse ~0 ~2 ~0 {Variant:770,Tags:[center_mobs,center_mobs_west],PersistenceRequired:true}
-summon pig ~0 ~2 ~0 {Tags:[center_mobs,center_mobs_west],PersistenceRequired:true}
