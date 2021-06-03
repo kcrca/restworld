@@ -1,6 +1,6 @@
 <%namespace name="base" file="../base.mcftmpl"/>\
 
-kill @e[tag=font]
+kill @e[tag=font_mobs]
 ${base.mobs_init(rotation_init=0)}
 ${base.mobs("Rabbit", do_adult=True, auto_tag=False, tags=('nameable',))}
 execute as @e[tag=font,tag=nameable,limit=1] run data modify entity @s CustomNameVisible set value True

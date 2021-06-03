@@ -5,3 +5,4 @@ ${base.sign('~0 ~3 ~-3', 'south', 1, ("Lorem ipsum", "dolor sit amet,", "consect
 execute positioned ~0 ~0 ~-2 run function restworld:font/copy_sign
 
 ${base.label(0, 2, -1, "Reset")}
+${base.label(0, 6, -3, "Glowing", facing=3)}
