@@ -32,6 +32,7 @@
     "black_stained_glass_pane",
     "iron_bars",
 
+    "brick_wall",
     "cobblestone_wall",
     "mossy_cobblestone_wall",
     "stone_brick_wall",
@@ -47,6 +48,10 @@
     "prismarine_wall",
     "blackstone_wall",
     "polished_blackstone_wall",
-    "polished_blackstone_brick_wall"
+    "polished_blackstone_brick_wall",
+    "cobbled_deepslate_wall",
+    "polished_deepslate_wall",
+    "deepslate_brick_wall",
+    "deepslate_tile_wall"
   ]
 }
