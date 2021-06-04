@@ -1,7 +1,6 @@
 <%namespace name="base" file="../base.mcftmpl"/>
 
 <%
-
     phases = tuple(Thing(x) for x in ('Amethyst Block', 'Budding Amethyst', 'Small Amethyst Bud', 'Medium Amethyst Bud', 'Large Amethyst Bud', 'Amethyst Cluster'))
     dirs = ('up=true', 'north=true', '')
     surround = (

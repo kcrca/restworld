@@ -1,6 +1,6 @@
 %for x in range(0, 30):
 %for y in range(0, 4):
-execute if score font_glow funcs matches 0 at @e[tag=font_run_home] run data merge block ~${x - 1} ~${y + 2} ~-3 {GlowingText:false}
-execute if score font_glow funcs matches 1 at @e[tag=font_run_home] run data merge block ~${x - 1} ~${y + 2} ~-3 {GlowingText:true}
+execute if score font_glow funcs matches 0 at @e[tag=font_run_home] run data merge block ~${x - 3} ~${y + 2} ~-3 {GlowingText:false}
+execute if score font_glow funcs matches 1 at @e[tag=font_run_home] run data merge block ~${x - 3} ~${y + 2} ~-3 {GlowingText:true}
 %endfor
 %endfor

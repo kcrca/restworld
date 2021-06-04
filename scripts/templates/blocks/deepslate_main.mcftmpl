@@ -1,0 +1,14 @@
+<%namespace import="*" file="blocks_base.mcftmpl"/>
+<%
+    types = (
+	"Deepslate",
+	"Chiseled|Deepslate",
+	"Polished|Deepslate",
+	"Cracked|Deepslate|Bricks",
+	"Cracked|Deepslate|Tiles",
+	"Deepslate|Bricks",
+	"Deepslate|Tiles",
+	"Cobbled|Deepslate",
+    ) + tuple("Deepslate|%s|Ore" % x for x in ("Coal", "Iron", "Gold", "Lapis", "Redstone", "Diamond", "Emerald"))
+%>
+${blocks(types, sign=-1)}
