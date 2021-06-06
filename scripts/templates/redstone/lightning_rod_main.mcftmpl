@@ -3,4 +3,7 @@
 <%base:loop collection="${(Thing('Lightning Rod'), Thing('Lightning Rod', block_state='powered=true'))}" args="when,i,thing">\
 ${when(i)} setblock ~0 ~3 ~0 ${thing.full_id()}
 ${when(i)} data merge block ~-1 ~2 ~0 {Text3:${text("(Powered)" if "powered" in thing.full_id() else "")}}
+%if '[' in thing.full_id():
+${when(i)} summon lightning_bolt ~0 ~4 ~0
+%endif
 </%base:loop>
