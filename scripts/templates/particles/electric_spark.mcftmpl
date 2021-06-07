@@ -1,2 +1,2 @@
 <%namespace file="particle_base.mcftmpl" import="*"/>\
-${floor('soul_soil')}
+${main_clock()} summon lightning_bolt ~0 ~1 ~0

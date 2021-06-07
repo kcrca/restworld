@@ -1,0 +1,2 @@
+<%namespace file="particle_base.mcftmpl" import="*"/>\
+${fast_clock()} function restworld:particles/sculk_sensor_run

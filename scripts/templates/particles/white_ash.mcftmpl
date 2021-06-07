@@ -1,2 +1,2 @@
 <%namespace file="particle_base.mcftmpl" import="*"/>\
-${floor('soul_soil')}
+${fast_clock()} particle white_ash ~0 ~5 ~0 1 0 1 1 30

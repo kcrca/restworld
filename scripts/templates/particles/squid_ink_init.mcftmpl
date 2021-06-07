@@ -1,3 +1,2 @@
 <%namespace file="particle_base.mcftmpl" import="*"/>
 function restworld:particles/ocean
-${summon("squid", 4, "NoAI:True")}

@@ -5,6 +5,7 @@ import os
 import random
 import re
 import sys
+from functools import total_ordering
 from html.parser import HTMLParser
 
 from mako.lookup import TemplateLookup
@@ -17,6 +18,7 @@ def to_id(name):
     return name.lower().replace(" ", "_")
 
 
+@total_ordering
 class Thing:
     def __init__(self, name, id=None, block_state=None):
         self.text = name
@@ -28,6 +30,12 @@ class Thing:
 
     def __repr__(self):
         return self.name
+
+    def __lt__(self, other):
+        return self.full_id() < other.full_id()
+
+    def __eq__(self, other):
+        return self.full_id() == other.full_id()
 
     def full_id(self, block_state=""):
         id = "%s" % self.id
@@ -614,7 +622,7 @@ def main():
 
     sign_room("particles", particles, (
         Wall(7, 5, "east", (-1, 0)),
-        Wall(7, 7, "south", (0, -1)),
+        Wall(7, 7, "south", (0, -1), y_first=4),
         Wall(7, 5, "west", (1, 0)),
         Wall(7, 5, "north", (0, 1)),
     ), button=True)
@@ -635,12 +643,12 @@ def main():
     write_function("%s/%s" % (func_dir, "effects"), "effects_all_shown", "\n".join(all_effects) + "\n")
 
 
-particles = (
+particles = [
     ActionSign("Ambient Entity|Effect", "ambient"),
     ActionSign("Angry Villager"),
     ActionSign("Ash"),
     ActionSign("Barrier", priority=2, comment="not hard to find"),
-    ActionSign("Bubbles|and|Whirlpools", "bubbles"),
+    ActionSign("Bubbles|Currents|Whirlpools", "bubbles"),
     ActionSign("Clouds", note="Evaporation"),
     ActionSign("Composter"),
     ActionSign("Crimson Spore"),
@@ -654,12 +662,13 @@ particles = (
     ActionSign("Dripping Honey", note="Falling, Landing"),
     ActionSign("Dust", note="Redstone Dust"),
     ActionSign("Effect"),
+    ActionSign("Electric Spark"),
     ActionSign("Enchant"),
     ActionSign("Enchanted Hit"),
     ActionSign("End Rod"),
     ActionSign("Entity Effect"),
-    ActionSign("Explosion Emitter", note="Large Explosion"),
     ActionSign("Explosion"),
+    ActionSign("Explosion Emitter"),
     ActionSign("Falling Dust"),
     ActionSign("Falling Nectar", priority=2, comment="shown with bees"),
     ActionSign("Fireworks", note="and Flash"),
@@ -672,22 +681,28 @@ particles = (
     ActionSign("Item Snowball"),
     ActionSign("Large Smoke"),
     ActionSign("Lava", priority=2, comment="seen in materials, with ores"),
+    ActionSign("Light"),
     ActionSign("Mycelium", priority=2, comment="seen in plants"),
     ActionSign("Nautilus", note="with Conduit"),
     ActionSign("Poof", note="Small Explosion"),
+    ActionSign("Sculk Sensor"),
     ActionSign("Smoke", priority=2, comment="seen with items in blocks"),
     ActionSign("Sneeze"),
     ActionSign("Snow and Rain"),
     ActionSign("Soul"),
     ActionSign("Spit"),
+    ActionSign("Spore Blossom"),
     ActionSign("Splash"),
-    ActionSign("Squid Ink"),
+    ActionSign("Squid Ink", note="and Glow Squid"),
     ActionSign("Sweep Attack"),
     ActionSign("Totem of Undying"),
     ActionSign("Underwater"),
+    ActionSign("Wax", note="and Copper"),
     ActionSign("Warped Spore"),
+    ActionSign("White Ash"),
     ActionSign("Witch"),
-)
+]
+particles.sort()
 
 effects = (
     ActionSign("Speed"),
@@ -753,9 +768,10 @@ class Wall:
 
     def next_pos(self, x, y):
         # The top row is sparse
-        if y == 4 and x == 0:
-            return self.end - 1, y
         x += 1
+        if y == 4 and x == 3:
+            # Skip the middle position
+            x += 1
         if x >= self.end:
             self.line += 1
             if self.line >= len(self.used_widths):

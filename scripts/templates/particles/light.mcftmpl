@@ -1,2 +1,2 @@
 <%namespace file="particle_base.mcftmpl" import="*"/>\
-${floor('soul_soil')}
+${main_clock()} particle light ~0 ~2 ~0 0 0 0 0 1

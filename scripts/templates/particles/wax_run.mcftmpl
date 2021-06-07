@@ -1,0 +1,18 @@
+<%namespace name="base" file="../base.mcftmpl"/>\
+<%namespace file="particle_base.mcftmpl" import="*"/>
+
+<% names=('', 'Wax On', 'Wax Off', 'Scrape') %>
+
+<%base:loop collection="${names}" args="when,i,thing">\
+${when(i)} data merge entity @e[tag=particler,limit=1] {CustomName:${text(thing)},CustomNameVisible:${len(thing) > 0}}
+%if i == 0:
+${when(i)} setblock ~0 ~0 ~0 exposed_cut_copper
+%elif i == 1:
+${when(i)} particle wax_on ~0 ~0.5 ~0 0.5 0.5 0.5 0 10
+%elif i == 2:
+${when(i)} particle wax_off ~0 ~0.5 ~0 0.5 0.5 0.5 0 10
+%else:
+${when(i)} setblock ~0 ~0 ~0 cut_copper
+${when(i)} particle scrape ~0 ~0.5 ~0 0.5 0.5 0.5 0 10
+%endif
+</%base:loop>\

@@ -1,0 +1,15 @@
+<%namespace name="base" file="../base.mcftmpl"/>\
+
+<%
+    coords = (
+	"~3 ~0 ~2",
+	"~2 ~0 ~-2",
+	"~-2 ~1 ~-2",
+	"~-2 ~2 ~2",
+    )
+%>
+
+<%base:loop collection="${coords}" args="when,i,thing">\
+${when(i)} setblock ${thing} redstone_torch
+${when(i)} setblock ${coords[(i - 1 + len(coords)) % len(coords)]} air
+</%base:loop>\

@@ -1,0 +1,10 @@
+<%namespace name="base" file="../base.mcftmpl"/>\
+<%namespace file="particle_base.mcftmpl" import="*"/>
+
+<% squids = ('squid', 'glow_squid') %>
+
+${base.remove("tag=particler")}
+<%base:loop collection="${squids}" args="when,i,thing">\
+${when(i)} ${summon(thing, 4, "NoAI:True")}
+${when(i)} particle ${thing}_ink ~0 ~2 ~-0 0.2 1 0.2 0.03 10
+</%base:loop>\
