@@ -1,7 +1,7 @@
 <%namespace name="base" file="../base.mcftmpl"/>
 
 <%def name="blocks(collection, *others, **kwargs)">${do_blocks((collection,) + others, **kwargs)}</%def>
-<%def name="do_blocks(collection, sign=-1, dx=0, dz=0, size=0, prefixes=None)">
+<%def name="do_blocks(collection, sign=-1, dx=0, dz=0, size=0, prefixes=None, labels=None)">
 <%base:loop collection="${collection[0]}" args="when,i,thing">\
 <%
     x = z = 0
@@ -16,7 +16,7 @@
 	t = c[i]
     else:
 	t = Thing(c[i])
-    lines = t.to_sign_text()
+    lines = t.to_sign_text() if labels is None else labels[i]
     signage = ()
     for j in range(0, 3):
 	txt = lines[j] if j < len(lines) else ""
