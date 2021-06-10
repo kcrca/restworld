@@ -47,5 +47,5 @@ ${when(i)} data merge block ~3 ~2 ~6 {Text3:${text("/ Netherite")}}
 %if raw:
 ${when(i)} summon item_frame ~3 ~4 ~3 {Facing:3,Tags:[${raw_frame},${room}],${base.named_frame_item(raw)},Fixed:True}
 %endif
-${when(i)} execute as @e[type=item_frame,tag=!${raw_frame},dx=8,dy=5,dz=8] run data merge entity @s {Item:{id:${item.id},Count:1}}
+${when(i)} execute as @e[tag=ore_ingot_frame,dx=8,dy=5,dz=8] run data merge entity @s {Item:{id:${item.id},Count:1}}
 </%base:loop>
