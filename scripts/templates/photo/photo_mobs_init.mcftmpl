@@ -15,7 +15,7 @@ class Mob:
 mobs = (
     Mob( 3.5,  -42, 'parrot'),
     Mob( 3,  -25, 'cat'),
-    Mob( 3,    0, 'turtle'),
+    Mob( 3,    0, 'axolotl'),
     Mob( 3,  +29, 'ocelot'),
     Mob( 3.2,  +47, 'fox'),
 
