@@ -1,6 +1,10 @@
+<%namespace name="base" file="../base.mcftmpl"/>
 <%namespace file="../sign_base.mcftmpl" import="*"/>
 
-<%def name="arena_sign(y, z, hunter, victim, hunter_nbt=None, victim_nbt=None)">
+## This is NOT intended to be run on the clock. It is only called "_main" because that gives us a
+## "_cur" function, which is useful when paging through the signs. Do not create the _home armor stand.
+
+<%def name="arena_sign(y, z, hunter, victim, hunter_nbt=None, victim_nbt=None, wet=False, when=None, i=None)">
 <%
 hunter_cmd = 'execute at @e[tag=hunter_home] run summon %s ~0 ~2 ~0 {Tags:[battler,hunter]%s}' % (Thing(hunter).id, ',%s' % hunter_nbt if hunter_nbt else '')
 victim_cmd = 'execute at @e[tag=victim_home] run summon %s ~0 ~2 ~0 {Tags:[battler,victim]%s}' % (Thing(victim).id, ',%s' % victim_nbt if victim_nbt else '')
@@ -8,16 +12,14 @@ vs = 'vs.'
 if hunter == 'Peace':
     hunter_cmd = victim_cmd = vs = ''
 %>
-setblock ~-2 ~${y} ~${z} air
-setblock ~-2 ~${y} ~${z} oak_wall_sign[facing=east]{\
-    ${sign_nbt(0, '', '', name='controls')},\
+${when(i)} setblock ~-2 ~${y} ~${z} air
+${when(i)} setblock ~-2 ~${y} ~${z} oak_wall_sign[facing=east]{\
+    ${sign_nbt(0, 'execute at @e[tag=monitor_home] run fill ~-12 ~2 ~-12 ~12 ~2 ~12 %s' % ('water' if wet else 'air'), '', name='controls')},\
     ${sign_nbt(1, 'execute at @e[tag=monitor_home] run data merge block ~2 ~0 ~0 {Command:"execute unless entity @e[tag=hunter] run %s"}' % hunter_cmd, hunter, name='controls')},\
     ${sign_nbt(2, 'execute at @e[tag=monitor_home] run data merge block ~3 ~0 ~0 {Command:"execute unless entity @e[tag=victim] run %s"}' % victim_cmd, vs, name='controls')},\
     ${sign_nbt(3, 'function restworld:arena/start_battle', victim, name='controls')}\
 }
 </%def>
-
-<%def name="arena_page(page)">
 <%
 import sys
 
@@ -31,16 +33,18 @@ battles = (
     ('Drowned', 'Snow Golem', 'HandItems:[{id:trident,Count:1}]'),
     ('Wither Skeleton', 'Piglin', 'HandItems:[{id:stone_sword,Count:1},{}]', 'IsImmuneToZombification:True,HandItems:[{id:golden_sword,Count:1},{}]'),
     ('Skeleton', 'Iron Golem', 'HandItems:[{id:bow,Count:1}],ArmorItems:[{id:iron_boots,Count:1,tag:{RepairCost:1,Enchantments:[{lvl:9,id:protection}]}},{},{},{}]'),
+    ('Shulker', 'Snow Golem'),
     ('Stray', 'Iron Golem', 'HandItems:[{id:bow,Count:1}],ArmorItems:[{id:iron_boots,Count:1,tag:{RepairCost:1,Enchantments:[{lvl:9,id:protection}]}},{},{},{}]'),
     ('Wither', 'Iron Golem'),
     ('Blaze', 'Snow Golem'),
     ('Piglin Brute', 'Vindicator', 'HandItems:[{id:golden_axe,Count:1}],IsImmuneToZombification:True', armed_johnny),
     ('Witch', 'Snow Golem'),
     ('Wolf', 'Sheep'),
-    ('Ravager', 'Iron Golem'),
+    ('Goat', 'Sheep', 'IsScreamingGoat:True', 'NoAI:True'),
     ('Fox', 'Chicken'),
     ('Ocelot', 'Chicken'),
     ('Cat', 'Rabbit'),
+    ('Ravager', 'Iron Golem'),
     ('Polar Bear', 'Vindicator', '', armed_johnny),
     ('Hoglin', 'Vindicator', 'IsImmuneToZombification:True', armed_johnny),
     ('Zoglin', 'Vindicator', '', armed_johnny),
@@ -48,33 +52,41 @@ battles = (
     ('Panda', 'Vindicator', 'MainGene:aggressive', 'Johnny:True'),
     ('Spider', 'Vindicator', '', 'Johnny:True'),
     ('Cave Spider', 'Vindicator', '', 'Johnny:True'),
+    ('Phantom', 'Rabbit', 'AX:1000,AY:110,AZ:-1000'),
     ('Parrot', 'Vindicator', '', 'Johnny:True'),
+    ('Axolotl', 'Guardian', '', ''),
+    ('Axolotl', 'Elder Guardian', '', ''),
 )
 if len(battles) % row_length != 0:
     sys.stderr.write('Row length (%d) is not a multiple of battle count (%d)\n' % (row_length, len(battles)))
     sys.exit(1)
 
+chunks = []
+for i in range(0, len(battles), row_length):
+    chunks.append(battles[i:i + row_length])
+
 peace = ('Peace', ''),
 
 num_pages = int(len(battles) / row_length)
-pos = page * row_length
-signs = battles[pos:pos + row_length]
 end = int(row_length / 2) + 1
 x = -2
 %>
 
-fill ~${x} ~3 ~${-end} ~${x} ~3 ~${end} air
+fill ~${x} ~2 ~${-end} ~${x} ~2 ~${end} air
 
+<%base:loop collection="${chunks}" args="when,i,thing">\
 %for which_dir in (-1, 1):
 <%
-    to = ((page + which_dir + num_pages) % num_pages)
+    to = (i + which_dir + num_pages) % num_pages
     text, z = ('<--', +end) if which_dir == -1 else ('-->', -end)
-%>
-setblock ~${x} ~3 ~${z} oak_wall_sign[facing=east]{${sign_nbt(1, 'execute at @e[tag=controls_home] run function restworld:arena/arena_signs_%d' % to, text)}}
-%endfor
+%>\
+${when(i)} setblock ~${x} ~2 ~${z} oak_wall_sign[facing=east]{\
+${sign_nbt(1, 'scoreboard players set %s funcs %d' % (var, to), text)},\
+${sign_nbt(2, 'execute at @e[tag=controls_home] run function restworld:%s/%s_cur' % (room, var), '')}}
+%endfor\
 
-%for i in range(0, row_length):
-    <% args = signs[i] + (None,) * (4 - len(signs[i])) %>
-    ${arena_sign(3, -end + 1 + i, args[0], args[1], hunter_nbt=args[2], victim_nbt=args[3])}
+%for s in range(0, row_length):
+<% args = thing[s] + (None,) * (4 - len(thing[s])) %>\
+${arena_sign(2, -end + 1 + s, args[0], args[1], hunter_nbt=args[2], victim_nbt=args[3], wet=args[0] == 'Axolotl', when=when, i=i)}
 %endfor
-</%def>
+</%base:loop>

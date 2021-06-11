@@ -1,3 +1,0 @@
-<%namespace file="arena_base.mcftmpl" import="*"/>
-
-${arena_page(1)}
