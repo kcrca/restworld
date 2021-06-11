@@ -3,5 +3,5 @@
 <% llamas = ( Thing("Creamy"), Thing("White"), Thing("Brown"), Thing("Gray")) %>
 
 <%base:loop collection="${llamas}" args="when,i,thing">\
-${when(i)} execute as @e[type=trader_llama] run data modify entity @s Variant set value ${i}
+${when(i)} execute as @e[type=trader_llama,tag=${room}] run data modify entity @s Variant set value ${i}
 </%base:loop>
