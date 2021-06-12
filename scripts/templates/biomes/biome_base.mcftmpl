@@ -2,7 +2,7 @@
 
 <%def name="load_biome(renderer, biome, handback=None)">
 %for i in range(0, 4):
-${renderer(biome, 'execute at @e[tag=biome_loading_home] run', i, 32 * int(i / 2), 32 * int(i % 2), handback)}
+${renderer(biome, 'execute at @e[tag=biome_loading_action_home] run', i, 32 * int(i / 2), 32 * int(i % 2), handback)}
 %endfor
 </%def>
 

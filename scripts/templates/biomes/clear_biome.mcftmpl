@@ -13,7 +13,7 @@ ${load_biome(clear, 'clear')}
 ${load_biome(trigger, 'trigger')}
 
 ## Three times because slimes take three to kill
-execute at @e[tag=biome_loading_home] positioned ~-5 ~-5 ~-5 run kill @e[type=!player,tag=!homer,dx=74,dy=42,dz=74]
-execute at @e[tag=biome_loading_home] positioned ~-5 ~-5 ~-5 run kill @e[type=!player,tag=!homer,dx=74,dy=42,dz=74]
-execute at @e[tag=biome_loading_home] positioned ~-5 ~-5 ~-5 run kill @e[type=!player,tag=!homer,dx=74,dy=42,dz=74]
+execute at @e[tag=biome_loading_action_home] positioned ~-5 ~-5 ~-5 run kill @e[type=!player,tag=!homer,dx=74,dy=42,dz=74]
+execute at @e[tag=biome_loading_action_home] positioned ~-5 ~-5 ~-5 run kill @e[type=!player,tag=!homer,dx=74,dy=42,dz=74]
+execute at @e[tag=biome_loading_action_home] positioned ~-5 ~-5 ~-5 run kill @e[type=!player,tag=!homer,dx=74,dy=42,dz=74]
 kill @e[type=item]
