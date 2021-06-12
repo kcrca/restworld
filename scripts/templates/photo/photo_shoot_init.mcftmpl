@@ -2,7 +2,7 @@
 
 kill @e[tag=photo_view]
 summon armor_stand ~0 ~10 ~-3 {Tags:[photo_view,photo_example_view],NoGravity:true,Small:True,PersistenceRequired:True,Invisible:True}
-summon armor_stand ~0 ~10 ~3 {Tags:[photo_view,photo_quilt_view],NoGravity:true,Small:True,PersistenceRequired:True,Invisible:True}
+summon armor_stand ~0 ~10 ~2 {Tags:[photo_view,photo_quilt_view],NoGravity:true,Small:True,PersistenceRequired:True,Invisible:True}
 
 ${base.label(-1, 10, -1, "Reset Example Photo")}
 ${base.label(1, 10, -1, "Reset Mob Photo")}

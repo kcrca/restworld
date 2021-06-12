@@ -1,14 +1,9 @@
 Acacia Log
-Stripped Warped Stem
-Stripped Crimson Stem
-Structure Block
-#Jigsaw
-Warped Stem
-Crimson Stem
 Acacia Planks
 Acacia Wood
 Ancient Debris
 Andesite
+Azalea Leaves
 Barrel
 Basalt
 Bedrock
@@ -26,13 +21,19 @@ Black Terracotta
 Black Wool
 Blackstone
 Blast Furnace
+Block of Amethyst
 Block of Coal
+Block of Copper
 Block of Diamond
 Block of Emerald
 Block of Gold
 Block of Iron
+Block of Lapis Lazuli
 Block of Netherite
 Block of Quartz
+Block of Raw Copper
+Block of Raw Gold
+Block of Raw Iron
 Block of Redstone
 Blue Concrete
 Blue Concrete Powder
@@ -55,10 +56,12 @@ Brown Stained Glass
 Brown Terracotta
 Brown Wool
 Bubble Coral Block
+Budding Amethyst
+Calcite
 Cartography Table
 Carved Pumpkin
-Cauldron
-#Chain Command Block
+Repeating Command Block
+Chiseled Deepslate
 Chiseled Nether Bricks
 Chiseled Polished Blackstone
 Chiseled Quartz Block
@@ -68,8 +71,11 @@ Chiseled Stone Bricks
 Clay
 Coal Ore
 Coarse Dirt
+Cobbled Deepslate
 Cobblestone
-#Command Block
+Copper Ore
+Cracked Deepslate Bricks
+Cracked Deepslate Tiles
 Cracked Nether Bricks
 Cracked Polished Blackstone Bricks
 Cracked Stone Bricks
@@ -77,7 +83,9 @@ Crafting Table
 Crimson Hyphae
 Crimson Nylium
 Crimson Planks
+Crimson Stem
 Crying Obsidian
+Cut Copper
 Cut Red Sandstone
 Cut Sandstone
 Cyan Concrete
@@ -96,23 +104,37 @@ Dead Bubble Coral Block
 Dead Fire Coral Block
 Dead Horn Coral Block
 Dead Tube Coral Block
+Deepslate
+Deepslate Bricks
+Deepslate Coal Ore
+Deepslate Copper Ore
+Deepslate Diamond Ore
+Deepslate Emerald Ore
+Deepslate Gold Ore
+Deepslate Iron Ore
+Deepslate Lapis Lazuli Ore
+Deepslate Redstone Ore
+Deepslate Tiles
 Diamond Ore
 Diorite
 Dirt
 Dispenser
 Dried Kelp Block
+Dripstone Block
 Dropper
 Emerald Ore
 End Stone
 End Stone Bricks
+Exposed Copper
+Exposed Cut Copper
 Fire Coral Block
 Fletching Table
+Flowering Azalea Leaves
 Furnace
 Gilded Blackstone
 Glass
 Glowstone
 Gold Ore
-Granite
 Grass Block
 Gravel
 Gray Concrete
@@ -132,7 +154,6 @@ Green Wool
 Hay Bale
 Honey Block
 Honeycomb Block
-Hopper
 Horn Coral Block
 Ice
 Iron Ore
@@ -140,7 +161,6 @@ Jukebox
 Jungle Log
 Jungle Planks
 Jungle Wood
-Lapis Lazuli Block
 Lapis Lazuli Ore
 Light Blue Concrete
 Light Blue Concrete Powder
@@ -164,6 +184,7 @@ Lime Stained Glass
 Lime Terracotta
 Lime Wool
 Lodestone
+Loom
 Magenta Concrete
 Magenta Concrete Powder
 Magenta Glazed Terracotta
@@ -173,8 +194,10 @@ Magenta Terracotta
 Magenta Wool
 Magma Block
 Melon
+Moss Block
 Mossy Cobblestone
 Mossy Stone Bricks
+Mushroom Stem
 Mycelium
 Nether Bricks
 Nether Gold Ore
@@ -194,6 +217,8 @@ Orange Shulker Box
 Orange Stained Glass
 Orange Terracotta
 Orange Wool
+Oxidized Copper
+Oxidized Cut Copper
 Packed Ice
 Pink Concrete
 Pink Concrete Powder
@@ -208,6 +233,7 @@ Polished Andesite
 Polished Basalt
 Polished Blackstone
 Polished Blackstone Bricks
+Polished Deepslate
 Polished Diorite
 Polished Granite
 Prismarine
@@ -224,6 +250,8 @@ Purpur Block
 Purpur Pillar
 Quartz Bricks
 Quartz Pillar
+Command Block
+Chain Command Block
 Red Concrete
 Red Concrete Powder
 Red Glazed Terracotta
@@ -235,9 +263,10 @@ Red Shulker Box
 Red Stained Glass
 Red Terracotta
 Red Wool
+Redstone Lamp
 Redstone Ore
-#Repeating Command Block
 Respawn Anchor
+Rooted Dirt
 Sand
 Sandstone
 Sea Lantern
@@ -246,6 +275,7 @@ Shulker Box
 Slime Block
 Smithing Table
 Smoker
+Smooth Basalt
 Smooth Quartz
 Smooth Red Sandstone
 Smooth Sandstone
@@ -265,6 +295,7 @@ Stripped Acacia Wood
 Stripped Birch Log
 Stripped Birch Wood
 Stripped Crimson Hyphae
+Stripped Crimson Stem
 Stripped Dark Oak Log
 Stripped Dark Oak Wood
 Stripped Jungle Log
@@ -274,14 +305,21 @@ Stripped Oak Wood
 Stripped Spruce Log
 Stripped Spruce Wood
 Stripped Warped Hyphae
+Stripped Warped Stem
 TNT
 Target
 Terracotta
+Tinted Glass
 Tube Coral Block
+Tuff
 Warped Hyphae
 Warped Nylium
 Warped Planks
+Warped Stem
 Warped Wart Block
+Weathered Copper
+Weathered Cut Copper
+Wet Sponge
 White Concrete
 White Concrete Powder
 White Glazed Terracotta

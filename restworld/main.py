@@ -380,6 +380,12 @@ def get_normal_blocks():
         name = name.replace('  ', ' ').strip()
 
         # Special cases to force grouping and sometimes placement.
+        if name == 'Tinted Glass':
+            name = 'Glass ' + name
+        if 'Azalea' in name:
+            name = 'Azalea ' + name
+        if 'Amethyst' in name:
+            name = 'Amethyst ' + name
         if 'Coral' in name:
             name = 'E-Coral ' + name
         elif name in ('Dropper', 'Dispenser', 'Furnace', 'Observer'):

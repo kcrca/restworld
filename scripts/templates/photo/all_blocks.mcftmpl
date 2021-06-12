@@ -8,8 +8,10 @@ fill ~0 ~-1 ~0 ~${line_length} ~-20 ~2 air
     dir = y % 2 == 0
     if dir == 0:
 	x = line_length - x - 1
-    if '_log' in b or 'basalt' in b or 'stem' in b:
+    if '_log' in b or ('basalt' in b and 'smooth' not in b) or ('stem' in b and 'mush' not in b):
 	b += '[axis=z]'
+    elif 'command_block' in b:
+	b += '[facing=east]'
     elif b == 'observer':
 	b += '[facing=north]'
 %>
