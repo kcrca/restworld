@@ -6,7 +6,7 @@ item replace block ~1 ~-5 ~-1 container.${slot} from entity @e[tag=only_item_fra
 </%def>
 
 <%
-    rows = [(1, 4), (0, 6), (1, 4)]
+    rows = [(0, 5), (0, 5), (0, 5)]
     dx = 2
     dz = 1
     x = 0

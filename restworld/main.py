@@ -320,14 +320,15 @@ non_inventory = tuple(Thing(s) for s in (
     "Debug Stick",
     "Suspicious Stew",
     "Firework Star",
+    "Bundle",
 
     "Jigsaw",
     "Structure Block",
     "Structure Void",
     "Barrier",
     "Light",
-    "Dragon Egg",
 
+    "Dragon Egg",
     "Command Block",
     "Command Block Minecart",
     "Sculk Sensor",
