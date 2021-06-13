@@ -80,7 +80,7 @@ fill ~${x} ~2 ~${-end} ~${x} ~2 ~${end} air
     to = (i + which_dir + num_pages) % num_pages
     text, z = ('<--', +end) if which_dir == -1 else ('-->', -end)
 %>\
-${when(i)} setblock ~${x} ~2 ~${z} oak_wall_sign[facing=east]{\
+${when(i)} setblock ~${x} ~2 ~${z} oak_wall_sign[facing=east]{GlowingText:True,\
 ${sign_nbt(1, 'scoreboard players set %s funcs %d' % (var, to), text)},\
 ${sign_nbt(2, 'execute at @e[tag=controls_home] run function restworld:%s/%s_cur' % (room, var), '')}}
 %endfor\
