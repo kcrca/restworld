@@ -14,5 +14,6 @@ ${when(i)} say Switching to biome ${thing}\
 ${load_biome(setup, thing, handback=(when, i, thing))}
 %if i == len(biomes) - 1:
 ${load_biome(trigger, 'trigger')}
+${load_biome(illuminate, 'illuminate')}
 %endif
 </%base:loop>
