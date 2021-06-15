@@ -1,6 +1,6 @@
 <%namespace import="*" file="blocks_base.mcftmpl"/>
 <%
-    basic = ["Coal", "Iron", "Gold", "Lapis", "Redstone", "Diamond", "Emerald"]
+    basic = ["Coal", "Iron", "Copper", "Gold", "Lapis", "Redstone", "Diamond", "Emerald"]
     odder = ["Nether Quartz", "Nether Gold"]
 
     ores = list("%s Ore" % t for t in basic + odder) + ["Ancient Debris",]
