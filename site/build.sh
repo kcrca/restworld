@@ -5,14 +5,11 @@ for f in src/*/; do
     out=$(basename $name)
     if test ! -f $out.gif || find $name -newer $out.gif | grep -q . > /dev/null ; then
 	case $out in
-	    download)
-		echo - convert -delay 200 $name/\*.png -loop 0 -resize 32x32 $out.gif
-		convert -delay 200 $name/*.png -loop 0 -scale 32x32 $out.gif
-		;;
-	    *)
-		echo - convert -delay 200 $name/\*.png -loop 0 -resize 750x483 $out.gif
-		convert -delay 200 $name/*.png -loop 0 -resize 750x483 $out.gif
-		;;
+	    download) size=32x32;;
+	    *) size=750x483
 	esac
+	echo - convert -delay 200 $name/\*.png -loop 0 -resize $size $out.gif
+	ls $name/*.png
+	convert -delay 200 $name/*.png -loop 0 -scale $size $out.gif
     fi
 done
