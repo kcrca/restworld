@@ -44,7 +44,7 @@ class Thing:
             id += "[%s]" % state
         return id
 
-    def sign_text(self):
+    def sign_text(self, skip=()):
         lines = self.to_sign_text()
         if len(lines) == 4:
             start = 0
@@ -53,7 +53,12 @@ class Thing:
             lines = ["", ] + lines
         while len(lines) < 4:
             lines += ("",)
-        s = ','.join(["Text%d:%s" % (i + 1, text(lines[i])) for i in range(0, 4)])
+        s = ''
+        for i in range(0, 4):
+            if i not in skip:
+                if len(s) > 0:
+                    s += ','
+                s += "Text%d:%s" % (i + 1, text(lines[i]))
         return s
 
     def to_sign_text(self):

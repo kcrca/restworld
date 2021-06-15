@@ -16,6 +16,7 @@ ${base.when(1)} execute as @e[tag=${room},tag=!passenger,type=!item_frame] run e
 ${base.when(0)} execute at @e[tag=sleeping_bat] run clone ~0 ~1 ~0 ~0 ~1 ~0 ~0 ~-1 ~0 replace move
 ${base.when(0)} execute at @e[tag=turtle_eggs_home] run clone ~1 ~4 ~0 ~-2 ~4 ~0 ~-2 ~2 ~0 replace move
 ${base.when(0)} execute at @e[tag=brown_horses,tag=kid] run clone ~2 ~0 ~0 ~2 ~0 ~0 ~2 ~-2 ~0 replace move
+${base.when(0)} execute at @e[tag=bee_home] run fill ~2 ~2 ~0 ~-2 ~2 ~0 air
 %for room in rooms:
 ${base.when(0)} execute as @e[tag=${room}_home] run data merge entity @s {Invisible:false}
 ${base.when(0)} execute as @e[tag=${room}_home] run execute at @s run tp @s ~0 ~-2 ~0

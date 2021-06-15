@@ -1,0 +1,17 @@
+<%namespace name="base"  file="../base.mcftmpl"/>
+
+<% riders = (None, "Pillager", "Vindicator", "Evoker") %>
+
+${base.mobs_init(adult_x_init=1, rotation_init=270)}\
+
+<%base:loop collection="${riders}" args="when,i,thing">
+%if i == 0:
+${base.remove("tag=ravager")}
+%endif
+%if thing is None:
+${base.mobs('Ravager', when=when, i=i, do_adult=True)}
+%else:
+<% t = Thing(thing) %>
+${base.mobs('Ravager', when=when, i=i, do_adult=True, nbt='Passengers:[{id:"%s",CustomName:%s,CustomNameVisible:True,Tags:[ravager,monsters],Rotation:[270f,0f],PersistenceRequired:True,NoAI:True}]' % (t.id, text("Ravager & %s" % t.name)))}
+%endif
+</%base:loop>

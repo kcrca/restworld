@@ -1,7 +1,7 @@
 <%namespace name="base" file="../base.mcftmpl"/>
 
 <%
-    phases = tuple(Thing(x) for x in ('Amethyst Block', 'Budding Amethyst', 'Small Amethyst Bud', 'Medium Amethyst Bud', 'Large Amethyst Bud', 'Amethyst Cluster'))
+    phases = tuple(Thing(x) for x in ('Amethyst Block', 'Budding Amethyst', 'Small Amethyst|Bud', 'Medium Amethyst|Bud', 'Large Amethyst|Bud', 'Amethyst Cluster'))
     dirs = ('up=true', 'north=true', '')
     surround = (
 	(-1,  0, 'west'),
@@ -25,7 +25,7 @@ ${when(i)} setblock ~${offsets[0]} ~4 ~${offsets[1]} ${thing.id}[facing=${offset
 %endfor
 %endif
 %endif
-${when(i)} data merge block ~0 ~2 ~-1 {${thing.sign_text()}}
+${when(i)} data merge block ~0 ~2 ~-1 {${thing.sign_text(skip=(0,))}}
 </%base:bounce>
 
 ## The top cluster drops a shard when replaced, even though it has been replaced with air
