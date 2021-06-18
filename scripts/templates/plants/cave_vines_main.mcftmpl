@@ -2,5 +2,5 @@
 
 <%base:loop collection="${('true', 'false')}" args="when,i,thing">\
 ${when(i)} fill ~0 ~2 ~0 ~0 ~3 ~0 cave_vines[berries=${thing}]
-${when(i)} data merge block ~1 ~4 ~0 {Text3:${text("With%s Berries" % ('' if thing == 'true' else 'out'))}}
+${when(i)} data merge block ~1 ~5 ~0 {Text3:${text("With%s Berries" % ('' if thing == 'true' else 'out'))}}
 </%base:loop>

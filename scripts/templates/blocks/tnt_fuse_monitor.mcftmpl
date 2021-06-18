@@ -1,2 +1,0 @@
-execute if score tnt_fuse funcs matches 1.. run scoreboard players remove tnt_fuse funcs 1
-execute if score tnt_fuse funcs matches 0 at @e[tag=tnt_home] run function restworld:blocks/tnt_main
