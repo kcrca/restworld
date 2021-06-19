@@ -2,6 +2,6 @@
 <%
     types = ('Infested|Chiseled Stone|Bricks', 'Infested|Cobblestone',
              'Infested|Cracked Stone|Bricks', 'Infested|Mossy Stone|Bricks',
-	     'Infested|Stone', 'Infested|Stone Bricks')
+	     'Infested|Stone', 'Infested|Stone Bricks', 'Infested Deepslate')
 %>
 ${blocks(types)}
