@@ -15,11 +15,15 @@
 raw_frame = 'ore_raw_frame'
 %>
 
-kill @e[tag=${raw_frame}]
-data merge block ~3 ~2 ~6 {Text3:${text("")}}
 
 <% fill = 'fill ~7 ~5 ~6 ~0 ~2 ~0' %>
 <%base:loop collection="${blocks}" args="when,i,thing">
+%if i == 0:
+kill @e[tag=${raw_frame}]
+data merge block ~3 ~2 ~6 {Text3:${text("")}}
+setblock ~3 ~4 ~2 air
+%endif
+
 <% ore, block, item, raw = (Thing(s) if s else None for s in thing) %>
 ${when(i)} ${fill} ${block.id} replace #restworld:ore_blocks
 ${when(i)} data merge block ~3 ~2 ~6 {Text2:${text(ore.name.replace(" Ore", ""))}}
@@ -45,6 +49,9 @@ ${when(i)} ${fill} granite replace basalt
 ${when(i)} data merge block ~3 ~2 ~6 {Text3:${text("/ Netherite")}}
 %endif
 %if raw:
+%if 'Raw' in raw.name:
+${when(i)} setblock ~3 ~4 ~2 ${raw.id}_block
+%endif
 ${when(i)} summon item_frame ~3 ~4 ~3 {Facing:3,Tags:[${raw_frame},${room}],${base.named_frame_item(raw)},Fixed:True}
 %endif
 ${when(i)} execute as @e[tag=ore_ingot_frame,dx=8,dy=5,dz=8] run data merge entity @s {Item:{id:${item.id},Count:1}}
