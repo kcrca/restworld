@@ -1,6 +1,6 @@
 <%namespace import="*" file="blocks_base.mcftmpl"/>
 <%
-    types = tuple(Thing("light[level=%d]" % x) for x in range(0, 15))
+    types = tuple(Thing("light", block_state="level=%d" % x) for x in range(0, 15))
     labels = tuple(("light", "Level: %d" % i) for i in range(0, 15))
 %>
 ${blocks(types, sign=-1, labels=labels)}

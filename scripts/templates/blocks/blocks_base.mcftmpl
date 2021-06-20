@@ -2,16 +2,25 @@
 
 <%def name="blocks(collection, *others, **kwargs)">${do_blocks((collection,) + others, **kwargs)}</%def>
 <%def name="do_blocks(collection, sign=-1, dx=0, dz=0, size=0, prefixes=None, labels=None)">
+<%
+    show_list = len(set(x.name if isinstance(x, Thing) else x for x in collection[0])) > 1
+%>
 <%base:loop collection="${collection[0]}" args="when,i,thing">\
 <%
     x = z = 0
     x_size = 0
     which_prefix = 0
     in_prefix = 0
+    done_list = set()
 %>\
+%if i == 0:
+%if show_list:
+execute unless score block_list funcs matches 0.. run scoreboard players set block_list funcs 0
+execute if score block_list funcs matches 0 run kill @e[tag=block_list_${var}]
+%endif
+%endif
 %for c in collection:
 <%
-    cur_prefixes = None if prefixes is None else prefixes[which_prefix]
     if isinstance(c[i], Thing):
 	t = c[i]
     else:
@@ -25,10 +34,19 @@
 	nbt = "{%s}" % t.nbt
     except AttributeError:
 	nbt = ""
+    cur_prefixes = None if prefixes is None else prefixes[which_prefix]
     cmd_prefix = '' if prefixes is None or cur_prefixes[in_prefix] is None else cur_prefixes[in_prefix] + ' '
+    block_list_name = 'block_list_%s_%d_%d_%d' % (var, x, z, i)
 %>
 ${when(i)} ${cmd_prefix}setblock ~${x} ~3 ~${z} ${t.full_id()}${nbt}
 ${when(i)} ${cmd_prefix}data merge block ~${x} ~2 ~${z + sign} {${",".join(signage)}}
+%if show_list:
+%if (x, z) not in done_list:
+execute unless score block_list funcs matches 0 unless entity @e[tag=${block_list_name}] run summon armor_stand ~${x} ~${2.5 + (len(collection[0]) - i) * 0.24} ~${z} {Invisible:True,NoGravity:True,CustomNameVisible:True,Tags:[block_list,block_list_${var},${block_list_name}]}
+<% done_list.add((x, z)) %>
+%endif
+execute unless score block_list funcs matches 0 as @e[tag=${block_list_name}] run ${cmd_prefix}data merge entity @s {CustomName:${text(t.name)}}
+%endif
 <%
     in_prefix += 1
     if prefixes is None or in_prefix >= len(cur_prefixes):
