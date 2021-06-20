@@ -9,3 +9,4 @@ ${base.label(-16, 2, 3, "List Blocks")}
 ${base.label(-16, 2, -3, "List Blocks")}
 ${base.label(-43, 2, 3, "List Blocks")}
 ${base.label(-43, 2, -3, "List Blocks")}
+kill @e[tag=block_list]
