@@ -1,0 +1,10 @@
+<%namespace name="base" file="../base.mcftmpl"/>
+
+kill @e[tag=item_holder]
+summon armor_stand ~0 ~2 ~-1 {ShowArms:True,Rotation:[270f,0f],Tags:[item_holder,item_hands]}
+setblock ~0 ~2 ~1 barrier
+summon item_frame ~1 ~2 ~1 {Facing:5,Tags:[item_holder,item_src]}
+summon item_frame ~1 ~-1 ~1 {Facing:5,Tags:[item_holder,item_dst]}
+
+setblock ~-1 ~2 ~0 oak_wall_sign[facing=east]{Text1:${text("Put item in frame.")},Text2:${text("See it in 'fixed',")},Text3:${text("'ground', and 3rd")},Text4:${text("party hands")}}
+${base.label(1, 2, -1, "Hand")}
