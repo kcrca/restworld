@@ -35,7 +35,7 @@ ${when(i)} setblock ~-2 ~2 ~-1 ${id}_sapling
 ${when(i)} setblock ~0 ~2 ~-1 ${id}_sapling[stage=1]
 ${when(i)} fill ~-4 ~4 ~-3 ~-2 ~4 ~-3 ${id}_leaves
 %else:
-${when(i)} setblock ~-2 ~2 ~-1 ${id}_fungus
+${when(i)} setblock ~-2 ~2 ~-1 ${id}_roots
 ${when(i)} setblock ~0 ~2 ~-1 ${id}_fungus
 %if id == 'crimson':
 ${when(i)} fill ~-4 ~4 ~-3 ~-2 ~4 ~-3 nether_wart_block
