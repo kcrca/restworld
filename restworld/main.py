@@ -194,9 +194,9 @@ stepables = (
     Stepable("Dark Prismarine", "air"),
 )
 materials = (
-    'Iron', 'Coal', 'Gold', 'Diamond', 'Emerald', 'Chainmail', 'Redstone', 'Lapis Lazuli', 'Granite', 'Andesite',
-    'Diorite', 'Netherite', 'Blackstone', 'Stone', 'Cobblestone', 'End Stone', 'Sandstone', 'Red Sandstone', 'Bone',
-    'Honey', 'Honeycomb', 'Grass', 'Sticky', 'Nether')
+    'Iron', 'Coal', 'Copper', 'Gold', 'Diamond', 'Emerald', 'Chainmail', 'Redstone', 'Lapis Lazuli', 'Granite',
+    'Andesite', 'Diorite', 'Netherite', 'Blackstone', 'Stone', 'Cobblestone', 'End Stone', 'Sandstone', 'Red Sandstone',
+    'Bone', 'Honey', 'Honeycomb', 'Grass', 'Sticky', 'Nether')
 corals = ('Horn', 'Tube', 'Fire', 'Bubble', 'Brain')
 woods = ("Acacia", "Birch", "Jungle", "Oak", "Dark Oak", "Spruce")
 stems = ("Warped", "Crimson")
@@ -361,7 +361,8 @@ biomes = [item for sublist in list(biome_groups.values()) for item in sublist]
 
 
 def get_normal_blocks():
-    modifiers = tuple(c.name for c in colors) + woods + stems + materials + tuple(s.name for s in stepables) + corals
+    modifiers = tuple(c.name for c in colors) + woods + stems + materials + tuple(
+        s.name for s in stepables) + corals + ('Weathered', 'Oxidized', 'Exposed')
     modifiers = tuple(sorted(set(modifiers), key=lambda x: len(x), reverse=True))
     mod_re = re.compile(r'^(.*? ?)(\b(?:Mossy )?%s\b)($| (.*))' % '|'.join(modifiers))
     block_re = re.compile(r'Block of (.*)')
@@ -403,6 +404,8 @@ def get_normal_blocks():
         elif 'Glass' in name:
             # "M" to move it away from corals so the water trough behind the coral doesn't overlap
             name = 'MGlass ' + name
+        elif 'Copper' in block and 'Deepslate' not in block and name not in ('Ore', 'Raw Block'):
+            name = 'Copper'
 
         if name not in blocks:
             blocks[name] = []
