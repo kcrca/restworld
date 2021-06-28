@@ -2,7 +2,7 @@
 
 <%base:loop collection="${range(0, 4)}" args="when,i,thing">
 <% lantern = Thing('Lantern') if i < 2 else Thing('Soul Lantern') %>
-%if i % 2 == 0:
+%if i in (0, 3):
 ${when(i)} setblock ~0 ~3 ~0 ${lantern.full_id()}[hanging=false]
 ${when(i)} setblock ~0 ~4 ~0 air
 ${when(i)} data merge block ~0 ~2 ~-1 {Text2:${text("")},Text4:${text("")}}

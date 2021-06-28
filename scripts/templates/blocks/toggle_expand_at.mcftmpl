@@ -10,11 +10,10 @@ execute as @e[tag=stop_expanding,distance=..1] run tag @s remove expander
 ## ... and then remove the "to be stopped' tag
 execute as @e[tag=stop_expanding,distance=..1] run tag @s remove stop_expanding
 
-## Now it has the right tagging, do an immediate action ion it
+## Now it has the right tagging, do an immediate action on it
 execute at @e[tag=expander,distance=..1] run function restworld:blocks/expander
 execute at @e[tag=!expander,tag=!no_expansion,distance=..1] run function restworld:blocks/contracter
 
 ## And, as a cleanup, if it never will be an expander, say 'sorry'
 execute at @e[tag=no_expansion,distance=..1] run say "Sorry, cannot expand this one."
 execute at @e[tag=no_expansion,tag=fire_home,distance=..1] run say say "Sorry, cannot expand this one."
-execute at @e[tag=no_expansion,tag=soul_home,distance=..1] run say say "Sorry, cannot expand this one."

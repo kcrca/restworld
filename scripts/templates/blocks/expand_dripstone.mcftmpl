@@ -1,0 +1,7 @@
+## Clone the original stack to either side to form a line, including anything on top of the block
+clone ~0 ~12 ~0 ~0 ~3 ~0 ~-1 ~3 ~0
+clone ~0 ~12 ~0 ~0 ~3 ~0 ~1 ~3 ~0
+
+## Clone the line to either side to get a 3x3 level
+clone ~1 ~12 ~0 ~-1 ~3 ~0 ~-1 ~3 ~-1
+clone ~1 ~12 ~0 ~-1 ~3 ~0 ~-1 ~3 ~1

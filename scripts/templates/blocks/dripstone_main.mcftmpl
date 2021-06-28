@@ -2,12 +2,12 @@
 
 <%base:bounce collection="${range(1, 5)}" args="when,i,thing">
 %for j in range(0, thing):
-${when(i)} setblock ~0 ~${3 + j} ~0 pointed_dripstone[thickness=tip,vertical_direction=up]
+${when(i)} setblock ~0 ~${4 + j} ~0 pointed_dripstone[thickness=tip,vertical_direction=up]
 %endfor
 %for j in range(0, thing):
-${when(i)} setblock ~0 ~${10 - j} ~0 pointed_dripstone[thickness=${'tip_merge' if j == thing - 1 else 'tip'},vertical_direction=down]
+${when(i)} setblock ~0 ~${11 - j} ~0 pointed_dripstone[thickness=${'tip_merge' if j == thing - 1 else 'tip'},vertical_direction=down]
 %endfor
 %if thing != 4:
-${when(i)} fill ~0 ~${3 + thing} ~0 ~0 ~${10 - thing} ~0 air
+${when(i)} fill ~0 ~${4 + thing} ~0 ~0 ~${11 - thing} ~0 air
 %endif
 </%base:bounce>
