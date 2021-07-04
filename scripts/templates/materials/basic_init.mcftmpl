@@ -21,6 +21,7 @@ summon item_frame ~-3 ~5 ~1 {Facing:2,Tags:[armor_helmet,armor_frame]}
 summon item_frame ~3 ~2 ~1 {Facing:2,Tags:[armor_gem,armor_frame]}
 summon item_frame ~4 ~4 ~1 {Facing:2,Tags:[armor_horse_frame,armor_frame]}
 
-${base.label(5, 2, -2, "Toggle Saddle")}
+${base.label(5, 2, -2, "Saddle")}
+${base.label(3, 2, -2, "Enchanted")}
 ${base.label(1, 2, -2, "Turtle Helmet")}
-${base.label(-1, 2, -2, "Enchanted")}
+${base.label(-1, 2, -2, "Elytra")}

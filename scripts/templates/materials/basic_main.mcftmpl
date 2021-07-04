@@ -8,8 +8,6 @@
 	("diamond", "diamond", True, Thing("diamond_block"), "diamond"),
 	("netherite", "netherite", False, Thing("netherite_block"), "netherite_ingot"),
     )
-    global has_horse
-    has_horse = False
 %>
 
 <%def name="enchant(on)">
@@ -35,8 +33,9 @@ ${base.remove("tag=material_thing")}
 
 <%base:loop collection="${materials}" args="when,i,thing">
 <% material, armor, horse_armor, background, gem = thing %>
-${when(i, as_prefix=True)} if score turtle_helmet funcs matches 0 run data merge entity @e[tag=armor_stand,limit=1] {CustomName:${text(material.capitalize())},ArmorItems:[{id:${armor}_boots,Count:1},{id:${armor}_leggings,Count:1},{id:${armor}_chestplate,Count:1},{id:${armor}_helmet,Count:1}]}
-${when(i, as_prefix=True)} unless score turtle_helmet funcs matches 0 run data merge entity @e[tag=armor_stand,limit=1] {CustomName:${text(material.capitalize())},ArmorItems:[{id:${armor}_boots,Count:1},{id:${armor}_leggings,Count:1},{id:${armor}_chestplate,Count:1},{id:turtle_helmet,Count:1}]}
+
+${when(i)} data merge entity @e[tag=armor_stand,limit=1] {CustomName:${text(material.capitalize())},ArmorItems:[{id:${armor}_boots,Count:1},{id:${armor}_leggings,Count:1},{id:${armor}_chestplate,Count:1},{id:${armor}_helmet,Count:1}]}
+
 ${when(i)} fill ~-3 ~2 ~2 ~-3 ~5 ~2 ${background.full_id()}
 ${when(i)} setblock ~3 ~2 ~2 ${background.full_id()}
 ${when(i)} setblock ~4 ~4 ~2 ${background.full_id()}
@@ -84,6 +83,12 @@ ${when(i)} data merge block ~-2 ~0 ~1 {name:"restworld:material_${material}",mod
 %if i == len(materials) - 1:
 ${enchant(False)}
 ${enchant(True)}
+
+execute if score turtle_helmet funcs matches 1 run data modify entity @e[tag=armor_stand,limit=1] ArmorItems[3].id set value 'turtle_helmet'
+execute if score turtle_helmet funcs matches 1 run data modify entity @e[tag=armor_helmet,limit=1] Item.id set value 'turtle_helmet'
+
+execute if score elytra funcs matches 1 run data modify entity @e[tag=armor_stand,limit=1] ArmorItems[2].id set value 'elytra'
+execute if score elytra funcs matches 1 run data modify entity @e[tag=armor_chestplate,limit=1] Item.id set value 'elytra'
 %endif
 </%base:loop>
 

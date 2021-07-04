@@ -1,0 +1,5 @@
+<%namespace name="base" file="../base.mcftmpl"/>
+
+${base.remove('tag=armor_horse')}
+execute at @e[tag=basic_home] run function restworld:materials/basic_cur
+execute at @e[tag=basic_home] run function restworld:materials/basic_finish_main
