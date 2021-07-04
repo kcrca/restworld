@@ -5,6 +5,7 @@
 
 <%base:loop collection="${range(0, 25)}" args="when,i,thing">
 % for instrument in instruments:
-${when(i, as_prefix=True)} if score instrument funcs matches ${loop.index} run setblock ~0 ~3 ~0 note_block[note=${thing},instrument=${instrument}]
+${when(i, as_prefix=True)} if score instrument funcs matches ${loop.index} if score note_powered funcs matches 0 run setblock ~0 ~3 ~0 note_block[note=${thing},instrument=${instrument},powered=false]
+${when(i, as_prefix=True)} if score instrument funcs matches ${loop.index} if score note_powered funcs matches 1 run setblock ~0 ~3 ~0 note_block[note=${thing},instrument=${instrument},powered=true]
 % endfor
 </%base:loop>

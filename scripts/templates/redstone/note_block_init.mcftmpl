@@ -42,3 +42,5 @@ ${sign_local_nbt(1, 'scoreboard players set instrument funcs %d' % i, thing[0])}
 ${sign_local_nbt(2, 'execute at @e[tag=note_block_home] run setblock ~0 ~2 ~0 %s' % thing[1].id, '(%s)' % thing[1].name)}, \
 } destroy
 %endfor
+
+${base.label(0, 2, 1, 'Powered')}
