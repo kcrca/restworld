@@ -14,7 +14,7 @@ if hunter == 'Peace':
 %>
 ${when(i)} setblock ~-2 ~${y} ~${z} air
 ${when(i)} setblock ~-2 ~${y} ~${z} oak_wall_sign[facing=east]{\
-    ${sign_nbt(0, 'execute at @e[tag=monitor_home] run fill ~-12 ~2 ~-12 ~12 ~2 ~12 %s' % ('water' if wet else 'air'), '', name='controls')},\
+    ${sign_nbt(0, 'execute at @e[tag=monitor_home] run fill ~-12 ~4 ~-12 ~12 ~2 ~12 %s' % ('water' if wet else 'air'), '', name='controls')},\
     ${sign_nbt(1, 'execute at @e[tag=monitor_home] run data merge block ~2 ~0 ~0 {Command:"execute unless entity @e[tag=hunter] run %s"}' % hunter_cmd, hunter, name='controls')},\
     ${sign_nbt(2, 'execute at @e[tag=monitor_home] run data merge block ~3 ~0 ~0 {Command:"execute unless entity @e[tag=victim] run %s"}' % victim_cmd, vs, name='controls')},\
     ${sign_nbt(3, 'function restworld:arena/start_battle', victim, name='controls')}\
@@ -54,7 +54,7 @@ battles = (
     ('Cave Spider', 'Vindicator', '', 'Johnny:True'),
     ('Phantom', 'Rabbit', 'AX:1000,AY:110,AZ:-1000'),
     ('Parrot', 'Vindicator', '', 'Johnny:True'),
-    ('Axolotl', 'Guardian', '', ''),
+    ('Axolotl', 'Drowned', '', ''),
     ('Axolotl', 'Elder Guardian', '', ''),
 )
 if len(battles) % row_length != 0:
