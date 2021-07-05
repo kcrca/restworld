@@ -1,5 +1,5 @@
 <%namespace name="base"  file="../base.mcftmpl"/>\
-<% dusty = (Thing("Dragon Egg"), Thing("Scaffolding"), Thing("Sand"), Thing("Red Sand"), Thing("Gravel"), Thing("Green Concrete Powder")) %>
+<% dusty = (Thing("Dragon Egg"), Thing("Sand"), Thing("Red Sand"), Thing("Gravel"), Thing("Green Concrete Powder")) %>
 
 <%base:loop collection="${dusty}" args="when,i,thing">
 ${when(i)} fill ~-2 ~5 ~-2 ~2 ~5 ~2 ${thing.full_id()}
