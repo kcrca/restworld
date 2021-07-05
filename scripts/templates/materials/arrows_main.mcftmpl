@@ -11,5 +11,5 @@
 kill @e[tag=arrow]
 <%base:loop collection="${arrows}" args="when,i,thing">
 ${when(i)} summon ${thing.full_id()} ~0 ~3 ~0.25 {Tags:[arrow],NoGravity:True${',Color:127,CustomPotionColor:127,' if i == 2 else ''}}
-${when(i)} data merge block ~-1 ~3 ~0 {Text2:${text(thing.name)}}
+${when(i)} data merge block ~1 ~2 ~0 {Text2:${text(thing.name)}}
 </%base:loop>

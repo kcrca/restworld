@@ -17,5 +17,5 @@ radius = 4
     f = -32768 if i == 0 else points[i - 1]
 %>\
 ${when(i)} summon experience_orb ~0 ~3 ~0 {Value:${p},Age:${6000-40}}
-${when(i)} data merge block ~-1 ~3 ~0 {Text3:${text("Size: %d" % (i + 1))},Text4:${text("%d - %d" % (f, p))}}
+${when(i)} data merge block ~1 ~2 ~0 {Text3:${text("Size: %d" % (i + 1))},Text4:${text("%d - %d" % (f, p))}}
 </%base:loop>
