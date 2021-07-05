@@ -1,2 +1,1 @@
-function restworld:friendlies/no_saddles
 kill @e[type=leash_knot]
