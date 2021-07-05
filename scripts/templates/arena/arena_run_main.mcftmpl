@@ -40,7 +40,7 @@ battles = (
     ('Piglin Brute', 'Vindicator', 'HandItems:[{id:golden_axe,Count:1}],IsImmuneToZombification:True', armed_johnny),
     ('Witch', 'Snow Golem'),
     ('Wolf', 'Sheep'),
-    ('Goat', 'Sheep', 'IsScreamingGoat:True', 'NoAI:True'),
+    ('Goat', 'Sheep', 'IsScreamingGoat:True'),
     ('Fox', 'Chicken'),
     ('Ocelot', 'Chicken'),
     ('Cat', 'Rabbit'),
