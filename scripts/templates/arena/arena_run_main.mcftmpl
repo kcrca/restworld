@@ -6,6 +6,23 @@
 
 <%def name="arena_sign(y, z, hunter, victim, hunter_nbt=None, victim_nbt=None, wet=False, when=None, i=None)">
 <%
+nbts = {
+    'Vindicator': 'Johnny:True,HandItems:[{id:iron_axe,Count:1},{}]',
+    'Pillager': 'HandItems:[{id:crossbow,Count:1},{}]',
+    'Drowned': 'HandItems:[{id:trident,Count:1}]',
+    'Wither Skeleton': 'HandItems:[{id:stone_sword,Count:1},{}]',
+    'Piglin': 'IsImmuneToZombification:True,HandItems:[{id:golden_sword,Count:1},{}]',
+    'Skeleton': 'HandItems:[{id:bow,Count:1}],ArmorItems:[{id:iron_boots,Count:1,tag:{RepairCost:1,Enchantments:[{lvl:9,id:protection}]}},{},{},{}]',
+    'Stray': 'HandItems:[{id:bow,Count:1}],ArmorItems:[{id:iron_boots,Count:1,tag:{RepairCost:1,Enchantments:[{lvl:9,id:protection}]}},{},{},{}]',
+    'Piglin Brute': 'HandItems:[{id:golden_axe,Count:1}],IsImmuneToZombification:True',
+    'Goat': 'IsScreamingGoat:True',
+    'Hoglin': 'IsImmuneToZombification:True',
+    'Zombified Piglin': 'HandItems:[{id:golden_sword,Count:1}]',
+    'Panda': 'MainGene:aggressive',
+    'Phantom': 'AX:1000,AY:110,AZ:-1000',
+}
+hunter_nbt = nbts.get(hunter, None)
+victim_nbt = nbts.get(victim, None)
 hunter_cmd = 'execute if score hunter_count funcs < arena_count funcs at @e[tag=hunter_home] run summon %s ~0 ~2 ~0 {Tags:[battler,hunter]%s}' % (Thing(hunter).id, ',%s' % hunter_nbt if hunter_nbt else '')
 victim_cmd = 'execute if score victim_count funcs < arena_count funcs at @e[tag=victim_home] run summon %s ~0 ~2 ~0 {Tags:[battler,victim]%s}' % (Thing(victim).id, ',%s' % victim_nbt if victim_nbt else '')
 vs = 'vs.'
@@ -23,39 +40,38 @@ ${when(i)} setblock ~-2 ~${y} ~${z} oak_wall_sign[facing=east]{\
 <%
 import sys
 
-armed_johnny = 'Johnny:True,HandItems:[{id:iron_axe,Count:1},{}]'
 row_length = 5
 battles = (
     ('Evoker', 'Iron Golem'),
-    ('Vindicator', 'Snow Golem', armed_johnny),
-    ('Pillager', 'Snow Golem', 'HandItems:[{id:crossbow,Count:1},{}]'),
+    ('Vindicator', 'Snow Golem'),
+    ('Pillager', 'Snow Golem'),
     ('Illusioner', 'Snow Golem'),
-    ('Drowned', 'Snow Golem', 'HandItems:[{id:trident,Count:1}]'),
-    ('Wither Skeleton', 'Piglin', 'HandItems:[{id:stone_sword,Count:1},{}]', 'IsImmuneToZombification:True,HandItems:[{id:golden_sword,Count:1},{}]'),
-    ('Skeleton', 'Iron Golem', 'HandItems:[{id:bow,Count:1}],ArmorItems:[{id:iron_boots,Count:1,tag:{RepairCost:1,Enchantments:[{lvl:9,id:protection}]}},{},{},{}]'),
+    ('Drowned', 'Snow Golem'),
+    ('Wither Skeleton', 'Piglin'),
+    ('Skeleton', 'Iron Golem'),
     ('Shulker', 'Snow Golem'),
-    ('Stray', 'Iron Golem', 'HandItems:[{id:bow,Count:1}],ArmorItems:[{id:iron_boots,Count:1,tag:{RepairCost:1,Enchantments:[{lvl:9,id:protection}]}},{},{},{}]'),
-    ('Wither', 'Iron Golem'),
+    ('Stray', 'Iron Golem'),
+    ('Wither', 'Pillager'),
     ('Blaze', 'Snow Golem'),
-    ('Piglin Brute', 'Vindicator', 'HandItems:[{id:golden_axe,Count:1}],IsImmuneToZombification:True', armed_johnny),
+    ('Piglin Brute', 'Vindicator'),
     ('Witch', 'Snow Golem'),
     ('Wolf', 'Sheep'),
-    ('Goat', 'Sheep', 'IsScreamingGoat:True'),
+    ('Goat', 'Sheep'),
     ('Fox', 'Chicken'),
     ('Ocelot', 'Chicken'),
     ('Cat', 'Rabbit'),
     ('Ravager', 'Iron Golem'),
-    ('Polar Bear', 'Vindicator', '', armed_johnny),
-    ('Hoglin', 'Vindicator', 'IsImmuneToZombification:True', armed_johnny),
-    ('Zoglin', 'Vindicator', '', armed_johnny),
-    ('Zombified Piglin', 'Vindicator', 'HandItems:[{id:golden_sword,Count:1}]', armed_johnny),
-    ('Panda', 'Vindicator', 'MainGene:aggressive', 'Johnny:True'),
-    ('Spider', 'Vindicator', '', 'Johnny:True'),
-    ('Cave Spider', 'Vindicator', '', 'Johnny:True'),
-    ('Phantom', 'Rabbit', 'AX:1000,AY:110,AZ:-1000'),
-    ('Parrot', 'Vindicator', '', 'Johnny:True'),
-    ('Axolotl', 'Drowned', '', ''),
-    ('Axolotl', 'Elder Guardian', '', ''),
+    ('Polar Bear', 'Vindicator'),
+    ('Hoglin', 'Vindicator'),
+    ('Zoglin', 'Vindicator'),
+    ('Zombified Piglin', 'Vindicator'),
+    ('Panda', 'Vindicator'),
+    ('Spider', 'Vindicator'),
+    ('Cave Spider', 'Vindicator'),
+    ('Phantom', 'Rabbit'),
+    ('Parrot', 'Vindicator'),
+    ('Axolotl', 'Drowned'),
+    ('Axolotl', 'Elder Guardian'),
 )
 if len(battles) % row_length != 0:
     sys.stderr.write('Row length (%d) is not a multiple of battle count (%d)\n' % (row_length, len(battles)))
