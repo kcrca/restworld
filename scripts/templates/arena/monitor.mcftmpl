@@ -1,7 +1,7 @@
-<%def name="monitor(player)">
-execute unless entity @e[tag=${player}] run scoreboard players set place_battlers funcs 1
-scoreboard players set ${player}_count funcs 0
-execute as @e[tag=${player}] run scoreboard players add ${player}_count funcs 1
+<%def name="monitor(which)">
+execute unless entity @e[tag=${which}] run scoreboard players set place_battlers funcs 1
+scoreboard players set ${which}_count funcs 0
+execute as @e[tag=${which}] run scoreboard players add ${which}_count funcs 1
 </%def>
 
 ${monitor('hunter')}

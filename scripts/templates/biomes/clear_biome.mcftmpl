@@ -1,13 +1,18 @@
 <%namespace file="biome_base.mcftmpl" import="*"/>
 
-<%def name="clear(biome, prefix, i, x, z, handback)">
+<%def name="clear(biome, prefix, i, x, y, z, handback)">
 data merge block ~${x} ~1 ~${z} {name:"restworld:air",mode:LOAD}
 </%def>
 
+## Currently nothing above this level has liquid, but if that changes, this should change
 fill ~-2 ~-4 ~-2 ~-1 ~42 ~66 air replace #restworld:liquid
 fill ~-2 ~-4 ~-2 ~66 ~42 ~-1 air replace #restworld:liquid
 fill ~-2 ~-4 ~65 ~65 ~42 ~64 air replace #restworld:liquid
 fill ~64 ~-4 ~-2 ~65 ~42 ~65 air replace #restworld:liquid
+fill ~0 ~34 ~0 ~31 ~65 ~31 air
+fill ~32 ~34 ~0 ~63 ~65 ~31 air
+fill ~0 ~34 ~32 ~31 ~65 ~63 air
+fill ~32 ~34 ~32 ~63 ~65 ~63 air
 
 ${load_biome(clear, 'clear')}
 ${load_biome(trigger, 'trigger')}

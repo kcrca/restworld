@@ -42,10 +42,11 @@ import sys
 
 row_length = 5
 battles = (
-    ('Evoker', 'Iron Golem'),
     ('Vindicator', 'Snow Golem'),
     ('Pillager', 'Snow Golem'),
     ('Illusioner', 'Snow Golem'),
+    ('Evoker', 'Iron Golem'),
+    ('Vex', 'Snow Golem'),
     ('Drowned', 'Snow Golem'),
     ('Wither Skeleton', 'Piglin'),
     ('Skeleton', 'Iron Golem'),
@@ -71,7 +72,6 @@ battles = (
     ('Phantom', 'Rabbit'),
     ('Parrot', 'Vindicator'),
     ('Axolotl', 'Drowned'),
-    ('Axolotl', 'Elder Guardian'),
 )
 if len(battles) % row_length != 0:
     sys.stderr.write('Row length (%d) is not a multiple of battle count (%d)\n' % (row_length, len(battles)))
