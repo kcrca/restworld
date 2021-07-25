@@ -1,14 +1,14 @@
 <%def name="if_user_in(world)">\
-execute in ${world} run execute as @p[sort=nearest,distance=..100,limit=1] in overworld run\
+execute in ${world} as @p in overworld run\
 </%def>\
 
 ## In the overworld, go to the middle
 ${if_user_in('overworld')} tp @p 0 101 0 facing 0 101 10
 
 ## In the nether, go directly in front of the nether portal
-${if_user_in('the_nether')} tp @p 54 101 0 facing 50 102 0
+${if_user_in('the_nether')} tp @p 57 101 -5 facing 50 102 -5
 
 ## In the end, go to the end portals
-${if_user_in('the_end')} tp @p 5 102 83 facing 8 102 83
+${if_user_in('the_end')} tp @s 12 102 76 facing 12 102 83
 
 execute in overworld run weather clear
