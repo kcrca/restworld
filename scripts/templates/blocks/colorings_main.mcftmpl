@@ -75,7 +75,7 @@ cnt = 0
 %>
 %if is_plain:
 ${when(i)} ${base.remove("tag=%s_horse" % var)}
-${when(i)} summon horse ~-10.0 ~2 ~4.8 {Variant:5,Tags:[${var}_horse,${var}_item,${var}_names],ArmorItem:{id:leather_horse_armor,Count:1},Rotation:[355f,0f],Tame:true,NoAI:true,Silent:true}
+${when(i)} summon horse ~1.2 ~2 ~4.8 {Variant:5,Tags:[${var}_horse,${var}_item,${var}_names],ArmorItem:{id:leather_horse_armor,Count:1},Rotation:[30f,0f],Tame:true,NoAI:true,Silent:true}
 %endif
 ${when(i)} data merge entity @e[tag=${var}_armor_stand,limit=1] {ArmorItems:[{id:leather_boots,Count:1${leather_color}},{id:leather_leggings,Count:1${leather_color}},{id:leather_chestplate,Count:1${leather_color}},{id:leather_helmet,Count:1${leather_color}}]}
 ${when(i)} data merge entity @e[tag=${var}_horse,limit=1] {ArmorItem:{id:leather_horse_armor,Count:1${horse_leather_color}}}
