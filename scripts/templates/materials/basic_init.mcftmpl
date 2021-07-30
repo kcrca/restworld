@@ -14,12 +14,12 @@ summon armor_stand ~${+0.6 + i * 0.7} ~2.0 ~0 {Tags:[material_${3-i},material_st
 fill ~-3 ~2 ~2 ~-3 ~5 ~2 stone
 
 kill @e[tag=armor_frame]
-summon item_frame ~-3 ~2 ~1 {Facing:2,Tags:[armor_boots,armor_frame]}
-summon item_frame ~-3 ~3 ~1 {Facing:2,Tags:[armor_leggings,armor_frame]}
-summon item_frame ~-3 ~4 ~1 {Facing:2,Tags:[armor_chestplate,armor_frame]}
-summon item_frame ~-3 ~5 ~1 {Facing:2,Tags:[armor_helmet,armor_frame]}
+summon item_frame ~-3 ~2 ~1 {Facing:2,Tags:[armor_boots,enchantable,armor_frame]}
+summon item_frame ~-3 ~3 ~1 {Facing:2,Tags:[armor_leggings,enchantable,armor_frame]}
+summon item_frame ~-3 ~4 ~1 {Facing:2,Tags:[armor_chestplate,enchantable,armor_frame]}
+summon item_frame ~-3 ~5 ~1 {Facing:2,Tags:[armor_helmet,enchantable,armor_frame]}
 summon item_frame ~3 ~2 ~1 {Facing:2,Tags:[armor_gem,armor_frame]}
-summon item_frame ~4 ~4 ~1 {Facing:2,Tags:[armor_horse_frame,armor_frame]}
+summon item_frame ~4 ~4 ~1 {Facing:2,Tags:[armor_horse_frame,enchantable,armor_frame]}
 
 ${base.label(5, 2, -2, "Saddle")}
 ${base.label(3, 2, -2, "Enchanted")}

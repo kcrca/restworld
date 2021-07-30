@@ -17,7 +17,7 @@ if on:
 else:
     value, act, arg = 0, 'remove', ''
 %>
-execute if score enchanted funcs matches ${value} as @e[tag=armor_frame] run data ${act} entity @s Item.tag ${arg}
+execute if score enchanted funcs matches ${value} as @e[tag=enchantable] run data ${act} entity @s Item.tag ${arg}
 execute if score enchanted funcs matches ${value} as @e[tag=armor_horse] run data ${act} entity @s ArmorItem.tag ${arg}
 %for a in range(0, 4):
 execute if score enchanted funcs matches ${value} as @e[tag=material_static] run data ${act} entity @s ArmorItems[${a}].tag ${arg}
