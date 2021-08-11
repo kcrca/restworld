@@ -525,7 +525,7 @@ def main():
     func_dir = os.path.join(src_dir, 'functions')
     lookup = TemplateLookup(directories=['.'])
     tmpls = {}
-    for f in ("home", "group", "tick") + incr_funcs:
+    for f in ("home", "group", "tick", "goto") + incr_funcs:
         tmpls[f] = Template(filename="templates/%s%s" % (f, tmpl_suffix), lookup=lookup)
 
     class Room:
@@ -563,6 +563,11 @@ def main():
             if which in speeds and not os.path.exists(tmpl_path.replace("_%s." % which, "_cur.")):
                 rendered = render_tmpl(tmpl, var, suppress_loop=True, room=self.name)
                 write_function(self.func_dir, "%s_cur" % var, rendered)
+
+            # pos = "foo"
+            # x, y, z = (int(x) for x in pos.split(r'[\~ ]+'))
+            if func.endswith('_room_init'):
+                write_function(self.func_dir, "_goto", tmpls["goto"].render(room=self.name))
 
             if which and which not in misc:
                 self.vars.add(var)

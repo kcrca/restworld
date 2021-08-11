@@ -11,13 +11,33 @@ ${scribe(r"\\nClock Speed:\\n      ")}, \
 ${action(r"<<", "Slower Clock Speed", "function restworld:center/slower_clocks")}, ${scribe("   ")}, \
 ${action(r"\\u27f2", "Reset Clock Speed", "function restworld:center/reset_clocks")}, ${scribe("   ")}, \
 ${action(r">>", "Faster Clock Speed", "function restworld:center/faster_clocks")}, ${scribe(r"\\n")}, \
-${scribe(r"\\nLinks:\\n   ")}, \
+${scribe(r"\\nPlaces:\\n   ")}, \
 ${action(r"Home", "Starting Point", "function restworld:global/go_home")}, ${scribe(r"\\n   ")}, \
 ${action(r"Photo Shoot", "Scenic View", "function restworld:global/go_photo")}, ${scribe(r"\\n   ")}, \
 ${action(r"Battle Arena", "Battle Arena", "function restworld:arena/go_arena")}, ${scribe(r"\\n   ")}, \
 ${action(r"Biome Sampler", "Biome Sampler", "function restworld:global/go_biomes")}, ${scribe(r"\\n   ")}, \
 ${action(r"Nether Home", "Nether Starting Point", "function restworld:global/go_nether_home")}, ${scribe(r"\\n   ")}, \
 ${action(r"End Home", "End Starting Point", "function restworld:global/go_end_home")}, ${scribe(r"\\n   ")} \
+]","[\"\", \
+${scribe(r"Rooms: ")}, \
+${action(r"Blocks", "Go to Blocks", "function restworld:blocks/_goto")}, ${scribe(r", ")}, \
+${action(r"Materials", "Go to Materials", "function restworld:materials/_goto")}, ${scribe(r", ")}, \
+${action(r"DIY:", "Go to DIY:", "function restworld:diy/_goto")}, ${scribe(r", ")}, \
+${action(r"Plants", "Go to Plants", "function restworld:plants/_goto")}, ${scribe(r", ")}, \
+${action(r"Ender Dragon", "Go to Ender Dragon", "function restworld:enders/_goto")}, ${scribe(r", ")}, \
+${action(r"Redstone", "Go to Redstone", "function restworld:redstone/_goto")}, ${scribe(r", ")}, \
+${action(r"Paintings", "Go to Paintings", "function restworld:paintings/_goto")}, ${scribe(r", ")}, \
+${action(r"Particles", "Go to Particles", "function restworld:particles/_goto")}, ${scribe(r", ")}, \
+${action(r"Wither", "Go to Wither", "function restworld:wither/_goto")}, ${scribe(r", ")}, \
+${action(r"Banners &", "Go to Banners &", "function restworld:banners/_goto")}, ${scribe(r", ")}, \
+${action(r"Time", "Go to Time", "function restworld:time/_goto")}, ${scribe(r", ")}, \
+${action(r"Villagers", "Go to Villagers", "function restworld:friendlies/_goto")}, ${scribe(r", ")}, \
+${action(r"GUI", "Go to GUI", "function restworld:containers/_goto")}, ${scribe(r", ")}, \
+${action(r"Fonts", "Go to Fonts", "function restworld:font/_goto")}, ${scribe(r", ")}, \
+${action(r"Aquatic", "Go to Aquatic", "function restworld:acquatic/_goto")}, ${scribe(r", ")}, \
+${action(r"Mob Effects", "Go to Mob Effects", "function restworld:effects/_goto")}, ${scribe(r", ")}, \
+${action(r"End & Nether", "Go to End & Nether", "function restworld:end_monsters/_goto")}, ${scribe(r", ")}, \
+${action(r"Monsters", "Go to Monsters", "function restworld:monsters/_goto")} \
 ]","[\"\", \
 ${scribe(r"Credits:\\n\\n")}, \
 ${scribe(r"BlueMeanial:\\n", {"bold": True})}, \
