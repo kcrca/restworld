@@ -6,7 +6,7 @@ scoreboard players set ${v} funcs 0
 %endfor
 
 %if which == "init":
-kill @e[tag=${room}]
+tp @e[tag=${room}] @e[tag=death,limit=1]
 %endif
 %endif
 
