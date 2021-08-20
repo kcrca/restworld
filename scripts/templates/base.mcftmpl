@@ -174,7 +174,10 @@ scoreboard players set ${var}_goto_rot ${rot}
 kill @e[tag=${var}_anchor]
 summon armor_stand ~0 ~2 ~0 {PersistenceRequired:True,Rotation:[${rot}f,0f],Tags:[${var}_anchor,anchor],Invisible:true,Small:true}
 <%
-    room_name = lines[0].replace(',', '')
-    print(r'${action(r"%s", "Go to %s", "function restworld:%s/_goto")}, ${scribe(r", ")}, %s' % (room_name, room_name, var.replace('_room', ''), '\\'))
+    room_name = lines[0]
+    if room_name.endswith('&'):
+	room_name += ' ' + lines[1]
+    room_name = room_name.replace(',', '').replace(':', '')
+    print(r'${action(r"%s", "Go to %s room", "function restworld:%s/_goto")}, ${scribe(r", ")}, %s' % (room_name, room_name.lower(), var.replace('_room', ''), '\\'))
 %>
 </%def>
