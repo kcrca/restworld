@@ -71,8 +71,8 @@ ${when(i)} summon boat ~-0.5 ~1.525 ~2 {Type:${id},CustomName:"\"${woodlike[i]}\
 
 ${when(i)} setblock ~1 ~2 ~-3 ${id}_planks
 ${when(i)} setblock ~1 ~3 ~-3 ${id}_slab
-${when(i)} setblock ~1 ~2 ~-2 ${id}_trapdoor[facing=south,open=true]
-${when(i)} setblock ~1 ~1 ~-1 ${id}_trapdoor[facing=east,open=true,half=top]
+${when(i)} setblock ~1 ~2 ~-2 ${id}_trapdoor[facing=east,open=true]
+${when(i)} setblock ~1 ~1 ~-1 ${id}_trapdoor[facing=south,open=true,half=top]
 ${when(i)} setblock ~2 ~2 ~-2 ${id}_trapdoor[facing=south,open=false]
 ${when(i)} setblock ~2 ~1 ~-1 ${id}_trapdoor[facing=west,open=false,half=top]
 ${when(i)} fill ~4 ~2 ~-3 ~4 ~3 ~-3 ${id}_planks
