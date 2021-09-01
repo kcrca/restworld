@@ -1,5 +1,5 @@
 <%def name="if_user_in(world)">\
-execute in ${world} as @p in overworld run\
+execute as @p at @s[nbt={Dimension:"minecraft:${world}"}] in overworld run\
 </%def>\
 
 ## In the overworld, go to the middle
