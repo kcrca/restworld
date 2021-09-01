@@ -42,7 +42,7 @@ import sys
 
 row_length = 5
 battles = (
-    ('Vindicator', 'Snow Golem'),
+    ('Vindicator', 'Iron Golem'),
     ('Pillager', 'Snow Golem'),
     ('Illusioner', 'Snow Golem'),
     ('Evoker', 'Iron Golem'),
@@ -103,6 +103,6 @@ ${sign_nbt(2, 'execute at @e[tag=controls_home] run function restworld:%s/%s_cur
 
 %for s in range(0, row_length):
 <% args = thing[s] + (None,) * (4 - len(thing[s])) %>\
-${arena_sign(2, -end + 1 + s, args[0], args[1], hunter_nbt=args[2], victim_nbt=args[3], wet=args[0] == 'Axolotl', when=when, i=i)}
+${arena_sign(2, end - 1 - s, args[0], args[1], hunter_nbt=args[2], victim_nbt=args[3], wet=args[0] == 'Axolotl', when=when, i=i)}
 %endfor
 </%base:loop>
