@@ -1,5 +1,4 @@
 <%def name="connect(src, sx, sz)">
-say ${var}
 %for x in range(-12, 13):
 %  for y in range(0, 5):
 %    for z in range(-12, 13):
