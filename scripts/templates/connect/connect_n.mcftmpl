@@ -1,0 +1,2 @@
+<%namespace import="*" file="connect_base.mcftmpl"/>
+${connect('grass_block', 0, -1)}

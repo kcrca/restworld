@@ -1,0 +1,2 @@
+<%namespace import="*" file="connect_base.mcftmpl"/>
+${connect('dripstone_block', -1, -1)}

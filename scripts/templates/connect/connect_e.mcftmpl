@@ -1,0 +1,2 @@
+<%namespace import="*" file="connect_base.mcftmpl"/>
+${connect('redstone_ore', 1, 0)}

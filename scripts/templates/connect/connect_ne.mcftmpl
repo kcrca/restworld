@@ -1,0 +1,2 @@
+<%namespace import="*" file="connect_base.mcftmpl"/>
+${connect('cobblestone', 1, -1)}
