@@ -12,3 +12,4 @@ ${monitor('hunter', 'victim')}
 ${monitor('victim', 'hunter')}
 
 kill @e[type=item,distance=..50]
+kill @e[type=experience_orb,distance=..50]

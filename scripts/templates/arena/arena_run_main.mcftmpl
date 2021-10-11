@@ -23,7 +23,7 @@ nbts = {
 }
 hunter_nbt = nbts.get(hunter, None)
 victim_nbt = nbts.get(victim, None)
-hunter_cmd = 'execute if score hunter_count funcs < arena_count funcs at @e[tag=hunter_home] run summon %s ~0 ~2 ~0 {Tags:[battler,hunter]%s}' % (Thing(hunter).id, ',%s' % hunter_nbt if hunter_nbt else '')
+hunter_cmd = 'execute if score hunter_count funcs < arena_count funcs at @e[tag=hunter_home] run summon %s ~0 ~2 ~0 {Tags:[battler,hunter]%s,Rotation:[180f,0f]}' % (Thing(hunter).id, ',%s' % hunter_nbt if hunter_nbt else '')
 victim_cmd = 'execute if score victim_count funcs < arena_count funcs at @e[tag=victim_home] run summon %s ~0 ~2 ~0 {Tags:[battler,victim]%s}' % (Thing(victim).id, ',%s' % victim_nbt if victim_nbt else '')
 vs = 'vs.'
 if hunter == 'Peace':
