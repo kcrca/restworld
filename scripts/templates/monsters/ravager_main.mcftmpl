@@ -12,6 +12,6 @@ ${base.remove("tag=ravager")}
 ${base.mobs('Ravager', when=when, i=i, do_adult=True)}
 %else:
 <% t = Thing(thing) %>
-${base.mobs('Ravager', when=when, i=i, do_adult=True, nbt='Passengers:[{id:"%s",CustomName:%s,CustomNameVisible:True,Tags:[ravager,monsters],Rotation:[270f,0f],PersistenceRequired:True,NoAI:True}]' % (t.id, text("Ravager & %s" % t.name)))}
+${base.mobs('Ravager', when=when, i=i, do_adult=True, nbt='Passengers:[{id:"%s",CustomName:%s,Tags:[ravager,monsters],Rotation:[270f,0f],PersistenceRequired:True,NoAI:True}]' % (t.id, text("Ravager & %s" % t.name)))}
 %endif
 </%base:loop>
