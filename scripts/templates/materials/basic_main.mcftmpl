@@ -50,8 +50,8 @@ ${when(i)} data merge entity @e[tag=armor_gem,limit=1] {Item:{id:${gem},Count:1}
 ${when(i)} execute unless entity @e[tag=armor_horse,distance=..10] run summon horse ~4.5 ~2 ~0.5 {Variant:1,Tame:True,NoAI:True,Silent:True,Tags:[armor_horse,material_static],Rotation:[180f,0f]}
 ${when(i)} data merge entity @e[tag=armor_horse,limit=1,sort=nearest] {ArmorItem:{id:${armor}_horse_armor,Count:1}}
 ${when(i)} data merge entity @e[tag=armor_horse_frame,limit=1] {Item:{id:${armor}_horse_armor,Count:1},ItemRotation:0}
-${when(i)} execute if score horse_saddle funcs matches 1 run item replace entity 4cb056e5-d858-4ec1-866f-d549f867dee3 horse.saddle with saddle
-${when(i)} execute if score horse_saddle funcs matches 0 run item replace entity 4cb056e5-d858-4ec1-866f-d549f867dee3 horse.saddle with air
+${when(i)} execute if score horse_saddle funcs matches 1 run item replace entity @e[tag=armor_horse] horse.saddle with saddle
+${when(i)} execute if score horse_saddle funcs matches 0 run item replace entity @e[tag=armor_horse] horse.saddle with air
 %else:
 ${when(i)} data merge entity @e[tag=armor_horse_frame,limit=1] {Item:{id:air,Count:1}}
 ${when(i)} execute if entity @e[tag=armor_horse,distance=..10] run teleport @e[tag=armor_horse] @e[tag=death,limit=1]
