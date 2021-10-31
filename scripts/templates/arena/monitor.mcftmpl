@@ -5,7 +5,7 @@ scoreboard players set ${which}_count funcs 0
 execute as @e[tag=${which}] run scoreboard players add ${which}_count funcs 1
 
 scoreboard players set ${which}_close funcs 0
-execute at @e[tag=${other}_home] positioned ~-2 ~0 ~-2 as @e[tag=${which},dx=4,dy=10,dz=4] run scoreboard players add ${which}_close funcs 1
+execute at @e[tag=${other}_home] positioned ~-2 ~0 ~-2 as @e[tag=${which},dx=4,dy=5,dz=4] run scoreboard players add ${which}_close funcs 1
 </%def>
 
 ${monitor('hunter', 'victim')}
