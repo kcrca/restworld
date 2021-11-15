@@ -7,7 +7,7 @@ world=${1:-RestWorld}
 dst_dir="/Users/kcrca/Library/Application Support/minecraft/saves/$world/datapacks/restworld/data/restworld"
 rm -rf functions
 mkdir functions
-/usr/local/bin/python3 /Users/kcrca/restworld/restworld/main.py
+python3 /Users/kcrca/restworld/restworld/main.py
 (
     cd tags/blocks
     for script in *.sh; do
