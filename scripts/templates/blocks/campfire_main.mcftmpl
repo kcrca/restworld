@@ -3,7 +3,7 @@
 <%
     types = (
 	Thing("Campfire", block_state="lit=true"), Thing("Campfire|Unlit", id="campfire", block_state="lit=false"),
-	Thing("Soul Campfire", block_state="lit=true"), Thing("Soul Campfire|Unlit", id="campfire", block_state="lit=false"),
+	Thing("Soul Campfire", block_state="lit=true"), Thing("Soul Campfire|Unlit", id="soul_campfire", block_state="lit=false"),
     )
 %>
 
