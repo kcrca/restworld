@@ -1,2 +1,2 @@
 <%namespace file="particle_base.mcftmpl" import="*"/>\
-${main_clock()} particle light ~0 ~2 ~0 0 0 0 0 1
+${main_clock()} particle block_marker light ~0 ~2 ~0 0 0 0 0 1
