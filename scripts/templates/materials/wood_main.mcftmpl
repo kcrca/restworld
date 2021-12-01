@@ -60,6 +60,16 @@ ${when(i)} setblock ~4 ~3 ~1 ${id}_door[facing=west,half=upper,hinge=right]
 ${when(i)} setblock ~4 ~2 ~2 ${id}_door[facing=west,half=lower]
 ${when(i)} setblock ~4 ~3 ~2 ${id}_door[facing=west,half=upper]
 
+%if id == 'dark_oak':
+${when(i)} setblock ~4 ~2 ~0 cartography_table
+%elif id == 'oak':
+${when(i)} setblock ~4 ~2 ~0 lectern[facing=west]
+%elif id == 'birch':
+${when(i)} setblock ~4 ~2 ~0 fletching_table
+%else:
+${when(i)} setblock ~4 ~2 ~0 air
+%endif
+
 ${when(i)} setblock ~3 ~2 ~3 ${id}_wall_sign[facing=south]
 ${when(i)} data merge block ~3 ~2 ~3 {Text2:${text(woodlike[i])},Text3:${text("Wall Sign")}}
 ${when(i)} setblock ~-3 ~2 ~3 ${id}_sign[rotation=0]
