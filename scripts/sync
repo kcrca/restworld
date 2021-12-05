@@ -1,9 +1,7 @@
 #!/bin/sh
-set -x
-set -e
 cd `dirname $0`
-set -e
-world=${1:-RestWorld}
+version=$(cat version)
+world=RestWorld_${1:-$version}
 dst_dir="/Users/kcrca/Library/Application Support/minecraft/saves/$world/datapacks/restworld/data/restworld"
 rm -rf functions
 mkdir functions

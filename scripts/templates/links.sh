@@ -1,6 +1,7 @@
 #!/bin/sh
 cd $(dirname $0)
-world=${1:-RestWorld}
+version=$(cat ../version)
+world=RestWorld_${1:-$version}
 target="$HOME/clarity/home/saves/$world/datapacks/restworld/data/restworld/functions"
 if [ ! -d "$target" ]; then
     echo No such directory: $target 1>&2
