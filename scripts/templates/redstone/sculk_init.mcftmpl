@@ -1,0 +1,4 @@
+<%namespace name="base" file="../base.mcftmpl"/>
+
+setblock ~6 ~3 ~0 sculk_sensor
+${base.sign('~7 ~2 ~0', 'east', 2, 'Sculk Sensor')}
