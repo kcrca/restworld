@@ -16,16 +16,16 @@
     xp += ((5, 250),)
 
     trades = (
-	('emerald', 1, 'air', 1, 'pink_dye', 3, 0),
-	('diamond', 24, 'emerald', 20, 'diamond_sword', 1, 0),
-	('emerald', 3, 'air', 1, 'bubble_coral_block', 1, 1001),
-	('emerald', 1, 'air', 1, 'pumpkin_seeds', 1, 0),
-	('emerald', 1, 'air', 1, 'dandelion', 1, 0),
-	('emerald', 1, 'air', 1, 'red_tulip', 1, 0),
-	('emerald', 1, 'air', 1, 'red_dye', 3, 0),
-	('emerald', 1, 'air', 1, 'gunpowder', 1, 0),
-	('emerald', 1, 'air', 1, 'pink_dye', 3, 1001),
-	('emerald', 1, 'air', 1, 'orange_dye', 3, 0),
+	('carrot', 6, 'iron_hoe', 1, 'emerald', 2, 0),
+	('emerald', 1, 'air', 20, 'bread', 6, 1001),
+	('pumpkin', 6, 'air', 1, 'emerald', 1, 0),
+	('emerald', 1, 'air', 1, 'pumpkin_pie', 1, 0),
+	('melon', 4, 'air', 1, 'emerald', 1, 1001),
+	('emerald', 1, 'cocoa_beans', 1, 'cookie', 18, 0),
+	('emerald', 1, 'air', 1, 'cake', 1, 0),
+	('emerald', 1, 'air', 1, 'suspicious_stew', 1, 0),
+	('emerald', 1, 'air', 1, 'golden_carrot', 3, 1001),
+	('emerald', 1, 'melon', 1, 'glistering_melon_slice', 3, 0),
     )
     printf = lambda \
 	    *args: '{maxUses:1000,buy:{id:"%s",Count:%db},buyB:{id:"%s",Count:%db},sell:{id:"%s",Count:%db},xp:1,uses:%d}' % args
