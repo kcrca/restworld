@@ -1,4 +1,4 @@
 %for v in vars:
-scoreboard players remove ${v} funcs 1
+execute at @e[tag=${v}_home] run scoreboard players remove ${v} funcs 1
 %endfor
 function restworld:${room}/_cur

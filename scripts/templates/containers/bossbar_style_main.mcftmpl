@@ -1,0 +1,7 @@
+<%namespace name="base" file="../base.mcftmpl"/>
+<% styles = ('progress', 'notched_6', 'notched_10', 'notched_12', 'notched_20') %>
+
+<%base:loop collection="${styles}" args="when,i,thing">
+${when(i)} bossbar set restworld:bossbar style ${thing}
+${when(i)} data merge block ~0 ~2 ~0 {Text2:${text("Style: " + thing)}}
+</%base:loop>
