@@ -11,9 +11,6 @@
 	('emerald', 1, 'air', 1, 'gunpowder', 1, 0),
 	('emerald', 1, 'air', 1, 'pink_dye', 3, 1001),
 	('emerald', 1, 'air', 1, 'orange_dye', 3, 0),
-	('emerald', 5, 'air', 1, 'oak_sapling', 1, 0),
-	('emerald', 1, 'air', 1, 'orange_tulip', 1, 1001),
-	('emerald', 3, 'air', 1, 'packed_ice', 1, 0),
     )
     counts = [2, 7, 13]
     printf = lambda \
