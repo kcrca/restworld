@@ -12,7 +12,5 @@ ${base.label(-3, 2, 0, 'Style')}
 ${base.sign('~-2 ~2 ~0', 'west', 2, 'Style: progress')}
 ${base.label(-3, 2, 1, 'Style')}
 ${base.sign('~-2 ~2 ~1', 'west', 2, 'Value: 50')}
-%for f in ('color', 'style', 'variant'):
-scoreboard players set bossbar_${f}_on funcs 0
-%endfor
+scoreboard players set bossbar_which funcs 0
 function restworld:containers/bossbar_exit

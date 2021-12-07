@@ -4,10 +4,11 @@
 %if i == 0:
 ${when(0)} bossbar set restworld:bossbar visible true
 %for f in ('color', 'style', 'variant'):
-${when(0)} execute if score bossbar_${f}_on funcs matches 1 run function restworld:containers/bossbar_${f}_init
-${when(0)} execute at @e[tag=bossbar_${f}_home] run function restworld:containers/bossbar_${f}_cur
+${when(0)} execute if score bossbar_which funcs matches ${loop.index} at @e[tag=bossbar_home] run setblock ~-3 ~-1 ~${-1 + loop.index} redstone_block
+${when(0)} execute if score bossbar_which funcs matches ${loop.index} at @e[tag=bossbar_home] run setblock ~-3 ~-1 ~${-1 + loop.index} air
 %endfor
 %else:
 ${when(1)} bossbar set restworld:bossbar visible false
+${when(1)} kill @e[tag=bossbar_current]
 %endif
 </%base:loop>
