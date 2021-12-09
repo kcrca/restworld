@@ -1,0 +1,1 @@
+function restworld:arena/arena_run_cur

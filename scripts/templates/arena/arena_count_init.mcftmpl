@@ -1,0 +1,2 @@
+execute unless score ${var} funcs matches 1.. run scoreboard players set ${var} funcs 1
+function restworld:arena/${var}_cur
