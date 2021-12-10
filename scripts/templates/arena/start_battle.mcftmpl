@@ -1,4 +1,3 @@
-kill @e[tag=battler,distance=..100]
-%for mob in ('vex', 'trident', 'arrow'):
-kill @e[type=${mob},distance=..100]
-%endfor
+tag @a add arena_safe
+tag @e[type=armor_stand] add arena_safe
+kill @e[tag=!arena_safe,distance=..100]
