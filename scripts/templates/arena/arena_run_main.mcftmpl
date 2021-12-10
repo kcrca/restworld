@@ -52,7 +52,7 @@ if row_length % 2 == 0:
     sys.stderr.write("Row length(%d) is not odd" % row_length)
     sys.exit(1)
 
-battles = (
+battles = [
     ('Vindicator', 'Iron Golem'),
     ('Pillager', 'Snow Golem'),
     ('Illusioner', 'Snow Golem'),
@@ -87,7 +87,7 @@ battles = (
     ('Phantom', 'Rabbit'),
     ('Parrot', 'Vindicator'),
     ('Axolotl', 'Drowned'),
-)
+]
 
 ## Some set aisde for adding if we need them
 ##  ('Axolotl', 'Guardian'),
@@ -99,6 +99,8 @@ battles = (
 if len(battles) % stride_length != 0:
     sys.stderr.write('Row length (%d) is not a multiple of battle count (%d)\n' % (stride_length, len(battles)))
     sys.exit(1)
+
+battles.sort()
 
 chunks = []
 for i in range(0, len(battles), stride_length):
