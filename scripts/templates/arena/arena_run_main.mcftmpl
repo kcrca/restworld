@@ -28,8 +28,6 @@ victim_nbt = nbts.get(victim, None)
 hunter_cmd = 'execute if score hunter_count funcs < arena_count funcs at @e[tag=hunter_home] run summon %s ~0 ~2 ~0 {Tags:[battler,hunter]%s,Rotation:[180f,0f]}' % (Thing(hunter).id, ',%s' % hunter_nbt if hunter_nbt else '')
 victim_cmd = 'execute if score victim_count funcs < arena_count funcs at @e[tag=victim_home] run summon %s ~0 ~2 ~0 {Tags:[battler,victim]%s}' % (Thing(victim).id, ',%s' % victim_nbt if victim_nbt else '')
 vs = 'vs.'
-if hunter == 'Peace':
-    hunter_cmd = victim_cmd = vs = ''
 %>
 ${when(i)} setblock ~-2 ~${y} ~${z} air
 ${when(i)} setblock ~-2 ~${y} ~${z} oak_wall_sign[facing=east]{\
@@ -87,6 +85,8 @@ battles = [
     ('Phantom', 'Rabbit'),
     ('Parrot', 'Vindicator'),
     ('Axolotl', 'Drowned'),
+
+    #(None, 'Dolphin'),
 ]
 
 ## Some set aisde for adding if we need them
@@ -105,8 +105,6 @@ battles.sort()
 chunks = []
 for i in range(0, len(battles), stride_length):
     chunks.append(battles[i:i + stride_length])
-
-peace = ('Peace', ''),
 
 num_pages = int(len(battles) / stride_length)
 end = int(row_length / 2)

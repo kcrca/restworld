@@ -3,7 +3,6 @@
 scoreboard players set count_sign funcs 1
 scoreboard players set count_sign max 5
 scoreboard players set arena_run funcs 0
-scoreboard players set arena_peace funcs 0
 function restworld:arena/arena_run_cur
 
 ${base.label(1, 3, 0, "Go Home")}
