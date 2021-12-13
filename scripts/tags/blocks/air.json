@@ -1,7 +1,6 @@
 {
   "replace": false,
   "values": [
-    "air",
     "cave_air"
   ]
 }
