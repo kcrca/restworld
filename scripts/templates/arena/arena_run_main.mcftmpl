@@ -4,7 +4,7 @@
 ## This is NOT intended to be run on the clock. It is only called "_main" because that gives us a
 ## "_cur" function, which is useful when paging through the signs. Do not create the _home armor stand.
 
-<%def name="arena_sign(y, z, hunter, victim, hunter_nbt=None, victim_nbt=None, wet=False, when=None, i=None)">
+<%def name="arena_sign(y, z, hunter, victim, hunter_nbt=None, victim_nbt=None, when=None, i=None)">
 <%
 nbts = {
     'Slime': 'Size:3',
@@ -23,17 +23,29 @@ nbts = {
     'Panda': 'MainGene:aggressive',
     'Phantom': 'AX:1000,AY:110,AZ:-1000',
 }
+wet = False
+if hunter[-2:] == ':w':
+    wet = True
+    hunter = hunter[:-2]
 hunter_nbt = nbts.get(hunter, None)
 victim_nbt = nbts.get(victim, None)
-hunter_cmd = 'execute if score hunter_count funcs < arena_count funcs at @e[tag=hunter_home] run summon %s ~0 ~2 ~0 {Tags:[battler,hunter]%s,Rotation:[180f,0f]}' % (Thing(hunter).id, ',%s' % hunter_nbt if hunter_nbt else '')
-victim_cmd = 'execute if score victim_count funcs < arena_count funcs at @e[tag=victim_home] run summon %s ~0 ~2 ~0 {Tags:[battler,victim]%s}' % (Thing(victim).id, ',%s' % victim_nbt if victim_nbt else '')
+func_base = 'restworld:arena/%s' % hunter
+if victim == '':
+    hunter_incr = 'function %s_incr' % func_base
+    hunter_decr = 'function %s_decr' % func_base
+else:
+    hunter_incr = 'summon %s ~0 ~2 ~0 {Tags:[battler,hunter]%s,Rotation:[180f,0f]}' % (Thing(hunter).id, ',%s' % hunter_nbt if hunter_nbt else '')
+    hunter_decr = 'kill @e[tag=hunter,limit=1,sort=random,distance=..100]'
+hunter_incr_cmd = 'execute if score hunter_count funcs < arena_count funcs at @e[tag=hunter_home] run %s' % hunter_incr
+victim_incr_cmd = 'execute if score victim_count funcs < arena_count funcs at @e[tag=victim_home] run summon %s ~0 ~2 ~0 {Tags:[battler,victim]%s}' % (Thing(victim).id, ',%s' % victim_nbt if victim_nbt else '')
+hunter_decr_cmd = 'execute if score hunter_count funcs > arena_count funcs run %s' % 'kill @e[tag=hunter,limit=1,sort=random,distance=..100]' if len(victim) > 0 else 'function %s_decr' % func_base
 vs = 'vs.'
 %>
 ${when(i)} setblock ~-2 ~${y} ~${z} air
 ${when(i)} setblock ~-2 ~${y} ~${z} oak_wall_sign[facing=east]{\
     ${sign_nbt(0, 'execute at @e[tag=monitor_home] run fill ~-12 ~4 ~-12 ~12 ~2 ~12 %s' % ('water' if wet else 'air'), '', name='controls')},\
-    ${sign_nbt(1, 'execute at @e[tag=monitor_home] run data merge block ~2 ~0 ~0 {Command:"%s"}' % hunter_cmd, hunter, name='controls')},\
-    ${sign_nbt(2, 'execute at @e[tag=monitor_home] run data merge block ~3 ~0 ~0 {Command:"%s"}' % victim_cmd, vs, name='controls')},\
+    ${sign_nbt(1, 'execute at @e[tag=monitor_home] run data merge block ~2 ~0 ~0 {Command:"%s"}' % hunter_incr_cmd, hunter, name='controls')},\
+    ${sign_nbt(2, 'execute at @e[tag=monitor_home] run data merge block ~3 ~0 ~0 {Command:"%s"}' % victim_incr_cmd, vs, name='controls')},\
     ${sign_nbt(3, 'function restworld:arena/start_battle', victim, name='controls')}\
 }
 </%def>
@@ -47,6 +59,7 @@ if stride_length % num_rows != 0:
     sys.stderr.write('Stride length(%d) is not a multiple of the number of rows (%d)' % (stride_length, num_rows))
     sys.exit(1)
 if row_length % 2 == 0:
+    # Needed so we can center on the middle sign
     sys.stderr.write("Row length(%d) is not odd" % row_length)
     sys.exit(1)
 
@@ -84,9 +97,7 @@ battles = [
     ('Cave Spider', 'Snow Golem'),
     ('Phantom', 'Rabbit'),
     ('Parrot', 'Vindicator'),
-    ('Axolotl', 'Drowned'),
-
-    #(None, 'Dolphin'),
+    ('Axolotl:w', 'Drowned'),
 ]
 
 ## Some set aisde for adding if we need them
@@ -131,6 +142,6 @@ ${sign_nbt(2, 'execute at @e[tag=controls_home] run function restworld:%s/%s_cur
     args = thing[s] + (None,) * (4 - len(thing[s]))
     y = 3 - int(s / row_length)
 %>\
-${arena_sign(y, max_z - (s % row_length), args[0], args[1], hunter_nbt=args[2], victim_nbt=args[3], wet=args[0] in 'Axolotl', when=when, i=i)}
+${arena_sign(y, max_z - (s % row_length), args[0], args[1], hunter_nbt=args[2], victim_nbt=args[3], when=when, i=i)}
 %endfor
 </%base:loop>
