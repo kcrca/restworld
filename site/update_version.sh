@@ -14,6 +14,7 @@ ts_cur=$(stat -f '%Sm' index.html)
 rm -f index.html.new
 ex index.html <<EOF || true
 g/\\<$ver_old_re\\>/s//$ver_cur/g
+g/_$ver_old_re\\>/s//_$ver_cur/g
 /CopyrightBegin/+,/CopyrightEnd/-d
 /CopyrightBegin/r ../License.html
 /\\(<p class="timestamp">\\).*/s//\1Page Last Edited: $ts_cur/
