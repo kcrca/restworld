@@ -2,7 +2,7 @@
 cd `dirname $0`
 version=$(cat version)
 world=RestWorld_${1:-$version}
-dst_dir="/Users/kcrca/Library/Application Support/minecraft/saves/$world/datapacks/restworld/data/restworld"
+dst_dir="/Users/kcrca/clarity/home/saves/$world/datapacks/restworld/data/restworld"
 rm -rf functions
 mkdir functions
 python3 /Users/kcrca/restworld/restworld/main.py || exit 1
