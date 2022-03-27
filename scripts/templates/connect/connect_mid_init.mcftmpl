@@ -21,6 +21,3 @@ ${base.sign('~2 ~-9 ~0',   'east', 1, below2)}
 ${base.sign('~-2 ~-9 ~0',  'west', 1, below2)}
 
 ${base.label( 0, 2, 0, "Go Home")}
-<%namespace name="base" file="../base.mcftmpl"/>\
-
-${base.sign('~2 ~2 ~0', 'west', 1, )}
