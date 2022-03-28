@@ -32,6 +32,8 @@ ${when(i)} fill ~-4 ~2 ~-2 ~-4 ~4 ~-2 air
 
 %if log == 'log':
 %  if id == 'mangrove':
+<% # This is a problem in 1.19 that probably will get fixed? Dunno... 
+%>
 ${when(i)} setblock ~-2 ~2 ~-1 air
 ${when(i)} setblock ~0 ~2 ~-1 air
 %  else:

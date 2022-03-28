@@ -1,6 +1,9 @@
 <%namespace name="base" file="../base.mcftmpl"/>
 <%
-    potables = [Thing("%s Sapling" % w) for w in woods] + [Thing("%s Tulip" % t) for t in tulips] + list(small_flowers) + [ 
+    # This is a problem in 1.19 that probably will get fixed? Dunno...
+    saplings = list(woods)
+    saplings.remove('Mangrove')
+    potables = [Thing("%s Sapling" % w) for w in saplings] + [Thing("%s Tulip" % t) for t in tulips] + list(small_flowers) + [ 
 	Thing("Brown Mushroom"),
 	Thing("Red Mushroom"),
 	Thing("Cactus"),
