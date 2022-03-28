@@ -198,7 +198,7 @@ materials = (
     'Andesite', 'Diorite', 'Netherite', 'Blackstone', 'Stone', 'Cobblestone', 'End Stone', 'Sandstone', 'Red Sandstone',
     'Bone', 'Honey', 'Honeycomb', 'Grass', 'Sticky', 'Nether')
 corals = ('Horn', 'Tube', 'Fire', 'Bubble', 'Brain')
-woods = ("Acacia", "Birch", "Jungle", "Oak", "Dark Oak", "Spruce")
+woods = ("Acacia", "Birch", "Jungle", "Mangrove", "Oak", "Dark Oak", "Spruce")
 stems = ("Warped", "Crimson")
 fish_data = (
     ("kob",

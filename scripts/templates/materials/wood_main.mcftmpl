@@ -31,8 +31,13 @@ ${when(i)} fill ~-4 ~2 ~-2 ~-4 ~4 ~-2 air
 %endif
 
 %if log == 'log':
+%  if id == 'mangrove':
+${when(i)} setblock ~-2 ~2 ~-1 air
+${when(i)} setblock ~0 ~2 ~-1 air
+%  else:
 ${when(i)} setblock ~-2 ~2 ~-1 ${id}_sapling
 ${when(i)} setblock ~0 ~2 ~-1 ${id}_sapling[stage=1]
+%  endif
 ${when(i)} fill ~-4 ~4 ~-3 ~-2 ~4 ~-3 ${id}_leaves
 %else:
 ${when(i)} setblock ~-2 ~2 ~-1 ${id}_roots
