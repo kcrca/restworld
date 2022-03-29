@@ -1,0 +1,49 @@
+Don't make any changes to the world itself, just to the scripts, until you are sure
+there are no bugs that would hurt it. Then, if there is a problem, you can just use the
+original 1.18.2 to start from without harm.
+
+Fix the color area -- cloning makes changing it very fragile. Should be able to just change
+what's there, but not sure how to do it now.
+
+friendlies:
+    Rotate, move donkey/mule to be in line with horses
+    move goat to Mule
+    move bat to Donkey
+    move bees to Polar Bear
+    move parrot to Pand
+    put firefly next to parrot? where?
+    place frogs at Bees; include spawn pond
+    shift llama stuff to right (or left)
+    put polar bear and panda next to llamas
+    parrots: (from 1.18 or earlier)
+	dance to music
+	sit on player's shoulder
+	swims in water
+    allay?
+
+monsters:
+    move end mobs into room with drgon, expanding probably
+    move nether mob room plus wither so it is directly across from entrance (no rotating it, just move)
+    create room for Warden to the right.
+
+materials:
+    Gotta figure out how mangroves grow (no sapling) and how to display propagule
+	pots?
+	only in new mangrove forest thing?
+
+fonts:
+    add mangrove sign
+    put signs on either side of target pointing at it?
+
+particles:
+    somehow these feel the least stable, wait for them
+
+effects:
+    add darkness
+
+blocks:
+    sculk stuff, including sculk vein (different)
+    (Is sculk + sculk vein a plant?)
+
+death:
+    lower to new bottom?
