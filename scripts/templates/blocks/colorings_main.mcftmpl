@@ -4,7 +4,7 @@
 <%
     import re
 
-    fill = 'fill ~1 ~4 ~6 ~-11 ~2 ~-1'
+    fill = 'fill ~1 ~5 ~6 ~-12 ~2 ~-1'
     fills = ('stained_glass', 'stained_glass_pane', 'wool', 'banner', 'shulker_box', 'carpet', 'concrete', 'concrete_powder', 'terracotta')
     plain_fills = ('glass', 'glass_pane', 'air', 'air', 'shulker_box', 'air', 'air', 'air', 'terracotta')
     candles = ['candle[candles=%d,lit=true]' % x for x in range(1, 5)]
@@ -21,7 +21,20 @@ execute if score lit_signs funcs matches 1 run data merge block ~${x} ~${y} ~${z
 <%base:loop collection="${colorings}" args="when,i,thing">
 <% is_plain = thing.name == 'Plain' %>
 
-%if is_plain:
+<%doc>
+    When displaying the plain version, first clone away the non-plain version
+    down below so we don't have to reconstruct it.  Otherwise we clone the other
+    way.
+
+    We also want to be able to do this when the layout changes, or we keep
+    cloning, overwriting using the old saved version. This can be done with
+
+/execute at @e[tag=colorings_home] run clone ~1 ~5 ~6 ~-12 ~1 ~-1 ~-12 0 ~-1
+
+    But be sure that the clone command is a copy of the one done when the
+    'colorings' score is the last one, i.e., the last one in the file, which
+    copies from above to below.
+</%doc> %if is_plain:
 ${when(i)} execute if data entity @e[tag=colorings_llama,limit=1] DecorItem run clone ~${coords[0]} ~${coords[1]} ~${coords[2]} ~${coords[3]} ~${coords[4] - 1} ~${coords[5]} ~${coords[3]} 0 ~${coords[5]}
 %elif i == 0:
 execute if score ${var} funcs matches 0..${len(colorings) - 2} unless data entity @e[tag=colorings_llama,limit=1] DecorItem run clone ~${coords[0]} ${coords[1] - coords[4] + 1} ~${coords[2]} ~${coords[3]} 0 ~${coords[5]} ~${coords[3]} ~${coords[4] - 1} ~${coords[5]}

@@ -66,8 +66,15 @@ execute unless score block_list funcs matches 0 as @e[tag=${block_list_name}] ru
 </%def>\
 
 <%def name="colored_signs(color, render, when=None, i=None, thing=None)">
-<% color_split = len(woods + stems) / 2 %>
-%for wood in woods + stems:
-${render(-12 + int(loop.index % color_split), 2 + int(loop.index / color_split), 3 - int(loop.index % color_split), color, Thing(wood), when, i, thing)}
+<% signables = woods + stems %>
+%for w in range(0, len(signables)):
+<%
+wood = signables[w]
+row_len = 4 if w < 4 else 3 if w < 7 else 2
+x = w % row_len - 12
+y = (4 - row_len) + 2
+z = -(w % row_len) + 3
+%>
+${render(x, y, z, color, Thing(wood), when, i, thing)}
 %endfor
 </%def>

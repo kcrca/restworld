@@ -1,11 +1,13 @@
 <%namespace import="*" file="blocks_base.mcftmpl"/>
 <% types = (
-    'Bricks', 'Quartz Bricks', 'Red|Nether Bricks', 'Nether Bricks',
-    'Cracked|Nether Bricks', 'Chiseled|Nether Bricks',
+    'Bricks', 'Quartz Bricks',
+    'Mud Bricks',
     "Deepslate|Bricks",
     "Cracked|Deepslate|Bricks",
     'Deepslate|Tiles',
     'Cracked|Deepslate|Tiles',
     'Prismarine Bricks',
+    'Nether Bricks', 'Cracked|Nether Bricks', 'Chiseled|Nether Bricks',
+    'Red|Nether Bricks',
 ) %>
 ${blocks(types)}
