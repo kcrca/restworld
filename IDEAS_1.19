@@ -5,27 +5,47 @@ original 1.18.2 to start from without harm.
 Fix the color area -- cloning makes changing it very fragile. Should be able to just change
 what's there, but not sure how to do it now.
 
+center:
+    add some new 1.19 things
+
 friendlies:
     Rotate, move donkey/mule to be in line with horses
     move goat to Mule
-    move bat to Donkey
     move bees to Polar Bear
-    move parrot to Pand
+    move bat to Donkey
+    create allay is a flier, add to flier? That screws up the above plan...
+    move parrot to Panda
     put firefly next to parrot? where?
     place frogs at Bees; include spawn pond
     shift llama stuff to right (or left)
     put polar bear and panda next to llamas
+
+    Could move axolotl to the "amphib" area (move villagers left?)
+	axolotl has swimming motion that needs water
+
     parrots: (from 1.18 or earlier)
 	dance to music (flying or sitting, so on/off switch?)
 	sit on player's shoulder (no way to do this I'm pretty sure)
-	swims in water (just flying)
+	swims in water (just flying, ignore)
     frogs can shoot tongue long distance
-    allay?
-    Could move axolotl to the "amphib" area (move villagers left?)
+
+    Or...
+    Move horses to right end, move donkey/mule next to them
+    Move golems to right of horse-likes, in corner (prob swap order)
+    Move goat to Mule
+    Move llamas to Donkey, Polar Bear, Panda
+    Move villagers one slot left
+    Fliers:
+	Move bat, parrot, allay and fireflay to Bees, etc.
+	add firefly (should be small, should fit)
+    Amphibs
+	Move axolotl (twice, once underwater), turtle & eggs, to LLamas
+	... maybe also move golems here, loosen up the Bat/Parrot area
 
 monsters:
     move end mobs into room with drgon, expanding probably
     move nether mob room plus wither so it is directly across from entrance (no rotating it, just move)
+	no real need to separate wither, just have a visible border to cross that summons it; allows us to put nether room door right across from monster door
     create room for Warden to the right.
 
 materials:
