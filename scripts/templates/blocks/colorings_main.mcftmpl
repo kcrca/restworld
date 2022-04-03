@@ -22,9 +22,11 @@ execute if score lit_signs funcs matches 1 run data merge block ~${x} ~${y} ~${z
 <% is_plain = thing.name == 'Plain' %>
 
 %if is_plain:
-${when(i)} execute if data entity @e[tag=colorings_llama,limit=1] DecorItem run clone ~${coords[0]} ~${coords[1]} ~${coords[2]} ~${coords[3]} ~${coords[4] - 1} ~${coords[5]} ~${coords[3]} 0 ~${coords[5]}
-%elif i == 0:
-execute if score ${var} funcs matches 0..${len(colorings) - 2} unless data entity @e[tag=colorings_llama,limit=1] DecorItem run clone ~${coords[0]} ${coords[1] - coords[4] + 1} ~${coords[2]} ~${coords[3]} 0 ~${coords[5]} ~${coords[3]} ~${coords[4] - 1} ~${coords[5]}
+${when(i)} clone ~${coords[0]} ~${coords[1]} ~${coords[2]} ~${coords[3]} ~${coords[4] - 1} ~${coords[5]} ~${coords[3]} 0 ~${coords[5]}
+${when(i)} data modify storage restworld:blocks colorings.was_plain set value True
+%else:
+${when(i)} execute if data storage restworld:blocks {colorings:{was_plain:True}} run clone ~${coords[0]} ${coords[1] - coords[4] + 1} ~${coords[2]} ~${coords[3]} 0 ~${coords[5]} ~${coords[3]} ~${coords[4] - 1} ~${coords[5]}
+${when(i)} data modify storage restworld:blocks colorings.was_plain set value False
 %endif
 
 %for which in fills:
