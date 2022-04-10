@@ -24,18 +24,14 @@ ${when(i)} setblock ~-4 ~2 ~0 ${id}_fence
 ${when(i)} setblock ~-4 ~2 ~1 ${id}_fence_gate[facing=east]
 ${when(i)} setblock ~-4 ~2 ~2 ${id}_fence_gate[in_wall=true,facing=east]
 
-%if id == "jungle":
-${when(i)} fill ~-4 ~2 ~-2 ~-4 ~4 ~-2 vine[north=true]
-%else:
-${when(i)} fill ~-4 ~2 ~-2 ~-4 ~4 ~-2 air
+%if id != 'mangrove':
+${when(i)} setblock ~-2 ~3 ~-3 air
 %endif
 
 %if log == 'log':
 %  if id == 'mangrove':
-<% # This is a problem in 1.19 that probably will get fixed? Dunno... 
-%>
-${when(i)} setblock ~-2 ~2 ~-1 air
-${when(i)} setblock ~0 ~2 ~-1 air
+${when(i)} setblock ~-2 ~2 ~-1 mangrove_propagule[age=1]
+${when(i)} setblock ~0 ~2 ~-1 mangrove_propagule[age=4]
 %  else:
 ${when(i)} setblock ~-2 ~2 ~-1 ${id}_sapling
 ${when(i)} setblock ~0 ~2 ~-1 ${id}_sapling[stage=1]
@@ -49,6 +45,11 @@ ${when(i)} fill ~-4 ~4 ~-3 ~-2 ~4 ~-3 nether_wart_block
 %else:
 ${when(i)} fill ~-4 ~4 ~-3 ~-2 ~4 ~-3 ${id}_wart_block
 %endif
+%endif
+
+${when(i)} fill ~-4 ~2 ~-2 ~-4 ~4 ~-2 ${'vine[north=true]' if id in ('jungle', 'mangrove') else 'air'}
+%if id == 'mangrove':
+${when(i)} setblock ~-2 ~3 ~-3 mangrove_propagule[age=4,hanging=true]
 %endif
 
 ${when(i)} fill ~-4 ~2 ~-1 ~-4 ~3 ~-1 ${id}_${wood}

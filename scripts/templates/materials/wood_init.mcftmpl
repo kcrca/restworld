@@ -2,6 +2,3 @@
 
 summon item_frame ~2 ~3 ~-3 {Tags:[wood_boat_frame,${room}],Facing:3,Fixed:True,Item:{id:stone,Count:1}}
 summon item_frame ~3 ~3 ~-3 {Tags:[wood_sign_frame,${room}],Facing:3,Fixed:True,Item:{id:stone,Count:1}}
-
-${base.label(-2, 2, 0, 'Sapling Stage 0')}
-${base.label(0, 2, 0, 'Sapling Stage 1')}
