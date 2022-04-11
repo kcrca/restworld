@@ -44,8 +44,10 @@ class Thing:
             id += "[%s]" % state
         return id
 
-    def sign_text(self, skip=()):
+    def sign_text(self, pre=None, skip=()):
         lines = self.to_sign_text()
+        if pre:
+            lines = [pre,] + lines
         if len(lines) == 4:
             start = 0
         else:
