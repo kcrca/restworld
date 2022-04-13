@@ -69,3 +69,7 @@ blocks:
 
 death:
     lower to new bottom?
+
+plants:
+    loop soils for: dripleaf
+    dead bush can be on mud; create a seaprate loop for it and cane

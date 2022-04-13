@@ -7,21 +7,21 @@
 <%def name="arena_sign(y, z, hunter, victim, hunter_nbt=None, victim_nbt=None, when=None, i=None)">
 <%
 nbts = {
-    'Slime': 'Size:3',
-    'Magma Cube': 'Size:3',
-    'Vindicator': 'Johnny:True,HandItems:[{id:iron_axe,Count:1},{}]',
-    'Pillager': 'HandItems:[{id:crossbow,Count:1},{}]',
     'Drowned': 'HandItems:[{id:trident,Count:1}]',
-    'Wither Skeleton': 'HandItems:[{id:stone_sword,Count:1},{}]',
-    'Piglin': 'IsImmuneToZombification:True,HandItems:[{id:golden_sword,Count:1},{}]',
-    'Skeleton': 'HandItems:[{id:bow,Count:1}],ArmorItems:[{id:iron_boots,Count:1,tag:{RepairCost:1,Enchantments:[{lvl:9,id:protection}]}},{},{},{}]',
-    'Stray': 'HandItems:[{id:bow,Count:1}],ArmorItems:[{id:iron_boots,Count:1,tag:{RepairCost:1,Enchantments:[{lvl:9,id:protection}]}},{},{},{}]',
-    'Piglin Brute': 'HandItems:[{id:golden_axe,Count:1}],IsImmuneToZombification:True',
     'Goat': 'IsScreamingGoat:True',
     'Hoglin': 'IsImmuneToZombification:True',
-    'Zombified Piglin': 'HandItems:[{id:golden_sword,Count:1}]',
+    'Magma Cube': 'Size:3',
     'Panda': 'MainGene:aggressive',
     'Phantom': 'AX:1000,AY:110,AZ:-1000',
+    'Piglin Brute': 'HandItems:[{id:golden_axe,Count:1}],IsImmuneToZombification:True',
+    'Piglin': 'IsImmuneToZombification:True,HandItems:[{id:golden_sword,Count:1},{}]',
+    'Pillager': 'HandItems:[{id:crossbow,Count:1},{}]',
+    'Skeleton': 'HandItems:[{id:bow,Count:1}],ArmorItems:[{id:iron_boots,Count:1,tag:{RepairCost:1,Enchantments:[{lvl:9,id:protection}]}},{},{},{}]',
+    'Slime': 'Size:0',
+    'Stray': 'HandItems:[{id:bow,Count:1}],ArmorItems:[{id:iron_boots,Count:1,tag:{RepairCost:1,Enchantments:[{lvl:9,id:protection}]}},{},{},{}]',
+    'Vindicator': 'Johnny:True,HandItems:[{id:iron_axe,Count:1},{}]',
+    'Wither Skeleton': 'HandItems:[{id:stone_sword,Count:1},{}]',
+    'Zombified Piglin': 'HandItems:[{id:golden_sword,Count:1}]',
 }
 wet = False
 if hunter[-2:] == ':w':
@@ -83,7 +83,7 @@ battles = [
     ('Wolf', 'Sheep'),
     ('Goat', 'Sheep'),
     ('Fox', 'Chicken'),
-    ('Ocelot', 'Chicken'),
+    ('Frog', 'Slime'),
 
     ('Cat', 'Rabbit'),
     ('Ravager', 'Iron Golem'),
@@ -102,6 +102,7 @@ battles = [
 
 ## Some set aisde for adding if we need them
 ##  ('Axolotl', 'Guardian'),
+##  ('Ocelot', 'Chicken'),
 ##  ('Axolotl', 'Elder Guardian'),
 ## These don't work unelss we figure out how to kill the ones that spawn when a larger is killed
 ##  ('Slime', 'Iron Golem'),
