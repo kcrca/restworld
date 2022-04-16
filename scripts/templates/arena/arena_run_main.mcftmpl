@@ -37,7 +37,7 @@ def incr_cmd(which, mob):
     if which == 'hunter':
 	my_nbts.append('Rotation:[180f,0f]')
     incr = 'summon %s ~0 ~2 ~0 {%s}' % (Thing(mob).id, ','.join(my_nbts))
-    incr_cmd = 'execute if score %s_count funcs < arena_count funcs at @e[tag=%s_home] run %s' % (which, which, incr)
+    incr_cmd = 'execute if score %s_count funcs < arena_count funcs at @e[tag=%s_spawn,sort=random,limit=1] run %s' % (which, which, incr)
     return incr_cmd
 
 vs = 'vs.'

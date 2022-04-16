@@ -1,5 +1,0 @@
-execute if score place_battlers funcs matches 1 at @e[tag=hunter_home] run tp @e[tag=hunter] ~0 ~2 ~0 facing ~0 ~2 ~-10
-execute if score place_battlers funcs matches 1 at @e[tag=victim_home] run tp @e[tag=victim] ~0 ~2 ~0 facing ~0 ~2 ~10
-execute if score arena_count funcs matches 2.. if score hunter_close funcs = arena_count funcs if score victim_athome funcs matches 1.. at @e[tag=hunter_home] run tp @e[tag=hunter] ~0 ~2 ~0 facing ~0 ~2 ~-10
-execute if score arena_count funcs matches 2.. if score victim_close funcs = arena_count funcs if score hunter_athome funcs matches 1.. at @e[tag=victim_home] run tp @e[tag=victim] ~0 ~2 ~0 facing ~0 ~2 ~10
-scoreboard players set place_battlers funcs 0
