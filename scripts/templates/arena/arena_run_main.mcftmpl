@@ -23,29 +23,30 @@ nbts = {
     'Wither Skeleton': 'HandItems:[{id:stone_sword,Count:1},{}]',
     'Zombified Piglin': 'HandItems:[{id:golden_sword,Count:1}]',
 }
+
 wet = False
 if hunter[-2:] == ':w':
     wet = True
     hunter = hunter[:-2]
-hunter_nbt = nbts.get(hunter, None)
-victim_nbt = nbts.get(victim, None)
-func_base = 'restworld:arena/%s' % hunter
-if victim == '':
-    hunter_incr = 'function %s_incr' % func_base
-    hunter_decr = 'function %s_decr' % func_base
-else:
-    hunter_incr = 'summon %s ~0 ~2 ~0 {Tags:[battler,hunter]%s,Rotation:[180f,0f]}' % (Thing(hunter).id, ',%s' % hunter_nbt if hunter_nbt else '')
-    hunter_decr = 'kill @e[tag=hunter,limit=1,sort=random,distance=..100]'
-hunter_incr_cmd = 'execute if score hunter_count funcs < arena_count funcs at @e[tag=hunter_home] run %s' % hunter_incr
-victim_incr_cmd = 'execute if score victim_count funcs < arena_count funcs at @e[tag=victim_home] run summon %s ~0 ~2 ~0 {Tags:[battler,victim]%s}' % (Thing(victim).id, ',%s' % victim_nbt if victim_nbt else '')
-hunter_decr_cmd = 'execute if score hunter_count funcs > arena_count funcs run %s' % 'kill @e[tag=hunter,limit=1,sort=random,distance=..100]' if len(victim) > 0 else 'function %s_decr' % func_base
+
+def incr_cmd(which, mob):
+    my_nbts = ['Tags:[battler,%s]' % which]
+    added_nbt = nbts.get(mob, None)
+    if added_nbt:
+	my_nbts.append(added_nbt)
+    if which == 'hunter':
+	my_nbts.append('Rotation:[180f,0f]')
+    incr = 'summon %s ~0 ~2 ~0 {%s}' % (Thing(mob).id, ','.join(my_nbts))
+    incr_cmd = 'execute if score %s_count funcs < arena_count funcs at @e[tag=%s_home] run %s' % (which, which, incr)
+    return incr_cmd
+
 vs = 'vs.'
 %>
 ${when(i)} setblock ~-2 ~${y} ~${z} air
 ${when(i)} setblock ~-2 ~${y} ~${z} oak_wall_sign[facing=east]{\
     ${sign_nbt(0, 'execute at @e[tag=monitor_home] run fill ~-12 ~4 ~-12 ~12 ~2 ~12 %s' % ('water' if wet else 'air'), '', name='controls')},\
-    ${sign_nbt(1, 'execute at @e[tag=monitor_home] run data merge block ~2 ~0 ~0 {Command:"%s"}' % hunter_incr_cmd, hunter, name='controls')},\
-    ${sign_nbt(2, 'execute at @e[tag=monitor_home] run data merge block ~3 ~0 ~0 {Command:"%s"}' % victim_incr_cmd, vs, name='controls')},\
+    ${sign_nbt(1, 'execute at @e[tag=monitor_home] run data merge block ~2 ~0 ~0 {Command:"%s"}' % incr_cmd('hunter', hunter), hunter, name='controls')},\
+    ${sign_nbt(2, 'execute at @e[tag=monitor_home] run data merge block ~3 ~0 ~0 {Command:"%s"}' % incr_cmd('victim', victim), vs, name='controls')},\
     ${sign_nbt(3, 'function restworld:arena/start_battle', victim, name='controls')}\
 }
 </%def>

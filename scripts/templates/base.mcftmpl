@@ -181,3 +181,12 @@ summon armor_stand ~0 ~2 ~0 {PersistenceRequired:True,Rotation:[${rot}f,0f],Tags
     print(r'${action(r"%s", "Go to %s room", "function restworld:%s/_goto")}, ${scribe(r", ")}, %s' % (room_name, room_name.lower(), var.replace('_room', ''), '\\'))
 %>
 </%def>
+
+<%def name="say_scores(*args)">
+<%
+    parts = '{"text":"scores: "}'
+    for s in args:
+	parts += ', {"text": " %s="}, {"score":{"name":"%s","objective":"funcs"}}' % (s, s)
+%>
+tellraw @a [${parts}]
+</%def>
