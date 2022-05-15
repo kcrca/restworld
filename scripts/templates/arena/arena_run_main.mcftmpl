@@ -4,6 +4,8 @@
 ## This is NOT intended to be run on the clock. It is only called "_main" because that gives us a
 ## "_cur" function, which is useful when paging through the signs. Do not create the _home armor stand.
 
+execute unless score ${var}_type funcs matches 0.. run scoreboard players set ${var}_type funcs 0
+
 <%def name="arena_sign(y, z, hunter, victim, hunter_nbt=None, victim_nbt=None, when=None, i=None)">
 <%
 nbts = {
@@ -24,10 +26,10 @@ nbts = {
     'Zombified Piglin': 'HandItems:[{id:golden_sword,Count:1}]',
 }
 
-wet = False
-if hunter[-2:] == ':w':
-    wet = True
-    hunter = hunter[:-2]
+battle_type = 0
+if hunter[-2] == ':':
+    battle_type = {'w': 1, 'u': 2}[hunter[-1]]
+    hunter = hunter[0:-2]
 
 def incr_cmd(which, mob):
     my_nbts = ['Tags:[battler,%s]' % which]
@@ -37,14 +39,14 @@ def incr_cmd(which, mob):
     if which == 'hunter':
 	my_nbts.append('Rotation:[180f,0f]')
     incr = 'summon %s ~0 ~2 ~0 {%s}' % (Thing(mob).id, ','.join(my_nbts))
-    incr_cmd = 'execute if score %s_count funcs < arena_count funcs at @e[tag=%s_spawn,sort=random,limit=1] run %s' % (which, which, incr)
+    incr_cmd = 'execute if score %s_count funcs < arena_count funcs at @e[tag=%s_home,sort=random,limit=1] run %s' % (which, which, incr)
     return incr_cmd
 
 vs = 'vs.'
 %>
 ${when(i)} setblock ~-2 ~${y} ~${z} air
 ${when(i)} setblock ~-2 ~${y} ~${z} oak_wall_sign[facing=east]{\
-    ${sign_nbt(0, 'execute at @e[tag=monitor_home] run fill ~-12 ~4 ~-12 ~12 ~2 ~12 %s' % ('water' if wet else 'air'), '', name='controls')},\
+    ${sign_nbt(0, 'scoreboard players set start_battle_type funcs %d' % battle_type, '', name='controls')},\
     ${sign_nbt(1, 'execute at @e[tag=monitor_home] run data merge block ~2 ~0 ~0 {Command:"%s"}' % incr_cmd('hunter', hunter), hunter, name='controls')},\
     ${sign_nbt(2, 'execute at @e[tag=monitor_home] run data merge block ~3 ~0 ~0 {Command:"%s"}' % incr_cmd('victim', victim), vs, name='controls')},\
     ${sign_nbt(3, 'function restworld:arena/start_battle', victim, name='controls')}\
@@ -73,7 +75,7 @@ battles = [
     ('Drowned', 'Snow Golem'),
 
     ('Wither Skeleton', 'Piglin'),
-    ('Skeleton', 'Iron Golem'),
+    ('Zombie:u', 'Iron Golem'),
     ('Shulker', 'Snow Golem'),
     ('Stray', 'Iron Golem'),
     ('Wither', 'Pillager'),
@@ -102,6 +104,7 @@ battles = [
 ]
 
 ## Some set aisde for adding if we need them
+##  ('Zombie', 'Iron Golem'),
 ##  ('Axolotl', 'Guardian'),
 ##  ('Ocelot', 'Chicken'),
 ##  ('Axolotl', 'Elder Guardian'),
