@@ -47,11 +47,13 @@ monsters:
     move nether mob room plus wither so it is directly across from entrance (no rotating it, just move)
 	no real need to separate wither, just have a visible border to cross that summons it; allows us to put nether room door right across from monster door
     create room for Warden to the right.
+    goats have separate left/right horns, rotate through the states
 
 materials:
     Gotta figure out how mangroves grow (no sapling) and how to display propagule
 	pots?
 	only in new mangrove forest thing?
+    Elytra needs to show damaged texture (may need its own armor stand)
 
 fonts:
     add mangrove sign
@@ -73,3 +75,16 @@ death:
 plants:
     loop soils for: dripleaf
     dead bush can be on mud; create a seaprate loop for it and cane
+
+biomes:
+    new biome for mangrove has different colors of water, etc.? or same as swamp?
+    mangrove swamp
+    ancient city
+
+paintings:
+    new paintings, four in a series, I guess we grow the room a little, could show them in a 2x2 matrix.
+    If the room was one or two blocks larger in both left and right, would make more room for the paintings in the middle.
+
+arena:
+    place hunter/victim in random locations clustered around home instead of at home. Possibly create some armor stands
+    sharing a tag, and tell the spawn commend to pick a random entity with that tag?
