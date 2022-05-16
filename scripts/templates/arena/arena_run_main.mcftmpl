@@ -28,7 +28,7 @@ nbts = {
 
 battle_type = 0
 if hunter[-2] == ':':
-    battle_type = {'w': 1, 'u': 2}[hunter[-1]]
+    battle_type = {'w': 1, 'c': 2}[hunter[-1]]
     hunter = hunter[0:-2]
 
 def incr_cmd(which, mob):
@@ -72,12 +72,12 @@ battles = [
     ('Illusioner', 'Snow Golem'),
     ('Evoker', 'Iron Golem'),
     ('Vex', 'Snow Golem'),
-    ('Drowned', 'Snow Golem'),
+    ('Drowned:c', 'Snow Golem'),
 
     ('Wither Skeleton', 'Piglin'),
-    ('Zombie:u', 'Iron Golem'),
+    ('Zombie:c', 'Iron Golem'),
     ('Shulker', 'Snow Golem'),
-    ('Stray', 'Iron Golem'),
+    ('Stray:c', 'Iron Golem'),
     ('Wither', 'Pillager'),
     ('Blaze', 'Snow Golem'),
 
@@ -98,7 +98,7 @@ battles = [
     ('Panda', 'Vindicator'),
     ('Spider', 'Snow Golem'),
     ('Cave Spider', 'Snow Golem'),
-    ('Phantom', 'Rabbit'),
+    ('Phantom:c', 'Rabbit'),
     ('Parrot', 'Vindicator'),
     ('Axolotl:w', 'Drowned'),
 ]
