@@ -1,3 +1,0 @@
-<%namespace import="*" file="blocks_base.mcftmpl"/>
-<% types = ("Netherrack", "Magma Block") %>
-${blocks(types)}

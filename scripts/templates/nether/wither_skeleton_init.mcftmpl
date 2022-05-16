@@ -1,4 +1,4 @@
 <%namespace name="base" file="../base.mcftmpl"/>\
 
-${base.mobs_init(kid_z_init=2.2, adult_z_init=-0.20, rotation_init=0)}\
+${base.mobs_init(kid_z_init=2.2, adult_z_init=-0.20, rotation_init=90)}\
 ${base.mobs("Wither Skeleton", do_adult=True, nbt='HandItems:[{id:"stone_sword",Count:1b},{}]')}

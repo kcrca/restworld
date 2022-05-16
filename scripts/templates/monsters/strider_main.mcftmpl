@@ -1,6 +1,0 @@
-<%namespace name="base" file="../base.mcftmpl"/>\
-
-<%base:loop collection="${('lava', 'netherrack')}" args="when,i,thing">
-${when(i)} execute if score mob_levitation funcs matches 0 run setblock ~0 ~1 ~-2 ${thing}
-${when(i)} execute if score mob_levitation funcs matches 0 run setblock ~0 ~1 ~1 ${thing}
-</%base:loop>

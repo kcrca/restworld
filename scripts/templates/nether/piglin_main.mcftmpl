@@ -10,7 +10,7 @@
 ${base.remove("tag=piglin")}
 
 <%base:loop collection="${piglins}" args="when,i,thing">
-${base.mobs_init(kid_z_init=-1.8, adult_z_init=0.8, x_delta_init=-3, rotation_init=180, tags_init=("piglin",))}
+${base.mobs_init(kid_x_init=3.0, adult_x_init=-0.0, z_delta_init=3, rotation_init=270, tags_init=("piglin",))}
 ${base.mobs(thing, when=when, i=i)}
 ${base.mobs(hoglins[i], when=when, i=i)}
 %if hoglins[i] == 'Hoglin' and num_riders > 0:

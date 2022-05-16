@@ -2,4 +2,4 @@
 
 ${base.sign('~0 ~2 ~-2', 'north', 3, "Wither")}
 
-${base.label(0, 2, -8, "Change Height")}
+${base.label(0, 2, -4, "Change Height")}

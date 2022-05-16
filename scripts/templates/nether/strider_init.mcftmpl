@@ -1,0 +1,7 @@
+<%namespace name="base" file="../base.mcftmpl"/>\
+
+${base.mobs_init(kid_x_init=3.0, adult_x_init=-0.0, rotation_init=270)}
+${base.mobs("Strider")}
+
+${base.label(4, 2, 0, "Saddles")}
+${base.label(-1, 2, -6, "Change Height")}
