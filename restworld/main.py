@@ -651,7 +651,7 @@ def main():
     ), button=True)
     commands = sign_room("effects", effects, (
         Wall(7, 5, "east", (-1, 0), used_widths=(3, 5, 3)),
-        Wall(7, 5, "south", (0, -1), used_widths=(5, 5), y_first=2),
+        Wall(7, 5, "south", (0, -1), used_widths=(3, 5, 3)),
         Wall(7, 5, "west", (1, 0), used_widths=(3, 5, 3)),
         Wall(7, 5, "north", (0, 1)),
     ))
@@ -760,6 +760,7 @@ effects = (
     ActionSign("Dolphin's Grace", id="dolphins_grace"),
     ActionSign("Bad Omen", note="Negative"),
     ActionSign("Hero|of the Village"),
+    ActionSign("Darkness"),
 )
 
 

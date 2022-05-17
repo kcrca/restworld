@@ -2,7 +2,7 @@
 
 ## I could give this for only 30 seconds or so, because finding the "off" sign is hard
 ## with the negative effect visuals. But (a bug?) a few of the effects seem to interpret
-## "seconds" as "ticks", and 30 ticks is nothing. So instead I rely on the use being able
+## "seconds" as "ticks", and 30 ticks is nothing. So instead I rely on the user being able
 ## to find the "off" button. Reexamine this if someone complains, maybe the bug will be
 ## fixed then?
 
