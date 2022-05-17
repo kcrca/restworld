@@ -59,8 +59,8 @@ gui:
     _ Elytra needs to show damaged texture (only shows in inventory, so probably it's an item not in the creative inv
 
 fonts:
-    _ add mangrove sign
-    _ put signs on either side of target pointing at it?
+    * add mangrove sign
+    * put signs on either side of target pointing at it?
 
 particles:
     _ somehow these feel the least stable, wait for them
