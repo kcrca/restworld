@@ -23,6 +23,6 @@ ${base.mobs(hoglins[i], when=when, i=i)}
 	riders = rider_tmpl % riders
     nbt = 'Passengers:[{%s}]' % riders
 %>
-${when(i)} data merge entity @e[type=hoglin,tag=monsters,tag=kid,limit=1] {${nbt}}
+${when(i)} data merge entity @e[type=hoglin,tag=nether,tag=kid,limit=1] {${nbt}}
 %endif
 </%base:loop>

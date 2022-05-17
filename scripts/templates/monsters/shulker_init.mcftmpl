@@ -1,5 +1,0 @@
-<%namespace name="base" file="../base.mcftmpl"/>\
-${base.mobs_init(rotation_init=0, tags_init=("shulker",))}\
-${base.adult(Thing("Shulker"), 1, 1, 0, 90, nbt="Color:16,Peek:0,Rotation:[180f,0f]")}\
-summon shulker_bullet ~0 ~3 ~-1 {CustomName:${text("Shulker Bullet")},TXD:0,TYD:0,TZD:0,Steps:0,NoAI:True,Motion:[0,0,0],NoGravity:True,PersistanceRequired:True,Tags:[monsters]}
-${base.sign('~0 ~2 ~-2', 'north', 2, "Shulker Bullet")}
