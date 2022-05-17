@@ -46,16 +46,17 @@ friendlies:
 	... maybe also move golems here, loosen up the Bat/Parrot area
 
 monsters:
-    _ move end mobs into room with dragon, expanding probably
+    * move end mobs into room with dragon, expanding probably
     * move nether mob room plus wither so it is directly across from entrance (no rotating it, just move)
 	no real need to separate wither, just have a visible border to cross that summons it; allows us to put nether room door right across from monster door
-    _ create room for Warden
+    * create room for Warden
 
 materials:
-    _ Gotta figure out how mangroves grow (no sapling) and how to display propagule
-	pots?
-	only in new mangrove forest thing?
-    _ Elytra needs to show damaged texture (may need its own armor stand)
+    _ Gotta figure out how mangroves grow (no sapling) only in new mangrove forest thing?
+    * And how to display propagule pots?
+
+gui:
+    _ Elytra needs to show damaged texture (only shows in inventory, so probably it's an item not in the creative inv
 
 fonts:
     _ add mangrove sign
