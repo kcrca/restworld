@@ -8,6 +8,7 @@
 	Thing("Dead Bush"),
 	Thing("Fern"),
 	Thing("Azalea Bush"), Thing("Flowering Azalea Bush"),
+	Thing("Mangrove Propagule"),
     ]
     potables = [Thing("Mangrove|Propagule" if w == "Mangrove" else "%s Sapling" % w) for w in saplings] + [Thing("%s Tulip" % t) for t in tulips] + list(small_flowers) + misc + [Thing("%s Roots" % x) for x in stems] + [Thing("%s Fungus" % x) for x in stems] + [Thing("Wither Rose"), ]
 %>
