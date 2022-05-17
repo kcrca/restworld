@@ -60,13 +60,13 @@ gui:
 
 fonts:
     * add mangrove sign
-    * put signs on either side of target pointing at it?
+    * put signs on either side of target pointing at it
 
 particles:
     _ somehow these feel the least stable, wait for them
 
 effects:
-    _ add darkness
+    * add darkness
 
 blocks:
     _ sculk stuff, including sculk vein (different)
