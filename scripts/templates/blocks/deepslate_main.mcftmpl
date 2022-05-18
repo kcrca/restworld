@@ -9,6 +9,7 @@
 	"Deepslate|Bricks",
 	"Deepslate|Tiles",
 	"Cobbled|Deepslate",
-    ) + tuple("Deepslate|%s|Ore" % x for x in ("Coal", "Iron", "Copper", "Gold", "Lapis", "Redstone", "Diamond", "Emerald"))
+	"Reinforced|Deepslate",
+    )
 %>
 ${blocks(types, sign=-1)}

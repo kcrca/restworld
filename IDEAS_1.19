@@ -67,8 +67,12 @@ effects:
     * add darkness
 
 blocks:
-    _ sculk stuff, including sculk vein (different)
-    _ (Is sculk + sculk vein a plant?)
+    * sculk stuff
+    _ including sculk vein (different) (Is sculk + sculk vein a plant?)
+    * Reinforced Deepslate
+    * Forglights
+    * Mangrove tree parts
+    * Mud
 
 death:
     _ lower to new bottom?

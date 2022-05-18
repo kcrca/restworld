@@ -1,0 +1,4 @@
+<%namespace import="*" file="blocks_base.mcftmpl"/>
+<% types = ("Sculk", "Sculk Catalyst", 'Sculk Sensor', "Sculk Shrieker") %>
+
+${blocks(types)}
