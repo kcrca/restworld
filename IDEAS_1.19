@@ -18,7 +18,6 @@ friendlies:
     _ move bat to Donkey
     _ create allay is a flier, add to flier? That screws up the above plan...
     _ move parrot to Panda
-    _ put firefly next to parrot? where?
     _ place frogs at Bees; include spawn pond
     _ shift llama stuff to right (or left)
     _ put polar bear and panda next to llamas
@@ -39,8 +38,7 @@ friendlies:
     _ Move llamas to Donkey, Polar Bear, Panda
     _ Move villagers one slot left
     _ Fliers:
-	Move bat, parrot, allay and fireflay to Bees, etc.
-	add firefly (should be small, should fit)
+	Move bat, parrot, allay to Bees, etc.
     _ Amphibs
 	Move axolotl (twice, once underwater), turtle & eggs, to LLamas
 	... maybe also move golems here, loosen up the Bat/Parrot area
