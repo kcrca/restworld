@@ -90,4 +90,4 @@ paintings:
 
 arena:
     _ place hunter/victim in random locations clustered around home instead of at home. Possibly create some armor stands
-    _ sharing a tag, and tell the spawn commend to pick a random entity with that tag?
+      sharing a tag, and tell the spawn commend to pick a random entity with that tag?
