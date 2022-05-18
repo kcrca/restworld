@@ -52,11 +52,11 @@ monsters:
     * create room for Warden
 
 materials:
-    _ Gotta figure out how mangroves grow (no sapling) only in new mangrove forest thing?
+    * Gotta figure out how mangroves grow (no sapling) only in new mangrove forest thing?
     * And how to display propagule pots?
 
 gui:
-    _ Elytra needs to show damaged texture (only shows in inventory, so probably it's an item not in the creative inv
+    * Elytra needs to show damaged texture (only shows in inventory, so probably it's an item not in the creative inv
 
 fonts:
     * add mangrove sign

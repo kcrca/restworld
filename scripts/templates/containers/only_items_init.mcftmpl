@@ -1,20 +1,25 @@
 <%namespace name="base" file="../base.mcftmpl"/>\
 
 <%def name="only_item_contents(thing, slot)">
-data merge entity @e[tag=only_item_frame_${thing.id},limit=1] {${base.named_frame_item(thing)}}
-item replace block ~1 ~-5 ~-1 container.${slot} from entity @e[tag=only_item_frame_${thing.id},limit=1] container.0
+<%
+name, damage = None, None
+if thing.name == 'Elytra':
+    name, damage = 'Damaged Elytra', ',Damage:450'
+%>
+data merge entity @e[tag=only_item_frame_${thing.id},limit=1] {${base.named_frame_item(thing, name, damage)}}
+item replace block ~1 ~-5 ~-2 container.${slot} from entity @e[tag=only_item_frame_${thing.id},limit=1] container.0
 </%def>
 
 <%
-    rows = [(0, 5), (0, 5), (0, 5)]
-    dx = 2
-    dz = 1
+    rows = [(0, 4), (0, 4), (0, 4), (0, 4)]
+    dx = 1
+    dz = 2
     x = 0
     items = list(non_inventory)
 %>
 
-${base.label(3, 2, -1, "Give")}
-setblock ~1 ~-5 ~-1 chest[facing=east]
+${base.label(3, 2, -2, "Give")}
+setblock ~1 ~-5 ~-2 chest[facing=east]
 
 kill @e[tag=only_item_frame]
 %while len(items) > 0:
@@ -33,4 +38,4 @@ summon item_frame ~${x} ~2 ~${5 - z} {Facing:2,Tags:[only_item_frame,only_item_f
 %for t in non_inventory:
 ${only_item_contents(t, loop.index)}
 %endfor
-clone ~1 ~-5 ~-1 ~1 ~-5 ~-1 ~1 ~1 ~-1
+clone ~1 ~-5 ~-2 ~1 ~-5 ~-2 ~1 ~1 ~-2

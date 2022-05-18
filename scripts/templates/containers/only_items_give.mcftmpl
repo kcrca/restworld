@@ -3,6 +3,6 @@
 give @p chain_command_block
 give @p repeating_command_block
 %for t in non_inventory:
-give @p ${t.id}
+give @p ${t.id}${'{tag:{Damage:450}}' if t.name == 'Elytra' else ''}
 %endfor
 give @p firework_rocket

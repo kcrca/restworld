@@ -159,7 +159,7 @@ colors = (
     Color("Lime", 8439583, "lime_dye"),
     Color("Pink", 15961002, "pink_dye"),
     Color("Gray", 4673362, "gray_dye"),
-    Color("Light Gray", 10329495, "light_gray_dye"),
+    Color("Light Gray", 10329495, "light_g/ray_dye"),
     Color("Cyan", 1481884, "cyan_dye"),
     Color("Purple", 8991416, "purple_dye"),
     Color("Blue", 3949738, "lapis_lazuli"),
@@ -340,6 +340,8 @@ non_inventory = tuple(Thing(s) for s in (
     "Command Block Minecart",
     "Sculk Sensor",
     "Spawner",
+
+    "Elytra",
 ))
 
 villager_types = ("Desert", "Jungle", "Plains", "Savanna", "Snow", "Swamp", "Taiga")
