@@ -1,5 +1,5 @@
 <%namespace name="base" file="../base.mcftmpl"/>\
 
 <%base:loop collection="${range(0, 4)}" args="when,i,thing">\
-${when(i)} execute as @e[tag=goat] run data merge entity @s {HasLeftHorn:${i & 1},HasRightHorn:${i & 2}}
+${when(i)} execute as @e[tag=goat,tag=adult] run data merge entity @s {HasLeftHorn:${i & 1},HasRightHorn:${i & 2}}
 </%base:loop>\

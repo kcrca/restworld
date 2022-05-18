@@ -102,7 +102,7 @@ ${_mob(thing, x, y_add, z, rotation,
 </%def>
 
 <%def name="adult(thing, x=None, y_add=None, z=None, rotation=0, nbt='', tags=(), when=None, i=None, on_stand=False)">\
-${_mob(thing, x, y_add, z, rotation, commas(nbt, "CustomName:%s" % text(thing.name)), tags, when=when, i=i, on_stand=on_stand)}\
+${_mob(thing, x, y_add, z, rotation, commas(nbt, "CustomName:%s" % text(thing.name)), tags + ("adult",), when=when, i=i, on_stand=on_stand)}\
 </%def>
 
 <%def name="mobs(name, id=None, nbt='', tags=(), auto_tag=True, name_kid=True, do_kid=False, do_adult=False, y_add=0, when=None, i=None, on_stand=False)">\
