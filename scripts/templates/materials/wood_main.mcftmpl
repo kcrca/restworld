@@ -84,7 +84,8 @@ ${when(i)} setblock ~-3 ~2 ~3 ${id}_sign[rotation=0]
 ${when(i)} data merge block ~-3 ~2 ~3 {Text2:${text(woodlike[i])},Text3:${text("Sign")}}
 
 %if log == 'log':
-${when(i)} summon boat ~-0.5 ~1.525 ~2 {Type:${id},CustomName:"\"${woodlike[i]}\"",CustomNameVisible:True,Tags:[wood_boat],Rotation:[90f,0f]}
+${when(i)} execute if score wood_boat_chest funcs matches 0 run summon boat ~-0.5 ~1.525 ~2 {Type:${id},Tags:[wood_boat],Rotation:[90f,0f],CustomName:"\"${woodlike[i]}\"",CustomNameVisible:True}
+${when(i)} execute if score wood_boat_chest funcs matches 1 run summon chest_boat ~-0.5 ~1.525 ~2 {Type:${id},Tags:[wood_boat],Rotation:[90f,0f],CustomName:"\"${woodlike[i]}\"",CustomNameVisible:True}
 %endif
 
 ${when(i)} setblock ~1 ~2 ~-3 ${id}_planks

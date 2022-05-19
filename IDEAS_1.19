@@ -24,6 +24,7 @@ monsters:
 materials:
     * Gotta figure out how mangroves grow (no sapling) only in new mangrove forest thing?
     * And how to display propagule pots?
+    _ boat with chest
 
 gui:
     * Elytra needs to show damaged texture (only shows in inventory, so probably it's an item not in the creative inv
@@ -50,8 +51,8 @@ death:
     _ lower to new bottom?
 
 plants:
-    _ loop soils for: dripleaf
-    * soils for bamboo, sugar cane, dead bush, and cactus
+    * soils for dripleaf, bamboo, sugar cane, dead bush, and cactus
+    * mangrove propagule in pot
 
 biomes:
     _ new biome for mangrove has different colors of water, etc.? or same as swamp?
