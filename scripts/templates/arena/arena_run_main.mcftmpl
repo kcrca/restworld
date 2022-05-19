@@ -12,6 +12,7 @@ nbts = {
     'Drowned': 'HandItems:[{id:trident,Count:1}]',
     'Goat': 'IsScreamingGoat:True',
     'Hoglin': 'IsImmuneToZombification:True',
+    'Magma Cube': 'Size:0',
     'Panda': 'MainGene:aggressive',
     'Phantom': 'AX:1000,AY:110,AZ:-1000',
     'Piglin Brute': 'HandItems:[{id:golden_axe,Count:1}],IsImmuneToZombification:True',
@@ -19,7 +20,6 @@ nbts = {
     'Pillager': 'HandItems:[{id:crossbow,Count:1},{}]',
     'Skeleton': 'HandItems:[{id:bow,Count:1}],ArmorItems:[{id:iron_boots,Count:1,tag:{RepairCost:1,Enchantments:[{lvl:9,id:protection}]}},{},{},{}]',
     'Slime': 'Size:0',
-    'Magma Cube': 'Size:0',
     'Stray': 'HandItems:[{id:bow,Count:1}],ArmorItems:[{id:iron_boots,Count:1,tag:{RepairCost:1,Enchantments:[{lvl:9,id:protection}]}},{},{},{}]',
     'Vindicator': 'Johnny:True,HandItems:[{id:iron_axe,Count:1},{}]',
     'Wither Skeleton': 'HandItems:[{id:stone_sword,Count:1},{}]',
@@ -101,6 +101,13 @@ battles = [
     ('Phantom:c', 'Rabbit'),
     ('Parrot', 'Vindicator'),
     ('Axolotl:w', 'Drowned'),
+
+    ('Zombie:c', 'Iron Golem'),
+    ('Axolotl:w', 'Guardian'),
+    ('Ocelot', 'Chicken'),
+    ('Axolotl:w', 'Elder Guardian'),
+    ('Frog', 'Slime'),
+    ('Slime', 'Iron Golem'),
 ]
 
 ## Some set aisde for adding if we need them

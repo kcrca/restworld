@@ -628,7 +628,7 @@ def main():
                     sys.exit(-1)
 
     rooms = []
-    for room_dir in glob.glob(os.path.join(tmpl_dir, '*/')):
+    for room_dir in sorted(glob.glob(os.path.join(tmpl_dir, '*/'))):
         room = Room(room_dir)
         room.generate()
         rooms += [room.name, ]
