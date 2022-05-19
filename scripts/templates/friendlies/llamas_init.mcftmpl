@@ -1,11 +1,11 @@
 <%namespace name="base" file="../base.mcftmpl"/>\
 
-${base.mobs_init(x_delta_init=-2, kid_z_init=-2.2, adult_z_init=0.20, rotation_init=180)}
+${base.mobs_init(kid_x_init=-2, x_delta_init=-2, rotation_init=90)}\
 ${base.mobs("Llama")}
 
-summon llama_spit ~1 ~3.5 ~1 {Tags:[friendlies,llama,llama_spit],TXD:0,TYD:0,TZD:0,Steps:0,NoAI:True,Motion:[0,0,0],NoGravity:True}
+summon llama_spit ~1 ~3.5 ~-1 {Tags:[friendlies,llama,llama_spit],TXD:0,TYD:0,TZD:0,Steps:0,NoAI:True,Motion:[0,0,0],NoGravity:True}
 
-${base.sign('~1 ~2 ~0', 'north', 2, "Lllama Spit")}
+${base.sign('~1 ~2 ~-1', 'west', 2, "Lllama Spit")}
 
-${base.label( 1, 2, -2, "Carpets")}
-${base.label(-1, 2, -2, "Chests")}
+${base.label(-2, 2,  1, "Carpets")}
+${base.label(-2, 2, -1, "Chests")}

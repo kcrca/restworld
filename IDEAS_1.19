@@ -9,7 +9,12 @@ center:
     * add some new 1.19 things
 
 friendlies:
-    _ goats have separate left/right horns, rotate through the states
+    * goats have separate left/right horns, rotate through the states
+    _ parrots: (from 1.18 or earlier)
+	dance to music (flying or sitting, so on/off switch?)
+	sit on player's shoulder (no way to do this I'm pretty sure)
+	swims in water (just flying, ignore)
+    _ frogs can shoot tongue long distance
 
     == Dealing with the new mobs
     _ Rotate, move donkey/mule to be in line with horses
@@ -21,15 +26,8 @@ friendlies:
     _ place frogs at Bees; include spawn pond
     _ shift llama stuff to right (or left)
     _ put polar bear and panda next to llamas
-
     _ Could move axolotl to the "amphib" area (move villagers left?)
 	axolotl has swimming motion that needs water
-
-    _ parrots: (from 1.18 or earlier)
-	dance to music (flying or sitting, so on/off switch?)
-	sit on player's shoulder (no way to do this I'm pretty sure)
-	swims in water (just flying, ignore)
-    _ frogs can shoot tongue long distance
 
     == Or...
     _ Move horses to right end, move donkey/mule next to them

@@ -1,0 +1,7 @@
+<%namespace name="base" file="../base.mcftmpl"/>\
+
+<% frogs = (Thing("Temperate"), Thing("Warm"), Thing("Cold")) %>
+
+<%base:loop collection="${frogs}" args="when,i,thing">\
+${when(i)} execute as @e[tag=frog,tag=${room}] run data merge entity @s {variant:${thing.name.lower()},CustomName:${text(thing.name)}}
+</%base:loop>\

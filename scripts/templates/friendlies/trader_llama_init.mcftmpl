@@ -8,7 +8,7 @@ trader_uuid_str = 'UUIDLeast:%ldL,UUIDMost:%ldL' % (trader_uuid[0], trader_uuid[
 %>
 
 kill @e[tag=trader_llama]
-${base.adult(Thing("Wandering Trader"), 2, 0, 0, 180, tags=('trader_llama',))}
-${base.adult(Thing("Trader Llama"), 0, 0, 0, 180, tags=('trader_llama',), nbt='DespawnDelay:2147483647')}
-${base.sign('~0 ~2 ~-3', 'north')}
-data modify block ~0 ~2 ~-3 Text2 set value ${text("Trader Llama")}
+${base.adult(Thing("Wandering Trader"), 0, 0, -2, 90, tags=('trader_llama',))}
+${base.adult(Thing("Trader Llama"), 0, 0, 0, 90, tags=('trader_llama',), nbt='DespawnDelay:2147483647')}
+${base.sign('~-3 ~2 ~0', 'west')}
+data modify block ~-3 ~2 ~0 Text2 set value ${text("Trader Llama")}

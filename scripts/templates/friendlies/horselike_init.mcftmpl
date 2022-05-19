@@ -1,7 +1,7 @@
 <%namespace name="base" file="../base.mcftmpl"/>\
 
-${base.mobs_init(x_delta_init=2, kid_z_init=2.2, adult_z_init=-0.20, rotation_init=0, tags_init=("saddle", "chests"))}\
+${base.mobs_init(z_delta_init=-2, kid_x_init=1.4, adult_x_init=-1.2, rotation_init=270, tags_init=("saddle", "chests"))}\
 ${base.mobs("Mule")}
 ${base.mobs("Donkey")}
 
-${base.label(1, 2, 2, "Chests")}
+${base.label(2, 2, -1, "Chests")}

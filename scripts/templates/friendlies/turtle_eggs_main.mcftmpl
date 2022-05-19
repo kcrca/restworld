@@ -2,7 +2,7 @@
 
 <%base:bounce collection="${range(0, 3)}" args="when,i,thing">\
 % for count in range(4, 0, -1):
-${when(i)} setblock ~${count - 3} ~2 ~0 turtle_egg[eggs=${count},hatch=${thing}]
+${when(i)} setblock ~0 ~2 ~${count - 3} turtle_egg[eggs=${count},hatch=${thing}]
 % endfor
-${when(i)} data merge block ~2 ~2 ~0 {Text3:${text('Hatch Age: %d' % thing)}}
+${when(i)} data merge block ~0 ~2 ~2 {Text3:${text('Hatch Age: %d' % thing)}}
 </%base:bounce>\
