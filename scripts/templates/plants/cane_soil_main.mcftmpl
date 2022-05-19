@@ -7,6 +7,9 @@
 	Thing("Podzol"),
 	Thing("Sand"),
 	Thing("Red Sand"),
+	Thing('Moss Block'),
+	Thing('Mycelium'),
+	Thing('Mud'),
     ]
 %>
 

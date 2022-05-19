@@ -1,0 +1,9 @@
+<%namespace name="base" file="../base.mcftmpl"/>
+
+<%
+soils = ('Clay', 'Moss Block')
+%>
+
+<%base:loop collection="${soils}" args="when,i,thing">\
+${when(i)} setblock ~0 ~1 ~1 ${Thing(thing).full_id()}
+</%base:loop>

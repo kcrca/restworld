@@ -10,36 +10,10 @@ center:
 
 friendlies:
     * goats have separate left/right horns, rotate through the states
-    _ parrots: (from 1.18 or earlier)
-	dance to music (flying or sitting, so on/off switch?)
-	sit on player's shoulder (no way to do this I'm pretty sure)
-	swims in water (just flying, ignore)
-    _ frogs can shoot tongue long distance
-
-    == Dealing with the new mobs
-    _ Rotate, move donkey/mule to be in line with horses
-    _ move goat to Mule
-    _ move bees to Polar Bear
-    _ move bat to Donkey
-    _ create allay is a flier, add to flier? That screws up the above plan...
-    _ move parrot to Panda
-    _ place frogs at Bees; include spawn pond
-    _ shift llama stuff to right (or left)
-    _ put polar bear and panda next to llamas
-    _ Could move axolotl to the "amphib" area (move villagers left?)
-	axolotl has swimming motion that needs water
-
-    == Or...
-    _ Move horses to right end, move donkey/mule next to them
-    _ Move golems to right of horse-likes, in corner (prob swap order)
-    _ Move goat to Mule
-    _ Move llamas to Donkey, Polar Bear, Panda
-    _ Move villagers one slot left
-    _ Fliers:
-	Move bat, parrot, allay to Bees, etc.
-    _ Amphibs
-	Move axolotl (twice, once underwater), turtle & eggs, to LLamas
-	... maybe also move golems here, loosen up the Bat/Parrot area
+    x parrots: (from 1.18 or earlier)
+	dance to music (flying or sitting, so on/off switch?) [can't: playing music requires the act of putting it in, can't do it via commands.]
+    * frogs can shoot tongue long distance [fixed by adding frog vs. slime to arena]
+    * Dealing with the new mobs
 
 monsters:
     * move end mobs into room with dragon, expanding probably
@@ -77,7 +51,7 @@ death:
 
 plants:
     _ loop soils for: dripleaf
-    _ dead bush can be on mud; create a seaprate loop for it and cane
+    * soils for bamboo, sugar cane, dead bush, and cactus
 
 biomes:
     _ new biome for mangrove has different colors of water, etc.? or same as swamp?
