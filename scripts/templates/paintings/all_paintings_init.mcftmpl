@@ -1,6 +1,7 @@
 <%namespace name="base" file="../base.mcftmpl"/>
 
 kill @e[tag=painting]
+fill ~-2 ~2 ~0 ~16 ~6 ~22 air replace oak_wall_sign
 
 <%def name="painting(id, facing, x, z, sx=0, sy=0, sz=0)">\
 <%
@@ -10,33 +11,43 @@ kill @e[tag=painting]
     pz += sz
     dir = ('south', 'west', 'north', 'east')[facing]
 %>\
-summon painting ~${x} ~3 ~${z} {Motive:${thing.id},Facing:${facing},Tags:[painting]}
+summon painting ~${x} ~3 ~${z} {variant:${thing.id},facing:${facing},Tags:[painting]}
 ${base.sign('~%d ~%d ~%d' % (x + px, 2 + sy, z + pz), dir, 2, thing.name)}\
 </%def>
 
 ${painting('Burning Skull', 0, 0, 0, sx=-1)}
 ${painting('Pointer', 0, 11, 0, sx=4, sy=1)}
+
 ${painting('Pigscene', 1, 14, 2, sz=-1)}
 ${painting('Skull and Roses', 1, 14, 6)}
 ${painting('Bust', 1, 14, 9)}
 ${painting('Void', 1, 14, 12)}
-${painting('Match', 2, 12, 14)}
-${painting('Wither', 2, 9, 14)}
-${painting('Stage', 2, 6, 14)}
-${painting('Fighters', 2, 2, 14, sx=1)}
-${painting('Graham', 3, -2, 13)}
-${painting('Wanderer', 3, -2, 11)}
-${painting('Donkey Kong', 3, -2, 8, sz=1)}
+${painting('Match', 1, 14, 15)}
+${painting('Graham', 1, 14, 19)}
+
+${painting('Stage', 2, 12, 20)}
+${painting('Earth', 2, 8, 20)}
+${painting('Wind', 2, 5, 20)}
+${painting('Wither', 2, 1, 20)}
+
+${painting('Wanderer', 3, -2, 19)}
+${painting('Fighters', 3, -2, 15, sz=1)}
+${painting('Donkey Kong', 3, -2, 9, sz=1)}
 ${painting('Skeleton', 3, -2, 3, sz=1)}
-${painting('Wasteland', 1, 2, 5, sz=1)}
-${painting('Aztec2', 2, 4, 4)}
+
+${painting('Wasteland', 2, 4, 4)}
 ${painting('Kebab', 2, 6, 4)}
 ${painting('Alban', 2, 8, 4)}
-${painting('Aztec', 3, 10, 5, sz=-1)}
 ${painting('Bomb', 0, 9, 6)}
 ${painting('Plant', 0, 7, 6)}
 ${painting('Sunset', 0, 4, 6)}
+
 ${painting('Creebet', 2, 5, 9)}
 ${painting('Courbet', 2, 8, 9)}
 ${painting('Pool', 0, 7, 11)}
 ${painting('Sea', 0, 4, 11)}
+
+${painting('Aztec2', 2, 4, 14)}
+${painting('Aztec', 2, 7, 14)}
+${painting('Water', 0, 4, 16)}
+${painting('Fire', 0, 7, 16)}

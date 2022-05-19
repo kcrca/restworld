@@ -24,7 +24,7 @@ monsters:
 materials:
     * Gotta figure out how mangroves grow (no sapling) only in new mangrove forest thing?
     * And how to display propagule pots?
-    _ boat with chest
+    * boat with chest
 
 gui:
     * Elytra needs to show damaged texture (only shows in inventory, so probably it's an item not in the creative inv
@@ -60,8 +60,7 @@ biomes:
     _ ancient city
 
 paintings:
-    _ new paintings, four in a series, I guess we grow the room a little, could show them in a 2x2 matrix.
-    _ If the room was one or two blocks larger in both left and right, would make more room for the paintings in the middle.
+    * new paintings, four in a series, I guess we grow the room a little, could show them in a 2x2 matrix.
 
 arena:
     _ place hunter/victim in random locations clustered around home instead of at home. Possibly create some armor stands
