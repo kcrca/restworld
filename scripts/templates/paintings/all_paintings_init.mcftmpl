@@ -3,7 +3,7 @@
 kill @e[tag=painting]
 fill ~-2 ~2 ~0 ~16 ~6 ~22 air replace oak_wall_sign
 
-<%def name="painting(id, facing, x, z, sx=0, sy=0, sz=0)">\
+<%def name="painting(id, facing, x, z, sx=0, sy=0, sz=0, note='')">\
 <%
     thing = Thing(id)
     px, pz = ((-1, 0), (0, -1), (1, 0), (0, 1))[facing]
@@ -12,7 +12,7 @@ fill ~-2 ~2 ~0 ~16 ~6 ~22 air replace oak_wall_sign
     dir = ('south', 'west', 'north', 'east')[facing]
 %>\
 summon painting ~${x} ~3 ~${z} {variant:${thing.id},facing:${facing},Tags:[painting]}
-${base.sign('~%d ~%d ~%d' % (x + px, 2 + sy, z + pz), dir, 2, thing.name)}\
+${base.sign('~%d ~%d ~%d' % (x + px, 2 + sy, z + pz), dir, 2, (thing.name, note))}\
 </%def>
 
 ${painting('Burning Skull', 0, 0, 0, sx=-1)}
@@ -26,8 +26,8 @@ ${painting('Stage', 1, 14, 14)}
 ${painting('Wither', 1, 14, 17)}
 
 ${painting('Pigscene', 2, 12, 20, sx=1)}
-${painting('Earth', 2, 8, 20)}
-${painting('Wind', 2, 5, 20)}
+${painting('Earth', 2, 8, 20, note='(unused)')}
+${painting('Wind', 2, 5, 20, note='(unused)')}
 ${painting('Graham', 2, 1, 20)}
 ${painting('Wanderer', 2, -1, 20)}
 
@@ -49,5 +49,5 @@ ${painting('Sea', 0, 4, 11)}
 
 ${painting('Aztec2', 2, 4, 14)}
 ${painting('Aztec', 2, 7, 14)}
-${painting('Water', 0, 4, 16)}
-${painting('Fire', 0, 7, 16)}
+${painting('Water', 0, 4, 16, note='(unused)')}
+${painting('Fire', 0, 7, 16, note='(unused)')}
