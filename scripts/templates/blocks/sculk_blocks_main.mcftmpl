@@ -9,4 +9,4 @@
 	Thing("Sculk Shrieker|Can't Summon|Shrieking", id='sculk_shrieker', block_state="can_summon=false,shrieking=true"),
     )
 %>
-${blocks(types, sign=1)}
+${blocks(types)}
