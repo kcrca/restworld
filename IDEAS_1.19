@@ -54,7 +54,7 @@ plants:
     * mangrove propagule in pot
 
 biomes:
-    _ new biome for mangrove has different colors of water, etc.? or same as swamp?
+    _ new biome for mangrove has different colors of water, etc.? or same as swamp? [need to wait until 3p editors support 1.19, can't find a way to set the biome]
     _ mangrove swamp
     _ ancient city
 
@@ -64,3 +64,6 @@ paintings:
 arena:
     _ place hunter/victim in random locations clustered around home instead of at home. Possibly create some armor stands
       sharing a tag, and tell the spawn commend to pick a random entity with that tag?
+
+photo:
+    Total rework: Nothing from 1.7 (moss, etc.) onward!
