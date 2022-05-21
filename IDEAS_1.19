@@ -62,8 +62,9 @@ paintings:
     * new paintings, four in a series, I guess we grow the room a little, could show them in a 2x2 matrix.
 
 arena:
-    _ place hunter/victim in random locations clustered around home instead of at home. Possibly create some armor stands
+    * place hunter/victim in random locations clustered around home instead of at home. Possibly create some armor stands
       sharing a tag, and tell the spawn commend to pick a random entity with that tag?
+    * add more battlers
 
 photo:
     Total rework: Nothing from 1.7 (moss, etc.) onward!
