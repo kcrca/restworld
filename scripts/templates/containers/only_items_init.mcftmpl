@@ -12,15 +12,15 @@ item replace block ~1 ~-5 ~-2 container.${slot} from entity @e[tag=only_item_fra
 </%def>
 
 <%
-    rows = [(0, 4), (0, 4), (0, 4), (0, 4)]
-    dx = 1
-    dz = 2
+    rows = [(0, 5), (0, 5), (0, 5)]
+    dx = 2
+    dz = 1
     x = 0
     items = list(non_inventory)
 %>
 
-${base.label(3, 2, -2, "Give")}
-setblock ~1 ~-5 ~-2 chest[facing=east]
+${base.label(3, 2, -1, "Give")}
+setblock ~1 ~-5 ~-1 chest[facing=east]
 
 kill @e[tag=only_item_frame]
 %while len(items) > 0:
@@ -39,4 +39,6 @@ summon item_frame ~${x} ~2 ~${5 - z} {Facing:2,Tags:[only_item_frame,only_item_f
 %for t in non_inventory:
 ${only_item_contents(t, loop.index)}
 %endfor
-clone ~1 ~-5 ~-2 ~1 ~-5 ~-2 ~1 ~1 ~-2
+clone ~1 ~-5 ~-1 ~1 ~-5 ~-1 ~1 ~1 ~-1
+
+${base.sign('~2 ~2 ~-1', 'north', 2, ('Items Not in', 'Creative', 'Iventory'))}
