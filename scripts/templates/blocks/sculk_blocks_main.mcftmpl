@@ -12,3 +12,5 @@
     )
 %>
 ${blocks(types)}
+execute if score ${var} funcs matches 6 positioned ~0 ~3 ~0 run function restworld:particles/shriek_particles
+execute if score ${var} funcs matches 8 positioned ~0 ~3 ~0 run function restworld:particles/shriek_particles

@@ -34,7 +34,7 @@ fonts:
     * put signs on either side of target pointing at it
 
 particles:
-    _ somehow these feel the least stable, wait for them
+    * sculk soul and [sculk] shrieker
 
 effects:
     * add darkness
