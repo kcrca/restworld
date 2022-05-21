@@ -67,60 +67,51 @@ if row_length % 2 == 0:
     sys.exit(1)
 
 battles = [
-    ('Vindicator', 'Iron Golem'),
-    ('Pillager', 'Snow Golem'),
-    ('Illusioner', 'Snow Golem'),
-    ('Evoker', 'Iron Golem'),
-    ('Vex', 'Snow Golem'),
-    ('Drowned:c', 'Snow Golem'),
-
-    ('Wither Skeleton', 'Piglin'),
-    ('Zombie:c', 'Iron Golem'),
-    ('Shulker', 'Snow Golem'),
-    ('Stray:c', 'Iron Golem'),
-    ('Wither', 'Pillager'),
-    ('Blaze', 'Snow Golem'),
-
-    ('Piglin Brute', 'Vindicator'),
-    ('Witch', 'Snow Golem'),
-    ('Wolf', 'Sheep'),
-    ('Goat', 'Sheep'),
-    ('Fox', 'Chicken'),
-    ('Frog', 'Magma Cube'),
-
-    ('Cat', 'Rabbit'),
-    ('Ravager', 'Iron Golem'),
-    ('Polar Bear', 'Vindicator'),
-    ('Hoglin', 'Vindicator'),
-    ('Zoglin', 'Vindicator'),
-    ('Zombified Piglin', 'Vindicator'),
-
-    ('Panda', 'Vindicator'),
-    ('Spider', 'Snow Golem'),
-    ('Cave Spider', 'Snow Golem'),
-    ('Phantom:c', 'Rabbit'),
-    ('Parrot', 'Vindicator'),
     ('Axolotl:w', 'Drowned'),
-
-    ('Zombie:c', 'Iron Golem'),
-    ('Axolotl:w', 'Guardian'),
-    ('Ocelot', 'Chicken'),
-    ('Axolotl:w', 'Elder Guardian'),
+    ('Blaze', 'Snow Golem'),
+    ('Cat', 'Rabbit'),
+    ('Cave Spider', 'Snow Golem'),
+    ('Drowned:c', 'Snow Golem'),
+    ('Evoker', 'Iron Golem'),
+    ('Fox', 'Chicken'),
     ('Frog', 'Slime'),
-    ('Slime', 'Iron Golem'),
+    ('Goat', 'Sheep'),
+    ('Hoglin', 'Vindicator'),
+    ('Illusioner', 'Snow Golem'),
+    ('Panda', 'Vindicator'),
+    ('Parrot', 'Vindicator'),
+    ('Phantom:c', 'Rabbit'),
+    ('Piglin Brute', 'Vindicator'),
+    ('Pillager', 'Snow Golem'),
+    ('Polar Bear', 'Vindicator'),
+    ('Ravager', 'Iron Golem'),
+    ('Shulker', 'Vindicator'),
+    ('Spider', 'Snow Golem'),
+    ('Stray:c', 'Iron Golem'),
+    ('Vex', 'Snow Golem'),
+    ('Vindicator', 'Iron Golem'),
+    ('Witch', 'Snow Golem'),
+    ('Wither Skeleton', 'Piglin'),
+    ('Wither', 'Pillager'),
+    ('Wolf', 'Sheep'),
+    ('Zoglin', 'Vindicator'),
+    ('Zombie:c', 'Iron Golem'),
+    ('Zombified Piglin', 'Vindicator'),
 ]
 
-## Some set aisde for adding if we need them
-##  ('Zombie', 'Iron Golem'),
-##  ('Axolotl', 'Guardian'),
-##  ('Ocelot', 'Chicken'),
-##  ('Axolotl', 'Elder Guardian'),
-## These don't work unelss we figure out how to kill the ones that spawn when a larger is killed
+## Lower priority ones that can be used as filler
+##    ('Axolotl:w', 'Elder Guardian'),
+##    ('Axolotl:w', 'Guardian'),
+##    ('Ocelot', 'Chicken'),
+##    ('Slime', 'Iron Golem'),
+##    ('Magma Cube', 'Iron Golem'),
+## These don't work unelss we figure out how to kill the ones that spawn when a larger is killed. For
+## now, we just make sure they are the smallest size.
 ##  ('Slime', 'Iron Golem'),
 ##  ('Magma Cube', 'Iron Golem'),
 
 if len(battles) % stride_length != 0:
-    sys.stderr.write('Row length (%d) is not a multiple of battle count (%d)\n' % (stride_length, len(battles)))
+    sys.stderr.write('Stride length (%d) is not a multiple of battle count (%d)\n' % (stride_length, len(battles)))
     sys.exit(1)
 
 battles.sort()

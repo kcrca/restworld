@@ -14,3 +14,5 @@ execute if score ${var}_type funcs matches 2 at @e[tag=monitor_home] run fill ~-
 tag @a add arena_safe
 tag @e[type=armor_stand] add arena_safe
 kill @e[tag=!arena_safe,distance=..100]
+kill @e[tag=!arena_safe,distance=..100]
+kill @e[tag=!arena_safe,distance=..100]
