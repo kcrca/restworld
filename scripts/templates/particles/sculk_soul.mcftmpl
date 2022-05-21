@@ -1,0 +1,5 @@
+<%namespace file="particle_base.mcftmpl" import="*"/>\
+${main_clock()} setblock ~0 ~0 ~0 sculk_catalyst[bloom=true]
+## I don't know how to avoid this locaton specific attribute
+${main_clock(delay=8)} setblock ~0 ~0 ~0 sculk_catalyst[bloom=false]
+${main_clock(delay=12)} data merge block ~0 ~0 ~0 {cursors:[{charge:0,pos:[0,102,-74]}]}

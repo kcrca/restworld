@@ -1,0 +1,4 @@
+setblock ~0 ~0 ~0 sculk_shrieker[can_summon=true,shrieking=true]
+%for i in range(0, 8):
+particle shriek ${i * 7} ~0 ~1 ~0
+%endfor
