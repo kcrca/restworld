@@ -18,22 +18,22 @@ ${base.sign('~%d ~%d ~%d' % (x + px, 2 + sy, z + pz), dir, 2, thing.name)}\
 ${painting('Burning Skull', 0, 0, 0, sx=-1)}
 ${painting('Pointer', 0, 11, 0, sx=4, sy=1)}
 
-${painting('Pigscene', 1, 14, 2, sz=-1)}
-${painting('Skull and Roses', 1, 14, 6)}
-${painting('Bust', 1, 14, 9)}
-${painting('Void', 1, 14, 12)}
-${painting('Match', 1, 14, 15)}
-${painting('Graham', 1, 14, 19)}
+${painting('Skull and Roses', 1, 14, 2)}
+${painting('Bust', 1, 14, 5)}
+${painting('Void', 1, 14, 8)}
+${painting('Match', 1, 14, 11)}
+${painting('Stage', 1, 14, 14)}
+${painting('Wither', 1, 14, 17)}
 
-${painting('Stage', 2, 12, 20)}
+${painting('Pigscene', 2, 12, 20, sx=1)}
 ${painting('Earth', 2, 8, 20)}
 ${painting('Wind', 2, 5, 20)}
-${painting('Wither', 2, 1, 20)}
+${painting('Graham', 2, 1, 20)}
+${painting('Wanderer', 2, -1, 20)}
 
-${painting('Wanderer', 3, -2, 19)}
-${painting('Fighters', 3, -2, 15, sz=1)}
-${painting('Donkey Kong', 3, -2, 9, sz=1)}
-${painting('Skeleton', 3, -2, 3, sz=1)}
+${painting('Fighters', 3, -2, 16, sz=1)}
+${painting('Donkey Kong', 3, -2, 10, sz=1)}
+${painting('Skeleton', 3, -2, 4, sz=1)}
 
 ${painting('Wasteland', 2, 4, 4)}
 ${painting('Kebab', 2, 6, 4)}
