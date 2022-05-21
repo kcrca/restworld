@@ -1,4 +1,12 @@
 <%namespace import="*" file="blocks_base.mcftmpl"/>
-<% types = ("Sculk", "Sculk Catalyst", 'Sculk Sensor', "Sculk Shrieker") %>
-
-${blocks(types)}
+<%
+    types = ("Sculk", 'Sculk Sensor',
+	Thing("Sculk Catalyst"),
+	Thing("Sculk Catalyst|Blooming", id='sculk_catalyst', block_state='bloom=true'),
+	Thing("Sculk Shrieker|Can Summon", id='sculk_shrieker', block_state="can_summon=true,shrieking=false"),
+	Thing("Sculk Shrieker|Can Summon|Shrieking", id='sculk_shrieker', block_state="can_summon=true,shrieking=true"),
+	Thing("Sculk Shrieker|Can't Summon", id='sculk_shrieker', block_state="can_summon=false,shrieking=false"),
+	Thing("Sculk Shrieker|Can't Summon|Shrieking", id='sculk_shrieker', block_state="can_summon=false,shrieking=true"),
+    )
+%>
+${blocks(types, sign=1)}
