@@ -1,13 +1,14 @@
 <%namespace name="base" file="../base.mcftmpl"/>\
 
-<%def name="only_item_contents(thing, slot)">
+<%def name="only_item_contents(thing, slot, tag=None)">\
 <%
 name, damage = None, None
 if thing.name == 'Elytra':
     name, damage = 'Damaged Elytra', ',Damage:450'
-%>
-data merge entity @e[tag=only_item_frame_${thing.id},limit=1] {${base.named_frame_item(thing, name, damage)}}
-item replace block ~1 ~-5 ~-2 container.${slot} from entity @e[tag=only_item_frame_${thing.id},limit=1] container.0
+tag_id = tag if tag else thing.id
+%>\
+data merge entity @e[tag=only_item_frame_${tag_id},limit=1] {${base.named_frame_item(thing, name, damage)}}
+item replace block ~1 ~-5 ~-2 container.${slot} from entity @e[tag=only_item_frame_${tag_id},limit=1] container.0
 </%def>
 
 <%
