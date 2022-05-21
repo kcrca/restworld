@@ -2,6 +2,8 @@
 #
 # This script translates a JimStoneCraft book into a book we can use, reading
 # unicode_text.txt and producing unicode_text.mcftmpl
+#
+# unicode_text.txt is downloaded from https://www.johnsmithlegacy.co.uk/jimstonecraft.php
 set -x
 src="unicode_text.txt"
 if [[ ! -f $src ]]; then

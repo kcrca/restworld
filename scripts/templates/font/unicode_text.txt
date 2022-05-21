@@ -1,36 +1,33 @@
-<%namespace name="base" file="../base.mcftmpl"/>
+====================================================================================================
 
-## ====================================================================================================
-## 
-## JimStoneCraft Unicode Font List Command Block.
-## 
-## http://www.johnsmithlegacy.co.uk/
-## 
-## for Minecraft Java Edition 1.17.1 or greater.
-## 
-## This is a command block script to create an thirteen page book with the unicode characters used in
-## the game, this is of great help while you are texturing the fonts used.
-## 
-## Page 2, 3 - ascii.png
-## Page 4-15 - accented.png
-## Page 16-26 - nonlatin_european.png
-## Page 27 - ascii_sga.png
-## Page 28-29 - unicode_page_00.png
-## Page 30 - unicode_page_01.png
-## Page 31-33 - berylium_bd.otf (Complete Font List)
-## 
-## Give yourself a command block and paste everything below the line into it (you cannot paste the
-## script into the chat command as the script is too long and gets cut off).
-## 
-## /give @r minecraft:command_block
-## 
-## Created: 27th April 2019
-## Last Updated: 18th June 2021
-## 
-## ====================================================================================================
+JimStoneCraft Unicode Font List Command Block.
 
-<%
-book = r'''
+http://www.johnsmithlegacy.co.uk/
+
+for Minecraft Java Edition 1.17.1 or greater.
+
+This is a command block script to create an thirteen page book with the unicode characters used in
+the game, this is of great help while you are texturing the fonts used.
+
+Page 2, 3 - ascii.png
+Page 4-15 - accented.png
+Page 16-26 - nonlatin_european.png
+Page 27 - ascii_sga.png
+Page 28-29 - unicode_page_00.png
+Page 30 - unicode_page_01.png
+Page 31-33 - berylium_bd.otf (Complete Font List)
+
+Give yourself a command block and paste everything below the line into it (you cannot paste the
+script into the chat command as the script is too long and gets cut off).
+
+/give @r minecraft:command_block
+
+Created: 27th April 2019
+Last Updated: 18th June 2021
+
+====================================================================================================
+
+/give @p written_book
 {pages:[
 "{\"text\":\"
 
@@ -448,6 +445,3 @@ berylium_bd.otf - 3/3\\n
 title:"Unicode Fonts",
 author:"JimStoneCraft"
 }
-'''.replace('\n', '').replace('.png', '').replace('.otf', '')
-%>
-<%base.ensure("~0 ~2 ~0", 'lectern[facing=east,has_book=true]', nbt='Book:{id:"minecraft:written_book", Count:1, tag: %s}' % book)%>
