@@ -47,7 +47,7 @@ class Thing:
     def sign_text(self, pre=None, skip=()):
         lines = self.to_sign_text()
         if pre:
-            lines = [pre,] + lines
+            lines = [pre, ] + lines
         if len(lines) == 4:
             start = 0
         else:
@@ -646,9 +646,9 @@ def main():
                           button)
 
     sign_room("particles", particles, (
-        Wall(7, 5, "east", (-1, 0)),
-        Wall(7, 7, "south", (0, -1), y_first=4),
-        Wall(7, 5, "west", (1, 0)),
+        Wall(7, 6, "east", (-1, 0), start=1, y_first=4, skip={4:(2,3)}),
+        Wall(7, 5, "south", (0, -1)),
+        Wall(7, 6, "west", (1, 0), y_first=4, skip={4:(2,3)}),
         Wall(7, 5, "north", (0, 1)),
     ), button=True)
     commands = sign_room("effects", effects, (
@@ -711,6 +711,8 @@ particles = [
     ActionSign("Nautilus", note="with Conduit"),
     ActionSign("Poof", note="Small Explosion"),
     ActionSign("Sculk Sensor"),
+    ActionSign("Sculk Soul"),
+    ActionSign("Shriek"),
     ActionSign("Smoke", priority=2, comment="seen with items in blocks"),
     ActionSign("Sneeze"),
     ActionSign("Snow and Rain"),
@@ -767,23 +769,25 @@ effects = (
 
 
 class Wall:
-    def __init__(self, width, used, facing, block_at, y_first=3, y_last=1, used_widths=None):
+    def __init__(self, width, used, facing, block_at, y_first=3, y_last=1, used_widths=None, start=None, skip=None):
         self.width = width
+        self.provided_start = start
         self.facing = facing
         self.block_at = block_at
-        self.start = int((width - used) / 2)
-        self.end = width - self.start
         self.y_first = y_first
         self.y_last = y_last
         if used_widths is None:
             used_widths = (used,) * 10
         self.used_widths = used_widths
+        self.skip = skip if skip else {}
         self.line = 0
         self.set_line_range()
 
     def set_line_range(self):
-        self.start = int((self.width - self.used_widths[self.line]) / 2)
-        self.end = self.width - self.start
+        self.start = self.provided_start
+        if not self.start:
+            self.start = int((self.width - self.used_widths[self.line]) / 2)
+        self.end = self.start + self.used_widths[self.line]
 
     def to_next_wall(self, tag):
         return "execute as @e[tag=%s] run execute at @s run teleport @s ^-%d ^0 ^0 ~90 ~" % (
@@ -795,6 +799,12 @@ class Wall:
     def next_pos(self, x, y):
         # The top row is sparse
         x += 1
+        try:
+            skip = self.skip[y]
+            while skip and x - self.start in range(skip[0], skip[1] + 1):
+                x += 1
+        except KeyError:
+            pass
         if y == 4 and x == 3:
             # Skip the middle position
             x += 1
