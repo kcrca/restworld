@@ -619,9 +619,12 @@ def main():
 
             I thought of doing this using mako to generate mako templates, but the quoting issues....
             """
-            for script in glob.glob(os.path.join(self.room_dir, "*.py]")):
-                if exec(compile(open(script, "rb").read(), script, 'exec')) != 0:
-                    sys.exit(-1)
+            scripts = glob.glob(os.path.join(self.room_dir, "*.sh"))
+            if scripts:
+                for script in scripts:
+                    local_name = script[len(self.room_dir) + 1:]
+                    if os.system('cd %s ; ./%s' % (self.room_dir, local_name)) != 0:
+                        sys.exit(-1)
 
     rooms = []
     for room_dir in sorted(glob.glob(os.path.join(tmpl_dir, '*/'))):
@@ -642,9 +645,9 @@ def main():
                           button)
 
     sign_room("particles", particles, (
-        Wall(7, 6, "east", (-1, 0), start=1, y_first=4, skip={4:(2,3)}),
+        Wall(7, 6, "east", (-1, 0), start=1, y_first=4, skip={4: (2, 3)}),
         Wall(7, 5, "south", (0, -1)),
-        Wall(7, 6, "west", (1, 0), y_first=4, skip={4:(2,3)}),
+        Wall(7, 6, "west", (1, 0), y_first=4, skip={4: (2, 3)}),
         Wall(7, 5, "north", (0, 1)),
     ), button=True)
     commands = sign_room("effects", effects, (
