@@ -1,6 +1,8 @@
 <%namespace import="*" file="blocks_base.mcftmpl"/>
 <%
-    types = ("Sculk", 'Sculk Sensor',
+    types = (
+	Thing("Sculk Vein", block_state="north=true"),
+	"Sculk", 'Sculk Sensor',
 	Thing("Sculk Catalyst"),
 	Thing("Sculk Catalyst|Blooming", id='sculk_catalyst', block_state='bloom=true'),
 	Thing("Sculk Shrieker|Can Summon", id='sculk_shrieker', block_state="can_summon=true,shrieking=false"),
