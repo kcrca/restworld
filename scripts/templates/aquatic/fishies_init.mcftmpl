@@ -6,4 +6,4 @@ ${base.mobs_init(z_init=-4, z_delta_init=-1, y_init=2, kid_x_init=-1.6, adult_x_
 ${base.mobs("Salmon", do_adult=True)}\
 ${base.mobs("Cod", do_adult=True)}\
 ${base.mobs("Pufferfish", tags=("pufferfish",), do_adult=True)}\
-${base.mobs("Tadpole", tags=("tadpole",), do_adult=True)}\
+${base.mobs("Tadpole", tags=("tadpole",), do_adult=False)}\
