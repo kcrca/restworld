@@ -71,8 +71,6 @@ ${when(i)} data merge entity @e[tag=armor_stand,limit=1] {HandItems:[{id:${mater
 	hands_raw[7] = "compass"
     elif material == "golden":
 	hands_raw[6] = "clock"
-    elif material == "netherite":
-	hands_raw[6] = "recovery_compass"
     hands = list("%s" % ("id:%s,Count:1" % h if h else "") for h in hands_raw)
 %>
 %for j in range(0, 4):
