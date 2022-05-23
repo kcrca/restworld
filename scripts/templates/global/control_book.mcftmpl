@@ -21,31 +21,32 @@ ${action(r"Nether Home", "Nether Starting Point", "function restworld:global/go_
 ${action(r"End Home", "End Starting Point", "function restworld:global/go_end_home")}, ${scribe(r"\\n   ")} \
 ]","[\"\", \
 ${scribe(r"Rooms: \\n")}, \
+${action(r"Warden", "Go to warden room", "function restworld:ancient/_goto")}, ${scribe(r", ")}, \
 ${action(r"Aquatic", "Go to aquatic room", "function restworld:acquatic/_goto")}, ${scribe(r", ")}, \
 ${action(r"Banners & Shields", "Go to banners & shields room", "function restworld:banners/_goto")}, ${scribe(r", ")}, \
 ${action(r"Blocks", "Go to blocks room", "function restworld:blocks/_goto")}, ${scribe(r", ")}, \
-${action(r"DIY", "Go to diy room", "function restworld:diy/_goto")}, ${scribe(r", ")}, \
-${action(r"End & Nether", "Go to end & nether room", "function restworld:end_monsters/_goto")}, ${scribe(r", ")}, \
-${action(r"Ender Dragon", "Go to ender dragon room", "function restworld:enders/_goto")}, ${scribe(r", ")}, \
-${action(r"Fonts", "Go to fonts room", "function restworld:font/_goto")}, ${scribe(r", ")}, \
 ${action(r"GUI", "Go to gui room", "function restworld:containers/_goto")}, ${scribe(r", ")}, \
-${action(r"Materials", "Go to materials room", "function restworld:materials/_goto")}, ${scribe(r", ")}, \
+${action(r"DIY", "Go to diy room", "function restworld:diy/_goto")}, ${scribe(r", ")}, \
 ${action(r"Mob Effects", "Go to mob effects room", "function restworld:effects/_goto")}, ${scribe(r", ")}, \
+${action(r"The End", "Go to the end room", "function restworld:enders/_goto")}, ${scribe(r", ")}, \
+${action(r"Fonts", "Go to fonts room", "function restworld:font/_goto")}, ${scribe(r", ")}, \
+${action(r"Villagers", "Go to villagers room", "function restworld:friendlies/_goto")}, ${scribe(r", ")}, \
+${action(r"Materials", "Go to materials room", "function restworld:materials/_goto")}, ${scribe(r", ")}, \
 ${action(r"Monsters", "Go to monsters room", "function restworld:monsters/_goto")}, ${scribe(r", ")}, \
+${action(r"Nether", "Go to nether room", "function restworld:nether/_goto")}, ${scribe(r", ")}, \
 ${action(r"Paintings", "Go to paintings room", "function restworld:paintings/_goto")}, ${scribe(r", ")}, \
 ${action(r"Particles", "Go to particles room", "function restworld:particles/_goto")}, ${scribe(r", ")}, \
 ${action(r"Plants", "Go to plants room", "function restworld:plants/_goto")}, ${scribe(r", ")}, \
 ${action(r"Redstone", "Go to redstone room", "function restworld:redstone/_goto")}, ${scribe(r", ")}, \
 ${action(r"Time", "Go to time room", "function restworld:time/_goto")}, ${scribe(r", ")}, \
-${action(r"Villagers", "Go to villagers room", "function restworld:friendlies/_goto")}, ${scribe(r", ")}, \
-${action(r"Wither", "Go to wither room", "function restworld:wither/_goto")} \
+${action(r"Wither", "Go to wither room", "function restworld:wither/_goto")}, ${scribe(r".")} \
 ]","[\"\", \
 ${scribe(r"Credits:\\n\\n")}, \
 ${scribe(r"BlueMeanial:\\n", {"bold": True})}, \
 ${scribe(r"  Command Blocks\\n  Software Design\\n  Programming\\n\\n")}, \
 ${scribe(r"JUMBOshrimp277:\\n", {"bold": True})}, \
 ${scribe(r"  World Design\\n  Testing\\n  Rubber Duck\\n")}, \
-${scribe(r"\\nMinecraft Version:\\n   1.17.1, Aug 2021")} \
+${scribe(r"\\nMinecraft Version:\\n   1.19, May 2022")} \
 ]" \
 ], \
 title:"World Control",author:"Display World",display:{Lore:["Useful controls"]}}
