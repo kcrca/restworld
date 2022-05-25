@@ -360,6 +360,8 @@ biome_groups['End'] = ('The End', 'End Island', 'End City')
 biome_groups['Structures'] = ('Mineshaft', 'Monument', 'Stronghold', 'Bastion Remnant', 'Fortress')
 biomes = [item for sublist in list(biome_groups.values()) for item in sublist]
 
+coloring_coords = (1, 4, 6, -13, 2, -1)
+
 
 def get_normal_blocks():
     modifiers = tuple(c.name for c in colors) + woods + stems + materials + tuple(
@@ -509,6 +511,7 @@ def render_tmpl(tmpl, var_name, **kwargs):
         effects=effects,
         moon_phases=moon_phases,
         non_inventory=non_inventory,
+        coloring_coords=coloring_coords,
         **kwargs
     )
 
