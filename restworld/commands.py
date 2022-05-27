@@ -1,11 +1,23 @@
 from __future__ import annotations
 
-import io
 import re
 from enum import Enum, auto
+from functools import wraps
 from inspect import signature, getmembers, ismethod
+from io import StringIO
 
 from .enums import Advancement, ValueEnum
+
+
+def fluent(method):
+    @wraps(method)
+    def inner(self, *args, **kwargs):
+        obj = self.__class__.__new__(self.__class__)
+        obj.__dict__ = self.__dict__.copy()
+        method(obj, *args, **kwargs)
+        return obj
+
+    return inner
 
 
 class PyEum(Enum):
@@ -28,6 +40,19 @@ class Gamemode(ValueEnum):
     SPECTATOR = 'spectator'
 
 
+class ParamEnum(Enum):
+    def __str__(self):
+        return super().name.lower()
+
+
+class AdvancementBehavior(ParamEnum):
+    EVERYTHING = auto()
+    ONLY = auto()
+    FROM = auto()
+    THROUGH = auto()
+    UNTIL = auto()
+
+
 class Action(Enum):
     GIVE = auto()
     GRANT = GIVE
@@ -39,16 +64,50 @@ class Action(Enum):
         return action == 'grant' if action == cls.GIVE else 'revoke'
 
 
-class Range:
-    def __init__(self, start: int | float = None, end: int | float = None, at: int | float = None):
-        if not start and not end and not at:
-            raise ValueError("Must specify start or end or at")
-        self.start = str(start) if start else ''
-        self.end = str(end) if end else ''
-        self.at = str(at) if at else ''
+def _bool(criteria: bool) -> str:
+    return str(criteria).lower()
+
+
+def not_ify(value) -> str:
+    s = str(value)
+    if s[0] != '!':
+        s = '!' + s
+    return s
+
+
+class Chain:
+    def __init__(self):
+        self.rep = None
+
+    def _add(self, *objs: any, prefix=''):
+        s = ' '.join(str(x) for x in objs)
+        if not self.rep:
+            self.rep = prefix
+        self.rep += s
+
+    def _add_if(self, s: str):
+        if self.rep:
+            self.rep += s
+
+    def _start(self, start: Chain):
+        self.rep = start.rep
+        return self
 
     def __str__(self):
-        return self.at if self.at else '%s..%s' % (self.start, self.end)
+        return self.rep
+
+
+class Range(Chain):
+    def __init__(self, start: int | float = None, end: int | float = None, at: int | float = None):
+        super().__init__()
+        if not start and not end and not at:
+            raise ValueError("Must specify start, end or at")
+        if at:
+            self._add(str(at))
+        else:
+            b = str(start) if start else ''
+            e = str(end) if end else ''
+            self._add(b + '..' + e)
 
 
 class ScoreRange:
@@ -58,29 +117,23 @@ class ScoreRange:
         self.inverse = inverse
 
 
-class AdvancementCriteria:
+class AdvancementCriteria(Chain):
     def __init__(self, advancement: Advancement, criteria: bool | tuple[str, bool]):
-        self.advancement = advancement
-        self.criteria = None if isinstance(criteria, bool) else criteria[0]
-        self.done = criteria if isinstance(criteria, bool) else criteria[1]
-
-    def __str__(self):
-        if self.criteria:
-            return '%s={%s=%s}' % (self.advancement, self.criteria, str(self.done).lower())
+        super().__init__()
+        if isinstance(criteria, bool):
+            self._add('%s=%s' % (advancement, _bool(criteria)))
         else:
-            return '%s=%s' % (self.advancement, str(self.done).lower())
+            self._add('%s={%s=%s}' % (advancement, criteria[0], _bool(criteria[1])))
 
 
-class _NbtFormat:
+class _NbtFormat(Chain):
     _needs_quotes = re.compile(r'[\s:"]')
 
     def __init__(self, nbt: dict):
-        self.nbt = nbt
-        self.sio = io.StringIO()
-
-    def __str__(self):
-        self._dict(self.nbt)
-        return self.sio.getvalue()
+        super().__init__()
+        self.sio = StringIO()
+        self._dict(nbt)
+        self._add(self.sio.getvalue())
 
     def _quote(self, s: str):
         s = s.replace('"', r'\"')
@@ -122,21 +175,8 @@ class _NbtFormat:
         self.sio.write(']')
 
 
-def notify(value):
-    s = str(value)
-    if s[0] != '!':
-        s = '!' + s
-    return s
-
-
-class Target:
+class Target(Chain):
     _create_key = object()
-
-    # noinspection PyUnusedLocal
-    def __init__(self, create_key, selector):
-        assert (create_key == Target._create_key), "Private __init__, use creation methods"
-        self._selector = selector
-        self._args = {}
 
     @classmethod
     def player(cls):
@@ -158,10 +198,16 @@ class Target:
     def self(cls):
         return Target(cls._create_key, "@s")
 
+    def __init__(self, create_key, selector):
+        super().__init__()
+        assert (create_key == Target._create_key), "Private __init__, use creation methods"
+        self._selector = selector
+        self._args = {}
+
     def __str__(self):
         if len(self._args) == 0:
             return self._selector
-        return self._selector + '[' + ','.join(self._args.values()) + ']'
+        return self._selector + '[' + super().__str__() + ']'
 
     def _add_arg(self, key: str, value: any):
         v = str(value)
@@ -171,6 +217,8 @@ class Target:
             self._args[key] += ',' + v
         else:
             self._args[key] = v
+        self._add_if(',')
+        self._add(v)
 
     def _unique_arg(self, key: str, value: any):
         if key in self._args:
@@ -178,16 +226,16 @@ class Target:
         self._add_arg(key, value)
         return self
 
-    def _multi_args(self, key: str, value: any, values: tuple[any]):
+    def _multi_args(self, key: str, value: any, values: tuple[any, ...]):
         self._add_arg(key, value)
         for v in values:
             self._add_arg(key, v)
         return self
 
     def _not_args(self, key: str, value, values):
-        self._add_arg(key, notify(value))
+        self._add_arg(key, not_ify(value))
         for v in values:
-            self._add_arg(key, notify(v));
+            self._add_arg(key, not_ify(v))
         result = self._args[key]
         value_count = result.count('=')
         neg_count = result.count('!')
@@ -195,72 +243,96 @@ class Target:
             raise KeyError("Cannot repeat %s unless all are negated: %s" % (key, result))
         return self
 
+    @fluent
     def pos(self, x, y, z):
-        return self._unique_arg('pos', 'x=%s,y=%s,z=%s' % (str(x), str(y), str(z)))
+        self._unique_arg('pos', 'x=%s,y=%s,z=%s' % (str(x), str(y), str(z)))
 
+    @fluent
     def distance(self, distance: Range):
         return self._unique_arg('distance', distance)
 
+    @fluent
     def delta(self, dx, dy, dz):
         return self._unique_arg('delta', 'dx=%s,dy=%s,dz=%s' % (str(dx), str(dy), str(dz)))
 
+    @fluent
     def scores(self, *scores):
         return self._unique_arg('scores', '{' + ','.join(scores) + '}')
 
+    @fluent
     def tag(self, tag: str, *tags: str):
         return self._multi_args('tag', tag, tags)
 
+    @fluent
+    def not_tag(self, tag: str, *tags: str):
+        return self.tag(not_ify(tag), not_ify(tags))
+
+    @fluent
     def team(self, team: str):
         return self._unique_arg('team', team)
 
+    @fluent
     def not_team(self, team: str, *teams):
         return self._not_args('team', team, teams)
 
+    @fluent
     def sort(self, sorting: Sort):
         return self._unique_arg('sort', sorting)
 
+    @fluent
     def limit(self, limit: int):
         return self._unique_arg('limit', str(limit))
 
-    def level(self, range: Range):
-        return self._unique_arg('level', range)
+    @fluent
+    def level(self, level_range: Range):
+        return self._unique_arg('level', level_range)
 
+    @fluent
     def gamemode(self, gamemode: Gamemode):
         return self._unique_arg('gamemode', gamemode)
 
+    @fluent
     def not_gamemode(self, gamemode: Gamemode, *gamemodes: Gamemode):
         return self._not_args('gamemode', gamemode, gamemodes)
 
+    @fluent
     def name(self, name: str):
         return self._unique_arg('name', name)
 
+    @fluent
     def not_name(self, name: str, *names: str):
         return self._not_args('name', name, names)
 
-    def x_rotation(self, range: Range):
-        self._unique_arg('x_rotation', range)
+    @fluent
+    def x_rotation(self, rot_range: Range):
+        self._unique_arg('x_rotation', rot_range)
         return self
 
-    def y_rotation(self, range: Range):
-        self._unique_arg('y_rotation', range)
+    @fluent
+    def y_rotation(self, rot_range: Range):
+        self._unique_arg('y_rotation', rot_range)
         return self
 
-    def type(self, type: type):
-        return self._unique_arg('type', type)
+    @fluent
+    def type(self, type_: type):
+        return self._unique_arg('type', type_)
 
-    def not_types(self, type: str, *types: str):
-        return self._not_args('type', type, types)
+    @fluent
+    def not_types(self, type_: str, *types: str):
+        return self._not_args('type', type_, types)
 
+    @fluent
     def nbt(self, nbt: dict, *nbts: dict):
-        return self._multi_args('nbt', _NbtFormat(nbt), tuple(_NbtFormat(x)
-                                                              for x in nbts))
+        return self._multi_args('nbt', _NbtFormat(nbt), tuple(_NbtFormat(x) for x in nbts))
 
+    @fluent
     def advancements(self, advancement: AdvancementCriteria, *advancements: AdvancementCriteria):
         adv = [advancement, ]
         for a in advancements:
             adv.append(a)
         return self._unique_arg('advancements', '{' + ','.join(str(x) for x in adv) + '}')
 
+    @fluent
     def predicate(self, predicate: str, *predicates: str):
         return self._multi_args('predicate', predicate, predicates)
 
@@ -269,35 +341,16 @@ def _grant(action: Action):
     return 'grant' if action == Action.GRANT else 'revoke'
 
 
-class Param(Enum):
-    def __str__(self):
-        return super().name.lower()
-
-
-class AdvancementBehavior(Param):
-    EVERYTHING = auto()
-    ONLY = auto()
-    FROM = auto()
-    THROUGH = auto()
-    UNTIL = auto()
-
-
-class Command:
-    def __int__(self):
-        self.str = None
-
-    def __str__(self):
-        return self.str
-
+class Command(Chain):
     def advancement(self, action: Action, target: Target, behavior: AdvancementBehavior,
                     advancement: Advancement = None,
                     criterion: str = None):
-        cmd = "advancement %s %s %s" % (_grant(action), target, behavior)
+        self._add('advancement', _grant(action), target, behavior)
         if behavior != AdvancementBehavior.EVERYTHING:
-            cmd += ' %s' % advancement
+            self._add('', advancement)
             if behavior == AdvancementBehavior.ONLY and criterion:
-                cmd += ' %s' % criterion
-        self.str = cmd
+                self._add('', criterion)
+        return str(self)
 
     def attribute(self):
         """Queries, adds, removes or sets an entity attribute."""
