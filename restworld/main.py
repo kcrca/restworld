@@ -642,7 +642,7 @@ def main():
         return room_signs('%s/%s' % (func_dir, name),
                           name,
                           Template(filename="%s/%s_sign%s" % (tmpl_dir, name, tmpl_suffix), lookup=lookup),
-                          sorted(things, key=lambda x: x.name.replace('|', ' ')),
+                          sorted(things, key=lambda x: x.value.replace('|', ' ')),
                           walls,
                           (1, 1.5, -1),
                           button)
