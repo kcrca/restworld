@@ -1,38 +1,26 @@
-from contextlib import redirect_stdout
-
 import pytest
 
-from restworld import commands
 from restworld.commands import *
 from restworld.commands import _NbtFormat
 
 
-def command(func) -> str:
-    sout = io.StringIO()
-    with redirect_stdout(sout):
-        func()
-    cmd = sout.getvalue()
-    assert cmd[-1] == '\n'
-    return cmd[:-1]
-
-
 def test_command_advancement():
     for give in Action.GIVE, Action.GRANT:
-        assert command(lambda: commands.advancement(give, Target.self(),
-                                                    AdvancementBehavior.EVERYTHING)) == 'advancement grant @s everything'
-        assert command(lambda: commands.advancement(give, Target.self(),
-                                                    AdvancementBehavior.ONLY,
-                                                    Advancement.A_BALANCED_DIET,
-                                                    "pig")) == 'advancement grant @s only husbandry/balanced_diet pig'
-        assert command(lambda: commands.advancement(give, Target.self(),
-                                                    AdvancementBehavior.FROM,
-                                                    Advancement.WAX_ON)) == 'advancement grant @s from husbandry/wax_on'
-        assert command(lambda: commands.advancement(give, Target.self(),
-                                                    AdvancementBehavior.THROUGH,
-                                                    Advancement.WAX_ON)) == 'advancement grant @s through husbandry/wax_on'
-        assert command(lambda: commands.advancement(give, Target.self(),
-                                                    AdvancementBehavior.UNTIL,
-                                                    Advancement.WAX_ON)) == 'advancement grant @s until husbandry/wax_on'
+        assert str(Command().advancement(give, Target.self(),
+                                         AdvancementBehavior.EVERYTHING)) == 'advancement grant @s everything'
+        assert str(Command().advancement(give, Target.self(),
+                                         AdvancementBehavior.ONLY,
+                                         Advancement.A_BALANCED_DIET,
+                                         "pig")) == 'advancement grant @s only husbandry/balanced_diet pig'
+        assert str(Command().advancement(give, Target.self(),
+                                         AdvancementBehavior.FROM,
+                                         Advancement.WAX_ON)) == 'advancement grant @s from husbandry/wax_on'
+        assert str(Command().advancement(give, Target.self(),
+                                         AdvancementBehavior.THROUGH,
+                                         Advancement.WAX_ON)) == 'advancement grant @s through husbandry/wax_on'
+        assert str(Command().advancement(give, Target.self(),
+                                         AdvancementBehavior.UNTIL,
+                                         Advancement.WAX_ON)) == 'advancement grant @s until husbandry/wax_on'
 
 
 def test_range():

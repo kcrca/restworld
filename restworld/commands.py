@@ -3,6 +3,7 @@ from __future__ import annotations
 import io
 import re
 from enum import Enum, auto
+from inspect import signature, getmembers, ismethod
 
 from .enums import Advancement, ValueEnum
 
@@ -281,315 +282,267 @@ class AdvancementBehavior(Param):
     UNTIL = auto()
 
 
-def advancement(action: Action, target: Target, behavior: AdvancementBehavior, advancement: Advancement = None,
-                criterion: str = None):
-    cmd = "advancement %s %s %s" % (_grant(action), target, behavior)
-    if behavior != AdvancementBehavior.EVERYTHING:
-        cmd += ' %s' % advancement
-        if behavior == AdvancementBehavior.ONLY and criterion:
-            cmd += ' %s' % criterion
-    print(cmd)
+class Command:
+    def __int__(self):
+        self.str = None
 
+    def __str__(self):
+        return self.str
 
-def attribute():
-    """Queries, adds, removes or sets an entity attribute."""
+    def advancement(self, action: Action, target: Target, behavior: AdvancementBehavior,
+                    advancement: Advancement = None,
+                    criterion: str = None):
+        cmd = "advancement %s %s %s" % (_grant(action), target, behavior)
+        if behavior != AdvancementBehavior.EVERYTHING:
+            cmd += ' %s' % advancement
+            if behavior == AdvancementBehavior.ONLY and criterion:
+                cmd += ' %s' % criterion
+        self.str = cmd
 
+    def attribute(self):
+        """Queries, adds, removes or sets an entity attribute."""
 
-def ban():
-    """Adds player to banlist."""
+    def ban(self):
+        """Adds player to banlist."""
 
+    def ban_ip(self):
+        """Adds IP address to banlist."""
 
-def ban_ip():
-    """Adds IP address to banlist."""
+    def banlist(self):
+        """Displays banlist."""
 
+    def bossbar(self):
+        """Creates and modifies bossbars."""
 
-def banlist():
-    """Displays banlist."""
+    def clear(self):
+        """Clears items from player inventory."""
 
+    def clone(self):
+        """Copies blocks from one place to another."""
 
-def bossbar():
-    """Creates and modifies bossbars."""
+    def data(self):
+        """Gets, merges, modifies and removes block entity and entity NBT data."""
 
+    def datapack(self):
+        """Controls loaded data packs."""
 
-def clear():
-    """Clears items from player inventory."""
+    def debug(self):
+        """Starts or stops a debugging session."""
 
+    def defaultgamemode(self):
+        """Sets the default game mode."""
 
-def clone():
-    """Copies blocks from one place to another."""
+    def deop(self):
+        """Revokes operator status from a player."""
 
+    def difficulty(self):
+        """Sets the difficulty level."""
 
-def data():
-    """Gets, merges, modifies and removes block entity and entity NBT data."""
+    def effect(self):
+        """Adds or removes status effects."""
 
+    def enchant(self):
+        """Adds an enchantment to a player's selected item."""
 
-def datapack():
-    """Controls loaded data packs."""
+    def execute(self):
+        """Executes another command."""
 
+    def experience(self):
+        """An alias of /xp. Adds or removes player experience."""
 
-def debug():
-    """Starts or stops a debugging session."""
+    def fill(self):
+        """Fills a region with a specific block."""
 
+    def forceload(self):
+        """Forces chunks to constantly be loaded or not."""
 
-def defaultgamemode():
-    """Sets the default game mode."""
+    def function(self):
+        """Runs a function."""
 
+    def gamemode(self):
+        """Sets a player's game mode."""
 
-def deop():
-    """Revokes operator status from a player."""
+    def gamerule(self):
+        """Sets or queries a game rule value."""
 
+    def give(self):
+        """Gives an item to a player."""
 
-def difficulty():
-    """Sets the difficulty level."""
+    def help(self):
+        """An alias of /?. Provides help for commands."""
 
+    def item(self):
+        """Manipulates items in inventories."""
 
-def effect():
-    """Adds or removes status effects."""
+    def jfr(self):
+        """Starts or stops a JFR profiling."""
 
+    def kick(self):
+        """Kicks a player off a server."""
 
-def enchant():
-    """Adds an enchantment to a player's selected item."""
+    def kill(self):
+        """Kills entities (players, mobs, items, etc.)."""
 
+    def list(self):
+        """Lists players on the server."""
 
-def execute():
-    """Executes another command."""
+    def locate(self):
+        """Locates closest structure."""
 
+    def locatebiome(self):
+        """Locates closest biome."""
 
-def experience():
-    """An alias of /xp. Adds or removes player experience."""
+    def loot(self):
+        """Drops items from an inventory slot onto the ground."""
 
+    def me(self):
+        """Displays a message about the sender."""
 
-def fill():
-    """Fills a region with a specific block."""
+    def msg(self):
+        """An alias of /tell and /w. Displays a private message to other players."""
 
+    def op(self):
+        """Grants operator status to a player."""
 
-def forceload():
-    """Forces chunks to constantly be loaded or not."""
+    def pardon(self):
+        """Removes entries from the banlist."""
 
+    def pardon_ip(self):
+        """Removes entries from the banlist."""
 
-def function():
-    """Runs a function."""
+    def particle(self):
+        """Creates particles."""
 
+    def perf(self):
+        """Captures info and metrics about the game for 10 seconds."""
 
-def gamemode():
-    """Sets a player's game mode."""
+    def place(self):
+        """Used to place a configured feature, jigsaw, or structure at a given location."""
 
+    def playsound(self):
+        """Plays a sound."""
 
-def gamerule():
-    """Sets or queries a game rule value."""
+    def publish(self):
+        """Opens single-player world to local network."""
 
+    def recipe(self):
+        """Gives or takes player recipes."""
 
-def give():
-    """Gives an item to a player."""
+    def reload(self):
+        """Reloads loot tables, advancements, and functions from disk."""
 
+    def save_all(self):
+        """Saves the server to disk."""
 
-def help():
-    """An alias of /?. Provides help for commands."""
+    def save_off(self):
+        """Disables automatic server saves."""
 
+    def save_on(self):
+        """Enables automatic server saves."""
 
-def item():
-    """Manipulates items in inventories."""
+    def say(self):
+        """Displays a message to multiple players."""
 
+    def schedule(self):
+        """Delays the execution of a function."""
 
-def jfr():
-    """Starts or stops a JFR profiling."""
+    def scoreboard(self):
+        """Manages scoreboard objectives and players."""
 
+    def seed(self):
+        """Displays the world seed."""
 
-def kick():
-    """Kicks a player off a server."""
+    def setblock(self):
+        """Changes a block to another block."""
 
+    def setidletimeout(self):
+        """Sets the time before idle players are kicked."""
 
-def kill():
-    """Kills entities (players, mobs, items, etc.)."""
+    def setworldspawn(self):
+        """Sets the world spawn."""
 
+    def spawnpoint(self):
+        """Sets the spawn point for a player."""
 
-def list():
-    """Lists players on the server."""
+    def spectate(self):
+        """Make one player in spectator mode spectate an entity."""
 
+    def spreadplayers(self):
+        """Teleports entities to random locations."""
 
-def locate():
-    """Locates closest structure."""
+    def stop(self):
+        """Stops a server."""
 
+    def stopsound(self):
+        """Stops a sound."""
 
-def locatebiome():
-    """Locates closest biome."""
+    def summon(self):
+        """Summons an entity."""
 
+    def tag(self):
+        """Controls entity tags."""
 
-def loot():
-    """Drops items from an inventory slot onto the ground."""
+    def team(self):
+        """Controls teams."""
 
+    def teammsg(self):
+        """An alias of /tm. Specifies the message to send to team."""
 
-def me():
-    """Displays a message about the sender."""
+    def teleport(self):
+        """An alias of /tp. Teleports entities."""
 
+    def tell(self):
+        """An alias of /msg and /w. Displays a private message to other players."""
 
-def msg():
-    """An alias of /tell and /w. Displays a private message to other players."""
+    def tellraw(self):
+        """Displays a JSON message to players."""
 
+    def time(self):
+        """Changes or queries the world's game time."""
 
-def op():
-    """Grants operator status to a player."""
+    def title(self):
+        """Manages screen titles."""
 
+    def tm(self):
+        """An alias of /teammsg. Specifies the message to send to team."""
 
-def pardon():
-    """Removes entries from the banlist."""
+    def tp(self):
+        """An alias of /teleport. Teleports entities."""
 
+    def trigger(self):
+        """Sets a trigger to be activated."""
 
-def pardon_ip():
-    """Removes entries from the banlist."""
+    def w(self):
+        """An alias of /tell and /msg. Displays a private message to other players."""
 
+    def warden_spawn_tracker(self):
+        """Sets the spawn state of the Warden."""
 
-def particle():
-    """Creates particles."""
+    def weather(self):
+        """Sets the weather."""
 
+    def whitelist(self):
+        """Manages server whitelist."""
 
-def perf():
-    """Captures info and metrics about the game for 10 seconds."""
+    def worldborder(self):
+        """Manages the world border."""
 
 
-def place():
-    """Used to place a configured feature, jigsaw, or structure at a given location."""
+# Define stand-alone methods for each command that creates a command object, then prints it
+cmds = 'import sys\n\n'
+command = Command()
+for m in getmembers(command, ismethod):
+    sig = signature(m[1])
+    old_sig = str(sig)
+    added = 'out=sys.stdout)'
+    if old_sig != '()':
+        added = ', ' + added
+    new_sig = str(sig)[:-1] + added
+    pass_on = ', '.join(sig.parameters.keys())
+    cmd = \
+        """def %s%s:
+            out.write(Command().%s(%s))
+        """ % (m[0], new_sig, m[0], pass_on)
+    cmds += '\n\n' + cmd
 
-
-def playsound():
-    """Plays a sound."""
-
-
-def publish():
-    """Opens single-player world to local network."""
-
-
-def recipe():
-    """Gives or takes player recipes."""
-
-
-def reload():
-    """Reloads loot tables, advancements, and functions from disk."""
-
-
-def save_all():
-    """Saves the server to disk."""
-
-
-def save_off():
-    """Disables automatic server saves."""
-
-
-def save_on():
-    """Enables automatic server saves."""
-
-
-def say():
-    """Displays a message to multiple players."""
-
-
-def schedule():
-    """Delays the execution of a function."""
-
-
-def scoreboard():
-    """Manages scoreboard objectives and players."""
-
-
-def seed():
-    """Displays the world seed."""
-
-
-def setblock():
-    """Changes a block to another block."""
-
-
-def setidletimeout():
-    """Sets the time before idle players are kicked."""
-
-
-def setworldspawn():
-    """Sets the world spawn."""
-
-
-def spawnpoint():
-    """Sets the spawn point for a player."""
-
-
-def spectate():
-    """Make one player in spectator mode spectate an entity."""
-
-
-def spreadplayers():
-    """Teleports entities to random locations."""
-
-
-def stop():
-    """Stops a server."""
-
-
-def stopsound():
-    """Stops a sound."""
-
-
-def summon():
-    """Summons an entity."""
-
-
-def tag():
-    """Controls entity tags."""
-
-
-def team():
-    """Controls teams."""
-
-
-def teammsg():
-    """An alias of /tm. Specifies the message to send to team."""
-
-
-def teleport():
-    """An alias of /tp. Teleports entities."""
-
-
-def tell():
-    """An alias of /msg and /w. Displays a private message to other players."""
-
-
-def tellraw():
-    """Displays a JSON message to players."""
-
-
-def time():
-    """Changes or queries the world's game time."""
-
-
-def title():
-    """Manages screen titles."""
-
-
-def tm():
-    """An alias of /teammsg. Specifies the message to send to team."""
-
-
-def tp():
-    """An alias of /teleport. Teleports entities."""
-
-
-def trigger():
-    """Sets a trigger to be activated."""
-
-
-def w():
-    """An alias of /tell and /msg. Displays a private message to other players."""
-
-
-def warden_spawn_tracker():
-    """Sets the spawn state of the Warden."""
-
-
-def weather():
-    """Sets the weather."""
-
-
-def whitelist():
-    """Manages server whitelist."""
-
-
-def worldborder():
-    """Manages the world border."""
+exec(cmds)
