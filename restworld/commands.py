@@ -8,7 +8,7 @@ from functools import wraps
 from inspect import signature, getmembers, ismethod
 from io import StringIO
 
-from .enums import Advancement, LowerEnum
+from .enums import Advancement, LowerEnum, ValueEnum
 
 
 def fluent(method):
@@ -89,6 +89,36 @@ class ScanMode(LowerEnum):
     MASKED = auto()
 
 
+class Relation(ValueEnum):
+    LT = '<'
+    LE = '<='
+    EQ = '='
+    GE = '>='
+    GT = '>'
+
+
+class Store(LowerEnum):
+    RESULT = auto()
+    SUCCESS = auto()
+
+
+class DataType(LowerEnum):
+    BYTE = auto()
+    SHORT = auto()
+    INT = auto()
+    LONG = auto()
+    FLOAT = auto()
+    DOUBLE = auto()
+
+
+class Bossbar(LowerEnum):
+    VALUE = auto()
+    MAX = auto()
+
+
+ALL_SCORES = '*'
+
+
 def _bool(criteria: bool) -> str:
     return str(criteria).lower()
 
@@ -142,12 +172,6 @@ def d(v: float):
     return Coord('^', v)
 
 
-class NbtPath(Chain):
-    def __init__(self, path: str):
-        super().__init__()
-        self._add(path)
-
-
 class Range(Chain):
     def __init__(self, start: float = None, end: float = None, at: float = None):
         super().__init__()
@@ -166,6 +190,24 @@ class ScoreRange:
         self.score = score
         self.range = range
         self.inverse = inverse
+
+
+class Score(Chain):
+    def __init__(self, target: Target | str, objective: str):
+        super().__init__()
+        if isinstance(target, str) and target != '*':
+            raise ValueError('Target must be target or "*": %s' % target)
+        self._add(target, objective)
+
+
+class ScoreClause(Chain):
+    def is_(self, relation: Relation, target: Target | str, objective: str) -> ExecuteMod:
+        self._add(relation, Score(target, objective))
+        return self._start(ExecuteMod())
+
+    def matches(self, range: Range) -> ExecuteMod:
+        self._add('matches', range)
+        return self._start(ExecuteMod())
 
 
 class AdvancementCriteria(Chain):
@@ -418,22 +460,61 @@ def _grant(action: Action):
 
 
 class IfClause(Chain):
-    def block(self, x: float | Coord, y: float | Coord, z: float | Coord, block_name: str):
+    def block(self, x: float | Coord, y: float | Coord, z: float | Coord, block_name: str) -> ExecuteMod:
         self._add('block', x, y, z, block_name)
         return self._start(ExecuteMod())
 
     def blocks(self,
-               start_x: Coord, start_y: Coord, start_z: Coord,
-               end_x: Coord, end_y: Coord, end_z: Coord,
-               dest_x: Coord, dest_y: Coord, dest_z: Coord,
+               start_x: float | Coord, start_y: float | Coord, start_z: float | Coord,
+               end_x: float | Coord, end_y: float | Coord, end_z: float | Coord,
+               dest_x: float | Coord, dest_y: float | Coord, dest_z: float | Coord,
                mode: ScanMode
-               ):
+               ) -> ExecuteMod:
         self._add('blocks', start_x, start_y, start_z, end_x, end_y, end_z,
                   dest_x, dest_y, dest_z, mode)
         return self._start(ExecuteMod())
 
-    def data_block(self, x: float | Coord, y: float | Coord, z: float | Coord, path: NbtPath):
-        self._add('blocks', 'data', x, y, z, path)
+    def data_block(self, x: float | Coord, y: float | Coord, z: float | Coord, path: str) -> ExecuteMod:
+        self._add('data', 'block', x, y, z, path)
+        return self._start(ExecuteMod())
+
+    def data_entity(self, target: Target, path: str) -> ExecuteMod:
+        self._add('data', 'entity', target, path)
+        return self._start(ExecuteMod())
+
+    def data_storage(self, source: str, path: str) -> ExecuteMod:
+        self._add('data', 'storage', source, path)
+        return self._start(ExecuteMod())
+
+    def predicate(self, predicate: str) -> ExecuteMod:
+        self._add('predicate', predicate)
+        return self._start(ExecuteMod())
+
+    def score(self, target: Target | str, objective: str) -> ScoreClause:
+        self._add('score', Score(target, objective))
+        return self._start(ScoreClause())
+
+
+class StoreClause(Chain):
+    def block(self, x: float | Coord, y: float | Coord, z: float | Coord, path: str, data_type: DataType,
+              scale: float) -> ExecuteMod:
+        self._add('block', x, y, z, path, data_type, scale)
+        return self._start(ExecuteMod())
+
+    def bossbar(self, id: str, value: Bossbar) -> ExecuteMod:
+        self._add('bossbar', id, value)
+        return self._start(ExecuteMod())
+
+    def entity(self, target: Target, path: str, data_type: DataType, scale: float) -> ExecuteMod:
+        self._add('entity', target, path, data_type, scale)
+        return self._start(ExecuteMod())
+
+    def score(self, target: Target | str, objective: str) -> ExecuteMod:
+        self._add('score', Score(target, objective))
+        return self._start(ExecuteMod())
+
+    def storage(self, target: Target, path: str, data_type: DataType, scale: float) -> ExecuteMod:
+        self._add('storage', target, path, data_type, scale)
         return self._start(ExecuteMod())
 
 
@@ -485,6 +566,18 @@ class ExecuteMod(Chain):
     def if_(self) -> IfClause:
         self._add('if')
         return self._start(IfClause())
+
+    def unless(self) -> IfClause:
+        self._add('unless')
+        return self._start(IfClause())
+
+    def store(self) -> StoreClause:
+        self._add('store')
+        return self._start(StoreClause())
+
+    def run(self) -> Command:
+        self._add('run')
+        return self._start(Command())
 
 
 class Command(Chain):
@@ -641,8 +734,10 @@ class Command(Chain):
     def save_on(self):
         """Enables automatic server saves."""
 
-    def say(self):
+    def say(self, *msg: str):
         """Displays a message to multiple players."""
+        self._add('say', *msg)
+        return str(self)
 
     def schedule(self):
         """Delays the execution of a function."""

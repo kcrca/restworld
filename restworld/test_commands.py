@@ -42,13 +42,41 @@ def test_command_advancement():
 
 def test_command_execute():
     assert str(Command().execute().align(Axes.XZ)) == 'execute align xz'
-    assert str(Command().execute().anchored(EntityAnchor.EYES)) == 'execute anchored eyes'
-    assert str(Command().execute().as_(TargetSelector.self().tag('fred'))) == 'execute as @s[tag=fred]'
-    assert str(Command().execute().at(Uuid(1, 3, 5, 7))) == 'execute at [1, 3, 5, 7]'
-    assert str(Command().execute().facing(1, r(2), d(3))) == 'execute facing 1 ~2 ^3'
-    assert str(Command().execute().facing_entity(User('Fred'), EntityAnchor.FEET)) == 'execute facing entity Fred feet'
-    assert str(Command().execute().in_(Dimension.THE_NETHER)) == 'execute in the_nether'
-    assert str(Command().execute().if_().block(1, r(2), d(3), 'stone')) == 'execute if block 1 ~2 ^3 stone'
+
+
+def test_execute_mod():
+    assert str(ExecuteMod().align(Axes.XZ)) == 'align xz'
+    assert str(ExecuteMod().anchored(EntityAnchor.EYES)) == 'anchored eyes'
+    assert str(ExecuteMod().as_(TargetSelector.self().tag('fred'))) == 'as @s[tag=fred]'
+    assert str(ExecuteMod().at(Uuid(1, 3, 5, 7))) == 'at [1, 3, 5, 7]'
+    assert str(ExecuteMod().facing(1, r(2), d(3))) == 'facing 1 ~2 ^3'
+    assert str(ExecuteMod().facing_entity(User('Fred'), EntityAnchor.FEET)) == 'facing entity Fred feet'
+    assert str(ExecuteMod().in_(Dimension.THE_NETHER)) == 'in the_nether'
+    assert str(ExecuteMod().if_().block(1, r(2), d(3), 'stone')) == 'if block 1 ~2 ^3 stone'
+    assert str(ExecuteMod().unless().block(1, r(2), d(3), 'stone')) == 'unless block 1 ~2 ^3 stone'
+    assert str(
+        ExecuteMod().store().block(1, r(2), d(3), '{}', DataType.SHORT, 1.3)) == 'store block 1 ~2 ^3 {} short 1.3'
+    assert str(ExecuteMod().run().say('hi')) == 'run say hi'
+
+
+def test_if_clause():
+    assert str(IfClause().blocks(1, 2, 3, 4, 5, 6, 7, 8, 9, ScanMode.MASKED)) == 'blocks 1 2 3 4 5 6 7 8 9 masked'
+    assert str(IfClause().data_block(1, r(2), d(3), '{}')) == 'data block 1 ~2 ^3 {}'
+    assert str(IfClause().data_entity(TargetSelector.all(), '{}')) == 'data entity @a {}'
+    assert str(IfClause().data_storage('stone', '{}')) == 'data storage stone {}'
+    assert str(IfClause().predicate('foo')) == 'predicate foo'
+    assert str(IfClause().score('*', 'bar').is_(Relation.LT, User('up'), 'down')) == 'score * bar < up down'
+    assert str(IfClause().score('*', 'bar').matches(Range(end=10))) == 'score * bar matches ..10'
+    with pytest.raises(ValueError):
+        IfClause().score('foo', 'bar').matches(Range(end=10))
+
+
+def test_store_clause():
+    assert str(StoreClause().block(1, r(2), d(3), '{}', DataType.SHORT, 1.3)) == 'block 1 ~2 ^3 {} short 1.3'
+    assert str(StoreClause().bossbar('stud', Bossbar.MAX)) == 'bossbar stud max'
+    assert str(StoreClause().entity(TargetSelector.player(), '{}', DataType.FLOAT, 3.5)) == 'entity @p {} float 3.5'
+    assert str(StoreClause().score(TargetSelector.entities(), 'foo')) == 'score @e foo'
+    assert str(StoreClause().storage(TargetSelector.self(), '{}', DataType.DOUBLE, 1.9)) == 'storage @s {} double 1.9'
 
 
 def test_range():
@@ -91,6 +119,13 @@ def test_target_all():
 
 def test_target_entities():
     assert str(TargetSelector.entities()) == '@e'
+
+
+def test_score():
+    assert str(Score('*', 'foo')) == '* foo'
+    assert str(Score(TargetSelector.all(), 'bar')) == '@a bar'
+    with pytest.raises(ValueError):
+        Score('bar', 'foo')
 
 
 def test_target_pos():
