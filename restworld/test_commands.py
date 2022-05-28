@@ -316,3 +316,7 @@ def test_command_comment():
         '#\n'
         '# This is a long line of text that would be wrapped if it were asked to be\n'
         '# wrapped, and we use it to test if wrapping does or does not happen.\n')
+
+
+def test_command_literal():
+    assert str(Command().literal('xyzzy')) == 'xyzzy'

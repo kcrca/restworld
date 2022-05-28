@@ -854,6 +854,10 @@ class Command(Chain):
         text = text.replace('\n', '\n# ').replace('# \n', '#\n')
         return '# %s\n' % text
 
+    def literal(self, text: str):
+        """Puts the text in without modification."""
+        return text
+
 
 # Define stand-alone methods for each command that creates a command object, then prints it
 cmds = '\n\n'
