@@ -26,6 +26,7 @@ class Library:
     def save(self, *functions: Function):
         for f in functions:
             path = self.top / f.name.with_suffix('.mcfunction')
-            path.parent.mkdir(parents=True, exist_ok=True)
+            parent = path.parent
+            parent.mkdir(parents=True, exist_ok=True)
             with open(path) as f:
                 f.write(str(f))
