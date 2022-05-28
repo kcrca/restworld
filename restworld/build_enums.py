@@ -18,6 +18,13 @@ class EnumDesc:
         raise RuntimeError('oops')
 
 
+def to_desc(text):
+    text = re.sub(r'\[[^]]*]', '', text)
+    if text[-1] not in '.!?':
+        return text + '.'
+    return text
+
+
 class Advancements(EnumDesc):
     def __init__(self):
         super().__init__('Advancement', 'https://minecraft.fandom.com/wiki/Advancement#List_of_advancements')
@@ -33,19 +40,23 @@ class Advancements(EnumDesc):
                 if headers:
                     for i in range(0, len(headers)):
                         th = headers[i]
-                        if th.text.strip() == 'Advancement':
+                        text = th.text.strip()
+                        if text == 'Advancement':
                             name_col = i
-                        elif th.text.strip().startswith('Resource'):
+                        elif text.startswith('Resource'):
                             str_col = i
+                        elif text.find('description') >= 0:
+                            desc_col = i
                 else:
                     cells = row.find_all('td')
                     raw_name = cells[name_col].text.strip()
                     string = cells[str_col].text.strip()
+                    desc = to_desc(cells[desc_col].text.strip())
                     name = re.sub(junk, '', raw_name).upper().replace(' ', '_')
                     name = self.replace(name, string)
                     if name in advancements:
                         raise KeyError("Duplicate name: %s (%s, %s)" % (name, string, advancements[name]))
-                    advancements[name] = string
+                    advancements[name] = (string, desc)
         return advancements
 
     def replace(self, name, string):
@@ -68,4 +79,5 @@ if __name__ == '__main__':
                 fields = tab.generate()
                 print('\n\nclass %s(ValueEnum):' % tab.name)
                 for key in fields:
-                    print('    %s = "%s"' % (key, fields[key]))
+                    value, desc = fields[key]
+                    print('    %s = "%s"\n    """%s"""' % (key, value, desc))
