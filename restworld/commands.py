@@ -217,6 +217,9 @@ class AdvancementCriteria(Chain):
             self._add('%s={%s=%s}' % (advancement, criteria[0], _bool(criteria[1])))
 
 
+# For future: https://github.com/vberlier/nbtlib/blob/main/docs/Usage.ipynb seems like a good
+# NBT library, more focused on files, but that's OK, it seems to manage the NBT itself pretty
+# well. Possibly a good base for the NBT work.
 class _NbtFormat(Chain):
     _needs_quotes = re.compile(r'[\s:"]')
 
