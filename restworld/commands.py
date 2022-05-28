@@ -3,12 +3,11 @@ from __future__ import annotations
 import re
 import typing
 from abc import abstractmethod
-from enum import Enum, auto
 from functools import wraps
 from inspect import signature, getmembers, ismethod
 from io import StringIO
 
-from .enums import Advancement, LowerEnum, ValueEnum
+from .enums import Advancement
 
 
 def fluent(method):
@@ -22,99 +21,97 @@ def fluent(method):
     return inner
 
 
-class PyEum(Enum):
-    def __str__(self):
-        return super().name.lower()
+def _in_group(group: str, *names: str):
+    group = globals()[group.upper()]
+    missing = []
+    for n in names:
+        if n not in group:
+            missing.append(n)
+    if missing:
+        raise ValueError('Not in %s: %s' % (group, missing))
 
 
-class Sort(LowerEnum):
-    NEAREST = auto()
-    FURTHEST = auto()
-    RANDOM = auto()
-    ARBITRARY = auto()
+NEAREST = 'nearest'
+FURTHEST = 'furthest'
+RANDOM = 'random'
+ARBITRARY = 'arbitrary'
+SORT = [NEAREST, FURTHEST, RANDOM, ARBITRARY]
+
+SURVIVAL = 'survival'
+CREATIVE = 'creative'
+ADVENTURE = 'adventure'
+HARDCORE = 'hardcore'
+SPECTATOR = 'spectator'
+GAMEMODE = [SURVIVAL, CREATIVE, ADVENTURE, HARDCORE, SPECTATOR]
+
+X = 'x'
+XZ = 'xz'
+ZYX = 'zyx'
+YZ = 'yz'
+AXES = [X, XZ, ZYX, YZ]
+
+EYES = 'eyes'
+FEET = 'feet'
+ENTITY_ANCHOR = [EYES, FEET]
+
+OVERWORLD = 'overworld'
+THE_NETHER = 'the_nether'
+THE_END = 'the_end'
+DIMENSION = [OVERWORLD, THE_NETHER, THE_END]
+
+ALL = 'all'
+MASKED = 'masked'
+SCAN_MODE = [ALL, MASKED]
+
+RESULT = 'result'
+SUCCESS = 'success'
+STORE = [RESULT, SUCCESS]
+
+BYTE = 'byte'
+SHORT = 'short'
+INT = 'int'
+LONG = 'long'
+FLOAT = 'float'
+DOUBLE = 'double'
+DATA_TYPE = [BYTE, SHORT, INT, LONG, FLOAT, DOUBLE]
+
+VALUE = 'value'
+MAX = 'max'
+BOSSBAR = [VALUE, MAX]
+
+EVERYTHING = 'everything'
+ONLY = 'only'
+FROM = 'from'
+THROUGH = 'through'
+UNTIL = 'until'
+ADVANCEMENT = [EVERYTHING, ONLY, FROM, THROUGH, UNTIL]
+
+GIVE = 'give'
+CLEAR = 'clear'
+GIVE_CLEAR = [GIVE, CLEAR]
+
+GRANT = 'grant'
+REVOKE = 'revoke'
+GRANT_REVOKE = [GRANT, REVOKE]
+
+GIVE_GRANT = GIVE_CLEAR + GRANT_REVOKE
 
 
-class Gamemode(LowerEnum):
-    SURVIVAL = auto()
-    CREATIVE = auto()
-    ADVENTURE = auto()
-    HARDCORE = auto()
-    SPECTATOR = auto()
+def _to_grant(action: str):
+    if action == 'give':
+        action = GRANT
+    elif action == 'clear':
+        action = REVOKE
+    _in_group('GRANT_REVOKE', action)
+    return action
 
 
-class Axes(LowerEnum):
-    X = auto()
-    XZ = auto()
-    ZYX = auto()
-    YZ = auto()
-
-
-class EntityAnchor(LowerEnum):
-    EYES = auto()
-    FEET = auto()
-
-
-class Dimension(LowerEnum):
-    OVERWORLD = auto()
-    THE_NETHER = auto()
-    THE_END = auto()
-
-
-class ParamEnum(Enum):
-    def __str__(self):
-        return super().name.lower()
-
-
-class AdvancementBehavior(ParamEnum):
-    EVERYTHING = auto()
-    ONLY = auto()
-    FROM = auto()
-    THROUGH = auto()
-    UNTIL = auto()
-
-
-class Action(Enum):
-    GIVE = auto()
-    GRANT = GIVE
-    CLEAR = auto()
-    REVOKE = CLEAR
-
-    @classmethod
-    def grant_names(cls, action):
-        return action == 'grant' if action == cls.GIVE else 'revoke'
-
-
-class ScanMode(LowerEnum):
-    ALL = auto()
-    MASKED = auto()
-
-
-class Relation(ValueEnum):
-    LT = '<'
-    LE = '<='
-    EQ = '='
-    GE = '>='
-    GT = '>'
-
-
-class Store(LowerEnum):
-    RESULT = auto()
-    SUCCESS = auto()
-
-
-class DataType(LowerEnum):
-    BYTE = auto()
-    SHORT = auto()
-    INT = auto()
-    LONG = auto()
-    FLOAT = auto()
-    DOUBLE = auto()
-
-
-class Bossbar(LowerEnum):
-    VALUE = auto()
-    MAX = auto()
-
+LT = '<'
+LE = '<='
+EQ = '='
+GE = '>='
+GT = '>'
+RELATION = [LT, LE, EQ, GE, GT]
 
 ALL_SCORES = '*'
 
@@ -201,7 +198,8 @@ class Score(Chain):
 
 
 class ScoreClause(Chain):
-    def is_(self, relation: Relation, target: Target | str, objective: str) -> ExecuteMod:
+    def is_(self, relation: str, target: Target | str, objective: str) -> ExecuteMod:
+        _in_group('RELATION', relation)
         self._add(relation, Score(target, objective))
         return self._start(ExecuteMod())
 
@@ -394,7 +392,8 @@ class TargetSelector(Target):
         return self._not_args('team', team, teams)
 
     @fluent
-    def sort(self, sorting: Sort):
+    def sort(self, sorting: str):
+        _in_group('SORT', sorting)
         return self._unique_arg('sort', sorting)
 
     @fluent
@@ -406,11 +405,13 @@ class TargetSelector(Target):
         return self._unique_arg('level', level_range)
 
     @fluent
-    def gamemode(self, gamemode: Gamemode):
+    def gamemode(self, gamemode: str):
+        _in_group('GAMEMODE', gamemode)
         return self._unique_arg('gamemode', gamemode)
 
     @fluent
-    def not_gamemode(self, gamemode: Gamemode, *gamemodes: Gamemode):
+    def not_gamemode(self, gamemode: str, *gamemodes: str):
+        _in_group('GAMEMODE', gamemode, *gamemodes)
         return self._not_args('gamemode', gamemode, gamemodes)
 
     @fluent
@@ -455,8 +456,8 @@ class TargetSelector(Target):
         return self._multi_args('predicate', predicate, predicates)
 
 
-def _grant(action: Action):
-    return 'grant' if action == Action.GRANT else 'revoke'
+def _grant(action: str):
+    return 'grant' if action == GRANT else 'revoke'
 
 
 class IfClause(Chain):
@@ -468,8 +469,9 @@ class IfClause(Chain):
                start_x: float | Coord, start_y: float | Coord, start_z: float | Coord,
                end_x: float | Coord, end_y: float | Coord, end_z: float | Coord,
                dest_x: float | Coord, dest_y: float | Coord, dest_z: float | Coord,
-               mode: ScanMode
+               mode: str
                ) -> ExecuteMod:
+        _in_group('SCAN_MODE', mode)
         self._add('blocks', start_x, start_y, start_z, end_x, end_y, end_z,
                   dest_x, dest_y, dest_z, mode)
         return self._start(ExecuteMod())
@@ -496,16 +498,19 @@ class IfClause(Chain):
 
 
 class StoreClause(Chain):
-    def block(self, x: float | Coord, y: float | Coord, z: float | Coord, path: str, data_type: DataType,
+    def block(self, x: float | Coord, y: float | Coord, z: float | Coord, path: str, data_type: str,
               scale: float) -> ExecuteMod:
+        _in_group('DATA_TYPE', data_type)
         self._add('block', x, y, z, path, data_type, scale)
         return self._start(ExecuteMod())
 
-    def bossbar(self, id: str, value: Bossbar) -> ExecuteMod:
-        self._add('bossbar', id, value)
+    def bossbar(self, id: str, param: str) -> ExecuteMod:
+        _in_group('BOSSBAR', param)
+        self._add('bossbar', id, param)
         return self._start(ExecuteMod())
 
-    def entity(self, target: Target, path: str, data_type: DataType, scale: float) -> ExecuteMod:
+    def entity(self, target: Target, path: str, data_type: str, scale: float) -> ExecuteMod:
+        _in_group('DATA_TYPE', data_type)
         self._add('entity', target, path, data_type, scale)
         return self._start(ExecuteMod())
 
@@ -513,18 +518,21 @@ class StoreClause(Chain):
         self._add('score', Score(target, objective))
         return self._start(ExecuteMod())
 
-    def storage(self, target: Target, path: str, data_type: DataType, scale: float) -> ExecuteMod:
+    def storage(self, target: Target, path: str, data_type: str, scale: float) -> ExecuteMod:
+        _in_group('DATA_TYPE', data_type)
         self._add('storage', target, path, data_type, scale)
         return self._start(ExecuteMod())
 
 
 class ExecuteMod(Chain):
     @fluent
-    def align(self, axes: Axes):
+    def align(self, axes: str):
+        _in_group('AXES', axes)
         self._add('align', axes)
 
     @fluent
-    def anchored(self, anchor: EntityAnchor):
+    def anchored(self, anchor: str):
+        _in_group('ENTITY_ANCHOR', anchor)
         self._add('anchored', anchor)
 
     @fluent
@@ -540,11 +548,13 @@ class ExecuteMod(Chain):
         self._add('facing', x, y, z)
 
     @fluent
-    def facing_entity(self, target: Target, anchor: EntityAnchor):
+    def facing_entity(self, target: Target, anchor: str):
+        _in_group('ENTITY_ANCHOR', anchor)
         self._add('facing entity', target, anchor)
 
     @fluent
-    def in_(self, dimension: Dimension):
+    def in_(self, dimension: str):
+        _in_group('DIMENSION', dimension)
         self._add('in', dimension)
 
     @fluent
@@ -581,13 +591,15 @@ class ExecuteMod(Chain):
 
 
 class Command(Chain):
-    def advancement(self, action: Action, target: TargetSelector, behavior: AdvancementBehavior,
+    def advancement(self, action: str, target: TargetSelector, behavior: str,
                     advancement: Advancement = None,
                     criterion: str = None):
+        action = _to_grant(action)
+        _in_group('ADVANCEMENT', behavior)
         self._add('advancement', _grant(action), target, behavior)
-        if behavior != AdvancementBehavior.EVERYTHING:
+        if behavior != EVERYTHING:
             self._add('', advancement)
-            if behavior == AdvancementBehavior.ONLY and criterion:
+            if behavior == ONLY and criterion:
                 self._add('', criterion)
         return str(self)
 
@@ -845,3 +857,5 @@ for m in getmembers(command, ismethod):
     cmds += '\n\n' + cmd
 
 exec(cmds)
+
+# Add everything to 'import *'

@@ -5,78 +5,82 @@ from restworld.commands import _NbtFormat
 
 
 def test_command_advancement():
-    for give in Action.GIVE, Action.GRANT:
-        assert str(Command().advancement(give, TargetSelector.self(),
-                                         AdvancementBehavior.EVERYTHING)) == 'advancement grant @s everything'
-        assert str(Command().advancement(give, TargetSelector.self(),
-                                         AdvancementBehavior.ONLY,
-                                         Advancement.A_BALANCED_DIET,
-                                         "pig")) == 'advancement grant @s only husbandry/balanced_diet pig'
-        assert str(Command().advancement(give, TargetSelector.self(),
-                                         AdvancementBehavior.FROM,
-                                         Advancement.WAX_ON)) == 'advancement grant @s from husbandry/wax_on'
-        assert str(Command().advancement(give, TargetSelector.self(),
-                                         AdvancementBehavior.THROUGH,
-                                         Advancement.WAX_ON)) == 'advancement grant @s through husbandry/wax_on'
-        assert str(Command().advancement(give, TargetSelector.self(),
-                                         AdvancementBehavior.UNTIL,
-                                         Advancement.WAX_ON)) == 'advancement grant @s until husbandry/wax_on'
+    assert str(Command().advancement(GIVE, TargetSelector.self(), EVERYTHING)) == 'advancement grant @s everything'
+    assert str(Command().advancement(GIVE, TargetSelector.self(), ONLY, Advancement.A_BALANCED_DIET,
+                                     "pig")) == 'advancement grant @s only husbandry/balanced_diet pig'
+    assert str(Command().advancement(GIVE, TargetSelector.self(), FROM,
+                                     Advancement.WAX_ON)) == 'advancement grant @s from husbandry/wax_on'
+    assert str(Command().advancement(GIVE, TargetSelector.self(), THROUGH,
+                                     Advancement.WAX_ON)) == 'advancement grant @s through husbandry/wax_on'
+    assert str(Command().advancement(GIVE, TargetSelector.self(), UNTIL,
+                                     Advancement.WAX_ON)) == 'advancement grant @s until husbandry/wax_on'
 
-    for give in Action.REVOKE, Action.CLEAR:
-        assert str(Command().advancement(give, TargetSelector.self(),
-                                         AdvancementBehavior.EVERYTHING)) == 'advancement revoke @s everything'
-        assert str(Command().advancement(give, TargetSelector.self(),
-                                         AdvancementBehavior.ONLY,
-                                         Advancement.A_BALANCED_DIET,
-                                         "pig")) == 'advancement revoke @s only husbandry/balanced_diet pig'
-        assert str(Command().advancement(give, TargetSelector.self(),
-                                         AdvancementBehavior.FROM,
-                                         Advancement.WAX_ON)) == 'advancement revoke @s from husbandry/wax_on'
-        assert str(Command().advancement(give, TargetSelector.self(),
-                                         AdvancementBehavior.THROUGH,
-                                         Advancement.WAX_ON)) == 'advancement revoke @s through husbandry/wax_on'
-        assert str(Command().advancement(give, TargetSelector.self(),
-                                         AdvancementBehavior.UNTIL,
-                                         Advancement.WAX_ON)) == 'advancement revoke @s until husbandry/wax_on'
+    assert str(Command().advancement(REVOKE, TargetSelector.self(), EVERYTHING)) == 'advancement revoke @s everything'
+    assert str(Command().advancement(REVOKE, TargetSelector.self(), ONLY, Advancement.A_BALANCED_DIET,
+                                     "pig")) == 'advancement revoke @s only husbandry/balanced_diet pig'
+    assert str(Command().advancement(REVOKE, TargetSelector.self(), FROM,
+                                     Advancement.WAX_ON)) == 'advancement revoke @s from husbandry/wax_on'
+    assert str(Command().advancement(REVOKE, TargetSelector.self(), THROUGH,
+                                     Advancement.WAX_ON)) == 'advancement revoke @s through husbandry/wax_on'
+    assert str(Command().advancement(REVOKE, TargetSelector.self(), UNTIL,
+                                     Advancement.WAX_ON)) == 'advancement revoke @s until husbandry/wax_on'
+
+    with pytest.raises(ValueError):
+        Command().advancement('foo', TargetSelector.self(), ONLY, Advancement.A_BALANCED_DIET, "pig")
+        Command().advancement(GIVE, TargetSelector.self(), 'foo', Advancement.A_BALANCED_DIET, "pig")
 
 
 def test_command_execute():
-    assert str(Command().execute().align(Axes.XZ)) == 'execute align xz'
+    assert str(Command().execute().align(XZ)) == 'execute align xz'
+    with pytest.raises(ValueError):
+        Command().execute().align('foo')
 
 
 def test_execute_mod():
-    assert str(ExecuteMod().align(Axes.XZ)) == 'align xz'
-    assert str(ExecuteMod().anchored(EntityAnchor.EYES)) == 'anchored eyes'
+    assert str(ExecuteMod().align(XZ)) == 'align xz'
+    assert str(ExecuteMod().anchored(EYES)) == 'anchored eyes'
     assert str(ExecuteMod().as_(TargetSelector.self().tag('fred'))) == 'as @s[tag=fred]'
     assert str(ExecuteMod().at(Uuid(1, 3, 5, 7))) == 'at [1, 3, 5, 7]'
     assert str(ExecuteMod().facing(1, r(2), d(3))) == 'facing 1 ~2 ^3'
-    assert str(ExecuteMod().facing_entity(User('Fred'), EntityAnchor.FEET)) == 'facing entity Fred feet'
-    assert str(ExecuteMod().in_(Dimension.THE_NETHER)) == 'in the_nether'
+    assert str(ExecuteMod().facing_entity(User('Fred'), FEET)) == 'facing entity Fred feet'
+    assert str(ExecuteMod().in_(THE_NETHER)) == 'in the_nether'
     assert str(ExecuteMod().if_().block(1, r(2), d(3), 'stone')) == 'if block 1 ~2 ^3 stone'
     assert str(ExecuteMod().unless().block(1, r(2), d(3), 'stone')) == 'unless block 1 ~2 ^3 stone'
     assert str(
-        ExecuteMod().store().block(1, r(2), d(3), '{}', DataType.SHORT, 1.3)) == 'store block 1 ~2 ^3 {} short 1.3'
+        ExecuteMod().store().block(1, r(2), d(3), '{}', SHORT, 1.3)) == 'store block 1 ~2 ^3 {} short 1.3'
     assert str(ExecuteMod().run().say('hi')) == 'run say hi'
+    with pytest.raises(ValueError):
+        Command().execute().align('foo')
+        ExecuteMod().anchored('foo')
+        ExecuteMod().facing_entity(User('Fred'), 'foo')
+        ExecuteMod().in_('foo')
+        ExecuteMod().store().block(1, r(2), d(3), '{}', 'foo', 1.3)
 
 
 def test_if_clause():
-    assert str(IfClause().blocks(1, 2, 3, 4, 5, 6, 7, 8, 9, ScanMode.MASKED)) == 'blocks 1 2 3 4 5 6 7 8 9 masked'
+    assert str(IfClause().blocks(1, 2, 3, 4, 5, 6, 7, 8, 9, MASKED)) == 'blocks 1 2 3 4 5 6 7 8 9 masked'
     assert str(IfClause().data_block(1, r(2), d(3), '{}')) == 'data block 1 ~2 ^3 {}'
     assert str(IfClause().data_entity(TargetSelector.all(), '{}')) == 'data entity @a {}'
     assert str(IfClause().data_storage('stone', '{}')) == 'data storage stone {}'
     assert str(IfClause().predicate('foo')) == 'predicate foo'
-    assert str(IfClause().score('*', 'bar').is_(Relation.LT, User('up'), 'down')) == 'score * bar < up down'
+    assert str(IfClause().score('*', 'bar').is_(LT, User('up'), 'down')) == 'score * bar < up down'
     assert str(IfClause().score('*', 'bar').matches(Range(end=10))) == 'score * bar matches ..10'
     with pytest.raises(ValueError):
         IfClause().score('foo', 'bar').matches(Range(end=10))
+        IfClause().blocks(1, 2, 3, 4, 5, 6, 7, 8, 9, 'foo')
+        IfClause().score('*', 'bar').is_('foo', User('up'), 'down')
 
 
 def test_store_clause():
-    assert str(StoreClause().block(1, r(2), d(3), '{}', DataType.SHORT, 1.3)) == 'block 1 ~2 ^3 {} short 1.3'
-    assert str(StoreClause().bossbar('stud', Bossbar.MAX)) == 'bossbar stud max'
-    assert str(StoreClause().entity(TargetSelector.player(), '{}', DataType.FLOAT, 3.5)) == 'entity @p {} float 3.5'
+    assert str(StoreClause().block(1, r(2), d(3), '{}', SHORT, 1.3)) == 'block 1 ~2 ^3 {} short 1.3'
+    assert str(StoreClause().bossbar('stud', MAX)) == 'bossbar stud max'
+    assert str(StoreClause().entity(TargetSelector.player(), '{}', FLOAT, 3.5)) == 'entity @p {} float 3.5'
     assert str(StoreClause().score(TargetSelector.entities(), 'foo')) == 'score @e foo'
-    assert str(StoreClause().storage(TargetSelector.self(), '{}', DataType.DOUBLE, 1.9)) == 'storage @s {} double 1.9'
+    assert str(StoreClause().storage(TargetSelector.self(), '{}', DOUBLE, 1.9)) == 'storage @s {} double 1.9'
+    with pytest.raises(ValueError):
+        StoreClause().bossbar('stud', 'foo')
+        StoreClause().entity(TargetSelector.player(), '{}', 'foo', 3.5)
+        StoreClause().storage(TargetSelector.self(), '{}', 'foo', 1.9)
 
 
 def test_range():
@@ -178,9 +182,10 @@ def test_target_not_teams():
 
 
 def test_target_sort():
-    assert str(TargetSelector.all().sort(Sort.NEAREST)) == '@a[sort=nearest]'
+    assert str(TargetSelector.all().sort(NEAREST)) == '@a[sort=nearest]'
     with pytest.raises(KeyError):
-        TargetSelector.all().sort(Sort.NEAREST).sort(Sort.RANDOM)
+        TargetSelector.all().sort(NEAREST).sort(RANDOM)
+        TargetSelector.all().sort('foo')
 
 
 def test_target_limit():
@@ -199,18 +204,20 @@ def test_target_level():
 
 
 def test_target_gamemode():
-    assert str(TargetSelector.all().gamemode(Gamemode.SURVIVAL)) == '@a[gamemode=survival]'
+    assert str(TargetSelector.all().gamemode(SURVIVAL)) == '@a[gamemode=survival]'
     with pytest.raises(KeyError):
-        TargetSelector.all().gamemode(Gamemode.CREATIVE).gamemode(Gamemode.ADVENTURE)
+        TargetSelector.all().gamemode(CREATIVE).gamemode(ADVENTURE)
+        TargetSelector.all().gamemode('foo')
 
 
 def test_target_not_gamemodes():
-    assert str(TargetSelector.all().not_gamemode(Gamemode.SURVIVAL)) == '@a[gamemode=!survival]'
+    assert str(TargetSelector.all().not_gamemode(SURVIVAL)) == '@a[gamemode=!survival]'
     assert str(
-        TargetSelector.all().not_gamemode(Gamemode.SURVIVAL,
-                                          Gamemode.CREATIVE)) == '@a[gamemode=!survival,gamemode=!creative]'
+        TargetSelector.all().not_gamemode(SURVIVAL,
+                                          CREATIVE)) == '@a[gamemode=!survival,gamemode=!creative]'
     with pytest.raises(KeyError):
-        TargetSelector.all().gamemode(Gamemode.CREATIVE).not_gamemode(Gamemode.ADVENTURE)
+        TargetSelector.all().gamemode(CREATIVE).not_gamemode(ADVENTURE)
+        TargetSelector.all().not_gamemode('foo')
 
 
 def test_target_name():
@@ -279,10 +286,10 @@ def test_target_predicate():
 
 def test_target_chainability():
     assert str(TargetSelector.all().pos(1, 2, 3).distance(Range(None, 15.5)).delta(4.4, 5.5, 6.6).scores().tag("one")
-        .team('slug').sort(Sort.ARBITRARY).limit(15).level(Range(3, 15)).gamemode(Gamemode.HARDCORE)
+        .team('slug').sort(ARBITRARY).limit(15).level(Range(3, 15)).gamemode(HARDCORE)
         .name('Robin').x_rotation(Range(at=9)).y_rotation(Range(None, 24)).type('cougar')
         .nbt({"hi": "there"}).advancements(AdvancementCriteria(Advancement.A_SEEDY_PLACE, True))
         .predicate(
         "nada")) == '@a[x=1,y=2,z=3,distance=..15.5,dx=4.4,dy=5.5,dz=6.6,scores={},tag=one,team=slug,sort=arbitrary,limit=15,level=3..15,gamemode=hardcore,name=Robin,x_rotation=9,y_rotation=..24,type=cougar,nbt={hi:there},advancements={husbandry/plant_seed=true},predicate=nada]'
-    assert str(TargetSelector.all().not_team('Raiders').not_name("GRBX").not_gamemode(Gamemode.CREATIVE)
+    assert str(TargetSelector.all().not_team('Raiders').not_name("GRBX").not_gamemode(CREATIVE)
                .not_types("worm")) == '@a[team=!Raiders,name=!GRBX,gamemode=!creative,type=!worm]'
