@@ -866,17 +866,18 @@ for m in getmembers(command, ismethod):
     if m[0][0] == '_':
         continue
     sig = signature(m[1])
-    old_sig = str(sig)
-    added = 'out=sys.stdout'
-    if old_sig[0:1] == '()':
-        new_sig = '(' + added + ')' + old_sig[2:]
-    else:
-        new_sig = re.sub(r'\)( -> .*)?:$', ', ' + added + r'\1', old_sig)
-    pass_on = ', '.join(sig.parameters.keys())
+    to_pass = []
+    for k in sig.parameters:
+        p = sig.parameters[k]
+        if p.kind == p.VAR_POSITIONAL:
+            to_pass.append('*' + k)
+        else:
+            to_pass.append(k)
+    pass_on = ', '.join(to_pass)
     cmd = \
         """def %s%s:
-            out.write(Command().%s(%s))
-        """ % (m[0], new_sig, m[0], pass_on)
+            return Command().%s(%s)
+        """ % (m[0], (str(sig)), m[0], pass_on)
     cmds += '\n\n' + cmd
 
 exec(cmds)

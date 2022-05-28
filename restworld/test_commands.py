@@ -5,35 +5,35 @@ from restworld.commands import _NbtFormat
 
 
 def test_command_advancement():
-    assert str(Command().advancement(GIVE, TargetSelector.self(), EVERYTHING)) == 'advancement grant @s everything'
-    assert str(Command().advancement(GIVE, TargetSelector.self(), ONLY, Advancement.A_BALANCED_DIET,
-                                     "pig")) == 'advancement grant @s only husbandry/balanced_diet pig'
-    assert str(Command().advancement(GIVE, TargetSelector.self(), FROM,
-                                     Advancement.WAX_ON)) == 'advancement grant @s from husbandry/wax_on'
-    assert str(Command().advancement(GIVE, TargetSelector.self(), THROUGH,
-                                     Advancement.WAX_ON)) == 'advancement grant @s through husbandry/wax_on'
-    assert str(Command().advancement(GIVE, TargetSelector.self(), UNTIL,
-                                     Advancement.WAX_ON)) == 'advancement grant @s until husbandry/wax_on'
+    assert str(advancement(GIVE, TargetSelector.self(), EVERYTHING)) == 'advancement grant @s everything'
+    assert str(advancement(GIVE, TargetSelector.self(), ONLY, Advancement.A_BALANCED_DIET,
+                           "pig")) == 'advancement grant @s only husbandry/balanced_diet pig'
+    assert str(advancement(GIVE, TargetSelector.self(), FROM,
+                           Advancement.WAX_ON)) == 'advancement grant @s from husbandry/wax_on'
+    assert str(advancement(GIVE, TargetSelector.self(), THROUGH,
+                           Advancement.WAX_ON)) == 'advancement grant @s through husbandry/wax_on'
+    assert str(advancement(GIVE, TargetSelector.self(), UNTIL,
+                           Advancement.WAX_ON)) == 'advancement grant @s until husbandry/wax_on'
 
-    assert str(Command().advancement(REVOKE, TargetSelector.self(), EVERYTHING)) == 'advancement revoke @s everything'
-    assert str(Command().advancement(REVOKE, TargetSelector.self(), ONLY, Advancement.A_BALANCED_DIET,
-                                     "pig")) == 'advancement revoke @s only husbandry/balanced_diet pig'
-    assert str(Command().advancement(REVOKE, TargetSelector.self(), FROM,
-                                     Advancement.WAX_ON)) == 'advancement revoke @s from husbandry/wax_on'
-    assert str(Command().advancement(REVOKE, TargetSelector.self(), THROUGH,
-                                     Advancement.WAX_ON)) == 'advancement revoke @s through husbandry/wax_on'
-    assert str(Command().advancement(REVOKE, TargetSelector.self(), UNTIL,
-                                     Advancement.WAX_ON)) == 'advancement revoke @s until husbandry/wax_on'
+    assert str(advancement(REVOKE, TargetSelector.self(), EVERYTHING)) == 'advancement revoke @s everything'
+    assert str(advancement(REVOKE, TargetSelector.self(), ONLY, Advancement.A_BALANCED_DIET,
+                           "pig")) == 'advancement revoke @s only husbandry/balanced_diet pig'
+    assert str(advancement(REVOKE, TargetSelector.self(), FROM,
+                           Advancement.WAX_ON)) == 'advancement revoke @s from husbandry/wax_on'
+    assert str(advancement(REVOKE, TargetSelector.self(), THROUGH,
+                           Advancement.WAX_ON)) == 'advancement revoke @s through husbandry/wax_on'
+    assert str(advancement(REVOKE, TargetSelector.self(), UNTIL,
+                           Advancement.WAX_ON)) == 'advancement revoke @s until husbandry/wax_on'
 
     with pytest.raises(ValueError):
-        Command().advancement('foo', TargetSelector.self(), ONLY, Advancement.A_BALANCED_DIET, "pig")
-        Command().advancement(GIVE, TargetSelector.self(), 'foo', Advancement.A_BALANCED_DIET, "pig")
+        advancement('foo', TargetSelector.self(), ONLY, Advancement.A_BALANCED_DIET, "pig")
+        advancement(GIVE, TargetSelector.self(), 'foo', Advancement.A_BALANCED_DIET, "pig")
 
 
 def test_command_execute():
-    assert str(Command().execute().align(XZ)) == 'execute align xz'
+    assert str(execute().align(XZ)) == 'execute align xz'
     with pytest.raises(ValueError):
-        Command().execute().align('foo')
+        execute().align('foo')
 
 
 def test_execute_mod():
@@ -50,7 +50,7 @@ def test_execute_mod():
         ExecuteMod().store().block(1, r(2), d(3), '{}', SHORT, 1.3)) == 'store block 1 ~2 ^3 {} short 1.3'
     assert str(ExecuteMod().run().say('hi')) == 'run say hi'
     with pytest.raises(ValueError):
-        Command().execute().align('foo')
+        execute().align('foo')
         ExecuteMod().anchored('foo')
         ExecuteMod().facing_entity(User('Fred'), 'foo')
         ExecuteMod().in_('foo')
@@ -297,20 +297,20 @@ def test_target_chainability():
 
 def test_command_comment():
     long_line = 'This is a long line of text that would be wrapped if it were asked to be wrapped, and we use it to test if wrapping does or does not happen.'
-    assert str(Command().comment('hi')) == '# hi\n'
-    assert str(Command().comment(' hi ')) == '# hi\n'
-    assert str(Command().comment('hi\nthere')) == '# hi\n# there\n'
-    assert str(Command().comment('  hi\nthere  ')) == '# hi\n# there\n'
-    assert str(Command().comment(long_line)) == '# %s\n' % long_line
-    assert str(Command().comment(long_line + '\n\n\n' + long_line)) == '# %s\n#\n#\n# %s\n' % (long_line, long_line)
+    assert str(comment('hi')) == '# hi\n'
+    assert str(comment(' hi ')) == '# hi\n'
+    assert str(comment('hi\nthere')) == '# hi\n# there\n'
+    assert str(comment('  hi\nthere  ')) == '# hi\n# there\n'
+    assert str(comment(long_line)) == '# %s\n' % long_line
+    assert str(comment(long_line + '\n\n\n' + long_line)) == '# %s\n#\n#\n# %s\n' % (long_line, long_line)
 
-    assert str(Command().comment('hi')) == '# hi\n'
-    assert str(Command().comment(' hi ')) == '# hi\n'
-    assert str(Command().comment('hi\nthere')) == '# hi\n# there\n'
-    assert str(Command().comment('  hi\nthere  ', wrap=True)) == '# hi there\n'
-    assert str(Command().comment(long_line, wrap=True)) == (
+    assert str(comment('hi')) == '# hi\n'
+    assert str(comment(' hi ')) == '# hi\n'
+    assert str(comment('hi\nthere')) == '# hi\n# there\n'
+    assert str(comment('  hi\nthere  ', wrap=True)) == '# hi there\n'
+    assert str(comment(long_line, wrap=True)) == (
         '# This is a long line of text that would be wrapped if it were asked to be\n# wrapped, and we use it to test if wrapping does or does not happen.\n')
-    assert str(Command().comment(long_line + '\n\n\n' + long_line, wrap=True)) == (
+    assert str(comment(long_line + '\n\n\n' + long_line, wrap=True)) == (
         '# This is a long line of text that would be wrapped if it were asked to be\n'
         '# wrapped, and we use it to test if wrapping does or does not happen.\n'
         '#\n'
@@ -319,4 +319,4 @@ def test_command_comment():
 
 
 def test_command_literal():
-    assert str(Command().literal('xyzzy')) == 'xyzzy'
+    assert str(literal('xyzzy')) == 'xyzzy'
