@@ -860,7 +860,7 @@ class Command(Chain):
 
 
 # Define stand-alone methods for each command that creates a command object, then prints it
-cmds = '\n\n'
+top_level_defs = '\n\n'
 command = Command()
 for m in getmembers(command, ismethod):
     if m[0][0] == '_':
@@ -874,12 +874,10 @@ for m in getmembers(command, ismethod):
         else:
             to_pass.append(k)
     pass_on = ', '.join(to_pass)
-    cmd = \
+    top_level_def = \
         """def %s%s:
             return Command().%s(%s)
         """ % (m[0], (str(sig)), m[0], pass_on)
-    cmds += '\n\n' + cmd
+    top_level_defs += '\n\n' + top_level_def
 
-exec(cmds)
-
-# Add everything to 'import *'
+exec(top_level_defs)
