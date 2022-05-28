@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import re
+import textwrap
 import typing
 from abc import abstractmethod
 from functools import wraps
@@ -838,9 +839,24 @@ class Command(Chain):
     def worldborder(self):
         """Manages the world border."""
 
+    def comment(self, text: str, wrap=False):
+        """
+        Inserts a comment.
+
+        :param text: The text of the comment
+        :param wrap: If False, the comment will be the text with each line prepended by a '# '. Otherwise, the text will be broken into paragraphs by blank lines, each paragraph will be formatted by textwrap.fill() (to 78 columns), and before each line is prepended by a '# '.
+        """
+        text = text.strip()
+        if wrap:
+            orig_paras = re.split('\n\s*\n', text)
+            new_paras = (textwrap.fill(x, width=78) for x in orig_paras)
+            text = '\n\n'.join(new_paras)
+        text = text.replace('\n', '\n# ').replace('# \n', '#\n')
+        return '# %s\n' % text
+
 
 # Define stand-alone methods for each command that creates a command object, then prints it
-cmds = 'import sys\n\n'
+cmds = '\n\n'
 command = Command()
 for m in getmembers(command, ismethod):
     if m[0][0] == '_':

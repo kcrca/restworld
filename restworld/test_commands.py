@@ -293,3 +293,26 @@ def test_target_chainability():
         "nada")) == '@a[x=1,y=2,z=3,distance=..15.5,dx=4.4,dy=5.5,dz=6.6,scores={},tag=one,team=slug,sort=arbitrary,limit=15,level=3..15,gamemode=hardcore,name=Robin,x_rotation=9,y_rotation=..24,type=cougar,nbt={hi:there},advancements={husbandry/plant_seed=true},predicate=nada]'
     assert str(TargetSelector.all().not_team('Raiders').not_name("GRBX").not_gamemode(CREATIVE)
                .not_types("worm")) == '@a[team=!Raiders,name=!GRBX,gamemode=!creative,type=!worm]'
+
+
+def test_command_comment():
+    long_line = 'This is a long line of text that would be wrapped if it were asked to be wrapped, and we use it to test if wrapping does or does not happen.'
+    assert str(Command().comment('hi')) == '# hi\n'
+    assert str(Command().comment(' hi ')) == '# hi\n'
+    assert str(Command().comment('hi\nthere')) == '# hi\n# there\n'
+    assert str(Command().comment('  hi\nthere  ')) == '# hi\n# there\n'
+    assert str(Command().comment(long_line)) == '# %s\n' % long_line
+    assert str(Command().comment(long_line + '\n\n\n' + long_line)) == '# %s\n#\n#\n# %s\n' % (long_line, long_line)
+
+    assert str(Command().comment('hi')) == '# hi\n'
+    assert str(Command().comment(' hi ')) == '# hi\n'
+    assert str(Command().comment('hi\nthere')) == '# hi\n# there\n'
+    assert str(Command().comment('  hi\nthere  ', wrap=True)) == '# hi there\n'
+    assert str(Command().comment(long_line, wrap=True)) == (
+        '# This is a long line of text that would be wrapped if it were asked to be\n# wrapped, and we use it to test if wrapping does or does not happen.\n')
+    assert str(Command().comment(long_line + '\n\n\n' + long_line, wrap=True)) == (
+        '# This is a long line of text that would be wrapped if it were asked to be\n'
+        '# wrapped, and we use it to test if wrapping does or does not happen.\n'
+        '#\n'
+        '# This is a long line of text that would be wrapped if it were asked to be\n'
+        '# wrapped, and we use it to test if wrapping does or does not happen.\n')
