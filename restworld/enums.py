@@ -1,6 +1,11 @@
 from enum import Enum
 
 
+class LowerEnum(Enum):
+    def __str__(self):
+        return self.name.lower()
+
+
 class ValueEnum(Enum):
     def __str__(self):
         return super().value

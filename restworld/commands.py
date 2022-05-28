@@ -1,12 +1,14 @@
 from __future__ import annotations
 
 import re
+import typing
+from abc import abstractmethod
 from enum import Enum, auto
 from functools import wraps
 from inspect import signature, getmembers, ismethod
 from io import StringIO
 
-from .enums import Advancement, ValueEnum
+from .enums import Advancement, LowerEnum
 
 
 def fluent(method):
@@ -25,19 +27,37 @@ class PyEum(Enum):
         return super().name.lower()
 
 
-class Sort(ValueEnum):
-    NEAREST = "nearest"
-    FURTHEST = 'furthest'
-    RANDOM = 'random'
-    ARBITRARY = 'arbitrary'
+class Sort(LowerEnum):
+    NEAREST = auto()
+    FURTHEST = auto()
+    RANDOM = auto()
+    ARBITRARY = auto()
 
 
-class Gamemode(ValueEnum):
-    SURVIVAL = 'survival'
-    CREATIVE = 'creative'
-    ADVENTURE = 'adventure'
-    HARDCORE = 'hardcore'
-    SPECTATOR = 'spectator'
+class Gamemode(LowerEnum):
+    SURVIVAL = auto()
+    CREATIVE = auto()
+    ADVENTURE = auto()
+    HARDCORE = auto()
+    SPECTATOR = auto()
+
+
+class Axes(LowerEnum):
+    X = auto()
+    XZ = auto()
+    ZYX = auto()
+    YZ = auto()
+
+
+class EntityAnchor(LowerEnum):
+    EYES = auto()
+    FEET = auto()
+
+
+class Dimension(LowerEnum):
+    OVERWORLD = auto()
+    THE_NETHER = auto()
+    THE_END = auto()
 
 
 class ParamEnum(Enum):
@@ -64,6 +84,11 @@ class Action(Enum):
         return action == 'grant' if action == cls.GIVE else 'revoke'
 
 
+class ScanMode(LowerEnum):
+    ALL = auto()
+    MASKED = auto()
+
+
 def _bool(criteria: bool) -> str:
     return str(criteria).lower()
 
@@ -77,31 +102,66 @@ def not_ify(value) -> str:
 
 class Chain:
     def __init__(self):
-        self.rep = None
+        self._rep = None
 
-    def _add(self, *objs: any, prefix=''):
+    def _add(self, *objs: any):
         s = ' '.join(str(x) for x in objs)
-        if not self.rep:
-            self.rep = prefix
-        self.rep += s
+        if not self._rep:
+            self._rep = ''
+        self._rep += s
 
     def _add_if(self, s: str):
-        if self.rep:
-            self.rep += s
+        if self._rep:
+            self._rep += s
 
-    def _start(self, start: Chain):
-        self.rep = start.rep
-        return self
+    def _start(self, start: T) -> T:
+        start._rep = self._rep + ' '
+        return start
 
     def __str__(self):
-        return self.rep
+        return self._rep.strip()
+
+
+T = typing.TypeVar("T", bound=Chain)
+
+
+class Coord:
+    def __init__(self, v: float):
+        self._v = v
+
+    @abstractmethod
+    def __str__(self):
+        return str(self._v)
+
+
+# noinspection PyPep8Naming
+class r(Coord):
+    def __init__(self, v: float):
+        super().__init__(v)
+
+    def __str__(self):
+        return '~' + super().__str__()
+
+# noinspection PyPep8Naming
+class d(Coord):
+    def __init__(self, v: float):
+        super().__init__(v)
+
+    def __str__(self):
+        return '^' + super().__str__()
+
+
+class NbtPath(Chain):
+    def __init__(self, path: str):
+        super().__init__()
+        self._add(path)
 
 
 class Range(Chain):
-    def __init__(self, start: int | float = None, end: int | float = None, at: int | float = None):
+    def __init__(self, start: float = None, end: float = None, at: float = None):
         super().__init__()
         if not start and not end and not at:
-            raise ValueError("Must specify start, end or at")
+            raise ValueError("Must specify end, end or at")
         if at:
             self._add(str(at))
         else:
@@ -176,31 +236,56 @@ class _NbtFormat(Chain):
 
 
 class Target(Chain):
+    pass
+
+
+class User(Target):
+    _name_re = re.compile(r'\w+')
+
+    def __init__(self, name: str):
+        super().__init__()
+        if not User._name_re.match(name):
+            raise ValueError('Invalid user name: %s' % name)
+        self._add(name)
+
+
+class Uuid(Target):
+    def __init__(self, u1: int, u2: int, u3: int, u4: int):
+        super().__init__()
+        self._add([u1, u2, u3, u4])
+
+
+class TargetSelector(Target):
     _create_key = object()
 
     @classmethod
     def player(cls):
-        return Target(cls._create_key, "@p")
+        return TargetSelector(cls._create_key, '@p')
 
     @classmethod
     def random(cls):
-        return Target(cls._create_key, "@r")
+        return TargetSelector(cls._create_key, '@r')
 
     @classmethod
     def all(cls):
-        return Target(cls._create_key, "@a")
+        return TargetSelector(cls._create_key, '@a')
 
     @classmethod
     def entities(cls):
-        return Target(cls._create_key, "@e")
+        return TargetSelector(cls._create_key, '@e')
 
     @classmethod
     def self(cls):
-        return Target(cls._create_key, "@s")
+        return TargetSelector(cls._create_key, '@s')
+
+    @classmethod
+    def self_(cls):
+        """Here so it can be imported as a shorthand."""
+        return cls.self()
 
     def __init__(self, create_key, selector):
         super().__init__()
-        assert (create_key == Target._create_key), "Private __init__, use creation methods"
+        assert (create_key == TargetSelector._create_key), "Private __init__, use creation methods"
         self._selector = selector
         self._args = {}
 
@@ -341,8 +426,78 @@ def _grant(action: Action):
     return 'grant' if action == Action.GRANT else 'revoke'
 
 
+class IfClause(Chain):
+    def block(self, x: float | Coord, y: float | Coord, z: float | Coord, block_name: str):
+        self._add('block', x, y, z, block_name)
+        return self._start(ExecuteMod())
+
+    def blocks(self,
+               start_x: Coord, start_y: Coord, start_z: Coord,
+               end_x: Coord, end_y: Coord, end_z: Coord,
+               dest_x: Coord, dest_y: Coord, dest_z: Coord,
+               mode: ScanMode
+               ):
+        self._add('blocks', start_x, start_y, start_z, end_x, end_y, end_z,
+                  dest_x, dest_y, dest_z, mode)
+        return self._start(ExecuteMod())
+
+    def data_block(self, x: float | Coord, y: float | Coord, z: float | Coord, path: NbtPath):
+        self._add('blocks', 'data', x, y, z, path)
+        return self._start(ExecuteMod())
+
+
+class ExecuteMod(Chain):
+    @fluent
+    def align(self, axes: Axes):
+        self._add('align', axes)
+
+    @fluent
+    def anchored(self, anchor: EntityAnchor):
+        self._add('anchored', anchor)
+
+    @fluent
+    def as_(self, target: Target):
+        self._add('as', target)
+
+    @fluent
+    def at(self, target: Target):
+        self._add('at', target)
+
+    @fluent
+    def facing(self, x: float | Coord, y: float | Coord, z: float | Coord):
+        self._add('facing', x, y, z)
+
+    @fluent
+    def facing_entity(self, target: Target, anchor: EntityAnchor):
+        self._add('facing entity', target, anchor)
+
+    @fluent
+    def in_(self, dimension: Dimension):
+        self._add('in', dimension)
+
+    @fluent
+    def positioned(self, x: float | Coord, y: float | Coord, z: float | Coord):
+        self._add('positioned', x, y, z)
+
+    @fluent
+    def positioned_as(self, target: Target):
+        self._add('positioned as', target)
+
+    @fluent
+    def rotated(self, yaw: float, pitch: float):
+        self._add('rotated', yaw, pitch)
+
+    @fluent
+    def rotated_as(self, target: Target):
+        self._add('rotated as', target)
+
+    def if_(self) -> IfClause:
+        self._add('if')
+        return self._start(IfClause())
+
+
 class Command(Chain):
-    def advancement(self, action: Action, target: Target, behavior: AdvancementBehavior,
+    def advancement(self, action: Action, target: TargetSelector, behavior: AdvancementBehavior,
                     advancement: Advancement = None,
                     criterion: str = None):
         self._add('advancement', _grant(action), target, behavior)
@@ -380,7 +535,7 @@ class Command(Chain):
         """Controls loaded data packs."""
 
     def debug(self):
-        """Starts or stops a debugging session."""
+        """ends or stops a debugging session."""
 
     def defaultgamemode(self):
         """Sets the default game mode."""
@@ -397,8 +552,10 @@ class Command(Chain):
     def enchant(self):
         """Adds an enchantment to a player's selected item."""
 
-    def execute(self):
+    def execute(self) -> ExecuteMod:
         """Executes another command."""
+        self._add('execute')
+        return self._start(ExecuteMod())
 
     def experience(self):
         """An alias of /xp. Adds or removes player experience."""
@@ -428,7 +585,7 @@ class Command(Chain):
         """Manipulates items in inventories."""
 
     def jfr(self):
-        """Starts or stops a JFR profiling."""
+        """ends or stops a JFR profiling."""
 
     def kick(self):
         """Kicks a player off a server."""
@@ -585,12 +742,15 @@ class Command(Chain):
 cmds = 'import sys\n\n'
 command = Command()
 for m in getmembers(command, ismethod):
+    if m[0][0] == '_':
+        continue
     sig = signature(m[1])
     old_sig = str(sig)
-    added = 'out=sys.stdout)'
-    if old_sig != '()':
-        added = ', ' + added
-    new_sig = str(sig)[:-1] + added
+    added = 'out=sys.stdout'
+    if old_sig[0:1] == '()':
+        new_sig = '(' + added + ')' + old_sig[2:]
+    else:
+        new_sig = re.sub(r'\)( -> .*)?:$', ', ' + added + r'\1', old_sig)
     pass_on = ', '.join(sig.parameters.keys())
     cmd = \
         """def %s%s:
