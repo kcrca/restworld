@@ -290,37 +290,32 @@ class Uuid(Target):
         self._add([u1, u2, u3, u4])
 
 
-class TargetSelector(Target):
+def player():
+    return Selector(Selector._create_key, '@p')
+
+
+def random():
+    return Selector(Selector._create_key, '@r')
+
+
+def all():
+    return Selector(Selector._create_key, '@a')
+
+
+def entities():
+    return Selector(Selector._create_key, '@e')
+
+
+def self():
+    return Selector(Selector._create_key, '@s')
+
+
+class Selector(Target):
     _create_key = object()
-
-    @classmethod
-    def player(cls):
-        return TargetSelector(cls._create_key, '@p')
-
-    @classmethod
-    def random(cls):
-        return TargetSelector(cls._create_key, '@r')
-
-    @classmethod
-    def all(cls):
-        return TargetSelector(cls._create_key, '@a')
-
-    @classmethod
-    def entities(cls):
-        return TargetSelector(cls._create_key, '@e')
-
-    @classmethod
-    def self(cls):
-        return TargetSelector(cls._create_key, '@s')
-
-    @classmethod
-    def self_(cls):
-        """Here so it can be imported as a shorthand."""
-        return cls.self()
 
     def __init__(self, create_key, selector):
         super().__init__()
-        assert (create_key == TargetSelector._create_key), "Private __init__, use creation methods"
+        assert (create_key == Selector._create_key), "Private __init__, use creation methods"
         self._selector = selector
         self._args = {}
 
@@ -595,7 +590,7 @@ class ExecuteMod(Chain):
 
 
 class Command(Chain):
-    def advancement(self, action: str, target: TargetSelector, behavior: str,
+    def advancement(self, action: str, target: Selector, behavior: str,
                     advancement: Advancement = None,
                     criterion: str = None):
         action = _to_grant(action)
