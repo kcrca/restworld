@@ -126,29 +126,20 @@ T = typing.TypeVar("T", bound=Chain)
 
 
 class Coord:
-    def __init__(self, v: float):
-        self._v = v
+    def __init__(self, prefix: str, v: float):
+        self._rep = prefix + str(v)
 
     @abstractmethod
     def __str__(self):
-        return str(self._v)
+        return str(self._rep)
 
 
-# noinspection PyPep8Naming
-class r(Coord):
-    def __init__(self, v: float):
-        super().__init__(v)
+def r(v: float):
+    return Coord('~', v)
 
-    def __str__(self):
-        return '~' + super().__str__()
 
-# noinspection PyPep8Naming
-class d(Coord):
-    def __init__(self, v: float):
-        super().__init__(v)
-
-    def __str__(self):
-        return '^' + super().__str__()
+def d(v: float):
+    return Coord('^', v)
 
 
 class NbtPath(Chain):
