@@ -322,6 +322,22 @@ def test_command_literal():
     assert str(literal('xyzzy')) == 'xyzzy'
 
 
+def test_command_attribute():
+    assert str(attribute(self(), 'foo').get()) == 'attribute @s foo get'
+
+
+def test_attribute_act():
+    assert str(AttributeAct().get()) == 'get'
+    assert str(AttributeAct().get(1.2)) == 'get 1.2'
+    assert str(AttributeAct().base().get()) == 'base get'
+    assert str(AttributeAct().base().get(1.2)) == 'base get 1.2'
+    assert str(AttributeAct().base().set(1.2)) == 'base set 1.2'
+    assert str(AttributeAct().modifier().add('1-2-3-f', 'fred', 1.3)) == 'modifier add 1-2-3-f "fred" 1.3'
+    assert str(AttributeAct().modifier().remove('1-2-3-f')) == 'modifier remove 1-2-3-f'
+    assert str(AttributeAct().modifier().value('1-2-3-f')) == 'modifier value get 1-2-3-f'
+    assert str(AttributeAct().modifier().value('1-2-3-f', 1.3)) == 'modifier value get 1-2-3-f 1.3'
+
+
 def test_resource_checks():
     assert good_resource('xyzzy') == 'xyzzy'
     assert good_resource('m:xyzzy') == 'm:xyzzy'

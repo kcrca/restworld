@@ -35,6 +35,7 @@ def _in_group(group: str, *names: str):
 _resource_re = re.compile(r'[\w.]+')
 _name_re = re.compile(r'[\w+.-]+')
 _user_re = re.compile(r'\w+')
+_uuid_re = re.compile(r'(?:[a-fA-F0-9]+-){3}[a-fA-F0-9]+')
 
 
 def _strip_namespace(path):
@@ -109,6 +110,12 @@ def good_user(name: str) -> str:
     if not _user_re.match(name):
         raise ValueError('Invalid user name: %s' % name)
     return name
+
+
+def good_uuid(uuid: str) -> str:
+    if not _uuid_re.match(uuid):
+        raise ValueError('Invalid UUID string: %s' % uuid)
+    return uuid
 
 
 NEAREST = 'nearest'
@@ -670,10 +677,54 @@ class ExecuteMod(Chain):
         return self._start(Command())
 
 
+class AttributeBaseAct(Chain):
+    def get(self, scale: float = None) -> str:
+        self._add('get')
+        if scale:
+            self._add('', scale)
+        return str(self)
+
+    def set(self, value: float) -> str:
+        self._add('set', value)
+        return str(self)
+
+
+class AttributeModifierAct(Chain):
+    def add(self, uuid: str, name: str, value: float) -> str:
+        self._add('add', good_uuid(uuid), '"%s"' % name, value)
+        return str(self)
+
+    def remove(self, uuid: str) -> str:
+        self._add('remove', good_uuid(uuid))
+        return str(self)
+
+    def value(self, uuid: str, scale: float = None) -> str:
+        self._add('value get', good_uuid(uuid))
+        if scale:
+            self._add('', scale)
+        return str(self)
+
+
+class AttributeAct(Chain):
+    def get(self, scale: float = None) -> str:
+        self._add('get')
+        if scale:
+            self._add('', scale)
+        return str(self)
+
+    def base(self) -> AttributeBaseAct:
+        self._add('base')
+        return self._start(AttributeBaseAct())
+
+    def modifier(self) -> AttributeModifierAct:
+        self._add('modifier')
+        return self._start(AttributeModifierAct())
+
+
 class Command(Chain):
     def advancement(self, action: str, target: Selector, behavior: str,
                     advancement: Advancement = None,
-                    criterion: str = None):
+                    criterion: str = None) -> str:
         action = _to_grant(action)
         _in_group('ADVANCEMENT', behavior)
         self._add('advancement', _grant(action), target, behavior)
@@ -683,8 +734,10 @@ class Command(Chain):
                 self._add('', criterion)
         return str(self)
 
-    def attribute(self):
+    def attribute(self, target: Target, attribute: str) -> AttributeAct:
         """Queries, adds, removes or sets an entity attribute."""
+        self._add('attribute', target, good_resource(attribute))
+        return self._start(AttributeAct())
 
     def ban(self):
         """Adds player to banlist."""
