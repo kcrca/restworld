@@ -445,6 +445,23 @@ def test_command_datapack():
         datapack().enable('robin', BEFORE)
 
 
+def test_command_forceload():
+    assert forceload().add(1, r(2)) == 'forceload add 1 ~2'
+    assert forceload().add(1, r(2), 3, 4) == 'forceload add 1 ~2 3 4'
+    assert forceload().remove(1, r(2)) == 'forceload remove 1 ~2'
+    assert forceload().remove(1, r(2), 3, 4) == 'forceload remove 1 ~2 3 4'
+    assert forceload().remove_all() == 'forceload remove all'
+    assert forceload().query() == 'forceload query'
+    assert forceload().query(1, r(2)) == 'forceload query 1 ~2'
+    with pytest.raises(ValueError):
+        forceload().add(1, d(2))
+        forceload().add(1, r(2.2))
+        forceload().add(1, r(2), 3)
+        forceload().query(d(2))
+        forceload().query(r(2.2))
+        forceload().query(1)
+
+
 def test_simple_commands():
     assert str(defaultgamemode(SURVIVAL)) == 'defaultgamemode survival'
     assert str(deop(self(), all())) == 'deop @s @a'

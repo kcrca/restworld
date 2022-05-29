@@ -1020,6 +1020,40 @@ class FilterClause(Chain):
         return str(self)
 
 
+def _good_col_coords(*coords):
+    for c in coords:
+        if '.' in str(c):
+            raise ValueError('Only int values for column coordinates: %s' % c)
+
+
+class ForceloadMod(Chain):
+    def _to_from(self, action: str, from_x, from_z, to_x, to_z):
+        if to_x is None != to_z is None:
+            raise ValueError('Must specify both "to" coords or neither')
+        _good_col_coords(from_x, from_z, to_x, to_z)
+        self._add(action, from_x, from_z)
+        self._add_opt(to_x, to_z)
+        return str(self)
+
+    def add(self, from_x: int | Coord, from_z: int | Coord, to_x: int | Coord = None, to_z: int | Coord = None,
+            /) -> str:
+        return self._to_from('add', from_x, from_z, to_x, to_z)
+
+    def remove(self, from_x: int | Coord, from_z: int | Coord, to_x: int | Coord = None,
+               to_z: int | Coord = None, /) -> str:
+        return self._to_from('remove', from_x, from_z, to_x, to_z)
+
+    def remove_all(self) -> str:
+        self._add('remove', 'all')
+        return str(self)
+
+    def query(self, x: int | Coord = None, z: int | Coord = None) -> str:
+        _good_col_coords(x, z)
+        self._add('query')
+        self._add_opt(x, z)
+        return str(self)
+
+
 class Command(Chain):
     def advancement(self, action: str, target: Selector, behavior: str,
                     advancement: Advancement = None,
@@ -1123,8 +1157,10 @@ class Command(Chain):
             return self._start(FilterClause())
         return str(self)
 
-    def forceload(self):
+    def forceload(self) -> ForceloaddMod:
         """Forces chunks to constantly be loaded or not."""
+        self._add('forceload')
+        return self._start(ForceloadMod())
 
     def function(self):
         """Runs a function."""
