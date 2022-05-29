@@ -338,6 +338,25 @@ def test_attribute_act():
     assert str(AttributeAct().modifier().value('1-2-3-f', 1.3)) == 'modifier value get 1-2-3-f 1.3'
 
 
+def test_command_bossbar():
+    assert str(bossbar().add('foo', 'stud')) == 'bossbar add foo stud'
+    assert str(bossbar().get('foo', 'max')) == 'bossbar get foo max'
+    assert str(bossbar().list()) == 'bossbar list'
+    assert str(bossbar().remove('foo')) == 'bossbar remove foo'
+    assert str(bossbar().set('foo').color(BLUE)) == 'bossbar set foo color blue'
+    assert str(bossbar().set('foo').max(17)) == 'bossbar set foo max 17'
+    assert str(bossbar().set('foo').name('Freddy')) == 'bossbar set foo name Freddy'
+    assert str(bossbar().set('foo').players(self(), entities())) == 'bossbar set foo players @s @e'
+    assert str(bossbar().set('foo').style(NOTCHED_12)) == 'bossbar set foo style notched_12'
+    assert str(bossbar().set('foo').value(17)) == 'bossbar set foo value 17'
+    assert str(bossbar().set('foo').visible(False)) == 'bossbar set foo visible false'
+
+
+def test_command_clear():
+    assert str(clear(self(), User('Fred')).item('foo{bar}')) == 'clear @s Fred foo{bar}'
+    assert str(clear(self(), User('Fred')).item('foo{bar}', 4)) == 'clear @s Fred foo{bar} 4'
+
+
 def test_resource_checks():
     assert good_resource('xyzzy') == 'xyzzy'
     assert good_resource('m:xyzzy') == 'm:xyzzy'

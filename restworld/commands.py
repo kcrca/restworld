@@ -173,6 +173,28 @@ THROUGH = 'through'
 UNTIL = 'until'
 ADVANCEMENT = [EVERYTHING, ONLY, FROM, THROUGH, UNTIL]
 
+MAX = "max"
+PLAYERS = 'players'
+VALUE = 'value'
+VISIBLE = 'visible'
+BOSSBAR_GET = [MAX, PLAYERS, VALUE, VISIBLE]
+
+BLUE = 'blue'
+GREEN = 'green'
+PINK = 'pink'
+PURPLE = 'purple'
+RED = 'red'
+WHITE = 'white'
+YELLOW = 'yellow'
+BOSSBAR_COLORS = [BLUE, GREEN, PINK, PURPLE, RED, WHITE, YELLOW]
+
+NOTCHED_6 = 'notched_6'
+NOTCHED_10 = 'notched_10'
+NOTCHED_12 = 'notched_12'
+NOTCHED_20 = 'notched_20'
+PROGRESS = 'progress'
+BOSSBAR_STYLES = [NOTCHED_6, NOTCHED_10, NOTCHED_12, NOTCHED_20, PROGRESS]
+
 GIVE = 'give'
 CLEAR = 'clear'
 GIVE_CLEAR = [GIVE, CLEAR]
@@ -721,6 +743,69 @@ class AttributeAct(Chain):
         return self._start(AttributeModifierAct())
 
 
+class BossbarSet(Chain):
+    def color(self, color: str) -> str:
+        _in_group('BOSSBAR_COLORS', color)
+        self._add('color', color)
+        return str(self)
+
+    def max(self, value: int) -> str:
+        self._add('max', value)
+        return str(self)
+
+    def name(self, name: str) -> str:
+        self._add('name', name)
+        return str(self)
+
+    def players(self, *targets: Target) -> str:
+        self._add('players', *targets)
+        return str(self)
+
+    def style(self, style: str) -> str:
+        _in_group('BOSSBAR_STYLES', style)
+        self._add('style', style)
+        return str(self)
+
+    def value(self, value: int) -> str:
+        self._add('value', value)
+        return str(self)
+
+    def visible(self, visible: bool) -> str:
+        self._add('visible', _bool(visible))
+        return str(self)
+
+
+class BossbarAct(Chain):
+    def add(self, id: str, name: str) -> str:
+        self._add('add', good_resource(id), name)
+        return str(self)
+
+    def get(self, id: str, which: str) -> str:
+        _in_group('BOSSBAR_GET', which)
+        self._add('get', good_resource(id), which)
+        return str(self)
+
+    def list(self) -> str:
+        self._add('list')
+        return str(self)
+
+    def remove(self, id: str) -> str:
+        self._add('remove', good_resource(id))
+        return str(self)
+
+    def set(self, id: str) -> BossbarSet:
+        self._add('set', id)
+        return self._start(BossbarSet())
+
+
+class ClearClause(Chain):
+    def item(self, item: str, max_count: int = None) -> str:
+        self._add(item)
+        if max_count:
+            self._add('', max_count)
+        return str(self)
+
+
 class Command(Chain):
     def advancement(self, action: str, target: Selector, behavior: str,
                     advancement: Advancement = None,
@@ -739,11 +824,15 @@ class Command(Chain):
         self._add('attribute', target, good_resource(attribute))
         return self._start(AttributeAct())
 
-    def bossbar(self):
+    def bossbar(self) -> BossbarAct:
         """Creates and modifies bossbars."""
+        self._add('bossbar')
+        return self._start(BossbarAct())
 
-    def clear(self):
+    def clear(self, target: Target, *targets: Target) -> ClearClause:
         """Clears items from player inventory."""
+        self._add('clear', target, *targets)
+        return self._start(ClearClause())
 
     def clone(self):
         """Copies blocks from one place to another."""
