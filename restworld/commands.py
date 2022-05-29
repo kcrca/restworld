@@ -32,6 +32,85 @@ def _in_group(group: str, *names: str):
         raise ValueError('Not in %s: %s' % (group, missing))
 
 
+_resource_re = re.compile(r'[\w.]+')
+_name_re = re.compile(r'[\w+.-]+')
+_user_re = re.compile(r'\w+')
+
+
+def _strip_namespace(path):
+    parts = path.split(':', 1)
+    if len(parts) > 1:
+        good_resource(parts[0])
+        path = parts[1]
+    return path
+
+
+def _strip_not(path):
+    if path and path[0] == '!':
+        return path[1:]
+    return path
+
+
+def good_resource(name: str, allow_namespace=True, allow_not=False) -> str:
+    input = name
+    if allow_not:
+        name = _strip_not(name)
+    if allow_namespace:
+        name = _strip_namespace(name)
+    if not _resource_re.match(name):
+        raise ValueError('Invalid resource location: %s' % name)
+    return input
+
+
+def good_resources(*names: str, allow_not=False) -> tuple[str, ...]:
+    for t in names:
+        good_resource(t, allow_not=allow_not)
+    return names
+
+
+def good_resource_path(path: str, allow_not=False) -> str:
+    input = path
+    if allow_not:
+        path = _strip_not(path)
+    path = _strip_namespace(path)
+    if path and path[0] == '/':
+        # allow leading '/'
+        path = path[1:]
+    for r in path.split('/'):
+        try:
+            good_resource(r, allow_namespace=False)
+        except ValueError:
+            raise ValueError('Invalid resource location in path: %s (%s)' % (r, path))
+    return input
+
+
+def good_resource_paths(*paths: str, allow_not=False) -> tuple[str, ...]:
+    for t in paths:
+        good_resources(t, allow_not=allow_not)
+    return paths
+
+
+def good_name(name: str, allow_not=False) -> str:
+    input = name
+    if allow_not:
+        name = _strip_not(name)
+    if not _name_re.match(name):
+        raise ValueError('Invalid name: %s' % name)
+    return input
+
+
+def good_names(*names: str, allow_not=False) -> tuple[str, ...]:
+    for t in names:
+        good_name(t, allow_not)
+    return names
+
+
+def good_user(name: str) -> str:
+    if not _user_re.match(name):
+        raise ValueError('Invalid user name: %s' % name)
+    return name
+
+
 NEAREST = 'nearest'
 FURTHEST = 'furthest'
 RANDOM = 'random'
@@ -195,7 +274,7 @@ class Score(Chain):
         super().__init__()
         if isinstance(target, str) and target != '*':
             raise ValueError('Target must be target or "*": %s' % target)
-        self._add(target, objective)
+        self._add(target, good_name(objective))
 
 
 class ScoreClause(Chain):
@@ -215,7 +294,7 @@ class AdvancementCriteria(Chain):
         if isinstance(criteria, bool):
             self._add('%s=%s' % (advancement, _bool(criteria)))
         else:
-            self._add('%s={%s=%s}' % (advancement, criteria[0], _bool(criteria[1])))
+            self._add('%s={%s=%s}' % (advancement, good_resource_path(criteria[0]), _bool(criteria[1])))
 
 
 # For future: https://github.com/vberlier/nbtlib/blob/main/docs/Usage.ipynb seems like a good
@@ -275,12 +354,9 @@ class Target(Chain):
 
 
 class User(Target):
-    _name_re = re.compile(r'\w+')
-
     def __init__(self, name: str):
         super().__init__()
-        if not User._name_re.match(name):
-            raise ValueError('Invalid user name: %s' % name)
+        good_user(name)
         self._add(name)
 
 
@@ -290,22 +366,27 @@ class Uuid(Target):
         self._add([u1, u2, u3, u4])
 
 
+# noinspection PyProtectedMember
 def player():
     return Selector(Selector._create_key, '@p')
 
 
+# noinspection PyProtectedMember
 def random():
     return Selector(Selector._create_key, '@r')
 
 
+# noinspection PyProtectedMember
 def all():
     return Selector(Selector._create_key, '@a')
 
 
+# noinspection PyProtectedMember
 def entities():
     return Selector(Selector._create_key, '@e')
 
 
+# noinspection PyProtectedMember
 def self():
     return Selector(Selector._create_key, '@s')
 
@@ -376,19 +457,19 @@ class Selector(Target):
 
     @fluent
     def tag(self, tag: str, *tags: str):
-        return self._multi_args('tag', tag, tags)
+        return self._multi_args('tag', good_name(tag, allow_not=True), good_names(*tags, allow_not=True))
 
     @fluent
     def not_tag(self, tag: str, *tags: str):
-        return self.tag(not_ify(tag), not_ify(tags))
+        return self.tag(not_ify(good_name(tag, allow_not=True)), not_ify(good_names(*tags, allow_not=True)))
 
     @fluent
     def team(self, team: str):
-        return self._unique_arg('team', team)
+        return self._unique_arg('team', good_name(team, allow_not=True))
 
     @fluent
     def not_team(self, team: str, *teams):
-        return self._not_args('team', team, teams)
+        return self._not_args('team', good_name(team, allow_not=True), good_names(*teams, allow_not=True))
 
     @fluent
     def sort(self, sorting: str):
@@ -415,11 +496,11 @@ class Selector(Target):
 
     @fluent
     def name(self, name: str):
-        return self._unique_arg('name', name)
+        return self._unique_arg('name', good_name(name, allow_not=True))
 
     @fluent
     def not_name(self, name: str, *names: str):
-        return self._not_args('name', name, names)
+        return self._not_args('name', good_name(name, allow_not=True), good_names(*names, allow_not=True))
 
     @fluent
     def x_rotation(self, rot_range: Range):
@@ -432,12 +513,12 @@ class Selector(Target):
         return self
 
     @fluent
-    def type(self, type_: type):
-        return self._unique_arg('type', type_)
+    def type(self, type_: str):
+        return self._unique_arg('type', good_resource(type_, allow_not=True))
 
     @fluent
     def not_types(self, type_: str, *types: str):
-        return self._not_args('type', type_, types)
+        return self._not_args('type', good_resource(type_, allow_not=True), good_resources(*types, allow_not=True))
 
     @fluent
     def nbt(self, nbt: dict, *nbts: dict):
@@ -461,7 +542,7 @@ def _grant(action: str):
 
 class IfClause(Chain):
     def block(self, x: float | Coord, y: float | Coord, z: float | Coord, block_name: str) -> ExecuteMod:
-        self._add('block', x, y, z, block_name)
+        self._add('block', x, y, z, good_resource(block_name))
         return self._start(ExecuteMod())
 
     def blocks(self,
@@ -475,16 +556,16 @@ class IfClause(Chain):
                   dest_x, dest_y, dest_z, mode)
         return self._start(ExecuteMod())
 
-    def data_block(self, x: float | Coord, y: float | Coord, z: float | Coord, path: str) -> ExecuteMod:
-        self._add('data', 'block', x, y, z, path)
+    def data_block(self, x: float | Coord, y: float | Coord, z: float | Coord, nbt_path: str) -> ExecuteMod:
+        self._add('data', 'block', x, y, z, nbt_path)
         return self._start(ExecuteMod())
 
-    def data_entity(self, target: Target, path: str) -> ExecuteMod:
-        self._add('data', 'entity', target, path)
+    def data_entity(self, target: Target, nbt_path: str) -> ExecuteMod:
+        self._add('data', 'entity', target, nbt_path)
         return self._start(ExecuteMod())
 
-    def data_storage(self, source: str, path: str) -> ExecuteMod:
-        self._add('data', 'storage', source, path)
+    def data_storage(self, source: str, nbt_path: str) -> ExecuteMod:
+        self._add('data', 'storage', source, nbt_path)
         return self._start(ExecuteMod())
 
     def predicate(self, predicate: str) -> ExecuteMod:
@@ -497,10 +578,10 @@ class IfClause(Chain):
 
 
 class StoreClause(Chain):
-    def block(self, x: float | Coord, y: float | Coord, z: float | Coord, path: str, data_type: str,
+    def block(self, x: float | Coord, y: float | Coord, z: float | Coord, nbt_patbh: str, data_type: str,
               scale: float) -> ExecuteMod:
         _in_group('DATA_TYPE', data_type)
-        self._add('block', x, y, z, path, data_type, scale)
+        self._add('block', x, y, z, nbt_patbh, data_type, scale)
         return self._start(ExecuteMod())
 
     def bossbar(self, id: str, param: str) -> ExecuteMod:
@@ -508,18 +589,18 @@ class StoreClause(Chain):
         self._add('bossbar', id, param)
         return self._start(ExecuteMod())
 
-    def entity(self, target: Target, path: str, data_type: str, scale: float) -> ExecuteMod:
+    def entity(self, target: Target, nbt_path: str, data_type: str, scale: float) -> ExecuteMod:
         _in_group('DATA_TYPE', data_type)
-        self._add('entity', target, path, data_type, scale)
+        self._add('entity', target, nbt_path, data_type, scale)
         return self._start(ExecuteMod())
 
     def score(self, target: Target | str, objective: str) -> ExecuteMod:
         self._add('score', Score(target, objective))
         return self._start(ExecuteMod())
 
-    def storage(self, target: Target, path: str, data_type: str, scale: float) -> ExecuteMod:
+    def storage(self, target: Target, nbt_path: str, data_type: str, scale: float) -> ExecuteMod:
         _in_group('DATA_TYPE', data_type)
-        self._add('storage', target, path, data_type, scale)
+        self._add('storage', target, nbt_path, data_type, scale)
         return self._start(ExecuteMod())
 
 
@@ -839,11 +920,13 @@ class Command(Chain):
         Inserts a comment.
 
         :param text: The text of the comment
-        :param wrap: If False, the comment will be the text with each line prepended by a '# '. Otherwise, the text will be broken into paragraphs by blank lines, each paragraph will be formatted by textwrap.fill() (to 78 columns), and before each line is prepended by a '# '.
+        :param wrap: If False, the comment will be the text with each line prepended by a '# '. Otherwise, the text will
+         be broken into paragraphs by blank lines, each paragraph will be formatted by textwrap.fill() (to 78 columns),
+         and before each line is prepended by a '# '.
         """
         text = text.strip()
         if wrap:
-            orig_paras = re.split('\n\s*\n', text)
+            orig_paras = re.split(r'\n\s*\n', text)
             new_paras = (textwrap.fill(x, width=78) for x in orig_paras)
             text = '\n\n'.join(new_paras)
         text = text.replace('\n', '\n# ').replace('# \n', '#\n')

@@ -50,7 +50,7 @@ def test_execute_mod():
         ExecuteMod().store().block(1, r(2), d(3), '{}', SHORT, 1.3)) == 'store block 1 ~2 ^3 {} short 1.3'
     assert str(ExecuteMod().run().say('hi')) == 'run say hi'
     with pytest.raises(ValueError):
-        execute().align('foo')
+        ExecuteMod().align('foo')
         ExecuteMod().anchored('foo')
         ExecuteMod().facing_entity(User('Fred'), 'foo')
         ExecuteMod().in_('foo')
@@ -320,3 +320,33 @@ def test_command_comment():
 
 def test_command_literal():
     assert str(literal('xyzzy')) == 'xyzzy'
+
+
+def test_resource_checks():
+    assert good_resource('xyzzy') == 'xyzzy'
+    assert good_resource('m:xyzzy') == 'm:xyzzy'
+    assert good_resource_path('xyzzy') == 'xyzzy'
+    assert good_resource_path('m:xyzzy') == 'm:xyzzy'
+    assert good_resource_path('a/b/c') == 'a/b/c'
+    assert good_resource_path('/a/b/c') == '/a/b/c'
+    assert good_resource_path('m:a/b/c') == 'm:a/b/c'
+    assert good_resource_path('m:/a/b/c') == 'm:/a/b/c'
+    with pytest.raises(ValueError):
+        good_resource('%')
+        good_resource('m:xyzzy', allow_namespace=False)
+        good_resource_path('/')
+        good_resource_path('a//b')
+        good_resource_path('/a/b:c')
+        good_resource_path('//a/b/c')
+
+
+def test_tag_checks():
+    assert good_name('xyzzy') == 'xyzzy'
+    assert good_name('a+b') == 'a+b'
+    assert good_name('!a+b', allow_not=True) == '!a+b'
+    assert good_names('_', 'b-3') == ('_', 'b-3')
+    assert good_names('_', '!b-3', allow_not=True) == ('_', '!b-3')
+    with pytest.raises(ValueError):
+        good_name('x&y')
+        good_name('!foo')
+        good_names('_', '!b-3')
