@@ -374,6 +374,23 @@ def test_command_data():
     assert str(data().get(EntityData(self()))) == 'data get entity @s'
 
 
+def test_command_effect():
+    assert str(effect().give(self(), Effects.SPEED)) == 'effect give @s speed'
+    assert str(effect().give(self(), Effects.SPEED, 100)) == 'effect give @s speed 100'
+    assert str(effect().give(self(), Effects.SPEED, 100, 2)) == 'effect give @s speed 100 2'
+    assert str(effect().give(self(), Effects.SPEED, 100, 2, True)) == 'effect give @s speed 100 2 true'
+    assert str(effect().clear()) == 'effect clear'
+    assert str(effect().clear(self())) == 'effect clear @s'
+    assert str(effect().clear(self(), Effects.SPEED)) == 'effect clear @s speed'
+    with pytest.raises(ValueError):
+        effect().give(self(), Effects.SPEED, -1)
+        effect().give(self(), Effects.SPEED, MAX_EFFECT_SECONDS + 100)
+        effect().give(self(), Effects.SPEED, None, 2)
+        effect().give(self(), Effects.SPEED, None, None, True)
+        effect().give(self(), Effects.SPEED, 100, None, True)
+        effect().clear(None, Effects.SPEED)
+
+
 def test_data_mod():
     assert str(DataMod().get(EntityData(all()))) == 'get entity @a'
     assert str(DataMod().merge(EntityData(all()), {})) == 'merge entity @a {}'

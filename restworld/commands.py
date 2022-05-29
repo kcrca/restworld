@@ -8,7 +8,7 @@ from functools import wraps
 from inspect import signature, getmembers, ismethod
 from io import StringIO
 
-from .enums import Advancement
+from .enums import Advancement, Effects
 
 
 def fluent(method):
@@ -230,6 +230,8 @@ GRANT_REVOKE = [GRANT, REVOKE]
 
 GIVE_GRANT = GIVE_CLEAR + GRANT_REVOKE
 
+MAX_EFFECT_SECONDS = 1000000
+
 
 def _to_grant(action: str):
     if action == 'give':
@@ -250,8 +252,10 @@ RELATION = [LT, LE, EQ, GE, GT]
 ALL_SCORES = '*'
 
 
-def _bool(criteria: bool) -> str:
-    return str(criteria).lower()
+def _bool(value: bool | None) -> str | None:
+    if value is None:
+        return None
+    return str(value).lower()
 
 
 def not_ify(value) -> str:
@@ -918,14 +922,11 @@ class ModifyClause(Chain):
 
 
 class DataMod(Chain):
-    def _path_and_scale(self, nbt_path, scale):
+    def get(self, data_target: DataTarget, nbt_path: str = None, scale: float = None, /) -> str:
+        self._add('get', data_target)
         if not nbt_path and scale is not None:
             raise ValueError('Must give path to use scale')
         self._add_opt(nbt_path, scale)
-
-    def get(self, data_target: DataTarget, nbt_path: str = None, scale: float = None) -> str:
-        self._add('get', data_target)
-        self._path_and_scale(nbt_path, scale)
         return str(self)
 
     def merge(self, data_target: DataTarget, nbt: dict) -> str:
@@ -964,9 +965,25 @@ class DatapackAction(Chain):
 
 
 class EffectAction(Chain):
-    def give(self, target: Target, effect: Effect, seconds: int = None, amplifier: int = None,
-             hide_particles: bool = None) -> str:
-        pass
+    def give(self, target: Target, effect: Effects, seconds: int = None, amplifier: int = None,
+             hide_particles: bool = None, /) -> str:
+        if amplifier is not None and seconds is None:
+            raise ValueError('must give seconds to use amplifier')
+        if hide_particles is not None and amplifier is None:
+            raise ValueError('must give amplifier to use hide_particles')
+        seconds_range = range(0, MAX_EFFECT_SECONDS + 1)
+        if seconds is not None and seconds not in seconds_range:
+            raise ValueError('Not in range: %d (%s)' % (seconds, seconds_range))
+        self._add('give', target, effect)
+        self._add_opt(seconds, amplifier, _bool(hide_particles))
+        return str(self)
+
+    def clear(self, target: Target = None, effect: Effects = None, /) -> str:
+        if effect is not None and target is None:
+            raise ValueError('must give target to use effect')
+        self._add('clear')
+        self._add_opt(target, effect)
+        return str(self)
 
 
 class Command(Chain):
