@@ -7,9 +7,10 @@ from bs4 import BeautifulSoup
 
 
 class EnumDesc(ABC):
-    def __init__(self, name, url):
+    def __init__(self, name, url, data_desc: str):
         self.name = name
         self.url = url
+        self.data_desc = data_desc
 
     def fetch(self):
         html = requests.get(self.url).text
@@ -41,7 +42,7 @@ class EnumDesc(ABC):
 
     def generate(self):
         soup = self.fetch()
-        tables = soup.find_all('table', attrs={'data-description': 'advancements'})
+        tables = soup.find_all('table', attrs={'data-description': self.data_desc})
         found = {}
         filter_col = None
         for table in tables:
@@ -64,15 +65,19 @@ class EnumDesc(ABC):
                     cells = row.find_all('td')
                     if filter_col is not None and self.filter_out(cells[filter_col]):
                         continue
-                    raw_name = cells[name_col].text.strip()
-                    string = cells[str_col].text.strip()
-                    desc = to_desc(cells[desc_col].text.strip())
+                    raw_name = clean(cells[name_col].text)
+                    string = clean(cells[str_col].text)
+                    desc = to_desc(clean(cells[desc_col].text))
                     name = re.sub(junk, '', raw_name).upper().replace(' ', '_')
                     name = self.replace(name, string)
                     if name in found:
                         raise KeyError("Duplicate name: %s (%s, %s)" % (name, string, found[name]))
                     found[name] = (string, desc)
         return found
+
+
+def clean(text: str) -> str:
+    return re.sub(r'\[.*', '', text.strip().replace(u'\u200c', ''), flags=re.DOTALL)
 
 
 def to_desc(text):
@@ -84,7 +89,8 @@ def to_desc(text):
 
 class Advancements(EnumDesc):
     def __init__(self):
-        super().__init__('Advancement', 'https://minecraft.fandom.com/wiki/Advancement#List_of_advancements')
+        super().__init__('Advancement', 'https://minecraft.fandom.com/wiki/Advancement#List_of_advancements',
+                         'advancements')
 
     def is_name_col(self, text: str):
         return text == 'Advancement'
@@ -106,7 +112,7 @@ class Advancements(EnumDesc):
 
 class Effects(EnumDesc):
     def __init__(self):
-        super().__init__('Effects', 'https://minecraft.fandom.com/wiki/Effect?so=search#Effect_list')
+        super().__init__('Effects', 'https://minecraft.fandom.com/wiki/Effect?so=search#Effect_list', 'Effects')
 
     def is_name_col(self, text: str):
         return text == 'Display name'
@@ -128,41 +134,66 @@ class Effects(EnumDesc):
             return 'ENTER_THE_END'
         return name
 
-    def generate(self):
-        soup = self.fetch()
-        tables = soup.find_all('table', attrs={'data-description': 'Effects'})
-        found = {}
-        for table in tables:
-            rows = table.find_all('tr')
-            for row in rows:
-                headers = row.find_all('th')
-                if headers:
-                    for i in range(0, len(headers)):
-                        th = headers[i]
-                        text = th.text.strip()
-                        if text == 'Display name':
-                            name_col = i
-                        elif text.startswith('Name'):
-                            str_col = i
-                        elif text.find('Effect') >= 0:
-                            desc_col = i
-                        elif text.find('ID (J.E.)'):
-                            id_col = i
-                else:
-                    cells = row.find_all('td')
-                    id = cells[id_col].text.strip()
-                    if id == 'N/A':
-                        continue
-                    raw_name = cells[name_col].text.strip()
-                    string = cells[str_col].text.strip()
-                    string = re.sub(r'\[.*', '', string, flags=re.DOTALL)
-                    desc = to_desc(cells[desc_col].text.strip())
-                    name = re.sub(junk, '', raw_name).upper().replace(' ', '_')
-                    name = self.replace(name, string)
-                    if name in found:
-                        raise KeyError("Duplicate name: %s (%s, %s)" % (name, string, found[name]))
-                    found[name] = (string, desc)
-        return found
+
+# class Enchantments(EnumDesc):
+#     def __init__(self):
+#         super().__init__('Enchantments', 'https://minecraft.fandom.com/wiki/Enchanting#Summary_of_enchantments')
+#
+#     def is_name_col(self, text: str):
+#         return text == 'Display name'
+#
+#     def is_string_col(self, text: str):
+#         return text.startswith('Name')
+#
+#     def is_desc_col(self, text: str):
+#         return text.find('Effect') >= 0
+#
+#     def is_filter_col(self, text: str):
+#         return text.find('ID (J.E.)')
+#
+#     def filter_out(self, text: str):
+#         return text == 'N/A'
+#
+#     def replace(self, name, string):
+#         if name == 'THE_END' and string.startswith('story'):
+#             return 'ENTER_THE_END'
+#         return name
+#
+#     def generate(self):
+#         soup = self.fetch()
+#         tables = soup.find_all('table', attrs={'data-description': 'Effects'})
+#         found = {}
+#         for table in tables:
+#             rows = table.find_all('tr')
+#             for row in rows:
+#                 headers = row.find_all('th')
+#                 if headers:
+#                     for i in range(0, len(headers)):
+#                         th = headers[i]
+#                         text = th.text.strip()
+#                         if text == 'Display name':
+#                             name_col = i
+#                         elif text.startswith('Name'):
+#                             str_col = i
+#                         elif text.find('Effect') >= 0:
+#                             desc_col = i
+#                         elif text.find('ID (J.E.)'):
+#                             id_col = i
+#                 else:
+#                     cells = row.find_all('td')
+#                     id = cells[id_col].text.strip()
+#                     if id == 'N/A':
+#                         continue
+#                     raw_name = cells[name_col].text.strip()
+#                     string = cells[str_col].text.strip()
+#                     string = re.sub(r'\[.*', '', string, flags=re.DOTALL)
+#                     desc = to_desc(cells[desc_col].text.strip())
+#                     name = re.sub(junk, '', raw_name).upper().replace(' ', '_')
+#                     name = self.replace(name, string)
+#                     if name in found:
+#                         raise KeyError("Duplicate name: %s (%s, %s)" % (name, string, found[name]))
+#                     found[name] = (string, desc)
+#         return found
 
 
 if __name__ == '__main__':
@@ -174,10 +205,9 @@ if __name__ == '__main__':
             print("class ValueEnum(Enum):")
             print("    def __str__(self):")
             print("        return super().value")
-            print("\n")
             for tab in (Advancements(), Effects()):
                 fields = tab.generate()
                 print('\n\nclass %s(ValueEnum):' % tab.name)
                 for key in fields:
-                    value, desc = (x.replace(u'\u200c', '') for x in fields[key])
+                    value, desc = fields[key]
                     print('    %s = "%s"\n    """%s"""' % (key, value, desc))

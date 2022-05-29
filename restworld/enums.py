@@ -6,8 +6,6 @@ class ValueEnum(Enum):
         return super().value
 
 
-
-
 class Advancement(ValueEnum):
     MINECRAFT = "story/root"
     """The heart and story of the game."""
@@ -262,14 +260,22 @@ class Effects(ValueEnum):
     """Adds damage absorption (additional hearts that can't be regenerated), higher levels give more absorption."""
     SATURATION = "saturation"
     """Restores hunger and saturation."""
+    GLOWING = "glowing"
+    """Outlines the affected entity (can be seen through blocks)."""
     LEVITATION = "levitation"
     """Floats the affected entity upward."""
-    FATAL_POISONBEDROCK_EDITION_ONLY = "fatal_poison"
+    LUCK_ = "luck"
+    """Can increase chances of high-quality and more loot, higher levels increase the chances of better loot."""
+    BAD_LUCK_ = "unluck"
+    """Can reduce chances of high-quality and more loot, higher levels reduce the chance of good loot."""
+    FATAL_POISON = "fatal_poison"
     """Inflicts damage over time and potentially kills."""
     SLOW_FALLING = "slow_falling"
     """Decreases falling speed and negates fall damage."""
     CONDUIT_POWER = "conduit_power"
     """Increases underwater visibility and mining speed, prevents drowning."""
+    DOLPHINS_GRACE = "dolphins_grace"
+    """Increases swimming speed (only obtainable from dolphins)."""
     BAD_OMEN = "bad_omen"
     """Causes an illager raid to start upon entering a village (only received from an Illager captain upon its death), higher levels cause a more difficult raid."""
     HERO_OF_THE_VILLAGE = "hero_of_the_village"
