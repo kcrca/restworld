@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 from contextlib import redirect_stdout
 
 import requests
-from bs4 import BeautifulSoup, Tag
+from bs4 import BeautifulSoup
 
 
 class EnumDesc(ABC):
@@ -31,6 +31,7 @@ class EnumDesc(ABC):
         soup = self.fetch()
         tables = soup.find_all('table', attrs={'data-description': self.data_desc})
         found = {}
+        assert tables
         for table in tables:
             rows = table.find_all('tr')
             for row in rows:
@@ -45,19 +46,28 @@ class EnumDesc(ABC):
                     extracted = self.extract(cells)
                     if not extracted:
                         continue
-                    name, value, desc = (clean(x) for x in extracted)
+                    name, value, desc = extracted
                     name = re.sub(junk, '', name).upper().replace(' ', '_')
                     name = self.replace(name, value)
                     if desc[-1] not in '.?!':
                         desc += '.'
+                    desc = re.sub('\s+', ' ', desc)
                     if name in found:
                         raise KeyError("Duplicate name: %s (%s, %s)" % (name, value, found[name]))
                     found[name] = (value, desc)
         return found
 
+    def supplement_value(self, key: str):
+        pass
 
-def clean(cell: Tag) -> str:
-    return re.sub(r'\[.*', '', cell.text.strip().replace(u'\u200c', ''), flags=re.DOTALL)
+    def supplement_class(self):
+        pass
+
+
+def clean(cell) -> str:
+    if not isinstance(cell, str):
+        cell = cell.text
+    return re.sub(r'\[.*', '', cell.strip().replace(u'\u200c', ''), flags=re.DOTALL)
 
 
 def to_desc(text):
@@ -84,7 +94,7 @@ class Advancements(EnumDesc):
             self.desc_col = col
 
     def extract(self, cols):
-        return cols[self.name_col], cols[self.value_col], cols[self.desc_col]
+        return (clean(x.text) for x in (cols[self.name_col], cols[self.value_col], cols[self.desc_col]))
 
     def replace(self, name, value):
         if name == 'THE_END' and value.startswith('story'):
@@ -113,19 +123,45 @@ class Effects(EnumDesc):
     def extract(self, cols):
         if cols[self.filter_col] == 'N/A':
             return None
-        return cols[self.name_col], cols[self.value_col], cols[self.desc_col]
+        return (clean(x.text) for x in (cols[self.name_col], cols[self.value_col], cols[self.desc_col]))
 
 
 class Enchantments(EnumDesc):
     def __init__(self):
         super().__init__('Enchantments', 'https://minecraft.fandom.com/wiki/Enchanting#Summary_of_enchantments',
-                         'Summary of enchantments ')
+                         'Summary of enchantments')
+        self.maxes = {}
 
     def note_header(self, col: int, text: str):
-        pass
+        if text == 'Name':
+            self.name_col = col
+        elif text == 'Summary':
+            self.desc_col = col
+        elif text.startswith('Max'):
+            self.max_col = col
 
     def extract(self, cols):
-        pass
+        name = clean(cols[self.name_col])
+        value = name.lower().replace(' ', '_')
+        desc = clean(cols[self.desc_col])
+        self.maxes[value] = roman_to_int(clean(cols[self.max_col].text))
+        return name, value, desc
+
+    def supplement_class(self):
+        print()
+        print('    def max_level(ench):')
+        print('      return %s[ench.value]' % self.maxes)
+
+
+def roman_to_int(s):
+    rom_val = {'I': 1, 'V': 5, 'X': 10, 'L': 50, 'C': 100, 'D': 500, 'M': 1000}
+    int_val = 0
+    for i in range(len(s)):
+        if i > 0 and rom_val[s[i]] > rom_val[s[i - 1]]:
+            int_val += rom_val[s[i]] - 2 * rom_val[s[i - 1]]
+        else:
+            int_val += rom_val[s[i]]
+    return int_val
 
 
 if __name__ == '__main__':
@@ -133,13 +169,16 @@ if __name__ == '__main__':
     with open('enums.py', 'w') as out:
         with redirect_stdout(out):
             print('from enum import Enum')
-            print("\n")
             print("class ValueEnum(Enum):")
             print("    def __str__(self):")
             print("        return super().value")
-            for tab in (Advancements(), Effects()):
+            for tab in (Advancements(), Effects(), Enchantments()):
                 fields = tab.generate()
-                print('\n\nclass %s(ValueEnum):' % tab.name)
+                print('\n')
+                print("# noinspection SpellCheckingInspection")
+                print('class %s(ValueEnum):' % tab.name)
                 for key in fields:
                     value, desc = fields[key]
                     print('    %s = "%s"\n    """%s"""' % (key, value, desc))
+                    tab.supplement_value(value)
+                tab.supplement_class()

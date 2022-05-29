@@ -8,7 +8,7 @@ from functools import wraps
 from inspect import signature, getmembers, ismethod
 from io import StringIO
 
-from .enums import Advancement, Effects
+from .enums import Advancement, Effects, Enchantments
 
 
 def fluent(method):
@@ -1054,8 +1054,17 @@ class Command(Chain):
         self._add('effect')
         return self._start(EffectAction())
 
-    def enchant(self):
+    def enchant(self, target: Target, enchantment: Enchantments | int, level: int = None) -> str:
         """Adds an enchantment to a player's selected item."""
+        self._add('enchant', target)
+        self._add('', enchantment)
+        if level is not None:
+            if type(enchantment) == Enchantments:
+                max_level = Enchantments.max_level(enchantment)
+                if level not in range(0, max_level + 1):
+                    raise ValueError('Level not in range [0..%d]', max_level)
+            self._add_opt(level)
+        return str(self)
 
     def execute(self) -> ExecuteMod:
         """Executes another command."""

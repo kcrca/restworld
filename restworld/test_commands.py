@@ -391,6 +391,15 @@ def test_command_effect():
         effect().clear(None, Effects.SPEED)
 
 
+def test_command_enchant():
+    assert enchant(self(), Enchantments.LURE) == 'enchant @s lure'
+    assert enchant(self(), Enchantments.LURE, 2) == 'enchant @s lure 2'
+    assert enchant(self(), 12) == 'enchant @s 12'
+    assert enchant(self(), 12, 2) == 'enchant @s 12 2'
+    with pytest.raises(ValueError):
+        enchant(self(), Enchantments.LURE, 17)
+
+
 def test_data_mod():
     assert str(DataMod().get(EntityData(all()))) == 'get entity @a'
     assert str(DataMod().merge(EntityData(all()), {})) == 'merge entity @a {}'

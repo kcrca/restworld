@@ -6,6 +6,7 @@ class ValueEnum(Enum):
         return super().value
 
 
+# noinspection SpellCheckingInspection
 class Advancement(ValueEnum):
     MINECRAFT = "story/root"
     """The heart and story of the game."""
@@ -213,6 +214,7 @@ class Advancement(ValueEnum):
     """Team up with an axolotl and win a fight."""
 
 
+# noinspection SpellCheckingInspection
 class Effects(ValueEnum):
     SPEED = "speed"
     """Increases walking speed; higher levels make the affected entity faster and increases the player's field of view when affected."""
@@ -282,3 +284,97 @@ class Effects(ValueEnum):
     """Gives discounts on trades with villagers, and makes villagers throw items at the player depending on their profession."""
     DARKNESS = "darkness"
     """Darkens the players screen."""
+
+
+# noinspection SpellCheckingInspection
+class Enchantments(ValueEnum):
+    AQUA_AFFINITY = "aqua_affinity"
+    """Increases underwater mining speed."""
+    BANE_OF_ARTHROPODS = "bane_of_arthropods"
+    """Increases damage and applies Slowness IV to arthropod mobs (spiders, cave spiders, silverfish, endermites and bees)."""
+    BLAST_PROTECTION = "blast_protection"
+    """Reduces explosion damage and knockback."""
+    CHANNELING = "channeling"
+    """During thunderstorms, tridents will be able to strike hit enemies with a lightning bolt."""
+    CLEAVING_ = "cleaving_"
+    """Increases damage and shield stunning."""
+    CURSE_OF_BINDING = "curse_of_binding"
+    """Items cannot be removed from armor slots."""
+    CURSE_OF_VANISHING = "curse_of_vanishing"
+    """Item disappears on death."""
+    DEPTH_STRIDER = "depth_strider"
+    """Increases underwater movement speed."""
+    EFFICIENCY = "efficiency"
+    """Increases tool speed, as well as the chance for axes to disable shields."""
+    FEATHER_FALLING = "feather_falling"
+    """Reduces fall damage."""
+    FIRE_ASPECT = "fire_aspect"
+    """Sets target on fire."""
+    FIRE_PROTECTION = "fire_protection"
+    """Reduces fire damage and burn time.Mutually exclusive with other protections."""
+    FLAME = "flame"
+    """Arrows shot are ignited and deal fire damage to the target."""
+    FORTUNE = "fortune"
+    """Increases the amount of block drops."""
+    FROST_WALKER = "frost_walker"
+    """Allows the player to walk on water by freezing the water under their feet."""
+    IMPALING = "impaling"
+    """Increases damage against aquatic mobs. In Bedrock Edition, increases damage against mobs in water or rain."""
+    INFINITY = "infinity"
+    """Prevents consumption of arrows."""
+    KNOCKBACK = "knockback"
+    """Increases knockback."""
+    LOOTING = "looting"
+    """Increases mob loot."""
+    LOYALTY = "loyalty"
+    """Trident returns after being thrown."""
+    LUCK_OF_THE_SEA = "luck_of_the_sea"
+    """Increases rate of good loot (enchanting books, etc.)."""
+    LURE = "lure"
+    """Decreases time for bites."""
+    MENDING = "mending"
+    """Repairs the item using experience."""
+    MULTISHOT = "multishot"
+    """Fires 3 arrows at the same time."""
+    PIERCING = "piercing"
+    """Arrows pierce entities, allowing for arrows to pierce through stacks of mobs. Available only to the crossbow."""
+    POWER = "power"
+    """Increases arrow damage."""
+    PROJECTILE_PROTECTION = "projectile_protection"
+    """Reduces damage from projectiles."""
+    PROTECTION = "protection"
+    """Reduces generic damage."""
+    PUNCH = "punch"
+    """Increases arrow knockback."""
+    QUICK_CHARGE = "quick_charge"
+    """Decreases crossbow charging time."""
+    RESPIRATION = "respiration"
+    """Extends underwater breathing time."""
+    RIPTIDE = "riptide"
+    """Trident launches player with itself when thrown while in water or rain."""
+    SHARPNESS = "sharpness"
+    """Increases melee damage."""
+    SILK_TOUCH = "silk_touch"
+    """Mined blocks drop themselves."""
+    SMITE = "smite"
+    """Increases damage to the undead."""
+    SOUL_SPEED = "soul_speed"
+    """Increases movement speed on soul soil."""
+    SWEEPING_EDGE = "sweeping_edge"
+    """Increases sweeping attack damage."""
+    SWIFT_SNEAK = "swift_sneak"
+    """Increases sneaking speed."""
+    THORNS = "thorns"
+    """Taking damage causes the attacker to also take damage."""
+    UNBREAKING = "unbreaking"
+    """Reduces durability damage."""
+
+    def max_level(ench):
+        return {'aqua_affinity': 1, 'bane_of_arthropods': 5, 'blast_protection': 4, 'channeling': 1, 'cleaving_': 3,
+                'curse_of_binding': 1, 'curse_of_vanishing': 1, 'depth_strider': 3, 'efficiency': 5,
+                'feather_falling': 4, 'fire_aspect': 2, 'fire_protection': 4, 'flame': 1, 'fortune': 3,
+                'frost_walker': 2, 'impaling': 5, 'infinity': 1, 'knockback': 2, 'looting': 3, 'loyalty': 3,
+                'luck_of_the_sea': 3, 'lure': 3, 'mending': 1, 'multishot': 1, 'piercing': 4, 'power': 5,
+                'projectile_protection': 4, 'protection': 4, 'punch': 2, 'quick_charge': 3, 'respiration': 3,
+                'riptide': 3, 'sharpness': 5, 'silk_touch': 1, 'smite': 5, 'soul_speed': 3, 'sweeping_edge': 3,
+                'swift_sneak': 3, 'thorns': 3, 'unbreaking': 3}[ench.value]
