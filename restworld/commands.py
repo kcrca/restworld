@@ -721,6 +721,12 @@ class AttributeAct(Chain):
         return self._start(AttributeModifierAct())
 
 
+class Message(Chain):
+    def reason(self, *msg: str) -> str:
+        self._add(*msg)
+        return str(self)
+
+
 class Command(Chain):
     def advancement(self, action: str, target: Selector, behavior: str,
                     advancement: Advancement = None,
@@ -739,8 +745,10 @@ class Command(Chain):
         self._add('attribute', target, good_resource(attribute))
         return self._start(AttributeAct())
 
-    def ban(self):
-        """Adds player to banlist."""
+    def ban(self, *targets: Target) -> Message:
+        """Adds player(s) to banlist."""
+        self._add('ban', *targets)
+        return self._start(Message())
 
     def ban_ip(self):
         """Adds IP address to banlist."""

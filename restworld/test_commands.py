@@ -326,6 +326,11 @@ def test_command_attribute():
     assert str(attribute(self(), 'foo').get()) == 'attribute @s foo get'
 
 
+def test_command_ban():
+    assert str(ban(entities(), User('fred'))) == 'ban @e fred'
+    assert str(ban(entities(), User('fred')).reason('bad actor')) == 'ban @e fred bad actor'
+
+
 def test_attribute_act():
     assert str(AttributeAct().get()) == 'get'
     assert str(AttributeAct().get(1.2)) == 'get 1.2'
