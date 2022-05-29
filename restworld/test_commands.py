@@ -400,6 +400,15 @@ def test_command_enchant():
         enchant(self(), Enchantments.LURE, 17)
 
 
+def test_command_experience():
+    assert experience().add(self(), 3, LEVELS) == 'experience add @s 3 levels'
+    assert experience().add(self(), 3, POINTS) == 'experience add @s 3 points'
+    assert experience().set(self(), 3, LEVELS) == 'experience set @s 3 levels'
+    assert experience().set(self(), 3, POINTS) == 'experience set @s 3 points'
+    assert experience().query(self(), POINTS) == 'experience query @s points'
+    assert xp().query(self(), POINTS) == 'experience query @s points'
+
+
 def test_data_mod():
     assert str(DataMod().get(EntityData(all()))) == 'get entity @a'
     assert str(DataMod().merge(EntityData(all()), {})) == 'merge entity @a {}'

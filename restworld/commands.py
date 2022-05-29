@@ -220,6 +220,10 @@ NORMAL = 'normal'
 PEACEFUL = 'peaceful'
 DIFFICULTIES = [EASY, HARD, NORMAL, PEACEFUL]
 
+LEVELS = 'levels'
+POINTS = 'points'
+EXPERIENCE_POINTS = [LEVELS, POINTS]
+
 GIVE = 'give'
 CLEAR = 'clear'
 GIVE_CLEAR = [GIVE, CLEAR]
@@ -986,6 +990,23 @@ class EffectAction(Chain):
         return str(self)
 
 
+class ExperienceMod(Chain):
+    def add(self, target: Target, amount: int, which: str) -> str:
+        _in_group('EXPERIENCE_POINTS', which)
+        self._add('add', target, amount, which)
+        return str(self)
+
+    def set(self, target: Target, amount: int, which: str) -> str:
+        _in_group('EXPERIENCE_POINTS', which)
+        self._add('set', target, amount, which)
+        return str(self)
+
+    def query(self, target: Target, which: str) -> str:
+        _in_group('EXPERIENCE_POINTS', which)
+        self._add('query', target, which)
+        return str(self)
+
+
 class Command(Chain):
     def advancement(self, action: str, target: Selector, behavior: str,
                     advancement: Advancement = None,
@@ -1071,8 +1092,12 @@ class Command(Chain):
         self._add('execute')
         return self._start(ExecuteMod())
 
-    def experience(self):
-        """An alias of /xp. Adds or removes player experience."""
+    def experience(self) -> ExperienceMod:
+        """Adds or removes player experience."""
+        self._add('experience')
+        return self._start(ExperienceMod())
+
+    xp = experience
 
     def fill(self):
         """Fills a region with a specific block."""
