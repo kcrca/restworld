@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 from contextlib import redirect_stdout
 
 import requests
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, Tag
 
 
 class EnumDesc(ABC):
@@ -16,35 +16,21 @@ class EnumDesc(ABC):
         html = requests.get(self.url).text
         return BeautifulSoup(html, 'html.parser')
 
-    def generate(self):
-        raise RuntimeError('oops')
-
     def replace(self, name: str, value: str):
         return name
 
     @abstractmethod
-    def is_name_col(self, text: str):
+    def note_header(self, col: int, text: str):
         pass
 
     @abstractmethod
-    def is_value_col(self, text: str):
+    def extract(self, cols):
         pass
-
-    @abstractmethod
-    def is_desc_col(self, text: str):
-        pass
-
-    def is_filter_col(self, text: str):
-        return False
-
-    def filter_out(self, text: str):
-        return True
 
     def generate(self):
         soup = self.fetch()
         tables = soup.find_all('table', attrs={'data-description': self.data_desc})
         found = {}
-        filter_col = None
         for table in tables:
             rows = table.find_all('tr')
             for row in rows:
@@ -53,31 +39,25 @@ class EnumDesc(ABC):
                     for i in range(0, len(headers)):
                         th = headers[i]
                         text = th.text.strip()
-                        if self.is_name_col(text):
-                            name_col = i
-                        elif self.is_value_col(text):
-                            value_col = i
-                        elif self.is_desc_col(text):
-                            desc_col = i
-                        elif self.is_filter_col(text):
-                            filter_col = i
+                        self.note_header(i, text)
                 else:
                     cells = row.find_all('td')
-                    if filter_col is not None and self.filter_out(cells[filter_col]):
+                    extracted = self.extract(cells)
+                    if not extracted:
                         continue
-                    raw_name = clean(cells[name_col].text)
-                    value = clean(cells[value_col].text)
-                    desc = to_desc(clean(cells[desc_col].text))
-                    name = re.sub(junk, '', raw_name).upper().replace(' ', '_')
+                    name, value, desc = (clean(x) for x in extracted)
+                    name = re.sub(junk, '', name).upper().replace(' ', '_')
                     name = self.replace(name, value)
+                    if desc[-1] not in '.?!':
+                        desc += '.'
                     if name in found:
                         raise KeyError("Duplicate name: %s (%s, %s)" % (name, value, found[name]))
                     found[name] = (value, desc)
         return found
 
 
-def clean(text: str) -> str:
-    return re.sub(r'\[.*', '', text.strip().replace(u'\u200c', ''), flags=re.DOTALL)
+def clean(cell: Tag) -> str:
+    return re.sub(r'\[.*', '', cell.text.strip().replace(u'\u200c', ''), flags=re.DOTALL)
 
 
 def to_desc(text):
@@ -91,18 +71,20 @@ class Advancements(EnumDesc):
     def __init__(self):
         super().__init__('Advancement', 'https://minecraft.fandom.com/wiki/Advancement#List_of_advancements',
                          'advancements')
+        self.value_col = None
+        self.desc_col = None
+        self.name_col = None
 
-    def is_name_col(self, text: str):
-        return text == 'Advancement'
+    def note_header(self, col: int, text: str):
+        if text == 'Advancement':
+            self.name_col = col
+        elif text.startswith('Resource'):
+            self.value_col = col
+        elif text.find('description') >= 0:
+            self.desc_col = col
 
-    def is_value_col(self, text: str):
-        return text.startswith('Resource')
-
-    def is_desc_col(self, text: str):
-        return text.find('description') >= 0
-
-    def filter_out(self, text: str):
-        pass
+    def extract(self, cols):
+        return cols[self.name_col], cols[self.value_col], cols[self.desc_col]
 
     def replace(self, name, value):
         if name == 'THE_END' and value.startswith('story'):
@@ -113,26 +95,25 @@ class Advancements(EnumDesc):
 class Effects(EnumDesc):
     def __init__(self):
         super().__init__('Effects', 'https://minecraft.fandom.com/wiki/Effect?so=search#Effect_list', 'Effects')
+        self.filter_col = None
+        self.desc_col = None
+        self.value_col = None
+        self.name_col = None
 
-    def is_name_col(self, text: str):
-        return text == 'Display name'
+    def note_header(self, col: int, text: str):
+        if text == 'Display name':
+            self.name_col = col
+        elif text.startswith('Name'):
+            self.value_col = col
+        elif text.find('Effect') >= 0:
+            self.desc_col = col
+        elif text.find('ID (J.E.)'):
+            self.filter_col = col
 
-    def is_value_col(self, text: str):
-        return text.startswith('Name')
-
-    def is_desc_col(self, text: str):
-        return text.find('Effect') >= 0
-
-    def is_filter_col(self, text: str):
-        return text.find('ID (J.E.)')
-
-    def filter_out(self, text: str):
-        return text == 'N/A'
-
-    def replace(self, name, value):
-        if name == 'THE_END' and value.startswith('story'):
-            return 'ENTER_THE_END'
-        return name
+    def extract(self, cols):
+        if cols[self.filter_col] == 'N/A':
+            return None
+        return cols[self.name_col], cols[self.value_col], cols[self.desc_col]
 
 
 class Enchantments(EnumDesc):
@@ -140,25 +121,11 @@ class Enchantments(EnumDesc):
         super().__init__('Enchantments', 'https://minecraft.fandom.com/wiki/Enchanting#Summary_of_enchantments',
                          'Summary of enchantments ')
 
-    def is_name_col(self, text: str):
-        return text == 'Name'
+    def note_header(self, col: int, text: str):
+        pass
 
-    def is_value_col(self, text: str):
-        return text.startswith('Name')
-
-    def is_desc_col(self, text: str):
-        return text.find('Effect') >= 0
-
-    def is_filter_col(self, text: str):
-        return text.find('ID (J.E.)')
-
-    def filter_out(self, text: str):
-        return text == 'N/A'
-
-    def replace(self, name, value):
-        if name == 'THE_END' and value.startswith('story'):
-            return 'ENTER_THE_END'
-        return name
+    def extract(self, cols):
+        pass
 
 
 if __name__ == '__main__':
