@@ -150,6 +150,11 @@ ALL = 'all'
 MASKED = 'masked'
 SCAN_MODE = [ALL, MASKED]
 
+FORCE = 'force'
+MOVE = 'move'
+NORMAL = 'normal'
+CLONE_FLAGS = [FORCE, MOVE, NORMAL]
+
 RESULT = 'result'
 SUCCESS = 'success'
 STORE = [RESULT, SUCCESS]
@@ -806,6 +811,29 @@ class ClearClause(Chain):
         return str(self)
 
 
+class CloneClause(Chain):
+
+    def _flag(self, flag):
+        if flag:
+            _in_group('CLONE_FLAGS', flag)
+            self._add('', flag)
+
+    def replace(self, flag: str = None) -> str:
+        self._add('replace')
+        self._flag(flag)
+        return str(self)
+
+    def masked(self, flag: str = None) -> str:
+        self._add('masked')
+        self._flag(flag)
+        return str(self)
+
+    def filtered(self, block_predicate: str, flag: str = None) -> str:
+        self._add('filtered', block_predicate)
+        self._flag(flag)
+        return str(self)
+
+
 class Command(Chain):
     def advancement(self, action: str, target: Selector, behavior: str,
                     advancement: Advancement = None,
@@ -834,8 +862,13 @@ class Command(Chain):
         self._add('clear', target, *targets)
         return self._start(ClearClause())
 
-    def clone(self):
+    def clone(self,
+              start_x: float | Coord, start_y: float | Coord, start_z: float | Coord,
+              end_x: float | Coord, end_y: float | Coord, end_z: float | Coord,
+              dest_x: float | Coord, dest_y: float | Coord, dest_z: float | Coord) -> CloneClause:
         """Copies blocks from one place to another."""
+        self._add('clone', start_x, start_y, start_z, end_x, end_y, end_z, dest_x, dest_y, dest_z)
+        return self._start(CloneClause())
 
     def data(self):
         """Gets, merges, modifies and removes block entity and entity NBT data."""

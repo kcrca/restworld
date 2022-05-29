@@ -357,6 +357,12 @@ def test_command_clear():
     assert str(clear(self(), User('Fred')).item('foo{bar}', 4)) == 'clear @s Fred foo{bar} 4'
 
 
+def test_command_clone():
+    assert str(clone(1, r(2), d(3), 4, 5, 6, 7, 8, 9).replace()) == 'clone 1 ~2 ^3 4 5 6 7 8 9 replace'
+    assert str(clone(1, r(2), d(3), 4, 5, 6, 7, 8, 9).masked(FORCE)) == 'clone 1 ~2 ^3 4 5 6 7 8 9 masked force'
+    assert str(clone(1, r(2), d(3), 4, 5, 6, 7, 8, 9).filtered('stone', FORCE)) == 'clone 1 ~2 ^3 4 5 6 7 8 9 filtered stone force'
+
+
 def test_resource_checks():
     assert good_resource('xyzzy') == 'xyzzy'
     assert good_resource('m:xyzzy') == 'm:xyzzy'
