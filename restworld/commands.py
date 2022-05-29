@@ -963,6 +963,12 @@ class DatapackAction(Chain):
         return str(self)
 
 
+class EffectAction(Chain):
+    def give(self, target: Target, effect: Effect, seconds: int = None, amplifier: int = None,
+             hide_particles: bool = None) -> str:
+        pass
+
+
 class Command(Chain):
     def advancement(self, action: str, target: Selector, behavior: str,
                     advancement: Advancement = None,
@@ -1026,8 +1032,10 @@ class Command(Chain):
         self._add('difficulty', difficulty)
         return str(self)
 
-    def effect(self):
+    def effect(self) -> EffectAction:
         """Adds or removes status effects."""
+        self._add('effect')
+        return self._start(EffectAction())
 
     def enchant(self):
         """Adds an enchantment to a player's selected item."""

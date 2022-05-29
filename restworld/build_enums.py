@@ -17,6 +17,9 @@ class EnumDesc:
     def generate(self):
         raise RuntimeError('oops')
 
+    def replace(self, name: str, string: str):
+        return name
+
 
 def to_desc(text):
     text = re.sub(r'\[[^]]*]', '', text)
@@ -32,7 +35,7 @@ class Advancements(EnumDesc):
     def generate(self):
         soup = self.fetch()
         tables = soup.find_all('table', attrs={'data-description': 'advancements'})
-        advancements = {}
+        found = {}
         for table in tables:
             rows = table.find_all('tr')
             for row in rows:
@@ -54,15 +57,56 @@ class Advancements(EnumDesc):
                     desc = to_desc(cells[desc_col].text.strip())
                     name = re.sub(junk, '', raw_name).upper().replace(' ', '_')
                     name = self.replace(name, string)
-                    if name in advancements:
-                        raise KeyError("Duplicate name: %s (%s, %s)" % (name, string, advancements[name]))
-                    advancements[name] = (string, desc)
-        return advancements
+                    if name in found:
+                        raise KeyError("Duplicate name: %s (%s, %s)" % (name, string, found[name]))
+                    found[name] = (string, desc)
+        return found
 
     def replace(self, name, string):
         if name == 'THE_END' and string.startswith('story'):
             return 'ENTER_THE_END'
         return name
+
+
+class Effects(EnumDesc):
+    def __init__(self):
+        super().__init__('Effects', 'https://minecraft.fandom.com/wiki/Effect?so=search#Effect_list')
+
+    def generate(self):
+        soup = self.fetch()
+        tables = soup.find_all('table', attrs={'data-description': 'Effects'})
+        found = {}
+        for table in tables:
+            rows = table.find_all('tr')
+            for row in rows:
+                headers = row.find_all('th')
+                if headers:
+                    for i in range(0, len(headers)):
+                        th = headers[i]
+                        text = th.text.strip()
+                        if text == 'Display name':
+                            name_col = i
+                        elif text.startswith('Name'):
+                            str_col = i
+                        elif text.find('Effect') >= 0:
+                            desc_col = i
+                        elif text.find('ID (J.E.)'):
+                            id_col = i
+                else:
+                    cells = row.find_all('td')
+                    id = cells[id_col].text.strip()
+                    if id == 'N/A':
+                        continue
+                    raw_name = cells[name_col].text.strip()
+                    string = cells[str_col].text.strip()
+                    string = re.sub(r'\[.*', '', string, flags=re.DOTALL)
+                    desc = to_desc(cells[desc_col].text.strip())
+                    name = re.sub(junk, '', raw_name).upper().replace(' ', '_')
+                    name = self.replace(name, string)
+                    if name in found:
+                        raise KeyError("Duplicate name: %s (%s, %s)" % (name, string, found[name]))
+                    found[name] = (string, desc)
+        return found
 
 
 if __name__ == '__main__':
@@ -75,9 +119,9 @@ if __name__ == '__main__':
             print("    def __str__(self):")
             print("        return super().value")
             print("\n")
-            for tab in (Advancements(),):
+            for tab in (Advancements(), Effects()):
                 fields = tab.generate()
                 print('\n\nclass %s(ValueEnum):' % tab.name)
                 for key in fields:
-                    value, desc = fields[key]
+                    value, desc = (x.replace(u'\u200c', '') for x in fields[key])
                     print('    %s = "%s"\n    """%s"""' % (key, value, desc))
