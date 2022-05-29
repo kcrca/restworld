@@ -1003,9 +1003,6 @@ class Command(Chain):
         self._add('datapack')
         return self._start(DatapackAction())
 
-    def debug(self):
-        """ends or stops a debugging session."""
-
     def defaultgamemode(self):
         """Sets the default game mode."""
 
