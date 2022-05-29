@@ -409,6 +409,13 @@ def test_command_experience():
     assert xp().query(self(), POINTS) == 'experience query @s points'
 
 
+def test_command_fill():
+    assert str(fill(1, r(2), d(3), 4, 5, 6, 'stone', HOLLOW)) == 'fill 1 ~2 ^3 4 5 6 stone hollow'
+    assert str(fill(1, r(2), d(3), 4, 5, 6, 'stone', REPLACE)) == 'fill 1 ~2 ^3 4 5 6 stone replace'
+    assert str(
+        fill(1, r(2), d(3), 4, 5, 6, 'stone', REPLACE).filter('air')) == 'fill 1 ~2 ^3 4 5 6 stone replace filter air'
+
+
 def test_data_mod():
     assert str(DataMod().get(EntityData(all()))) == 'get entity @a'
     assert str(DataMod().merge(EntityData(all()), {})) == 'merge entity @a {}'

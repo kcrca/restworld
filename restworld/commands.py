@@ -224,6 +224,13 @@ LEVELS = 'levels'
 POINTS = 'points'
 EXPERIENCE_POINTS = [LEVELS, POINTS]
 
+DESTROY = 'destroy'
+HOLLOW = 'hollow'
+KEEP = 'keep'
+OUTLINE = 'outline'
+REPLACE = 'replace'
+FILL_ACTIONS = [DESTROY, HOLLOW, KEEP, OUTLINE, REPLACE]
+
 GIVE = 'give'
 CLEAR = 'clear'
 GIVE_CLEAR = [GIVE, CLEAR]
@@ -1007,6 +1014,12 @@ class ExperienceMod(Chain):
         return str(self)
 
 
+class FilterClause(Chain):
+    def filter(self, block_predicate: str) -> str:
+        self._add('filter', block_predicate)
+        return str(self)
+
+
 class Command(Chain):
     def advancement(self, action: str, target: Selector, behavior: str,
                     advancement: Advancement = None,
@@ -1099,8 +1112,16 @@ class Command(Chain):
 
     xp = experience
 
-    def fill(self):
+    def fill(self,
+             start_x: float | Coord, start_y: float | Coord, start_z: float | Coord,
+             end_x: float | Coord, end_y: float | Coord, end_z: float | Coord,
+             block: str, action: str) -> FilterClause | str:
         """Fills a region with a specific block."""
+        _in_group('FILL_ACTIONS', action)
+        self._add('fill', start_x, start_y, start_z, end_x, end_y, end_z, good_resource(block), action)
+        if action == REPLACE:
+            return self._start(FilterClause())
+        return str(self)
 
     def forceload(self):
         """Forces chunks to constantly be loaded or not."""
