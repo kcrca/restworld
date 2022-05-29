@@ -286,11 +286,11 @@ def test_target_predicate():
 
 def test_target_chainability():
     assert str(all().pos(1, 2, 3).distance(Range(None, 15.5)).delta(4.4, 5.5, 6.6).scores().tag("one")
-        .team('slug').sort(ARBITRARY).limit(15).level(Range(3, 15)).gamemode(HARDCORE)
+        .team('slug').sort(ARBITRARY).limit(15).level(Range(3, 15)).gamemode(SURVIVAL)
         .name('Robin').x_rotation(Range(at=9)).y_rotation(Range(None, 24)).type('cougar')
         .nbt({"hi": "there"}).advancements(AdvancementCriteria(Advancement.A_SEEDY_PLACE, True))
         .predicate(
-        "nada")) == '@a[x=1,y=2,z=3,distance=..15.5,dx=4.4,dy=5.5,dz=6.6,scores={},tag=one,team=slug,sort=arbitrary,limit=15,level=3..15,gamemode=hardcore,name=Robin,x_rotation=9,y_rotation=..24,type=cougar,nbt={hi:there},advancements={husbandry/plant_seed=true},predicate=nada]'
+        "nada")) == '@a[x=1,y=2,z=3,distance=..15.5,dx=4.4,dy=5.5,dz=6.6,scores={},tag=one,team=slug,sort=arbitrary,limit=15,level=3..15,gamemode=survival,name=Robin,x_rotation=9,y_rotation=..24,type=cougar,nbt={hi:there},advancements={husbandry/plant_seed=true},predicate=nada]'
     assert str(all().not_team('Raiders').not_name("GRBX").not_gamemode(CREATIVE)
                .not_types("worm")) == '@a[team=!Raiders,name=!GRBX,gamemode=!creative,type=!worm]'
 
@@ -462,10 +462,16 @@ def test_command_forceload():
         forceload().query(1)
 
 
+def test_command_gamemode():
+    assert gamemode(SURVIVAL) == 'gamemode survival'
+    assert gamemode(SURVIVAL, self()) == 'gamemode survival @s'
+
+
 def test_simple_commands():
-    assert str(defaultgamemode(SURVIVAL)) == 'defaultgamemode survival'
-    assert str(deop(self(), all())) == 'deop @s @a'
-    assert str(difficulty(PEACEFUL)) == 'difficulty peaceful'
+    assert (defaultgamemode(SURVIVAL)) == 'defaultgamemode survival'
+    assert (deop(self(), all())) == 'deop @s @a'
+    assert (difficulty(PEACEFUL)) == 'difficulty peaceful'
+    assert (function('m:b/c')) == 'function m:b/c'
 
 
 def test_resource_checks():

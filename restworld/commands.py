@@ -23,13 +23,13 @@ def fluent(method):
 
 
 def _in_group(group: str, *names: str):
-    group = globals()[group.upper()]
+    group_list = globals()[group.upper()]
     missing = []
     for n in names:
-        if n not in group:
+        if n not in group_list:
             missing.append(n)
     if missing:
-        raise ValueError('Not in %s: %s' % (group, missing))
+        raise ValueError('%s: Not in %s %s' % (missing, group, group_list))
 
 
 _resource_re = re.compile(r'[\w.]+')
@@ -127,9 +127,8 @@ SORT = [NEAREST, FURTHEST, RANDOM, ARBITRARY]
 SURVIVAL = 'survival'
 CREATIVE = 'creative'
 ADVENTURE = 'adventure'
-HARDCORE = 'hardcore'
 SPECTATOR = 'spectator'
-GAMEMODE = [SURVIVAL, CREATIVE, ADVENTURE, HARDCORE, SPECTATOR]
+GAMEMODE = [SURVIVAL, CREATIVE, ADVENTURE, SPECTATOR]
 
 X = 'x'
 XZ = 'xz'
@@ -1162,11 +1161,16 @@ class Command(Chain):
         self._add('forceload')
         return self._start(ForceloadMod())
 
-    def function(self):
+    def function(self, path: str) -> str:
         """Runs a function."""
+        self._add('function', good_resource_path(path))
+        return str(self)
 
-    def gamemode(self):
-        """Sets a player's game mode."""
+    def gamemode(self, gamemode: str, target: Target = None) -> str:
+        _in_group('GAMEMODE', gamemode)
+        self._add('gamemode', gamemode)
+        self._add_opt(target)
+        return str(self)
 
     def gamerule(self):
         """Sets or queries a game rule value."""
