@@ -255,6 +255,11 @@ class Chain:
         if self._rep:
             self._rep += s
 
+    def _add_opt(self, *objs: any):
+        for o in objs:
+            if o is not None:
+                self._add('', o)
+
     def _start(self, start: T) -> T:
         start._rep = self._rep + ' '
         return start
@@ -834,6 +839,88 @@ class CloneClause(Chain):
         return str(self)
 
 
+class End(Chain):
+    pass
+
+
+class DataTarget(Chain):
+    pass
+
+
+class BlockData(DataTarget):
+    def __init__(self, x: float | Coord, y: float | Coord, z: float | Coord):
+        super().__init__()
+        self._add('block', x, y, z)
+
+
+class EntityData(DataTarget):
+    def __init__(self, target: Target):
+        super().__init__()
+        self._add('entity', target)
+
+
+class StorageData(DataTarget):
+    def __init__(self, resource_path: str):
+        super().__init__()
+        self._add('storage', good_resource_path(resource_path))
+
+
+class FromOrValue(Chain):
+    def from_(self, data_target: DataTarget) -> str:
+        self._add('from', data_target)
+        return str(self)
+
+    def value(self, nbt_tag: str) -> str:
+        self._add('value', nbt_tag)
+        return str(self)
+
+
+class ModifyClause(Chain):
+    def _keyword(self, keyword: str) -> FromOrValue:
+        self._add(keyword)
+        return self._start(FromOrValue())
+
+    def append(self) -> FromOrValue:
+        return self._keyword('append')
+
+    def insert(self, index: int) -> FromOrValue:
+        self._add('insert', index)
+        return self._start(FromOrValue())
+
+    def merge(self) -> FromOrValue:
+        return self._keyword('merge')
+
+    def prepend(self) -> FromOrValue:
+        return self._keyword('prepend')
+
+    def set(self) -> FromOrValue:
+        return self._keyword('set')
+
+
+class DataMod(Chain):
+    def _path_and_scale(self, nbt_path, scale):
+        if not nbt_path and scale is not None:
+            raise ValueError('Must give path to use scale')
+        self._add_opt(nbt_path, scale)
+
+    def get(self, data_target: DataTarget, nbt_path: str = None, scale: float = None) -> str:
+        self._add('get', data_target)
+        self._path_and_scale(nbt_path, scale)
+        return str(self)
+
+    def merge(self, data_target: DataTarget, nbt: dict) -> str:
+        self._add('merge', data_target, _NbtFormat(nbt))
+        return str(self)
+
+    def modify(self, data_target: DataTarget, nbt_path: str) -> ModifyClause:
+        self._add('modify', data_target, nbt_path)
+        return self._start(ModifyClause())
+
+    def remove(self, data_target: DataTarget, nbt_path: str) -> str:
+        self._add('remove', data_target, nbt_path)
+        return str(self)
+
+
 class Command(Chain):
     def advancement(self, action: str, target: Selector, behavior: str,
                     advancement: Advancement = None,
@@ -870,8 +957,10 @@ class Command(Chain):
         self._add('clone', start_x, start_y, start_z, end_x, end_y, end_z, dest_x, dest_y, dest_z)
         return self._start(CloneClause())
 
-    def data(self):
+    def data(self) -> DataMod:
         """Gets, merges, modifies and removes block entity and entity NBT data."""
+        self._add('data')
+        return self._start(DataMod())
 
     def datapack(self):
         """Controls loaded data packs."""

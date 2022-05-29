@@ -360,7 +360,38 @@ def test_command_clear():
 def test_command_clone():
     assert str(clone(1, r(2), d(3), 4, 5, 6, 7, 8, 9).replace()) == 'clone 1 ~2 ^3 4 5 6 7 8 9 replace'
     assert str(clone(1, r(2), d(3), 4, 5, 6, 7, 8, 9).masked(FORCE)) == 'clone 1 ~2 ^3 4 5 6 7 8 9 masked force'
-    assert str(clone(1, r(2), d(3), 4, 5, 6, 7, 8, 9).filtered('stone', FORCE)) == 'clone 1 ~2 ^3 4 5 6 7 8 9 filtered stone force'
+    assert str(clone(1, r(2), d(3), 4, 5, 6, 7, 8, 9).filtered('stone',
+                                                               FORCE)) == 'clone 1 ~2 ^3 4 5 6 7 8 9 filtered stone force'
+
+
+def test_data_target():
+    assert str(BlockData(1, r(2), d(3))) == 'block 1 ~2 ^3'
+    assert str(EntityData(self())) == 'entity @s'
+    assert str(StorageData('m:/a/b')) == 'storage m:/a/b'
+
+
+def test_command_data():
+    assert str(data().get(EntityData(self()))) == 'data get entity @s'
+
+
+def test_data_mod():
+    assert str(DataMod().get(EntityData(all()))) == 'get entity @a'
+    assert str(DataMod().merge(EntityData(all()), {})) == 'merge entity @a {}'
+    assert str(DataMod().modify(EntityData(all()), 'a.b')) == 'modify entity @a a.b'
+    assert str(DataMod().modify(EntityData(all()), 'a.b').append().from_(
+        StorageData('m:b'))) == 'modify entity @a a.b append from storage m:b'
+    assert str(
+        DataMod().modify(EntityData(all()), 'a.b').insert(3).value(
+            'Pos[0]')) == 'modify entity @a a.b insert 3 value Pos[0]'
+    assert str(
+        DataMod().modify(EntityData(all()), 'x').merge().value('Pos[0]')) == 'modify entity @a x merge value Pos[0]'
+    assert str(
+        DataMod().modify(EntityData(all()), 'x').prepend().value('Pos[0]')) == 'modify entity @a x prepend value Pos[0]'
+    assert str(
+        DataMod().modify(EntityData(all()), 'x').set().value('Pos[0]')) == 'modify entity @a x set value Pos[0]'
+    assert str(DataMod().remove(EntityData(all()), 'x')) == 'remove entity @a x'
+    with pytest.raises(ValueError):
+        DataMod().get(BlockData(1, r(2), d(3)), None, 2.2)
 
 
 def test_resource_checks():
