@@ -403,8 +403,10 @@ def test_command_datapack():
         datapack().enable('robin', BEFORE)
 
 
-def test_command_defaultgamemode():
+def test_simple_commands():
     assert str(defaultgamemode(SURVIVAL)) == 'defaultgamemode survival'
+    assert str(deop(self(), all())) == 'deop @s @a'
+    assert str(difficulty(PEACEFUL)) == 'difficulty peaceful'
 
 
 def test_resource_checks():

@@ -214,6 +214,12 @@ AVAILABLE = 'available'
 ENABLED = 'enabled'
 DATAPACK_FILTERS = [AVAILABLE, ENABLED]
 
+EASY = 'easy'
+HARD = 'hard'
+NORMAL = 'normal'
+PEACEFUL = 'peaceful'
+DIFFICULTIES = [EASY, HARD, NORMAL, PEACEFUL]
+
 GIVE = 'give'
 CLEAR = 'clear'
 GIVE_CLEAR = [GIVE, CLEAR]
@@ -1009,11 +1015,16 @@ class Command(Chain):
         self._add('defaultgamemode', gamemode)
         return str(self)
 
-    def deop(self):
+    def deop(self, *targets: Selector | User) -> str:
         """Revokes operator status from a player."""
+        self._add('deop', *targets)
+        return str(self)
 
-    def difficulty(self):
+    def difficulty(self, difficulty: str) -> str:
         """Sets the difficulty level."""
+        _in_group('DIFFICULTIES', difficulty)
+        self._add('difficulty', difficulty)
+        return str(self)
 
     def effect(self):
         """Adds or removes status effects."""
