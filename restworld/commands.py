@@ -200,6 +200,20 @@ NOTCHED_20 = 'notched_20'
 PROGRESS = 'progress'
 BOSSBAR_STYLES = [NOTCHED_6, NOTCHED_10, NOTCHED_12, NOTCHED_20, PROGRESS]
 
+ENABLE = 'enable'
+DISABLE = 'disable'
+DATAPACK_ACTIONS = [ENABLE, DISABLE]
+
+FIRST = 'first'
+LAST = 'last'
+BEFORE = 'before'
+AFTER = 'after'
+ORDER = [FIRST, LAST, BEFORE, AFTER]
+
+AVAILABLE = 'available'
+ENABLED = 'enabled'
+DATAPACK_FILTERS = [AVAILABLE, ENABLED]
+
 GIVE = 'give'
 CLEAR = 'clear'
 GIVE_CLEAR = [GIVE, CLEAR]
@@ -921,6 +935,28 @@ class DataMod(Chain):
         return str(self)
 
 
+class DatapackAction(Chain):
+    def disable(self, name: str) -> str:
+        self._add('disable', good_name(name))
+        return str(self)
+
+    def enable(self, name, order: str = None, other_datapack: str = None) -> str:
+        self._add('enable', name)
+        if order:
+            _in_group('ORDER', order)
+            if order in (FIRST, LAST):
+                self._add('', order)
+            else:
+                if not other_datapack:
+                    raise ValueError('"%s" requires other_datapack value' % order)
+                self._add('', order, other_datapack)
+        return str(self)
+
+    def list(self) -> str:
+        self._add('list')
+        return str(self)
+
+
 class Command(Chain):
     def advancement(self, action: str, target: Selector, behavior: str,
                     advancement: Advancement = None,
@@ -962,8 +998,10 @@ class Command(Chain):
         self._add('data')
         return self._start(DataMod())
 
-    def datapack(self):
+    def datapack(self) -> DatapackAction:
         """Controls loaded data packs."""
+        self._add('datapack')
+        return self._start(DatapackAction())
 
     def debug(self):
         """ends or stops a debugging session."""

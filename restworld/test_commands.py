@@ -39,10 +39,10 @@ def test_command_execute():
 def test_execute_mod():
     assert str(ExecuteMod().align(XZ)) == 'align xz'
     assert str(ExecuteMod().anchored(EYES)) == 'anchored eyes'
-    assert str(ExecuteMod().as_(self().tag('fred'))) == 'as @s[tag=fred]'
+    assert str(ExecuteMod().as_(self().tag('robin'))) == 'as @s[tag=robin]'
     assert str(ExecuteMod().at(Uuid(1, 3, 5, 7))) == 'at [1, 3, 5, 7]'
     assert str(ExecuteMod().facing(1, r(2), d(3))) == 'facing 1 ~2 ^3'
-    assert str(ExecuteMod().facing_entity(User('Fred'), FEET)) == 'facing entity Fred feet'
+    assert str(ExecuteMod().facing_entity(User('robin'), FEET)) == 'facing entity robin feet'
     assert str(ExecuteMod().in_(THE_NETHER)) == 'in the_nether'
     assert str(ExecuteMod().if_().block(1, r(2), d(3), 'stone')) == 'if block 1 ~2 ^3 stone'
     assert str(ExecuteMod().unless().block(1, r(2), d(3), 'stone')) == 'unless block 1 ~2 ^3 stone'
@@ -52,7 +52,7 @@ def test_execute_mod():
     with pytest.raises(ValueError):
         ExecuteMod().align('foo')
         ExecuteMod().anchored('foo')
-        ExecuteMod().facing_entity(User('Fred'), 'foo')
+        ExecuteMod().facing_entity(User('robin'), 'foo')
         ExecuteMod().in_('foo')
         ExecuteMod().store().block(1, r(2), d(3), '{}', 'foo', 1.3)
 
@@ -332,7 +332,7 @@ def test_attribute_act():
     assert str(AttributeAct().base().get()) == 'base get'
     assert str(AttributeAct().base().get(1.2)) == 'base get 1.2'
     assert str(AttributeAct().base().set(1.2)) == 'base set 1.2'
-    assert str(AttributeAct().modifier().add('1-2-3-f', 'fred', 1.3)) == 'modifier add 1-2-3-f "fred" 1.3'
+    assert str(AttributeAct().modifier().add('1-2-3-f', 'robin', 1.3)) == 'modifier add 1-2-3-f "robin" 1.3'
     assert str(AttributeAct().modifier().remove('1-2-3-f')) == 'modifier remove 1-2-3-f'
     assert str(AttributeAct().modifier().value('1-2-3-f')) == 'modifier value get 1-2-3-f'
     assert str(AttributeAct().modifier().value('1-2-3-f', 1.3)) == 'modifier value get 1-2-3-f 1.3'
@@ -353,8 +353,8 @@ def test_command_bossbar():
 
 
 def test_command_clear():
-    assert str(clear(self(), User('Fred')).item('foo{bar}')) == 'clear @s Fred foo{bar}'
-    assert str(clear(self(), User('Fred')).item('foo{bar}', 4)) == 'clear @s Fred foo{bar} 4'
+    assert str(clear(self(), User('robin')).item('foo{bar}')) == 'clear @s robin foo{bar}'
+    assert str(clear(self(), User('robin')).item('foo{bar}', 4)) == 'clear @s robin foo{bar} 4'
 
 
 def test_command_clone():
@@ -392,6 +392,15 @@ def test_data_mod():
     assert str(DataMod().remove(EntityData(all()), 'x')) == 'remove entity @a x'
     with pytest.raises(ValueError):
         DataMod().get(BlockData(1, r(2), d(3)), None, 2.2)
+
+
+def test_command_datapack():
+    assert str(datapack().disable('robin')) == 'datapack disable robin'
+    assert str(datapack().enable('robin')) == 'datapack enable robin'
+    assert str(datapack().enable('robin', FIRST)) == 'datapack enable robin first'
+    assert str(datapack().enable('robin', BEFORE, 'kelly')) == 'datapack enable robin before kelly'
+    with pytest.raises(ValueError):
+        datapack().enable('robin', BEFORE)
 
 
 def test_resource_checks():
