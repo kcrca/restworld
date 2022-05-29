@@ -1003,8 +1003,11 @@ class Command(Chain):
         self._add('datapack')
         return self._start(DatapackAction())
 
-    def defaultgamemode(self):
+    def defaultgamemode(self, gamemode: str) -> str:
         """Sets the default game mode."""
+        _in_group('GAMEMODE', gamemode)
+        self._add('defaultgamemode', gamemode)
+        return str(self)
 
     def deop(self):
         """Revokes operator status from a player."""

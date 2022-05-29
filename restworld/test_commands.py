@@ -403,6 +403,10 @@ def test_command_datapack():
         datapack().enable('robin', BEFORE)
 
 
+def test_command_defaultgamemode():
+    assert str(defaultgamemode(SURVIVAL)) == 'defaultgamemode survival'
+
+
 def test_resource_checks():
     assert good_resource('xyzzy') == 'xyzzy'
     assert good_resource('m:xyzzy') == 'm:xyzzy'
