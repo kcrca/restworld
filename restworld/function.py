@@ -1,8 +1,23 @@
 import datetime
 import os
 from pathlib import Path
+from typing import Iterable
 
 from restworld.commands import good_name
+
+
+def lines(*orig: any) -> Iterable[any]:
+    """Flatten a list of (command) strings into a one-line-per-command flat list."""
+    for item in orig:
+        if isinstance(item, str):
+            if item.find('\n') >= 0:
+                yield from lines(*item.split('\n'))
+            else:
+                yield item
+        elif isinstance(item, Iterable):
+            yield from lines(*item)
+        else:
+            yield item
 
 
 class Loop:
