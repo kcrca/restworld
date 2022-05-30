@@ -523,6 +523,12 @@ def test_list_command():
         list('foo')
 
 
+def test_locate_command():
+    assert (locate(STRUCTURE, 'foo')) == 'locate structure foo'
+    assert (locate(BIOME, 'foo')) == 'locate biome foo'
+    assert (locate(POI, 'foo')) == 'locate poi foo'
+
+
 def test_simple_commands():
     assert (defaultgamemode(SURVIVAL)) == 'defaultgamemode survival'
     assert (deop(self(), all())) == 'deop @s @a'

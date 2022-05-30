@@ -233,6 +233,11 @@ FILL_ACTIONS = [DESTROY, HOLLOW, KEEP, OUTLINE, REPLACE]
 UUIDS = 'uuids'
 LIST_TYPES = [UUIDS]
 
+STRUCTURE = 'structure'
+BIOME = 'biome'
+POI = 'poi'
+LOCATABLE = [STRUCTURE, BIOME, POI]
+
 GIVE = 'give'
 CLEAR = 'clear'
 GIVE_CLEAR = [GIVE, CLEAR]
@@ -1099,6 +1104,20 @@ class ItemMod(Chain):
         return self._start(ItemTarget(ItemReplace()))
 
 
+class LocateMod(Chain):
+    def structure(self, name: str) -> str:
+        self._add('structure', name)
+        return str(self)
+
+    def biome(self, name: str) -> str:
+        self._add('biome', name)
+        return str(self)
+
+    def poi(self, name: str) -> str:
+        self._add('poi', name)
+        return str(self)
+
+
 class Command(Chain):
     def advancement(self, action: str, target: Selector, behavior: str,
                     advancement: Advancement = None,
@@ -1262,11 +1281,11 @@ class Command(Chain):
             self._add_opt(modifier)
         return str(self)
 
-    def locate(self):
+    def locate(self, what: str, name: str) -> str:
         """Locates closest structure."""
-
-    def locatebiome(self):
-        """Locates closest biome."""
+        _in_group('LOCATABLE', what)
+        self._add('locate', what, name)
+        return str(self)
 
     def loot(self):
         """Drops items from an inventory slot onto the ground."""
