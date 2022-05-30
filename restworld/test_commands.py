@@ -445,7 +445,7 @@ def test_command_datapack():
     assert str(Command().datapack().disable('robin')) == 'datapack disable robin'
     assert str(Command().datapack().enable('robin')) == 'datapack enable robin'
     assert str(Command().datapack().enable('robin', FIRST)) == 'datapack enable robin first'
-    assert str(Command().datapack().enable('robin', BEFORE, 'kelly')) == 'datapack enable robin before kelly'
+    assert str(Command().datapack().enable('robin', BEFORE, 'kelly')) == 'datapack enable robin before_cmds kelly'
     with pytest.raises(ValueError):
         Command().datapack().enable('robin', BEFORE)
 

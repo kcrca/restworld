@@ -3,51 +3,83 @@ import os
 from pathlib import Path
 from typing import Iterable
 
-from restworld.commands import good_name
+from restworld.commands import good_name, Command, Range, MOD, User
 
 
 def lines(*orig: any) -> Iterable[any]:
     """Flatten a list of (command) strings into a one-line-per-command flat list."""
     for item in orig:
-        if isinstance(item, str):
+        if isinstance(item, Command):
+            yield item
+        elif isinstance(item, str):
             if item.find('\n') >= 0:
                 yield from lines(*item.split('\n'))
             else:
                 yield item
         elif isinstance(item, Iterable):
             yield from lines(*item)
-        else:
-            yield item
+        elif item is not None:
+            yield str(item)
 
 
 class Loop:
-    def __init__(self, name: str, items, body):
+    class Debug:
+        def _set_prefix_override(self, func):
+            Loop._prefix_override = func
+
+        def _set_setup_override(self, func):
+            Loop._setup_override = func
+
+    _prefix_override = None
+    _setup_override = None
+
+    def __init__(self, name: str, objective: str, items):
         self.name = good_name(name)
+        self.user = User(name)
+        self.objective = good_name(objective)
+        self.max_objective = objective + '_max'
         self.items = items
-        self.body = body
-        self.before = []
-        self.after = []
+        self.before_cmds = []
+        self.after_cmds = []
 
-    def before(self, *commands: any):
-        self.before.append(str(x) for x in commands)
+    @classmethod
+    def debug(cls):
+        return Loop.Debug()
 
-    def after(self, *commands: any):
-        self.after.append(str(x) for x in commands)
 
-    def run(self):
-        for c in self._setup():
-            yield c
-        for c in self.before:
-            yield c
-        self._run_loop()
-        for c in self.after:
-            yield c
+    def before(self, *commands):
+        self.before_cmds.append(commands)
+        return self
 
-    def _setup(self):
-        return ()
+    def after(self, *commands):
+        self.after_cmds.append(commands)
+        return self
 
-    def _run_loop(self):
-        pass
+    def run(self, body_func):
+        result = list(lines(self._setup_for()))
+        result.append(lines(self.before_cmds))
+        for (i, item) in enumerate(self.items):
+            once = body_func(self.name, i, item)
+            prefix = self._prefix_for(i)
+            for line in lines(once):
+                result.append(str(prefix) + line)
+        result.append(lines(self.after_cmds))
+        return lines(result)
+
+    def _setup_for(self):
+        if Loop._setup_override:
+            return Loop._setup_override()
+        return (
+            Command().scoreboard().players().set(self.user, self.objective, len(self.items)),
+            Command().execute().unless().score(self.name, self.objective).matches(
+                Range(0, len(self.items) - 1)).run().scoreboard().players().operation(self.user, self.objective, MOD,
+                                                                                      self.user, self.max_objective)
+        )
+
+    def _prefix_for(self, i):
+        if Loop._prefix_override:
+            return Loop._prefix_override(i)
+        return Command().execute().if_().score(self.name, self.objective).matches(i).run()
 
 
 class Function:

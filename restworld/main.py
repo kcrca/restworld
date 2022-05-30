@@ -616,7 +616,7 @@ def main():
 
         def run_shell_scripts(self):
             """
-            Run any shell scripts in the dir before generating templates. This is used to work around the fact that
+            Run any shell scripts in the dir before_cmds generating templates. This is used to work around the fact that
             Minecraft equates one function per file, so to generate multiple functions, I have to generate multiple
             files. This seemed like a job for shell scripts.
 

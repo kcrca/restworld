@@ -211,8 +211,8 @@ DATAPACK_ACTIONS = [ENABLE, DISABLE]
 
 FIRST = 'first'
 LAST = 'last'
-BEFORE = 'before'
-AFTER = 'after'
+BEFORE = 'before_cmds'
+AFTER = 'after_cmds'
 ORDER = [FIRST, LAST, BEFORE, AFTER]
 
 AVAILABLE = 'available'
@@ -1549,7 +1549,7 @@ class Command(Chain):
         """Changes a block to another block."""
 
     def setidletimeout(self):
-        """Sets the time before idle players are kicked."""
+        """Sets the time before_cmds idle players are kicked."""
 
     def setworldspawn(self):
         """Sets the world spawn."""
@@ -1627,7 +1627,7 @@ class Command(Chain):
         :param text: The text of the comment
         :param wrap: If False, the comment will be the text with each line prepended by a '# '. Otherwise, the text will
          be broken into paragraphs by blank lines, each paragraph will be formatted by textwrap.fill() (to 78 columns),
-         and before each line is prepended by a '# '.
+         and before_cmds each line is prepended by a '# '.
         """
         text = text.strip()
         if wrap:
