@@ -617,3 +617,10 @@ def test_tag_checks():
         good_name('x&y')
         good_name('!foo')
         good_names('_', '!b-3')
+
+
+def test_commands():
+    assert commands(
+        Command().help(),
+        Command().help('foo'),
+        Command().function('m:b/c')) == 'help\nhelp foo\nfunction m:b/c'

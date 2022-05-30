@@ -383,10 +383,22 @@ class ScoreRange:
         self.inverse = inverse
 
 
+def commands(*commands: str | Command) -> str:
+    return '\n'.join(str(x) for x in commands)
+
+
 class Score(Chain):
     def __init__(self, target: Target, objective: str):
         super().__init__()
+        self.target = target
+        self.objective = objective
         self._add(target, good_name(objective))
+
+    def init(self) -> str:
+        return commands(
+            Command().scoreboard().objectives().add(self.objective, ScoreCriteria.DUMMY),
+            Command().execute().unless().score(self.target, self.objective).matches(
+                Range(0)).run().scoreboard().players().add(self.target, self.objective, 0))
 
 
 class ScoreClause(Chain):
