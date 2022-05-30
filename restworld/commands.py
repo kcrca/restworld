@@ -230,6 +230,9 @@ OUTLINE = 'outline'
 REPLACE = 'replace'
 FILL_ACTIONS = [DESTROY, HOLLOW, KEEP, OUTLINE, REPLACE]
 
+UUIDS = 'uuids'
+LIST_TYPES = [UUIDS]
+
 GIVE = 'give'
 CLEAR = 'clear'
 GIVE_CLEAR = [GIVE, CLEAR]
@@ -1245,17 +1248,19 @@ class Command(Chain):
         self._add('item')
         return self._start(ItemMod())
 
-    def jfr(self):
-        """ends or stops a JFR profiling."""
-
-    def kick(self):
-        """Kicks a player off a server."""
-
-    def kill(self):
+    def kill(self, target: Target = None) -> str:
         """Kills entities (players, mobs, items, etc.)."""
+        self._add('kill')
+        self._add_opt(target)
+        return str(self)
 
-    def list(self):
+    def list(self, modifier: str = None) -> str:
         """Lists players on the server."""
+        self._add('list')
+        if modifier:
+            _in_group('LIST_TYPES', modifier)
+            self._add_opt(modifier)
+        return str(self)
 
     def locate(self):
         """Locates closest structure."""

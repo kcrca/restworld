@@ -511,6 +511,18 @@ def test_command_item():
         item().replace().entity(self(), 17, 'm:a')
 
 
+def test_kill_command():
+    assert kill() == 'kill'
+    assert kill(self()) == 'kill @s'
+
+
+def test_list_command():
+    assert list() == 'list'
+    assert list('uuids') == 'list uuids'
+    with pytest.raises(ValueError):
+        list('foo')
+
+
 def test_simple_commands():
     assert (defaultgamemode(SURVIVAL)) == 'defaultgamemode survival'
     assert (deop(self(), all())) == 'deop @s @a'
