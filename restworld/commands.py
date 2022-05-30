@@ -238,6 +238,10 @@ BIOME = 'biome'
 POI = 'poi'
 LOCATABLE = [STRUCTURE, BIOME, POI]
 
+MAINHAND = 'mainhand'
+OFFHAND = 'offhand'
+HANDS = [MAINHAND, OFFHAND]
+
 GIVE = 'give'
 CLEAR = 'clear'
 GIVE_CLEAR = [GIVE, CLEAR]
@@ -1118,6 +1122,56 @@ class LocateMod(Chain):
         return str(self)
 
 
+class LootSource(Chain):
+    def fish(self, loot_table: str, x: float | Coord, y: float | Coord, z: float | Coord, thing: str) -> str:
+        # the 'hand' keywords are also valid resource names, so no separate test is meaningful
+        self._add('fish', good_resource_path(loot_table), x, y, z, good_resource(thing))
+        return str(self)
+
+    def loot(self, loot_table: str) -> str:
+        self._add('loot', good_resource_path(loot_table))
+        return str(self)
+
+    def kill(self, target: Target) -> str:
+        self._add('kill', target)
+        return str(self)
+
+    def mine(self, x: float | Coord, y: float | Coord, z: float | Coord, thing: str) -> str:
+        # the 'hand' keywords are also valid resource names, so no separate test is meaningful
+        self._add('mine', x, y, z, good_resource(thing))
+        return str(self)
+
+
+class LootReplaceTarget(Chain):
+    def block(self, x: float | Coord, y: float | Coord, z: float | Coord, slot: int, count: int = None) -> LootSource:
+        self._add('block', x, y, z, slot)
+        self._add_opt(count)
+        return self._start(LootSource())
+
+    def entity(self, target: Target, slot: int, count: int = None) -> LootSource:
+        self._add('entity', target, slot)
+        self._add_opt(count)
+        return self._start(LootSource())
+
+
+class LootTarget(Chain):
+    def give(self, target: Target) -> LootSource:
+        self._add('give', target)
+        return self._start(LootSource())
+
+    def insert(self, x: float | Coord, y: float | Coord, z: float | Coord) -> LootSource:
+        self._add('insert', x, y, z)
+        return self._start(LootSource())
+
+    def spawn(self, x: float | Coord, y: float | Coord, z: float | Coord) -> LootSource:
+        self._add('spawn', x, y, z)
+        return self._start(LootSource())
+
+    def replace(self) -> LootReplaceTarget:
+        self._add('replace')
+        return self._start(LootReplaceTarget())
+
+
 class Command(Chain):
     def advancement(self, action: str, target: Selector, behavior: str,
                     advancement: Advancement = None,
@@ -1287,8 +1341,10 @@ class Command(Chain):
         self._add('locate', what, name)
         return str(self)
 
-    def loot(self):
+    def loot(self) -> LootTarget:
         """Drops items from an inventory slot onto the ground."""
+        self._add('loot')
+        return self._start(LootTarget())
 
     def me(self):
         """Displays a message about the sender."""

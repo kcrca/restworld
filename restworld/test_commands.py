@@ -524,9 +524,24 @@ def test_list_command():
 
 
 def test_locate_command():
-    assert (locate(STRUCTURE, 'foo')) == 'locate structure foo'
-    assert (locate(BIOME, 'foo')) == 'locate biome foo'
-    assert (locate(POI, 'foo')) == 'locate poi foo'
+    assert locate(STRUCTURE, 'foo') == 'locate structure foo'
+    assert locate(BIOME, 'foo') == 'locate biome foo'
+    assert locate(POI, 'foo') == 'locate poi foo'
+
+
+def test_loot_command():
+    assert Command().loot().give(all()).fish('m:/a/b', 1, r(2), d(3),
+                                             'stone') == 'loot give @a fish m:/a/b 1 ~2 ^3 stone'
+    assert Command().loot().insert(1, r(2), d(3)).loot('m:/a/b') == 'loot insert 1 ~2 ^3 loot m:/a/b'
+    assert Command().loot().spawn(1, r(2), d(3)).kill(player()) == 'loot spawn 1 ~2 ^3 kill @p'
+    assert Command().loot().replace().block(1, r(2), d(3), 13).mine(4, r(5), d(6),
+                                                                    MAINHAND) == 'loot replace block 1 ~2 ^3 13 mine 4 ~5 ^6 mainhand'
+    assert Command().loot().replace().block(1, r(2), d(3), 13, 2).kill(
+        player()) == 'loot replace block 1 ~2 ^3 13 2 kill @p'
+    assert Command().loot().replace().entity(all(), 12).kill(
+        player()) == 'loot replace entity @a 12 kill @p'
+    assert Command().loot().replace().entity(all(), 12, 3).kill(
+        player()) == 'loot replace entity @a 12 3 kill @p'
 
 
 def test_simple_commands():
