@@ -486,6 +486,31 @@ def test_command_help():
     assert help('foo') == 'help foo'
 
 
+def test_command_item():
+    assert str(item().modify().block(1, r(2), d(3), 17)) == 'item modify block 1 ~2 ^3 17'
+    assert str(item().modify().block(1, r(2), d(3), 17, 'm:a')) == 'item modify block 1 ~2 ^3 17 m:a'
+    assert str(item().modify().entity(self(), 17)) == 'item modify entity @s 17'
+    assert str(item().modify().entity(self(), 17, 'm:a')) == 'item modify entity @s 17 m:a'
+    assert str(item().replace().entity(self(), 17).with_('a{b}')) == 'item replace entity @s 17 with a{b}'
+    assert str(item().replace().entity(self(), 17).with_('a{b}', 2)) == 'item replace entity @s 17 with a{b} 2'
+    assert str(
+        item().replace().entity(self(), 17).from_().block(1, r(2), d(3),
+                                                          17)) == 'item replace entity @s 17 from block 1 ~2 ^3 17'
+    assert str(
+        item().replace().entity(self(), 17).from_().block(1, r(2), d(3), 17,
+                                                          'm:a')) == 'item replace entity @s 17 from block 1 ~2 ^3 17 m:a'
+    assert str(
+        item().replace().entity(self(), 17).from_().entity(player(),
+                                                           17)) == 'item replace entity @s 17 from entity @p 17'
+    assert str(
+        item().replace().entity(self(), 17).from_().entity(player(),
+                                                           17,
+                                                           'm:a')) == 'item replace entity @s 17 from entity @p 17 m:a'
+    with pytest.raises(ValueError):
+        item().replace().block(1, r(2), d(3), 17, 'm:a')
+        item().replace().entity(self(), 17, 'm:a')
+
+
 def test_simple_commands():
     assert (defaultgamemode(SURVIVAL)) == 'defaultgamemode survival'
     assert (deop(self(), all())) == 'deop @s @a'

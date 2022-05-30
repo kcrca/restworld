@@ -513,7 +513,7 @@ class Selector(Target):
         return self
 
     @fluent
-    def pos(self, x, y, z):
+    def pos(self, x: float | Coord, y: float | Coord, z: float | Coord):
         self._unique_arg('pos', 'x=%s,y=%s,z=%s' % (str(x), str(y), str(z)))
 
     @fluent
@@ -1053,6 +1053,49 @@ class ForceloadMod(Chain):
         return str(self)
 
 
+class ItemTarget(Chain):
+    def __init__(self, follow: T, allow_modifier=False):
+        super().__init__()
+        self.follow = follow
+        self.allow_modifier = allow_modifier
+
+    def block(self, x: float | Coord, y: float | Coord, z: float | Coord, slot: int, modifier: str = None) -> T:
+        self._add('block', x, y, z, slot)
+        self._modifier(modifier)
+        return self._start(self.follow)
+
+    def entity(self, target: Target, slot: int, modifier: str = None) -> T:
+        self._add('entity', target, slot)
+        self._modifier(modifier)
+        return self._start(self.follow)
+
+    def _modifier(self, modifier):
+        if modifier and not self.allow_modifier:
+            raise ValueError('Modifier not allowed here')
+        self._add_opt(modifier)
+
+
+class ItemReplace(Chain):
+    def with_(self, item: str, count: int = None) -> str:
+        self._add('with', item)
+        self._add_opt(count)
+        return str(self)
+
+    def from_(self) -> ItemTarget:
+        self._add('from')
+        return self._start(ItemTarget(End(), True))
+
+
+class ItemMod(Chain):
+    def modify(self) -> ItemTarget:
+        self._add('modify')
+        return self._start(ItemTarget(End(), True))
+
+    def replace(self) -> ItemTarget:
+        self._add('replace')
+        return self._start(ItemTarget(ItemReplace()))
+
+
 class Command(Chain):
     def advancement(self, action: str, target: Selector, behavior: str,
                     advancement: Advancement = None,
@@ -1197,8 +1240,10 @@ class Command(Chain):
         self._add_opt(command)
         return str(self)
 
-    def item(self):
+    def item(self) -> ItemMod:
         """Manipulates items in inventories."""
+        self._add('item')
+        return self._start(ItemMod())
 
     def jfr(self):
         """ends or stops a JFR profiling."""
