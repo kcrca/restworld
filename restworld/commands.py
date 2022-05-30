@@ -8,7 +8,7 @@ from functools import wraps
 from inspect import signature, getmembers, ismethod
 from io import StringIO
 
-from .enums import Advancement, Effects, Enchantments
+from .enums import Advancement, Effects, Enchantments, GameRules
 
 
 def fluent(method):
@@ -1172,8 +1172,18 @@ class Command(Chain):
         self._add_opt(target)
         return str(self)
 
-    def gamerule(self):
+    def gamerule(self, rule: GameRules, value: bool | int = None) -> str:
         """Sets or queries a game rule value."""
+        self._add('gamerule', rule)
+        if value is not None:
+            rule_type = GameRules.rule_type(rule)
+            if rule_type == 'int':
+                if type(value) != int:
+                    raise ValueError('int value required for rule: %s' % rule)
+                self._add('', int(value))
+            else:
+                self._add('', _bool(value))
+        return str(self)
 
     def give(self):
         """Gives an item to a player."""

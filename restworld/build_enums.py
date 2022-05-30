@@ -29,7 +29,7 @@ class EnumDesc(ABC):
 
     def generate(self):
         soup = self.fetch()
-        tables = soup.find_all('table', attrs={'data-description': self.data_desc})
+        tables = self.find_tables(soup)
         found = {}
         assert tables
         for table in tables:
@@ -56,6 +56,9 @@ class EnumDesc(ABC):
                         raise KeyError("Duplicate name: %s (%s, %s)" % (name, value, found[name]))
                     found[name] = (value, desc)
         return found
+
+    def find_tables(self, soup):
+        return soup.find_all('table', attrs={'data-description': self.data_desc})
 
     def supplement_value(self, key: str):
         pass
@@ -153,6 +156,50 @@ class Enchantments(EnumDesc):
         print('      return %s[ench.value]' % self.maxes)
 
 
+class GameRules(EnumDesc):
+    def __init__(self):
+        super().__init__('GameRules', 'https://minecraft.fandom.com/wiki/Game_rule?so=search#List_of_game_rules', None)
+        self.types = {}
+        self.filter_col = None
+        self.type_col = None
+        self.desc_col = None
+        self.value_col = None
+
+    def find_tables(self, soup):
+        tables = []
+        for t in soup.select('table'):
+            caption = t.find('caption')
+            if caption and 'List of game rules' in caption.text:
+                tables.append(t)
+        return tables
+
+    def note_header(self, col: int, text: str):
+        if text.lower() == 'rule name':
+            self.value_col = col
+        elif text == 'Description':
+            self.desc_col = col
+        elif text == 'Type':
+            self.type_col = col
+        elif text == 'Availability':
+            self.filter_col = col
+        elif text == 'Java':
+            # Yes this is weird. This is in a nested table, which is the original filter_cal
+            self.filter_col += col
+
+    def extract(self, cols):
+        if 'yes' not in cols[self.filter_col].text.lower():
+            return None
+        value = clean(cols[self.value_col].text)
+        name = re.sub(r'([a-z])([A-Z]+)', r'\1 \2', value)
+        self.types[value] = 'int' if clean(cols[self.type_col]).lower() == 'int' else 'bool'
+        return name, value, clean(cols[self.desc_col])
+
+    def supplement_class(self):
+        print()
+        print('    def rule_type(rule):')
+        print('      return %s[rule.value]' % self.types)
+
+
 def roman_to_int(s):
     rom_val = {'I': 1, 'V': 5, 'X': 10, 'L': 50, 'C': 100, 'D': 500, 'M': 1000}
     int_val = 0
@@ -172,7 +219,7 @@ if __name__ == '__main__':
             print("class ValueEnum(Enum):")
             print("    def __str__(self):")
             print("        return super().value")
-            for tab in (Advancements(), Effects(), Enchantments()):
+            for tab in (Advancements(), Effects(), Enchantments(), GameRules()):
                 fields = tab.generate()
                 print('\n')
                 print("# noinspection SpellCheckingInspection")

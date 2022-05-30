@@ -467,6 +467,15 @@ def test_command_gamemode():
     assert gamemode(SURVIVAL, self()) == 'gamemode survival @s'
 
 
+def test_command_gamerule():
+    assert gamerule(GameRules.DISABLE_RAIDS) == 'gamerule disableRaids'
+    assert gamerule(GameRules.DISABLE_RAIDS, True) == 'gamerule disableRaids true'
+    assert gamerule(GameRules.MAX_COMMAND_CHAIN_LENGTH, 13) == 'gamerule maxCommandChainLength 13'
+    with pytest.raises(ValueError):
+        gamerule(GameRules.DISABLE_RAIDS, 17)
+        gamerule(GameRules.MAX_COMMAND_CHAIN_LENGTH, True)
+
+
 def test_simple_commands():
     assert (defaultgamemode(SURVIVAL)) == 'defaultgamemode survival'
     assert (deop(self(), all())) == 'deop @s @a'

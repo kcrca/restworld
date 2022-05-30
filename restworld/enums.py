@@ -378,3 +378,92 @@ class Enchantments(ValueEnum):
                 'projectile_protection': 4, 'protection': 4, 'punch': 2, 'quick_charge': 3, 'respiration': 3,
                 'riptide': 3, 'sharpness': 5, 'silk_touch': 1, 'smite': 5, 'soul_speed': 3, 'sweeping_edge': 3,
                 'swift_sneak': 3, 'thorns': 3, 'unbreaking': 3}[ench.value]
+
+
+# noinspection SpellCheckingInspection
+class GameRules(ValueEnum):
+    ANNOUNCE_ADVANCEMENTS = "announceAdvancements"
+    """Whether advancements should be announced in chat."""
+    COMMAND_BLOCK_OUTPUT = "commandBlockOutput"
+    """Whether command blocks should notify admins when they perform commands."""
+    DISABLE_ELYTRA_MOVEMENT_CHECK = "disableElytraMovementCheck"
+    """Whether the server should skip checking player speed when the player is wearing elytra. Often helps with jittering due to lag in multiplayer."""
+    DISABLE_RAIDS = "disableRaids"
+    """Whether raids are disabled."""
+    DO_DAYLIGHT_CYCLE = "doDaylightCycle"
+    """Whether the daylight cycle and moon phases progress."""
+    DO_ENTITY_DROPS = "doEntityDrops"
+    """Whether entities that are not mobs should have drops."""
+    DO_FIRE_TICK = "doFireTick"
+    """Whether fire should spread and naturally extinguish."""
+    DO_INSOMNIA = "doInsomnia"
+    """Whether phantoms can spawn in the nighttime."""
+    DO_IMMEDIATE_RESPAWN = "doImmediateRespawn"
+    """Players respawn immediately without showing the death screen."""
+    DO_LIMITED_CRAFTING = "doLimitedCrafting"
+    """Whether players should be able to craft only those recipes that they've unlocked first."""
+    DO_MOB_LOOT = "doMobLoot"
+    """Whether mobs should drop items and experience orbs."""
+    DO_MOB_SPAWNING = "doMobSpawning"
+    """Whether mobs should naturally spawn. Does not affect monster spawners."""
+    DO_PATROL_SPAWNING = "doPatrolSpawning"
+    """Whether patrols can spawn."""
+    DO_TILE_DROPS = "doTileDrops"
+    """Whether blocks should have drops."""
+    DO_TRADER_SPAWNING = "doTraderSpawning"
+    """Whether wandering traders can spawn."""
+    DO_WEATHER_CYCLE = "doWeatherCycle"
+    """Whether the weather can change naturally. The /weather command can still change weather."""
+    DO_WARDEN_SPAWNING = "doWardenSpawning"
+    """Whether wardens can spawn."""
+    DROWNING_DAMAGE = "drowningDamage"
+    """Whether the player should take damage when drowning."""
+    FALL_DAMAGE = "fallDamage"
+    """Whether the player should take fall damage."""
+    FIRE_DAMAGE = "fireDamage"
+    """Whether the player should take damage in fire, lava, campfires, or on magma blocks."""
+    FORGIVE_DEAD_PLAYERS = "forgiveDeadPlayers"
+    """Makes angered neutral mobs stop being angry when the targeted player dies nearby."""
+    FREEZE_DAMAGE = "freezeDamage"
+    """Whether the player should take damage when inside powder snow."""
+    KEEP_INVENTORY = "keepInventory"
+    """Whether the player should keep items and experience in their inventory after death."""
+    LOG_ADMIN_COMMANDS = "logAdminCommands"
+    """Whether to log admin commands to server log."""
+    MAX_COMMAND_CHAIN_LENGTH = "maxCommandChainLength"
+    """The maximum length of a chain of commands that can be executed during one tick. Applies to command blocks and functions."""
+    MAX_ENTITY_CRAMMING = "maxEntityCramming"
+    """The maximum number of pushable entities a mob or player can push, before taking 3 suffocation damage per half-second. Setting to 0 or lower disables the rule. Damage affects survival-mode or adventure-mode players, and all mobs but bats. Pushable entities include non-spectator-mode players, any mob except bats, as well as boats and minecarts."""
+    MOB_GRIEFING = "mobGriefing"
+    """Whether creepers, zombies, endermen, ghasts, withers, ender dragons, rabbits, sheep, villagers, silverfish, snow golems, and end crystals should be able to change blocks, and whether mobs can pick up items. When mobGriefing is disabled, piglins will not pick up gold ingots, but a player can still barter with them by using the item on the mob. Similarly, villagers will not pick up food items but can still breed until they run out of any food already in their inventory. This also affects the capability of zombie-like creatures like zombified piglins and drowned to pathfind to turtle eggs."""
+    NATURAL_REGENERATION = "naturalRegeneration"
+    """Whether the player can regenerate health naturally if their hunger is full enough (doesn't affect external healing, such as golden apples, the Regeneration effect, etc.)."""
+    PLAYERS_SLEEPING_PERCENTAGE = "playersSleepingPercentage"
+    """What percentage of players must sleep to skip the night."""
+    RANDOM_TICK_SPEED = "randomTickSpeed"
+    """How often a random block tick occurs (such as plant growth, leaf decay, etc.) per chunk section per game tick. 0 and negative values disables random ticks, higher numbers increase random ticks. Setting to a high integer results in high speeds of decay and growth. Numbers over 4096 make plant growth or leaf decay instantaneous."""
+    REDUCED_DEBUG_INFO = "reducedDebugInfo"
+    """Whether the debug screen shows all or reduced information; and whether the effects of F3 + B (entity hitboxes) and F3 + G (chunk boundaries) are shown."""
+    SEND_COMMAND_FEEDBACK = "sendCommandFeedback"
+    """Whether the feedback from commands executed by a player should show up in chat. Also affects the default behavior of whether command blocks store their output text."""
+    SHOW_DEATH_MESSAGES = "showDeathMessages"
+    """Whether death messages are put into chat when a player dies. Also affects whether a message is sent to the pet's owner when the pet dies."""
+    SPAWN_RADIUS = "spawnRadius"
+    """The number of blocks outward from the world spawn coordinates that a player spawns in when first joining a server or when dying without a personal spawnpoint. Has no effect on servers where the default game mode is adventure."""
+    SPECTATORS_GENERATE_CHUNKS = "spectatorsGenerateChunks"
+    """Whether players in spectator mode can generate chunks."""
+    UNIVERSAL_ANGER = "universalAnger"
+    """Makes angered neutral mobs attack any nearby player, not just the player that angered them. Works best if forgiveDeadPlayers is disabled."""
+
+    def rule_type(rule):
+        return {'announceAdvancements': 'bool', 'commandBlockOutput': 'bool', 'disableElytraMovementCheck': 'bool',
+                'disableRaids': 'bool', 'doDaylightCycle': 'bool', 'doEntityDrops': 'bool', 'doFireTick': 'bool',
+                'doInsomnia': 'bool', 'doImmediateRespawn': 'bool', 'doLimitedCrafting': 'bool', 'doMobLoot': 'bool',
+                'doMobSpawning': 'bool', 'doPatrolSpawning': 'bool', 'doTileDrops': 'bool', 'doTraderSpawning': 'bool',
+                'doWeatherCycle': 'bool', 'doWardenSpawning': 'bool', 'drowningDamage': 'bool', 'fallDamage': 'bool',
+                'fireDamage': 'bool', 'forgiveDeadPlayers': 'bool', 'freezeDamage': 'bool', 'keepInventory': 'bool',
+                'logAdminCommands': 'bool', 'maxCommandChainLength': 'int', 'maxEntityCramming': 'int',
+                'mobGriefing': 'bool', 'naturalRegeneration': 'bool', 'playersSleepingPercentage': 'int',
+                'randomTickSpeed': 'int', 'reducedDebugInfo': 'bool', 'sendCommandFeedback': 'bool',
+                'showDeathMessages': 'bool', 'spawnRadius': 'int', 'spectatorsGenerateChunks': 'bool',
+                'universalAnger': 'bool'}[rule.value]
