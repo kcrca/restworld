@@ -3,6 +3,26 @@ import os
 from pathlib import Path
 
 
+class Loop:
+    def __init__(self, items):
+        self.items = items
+        self.before = []
+        self.body = []
+        self.after = []
+
+    def before(self, *commands: any):
+        self.before.append(str(x) for x in commands)
+
+    def body(self, *commands: any):
+        self.body.append(str(x) for x in commands)
+
+    def after(self, *commands: any):
+        self.after.append(str(x) for x in commands)
+
+    def run(self):
+        
+
+
 class Function:
     def __init__(self, name: Path, *commands: any):
         self.name = name
@@ -22,6 +42,10 @@ class Function:
 class Library:
     def __init__(self, path: Path, pack: str):
         self.top = path / pack / 'data' / pack / 'functions'
+        self._functions = []
+
+    def add(self, *functions: Function):
+        self._functions.append(*functions)
 
     def save(self, *functions: Function):
         for f in functions:
