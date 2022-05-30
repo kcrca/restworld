@@ -476,6 +476,16 @@ def test_command_gamerule():
         gamerule(GameRules.MAX_COMMAND_CHAIN_LENGTH, True)
 
 
+def test_command_give():
+    assert give(self(), 'foo') == 'give @s foo'
+    assert give(self(), 'foo', 17) == 'give @s foo 17'
+
+
+def test_command_help():
+    assert help() == 'help'
+    assert help('foo') == 'help foo'
+
+
 def test_simple_commands():
     assert (defaultgamemode(SURVIVAL)) == 'defaultgamemode survival'
     assert (deop(self(), all())) == 'deop @s @a'

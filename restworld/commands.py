@@ -1185,11 +1185,17 @@ class Command(Chain):
                 self._add('', _bool(value))
         return str(self)
 
-    def give(self):
+    def give(self, target: Target, item: str, count: int = None) -> str:
         """Gives an item to a player."""
+        self._add('give', target, item)
+        self._add_opt(count)
+        return str(self)
 
-    def help(self):
-        """An alias of /?. Provides help for commands."""
+    def help(self, command: str = None) -> str:
+        """Provides help for commands."""
+        self._add('help')
+        self._add_opt(command)
+        return str(self)
 
     def item(self):
         """Manipulates items in inventories."""
