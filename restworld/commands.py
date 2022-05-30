@@ -8,7 +8,7 @@ from functools import wraps
 from inspect import signature, getmembers, ismethod
 from io import StringIO
 
-from .enums import Advancement, Effects, Enchantments, GameRules
+from .enums import Advancement, Effects, Enchantments, GameRules, ScoreCriteria
 
 
 def fluent(method):
@@ -52,7 +52,9 @@ def _strip_not(path):
     return path
 
 
-def good_resource(name: str, allow_namespace=True, allow_not=False) -> str:
+def good_resource(name: str | None, allow_namespace=True, allow_not=False) -> str | None:
+    if name is None:
+        return None
     input = name
     if allow_not:
         name = _strip_not(name)
@@ -69,7 +71,9 @@ def good_resources(*names: str, allow_not=False) -> tuple[str, ...]:
     return names
 
 
-def good_resource_path(path: str, allow_not=False) -> str:
+def good_resource_path(path: str | None, allow_not=False) -> str | None:
+    if path is None:
+        return None
     input = path
     if allow_not:
         path = _strip_not(path)
@@ -91,7 +95,9 @@ def good_resource_paths(*paths: str, allow_not=False) -> tuple[str, ...]:
     return paths
 
 
-def good_name(name: str, allow_not=False) -> str:
+def good_name(name: str | None, allow_not=False) -> str | None:
+    if name is None:
+        return None
     input = name
     if allow_not:
         name = _strip_not(name)
@@ -242,6 +248,31 @@ MAINHAND = 'mainhand'
 OFFHAND = 'offhand'
 HANDS = [MAINHAND, OFFHAND]
 
+DISPLAY_NAME = 'displayname'
+RENDER_TYPE = 'rendertype'
+SCOREBOARD_OBJECTIVES_MODIFIABLE = [DISPLAY_NAME, RENDER_TYPE]
+
+HEARTS = 'hearts'
+INTEGER = 'integer'
+SCOREBOARD_RENDER_TYPES = [HEARTS, INTEGER]
+
+LIST = 'list'
+SIDEBAR = 'sidebar'
+BELOW_NAME = 'belowName'
+DISPLAY_SLOTS = [LIST, SIDEBAR, BELOW_NAME]
+SIDEBAR_TEAM = 'sidebar.team.'
+
+PLUS = '+='
+MINUS = '-='
+MULT = '*='
+DIV = '/='
+MOD = '%='
+ASSIGN = '='
+MIN = '<'
+# "MAX" has another value, so special casing required
+SWAP = '><'
+SCORE_OPERATIONS = [PLUS, MINUS, MULT, DIV, ASSIGN, MIN, MAX, SWAP]
+
 GIVE = 'give'
 CLEAR = 'clear'
 GIVE_CLEAR = [GIVE, CLEAR]
@@ -270,8 +301,6 @@ EQ = '='
 GE = '>='
 GT = '>'
 RELATION = [LT, LE, EQ, GE, GT]
-
-ALL_SCORES = '*'
 
 
 def _bool(value: bool | None) -> str | None:
@@ -355,10 +384,8 @@ class ScoreRange:
 
 
 class Score(Chain):
-    def __init__(self, target: Target | str, objective: str):
+    def __init__(self, target: Target, objective: str):
         super().__init__()
-        if isinstance(target, str) and target != '*':
-            raise ValueError('Target must be target or "*": %s' % target)
         self._add(target, good_name(objective))
 
 
@@ -449,6 +476,11 @@ class Uuid(Target):
     def __init__(self, u1: int, u2: int, u3: int, u4: int):
         super().__init__()
         self._add([u1, u2, u3, u4])
+
+
+class Star(Target):
+    def __str__(self):
+        return '*'
 
 
 # noinspection PyProtectedMember
@@ -1172,6 +1204,100 @@ class LootTarget(Chain):
         return self._start(LootReplaceTarget())
 
 
+class ScoreboardCriteria(Chain):
+    def __init__(self, criterion: str | ScoreCriteria, *criteria: str | ScoreCriteria):
+        super().__init__()
+        self._good_criteria(criterion)
+        self._add(criterion)
+        if criteria:
+            self._good_criteria(*criteria)
+            self._add('.' + '.'.join(str(x) for x in criteria))
+
+    def _good_criteria(self, *criteria):
+        for c in criteria:
+            if isinstance(c, str):
+                good_resource(c)
+
+
+class ScoreboardObjectivesMod(Chain):
+    def list(self) -> str:
+        self._add('list')
+        return str(self)
+
+    def add(self, objective: str, score_criteria: ScoreCriteria | ScoreboardCriteria, display_name: str = None) -> str:
+        self._add('add', good_name(objective), score_criteria)
+        self._add_opt(good_name(display_name))
+        return str(self)
+
+    def remove(self, objective: str) -> str:
+        self._add('remove', good_name(objective))
+        return str(self)
+
+    def setdisplay(self, slot: str, objective: str = None) -> str:
+        if not slot.startswith(SIDEBAR_TEAM):
+            _in_group('DISPLAY_SLOTS', slot)
+        self._add('setdisplay', slot)
+        self._add_opt(good_name(objective))
+        return str(self)
+
+    def modify(self, objective: str, which: str, value: str) -> str:
+        _in_group('SCOREBOARD_OBJECTIVES_MODIFIABLE', which)
+        if which == RENDER_TYPE:
+            _in_group('SCOREBOARD_RENDER_TYPES', value)
+        self._add('modify', good_name(objective), which, value)
+        return str(self)
+
+
+class ScoreboardPlayersMod(Chain):
+    def list(self, target: Target = None) -> str:
+        self._add('list')
+        self._add_opt(target)
+        return str(self)
+
+    def get(self, target: Target, objective: str) -> str:
+        self._add('get', target, good_name(objective))
+        return str(self)
+
+    def set(self, target: Target, objective: str, value: int) -> str:
+        self._add('set', target, good_name(objective), value)
+        return str(self)
+
+    def add(self, target: Target, objective: str, value: int) -> str:
+        self._add('add', target, good_name(objective), value)
+        return str(self)
+
+    def remove(self, target: Target, objective: str, value: int) -> str:
+        self._add('remove', target, good_name(objective), value)
+        return str(self)
+
+    def reset(self, target: Target, objective: str = None) -> str:
+        self._add('reset', target)
+        self._add_opt(good_name(objective))
+        return str(self)
+
+    def enable(self, target: Target, objective: str) -> str:
+        self._add('enable', target, good_name(objective))
+        return str(self)
+
+    def operation(self, target: Target, objective: str, op: str, source: Target, source_objective: str) -> str:
+        _in_group('SCORE_OPERATIONS', op)
+        # 'MAX' is used elsewhere, this special-cases it
+        if op == MAX:
+            op = '>'
+        self._add('operation', target, good_name(objective), op, source, good_name(source_objective))
+        return str(self)
+
+
+class ScoreboardMod(Chain):
+    def objectives(self) -> ScoreboardObjectivesMod:
+        self._add('objectives')
+        return self._start(ScoreboardObjectivesMod())
+
+    def players(self) -> ScoreboardPlayersMod:
+        self._add('players')
+        return self._start(ScoreboardPlayersMod())
+
+
 class Command(Chain):
     def advancement(self, action: str, target: Selector, behavior: str,
                     advancement: Advancement = None,
@@ -1399,8 +1525,10 @@ class Command(Chain):
     def schedule(self):
         """Delays the execution of a function."""
 
-    def scoreboard(self):
+    def scoreboard(self) -> ScoreboardMod:
+        self._add('scoreboard')
         """Manages scoreboard objectives and players."""
+        return self._start(ScoreboardMod())
 
     def seed(self):
         """Displays the world seed."""

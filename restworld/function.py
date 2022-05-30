@@ -2,25 +2,37 @@ import datetime
 import os
 from pathlib import Path
 
+from restworld.commands import good_name
+
 
 class Loop:
-    def __init__(self, items):
+    def __init__(self, name: str, items, body):
+        self.name = good_name(name)
         self.items = items
+        self.body = body
         self.before = []
-        self.body = []
         self.after = []
 
     def before(self, *commands: any):
         self.before.append(str(x) for x in commands)
 
-    def body(self, *commands: any):
-        self.body.append(str(x) for x in commands)
-
     def after(self, *commands: any):
         self.after.append(str(x) for x in commands)
 
     def run(self):
-        
+        for c in self._setup():
+            yield c
+        for c in self.before:
+            yield c
+        self._run_loop()
+        for c in self.after:
+            yield c
+
+    def _setup(self):
+        return ()
+
+    def _run_loop(self):
+        pass
 
 
 class Function:

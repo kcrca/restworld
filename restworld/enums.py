@@ -1,6 +1,4 @@
 from enum import Enum
-
-
 class ValueEnum(Enum):
     def __str__(self):
         return super().value
@@ -370,14 +368,7 @@ class Enchantments(ValueEnum):
     """Reduces durability damage."""
 
     def max_level(ench):
-        return {'aqua_affinity': 1, 'bane_of_arthropods': 5, 'blast_protection': 4, 'channeling': 1, 'cleaving_': 3,
-                'curse_of_binding': 1, 'curse_of_vanishing': 1, 'depth_strider': 3, 'efficiency': 5,
-                'feather_falling': 4, 'fire_aspect': 2, 'fire_protection': 4, 'flame': 1, 'fortune': 3,
-                'frost_walker': 2, 'impaling': 5, 'infinity': 1, 'knockback': 2, 'looting': 3, 'loyalty': 3,
-                'luck_of_the_sea': 3, 'lure': 3, 'mending': 1, 'multishot': 1, 'piercing': 4, 'power': 5,
-                'projectile_protection': 4, 'protection': 4, 'punch': 2, 'quick_charge': 3, 'respiration': 3,
-                'riptide': 3, 'sharpness': 5, 'silk_touch': 1, 'smite': 5, 'soul_speed': 3, 'sweeping_edge': 3,
-                'swift_sneak': 3, 'thorns': 3, 'unbreaking': 3}[ench.value]
+      return {'aqua_affinity': 1, 'bane_of_arthropods': 5, 'blast_protection': 4, 'channeling': 1, 'cleaving_': 3, 'curse_of_binding': 1, 'curse_of_vanishing': 1, 'depth_strider': 3, 'efficiency': 5, 'feather_falling': 4, 'fire_aspect': 2, 'fire_protection': 4, 'flame': 1, 'fortune': 3, 'frost_walker': 2, 'impaling': 5, 'infinity': 1, 'knockback': 2, 'looting': 3, 'loyalty': 3, 'luck_of_the_sea': 3, 'lure': 3, 'mending': 1, 'multishot': 1, 'piercing': 4, 'power': 5, 'projectile_protection': 4, 'protection': 4, 'punch': 2, 'quick_charge': 3, 'respiration': 3, 'riptide': 3, 'sharpness': 5, 'silk_touch': 1, 'smite': 5, 'soul_speed': 3, 'sweeping_edge': 3, 'swift_sneak': 3, 'thorns': 3, 'unbreaking': 3}[ench.value]
 
 
 # noinspection SpellCheckingInspection
@@ -456,14 +447,30 @@ class GameRules(ValueEnum):
     """Makes angered neutral mobs attack any nearby player, not just the player that angered them. Works best if forgiveDeadPlayers is disabled."""
 
     def rule_type(rule):
-        return {'announceAdvancements': 'bool', 'commandBlockOutput': 'bool', 'disableElytraMovementCheck': 'bool',
-                'disableRaids': 'bool', 'doDaylightCycle': 'bool', 'doEntityDrops': 'bool', 'doFireTick': 'bool',
-                'doInsomnia': 'bool', 'doImmediateRespawn': 'bool', 'doLimitedCrafting': 'bool', 'doMobLoot': 'bool',
-                'doMobSpawning': 'bool', 'doPatrolSpawning': 'bool', 'doTileDrops': 'bool', 'doTraderSpawning': 'bool',
-                'doWeatherCycle': 'bool', 'doWardenSpawning': 'bool', 'drowningDamage': 'bool', 'fallDamage': 'bool',
-                'fireDamage': 'bool', 'forgiveDeadPlayers': 'bool', 'freezeDamage': 'bool', 'keepInventory': 'bool',
-                'logAdminCommands': 'bool', 'maxCommandChainLength': 'int', 'maxEntityCramming': 'int',
-                'mobGriefing': 'bool', 'naturalRegeneration': 'bool', 'playersSleepingPercentage': 'int',
-                'randomTickSpeed': 'int', 'reducedDebugInfo': 'bool', 'sendCommandFeedback': 'bool',
-                'showDeathMessages': 'bool', 'spawnRadius': 'int', 'spectatorsGenerateChunks': 'bool',
-                'universalAnger': 'bool'}[rule.value]
+      return {'announceAdvancements': 'bool', 'commandBlockOutput': 'bool', 'disableElytraMovementCheck': 'bool', 'disableRaids': 'bool', 'doDaylightCycle': 'bool', 'doEntityDrops': 'bool', 'doFireTick': 'bool', 'doInsomnia': 'bool', 'doImmediateRespawn': 'bool', 'doLimitedCrafting': 'bool', 'doMobLoot': 'bool', 'doMobSpawning': 'bool', 'doPatrolSpawning': 'bool', 'doTileDrops': 'bool', 'doTraderSpawning': 'bool', 'doWeatherCycle': 'bool', 'doWardenSpawning': 'bool', 'drowningDamage': 'bool', 'fallDamage': 'bool', 'fireDamage': 'bool', 'forgiveDeadPlayers': 'bool', 'freezeDamage': 'bool', 'keepInventory': 'bool', 'logAdminCommands': 'bool', 'maxCommandChainLength': 'int', 'maxEntityCramming': 'int', 'mobGriefing': 'bool', 'naturalRegeneration': 'bool', 'playersSleepingPercentage': 'int', 'randomTickSpeed': 'int', 'reducedDebugInfo': 'bool', 'sendCommandFeedback': 'bool', 'showDeathMessages': 'bool', 'spawnRadius': 'int', 'spectatorsGenerateChunks': 'bool', 'universalAnger': 'bool'}[rule.value]
+
+
+# noinspection SpellCheckingInspection
+class ScoreCriteria(ValueEnum):
+    DUMMY = "dummy"
+    """Score is only changed by commands, and not by game events such as death. This is useful for event flags, state mappings, currencies,..."""
+    TRIGGER = "trigger"
+    """Score is only changed by commands, and not by game events such as death. The /trigger command can be used by a player to set or increment/decrement their own score in an objective with this criterion. The /trigger command fails if the objective has not been "enabled" for the player using it, and the objective is disabled for the player after using the /trigger command on it. Note that the /trigger command can be used by ordinary players even if Cheats are off and they are not an Operator. This is useful for player input via /tellraw interfaces."""
+    DEATH_COUNT = "deathCount"
+    """Score increments automatically for a player when they die."""
+    PLAYER_KILL_COUNT = "playerKillCount"
+    """Score increments automatically for a player when they kill another player."""
+    TOTAL_KILL_COUNT = "totalKillCount"
+    """Score increments automatically for a player when they kill another player or a mob."""
+    HEALTH = "health"
+    """Ranges from 0 to 20 on a normal player; represents the amount of half-hearts the player has. May appear as 0 for players before their health has changed for the first time. Extra hearts and absorption hearts also count to the health score, meaning that with Attributes/Modifiers or the Health Boost or Absorption status effects, health can far surpass 20."""
+    XP = "xp"
+    """Matches the total amount of experience the player has collected since their last death (or in other words, their score)."""
+    LEVEL = "level"
+    """Matches the current experience level of the player."""
+    FOOD = "food"
+    """Ranges from 0 to 20; represents the amount of hunger points the player has. May appear as 0 for players before their foodLevel has changed for the first time."""
+    AIR = "air"
+    """Ranges from 0 to 300; represents the amount of air the player has left from swimming under water, matches the air nbt tag of the player."""
+    ARMOR = "armor"
+    """Ranges from 0 to 20; represents the amount of armor points the player has. May appear as 0 for players before their armor has changed for the first time."""

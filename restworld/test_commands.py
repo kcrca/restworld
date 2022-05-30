@@ -126,10 +126,8 @@ def test_target_entities():
 
 
 def test_score():
-    assert str(Score('*', 'foo')) == '* foo'
+    assert str(Score(Star(), 'foo')) == '* foo'
     assert str(Score(all(), 'bar')) == '@a bar'
-    with pytest.raises(ValueError):
-        Score('bar', 'foo')
 
 
 def test_target_pos():
@@ -553,6 +551,35 @@ def test_loot_command():
         player()) == 'loot replace entity @a 12 kill @p'
     assert Command().loot().replace().entity(all(), 12, 3).kill(
         player()) == 'loot replace entity @a 12 3 kill @p'
+
+
+def test_scoreboard_command():
+    assert Command().scoreboard().objectives().add('obj', ScoreCriteria.FOOD) == 'scoreboard objectives add obj food'
+    assert str(Command().scoreboard().players().enable(Star(), 'obj')) == 'scoreboard players enable * obj'
+    assert ScoreboardObjectivesMod().list() == 'list'
+    assert ScoreboardObjectivesMod().add('obj', ScoreCriteria.FOOD) == 'add obj food'
+    assert ScoreboardObjectivesMod().add('obj', ScoreCriteria.FOOD, 'howdy') == 'add obj food howdy'
+    assert ScoreboardObjectivesMod().add('obj', ScoreboardCriteria(ScoreCriteria.AIR)) == 'add obj air'
+    assert ScoreboardObjectivesMod().remove('obj') == 'remove obj'
+    assert ScoreboardObjectivesMod().setdisplay(SIDEBAR) == 'setdisplay sidebar'
+    assert ScoreboardObjectivesMod().setdisplay(SIDEBAR_TEAM + 'blue', 'obj') == 'setdisplay sidebar.team.blue obj'
+    assert ScoreboardObjectivesMod().modify('obj', DISPLAY_NAME, 'fred') == 'modify obj displayname fred'
+    assert ScoreboardObjectivesMod().modify('obj', RENDER_TYPE, HEARTS) == 'modify obj rendertype hearts'
+    assert ScoreboardPlayersMod().list(Star()) == 'list *'
+    assert ScoreboardPlayersMod().get(all(), 'obj') == 'get @a obj'
+    assert ScoreboardPlayersMod().set(User('robin'), 'obj', 12) == 'set robin obj 12'
+    assert ScoreboardPlayersMod().add(all(), 'obj', 12) == 'add @a obj 12'
+    assert ScoreboardPlayersMod().remove(all(), 'obj', 12) == 'remove @a obj 12'
+    assert ScoreboardPlayersMod().reset(all(), 'obj') == 'reset @a obj'
+    assert ScoreboardPlayersMod().enable(all(), 'obj') == 'enable @a obj'
+    assert ScoreboardPlayersMod().operation(Star(), 'obj', PLUS, random(), 'obj2') == 'operation * obj += @r obj2'
+
+
+def test_scoreboard_criteria():
+    assert str(ScoreboardCriteria(ScoreCriteria.AIR)) == 'air'
+    assert str(ScoreboardCriteria('has', ScoreCriteria.AIR)) == 'has.air'
+    assert str(ScoreboardCriteria('killed_by', 'm:zombie')) == 'killed_by.m:zombie'
+    assert str(ScoreboardCriteria('on', 'team', 'purple')) == 'on.team.purple'
 
 
 def test_simple_commands():

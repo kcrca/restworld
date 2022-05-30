@@ -190,7 +190,7 @@ class GameRules(EnumDesc):
         if 'yes' not in cols[self.filter_col].text.lower():
             return None
         value = clean(cols[self.value_col].text)
-        name = re.sub(r'([a-z])([A-Z]+)', r'\1 \2', value)
+        name = camel_to_name(value)
         self.types[value] = 'int' if clean(cols[self.type_col]).lower() == 'int' else 'bool'
         return name, value, clean(cols[self.desc_col])
 
@@ -198,6 +198,27 @@ class GameRules(EnumDesc):
         print()
         print('    def rule_type(rule):')
         print('      return %s[rule.value]' % self.types)
+
+
+def camel_to_name(camel):
+    return re.sub(r'([a-z])([A-Z]+)', r'\1 \2', camel)
+
+
+class ScoreCriteria(EnumDesc):
+    def __init__(self):
+        super().__init__('ScoreCriteria', 'https://minecraft.fandom.com/wiki/Scoreboard#Criteria', 'Criteria')
+        self.desc_col = None
+        self.value_col = None
+
+    def note_header(self, col: int, text: str):
+        if text.endswith('name'):
+            self.value_col = col
+        elif text.startswith('Description'):
+            self.desc_col = col
+
+    def extract(self, cols):
+        value = clean(cols[self.value_col])
+        return camel_to_name(value), value, clean(cols[self.desc_col])
 
 
 def roman_to_int(s):
@@ -219,7 +240,7 @@ if __name__ == '__main__':
             print("class ValueEnum(Enum):")
             print("    def __str__(self):")
             print("        return super().value")
-            for tab in (Advancements(), Effects(), Enchantments(), GameRules()):
+            for tab in (Advancements(), Effects(), Enchantments(), GameRules(), ScoreCriteria()):
                 fields = tab.generate()
                 print('\n')
                 print("# noinspection SpellCheckingInspection")
