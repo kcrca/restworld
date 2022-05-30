@@ -5,35 +5,35 @@ from restworld.commands import _NbtFormat
 
 
 def test_command_advancement():
-    assert str(advancement(GIVE, self(), EVERYTHING)) == 'advancement grant @s everything'
-    assert str(advancement(GIVE, self(), ONLY, Advancement.A_BALANCED_DIET,
-                           "pig")) == 'advancement grant @s only husbandry/balanced_diet pig'
-    assert str(advancement(GIVE, self(), FROM,
-                           Advancement.WAX_ON)) == 'advancement grant @s from husbandry/wax_on'
-    assert str(advancement(GIVE, self(), THROUGH,
-                           Advancement.WAX_ON)) == 'advancement grant @s through husbandry/wax_on'
-    assert str(advancement(GIVE, self(), UNTIL,
-                           Advancement.WAX_ON)) == 'advancement grant @s until husbandry/wax_on'
+    assert str(Command().advancement(GIVE, self(), EVERYTHING)) == 'advancement grant @s everything'
+    assert str(Command().advancement(GIVE, self(), ONLY, Advancement.A_BALANCED_DIET,
+                                     "pig")) == 'advancement grant @s only husbandry/balanced_diet pig'
+    assert str(Command().advancement(GIVE, self(), FROM,
+                                     Advancement.WAX_ON)) == 'advancement grant @s from husbandry/wax_on'
+    assert str(Command().advancement(GIVE, self(), THROUGH,
+                                     Advancement.WAX_ON)) == 'advancement grant @s through husbandry/wax_on'
+    assert str(Command().advancement(GIVE, self(), UNTIL,
+                                     Advancement.WAX_ON)) == 'advancement grant @s until husbandry/wax_on'
 
-    assert str(advancement(REVOKE, self(), EVERYTHING)) == 'advancement revoke @s everything'
-    assert str(advancement(REVOKE, self(), ONLY, Advancement.A_BALANCED_DIET,
-                           "pig")) == 'advancement revoke @s only husbandry/balanced_diet pig'
-    assert str(advancement(REVOKE, self(), FROM,
-                           Advancement.WAX_ON)) == 'advancement revoke @s from husbandry/wax_on'
-    assert str(advancement(REVOKE, self(), THROUGH,
-                           Advancement.WAX_ON)) == 'advancement revoke @s through husbandry/wax_on'
-    assert str(advancement(REVOKE, self(), UNTIL,
-                           Advancement.WAX_ON)) == 'advancement revoke @s until husbandry/wax_on'
+    assert str(Command().advancement(REVOKE, self(), EVERYTHING)) == 'advancement revoke @s everything'
+    assert str(Command().advancement(REVOKE, self(), ONLY, Advancement.A_BALANCED_DIET,
+                                     "pig")) == 'advancement revoke @s only husbandry/balanced_diet pig'
+    assert str(Command().advancement(REVOKE, self(), FROM,
+                                     Advancement.WAX_ON)) == 'advancement revoke @s from husbandry/wax_on'
+    assert str(Command().advancement(REVOKE, self(), THROUGH,
+                                     Advancement.WAX_ON)) == 'advancement revoke @s through husbandry/wax_on'
+    assert str(Command().advancement(REVOKE, self(), UNTIL,
+                                     Advancement.WAX_ON)) == 'advancement revoke @s until husbandry/wax_on'
 
     with pytest.raises(ValueError):
-        advancement('foo', self(), ONLY, Advancement.A_BALANCED_DIET, "pig")
-        advancement(GIVE, self(), 'foo', Advancement.A_BALANCED_DIET, "pig")
+        Command().advancement('foo', self(), ONLY, Advancement.A_BALANCED_DIET, "pig")
+        Command().advancement(GIVE, self(), 'foo', Advancement.A_BALANCED_DIET, "pig")
 
 
 def test_command_execute():
-    assert str(execute().align(XZ)) == 'execute align xz'
+    assert str(Command().execute().align(XZ)) == 'execute align xz'
     with pytest.raises(ValueError):
-        execute().align('foo')
+        Command().execute().align('foo')
 
 
 def test_execute_mod():
@@ -285,32 +285,37 @@ def test_target_predicate():
 
 
 def test_target_chainability():
-    assert str(all().pos(1, 2, 3).distance(Range(None, 15.5)).delta(4.4, 5.5, 6.6).scores().tag("one")
-        .team('slug').sort(ARBITRARY).limit(15).level(Range(3, 15)).gamemode(SURVIVAL)
-        .name('Robin').x_rotation(Range(at=9)).y_rotation(Range(None, 24)).type('cougar')
-        .nbt({"hi": "there"}).advancements(AdvancementCriteria(Advancement.A_SEEDY_PLACE, True))
-        .predicate(
-        "nada")) == '@a[x=1,y=2,z=3,distance=..15.5,dx=4.4,dy=5.5,dz=6.6,scores={},tag=one,team=slug,sort=arbitrary,limit=15,level=3..15,gamemode=survival,name=Robin,x_rotation=9,y_rotation=..24,type=cougar,nbt={hi:there},advancements={husbandry/plant_seed=true},predicate=nada]'
+    assert str(
+        all().pos(1, 2, 3).distance(Range(None, 15.5)).delta(4.4, 5.5, 6.6).scores().tag("one").team('slug').sort(
+            ARBITRARY).limit(15).level(Range(3, 15)).gamemode(SURVIVAL).name('Robin').x_rotation(
+            Range(at=9)).y_rotation(Range(None, 24)).type('cougar').nbt({"hi": "there"}).advancements(
+            AdvancementCriteria(Advancement.A_SEEDY_PLACE, True)).predicate(
+            "nada")) == '@a[x=1,y=2,z=3,distance=..15.5,dx=4.4,dy=5.5,dz=6.6,scores={},tag=one,team=slug,' \
+                        'sort=arbitrary,limit=15,level=3..15,gamemode=survival,name=Robin,x_rotation=9,' \
+                        'y_rotation=..24,type=cougar,nbt={hi:there},advancements={husbandry/plant_seed=true},' \
+                        'predicate=nada]'
     assert str(all().not_team('Raiders').not_name("GRBX").not_gamemode(CREATIVE)
                .not_types("worm")) == '@a[team=!Raiders,name=!GRBX,gamemode=!creative,type=!worm]'
 
 
 def test_command_comment():
-    long_line = 'This is a long line of text that would be wrapped if it were asked to be wrapped, and we use it to test if wrapping does or does not happen.'
-    assert str(comment('hi')) == '# hi\n'
-    assert str(comment(' hi ')) == '# hi\n'
-    assert str(comment('hi\nthere')) == '# hi\n# there\n'
-    assert str(comment('  hi\nthere  ')) == '# hi\n# there\n'
-    assert str(comment(long_line)) == '# %s\n' % long_line
-    assert str(comment(long_line + '\n\n\n' + long_line)) == '# %s\n#\n#\n# %s\n' % (long_line, long_line)
+    long_line = 'This is a long line of text that would be wrapped if it were asked to be wrapped, and we use it to' \
+                ' test if wrapping does or does not happen.'
+    assert str(Command().comment('hi')) == '# hi\n'
+    assert str(Command().comment(' hi ')) == '# hi\n'
+    assert str(Command().comment('hi\nthere')) == '# hi\n# there\n'
+    assert str(Command().comment('  hi\nthere  ')) == '# hi\n# there\n'
+    assert str(Command().comment(long_line)) == '# %s\n' % long_line
+    assert str(Command().comment(long_line + '\n\n\n' + long_line)) == '# %s\n#\n#\n# %s\n' % (long_line, long_line)
 
-    assert str(comment('hi')) == '# hi\n'
-    assert str(comment(' hi ')) == '# hi\n'
-    assert str(comment('hi\nthere')) == '# hi\n# there\n'
-    assert str(comment('  hi\nthere  ', wrap=True)) == '# hi there\n'
-    assert str(comment(long_line, wrap=True)) == (
-        '# This is a long line of text that would be wrapped if it were asked to be\n# wrapped, and we use it to test if wrapping does or does not happen.\n')
-    assert str(comment(long_line + '\n\n\n' + long_line, wrap=True)) == (
+    assert str(Command().comment('hi')) == '# hi\n'
+    assert str(Command().comment(' hi ')) == '# hi\n'
+    assert str(Command().comment('hi\nthere')) == '# hi\n# there\n'
+    assert str(Command().comment('  hi\nthere  ', wrap=True)) == '# hi there\n'
+    assert str(Command().comment(long_line, wrap=True)) == (
+        '# This is a long line of text that would be wrapped if it were asked to be\n# wrapped, and we use it to test'
+        ' if wrapping does or does not happen.\n')
+    assert str(Command().comment(long_line + '\n\n\n' + long_line, wrap=True)) == (
         '# This is a long line of text that would be wrapped if it were asked to be\n'
         '# wrapped, and we use it to test if wrapping does or does not happen.\n'
         '#\n'
@@ -319,11 +324,11 @@ def test_command_comment():
 
 
 def test_command_literal():
-    assert str(literal('xyzzy')) == 'xyzzy'
+    assert str(Command().literal('xyzzy')) == 'xyzzy'
 
 
 def test_command_attribute():
-    assert str(attribute(self(), 'foo').get()) == 'attribute @s foo get'
+    assert str(Command().attribute(self(), 'foo').get()) == 'attribute @s foo get'
 
 
 def test_attribute_act():
@@ -339,29 +344,30 @@ def test_attribute_act():
 
 
 def test_command_bossbar():
-    assert str(bossbar().add('foo', 'stud')) == 'bossbar add foo stud'
-    assert str(bossbar().get('foo', 'max')) == 'bossbar get foo max'
-    assert str(bossbar().list()) == 'bossbar list'
-    assert str(bossbar().remove('foo')) == 'bossbar remove foo'
-    assert str(bossbar().set('foo').color(BLUE)) == 'bossbar set foo color blue'
-    assert str(bossbar().set('foo').max(17)) == 'bossbar set foo max 17'
-    assert str(bossbar().set('foo').name('Freddy')) == 'bossbar set foo name Freddy'
-    assert str(bossbar().set('foo').players(self(), entities())) == 'bossbar set foo players @s @e'
-    assert str(bossbar().set('foo').style(NOTCHED_12)) == 'bossbar set foo style notched_12'
-    assert str(bossbar().set('foo').value(17)) == 'bossbar set foo value 17'
-    assert str(bossbar().set('foo').visible(False)) == 'bossbar set foo visible false'
+    assert str(Command().bossbar().add('foo', 'stud')) == 'bossbar add foo stud'
+    assert str(Command().bossbar().get('foo', 'max')) == 'bossbar get foo max'
+    assert str(Command().bossbar().list()) == 'bossbar list'
+    assert str(Command().bossbar().remove('foo')) == 'bossbar remove foo'
+    assert str(Command().bossbar().set('foo').color(BLUE)) == 'bossbar set foo color blue'
+    assert str(Command().bossbar().set('foo').max(17)) == 'bossbar set foo max 17'
+    assert str(Command().bossbar().set('foo').name('Freddy')) == 'bossbar set foo name Freddy'
+    assert str(Command().bossbar().set('foo').players(self(), entities())) == 'bossbar set foo players @s @e'
+    assert str(Command().bossbar().set('foo').style(NOTCHED_12)) == 'bossbar set foo style notched_12'
+    assert str(Command().bossbar().set('foo').value(17)) == 'bossbar set foo value 17'
+    assert str(Command().bossbar().set('foo').visible(False)) == 'bossbar set foo visible false'
 
 
 def test_command_clear():
-    assert str(clear(self(), User('robin')).item('foo{bar}')) == 'clear @s robin foo{bar}'
-    assert str(clear(self(), User('robin')).item('foo{bar}', 4)) == 'clear @s robin foo{bar} 4'
+    assert str(Command().clear(self(), User('robin')).item('foo{bar}')) == 'clear @s robin foo{bar}'
+    assert str(Command().clear(self(), User('robin')).item('foo{bar}', 4)) == 'clear @s robin foo{bar} 4'
 
 
 def test_command_clone():
-    assert str(clone(1, r(2), d(3), 4, 5, 6, 7, 8, 9).replace()) == 'clone 1 ~2 ^3 4 5 6 7 8 9 replace'
-    assert str(clone(1, r(2), d(3), 4, 5, 6, 7, 8, 9).masked(FORCE)) == 'clone 1 ~2 ^3 4 5 6 7 8 9 masked force'
-    assert str(clone(1, r(2), d(3), 4, 5, 6, 7, 8, 9).filtered('stone',
-                                                               FORCE)) == 'clone 1 ~2 ^3 4 5 6 7 8 9 filtered stone force'
+    assert str(Command().clone(1, r(2), d(3), 4, 5, 6, 7, 8, 9).replace()) == 'clone 1 ~2 ^3 4 5 6 7 8 9 replace'
+    assert str(
+        Command().clone(1, r(2), d(3), 4, 5, 6, 7, 8, 9).masked(FORCE)) == 'clone 1 ~2 ^3 4 5 6 7 8 9 masked force'
+    assert str(Command().clone(1, r(2), d(3), 4, 5, 6, 7, 8, 9).filtered('stone', FORCE)) == 'clone 1 ~2 ^3 4 5 6 7 8' \
+                                                                                             ' 9 filtered stone force'
 
 
 def test_data_target():
@@ -371,49 +377,50 @@ def test_data_target():
 
 
 def test_command_data():
-    assert str(data().get(EntityData(self()))) == 'data get entity @s'
+    assert str(Command().data().get(EntityData(self()))) == 'data get entity @s'
 
 
 def test_command_effect():
-    assert str(effect().give(self(), Effects.SPEED)) == 'effect give @s speed'
-    assert str(effect().give(self(), Effects.SPEED, 100)) == 'effect give @s speed 100'
-    assert str(effect().give(self(), Effects.SPEED, 100, 2)) == 'effect give @s speed 100 2'
-    assert str(effect().give(self(), Effects.SPEED, 100, 2, True)) == 'effect give @s speed 100 2 true'
-    assert str(effect().clear()) == 'effect clear'
-    assert str(effect().clear(self())) == 'effect clear @s'
-    assert str(effect().clear(self(), Effects.SPEED)) == 'effect clear @s speed'
+    assert str(Command().effect().give(self(), Effects.SPEED)) == 'effect give @s speed'
+    assert str(Command().effect().give(self(), Effects.SPEED, 100)) == 'effect give @s speed 100'
+    assert str(Command().effect().give(self(), Effects.SPEED, 100, 2)) == 'effect give @s speed 100 2'
+    assert str(Command().effect().give(self(), Effects.SPEED, 100, 2, True)) == 'effect give @s speed 100 2 true'
+    assert str(Command().effect().clear()) == 'effect clear'
+    assert str(Command().effect().clear(self())) == 'effect clear @s'
+    assert str(Command().effect().clear(self(), Effects.SPEED)) == 'effect clear @s speed'
     with pytest.raises(ValueError):
-        effect().give(self(), Effects.SPEED, -1)
-        effect().give(self(), Effects.SPEED, MAX_EFFECT_SECONDS + 100)
-        effect().give(self(), Effects.SPEED, None, 2)
-        effect().give(self(), Effects.SPEED, None, None, True)
-        effect().give(self(), Effects.SPEED, 100, None, True)
-        effect().clear(None, Effects.SPEED)
+        Command().effect().give(self(), Effects.SPEED, -1)
+        Command().effect().give(self(), Effects.SPEED, MAX_EFFECT_SECONDS + 100)
+        Command().effect().give(self(), Effects.SPEED, None, 2)
+        Command().effect().give(self(), Effects.SPEED, None, None, True)
+        Command().effect().give(self(), Effects.SPEED, 100, None, True)
+        Command().effect().clear(None, Effects.SPEED)
 
 
 def test_command_enchant():
-    assert enchant(self(), Enchantments.LURE) == 'enchant @s lure'
-    assert enchant(self(), Enchantments.LURE, 2) == 'enchant @s lure 2'
-    assert enchant(self(), 12) == 'enchant @s 12'
-    assert enchant(self(), 12, 2) == 'enchant @s 12 2'
+    assert Command().enchant(self(), Enchantments.LURE) == 'enchant @s lure'
+    assert Command().enchant(self(), Enchantments.LURE, 2) == 'enchant @s lure 2'
+    assert Command().enchant(self(), 12) == 'enchant @s 12'
+    assert Command().enchant(self(), 12, 2) == 'enchant @s 12 2'
     with pytest.raises(ValueError):
-        enchant(self(), Enchantments.LURE, 17)
+        Command().enchant(self(), Enchantments.LURE, 17)
 
 
 def test_command_experience():
-    assert experience().add(self(), 3, LEVELS) == 'experience add @s 3 levels'
-    assert experience().add(self(), 3, POINTS) == 'experience add @s 3 points'
-    assert experience().set(self(), 3, LEVELS) == 'experience set @s 3 levels'
-    assert experience().set(self(), 3, POINTS) == 'experience set @s 3 points'
-    assert experience().query(self(), POINTS) == 'experience query @s points'
-    assert xp().query(self(), POINTS) == 'experience query @s points'
+    assert Command().experience().add(self(), 3, LEVELS) == 'experience add @s 3 levels'
+    assert Command().experience().add(self(), 3, POINTS) == 'experience add @s 3 points'
+    assert Command().experience().set(self(), 3, LEVELS) == 'experience set @s 3 levels'
+    assert Command().experience().set(self(), 3, POINTS) == 'experience set @s 3 points'
+    assert Command().experience().query(self(), POINTS) == 'experience query @s points'
+    assert Command().xp().query(self(), POINTS) == 'experience query @s points'
 
 
 def test_command_fill():
-    assert str(fill(1, r(2), d(3), 4, 5, 6, 'stone', HOLLOW)) == 'fill 1 ~2 ^3 4 5 6 stone hollow'
-    assert str(fill(1, r(2), d(3), 4, 5, 6, 'stone', REPLACE)) == 'fill 1 ~2 ^3 4 5 6 stone replace'
+    assert str(Command().fill(1, r(2), d(3), 4, 5, 6, 'stone', HOLLOW)) == 'fill 1 ~2 ^3 4 5 6 stone hollow'
+    assert str(Command().fill(1, r(2), d(3), 4, 5, 6, 'stone', REPLACE)) == 'fill 1 ~2 ^3 4 5 6 stone replace'
     assert str(
-        fill(1, r(2), d(3), 4, 5, 6, 'stone', REPLACE).filter('air')) == 'fill 1 ~2 ^3 4 5 6 stone replace filter air'
+        Command().fill(1, r(2), d(3), 4, 5, 6, 'stone', REPLACE).filter(
+            'air')) == 'fill 1 ~2 ^3 4 5 6 stone replace filter air'
 
 
 def test_data_mod():
@@ -437,48 +444,48 @@ def test_data_mod():
 
 
 def test_command_datapack():
-    assert str(datapack().disable('robin')) == 'datapack disable robin'
-    assert str(datapack().enable('robin')) == 'datapack enable robin'
-    assert str(datapack().enable('robin', FIRST)) == 'datapack enable robin first'
-    assert str(datapack().enable('robin', BEFORE, 'kelly')) == 'datapack enable robin before kelly'
+    assert str(Command().datapack().disable('robin')) == 'datapack disable robin'
+    assert str(Command().datapack().enable('robin')) == 'datapack enable robin'
+    assert str(Command().datapack().enable('robin', FIRST)) == 'datapack enable robin first'
+    assert str(Command().datapack().enable('robin', BEFORE, 'kelly')) == 'datapack enable robin before kelly'
     with pytest.raises(ValueError):
-        datapack().enable('robin', BEFORE)
+        Command().datapack().enable('robin', BEFORE)
 
 
 def test_command_forceload():
-    assert forceload().add(1, r(2)) == 'forceload add 1 ~2'
-    assert forceload().add(1, r(2), 3, 4) == 'forceload add 1 ~2 3 4'
-    assert forceload().remove(1, r(2)) == 'forceload remove 1 ~2'
-    assert forceload().remove(1, r(2), 3, 4) == 'forceload remove 1 ~2 3 4'
-    assert forceload().remove_all() == 'forceload remove all'
-    assert forceload().query() == 'forceload query'
-    assert forceload().query(1, r(2)) == 'forceload query 1 ~2'
+    assert Command().forceload().add(1, r(2)) == 'forceload add 1 ~2'
+    assert Command().forceload().add(1, r(2), 3, 4) == 'forceload add 1 ~2 3 4'
+    assert Command().forceload().remove(1, r(2)) == 'forceload remove 1 ~2'
+    assert Command().forceload().remove(1, r(2), 3, 4) == 'forceload remove 1 ~2 3 4'
+    assert Command().forceload().remove_all() == 'forceload remove all'
+    assert Command().forceload().query() == 'forceload query'
+    assert Command().forceload().query(1, r(2)) == 'forceload query 1 ~2'
     with pytest.raises(ValueError):
-        forceload().add(1, d(2))
-        forceload().add(1, r(2.2))
-        forceload().add(1, r(2), 3)
-        forceload().query(d(2))
-        forceload().query(r(2.2))
-        forceload().query(1)
+        Command().forceload().add(1, d(2))
+        Command().forceload().add(1, r(2.2))
+        Command().forceload().add(1, r(2), 3)
+        Command().forceload().query(d(2))
+        Command().forceload().query(r(2.2))
+        Command().forceload().query(1)
 
 
 def test_command_gamemode():
-    assert gamemode(SURVIVAL) == 'gamemode survival'
-    assert gamemode(SURVIVAL, self()) == 'gamemode survival @s'
+    assert Command().gamemode(SURVIVAL) == 'gamemode survival'
+    assert Command().gamemode(SURVIVAL, self()) == 'gamemode survival @s'
 
 
 def test_command_gamerule():
-    assert gamerule(GameRules.DISABLE_RAIDS) == 'gamerule disableRaids'
-    assert gamerule(GameRules.DISABLE_RAIDS, True) == 'gamerule disableRaids true'
-    assert gamerule(GameRules.MAX_COMMAND_CHAIN_LENGTH, 13) == 'gamerule maxCommandChainLength 13'
+    assert Command().gamerule(GameRules.DISABLE_RAIDS) == 'gamerule disableRaids'
+    assert Command().gamerule(GameRules.DISABLE_RAIDS, True) == 'gamerule disableRaids true'
+    assert Command().gamerule(GameRules.MAX_COMMAND_CHAIN_LENGTH, 13) == 'gamerule maxCommandChainLength 13'
     with pytest.raises(ValueError):
-        gamerule(GameRules.DISABLE_RAIDS, 17)
-        gamerule(GameRules.MAX_COMMAND_CHAIN_LENGTH, True)
+        Command().gamerule(GameRules.DISABLE_RAIDS, 17)
+        Command().gamerule(GameRules.MAX_COMMAND_CHAIN_LENGTH, True)
 
 
 def test_command_give():
-    assert give(self(), 'foo') == 'give @s foo'
-    assert give(self(), 'foo', 17) == 'give @s foo 17'
+    assert Command().give(self(), 'foo') == 'give @s foo'
+    assert Command().give(self(), 'foo', 17) == 'give @s foo 17'
 
 
 def test_command_help():
@@ -487,33 +494,36 @@ def test_command_help():
 
 
 def test_command_item():
-    assert str(item().modify().block(1, r(2), d(3), 17)) == 'item modify block 1 ~2 ^3 17'
-    assert str(item().modify().block(1, r(2), d(3), 17, 'm:a')) == 'item modify block 1 ~2 ^3 17 m:a'
-    assert str(item().modify().entity(self(), 17)) == 'item modify entity @s 17'
-    assert str(item().modify().entity(self(), 17, 'm:a')) == 'item modify entity @s 17 m:a'
-    assert str(item().replace().entity(self(), 17).with_('a{b}')) == 'item replace entity @s 17 with a{b}'
-    assert str(item().replace().entity(self(), 17).with_('a{b}', 2)) == 'item replace entity @s 17 with a{b} 2'
+    assert str(Command().item().modify().block(1, r(2), d(3), 17)) == 'item modify block 1 ~2 ^3 17'
+    assert str(Command().item().modify().block(1, r(2), d(3), 17, 'm:a')) == 'item modify block 1 ~2 ^3 17 m:a'
+    assert str(Command().item().modify().entity(self(), 17)) == 'item modify entity @s 17'
+    assert str(Command().item().modify().entity(self(), 17, 'm:a')) == 'item modify entity @s 17 m:a'
+    assert str(Command().item().replace().entity(self(), 17).with_('a{b}')) == 'item replace entity @s 17 with a{b}'
     assert str(
-        item().replace().entity(self(), 17).from_().block(1, r(2), d(3),
-                                                          17)) == 'item replace entity @s 17 from block 1 ~2 ^3 17'
+        Command().item().replace().entity(self(), 17).with_('a{b}', 2)) == 'item replace entity @s 17 with a{b} 2'
     assert str(
-        item().replace().entity(self(), 17).from_().block(1, r(2), d(3), 17,
-                                                          'm:a')) == 'item replace entity @s 17 from block 1 ~2 ^3 17 m:a'
+        Command().item().replace().entity(self(), 17).from_().block(1, r(2), d(3), 17)) == 'item replace entity @s 17' \
+                                                                                           ' from block 1 ~2 ^3 17'
     assert str(
-        item().replace().entity(self(), 17).from_().entity(player(),
-                                                           17)) == 'item replace entity @s 17 from entity @p 17'
+        Command().item().replace().entity(self(), 17).from_().block(1, r(2), d(3), 17, 'm:a')) == 'item replace' \
+                                                                                                  ' entity @s 17 from' \
+                                                                                                  ' block 1 ~2 ^3' \
+                                                                                                  ' 17 m:a'
     assert str(
-        item().replace().entity(self(), 17).from_().entity(player(),
-                                                           17,
-                                                           'm:a')) == 'item replace entity @s 17 from entity @p 17 m:a'
+        Command().item().replace().entity(self(), 17).from_().entity(player(), 17)) == 'item replace entity @s 17' \
+                                                                                       ' from entity @p 17'
+    assert str(
+        Command().item().replace().entity(self(), 17).from_().entity(player(), 17, 'm:a')) == 'item replace' \
+                                                                                              ' entity @s 17' \
+                                                                                              ' from entity @p 17 m:a'
     with pytest.raises(ValueError):
-        item().replace().block(1, r(2), d(3), 17, 'm:a')
-        item().replace().entity(self(), 17, 'm:a')
+        Command().item().replace().block(1, r(2), d(3), 17, 'm:a')
+        Command().item().replace().entity(self(), 17, 'm:a')
 
 
 def test_kill_command():
-    assert kill() == 'kill'
-    assert kill(self()) == 'kill @s'
+    assert Command().kill() == 'kill'
+    assert Command().kill(self()) == 'kill @s'
 
 
 def test_list_command():
@@ -524,9 +534,9 @@ def test_list_command():
 
 
 def test_locate_command():
-    assert locate(STRUCTURE, 'foo') == 'locate structure foo'
-    assert locate(BIOME, 'foo') == 'locate biome foo'
-    assert locate(POI, 'foo') == 'locate poi foo'
+    assert Command().locate(STRUCTURE, 'foo') == 'locate structure foo'
+    assert Command().locate(BIOME, 'foo') == 'locate biome foo'
+    assert Command().locate(POI, 'foo') == 'locate poi foo'
 
 
 def test_loot_command():
@@ -534,8 +544,9 @@ def test_loot_command():
                                              'stone') == 'loot give @a fish m:/a/b 1 ~2 ^3 stone'
     assert Command().loot().insert(1, r(2), d(3)).loot('m:/a/b') == 'loot insert 1 ~2 ^3 loot m:/a/b'
     assert Command().loot().spawn(1, r(2), d(3)).kill(player()) == 'loot spawn 1 ~2 ^3 kill @p'
-    assert Command().loot().replace().block(1, r(2), d(3), 13).mine(4, r(5), d(6),
-                                                                    MAINHAND) == 'loot replace block 1 ~2 ^3 13 mine 4 ~5 ^6 mainhand'
+    assert Command().loot().replace().block(1, r(2), d(3), 13).mine(4, r(5), d(6), MAINHAND) == 'loot replace' \
+                                                                                                ' block 1 ~2 ^3 13' \
+                                                                                                ' mine 4 ~5 ^6 mainhand'
     assert Command().loot().replace().block(1, r(2), d(3), 13, 2).kill(
         player()) == 'loot replace block 1 ~2 ^3 13 2 kill @p'
     assert Command().loot().replace().entity(all(), 12).kill(
@@ -545,10 +556,10 @@ def test_loot_command():
 
 
 def test_simple_commands():
-    assert (defaultgamemode(SURVIVAL)) == 'defaultgamemode survival'
-    assert (deop(self(), all())) == 'deop @s @a'
-    assert (difficulty(PEACEFUL)) == 'difficulty peaceful'
-    assert (function('m:b/c')) == 'function m:b/c'
+    assert (Command().defaultgamemode(SURVIVAL)) == 'defaultgamemode survival'
+    assert (Command().deop(self(), all())) == 'deop @s @a'
+    assert (Command().difficulty(PEACEFUL)) == 'difficulty peaceful'
+    assert (Command().function('m:b/c')) == 'function m:b/c'
 
 
 def test_resource_checks():
