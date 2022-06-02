@@ -12,7 +12,6 @@ execute unless score ${var} funcs matches 0..${count - 1} run scoreboard players
 </%def>
 
 <%def name="when(i, as_prefix=False)">execute if score ${var} funcs matches ${i}${"" if as_prefix else " run"}</%def>
-<%def name="unless(i, as_prefix=False)">execute unless score ${var} funcs matches ${i}${"" if as_prefix else " run"}</%def>
 
 <%def name="ensure(pos, block, nbt=None)">execute unless block ${pos} ${block} run setblock ${pos} ${block}${'{%s}' % nbt if nbt else ''}</%def>
 
