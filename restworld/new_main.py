@@ -1,12 +1,10 @@
 import collections
 import json
-import os
-import random
-import re
+from copy import deepcopy
 from functools import total_ordering
 from html.parser import HTMLParser
 
-from pyker.commands import Command, entities, NBT
+from pyker.function import *
 
 mc_version = '1.14'
 
@@ -342,7 +340,7 @@ villager_data = []
 for t in villager_types:
     for p in professions:
         villager_data += ['profession:%s,type:%s' % (p.lower(), t.lower()), ]
-    random.shuffle(villager_data)
+    # random.shuffle(villager_data)
 
 biome_groups = collections.OrderedDict()
 biome_groups['Temperate'] = (
@@ -524,6 +522,124 @@ def ensure(x, y, z, block, nbt=None):
     Command().execute().unless().block(x, y, z, block).run().setblock(x, y, z, block).nbt(
         NBT.as_nbt(nbt)
     )
+
+
+def extract_arg(name, default_value, kwargs, keep=False):
+    if name in kwargs:
+        value = kwargs[name]
+        if not keep:
+            del kwargs[name]
+    else:
+        value = default_value
+    return value, kwargs
+
+
+class Clock:
+    def __init__(self, name: str):
+        self.name = name
+        self.score = Score(name, 'clocks')
+        self._loops = []
+
+    def add(self, loop: Loop):
+        self._loops.append(loop)
+
+    def tick_cmds(self, other_funcs=()):
+        # execute at @e[tag=cage_home] run function restworld:enders/cage_main
+        for loop in self._loops:
+            yield Command().execute().at(entities().tag(self._tag(loop))).run().function(loop.name)
+        yield '\n'
+        for loop in self._loops:
+            loop_finish = loop.name[-len(self.name):] + 'finish'
+            if loop_finish in other_funcs:
+                yield Command().execute().at(entities().tag(self._tag(loop))).run(). \
+                    schedule().function(loop_finish, 1).replace()
+
+    def _tag(self, loop):
+        return loop.name.split(':')[-1]
+
+
+class Room:
+    def __init__(self, name: str):
+        self.name = name
+        self.solo_name = name.split(':')[-1]
+        self._funcs = {}
+        self._loops = {}
+        self._clocks = {}
+        self._homes = set()
+        self._home_marker = Entity('armor_stand', {
+            'tags': ['homer', '%s_homer' % self.name], 'NoGravity': True, 'Small': True})
+
+    def _func(self, name):
+        return self.name + '/' + name
+
+    def _home_func(self, name):
+        marker_tag = '%s_home' % name
+        marker = deepcopy(self._home_marker)
+        tags = marker.nbt().get_list('Tags')
+        tags.append(marker_tag)
+        assert marker_tag not in self._homes
+        self._homes.add(marker_tag)
+        return Function(self._func(marker_tag), (
+            Command().kill(entities().tag(marker_tag)),
+            Command().execute().positioned(r(-0.5), r(0), r(0.5)).run().
+                kill(entities().type('armor_stand').delta(1, 2, 1)),
+            marker.summon(r(0), r(0.5), r(0)),
+        ))
+
+    def loop(self, name: str, clock: Clock = None, needs_home=True) -> Loop:
+        base = name
+        loop = Loop(base, self.solo_name)
+        if clock:
+            self._clocks.setdefault(clock, []).append(loop)
+            name += '_' + clock.name
+            clock.add(loop)
+
+        self._loops[name] = loop
+
+        if needs_home:
+            self.add(self._home_func(loop.name))
+        return loop
+
+    def add(self, *funcs: Function):
+        for f in funcs:
+            self._funcs[f.name] = f
+
+    def functions(self):
+        return list(self._funcs.values()) + list(self._room_funcs())
+
+    def _room_funcs(self):
+        tick_func = Function(self._func('_tick'))
+        for clock, loops in self._clocks.items():
+            yield Function(self._func('_' + clock.name), clock.tick_cmds())
+            # execute if score main clocks matches 0 run function restworld:enders/_main
+            tick_func.add(
+                Command().execute().if_().score(clock.score).matches(0).run().function(self._func('_%s' % clock.name)))
+        # The '1' is for the generated warning
+        if len(list(tick_func.commands())) > 1:
+            yield tick_func
+        for loop_name in self._loops.keys():
+            loop = self._loops[loop_name]
+            yield Function(self._func(loop.name), loop.commands())
+            yield Function(self._func(loop.name + '_cur'), loop.cur())
+            # execute at @e[tag=enders_room_home] run function restworld:enders/enders_room_cur
+            yield Function(self._func('_cur'), (
+                Command().execute().at(entities().tag(x)).run().function(self._func(loop_name)) for x in self._homes),
+                           Command().function(self._func('_finish')))
+            # execute at @e[tag=enders_room_home] run scoreboard players remove enders_room funcs 1
+            yield Function(self._func('_incr'), (
+                Command().execute().at(entities().tag(x)).run(loop.score.add(1)) for x in self._homes),
+                           Command().function(self._func('_cur')))
+            yield Function(self._func('_decr'), (
+                Command().execute().at(entities().tag(x)).run(loop.score.remove(1)) for x in self._homes),
+                           Command().function(self._func('_cur')))
+
+        for f in ('init', 'enter', 'exit', 'finish'):
+            f_name = '_' + f
+            enter_funcs = filter(lambda x: x.endswith(f_name), self._funcs.keys())
+            if enter_funcs:
+                yield Function(self._func(f_name),
+                               (Command().execute().at(entities().tag(x)).run().function(self._funcs[x]) for x in
+                                enter_funcs))
 
 
 def main():
