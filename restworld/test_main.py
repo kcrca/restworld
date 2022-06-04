@@ -42,15 +42,21 @@ def test_mob_placer():
     assert re.search(r'Tags:.*m_1', cmds[0])
     assert re.search(r'Tags:.*m_1', cmds[1])
 
-    mp = MobPlacer(1.1, 12, 2.2, 'North', 3.3, 4.4, tags=('gtag',), nbt={'GProp': True})
+    mp = MobPlacer(r(1.1), r(12), r(2.2), 'North', 3.3, 4.4, tags=('gtag',), nbt={'GProp': True})
     cmds = lines(mp.summon(((Entity('m_1')), (Entity('m_2'))), tags=('stag'), nbt={'SProp': False}))
+    for c in cmds:
+        assert c.count('~') == 3, c
     assert 'gtag' in cmds[0]
     assert 'stag' in cmds[0]
     assert 'GProp:true' in cmds[0]
     assert 'SProp:false' in cmds[0]
 
-    mp = MobPlacer(1.1, 12, 2.2, 'North', 3.3, 4.4)
+    mp = MobPlacer(d(1.1), d(12), d(2.2), 'North', 3.3, 4.4)
     cmds = lines(mp.summon(((Entity('m_1')), (Entity('m_2'))), auto_tag=False))
+    assert cmds[0].count('^') == 3
+    assert cmds[1].count('^') == 3
+    assert cmds[2].count('^') == 3
+    assert cmds[3].count('^') == 3
     assert not re.search(r'Tags:.*m_1', cmds[0])
     assert not re.search(r'Tags:.*m_1', cmds[1])
     assert not re.search(r'Tags:.*m_2', cmds[2])
