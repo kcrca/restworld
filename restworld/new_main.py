@@ -511,7 +511,7 @@ def render_tmpl(tmpl, var_name, **kwargs):
     )
 
 
-def remove(target):
+def kill_em(target):
     return Command().tp().to(entities().tag('death').limit(1), target)
 
 
@@ -640,6 +640,92 @@ class Room:
                 yield Function(self._func(f_name),
                                (Command().execute().at(entities().tag(x)).run().function(self._funcs[x]) for x in
                                 enter_funcs))
+
+
+_facing_dir_info = {'north': (0, -1, 0), 'east': (1, 0, 90), 'west': (-1, 0, 270), 'south': (0, 1, 180)}
+_perpendicular_map = {'north': 'east', 'east': 'south', 'south': 'west', 'west': 'north'}
+_keys = tuple(_facing_dir_info.keys())
+for key in _keys:
+    _facing_dir_info[key[0]] = _facing_dir_info[key]
+    _perpendicular_map[key[0]] = _perpendicular_map[key]
+
+
+def _facing_info(facing, delta, perpendicular=False):
+    facing = facing.lower()
+    if perpendicular:
+        facing = _perpendicular_map[facing]
+    dx_mult, dz_mult, rot = _facing_dir_info[facing]
+    return delta * dx_mult, delta * dz_mult, rot
+
+
+class MobPlacer:
+    # summon armor_stand ~${at_x} ~${2 + y_add - 1} ~${at_z}
+    # {Invisible:true,Small:true,NoGravity:true,Tags:[${",".join(tags)}],
+    #  PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[${at_rotation}f,0f],
+    #  Passengers:[
+    #      {id:"${thing.full_id()}",Tags:[${",".join(tags)},passenger]${nbt},PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[${at_rotation}f,0f]}
+    #  ]}
+    _armor_stand_tmpl = Entity('armor_stand').merge_nbt({'Invisible': True, 'Small': True, 'NoGravity': True})
+
+    def __init__(self,
+                 start_x: Coord, start_y: Coord, start_z: Coord,
+                 mob_facing: str,
+                 delta: float, kid_delta: float,
+                 tags: Tuple[str, ...],
+                 nbt=None, only_kids=False, only_adults=False):
+        self.start_x = start_x
+        self.start_y = start_y
+        self.start_z = start_z
+        self.nbt = nbt if nbt else NBT()
+        self.tags = tags
+        self.kids = not only_adults
+        self.adults = not only_kids
+        try:
+            self.delta_x, self.delta_z, self.rotation = _facing_info(mob_facing, delta)
+            self.kid_x, self.kid_z, _ = _facing_info(mob_facing, kid_delta, perpendicular=True)
+        except KeyError:
+            raise ValueError('%s: Unknown dir' % mob_facing)
+        self._cur = [start_x, start_y, start_z]
+
+    def summon(self, mobs: Iterable[Entity], *, nbt: NBT = None, tags=None, auto_tag=True, on_stand=False) -> Tuple[
+        Command, ...]:
+        for mob in mobs:
+            tmpl = mob.clone()
+            if nbt:
+                tmpl.merge_nbt(nbt)
+            tmpl.merge_nbt(
+                {'NoAI': True, 'PersistenceRequired': True, 'Silent': True, 'Rotation': [self.rotation, 0.0]})
+            tmpl.set_name_visible(True)
+            if tags:
+                tmpl.tag(*tags)
+            if auto_tag:
+                tmpl.tag(tmpl.kind)
+            if on_stand:
+                # summon armor_stand ~${at_x} ~${2 + y_add - 1} ~${at_z}
+                # {Invisible:true,Small:true,NoGravity:true,Tags:[${",".join(tags)}],
+                #  PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[${at_rotation}f,0f],
+                #  Passengers:[
+                #      {id:"${thing.full_id()}",Tags:[${",".join(tags)},passenger]${nbt},PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[${at_rotation}f,0f]}
+                #  ]}
+                stand = copy.copy(MobPlacer._armor_stand_tmpl)
+                tmpl.merge_nbt({'id': tmpl.full_id()})
+                stand.nbt().get_list('Passengers').append(tmpl.nbt())
+                tmpl = stand
+
+            if self.adults:
+                adult = tmpl.clone()
+                adult.tag('adult')
+                yield adult.summon(*self._cur)
+            if self.kids:
+                kid = tmpl.clone()
+                kid.tag('kid')
+                kid.merge_nbt({'IsBaby': True, 'Age': -2147483648})
+                pos = self._cur
+                if self.adults:
+                    pos = pos[0] + self.kid_x, pos[1], pos[2] + self.kid_z
+                yield kid.summon(*pos)
+            self._cur[0] += self.delta_x
+            self._cur[2] += self.delta_z
 
 
 def main():
@@ -814,7 +900,7 @@ def room_signs(func_dir, room, sign_tmpl, subjects, walls, start, button=False):
             tag, -depth, top, -width),
     ]
     if button:
-        commands.append("execute at @e[tag=%s] run setblock ^%d ^%d ^%d stone_button[facing=south]" % (
+        commands.append("execute at @e[tag=%s] run setblock ^%d ^%d ^%d stone_button[mob_facing=south]" % (
             tag, -depth, top, -width / 2))
     x, y = wall.start_pos()
     for i, subj in enumerate(subjects):
