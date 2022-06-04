@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import collections
 import json
 from copy import deepcopy
@@ -680,7 +682,7 @@ class MobPlacer:
                  mob_facing: str,
                  delta: float, kid_delta: float, *,
                  tags: Tuple[str, ...] = None,
-                 nbt=None, only_kids=False, only_adults=False):
+                 nbt=None, only_kids=False, only_adults=False, auto_tag=True):
         self.start_x = start_x
         self.start_y = start_y
         self.start_z = start_z
@@ -688,6 +690,7 @@ class MobPlacer:
         self.tags = _to_iterable(tags)
         self.kids = not only_adults
         self.adults = not only_kids
+        self.auto_tag = auto_tag
         try:
             self.delta_x, self.delta_z, self.rotation = _facing_info(mob_facing, delta)
             self.kid_x, self.kid_z, _ = _facing_info(mob_facing, kid_delta, perpendicular=True)
@@ -695,28 +698,24 @@ class MobPlacer:
             raise ValueError('%s: Unknown dir' % mob_facing)
         self._cur = [start_x, start_y, start_z]
 
-    def summon(self, mobs: Iterable[Entity], *, nbt=None, tags=None, auto_tag=True, on_stand=False) -> Tuple[
+    def summon(self, mobs: Iterable[Entity], *, on_stand: bool | Callable[Entity] = False) -> Tuple[
         Command, ...]:
         for mob in mobs:
             tmpl = mob.clone()
-            if nbt:
-                tmpl.merge_nbt(nbt)
             if self.nbt:
                 tmpl.merge_nbt(self.nbt)
             tmpl.merge_nbt(
                 {'NoAI': True, 'PersistenceRequired': True, 'Silent': True, 'Rotation': [self.rotation, 0.0]})
             tmpl.set_name_visible(True)
-            if tags:
-                tmpl.tag(*_to_iterable(tags))
             if self.tags:
                 tmpl.tag(*self.tags)
-            if auto_tag:
+            if self.auto_tag:
                 tmpl.tag(tmpl.kind)
 
             if self.adults:
                 adult = tmpl.clone()
                 adult.tag('adult')
-                yield self._do_summons(adult, on_stand, self._cur)
+                yield self._do_summoning(adult, on_stand, self._cur)
             if self.kids:
                 kid = tmpl.clone()
                 kid.tag('kid')
@@ -724,11 +723,12 @@ class MobPlacer:
                 pos = self._cur
                 if self.adults:
                     pos = pos[0] + self.kid_x, pos[1], pos[2] + self.kid_z
-                yield self._do_summons(kid, on_stand, pos)
+                yield self._do_summoning(kid, on_stand, pos)
+
             self._cur[0] += self.delta_x
             self._cur[2] += self.delta_z
 
-    def _do_summons(self, tmpl, on_stand, pos):
+    def _do_summoning(self, tmpl, on_stand, pos):
         if on_stand:
             # summon armor_stand ~${at_x} ~${2 + y_add - 1} ~${at_z}
             # {Invisible:true,Small:true,NoGravity:true,Tags:[${",".join(tags)}],
