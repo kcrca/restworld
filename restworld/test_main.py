@@ -70,3 +70,11 @@ def test_mob_placer():
     assert cmds[1].count('kid') == 2
     assert cmds[2].count('adult') == 2
     assert cmds[3].count('kid') == 2
+
+
+def test_crops():
+    cmds = crops(15, list(range(0, 4)) + [3, 3], 'beets', 0, 3, 0)
+    assert cmds == ['fill ~0 ~3 ~0 ~2 ~3 ~0 beets[age=3]',
+                    'fill ~0 ~3 ~-1 ~2 ~3 ~-1 beets[age=3]',
+                    'fill ~0 ~3 ~-2 ~2 ~3 ~-2 beets[age=3]',
+                    'data merge block ~3 ~2 ~-1 {Text2:"\\"Stage: 3\\""}']

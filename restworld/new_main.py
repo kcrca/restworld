@@ -668,13 +668,18 @@ def _to_iterable(tags):
     return (tags,)
 
 
+def crops(loop_index: int, stages, crop, x, y, z, name='age'):
+    results = []
+    for i in range(0, 3):
+        stage = stages[(loop_index + i) % len(stages)]
+        results.append(Command().fill(r(x), r(y), r(z) - i, r(x) + 2, r(y), r(z) - i, Block(crop, {name: stage})))
+    stage = stages[(loop_index + 1) % len(stages)]
+    text_nbt = Sign.text_nbt((None, 'Stage: %d' % stages[stage]))
+    results.append(Command().data().merge(BlockData(r(x) + 3, r(2), r(z) - 1), text_nbt))
+    return lines(results)
+
+
 class MobPlacer:
-    # summon armor_stand ~${at_x} ~${2 + y_add - 1} ~${at_z}
-    # {Invisible:true,Small:true,NoGravity:true,Tags:[${",".join(tags)}],
-    #  PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[${at_rotation}f,0f],
-    #  Passengers:[
-    #      {id:"${thing.full_id()}",Tags:[${",".join(tags)},passenger]${nbt},PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[${at_rotation}f,0f]}
-    #  ]}
     _armor_stand_tmpl = Entity('armor_stand').merge_nbt({'Invisible': True, 'Small': True, 'NoGravity': True})
 
     def __init__(self,
