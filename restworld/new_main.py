@@ -514,14 +514,14 @@ def render_tmpl(tmpl, var_name, **kwargs):
 
 
 def kill_em(target):
-    return Command().tp().to(entities().tag('death').limit(1), target)
+    return mc.tp().to(entities().tag('death').limit(1), target)
 
 
 rooms = ('funcs')
 
 
 def ensure(x, y, z, block, nbt=None):
-    Command().execute().unless().block(x, y, z, block).run().setblock(x, y, z, block).nbt(
+    mc.execute().unless().block(x, y, z, block).run().setblock(x, y, z, block).nbt(
         NBT.as_nbt(nbt)
     )
 
@@ -548,12 +548,12 @@ class Clock:
     def tick_cmds(self, other_funcs=()):
         # execute at @e[tag=cage_home] run function restworld:enders/cage_main
         for loop in self._loops:
-            yield Command().execute().at(entities().tag(self._tag(loop))).run().function(loop.name)
+            yield mc.execute().at(entities().tag(self._tag(loop))).run().function(loop.name)
         yield '\n'
         for loop in self._loops:
             loop_finish = loop.name[-len(self.name):] + 'finish'
             if loop_finish in other_funcs:
-                yield Command().execute().at(entities().tag(self._tag(loop))).run(). \
+                yield mc.execute().at(entities().tag(self._tag(loop))).run(). \
                     schedule().function(loop_finish, 1).replace()
 
     def _tag(self, loop):
@@ -582,8 +582,8 @@ class Room:
         assert marker_tag not in self._homes
         self._homes.add(marker_tag)
         return Function(self._func(marker_tag), (
-            Command().kill(entities().tag(marker_tag)),
-            Command().execute().positioned(r(-0.5), r(0), r(0.5)).run().
+            mc.kill(entities().tag(marker_tag)),
+            mc.execute().positioned(r(-0.5), r(0), r(0.5)).run().
                 kill(entities().type('armor_stand').delta(1, 2, 1)),
             marker.summon(r(0), r(0.5), r(0)),
         ))
@@ -615,7 +615,7 @@ class Room:
             yield Function(self._func('_' + clock.name), clock.tick_cmds())
             # execute if score main clocks matches 0 run function restworld:enders/_main
             tick_func.add(
-                Command().execute().if_().score(clock.score).matches(0).run().function(self._func('_%s' % clock.name)))
+                mc.execute().if_().score(clock.score).matches(0).run().function(self._func('_%s' % clock.name)))
         # The '1' is for the generated warning
         if len(list(tick_func.commands())) > 1:
             yield tick_func
@@ -625,22 +625,22 @@ class Room:
             yield Function(self._func(loop.name + '_cur'), loop.cur())
             # execute at @e[tag=enders_room_home] run function restworld:enders/enders_room_cur
             yield Function(self._func('_cur'), (
-                Command().execute().at(entities().tag(x)).run().function(self._func(loop_name)) for x in self._homes),
-                           Command().function(self._func('_finish')))
+                mc.execute().at(entities().tag(x)).run().function(self._func(loop_name)) for x in self._homes),
+                           mc.function(self._func('_finish')))
             # execute at @e[tag=enders_room_home] run scoreboard players remove enders_room funcs 1
             yield Function(self._func('_incr'), (
-                Command().execute().at(entities().tag(x)).run(loop.score.add(1)) for x in self._homes),
-                           Command().function(self._func('_cur')))
+                mc.execute().at(entities().tag(x)).run(loop.score.add(1)) for x in self._homes),
+                           mc.function(self._func('_cur')))
             yield Function(self._func('_decr'), (
-                Command().execute().at(entities().tag(x)).run(loop.score.remove(1)) for x in self._homes),
-                           Command().function(self._func('_cur')))
+                mc.execute().at(entities().tag(x)).run(loop.score.remove(1)) for x in self._homes),
+                           mc.function(self._func('_cur')))
 
         for f in ('init', 'enter', 'exit', 'finish'):
             f_name = '_' + f
             enter_funcs = filter(lambda x: x.endswith(f_name), self._funcs.keys())
             if enter_funcs:
                 yield Function(self._func(f_name),
-                               (Command().execute().at(entities().tag(x)).run().function(self._funcs[x]) for x in
+                               (mc.execute().at(entities().tag(x)).run().function(self._funcs[x]) for x in
                                 enter_funcs))
 
 
@@ -672,10 +672,10 @@ def crops(loop_index: int, stages, crop, x, y, z, name='age'):
     results = []
     for i in range(0, 3):
         stage = stages[(loop_index + i) % len(stages)]
-        results.append(Command().fill(r(x), r(y), r(z) - i, r(x) + 2, r(y), r(z) - i, Block(crop, {name: stage})))
+        results.append(mc.fill(r(x), r(y), r(z) - i, r(x) + 2, r(y), r(z) - i, Block(crop, {name: stage})))
     stage = stages[(loop_index + 1) % len(stages)]
     text_nbt = Sign.text_nbt((None, 'Stage: %d' % stages[stage]))
-    results.append(Command().data().merge(BlockData(r(x) + 3, r(2), r(z) - 1), text_nbt))
+    results.append(mc.data().merge(BlockData(r(x) + 3, r(2), r(z) - 1), text_nbt))
     return lines(results)
 
 
