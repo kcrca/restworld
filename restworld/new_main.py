@@ -658,6 +658,14 @@ def _facing_info(facing, delta, perpendicular=False):
     return delta * dx_mult, delta * dz_mult, rot
 
 
+def _to_iterable(tags):
+    if tags is None:
+        return tags
+    if isinstance(tags, Iterable) and not isinstance(tags, str):
+        return tags
+    return (tags,)
+
+
 class MobPlacer:
     # summon armor_stand ~${at_x} ~${2 + y_add - 1} ~${at_z}
     # {Invisible:true,Small:true,NoGravity:true,Tags:[${",".join(tags)}],
@@ -670,14 +678,14 @@ class MobPlacer:
     def __init__(self,
                  start_x: Coord, start_y: Coord, start_z: Coord,
                  mob_facing: str,
-                 delta: float, kid_delta: float,
-                 tags: Tuple[str, ...],
+                 delta: float, kid_delta: float, *,
+                 tags: Tuple[str, ...] = None,
                  nbt=None, only_kids=False, only_adults=False):
         self.start_x = start_x
         self.start_y = start_y
         self.start_z = start_z
         self.nbt = nbt if nbt else NBT()
-        self.tags = tags
+        self.tags = _to_iterable(tags)
         self.kids = not only_adults
         self.adults = not only_kids
         try:
@@ -687,35 +695,28 @@ class MobPlacer:
             raise ValueError('%s: Unknown dir' % mob_facing)
         self._cur = [start_x, start_y, start_z]
 
-    def summon(self, mobs: Iterable[Entity], *, nbt: NBT = None, tags=None, auto_tag=True, on_stand=False) -> Tuple[
+    def summon(self, mobs: Iterable[Entity], *, nbt=None, tags=None, auto_tag=True, on_stand=False) -> Tuple[
         Command, ...]:
         for mob in mobs:
             tmpl = mob.clone()
             if nbt:
                 tmpl.merge_nbt(nbt)
+            if self.nbt:
+                tmpl.merge_nbt(self.nbt)
             tmpl.merge_nbt(
                 {'NoAI': True, 'PersistenceRequired': True, 'Silent': True, 'Rotation': [self.rotation, 0.0]})
             tmpl.set_name_visible(True)
             if tags:
-                tmpl.tag(*tags)
+                tmpl.tag(*_to_iterable(tags))
+            if self.tags:
+                tmpl.tag(*self.tags)
             if auto_tag:
                 tmpl.tag(tmpl.kind)
-            if on_stand:
-                # summon armor_stand ~${at_x} ~${2 + y_add - 1} ~${at_z}
-                # {Invisible:true,Small:true,NoGravity:true,Tags:[${",".join(tags)}],
-                #  PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[${at_rotation}f,0f],
-                #  Passengers:[
-                #      {id:"${thing.full_id()}",Tags:[${",".join(tags)},passenger]${nbt},PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[${at_rotation}f,0f]}
-                #  ]}
-                stand = copy.copy(MobPlacer._armor_stand_tmpl)
-                tmpl.merge_nbt({'id': tmpl.full_id()})
-                stand.nbt().get_list('Passengers').append(tmpl.nbt())
-                tmpl = stand
 
             if self.adults:
                 adult = tmpl.clone()
                 adult.tag('adult')
-                yield adult.summon(*self._cur)
+                yield self._do_summons(adult, on_stand, self._cur)
             if self.kids:
                 kid = tmpl.clone()
                 kid.tag('kid')
@@ -723,9 +724,24 @@ class MobPlacer:
                 pos = self._cur
                 if self.adults:
                     pos = pos[0] + self.kid_x, pos[1], pos[2] + self.kid_z
-                yield kid.summon(*pos)
+                yield self._do_summons(kid, on_stand, pos)
             self._cur[0] += self.delta_x
             self._cur[2] += self.delta_z
+
+    def _do_summons(self, tmpl, on_stand, pos):
+        if on_stand:
+            # summon armor_stand ~${at_x} ~${2 + y_add - 1} ~${at_z}
+            # {Invisible:true,Small:true,NoGravity:true,Tags:[${",".join(tags)}],
+            #  PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[${at_rotation}f,0f],
+            #  Passengers:[
+            #      {id:"${thing.full_id()}",Tags:[${",".join(tags)},passenger]${nbt},PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[${at_rotation}f,0f]}
+            #  ]}
+            stand = MobPlacer._armor_stand_tmpl.clone()
+            stand.tag(*tmpl.nbt().get('Tags'))
+            tmpl.merge_nbt({'id': tmpl.full_id()})
+            stand.nbt().get_list('Passengers').append(tmpl.nbt())
+            tmpl = stand
+        return tmpl.summon(*pos)
 
 
 def main():
