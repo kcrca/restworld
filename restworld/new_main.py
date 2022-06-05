@@ -1,10 +1,8 @@
 from __future__ import annotations
 
 import collections
-import json
 from copy import deepcopy
 from functools import total_ordering
-from html.parser import HTMLParser
 
 from pyker.function import *
 
@@ -519,10 +517,10 @@ def kill_em(target):
 
 def named_frame_item(thing: Thing, name=None, damage=None):
     # <%def name="named_frame_item(thing, name=None, damage=None)">Item:{id:${thing.id},Count:1,tag:{display:{Name:'{"text":"${name if name else thing.name}"}'}${damage if damage else ""}}},Fixed:True</%def>
-    tag_nbt = NBT({'display': {'Name': {'"text"': '"' + str(name if name else thing.name) + '"'}, }})
+    tag_nbt = Nbt({'display': {'Name': {'"text"': '"' + str(name if name else thing.name) + '"'}, }})
     if damage:
         tag_nbt.update(damage)
-    return NBT({'Item': {'id': thing.id, 'Count': 1, 'tag': tag_nbt}})
+    return Nbt({'Item': {'id': thing.id, 'Count': 1, 'tag': tag_nbt}})
 
 
 rooms = ('funcs')
@@ -530,7 +528,7 @@ rooms = ('funcs')
 
 def ensure(x, y, z, block, nbt=None):
     mc.execute().unless().block(x, y, z, block).run().setblock(x, y, z, block).nbt(
-        NBT.as_nbt(nbt)
+        Nbt.as_nbt(nbt)
     )
 
 
@@ -558,7 +556,7 @@ def crops(loop_index: int, stages, crop, x, y, z, name='age'):
         stage = stages[(loop_index + i) % len(stages)]
         results.append(mc.fill(r(x), r(y), r(z) - i, r(x) + 2, r(y), r(z) - i, Block(crop, {name: stage})))
     stage = stages[(loop_index + 1) % len(stages)]
-    text_nbt = Sign.text_nbt((None, 'Stage: %d' % stages[stage]))
+    text_nbt = Sign.lines_nbt((None, 'Stage: %d' % stages[stage]))
     results.append(mc.data().merge(BlockData(r(x) + 3, r(2), r(z) - 1), text_nbt))
     return lines(results)
 
@@ -697,14 +695,14 @@ class MobPlacer:
         self.start_x = start_x
         self.start_y = start_y
         self.start_z = start_z
-        self.nbt = nbt if nbt else NBT()
+        self.nbt = nbt if nbt else Nbt()
         self.tags = _to_iterable(tags)
         self.kids = not only_adults
         self.adults = not only_kids
         self.auto_tag = auto_tag
         try:
-            self.delta_x, self.delta_z, self.rotation = facing_info(mob_facing, delta)
-            self.kid_x, self.kid_z, _ = facing_info(mob_facing, kid_delta, ROTATION_90)
+            self.delta_x, self.delta_z, self.rotation, _ = facing_info(mob_facing, delta)
+            self.kid_x, self.kid_z, _ , _= facing_info(mob_facing, kid_delta, ROTATION_90)
         except KeyError:
             raise ValueError('%s: Unknown dir' % mob_facing)
         self._cur = [start_x, start_y, start_z]
