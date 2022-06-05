@@ -522,7 +522,7 @@ def named_frame_item(thing: Thing, name=None, damage=None):
     tag_nbt = NBT({'display': {'Name': {'"text"': '"' + str(name if name else thing.name) + '"'}, }})
     if damage:
         tag_nbt.update(damage)
-    return NBT({'Item': {'id': thing.id, 'Count': 1, 'tag': tag}})
+    return NBT({'Item': {'id': thing.id, 'Count': 1, 'tag': tag_nbt}})
 
 
 rooms = ('funcs')
@@ -542,22 +542,6 @@ def extract_arg(name, default_value, kwargs, keep=False):
     else:
         value = default_value
     return value, kwargs
-
-
-_facing_dir_info = {'north': (0, -1, 0), 'east': (1, 0, 90), 'west': (-1, 0, 270), 'south': (0, 1, 180)}
-_perpendicular_map = {'north': 'east', 'east': 'south', 'south': 'west', 'west': 'north'}
-_keys = tuple(_facing_dir_info.keys())
-for key in _keys:
-    _facing_dir_info[key[0]] = _facing_dir_info[key]
-    _perpendicular_map[key[0]] = _perpendicular_map[key]
-
-
-def _facing_info(facing, delta, perpendicular=False):
-    facing = facing.lower()
-    if perpendicular:
-        facing = _perpendicular_map[facing]
-    dx_mult, dz_mult, rot = _facing_dir_info[facing]
-    return delta * dx_mult, delta * dz_mult, rot
 
 
 def _to_iterable(tags):
@@ -719,8 +703,8 @@ class MobPlacer:
         self.adults = not only_kids
         self.auto_tag = auto_tag
         try:
-            self.delta_x, self.delta_z, self.rotation = _facing_info(mob_facing, delta)
-            self.kid_x, self.kid_z, _ = _facing_info(mob_facing, kid_delta, perpendicular=True)
+            self.delta_x, self.delta_z, self.rotation = facing_info(mob_facing, delta)
+            self.kid_x, self.kid_z, _ = facing_info(mob_facing, kid_delta, ROTATION_90)
         except KeyError:
             raise ValueError('%s: Unknown dir' % mob_facing)
         self._cur = [start_x, start_y, start_z]
@@ -757,12 +741,6 @@ class MobPlacer:
 
     def _do_summoning(self, tmpl, on_stand, pos):
         if on_stand:
-            # summon armor_stand ~${at_x} ~${2 + y_add - 1} ~${at_z}
-            # {Invisible:true,Small:true,NoGravity:true,Tags:[${",".join(tags)}],
-            #  PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[${at_rotation}f,0f],
-            #  Passengers:[
-            #      {id:"${thing.full_id()}",Tags:[${",".join(tags)},passenger]${nbt},PersistenceRequired:True,NoAI:True,Silent:True,Rotation:[${at_rotation}f,0f]}
-            #  ]}
             stand = MobPlacer._armor_stand_tmpl.clone()
             stand.tag(*tmpl.nbt().get('Tags'))
             tmpl.merge_nbt({'id': tmpl.full_id()})
