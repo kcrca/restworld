@@ -46,7 +46,7 @@ def test_mob_placer():
     for c in cmds:
         assert c.count('~') == 3, c
     assert 'gtag' in cmds[0]
-    assert 'GProp:true' in cmds[0]
+    assert 'GProp: true' in cmds[0]
 
     mp = MobPlacer(d(1.1), d(12), d(2.2), 'North', 3.3, 4.4, auto_tag=False)
     cmds = lines(mp.summon(((Entity('m_1')), (Entity('m_2')))))
@@ -76,4 +76,11 @@ def test_crops():
     assert cmds == ['fill ~0 ~3 ~0 ~2 ~3 ~0 beets[age=3]',
                     'fill ~0 ~3 ~-1 ~2 ~3 ~-1 beets[age=3]',
                     'fill ~0 ~3 ~-2 ~2 ~3 ~-2 beets[age=3]',
-                    'data merge block ~3 ~2 ~-1 {Text2:"\\"Stage: 3\\""}']
+                    'data merge block ~3 ~2 ~-1 {Text2: "\\"Stage: 3\\""}']
+
+
+def test_say_score():
+    say = say_score(Score('a', 'b'), ('c', 'd'))
+    assert say == ('tellraw @a [{"text": "\\"scores:\\""}, {"text": "\\"a=\\""}, {"score": '
+                   '{"name": "\\"a\\"", "objective": "\\"b\\""}}, {"text": "\\"c=\\""}, '
+                   '{"score": {"name": "\\"c\\"", "objective": "\\"d\\""}}]')

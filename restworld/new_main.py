@@ -702,7 +702,7 @@ class MobPlacer:
         self.auto_tag = auto_tag
         try:
             self.delta_x, self.delta_z, self.rotation, _ = facing_info(mob_facing, delta)
-            self.kid_x, self.kid_z, _ , _= facing_info(mob_facing, kid_delta, ROTATION_90)
+            self.kid_x, self.kid_z, _, _ = facing_info(mob_facing, kid_delta, ROTATION_90)
         except KeyError:
             raise ValueError('%s: Unknown dir' % mob_facing)
         self._cur = [start_x, start_y, start_z]
@@ -754,6 +754,16 @@ class Fencelike:
             mc.fill(*r(8, 3, 6, 0, 2, 0), id, REPLACE).filter('#restworld:fencelike'),
             mc.data().merge(BlockData(*r(5, 2, 0)), Sign.text_nbt(('', text2, text3, '')))
         )
+
+
+def say_score(*scores):
+    say = []
+    say.append(JsonText.text("scores:"))
+    for s in scores:
+        s = good_score(s)
+        say.append(JsonText.text(str(s.target) + '='))
+        say.append(JsonText.score(s))
+    return mc.tellraw(all(), *say)
 
 
 def main():
