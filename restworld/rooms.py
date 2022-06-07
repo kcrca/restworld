@@ -601,15 +601,12 @@ def _to_list(text):
     return text
 
 
-class Room:
-    def __init__(self, name: str):
-        self.name = name
-        self.solo_name = name.split(':')[-1]
-        self._funcs = {}
-        self._loops = {}
+class Room(FunctionSet):
+    def __init__(self, name: str, dp: DataPack):
+        super().__init__(name, dp.function_set)
+        self._dp = dp
         self._clocks = {}
-        self._homes = set()
-        self._home_marker = Entity('armor_stand', {
+        self._home_stand = Entity('armor_stand', {
             'tags': ['homer', '%s_homer' % self.name], 'NoGravity': True, 'Small': True})
 
     def room_sign(self, facing, text):
@@ -619,7 +616,7 @@ class Room:
         sign = WallSign(text)
         x, z, rot, _ = facing_info(facing)
         score = Score('ancient', 'goto')
-        self.add(Function(self._func('_room_sign')).add(
+        self.add(Function('_room_sign').add(
             sign.place(*r(x, 6, z), facing),
             score.init(),
             score.set(rot),
@@ -634,17 +631,12 @@ class Room:
         room_name = room_name.replace(',', '').replace(':', '')
         room_names.add(room_name)
 
-    def _func(self, name):
-        return self.name + '/' + name
-
     def _home_func(self, name):
         marker_tag = '%s_home' % name
-        marker = deepcopy(self._home_marker)
+        marker = deepcopy(self._home_stand)
         tags = marker.nbt().get_list('Tags')
         tags.append(marker_tag)
-        assert marker_tag not in self._homes
-        self._homes.add(marker_tag)
-        return Function(self._func(marker_tag)).add(
+        return Function(marker_tag).add(
             mc.kill(entities().tag(marker_tag)),
             mc.execute().positioned(r(-0.5), r(0), r(0.5)).run().
                 kill(entities().type('armor_stand').delta(1, 2, 1)),
@@ -652,25 +644,25 @@ class Room:
         )
 
     def loop(self, name: str, clock: Clock = None, needs_home=True) -> Loop:
-        base = name
-        loop = Loop(base, self.solo_name)
+        loop = Loop(name, self.name)
         if clock:
             self._clocks.setdefault(clock, []).append(loop)
             name += '_' + clock.name
             clock.add(loop)
 
-        self._loops[name] = loop
+        self.add(loop)
 
         if needs_home:
             self.add(self._home_func(loop.name))
         return loop
 
-    def add(self, *funcs: Function):
-        for f in funcs:
-            self._funcs[f.name] = f
+    def save(self, dir: Path):
+        rf = self.room_funcs()
+        self.add(*rf)
+        super().save(dir)
 
-    def functions(self):
-        return list(self._funcs.values()) + list(self._room_funcs())
+    def room_funcs(self):
+        return list(self._functions) + list(self._room_funcs())
 
     def _room_funcs(self):
         yield from self._yield_clock_funcs()
@@ -678,50 +670,56 @@ class Room:
         yield from self._yield_other_funcs()
 
     def _yield_clock_funcs(self):
-        tick_func = Function(self._func('_tick'))
+        tick_func = Function('_tick')
         for clock, loops in self._clocks.items():
-            yield Function(self._func('_' + clock.name))
+            name1 = '_' + clock.name
+            yield Function(name1)
             # execute if score main clocks matches 0 run function restworld:enders/_main
+            name = '_%s' % clock.name
             tick_func.add(
-                mc.execute().if_().score(clock.score).matches(0).run().function(self._func('_%s' % clock.name)))
+                mc.execute().if_().score(clock.score).matches(0).run().function(name))
         # The '1' is for the generated warning
         if len(list(tick_func.commands())) > 1:
             yield tick_func
         finish_funcs = {}
         clock_re = str('(' + '|'.join(x.name for x in self._clocks.keys()) + ')')
         finish_funcs_re = re.compile('(.*)_finish_%s$' % clock_re)
-        for f in self._funcs.keys():
-            m = finish_funcs_re.match(f)
+        for f in self._functions:
+            m = finish_funcs_re.match(f.name)
             if m:
                 finish_funcs.setdefault('_finish_' + m.group(2), []).append(f)
-        yield Function(self._func('_finish')).add((mc.function(x) for x in finish_funcs.keys()))
+        yield Function('_finish').add((mc.function(x) for x in finish_funcs.keys()))
         for cf in finish_funcs.keys():
-            yield Function(self._func(cf)).add((mc.function(x) for x in finish_funcs))
+            yield Function(cf).add((mc.function(x) for x in finish_funcs))
+
+    def _homes(self):
+        return filter(lambda x: x.name.endswith('_home'), self._functions)
 
     def _yield_loop_funcs(self):
-        for loop_name in self._loops.keys():
-            loop = self._loops[loop_name]
-            yield Function(self._func(loop.name))
-            yield Function(self._func(loop.name + '_cur'))
-            yield Function(self._func('_cur')).add(
-                (mc.execute().at(entities().tag(x)).run().function(self._func(loop_name)) for x in self._homes),
-                mc.function(self._func('_finish')))
-            yield Function(self._func('_incr')).add(
-                (mc.execute().at(entities().tag(x)).run(loop.score.add(1)) for x in self._homes),
-                mc.function(self._func('_cur')))
-            yield Function(self._func('_decr')).add(
-                (mc.execute().at(entities().tag(x)).run(loop.score.remove(1)) for x in self._homes),
-                mc.function(self._func('_cur')))
+        loops = filter(lambda x: isinstance(x, Loop), self._functions)
+        homes = self._homes()
+        for loop in loops:
+            name = loop.name + '_cur'
+            yield Function(name)
+            yield Function('_cur').add(
+                (mc.execute().at(entities().tag(x)).run().function(loop.name) for x in homes),
+                mc.function('_finish'))
+            yield Function('_incr').add(
+                (mc.execute().at(entities().tag(x)).run(loop.score.add(1)) for x in homes),
+                mc.function('_cur'))
+            yield Function('_decr').add(
+                (mc.execute().at(entities().tag(x)).run(loop.score.remove(1)) for x in homes),
+                mc.function('_cur'))
 
     def _yield_other_funcs(self):
         added_commands = {}
         added_commands['_enter'] = (mc.weather(CLEAR),)
         for f in ('init', 'enter', 'exit'):
             f_name = '_' + f
-            relevant_funcs = filter(lambda x: x.endswith(f_name), self._funcs.keys())
-            func = Function(self._func(f_name))
-            if relevant_funcs:
-                func.add((mc.execute().at(entities().tag(x)).run().function(self._funcs[x]) for x in relevant_funcs))
+            relevant = filter(lambda x: x.name.endswith(f_name), self._functions)
+            func = Function(f_name)
+            names = (x.name for x in relevant)
+            func.add((mc.execute().at(entities().tag(x + '_home')).run().function(x) for x in names))
             func.add(added_commands.setdefault(f, tuple()))
             cmds = func.commands()
             if cmds:
@@ -850,10 +848,9 @@ def room_sign(facing, text):
 def main():
     rooms = {}
     restworld = DataPack('restworld', '/tmp/r')
-    room = Room('restworld:ancient')
+    room = Room('ancient', restworld)
     rooms['warden'] = room
-    rm = rooms['warden']
-    rm.add(
+    room.add(
         Function('warden_mob_init').add((MobPlacer(*r(0, 2, 0), WEST, adults=True).summon('warden'),)),
         Function('warden_room_init').add(room_sign(WEST, (None, 'Warden'))),
     )

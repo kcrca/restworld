@@ -4,42 +4,38 @@ from restworld.rooms import *
 
 
 def test_unclocked_room():
-    room = Room('dp:foo')
+    room = Room('foo', DataPack('dp', 'none'))
     room.loop('bar').loop(lambda var, i, item: mc.say('var %s, i %s, item %s' % (var, i, item)), range(0, 5))
-    func_names = sorted(list(x.name for x in (room.functions())))
-    assert func_names == ['dp:foo/_cur', 'dp:foo/_decr', 'dp:foo/_enter', 'dp:foo/_exit', 'dp:foo/_finish',
-                          'dp:foo/_incr', 'dp:foo/_init', 'dp:foo/bar', 'dp:foo/bar_cur', 'dp:foo/bar_home']
+    func_names = sorted(list(x.name for x in (room.room_funcs())))
+    assert func_names == ['_cur', '_decr', '_enter', '_exit', '_finish', '_incr', '_init', 'bar', 'bar_cur', 'bar_home']
 
-    room.add(Function('dp:foo/bar_finish_main'))
-    room.add(Function('dp:foo/xyzzy'))
-    func_names = sorted(list(x.name for x in (room.functions())))
-    assert func_names == ['dp:foo/_cur', 'dp:foo/_decr', 'dp:foo/_enter', 'dp:foo/_exit', 'dp:foo/_finish',
-                          'dp:foo/_incr', 'dp:foo/_init', 'dp:foo/bar', 'dp:foo/bar_cur', 'dp:foo/bar_finish_main',
-                          'dp:foo/bar_home', 'dp:foo/xyzzy']
+    room.add(Function('bar_finish_main'))
+    room.add(Function('xyzzy'))
+    func_names = sorted(list(x.name for x in (room.room_funcs())))
+    assert func_names == ['_cur', '_decr', '_enter', '_exit', '_finish', '_incr', '_init', 'bar', 'bar_cur',
+                          'bar_finish_main', 'bar_home', 'xyzzy']
 
 
 def test_clocked_room():
-    room = Room('dp:foo')
+    room = Room('foo', DataPack('dp', 'none'))
     clock = Clock('main')
     room.loop('bar', clock).loop(lambda var, i, item: mc.say('var %s, i %s, item %s' % (var, i, item)), range(0, 5))
-    func_names = sorted(list(x.name for x in (room.functions())))
-    assert func_names == ['dp:foo/_cur', 'dp:foo/_decr', 'dp:foo/_enter', 'dp:foo/_exit', 'dp:foo/_finish',
-                          'dp:foo/_incr', 'dp:foo/_init', 'dp:foo/_main', 'dp:foo/_tick', 'dp:foo/bar',
-                          'dp:foo/bar_cur', 'dp:foo/bar_home']
+    func_names = sorted(list(x.name for x in (room.room_funcs())))
+    assert func_names == ['_cur', '_decr', '_enter', '_exit', '_finish', '_incr', '_init', '_main', '_tick', 'bar',
+                          'bar_cur', 'bar_home']
 
-    room.add(Function('dp:foo/bar_finish_main'))
-    room.add(Function('dp:foo/xyzzy'))
-    func_names = sorted(list(x.name for x in (room.functions())))
-    assert func_names == ['dp:foo/_cur', 'dp:foo/_decr', 'dp:foo/_enter', 'dp:foo/_exit', 'dp:foo/_finish',
-                          'dp:foo/_finish_main', 'dp:foo/_incr', 'dp:foo/_init', 'dp:foo/_main', 'dp:foo/_tick',
-                          'dp:foo/bar', 'dp:foo/bar_cur', 'dp:foo/bar_finish_main', 'dp:foo/bar_home', 'dp:foo/xyzzy']
+    room.add(Function('bar_finish_main'))
+    room.add(Function('xyzzy'))
+    func_names = sorted(list(x.name for x in (room.room_funcs())))
+    assert func_names == ['_cur', '_decr', '_enter', '_exit', '_finish', '_finish_main', '_incr', '_init', '_main',
+                          '_tick', 'bar', 'bar_cur', 'bar_finish_main', 'bar_home', 'xyzzy']
 
 
 def test_room_sign():
-    room = Room('dp:foo')
+    room = Room('foo', DataPack('dp', 'none'))
     room.room_sign(EAST, (None, 'Zargon'))
-    func_names = sorted(list(x.name for x in (room.functions())))
-    assert func_names == ['dp:foo/_enter', 'dp:foo/_exit', 'dp:foo/_finish', 'dp:foo/_init', 'dp:foo/_room_sign']
+    func_names = sorted(list(x.name for x in (room.room_funcs())))
+    assert func_names == ['_enter', '_exit', '_finish', '_init', '_room_sign']
 
 
 def test_mob_placer():
