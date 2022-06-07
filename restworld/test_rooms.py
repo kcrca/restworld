@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from restworld.new_main import *
+from restworld.rooms import *
 
 
 def test_unclocked_room():
@@ -33,6 +33,13 @@ def test_clocked_room():
     assert func_names == ['dp:foo/_cur', 'dp:foo/_decr', 'dp:foo/_enter', 'dp:foo/_exit', 'dp:foo/_finish',
                           'dp:foo/_finish_main', 'dp:foo/_incr', 'dp:foo/_init', 'dp:foo/_main', 'dp:foo/_tick',
                           'dp:foo/bar', 'dp:foo/bar_cur', 'dp:foo/bar_finish_main', 'dp:foo/bar_home', 'dp:foo/xyzzy']
+
+
+def test_room_sign():
+    room = Room('dp:foo')
+    room.room_sign(EAST, (None, 'Zargon'))
+    func_names = sorted(list(x.name for x in (room.functions())))
+    assert func_names == ['dp:foo/_enter', 'dp:foo/_exit', 'dp:foo/_finish', 'dp:foo/_init', 'dp:foo/_room_sign']
 
 
 def test_mob_placer():

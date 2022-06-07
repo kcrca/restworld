@@ -6,8 +6,6 @@ from functools import total_ordering
 
 from pyker.function import *
 
-mc_version = '1.14'
-
 
 def to_id(name):
     return name.lower().replace(" ", "_")
@@ -73,19 +71,15 @@ class Nicknamed(Thing):
 class Color(Thing):
     next_color_num = 0
 
-    def __init__(self, name, rgb, dye_13):
+    def __init__(self, name, rgb):
         Thing.__init__(self, name)
         self.rgb = rgb
-        self.dyes = {'1.13': dye_13, '1.14': '%s_dye' % self.id, 'default': dye_13}
         self.id = name.replace(' ', '_').lower()
         self.color_num = Color.next_color_num
         Color.next_color_num += 1
 
     def dye_name(self):
-        try:
-            return self.dyes[mc_version]
-        except KeyError:
-            return self.dyes['default']
+        return '%s_dye' % self.id
 
     def in_id(self):
         return self.id
@@ -146,22 +140,22 @@ class ActionSign(Thing):
 
 
 colors = (
-    Color("White", 16383998, "bone_meal"),
-    Color("Orange", 16351261, "orange_dye"),
-    Color("Magenta", 13061821, "magenta_dye"),
-    Color("Light Blue", 3847130, "light_blue_dye"),
-    Color("Yellow", 16701501, "dandelion_yellow"),
-    Color("Lime", 8439583, "lime_dye"),
-    Color("Pink", 15961002, "pink_dye"),
-    Color("Gray", 4673362, "gray_dye"),
-    Color("Light Gray", 10329495, "light_g/ray_dye"),
-    Color("Cyan", 1481884, "cyan_dye"),
-    Color("Purple", 8991416, "purple_dye"),
-    Color("Blue", 3949738, "lapis_lazuli"),
-    Color("Brown", 8606770, "cocoa_beans"),
-    Color("Green", 6192150, "cactus_green"),
-    Color("Red", 11546150, "rose_red"),
-    Color("Black", 1908001, "ink_sac"),
+    Color("White", 0xf9fffe),
+    Color("Orange", 0xf9801d),
+    Color("Magenta", 0xc74ebd),
+    Color("Light Blue", 0x3ab3da),
+    Color("Yellow", 0xfed83d),
+    Color("Lime", 0x80c71f),
+    Color("Pink", 0xf38baa),
+    Color("Gray", 0x474f52),
+    Color("Light Gray", 0x9d9d97),
+    Color("Cyan", 0x169c9c),
+    Color("Purple", 0x8932b8),
+    Color("Blue", 0x3c44aa),
+    Color("Brown", 0x835432),
+    Color("Green", 0x5e7c16),
+    Color("Red", 0xb02e26),
+    Color("Black", 0x1d1d21),
 )
 command_blocks = (
     CommandBlock("Command Block", True),
@@ -599,6 +593,14 @@ class Clock:
         return loop.name.split(':')[-1]
 
 
+def _to_list(text):
+    if not isinstance(text, list):
+        if isinstance(text, str):
+            return [text]
+        return list(text)
+    return text
+
+
 class Room:
     def __init__(self, name: str):
         self.name = name
@@ -609,6 +611,28 @@ class Room:
         self._homes = set()
         self._home_marker = Entity('armor_stand', {
             'tags': ['homer', '%s_homer' % self.name], 'NoGravity': True, 'Small': True})
+
+    def room_sign(self, facing, text):
+        text = _to_list(text)
+        self._record_room(text)
+        text = tuple((JsonText.text(x).bold().italic() if x else x) for x in text)
+        sign = WallSign(text)
+        x, z, rot, _ = facing_info(facing)
+        score = Score('ancient', 'goto')
+        self.add(Function(self._func('_room_sign')).add(
+            sign.place(*r(x, 6, z), facing),
+            score.init(),
+            score.set(rot),
+        ))
+
+    def _record_room(self, text):
+        while len(text) > 0 and text[0] is None:
+            text = text[1:]
+        room_name = text[0]
+        if text[0][-1] == '&':
+            room_name += ' ' + text[1]
+        room_name = room_name.replace(',', '').replace(':', '')
+        room_names.add(room_name)
 
     def _func(self, name):
         return self.name + '/' + name
@@ -656,7 +680,7 @@ class Room:
     def _yield_clock_funcs(self):
         tick_func = Function(self._func('_tick'))
         for clock, loops in self._clocks.items():
-            yield Function(self._func('_' + clock.name), clock.tick_cmds())
+            yield Function(self._func('_' + clock.name))
             # execute if score main clocks matches 0 run function restworld:enders/_main
             tick_func.add(
                 mc.execute().if_().score(clock.score).matches(0).run().function(self._func('_%s' % clock.name)))
@@ -677,8 +701,8 @@ class Room:
     def _yield_loop_funcs(self):
         for loop_name in self._loops.keys():
             loop = self._loops[loop_name]
-            yield Function(self._func(loop.name), loop.commands())
-            yield Function(self._func(loop.name + '_cur'), loop.cur())
+            yield Function(self._func(loop.name))
+            yield Function(self._func(loop.name + '_cur'))
             yield Function(self._func('_cur')).add(
                 (mc.execute().at(entities().tag(x)).run().function(self._func(loop_name)) for x in self._homes),
                 mc.function(self._func('_finish')))
