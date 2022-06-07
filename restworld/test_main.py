@@ -11,10 +11,11 @@ def test_unclocked_room():
                           'dp:foo/_incr', 'dp:foo/_init', 'dp:foo/bar', 'dp:foo/bar_cur', 'dp:foo/bar_home']
 
     room.add(Function('dp:foo/bar_finish_main'))
+    room.add(Function('dp:foo/xyzzy'))
     func_names = sorted(list(x.name for x in (room.functions())))
     assert func_names == ['dp:foo/_cur', 'dp:foo/_decr', 'dp:foo/_enter', 'dp:foo/_exit', 'dp:foo/_finish',
-                          'dp:foo/_finish_main', 'dp:foo/_incr', 'dp:foo/_init', 'dp:foo/bar', 'dp:foo/bar_cur',
-                          'dp:foo/bar_home']
+                          'dp:foo/_incr', 'dp:foo/_init', 'dp:foo/bar', 'dp:foo/bar_cur', 'dp:foo/bar_finish_main',
+                          'dp:foo/bar_home', 'dp:foo/xyzzy']
 
 
 def test_clocked_room():
@@ -27,10 +28,11 @@ def test_clocked_room():
                           'dp:foo/bar_cur', 'dp:foo/bar_home']
 
     room.add(Function('dp:foo/bar_finish_main'))
+    room.add(Function('dp:foo/xyzzy'))
     func_names = sorted(list(x.name for x in (room.functions())))
     assert func_names == ['dp:foo/_cur', 'dp:foo/_decr', 'dp:foo/_enter', 'dp:foo/_exit', 'dp:foo/_finish',
                           'dp:foo/_finish_main', 'dp:foo/_incr', 'dp:foo/_init', 'dp:foo/_main', 'dp:foo/_tick',
-                          'dp:foo/bar', 'dp:foo/bar_cur', 'dp:foo/bar_finish_main', 'dp:foo/bar_home']
+                          'dp:foo/bar', 'dp:foo/bar_cur', 'dp:foo/bar_finish_main', 'dp:foo/bar_home', 'dp:foo/xyzzy']
 
 
 def test_mob_placer():

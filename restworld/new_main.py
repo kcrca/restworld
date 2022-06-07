@@ -649,6 +649,11 @@ class Room:
         return list(self._funcs.values()) + list(self._room_funcs())
 
     def _room_funcs(self):
+        yield from self._yield_clock_funcs()
+        yield from self._yield_loop_funcs()
+        yield from self._yield_other_funcs()
+
+    def _yield_clock_funcs(self):
         tick_func = Function(self._func('_tick'))
         for clock, loops in self._clocks.items():
             yield Function(self._func('_' + clock.name), clock.tick_cmds())
@@ -658,6 +663,18 @@ class Room:
         # The '1' is for the generated warning
         if len(list(tick_func.commands())) > 1:
             yield tick_func
+        finish_funcs = {}
+        clock_re = str('(' + '|'.join(x.name for x in self._clocks.keys()) + ')')
+        finish_funcs_re = re.compile('(.*)_finish_%s$' % clock_re)
+        for f in self._funcs.keys():
+            m = finish_funcs_re.match(f)
+            if m:
+                finish_funcs.setdefault('_finish_' + m.group(2), []).append(f)
+        yield Function(self._func('_finish')).add((mc.function(x) for x in finish_funcs.keys()))
+        for cf in finish_funcs.keys():
+            yield Function(self._func(cf)).add((mc.function(x) for x in finish_funcs))
+
+    def _yield_loop_funcs(self):
         for loop_name in self._loops.keys():
             loop = self._loops[loop_name]
             yield Function(self._func(loop.name), loop.commands())
@@ -672,17 +689,7 @@ class Room:
                 (mc.execute().at(entities().tag(x)).run(loop.score.remove(1)) for x in self._homes),
                 mc.function(self._func('_cur')))
 
-        finish_funcs = {}
-        clock_re = str('(' + '|'.join(x.name for x in self._clocks.keys()) + ')' )
-        finish_funcs_re = re.compile('(.*)_finish_%s$' % clock_re)
-        for f in self._funcs.keys():
-            m = finish_funcs_re.match(f)
-            if m:
-                finish_funcs.setdefault('_finish_' + m.group(2), []).append(f)
-        yield Function(self._func('_finish')).add((mc.function(x) for x in finish_funcs.keys()))
-        for cf in finish_funcs.keys():
-            yield Function(self._func(cf)).add((mc.function(x) for x in finish_funcs))
-
+    def _yield_other_funcs(self):
         added_commands = {}
         added_commands['_enter'] = (mc.weather(CLEAR),)
         for f in ('init', 'enter', 'exit'):
