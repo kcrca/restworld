@@ -620,12 +620,12 @@ class Room:
         tags.append(marker_tag)
         assert marker_tag not in self._homes
         self._homes.add(marker_tag)
-        return Function(self._func(marker_tag), (
+        return Function(self._func(marker_tag)).add(
             mc.kill(entities().tag(marker_tag)),
             mc.execute().positioned(r(-0.5), r(0), r(0.5)).run().
                 kill(entities().type('armor_stand').delta(1, 2, 1)),
             marker.summon(r(0), r(0.5), r(0)),
-        ))
+        )
 
     def loop(self, name: str, clock: Clock = None, needs_home=True) -> Loop:
         base = name
@@ -662,25 +662,39 @@ class Room:
             loop = self._loops[loop_name]
             yield Function(self._func(loop.name), loop.commands())
             yield Function(self._func(loop.name + '_cur'), loop.cur())
-            # execute at @e[tag=enders_room_home] run function restworld:enders/enders_room_cur
-            yield Function(self._func('_cur'), (
-                mc.execute().at(entities().tag(x)).run().function(self._func(loop_name)) for x in self._homes),
-                           mc.function(self._func('_finish')))
-            # execute at @e[tag=enders_room_home] run scoreboard players remove enders_room funcs 1
-            yield Function(self._func('_incr'), (
-                mc.execute().at(entities().tag(x)).run(loop.score.add(1)) for x in self._homes),
-                           mc.function(self._func('_cur')))
-            yield Function(self._func('_decr'), (
-                mc.execute().at(entities().tag(x)).run(loop.score.remove(1)) for x in self._homes),
-                           mc.function(self._func('_cur')))
+            yield Function(self._func('_cur')).add(
+                (mc.execute().at(entities().tag(x)).run().function(self._func(loop_name)) for x in self._homes),
+                mc.function(self._func('_finish')))
+            yield Function(self._func('_incr')).add(
+                (mc.execute().at(entities().tag(x)).run(loop.score.add(1)) for x in self._homes),
+                mc.function(self._func('_cur')))
+            yield Function(self._func('_decr')).add(
+                (mc.execute().at(entities().tag(x)).run(loop.score.remove(1)) for x in self._homes),
+                mc.function(self._func('_cur')))
 
-        for f in ('init', 'enter', 'exit', 'finish'):
+        finish_funcs = {}
+        clock_re = str('(' + '|'.join(x.name for x in self._clocks.keys()) + ')' )
+        finish_funcs_re = re.compile('(.*)_finish_%s$' % clock_re)
+        for f in self._funcs.keys():
+            m = finish_funcs_re.match(f)
+            if m:
+                finish_funcs.setdefault('_finish_' + m.group(2), []).append(f)
+        yield Function(self._func('_finish')).add((mc.function(x) for x in finish_funcs.keys()))
+        for cf in finish_funcs.keys():
+            yield Function(self._func(cf)).add((mc.function(x) for x in finish_funcs))
+
+        added_commands = {}
+        added_commands['_enter'] = (mc.weather(CLEAR),)
+        for f in ('init', 'enter', 'exit'):
             f_name = '_' + f
-            enter_funcs = filter(lambda x: x.endswith(f_name), self._funcs.keys())
-            if enter_funcs:
-                yield Function(self._func(f_name),
-                               (mc.execute().at(entities().tag(x)).run().function(self._funcs[x]) for x in
-                                enter_funcs))
+            relevant_funcs = filter(lambda x: x.endswith(f_name), self._funcs.keys())
+            func = Function(self._func(f_name))
+            if relevant_funcs:
+                func.add((mc.execute().at(entities().tag(x)).run().function(self._funcs[x]) for x in relevant_funcs))
+            func.add(added_commands.setdefault(f, tuple()))
+            cmds = func.commands()
+            if cmds:
+                yield func
 
 
 class MobPlacer:
@@ -689,16 +703,22 @@ class MobPlacer:
     def __init__(self,
                  start_x: Coord, start_y: Coord, start_z: Coord,
                  mob_facing: str,
-                 delta: float, kid_delta: float, *,
+                 delta: float = 2, kid_delta: float = 1.2, *,
                  tags: Tuple[str, ...] = None,
-                 nbt=None, only_kids=False, only_adults=False, auto_tag=True):
+                 nbt=None, kids=None, adults=None, auto_tag=True):
         self.start_x = start_x
         self.start_y = start_y
         self.start_z = start_z
         self.nbt = nbt if nbt else Nbt()
         self.tags = _to_iterable(tags)
-        self.kids = not only_adults
-        self.adults = not only_kids
+        if (kids, adults) == (None, None):
+            kids, adults = True, True
+        elif kids is None:
+            kids = False
+        elif adults is None:
+            adults = False
+        self.kids = kids
+        self.adults = adults
         self.auto_tag = auto_tag
         try:
             self.delta_x, self.delta_z, self.rotation, _ = facing_info(mob_facing, delta)
@@ -707,14 +727,18 @@ class MobPlacer:
             raise ValueError('%s: Unknown dir' % mob_facing)
         self._cur = [start_x, start_y, start_z]
 
-    def summon(self, mobs: Iterable[Entity], *, on_stand: bool | Callable[Entity] = False) -> Tuple[
+    def summon(self, mobs: Iterable[EntityDef] | EntityDef, *, on_stand: bool | Callable[Entity] = False) -> Tuple[
         Command, ...]:
+        if isinstance(mobs, (Entity, str)):
+            mobs = (mobs,)
         for mob in mobs:
+            mob = good_entity(mob)
             tmpl = mob.clone()
             if self.nbt:
                 tmpl.merge_nbt(self.nbt)
+            rotation___ = {'NoAI': True, 'PersistenceRequired': True, 'Silent': True, 'Rotation': [self.rotation, 0.0]}
             tmpl.merge_nbt(
-                {'NoAI': True, 'PersistenceRequired': True, 'Silent': True, 'Rotation': [self.rotation, 0.0]})
+                rotation___)
             tmpl.set_name_visible(True)
             if self.tags:
                 tmpl.tag(*self.tags)
@@ -752,7 +776,7 @@ class Fencelike:
     def update(self, id, text2, text3='') -> Commands:
         return (
             mc.fill(*r(8, 3, 6, 0, 2, 0), id, REPLACE).filter('#restworld:fencelike'),
-            mc.data().merge(BlockData(*r(5, 2, 0)), Sign.text_nbt(('', text2, text3, '')))
+            mc.data().merge(BlockData(*r(5, 2, 0)), Sign.lines_nbt(('', text2, text3, '')))
         )
 
 
@@ -766,8 +790,43 @@ def say_score(*scores):
     return mc.tellraw(all(), *say)
 
 
+room_names = set()
+
+
+def record_room(text):
+    while len(text) > 0 and text[0] is None:
+        text = text[1:]
+    room_name = text[0]
+    if text[0][-1] == '&':
+        room_name += ' ' + text[1]
+    room_name = room_name.replace(',', '').replace(':', '')
+    room_names.add(room_name)
+
+
+def room_sign(facing, text):
+    record_room(text)
+    text = tuple((JsonText.text(x).bold().italic() if x else x) for x in text)
+    sign = WallSign(text)
+    x, z, rot, _ = facing_info(facing)
+    score = Score('ancient', 'goto')
+    return (
+        sign.place(*r(x, 6, z), facing),
+        score.init(),
+        score.set(rot),
+    )
+
+
 def main():
-    pass
+    rooms = {}
+    restworld = DataPack('restworld', '/tmp/r')
+    room = Room('restworld:ancient')
+    rooms['warden'] = room
+    rm = rooms['warden']
+    rm.add(
+        Function('warden_mob_init').add((MobPlacer(*r(0, 2, 0), WEST, adults=True).summon('warden'),)),
+        Function('warden_room_init').add(room_sign(WEST, (None, 'Warden'))),
+    )
+    restworld.save()
 
 
 particles = [
