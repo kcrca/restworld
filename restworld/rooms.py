@@ -570,28 +570,28 @@ class Clock:
     def __init__(self, name: str):
         self.name = name
         self.score = Score(name, 'clocks')
-        self._loops = []
+        self._funcs = []
 
     @classmethod
     def stop_all_clocks(cls) -> Command:
         return mc.setblock(0, 1, 0, 'redstone_block')
 
-    def add(self, loop: Loop):
-        self._loops.append(loop)
+    def add(self, function: Function):
+        self._funcs.append(function)
 
     def tick_cmds(self, other_funcs=()):
         # execute at @e[tag=cage_home] run function restworld:enders/cage_main
-        for loop in self._loops:
-            yield mc.execute().at(entities().tag(self._tag(loop))).run().function(loop.name)
+        for f in self._funcs:
+            yield mc.execute().at(entities().tag(self._tag(f))).run().function(f.name)
         yield '\n'
-        for loop in self._loops:
-            loop_finish = loop.name[-len(self.name):] + 'finish'
+        for f in self._funcs:
+            loop_finish = f.name[-len(self.name):] + 'finish'
             if loop_finish in other_funcs:
-                yield mc.execute().at(entities().tag(self._tag(loop))).run(). \
+                yield mc.execute().at(entities().tag(self._tag(f))).run(). \
                     schedule().function(loop_finish, 1).replace()
 
-    def _tag(self, loop):
-        return loop.name.split(':')[-1]
+    def _tag(self, f):
+        return f.name.split(':')[-1]
 
 
 def _to_list(text):
@@ -636,7 +636,7 @@ class Restworld(DataPack):
 
         cb.next_page()
         cb.add(r'Click on room name to go there: \\n\\n')
-        rooms = filter(lambda x: isinstance(x, Room), self.function_set.children())
+        rooms = filter(lambda x: isinstance(x, Room) and x.title is not None, self.function_set.children())
         rooms = sorted(rooms, key=lambda x: x.title)
         first = True
         for r in rooms:
@@ -664,13 +664,14 @@ class Restworld(DataPack):
 
 
 class Room(FunctionSet):
-    def __init__(self, name: str, dp: DataPack, facing: str, text: SignText):
+    def __init__(self, name: str, dp: DataPack, facing: str = None, text: SignText = None):
         super().__init__(name, dp.function_set)
         self._clocks = {}
         self._home_stand = Entity('armor_stand', {
             'tags': ['homer', '%s_homer' % self.name], 'NoGravity': True, 'Small': True})
-        self._room_sign(facing, text)
-        self._title = None
+        self.title = None
+        if facing:
+            self._room_sign(facing, text)
 
     def _room_sign(self, facing, text):
         text = _to_list(text)
@@ -685,7 +686,7 @@ class Room(FunctionSet):
             # score.init(),
             # score.set(rot),
         ))
-        self.add(self._home_func(self.name + '_room'))
+        self.add(self.home_func(self.name + '_room'))
 
     def _record_room(self, text):
         while len(text) > 0 and text[0] is None:
@@ -696,7 +697,7 @@ class Room(FunctionSet):
         room_name = room_name.replace(',', '').replace(':', '')
         self.title = room_name
 
-    def _home_func(self, name):
+    def home_func(self, name):
         marker_tag = '%s_home' % name
         marker = deepcopy(self._home_stand)
         tags = marker.nbt().get_list('Tags')
@@ -718,7 +719,7 @@ class Room(FunctionSet):
         self.add(loop)
 
         if needs_home:
-            self.add(self._home_func(loop.name))
+            self.add(self.home_func(loop.name))
         return loop
 
     def save(self, dir: Path):
@@ -884,14 +885,31 @@ def say_score(*scores):
     return mc.tellraw(all(), *say)
 
 
-def main():
-    rooms = {}
-    restworld = Restworld('/tmp/r')
-    room = Room('ancient', restworld, NORTH, (None, 'Warden'))
-    rooms['warden'] = room
-    room.add(
+restworld = Restworld('/tmp/r')
+fast_clock = Clock('fast')
+main_clock = Clock('main')
+slow_clock = Clock('slow')
+
+
+def ancient_room():
+    Room('ancient', restworld, NORTH, (None, 'Warden')).add(
         Function('warden_mob_init').add((MobPlacer(*r(0, 2, 0), WEST, adults=True).summon('warden'),)),
     )
+
+
+def global_room():
+    room = Room('global', restworld).add(
+        Function('arena').add(
+            mc.execute().in_(OVERWORLD).run().tp().pos(1126, 103, 1079).facing(1139, 104, 1079)),
+        Function('clock_base').add(
+
+        )
+    )
+
+
+def main():
+    for f in (ancient_room, global_room):
+        f()
     restworld.save()
 
 
