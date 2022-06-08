@@ -5,6 +5,7 @@ from copy import deepcopy
 from functools import total_ordering
 
 from pyker.function import *
+from pyker.simpler import Sign, WallSign, Book
 
 
 def to_id(name):
@@ -601,26 +602,90 @@ def _to_list(text):
     return text
 
 
+class Restworld(DataPack):
+    def __init__(self, dir: str):
+        super().__init__('restworld', dir)
+
+    def save(self):
+        gs = self.function_set.child('global')
+        if gs is None:
+            gs = FunctionSet('global', self.function_set)
+        gs.add(self.control_book_func())
+        super().save()
+
+    def control_book_func(self) -> Function:
+        cb = Book()
+        cb.sign('Control Book', 'Restworld', 'Useful Commands')
+
+        cb.add(r'Clock State:\\n      ',
+               self._action(r'|\\u25c0\\u25c0', 'Previous', '_decr').extra('  '),
+               self._action(r'||', 'Play/Pause', 'global/clock_toggle').bold(),
+               self._action(r'/\\u25b6', 'Play/Pause', 'global/clock_toggle').extra('  '),
+               self._action(r'\\u25b6\\u25b6|', 'Next', '_incr').extra(r'\\n', r'\\nClock Speed:\\n      '),
+               self._action(r'<<', 'Slower Clock Speed', 'center/slower_clocks').extra('   '),
+               self._action(r'\\u27f2', 'Reset Clock Speed', 'center/reset_clocks').extra('   '),
+               self._action(r'>>', 'Faster Clock Speed', 'center/faster_clocks').extra(r'\\n', r'\\nPlaces:\\n   '),
+               self._action('Home', 'Starting Point', 'global/go_home').extra(r'\\n   '),
+               self._action('Photo Shoot', 'Scenic View', 'global/go_photo').extra(r'\\n   '),
+               self._action('Battle Arena', 'Battle Arena', 'arena/go_arena').extra(r'\\n   '),
+               self._action('Biome Sampler', 'Biome Sampler', 'global/go_biomes').extra(r'\\n   '),
+               self._action('Connected Textures', 'Connected Textures', 'global/go_connected').extra(r'\\n   '),
+               self._action('Nether Home', 'Nether Starting Point', 'global/go_nether_home').extra(r'\\n   '),
+               self._action('End Home', 'End Starting Point', 'global/go_end_home').extra(r'\\n   '),
+               )
+
+        cb.next_page()
+        cb.add(r'Click on room name to go there: \\n\\n')
+        rooms = filter(lambda x: isinstance(x, Room), self.function_set.children())
+        rooms = sorted(rooms, key=lambda x: x.title)
+        first = True
+        for r in rooms:
+            if first:
+                first = False
+            else:
+                cb.add(', ')
+            cb.add(self._action(r.title, r.title, r.name + '/_goto'))
+
+        cb.next_page()
+        cb.add(
+            r'Credits:\\n\\n',
+            JsonText.text(r'BlueMeanial:\\n').bold(),
+            r'  Command Blocks\\n  Software Design\\n  Programming\\n\\n',
+            JsonText.text(r'JUMBOshrimp277:\\n').bold(),
+            r'  World Design\\n  Testing\\n  Rubber Duck\\n',
+            r'\\nMinecraft Version:\\n   1.19, May 2022',
+        )
+
+        return Function('control_book').add(mc.give(player(), cb.item()))
+
+    def _action(self, txt: str, tooltip: str, act: str, more=None) -> JsonText:
+        return JsonText.text(txt).color(DARK_GREEN).underlined().click_event().run_command(
+            mc.function('restworld:' + act)).hover_event().show_text(tooltip)
+
+
 class Room(FunctionSet):
-    def __init__(self, name: str, dp: DataPack):
+    def __init__(self, name: str, dp: DataPack, facing: str, text: SignText):
         super().__init__(name, dp.function_set)
-        self._dp = dp
         self._clocks = {}
         self._home_stand = Entity('armor_stand', {
             'tags': ['homer', '%s_homer' % self.name], 'NoGravity': True, 'Small': True})
+        self._room_sign(facing, text)
+        self._title = None
 
-    def room_sign(self, facing, text):
+    def _room_sign(self, facing, text):
         text = _to_list(text)
         self._record_room(text)
         text = tuple((JsonText.text(x).bold().italic() if x else x) for x in text)
         sign = WallSign(text)
         x, z, rot, _ = facing_info(facing)
-        score = Score('ancient', 'goto')
-        self.add(Function('_room_sign').add(
+        # I think this score is unused, but not sure, so I'm commenting it out.
+        # score = Score('ancient', 'goto')
+        self.add(Function('%s_room_init' % self.name).add(
             sign.place(*r(x, 6, z), facing),
-            score.init(),
-            score.set(rot),
+            # score.init(),
+            # score.set(rot),
         ))
+        self.add(self._home_func(self.name + '_room'))
 
     def _record_room(self, text):
         while len(text) > 0 and text[0] is None:
@@ -629,7 +694,7 @@ class Room(FunctionSet):
         if text[0][-1] == '&':
             room_name += ' ' + text[1]
         room_name = room_name.replace(',', '').replace(':', '')
-        room_names.add(room_name)
+        self.title = room_name
 
     def _home_func(self, name):
         marker_tag = '%s_home' % name
@@ -819,40 +884,13 @@ def say_score(*scores):
     return mc.tellraw(all(), *say)
 
 
-room_names = set()
-
-
-def record_room(text):
-    while len(text) > 0 and text[0] is None:
-        text = text[1:]
-    room_name = text[0]
-    if text[0][-1] == '&':
-        room_name += ' ' + text[1]
-    room_name = room_name.replace(',', '').replace(':', '')
-    room_names.add(room_name)
-
-
-def room_sign(facing, text):
-    record_room(text)
-    text = tuple((JsonText.text(x).bold().italic() if x else x) for x in text)
-    sign = WallSign(text)
-    x, z, rot, _ = facing_info(facing)
-    score = Score('ancient', 'goto')
-    return (
-        sign.place(*r(x, 6, z), facing),
-        score.init(),
-        score.set(rot),
-    )
-
-
 def main():
     rooms = {}
-    restworld = DataPack('restworld', '/tmp/r')
-    room = Room('ancient', restworld)
+    restworld = Restworld('/tmp/r')
+    room = Room('ancient', restworld, NORTH, (None, 'Warden'))
     rooms['warden'] = room
     room.add(
         Function('warden_mob_init').add((MobPlacer(*r(0, 2, 0), WEST, adults=True).summon('warden'),)),
-        Function('warden_room_init').add(room_sign(WEST, (None, 'Warden'))),
     )
     restworld.save()
 
@@ -1007,40 +1045,6 @@ class Wall:
             if y < self.y_last:
                 return None, None
         return x, y
-
-
-def room_signs(func_dir, room, sign_tmpl, subjects, walls, start, button=False):
-    cur_wall = 0
-    wall = walls[cur_wall]
-    tag = '%s_signer' % room
-    kill_command = "kill @e[tag=%s]" % tag
-    top = walls[0].y_first + 1
-    depth = walls[1].width - 1
-    width = walls[0].width - 1
-    commands = [
-        kill_command,
-        "summon armor_stand ~%f ~%f ~%f {Tags:[%s],Rotation:[90f,0f],ArmorItems:[{},{},{},{id:turtle_helmet,Count:1}]}" % tuple(
-            start + (tag,)),
-        "execute at @e[tag=%s] run fill ^0 ^0 ^0 ^%d ^%d ^%d air replace oak_wall_sign" % (
-            tag, -depth, top, -width),
-    ]
-    if button:
-        commands.append("execute at @e[tag=%s] run setblock ^%d ^%d ^%d stone_button[mob_facing=south]" % (
-            tag, -depth, top, -width / 2))
-    x, y = wall.start_pos()
-    for i, subj in enumerate(subjects):
-        sign_text = subj.to_sign_text()
-        lines = ["", ] + sign_text + [""] * (max(0, 3 - len(sign_text)))
-        commands.append(sign_tmpl.render(room=room, subj=subj, lines=lines, x=-x, y=y, z=0, wall=wall).strip())
-        x, y = wall.next_pos(x, y)
-        if x is None:
-            commands.append(wall.to_next_wall(tag))
-            cur_wall += 1
-            wall = walls[cur_wall]
-            x, y = wall.start_pos()
-    commands.append(kill_command)
-    write_function(func_dir, "signs", "\n".join(commands) + "\n")
-    return commands
 
 
 def write_function(func_dir, func_name, rendered):

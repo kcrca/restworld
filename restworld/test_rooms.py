@@ -4,38 +4,39 @@ from restworld.rooms import *
 
 
 def test_unclocked_room():
-    room = Room('foo', DataPack('dp', 'none'))
+    room = Room('foo', DataPack('dp', 'none'), NORTH, ('foo'), )
     room.loop('bar').loop(lambda var, i, item: mc.say('var %s, i %s, item %s' % (var, i, item)), range(0, 5))
     func_names = sorted(list(x.name for x in (room.room_funcs())))
-    assert func_names == ['_cur', '_decr', '_enter', '_exit', '_finish', '_incr', '_init', 'bar', 'bar_cur', 'bar_home']
+    assert func_names == ['_cur', '_decr', '_enter', '_exit', '_finish', '_incr', '_init', 'bar', 'bar_cur', 'bar_home',
+                          'foo_room_home', 'foo_room_init']
 
     room.add(Function('bar_finish_main'))
     room.add(Function('xyzzy'))
     func_names = sorted(list(x.name for x in (room.room_funcs())))
     assert func_names == ['_cur', '_decr', '_enter', '_exit', '_finish', '_incr', '_init', 'bar', 'bar_cur',
-                          'bar_finish_main', 'bar_home', 'xyzzy']
+                          'bar_finish_main', 'bar_home', 'foo_room_home', 'foo_room_init', 'xyzzy']
 
 
 def test_clocked_room():
-    room = Room('foo', DataPack('dp', 'none'))
+    room = Room('foo', DataPack('dp', 'none'), NORTH, ('foo'), )
     clock = Clock('main')
     room.loop('bar', clock).loop(lambda var, i, item: mc.say('var %s, i %s, item %s' % (var, i, item)), range(0, 5))
     func_names = sorted(list(x.name for x in (room.room_funcs())))
     assert func_names == ['_cur', '_decr', '_enter', '_exit', '_finish', '_incr', '_init', '_main', '_tick', 'bar',
-                          'bar_cur', 'bar_home']
+                          'bar_cur', 'bar_home', 'foo_room_home', 'foo_room_init']
 
     room.add(Function('bar_finish_main'))
     room.add(Function('xyzzy'))
     func_names = sorted(list(x.name for x in (room.room_funcs())))
     assert func_names == ['_cur', '_decr', '_enter', '_exit', '_finish', '_finish_main', '_incr', '_init', '_main',
-                          '_tick', 'bar', 'bar_cur', 'bar_finish_main', 'bar_home', 'xyzzy']
+                          '_tick', 'bar', 'bar_cur', 'bar_finish_main', 'bar_home', 'foo_room_home', 'foo_room_init',
+                          'xyzzy']
 
 
 def test_room_sign():
-    room = Room('foo', DataPack('dp', 'none'))
-    room.room_sign(EAST, (None, 'Zargon'))
+    room = Room('foo', DataPack('dp', 'none'), NORTH, ('foo'), )
     func_names = sorted(list(x.name for x in (room.room_funcs())))
-    assert func_names == ['_enter', '_exit', '_finish', '_init', '_room_sign']
+    assert func_names == ['_enter', '_exit', '_finish', '_init', 'foo_room_home', 'foo_room_init']
 
 
 def test_mob_placer():
@@ -99,3 +100,10 @@ def test_say_score():
     assert say == ('tellraw @a [{"text": "\\"scores:\\""}, {"text": "\\"a=\\""}, {"score": '
                    '{"name": "\\"a\\"", "objective": "\\"b\\""}}, {"text": "\\"c=\\""}, '
                    '{"score": {"name": "\\"c\\"", "objective": "\\"d\\""}}]')
+
+
+def test_control_book():
+    restworld = Restworld('none')
+    restworld.function_set.add(Room('r1', restworld, NORTH, ('Howdy')))
+    restworld.function_set.add(Room('r2', restworld, NORTH, ('Doody')))
+    assert re.search(r'Doody.*Howdy', str(restworld.control_book_func()))
