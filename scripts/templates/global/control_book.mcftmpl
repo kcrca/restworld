@@ -21,25 +21,25 @@ ${action(r"Nether Home", "Nether Starting Point", "function restworld:global/go_
 ${action(r"End Home", "End Starting Point", "function restworld:global/go_end_home")}, ${scribe(r"\\n   ")} \
 ]","[\"\", \
 ${scribe(r"Click on room name to go there: \\n\\n")}, \
-${action(r"Warden", "Warden", "function restworld:ancient/_goto")}, ${scribe(r", ")}, \
 ${action(r"Aquatic", "Aquatic", "function restworld:acquatic/_goto")}, ${scribe(r", ")}, \
 ${action(r"Banners & Shields", "Banners & Shields", "function restworld:banners/_goto")}, ${scribe(r", ")}, \
 ${action(r"Blocks", "Blocks", "function restworld:blocks/_goto")}, ${scribe(r", ")}, \
-${action(r"GUI", "GUI", "function restworld:containers/_goto")}, ${scribe(r", ")}, \
 ${action(r"DIY", "DIY", "function restworld:diy/_goto")}, ${scribe(r", ")}, \
-${action(r"Mob Effects", "Mob Effects", "function restworld:effects/_goto")}, ${scribe(r", ")}, \
-${action(r"The End", "The End", "function restworld:enders/_goto")}, ${scribe(r", ")}, \
 ${action(r"Fonts", "Fonts", "function restworld:font/_goto")}, ${scribe(r", ")}, \
-${action(r"Villagers", "Villagers", "function restworld:friendlies/_goto")}, ${scribe(r", ")}, \
+${action(r"GUI", "GUI", "function restworld:containers/_goto")}, ${scribe(r", ")}, \
 ${action(r"Materials", "Materials", "function restworld:materials/_goto")}, ${scribe(r", ")}, \
+${action(r"Mob Effects", "Mob Effects", "function restworld:effects/_goto")}, ${scribe(r", ")}, \
 ${action(r"Monsters", "Monsters", "function restworld:monsters/_goto")}, ${scribe(r", ")}, \
 ${action(r"Nether", "Nether", "function restworld:nether/_goto")}, ${scribe(r", ")}, \
 ${action(r"Paintings", "Paintings", "function restworld:paintings/_goto")}, ${scribe(r", ")}, \
 ${action(r"Particles", "Particles", "function restworld:particles/_goto")}, ${scribe(r", ")}, \
 ${action(r"Plants", "Plants", "function restworld:plants/_goto")}, ${scribe(r", ")}, \
 ${action(r"Redstone", "Redstone", "function restworld:redstone/_goto")}, ${scribe(r", ")}, \
+${action(r"The End", "The End", "function restworld:enders/_goto")}, ${scribe(r", ")}, \
 ${action(r"Time", "Time", "function restworld:time/_goto")}, ${scribe(r", ")}, \
-${action(r"Wither", "Wither", "function restworld:wither/_goto")}, ${scribe(r".")} \
+${action(r"Villagers", "Villagers", "function restworld:friendlies/_goto")}, ${scribe(r", ")}, \
+${action(r"Warden", "Warden", "function restworld:ancient/_goto")}, ${scribe(r", ")}, \
+${action(r"Wither", "Wither", "function restworld:wither/_goto")}, ${scribe(r", ")} \
 ]","[\"\", \
 ${scribe(r"Credits:\\n\\n")}, \
 ${scribe(r"BlueMeanial:\\n", {"bold": True})}, \

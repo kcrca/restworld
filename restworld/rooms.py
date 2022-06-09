@@ -898,12 +898,9 @@ def ancient_room():
 
 
 def global_room():
-    room = Room('global', restworld).add(
+    Room('global', restworld).add(
         Function('arena').add(
             mc.execute().in_(OVERWORLD).run().tp().pos(1126, 103, 1079).facing(1139, 104, 1079)),
-        Function('clock_base').add(
-
-        )
     )
 
 

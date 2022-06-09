@@ -1,0 +1,1 @@
+execute as @e[tag=${var}_home] run tag @s add blockers_home

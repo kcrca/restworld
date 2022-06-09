@@ -9,3 +9,4 @@ summon shulker_bullet ~1 ~3 ~1 {CustomName:${text("Shulker Bullet")},TXD:0,TYD:0
 ${base.sign('~1 ~2 ~2', 'south', 2, "Shulker Bullet")}
 
 ${base.label(-1, 2, 0, "Color")}
+${base.label(1, 2, 6, "Change Height")}

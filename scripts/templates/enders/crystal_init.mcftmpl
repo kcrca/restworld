@@ -1,3 +1,4 @@
 <%namespace name="base" file="../base.mcftmpl"/>
 
 ${base.label(4, 2, 0, "Cage")}
+execute as @e[tag=${var}_home] run tag @s add blockers_home
