@@ -19,11 +19,11 @@ mobs = (
     Mob( 3,  +29, 'ocelot'),
     Mob( 3.2,  +47, 'fox'),
 
-    Mob( 4.9,  -45, 'rabbit', nbt='RabbitType:3'),
-    Mob( 4.3,  -33, 'bee'),
-    Mob( 4.5,  -20, 'chicken'),
-    Mob( 5.0,    0, 'spider'),
-    Mob( 4.7,  +22, 'cave_spider', y=0.2),
+    Mob( 4.9,  -45, 'frog'),
+    Mob( 4.3,  -33, 'rabbit', nbt='RabbitType:3'),
+    Mob( 4.5,  -20, 'bee'),
+    Mob( 5.0,    0, 'chicken'),
+    Mob( 4.7,  +22, 'spider', y=0.2),
     Mob( 4.5,  +42, 'wolf'),
 
     Mob( 7.0,  -42, 'mooshroom'),
