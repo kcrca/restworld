@@ -349,7 +349,7 @@ for t in villager_types:
 
 biome_groups = collections.OrderedDict()
 biome_groups['Temperate'] = (
-    'Plains', 'Forest', 'Flower Forest', 'Birch Forest', 'Dark Forest', 'Swamp', 'Jungle', 'Mushroom Field')
+    'Plains', 'Forest', 'Flower Forest', 'Birch Forest', 'Dark Forest', 'Swamp', 'Mangrove Swamp', 'Jungle', 'Mushroom Field')
 biome_groups['Warm'] = ('Desert', 'Savanna', 'Badlands')
 biome_groups['Cold'] = ('Tiaga', 'Stone Shore')
 biome_groups['Snowy'] = ('Snowy Tundra', 'Ice Spikes', 'Snowy Tiaga')
