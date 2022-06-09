@@ -12,5 +12,4 @@ ${base.label(-3, 2, 0, 'Style')}
 ${base.sign('~-2 ~2 ~0', 'west', 2, 'Style:')}
 ${base.label(-3, 2, 1, 'Style')}
 ${base.sign('~-2 ~2 ~1', 'west', 2, 'Value:')}
-scoreboard players set bossbar_which funcs 0
 function restworld:containers/bossbar_exit
