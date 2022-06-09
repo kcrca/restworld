@@ -1,2 +1,1 @@
-scoreboard players set toggle_bossbar funcs 0
-function restworld:containers/toggle_bossbar
+bossbar set restworld:bossbar visible false

@@ -3,5 +3,5 @@
 
 <%base:loop collection="${styles}" args="when,i,thing">
 ${when(i)} bossbar set restworld:bossbar style ${thing}
-${when(i)} data merge block ~0 ~2 ~0 {Text2:${text("Style: " + thing)}}
+${when(i)} data merge block ~0 ~2 ~0 {Text3:${text(thing)}}
 </%base:loop>

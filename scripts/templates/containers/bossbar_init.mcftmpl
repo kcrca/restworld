@@ -7,10 +7,10 @@ bossbar set restworld:bossbar value 50
 scoreboard players set bossbar_value funcs 3
 ${base.sign('~0 ~3 ~0', 'west', 2, 'Boss Bar')}
 ${base.label(-3, 2, -1, 'Color')}
-${base.sign('~-2 ~2 ~-1', 'west', 2, 'Color: Blue')}
+${base.sign('~-2 ~2 ~-1', 'west', 2, 'Color:')}
 ${base.label(-3, 2, 0, 'Style')}
-${base.sign('~-2 ~2 ~0', 'west', 2, 'Style: progress')}
+${base.sign('~-2 ~2 ~0', 'west', 2, 'Style:')}
 ${base.label(-3, 2, 1, 'Style')}
-${base.sign('~-2 ~2 ~1', 'west', 2, 'Value: 50')}
+${base.sign('~-2 ~2 ~1', 'west', 2, 'Value:')}
 scoreboard players set bossbar_which funcs 0
 function restworld:containers/bossbar_exit
