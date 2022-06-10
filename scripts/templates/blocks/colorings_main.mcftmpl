@@ -16,5 +16,7 @@ ${when(i)} ${colored_signs(thing, render_signs, when, i, thing)}
 
 %if i == len(colors) - 1:
 ${colored_signs(thing, render_signs_glow)}
+setblock ~-7 ~-1 ~3 redstone_block
+setblock ~-7 ~-1 ~3 air
 %endif
 </%base:loop>

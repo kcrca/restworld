@@ -35,7 +35,7 @@ ${when(i)} execute if score lit_candles funcs matches 0 run ${fill} ${candle}${w
 ${when(i)} execute if score lit_candles funcs matches 1 run ${fill} ${candle}${which} replace #restworld:${re.sub(',?lit=true', '', which)}
 %endfor
 
-${when(i)} data merge block ~-7 ~0 ~3 {name:"${'restworld:%s_terra' % thing.id}"}
+${when(i)} data merge block ~-7 ~0 ~3 {name:"${'restworld:%s_terra' % thing.id}",showboundingbox:false}
 
 %if is_plain:
 ${when(i)} fill ~-9 ~2 ~2 ~-9 ~2 ~3 air
