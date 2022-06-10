@@ -567,9 +567,11 @@ def label(x: Coord, y: Coord, z: Coord, txt: str, facing) -> Commands:
 
 
 class Clock:
-    def __init__(self, name: str):
+    def __init__(self, name: str, init_speed: int = None):
         self.name = name
-        self.score = Score(name, 'clocks')
+        self.time = Score(name, 'clocks')
+        self.speed = Score('SPEED_' + name.upper(), 'clocks')
+        self.init_speed = init_speed
         self._funcs = []
 
     @classmethod
@@ -604,7 +606,7 @@ def _to_list(text):
 
 class Restworld(DataPack):
     def __init__(self, dir: str):
-        super().__init__('restworld', dir)
+        super().__init__('restworld', dir, 4)
 
     def save(self):
         gs = self.function_set.child('global')
@@ -612,6 +614,9 @@ class Restworld(DataPack):
             gs = FunctionSet('global', self.function_set)
         gs.add(self.control_book_func())
         super().save()
+
+    def clocks(self):
+        return (slow_clock, main_clock, fast_clock)
 
     def control_book_func(self) -> Function:
         cb = Book()
@@ -740,10 +745,9 @@ class Room(FunctionSet):
         for clock, loops in self._clocks.items():
             name1 = '_' + clock.name
             yield Function(name1)
-            # execute if score main clocks matches 0 run function restworld:enders/_main
             name = '_%s' % clock.name
             tick_func.add(
-                mc.execute().if_().score(clock.score).matches(0).run().function(name))
+                mc.execute().if_().score(clock.time).matches(0).run().function(name))
         # The '1' is for the generated warning
         if len(list(tick_func.commands())) > 1:
             yield tick_func
@@ -790,6 +794,9 @@ class Room(FunctionSet):
             cmds = func.commands()
             if cmds:
                 yield func
+
+    def score(self, name):
+        return Score(name, self.name)
 
 
 class MobPlacer:
@@ -885,10 +892,11 @@ def say_score(*scores):
     return mc.tellraw(all(), *say)
 
 
-restworld = Restworld('/tmp/r')
-fast_clock = Clock('fast')
-main_clock = Clock('main')
-slow_clock = Clock('slow')
+restworld = Restworld('/Users/kcrca/clarity/home/saves/NewRest')
+clock = Clock('clock')
+slow_clock = Clock('slow', 90)
+main_clock = Clock('main', 60)
+fast_clock = Clock('fast', 15)
 
 
 def ancient_room():
@@ -898,9 +906,63 @@ def ancient_room():
 
 
 def global_room():
-    Room('global', restworld).add(
+    def use_min_fill(y, filler, fillee):
+        # execute at @e[tag=min_home] run fill ~0 ${y} ~0 ~166 ${y} ~180 ${filler}                                                  |
+        return mc.execute().at(entities().tag('min_hom')).run().fill(r(0), y, r(0), r(166), y, r(180), filler,
+                                                                     REPLACE).filter(fillee)
+
+    def clock_lights(turn_on):
+        lights = ('red_concrete', 'lime_concrete')
+        before = lights[int(turn_on)]
+        after = lights[1 - int(turn_on)]
+        return (
+            use_min_fill(100, after, before),
+            mc.execute().at(entities().tag('min_home')).run().setblock(0, 105, -78, after)
+        )
+
+    def kill_if_time():
+        ex = mc.execute()
+        for c in restworld.clocks():
+            ex = ex.unless().score(c.time).matches((0, 1))
+        return ex.run().function('restworld:global/kill_em')
+
+    room = Room('global', restworld)
+    clock_toggle = room.score('clock_toggle')
+    room.add(
         Function('arena').add(
-            mc.execute().in_(OVERWORLD).run().tp().pos(1126, 103, 1079).facing(1139, 104, 1079)),
+            mc.execute().in_(OVERWORLD).run().tp().pos(1126, 103, 1079).facing(1139, 104, 1079), ),
+        room.home_func('clock'),
+        Function('clock_init').add(
+            mc.scoreboard().objectives().remove('clocks'),
+            mc.scoreboard().objectives().add('clocks', ScoreCriteria.DUMMY),
+            (c.speed.set(c.init_speed) for c in restworld.clocks()),
+            (c.time.set(-1) for c in restworld.clocks()),
+            mc.function('restworld:global/clock_off'),
+        ),
+        Function('clock_on').add(
+            mc.execute().at(entities().tag('clock_home')).run().setblock(*r(0, -2, 1), 'redstone_block')),
+        Function('clock_off').add(
+            mc.execute().at(entities().tag('clock_home')).run().setblock(*r(0, -2, 1), 'diamond_block')),
+        Function('clock_switched_on').add(
+            clock_lights(True)),
+        Function('clock_switched_off').add(
+            clock_lights(False),
+            (c.time.operation(EQ, c.speed) for c in restworld.clocks()),
+            (c.time.remove(1) for c in restworld.clocks()),
+        ),
+        Function('clock_toggle').add(
+            clock_toggle.set(0),
+            mc.execute().at(entities().tag('clock_home')).if_().block(*r(0, -2, 1), 'redstone_block').run(
+                clock_toggle.set(1)),
+            mc.execute().if_().score(clock_toggle).matches(0).run().function('restworld:global/clock_on'),
+            mc.execute().if_().score(clock_toggle).matches(1).run().function('restworld:global/clock_off'),
+        ),
+        Function('clock_tick').add(
+            clock.time.add(1),
+            (c.time.operation(EQ, clock.time) for c in restworld.clocks()),
+            (c.time.operation(MOD, c.speed) for c in restworld.clocks()),
+            kill_if_time()
+        ),
     )
 
 
