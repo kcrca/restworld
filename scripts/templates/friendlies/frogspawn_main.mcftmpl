@@ -4,8 +4,8 @@
 %if i == 0:
 ${when(0)} ${base.remove('tag=tadpole')}
 ${when(0)} setblock ~0 ~2 ~-1 frogspawn
-${when(1)} ${base.adult(Thing("Tadpole"), 0, 0, -1, 180, tags=('tadpole', room))}
+${when(1)} ${base.kid(Thing("Tadpole"), 0, 0, -1, 180, tags=('tadpole', room), nbt="Invulnerable:true,Age:-2147483648")}
 ${when(1)} setblock ~0 ~2 ~-1 air
 %endif
-kill @e[type=tadpole,tag=!tadpole]
+kill @e[type=!tadpole,tag=tadpole]
 </%base:loop>
