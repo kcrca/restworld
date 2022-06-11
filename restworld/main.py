@@ -188,12 +188,17 @@ stepables = (
     Stepable("Quartz", "Nether Quartz Ore", block="Quartz Block"),
     Stepable("Cobblestone", "Stone"),
     Stepable("Stone Brick", "Stone", block="Stone Bricks"),
+    Stepable("Mud Brick", "Packed Mud", block="Mud Bricks"),
     Stepable("Nether Brick", "Netherrack", block="Nether Bricks"),
     Stepable("Brick", "Clay", block="Bricks"),
     Stepable("Purpur", "air", block="Purpur Block"),
     Stepable("Prismarine", "air"),
     Stepable("Prismarine Brick", "air", block="Prismarine Bricks"),
     Stepable("Dark Prismarine", "air"),
+    Stepable("Cobbled Deepslate", "Deepslate"),
+    Stepable("Polished Deepslate", "Deepslate"),
+    Stepable("Deepslate Brick", "Deepslate", block='Deepslate Bricks'),
+    Stepable("Deepslate Tile", "Deepslate", block='Deepslate Tiles'),
 )
 materials = (
     'Iron', 'Coal', 'Copper', 'Gold', 'Diamond', 'Emerald', 'Chainmail', 'Redstone', 'Lapis Lazuli', 'Granite',
@@ -349,7 +354,8 @@ for t in villager_types:
 
 biome_groups = collections.OrderedDict()
 biome_groups['Temperate'] = (
-    'Plains', 'Forest', 'Flower Forest', 'Birch Forest', 'Dark Forest', 'Swamp', 'Mangrove Swamp', 'Jungle', 'Mushroom Field')
+    'Plains', 'Forest', 'Flower Forest', 'Birch Forest', 'Dark Forest', 'Swamp', 'Mangrove Swamp', 'Jungle',
+    'Mushroom Field')
 biome_groups['Warm'] = ('Desert', 'Savanna', 'Badlands')
 biome_groups['Cold'] = ('Tiaga', 'Stone Shore')
 biome_groups['Snowy'] = ('Snowy Tundra', 'Ice Spikes', 'Snowy Tiaga')

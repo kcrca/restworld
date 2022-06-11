@@ -6,7 +6,7 @@ import re
 
 blocks = (
     "Stone", "Cobblestone", "Mossy|Cobblestone",
-    "Bricks", "Stone Bricks", "Mossy|Stone Bricks",
+    "Bricks", "Stone Bricks", "Mossy|Stone Bricks", "Mud Bricks",
     "Sandstone", "Smooth|Sandstone", "Red|Sandstone", "Smooth Red|Sandstone",
     "Andesite", "Polished|Andesite",
     "Diorite", "Polished|Diorite",
@@ -21,6 +21,7 @@ blocks = (
     "Oxidized Cut Copper",
     "Prismarine", "Prismarine|Bricks", "Dark|Prismarine",
     "Acacia Planks", "Birch Planks", "Jungle Planks",
+    "Mangrove Planks",
     "Oak Planks", "Dark Oak Planks", "Spruce Planks",
     "Warped Planks", "Crimson Planks",
     "Nether Bricks", "Red|Nether Bricks",

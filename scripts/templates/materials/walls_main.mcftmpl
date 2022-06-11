@@ -8,6 +8,7 @@
 		Thing("Prismarine Wall"),
 	    ] + to_nicknamed("Blackstone Wall", ("", "Polished")) + [
 		Thing("Polished|Blackstone|Brick Wall"),
+		Thing("Mud|Brick Wall"),
 	    ] + to_nicknamed("Deepslate Wall", ("Cobbled", "Polished")) + to_nicknamed("Brick Wall", ("Deepslate",)) + to_nicknamed("Tile Wall", ("Deepslate",))
 %>
 

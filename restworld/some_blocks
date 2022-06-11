@@ -60,7 +60,7 @@ Budding Amethyst
 Calcite
 Cartography Table
 Carved Pumpkin
-Repeating Command Block
+Chain Command Block
 Chiseled Deepslate
 Chiseled Nether Bricks
 Chiseled Polished Blackstone
@@ -73,6 +73,7 @@ Coal Ore
 Coarse Dirt
 Cobbled Deepslate
 Cobblestone
+Command Block
 Copper Ore
 Cracked Deepslate Bricks
 Cracked Deepslate Tiles
@@ -193,10 +194,15 @@ Magenta Stained Glass
 Magenta Terracotta
 Magenta Wool
 Magma Block
+Mangrove Log
+Mangrove Planks
+Mangrove Wood
 Melon
 Moss Block
 Mossy Cobblestone
 Mossy Stone Bricks
+Mud
+Mud Bricks
 Mushroom Stem
 Mycelium
 Nether Bricks
@@ -210,6 +216,7 @@ Oak Planks
 Oak Wood
 Observer
 Obsidian
+Ochre Froglight
 Orange Concrete
 Orange Concrete Powder
 Orange Glazed Terracotta
@@ -220,6 +227,8 @@ Orange Wool
 Oxidized Copper
 Oxidized Cut Copper
 Packed Ice
+Packed Mud
+Pearlescent Froglight
 Pink Concrete
 Pink Concrete Powder
 Pink Glazed Terracotta
@@ -250,8 +259,6 @@ Purpur Block
 Purpur Pillar
 Quartz Bricks
 Quartz Pillar
-Command Block
-Chain Command Block
 Red Concrete
 Red Concrete Powder
 Red Glazed Terracotta
@@ -265,10 +272,14 @@ Red Terracotta
 Red Wool
 Redstone Lamp
 Redstone Ore
+Reinforced Deepslate
+Repeating Command Block
 Respawn Anchor
 Rooted Dirt
 Sand
 Sandstone
+Sculk
+Sculk Catalyst
 Sea Lantern
 Shroomlight
 Shulker Box
@@ -312,6 +323,7 @@ Terracotta
 Tinted Glass
 Tube Coral Block
 Tuff
+Verdant Froglight
 Warped Hyphae
 Warped Nylium
 Warped Planks
