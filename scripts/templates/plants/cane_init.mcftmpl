@@ -2,5 +2,5 @@
 
 setblock ~-1 ~2 ~0 water
 ${base.sign('~-2 ~2 ~0', 'east', 2, 'Bamboo')}
-${base.sign('~-1 ~2 ~-1', 'north')}
-${base.sign('~-1 ~2 ~1', 'south')}
+setblock ~-1 ~2 ~-1 structure_void
+setblock ~-1 ~2 ~1 structure_void
