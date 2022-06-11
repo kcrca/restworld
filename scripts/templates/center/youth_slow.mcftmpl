@@ -1,0 +1,1 @@
+execute as @e[tag=kid] run data merge entity @s {IsBaby:True,Age:-2147483648}
