@@ -388,37 +388,42 @@ def get_normal_blocks():
         if not m:
             m = command_re.match(block)
             if not m:
-                name = block
+                sort_key = block
             else:
-                name = 'Command Block'
+                sort_key = 'Command Block'
         else:
-            name = (m.group(1) + m.group(3))
-        name = name.replace('  ', ' ').strip()
+            sort_key = (m.group(1) + m.group(3))
+        sort_key = sort_key.replace('  ', ' ').strip()
 
         # Special cases to force grouping and sometimes placement.
-        if name == 'Tinted Glass':
-            name = 'Glass ' + name
-        if 'Azalea' in name:
-            name = 'Azalea ' + name
-        if 'Amethyst' in name:
-            name = 'Amethyst ' + name
-        if 'Coral' in name:
-            name = 'E-Coral ' + name
-        elif name in ('Dropper', 'Dispenser', 'Furnace', 'Observer'):
-            name = 'Furnace ' + name
-        elif name in (
-                'Crafting Table', 'Cartography Table', 'Smithing Table', 'Fletching Table', 'Smoker', 'Blast Furnace',
-                'Cauldron'):
-            name = 'Profession ' + name
-        elif 'Glass' in name:
+        if sort_key == 'Tinted Glass':
+            sort_key = 'Glass ' + sort_key
+        elif 'Azalea' in sort_key:
+            sort_key = 'Azalea ' + sort_key
+        elif 'Amethyst' in sort_key:
+            sort_key = 'Amethyst ' + sort_key
+        elif 'Coral' in sort_key:
+            sort_key = 'E-Coral ' + sort_key
+        elif 'Mud' in sort_key:
+            sort_key = 'Mud'
+        elif sort_key == 'Stem':
+            sort_key = 'LogStem'
+        elif sort_key == 'Wet Sponge':
+            sort_key = 'Sponge'
+        elif sort_key in ('Dropper', 'Dispenser', 'Furnace', 'Observer', 'Smoker', 'Blast Furnace'):
+            sort_key = 'Furnace ' + sort_key
+        elif sort_key in (
+                'Loom', 'Crafting Table', 'Cartography Table', 'Smithing Table', 'Fletching Table', 'Cauldron'):
+            sort_key = 'Profession ' + sort_key
+        elif 'Glass' in sort_key:
             # "M" to move it away from corals so the water trough behind the coral doesn't overlap
-            name = 'MGlass ' + name
-        elif 'Copper' in block and 'Deepslate' not in block and name not in ('Ore', 'Raw Block'):
-            name = 'Copper'
+            sort_key = 'MGlass ' + sort_key
+        elif 'Copper' in block and 'Deepslate' not in block and sort_key not in ('Ore', 'Raw Block'):
+            sort_key = 'Copper'
 
-        if name not in blocks:
-            blocks[name] = []
-        blocks[name] += (block,)
+        if sort_key not in blocks:
+            blocks[sort_key] = []
+        blocks[sort_key] += (block,)
     for b in sorted(blocks):
         for w in sorted(blocks[b]):
             yield w.lower().replace(' ', '_').replace('_lazuli', '').replace('bale', 'block')

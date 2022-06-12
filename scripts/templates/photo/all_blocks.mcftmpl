@@ -1,5 +1,5 @@
 <% coral_stage = 0 %>
-<% line_length = 21 %>
+<% line_length = 23 %>
 fill ~0 ~-1 ~0 ~${line_length} ~-20 ~2 air
 %for b in normal_blocks:
 <%
