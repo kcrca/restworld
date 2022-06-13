@@ -742,17 +742,24 @@ class Room(FunctionSet):
             marker.summon(r(0), r(0.5), r(0)),
         )
 
-    def loop(self, name: str, clock: Clock = None, needs_home=True) -> Loop:
-        loop = Loop(name, self.name)
+    def loop(self, name: str, clock: Clock = None, /, needs_home=True) -> Loop:
+        if not clock:
+            base_name = name
+        else:
+            if not name.endswith('_' + clock.name):
+                base_name = name
+                name += '_' + clock.name
+            else:
+                base_name = name[:len(clock.name) + 1]
+        loop = Loop(name, self.name, base_name=base_name)
         if clock:
             self._clocks.setdefault(clock, []).append(loop)
-            name += '_' + clock.name
             clock.add(loop)
 
         self.add(loop)
 
         if needs_home:
-            self.add(self.home_func(loop.name))
+            self.add(self.home_func(base_name))
         return loop
 
     def finalize(self):
@@ -795,16 +802,16 @@ class Room(FunctionSet):
         loops = filter(lambda x: isinstance(x, Loop), self._functions)
         homes = self._homes()
         for loop in loops:
-            name = loop.name + '_cur'
-            yield Function(name)
+            name = loop.base_name + '_cur'
+            yield Function(name).add(loop.cur())
             yield Function('_cur').add(
-                (mc.execute().at(entities().tag(x)).run().function(loop.name) for x in homes),
+                (mc.execute().at(entities().tag(x.name)).run().function(loop.name) for x in homes),
                 mc.function('_finish'))
             yield Function('_incr').add(
-                (mc.execute().at(entities().tag(x)).run(loop.score.add(1)) for x in homes),
+                (mc.execute().at(entities().tag(x.name)).run(loop.score.add(1)) for x in homes),
                 mc.function('_cur'))
             yield Function('_decr').add(
-                (mc.execute().at(entities().tag(x)).run(loop.score.remove(1)) for x in homes),
+                (mc.execute().at(entities().tag(x.name)).run(loop.score.remove(1)) for x in homes),
                 mc.function('_cur'))
 
     def _yield_other_funcs(self):
@@ -962,7 +969,8 @@ def global_room():
     clock_toggle = room.score('clock_toggle')
     room.add(
         Function('arena').add(
-            mc.execute().in_(OVERWORLD).run().tp().pos(1126, 103, 1079, player()).facing(1139, 104, 1079), ),
+            mc.execute().in_(OVERWORLD).run().tp().pos(1126, 103, 1079, player()).facing(1139, 104, 1079), ))
+    room.add(
         room.home_func('clock'),
         Function('clock_init').add(
             mc.scoreboard().objectives().remove('clocks'),
@@ -971,6 +979,12 @@ def global_room():
             list(c.time.set(-1) for c in restworld.clocks()),
             tick_clock.time.set(0),
             mc.function('restworld:global/clock_off'),
+        ),
+        Function('clock_tick').add(
+            clock.time.add(1),
+            (c.time.operation(EQ, clock.time) for c in restworld.clocks()),
+            (c.time.operation(MOD, c.speed) for c in restworld.clocks()),
+            kill_if_time()
         ),
         Function('clock_on').add(
             mc.execute().at(entities().tag('clock_home')).run().setblock(*r(0, -2, 1), 'redstone_block')),
@@ -990,13 +1004,109 @@ def global_room():
             mc.execute().if_().score(clock_toggle).matches(0).run().function('restworld:global/clock_on'),
             mc.execute().if_().score(clock_toggle).matches(1).run().function('restworld:global/clock_off'),
         ),
-        Function('clock_tick').add(
-            clock.time.add(1),
-            (c.time.operation(EQ, clock.time) for c in restworld.clocks()),
-            (c.time.operation(MOD, c.speed) for c in restworld.clocks()),
-            kill_if_time()
+    )
+    death_home = room.home_func('death')
+    room.add(death_home)
+    room.add(Function('death_init').add(
+        mc.execute().positioned(0, 1.5, 0).run().function(death_home.full_name),
+        mc.tag(entities().tag(death_home.name)).add('death'),
+        mc.tag(entities().tag(death_home.name)).add('immortal'),
+    ))
+
+    room.add(
+        Function('full_finish').add(
+            mc.function('restworld:_init'),
+            mc.function('restworld:_cur'),
+            # Some of these functions leave dropped items behind, this cleans that up'
+            mc.kill(entities().type('item')),
+        ),
+        Function('full_reset').add(
+            mc.function('restworld:global/clock_off'),
+            mc.execute().positioned(*r(0, -3, 0)).run().function('restworld:global/min_home'),
+            mc.kill(entities().tag('home', '!min_home')),
+            # Death must be ready before any other initialization
+            mc.function('restworld:global/death_init'),
+            use_min_fill(97, 'redstone_block', 'dried_kelp_block'),
+            use_min_fill(97, 'dried_kelp_block', 'redstone_block'),
+            use_min_fill(97, 'redstone_block', 'pumpkin'),
+            use_min_fill(97, 'pumpkin', 'redstone_block'),
         ),
     )
+    room.add(Function('gamerules').add(
+        (mc.gamerule(*args) for args in (
+            ('announceAdvancements', False),
+            ('commandBlockOutput', False),
+            ('disableRaids', True),
+            ('doDaylightCycle', False),
+            ('doFireTick', False),
+            ('doInsomnia', False),
+            ('doMobSpawning', False),
+            ('doPatrolSpawning', False),
+            ('doTraderSpawning', False),
+            ('doWeatherCycle', False),
+            ('keepInventory', True),
+            ('mobGriefing', False),
+            ('randomTickSpeed', 0),
+            ('spawnRadius', 0),
+        ))
+    ))
+    for p in (
+            ('biomes', OVERWORLD, (-1000, 101, -1000), (-1000, 80, -970)),
+            ('connected', OVERWORLD, (1000, 101, 1000), (990, 101, 1000)),
+            ('end_home', THE_END, (100, 49, 0), (-1000, 80, -970)),
+            ('home', OVERWORLD, (-1000, 101, -1000), (-1000, 80, -970)),
+            ('nether', OVERWORLD, (-1000, 101, -1000), (-1000, 80, -970)),
+            ('photo', OVERWORLD, (-1000, 101, -1000), (-1000, 80, -970))):
+        room.add(
+            Function('goto_' + p[0]).add(mc.execute().in_(p[1]).run().teleport().pos(*p[2], player()).facing(*p[3])))
+    room.add(Function('goto_weather').add(
+        mc.execute().in_(OVERWORLD).run().teleport().pos(1009, 101, 1000, player()).facing(1004, 102, 1000),
+        mc.weather(RAIN)))
+    room.add(room.home_func('min'))
+
+    levloop = room.loop('mob_levitation', main_clock)
+    levloop.loop(levitation_body, range(0, 2))
+
+    room.add(Function('ready').add(
+        mc.clear(player()),
+        mc.gamemode(CREATIVE, player()),
+        mc.function('restworld:global/control_book'),
+        mc.tp().pos(0, 101, 0, player()).facing(0, 100, 5),
+        mc.scoreboard().objectives().setdisplay(SIDEBAR),
+        mc.function('restworld:center/reset_clocks'),
+        mc.function('restworld:global/clock_on'),
+    ))
+
+
+def levitation_body(score: Score, i: int, which: int) -> Commands:
+    if i == 1:
+        yield mc.execute().at(entities().tag('sleeping_bat')).run().clone(*r(0, 1, 0, 0, 1, 0, 0, 3, 0)).replace(MOVE),
+        yield mc.execute().at(entities().tag('turtle_eggs_home')).run().clone(*r(1, 2, 0, -2, 2, 0, -2, -4, 0)).replace(
+            MOVE),
+        # yield mc.execute().at(entities().tag('brown_horses', 'kid')).run().clone(*r(2, 0, 0, 2, 0, 0, 2, 2, 0)).replace(
+        #     MOVE),
+        for mob_room in ("friendlies", "monsters", "aquatic", "wither", "nether", "enders", "ancient"):
+            room_home = mob_room + '_home'
+            yield mc.execute().as_(entities().tag(room_home)).run().data().merge(
+                EntityData(self()), {'Invisible': True})
+            yield mc.execute().as_(entities().tag(room_home, '!blockers_home')).at(self()).run().tp().pos(*r(0, 2, 0),
+                                                                                                          self())
+            yield mc.execute().as_(entities().tag(mob_room, '!passenger').type('!item_frame')).at(
+                self()).run().tp().pos(*r(0, 2, 0), self())
+    else:
+        yield mc.execute().at(entities().tag('sleeping_bat')).run().clone(*r(0, 1, 0, 0, 1, 0, 0, -1, 0)).replace(MOVE),
+        yield mc.execute().at(entities().tag('turtle_eggs_home')).run().clone(*r(1, 4, 0, -2, 4, 0, -2, 2, 0)).replace(
+            MOVE),
+        # yield mc.execute().at(entities().tag('brown_horses', 'kid')).run().clone(*r(2, 0, 0, 2, 0, 0, 2, 2, 0)).replace(
+        #     MOVE),
+        for mob_room in ("friendlies", "monsters", "aquatic", "wither", "nether", "enders", "ancient"):
+            room_home = mob_room + '_home'
+            yield mc.execute().as_(entities().tag(room_home)).run().data().merge(
+                EntityData(self()), {'Invisible': False})
+            yield mc.execute().as_(entities().tag(room_home, '!blockers_home')).at(self()).run().tp().pos(*r(0, -2, 0),
+                                                                                                          self())
+            yield mc.execute().as_(entities().tag(mob_room, '!passenger').type('!item_frame')).at(
+                self()).run().tp().pos(*r(0, -2, 0), self())
 
 
 def main():
