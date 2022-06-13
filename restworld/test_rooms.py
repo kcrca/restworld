@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from restworld.restworld import Restworld
 from restworld.rooms import *
 
 
