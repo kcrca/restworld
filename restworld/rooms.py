@@ -62,6 +62,9 @@ class Thing:
         lines = self.text.split("|")
         return lines
 
+    def summon(self, x, y, z, rotation):
+        return Entity(self.id, nbt={'CustomName': self.name, 'Rotation': [rotation, 0]}).summon(x, y, z)
+
 
 class Nicknamed(Thing):
     def __init__(self, nickname, kind, id=None, block_state=None):
@@ -842,8 +845,8 @@ class MobPlacer:
 
     def __init__(self,
                  start_x: Coord, start_y: Coord, start_z: Coord,
-                 mob_facing: str,
-                 delta: float = 2, kid_delta: float = 1.2, *,
+                 facing: str | int,
+                 delta: float | tuple[float, float] = 2, kid_delta: float | tuple[float, float] = 1.2, *,
                  tags: Tuple[str, ...] = None,
                  nbt=None, kids=None, adults=None, auto_tag=True):
         self.start_x = start_x
@@ -860,14 +863,22 @@ class MobPlacer:
         self.kids = kids
         self.adults = adults
         self.auto_tag = auto_tag
-        try:
-            self.delta_x, self.delta_z, self.rotation, _ = facing_info(mob_facing, delta)
-            self.kid_x, self.kid_z, _, _ = facing_info(mob_facing, kid_delta, ROTATION_90)
-        except KeyError:
-            raise ValueError('%s: Unknown dir' % mob_facing)
+        if isinstance(facing, str):
+            try:
+                self.delta_x, self.delta_z, self.rotation, _ = facing_info(facing, delta)
+                self.kid_x, self.kid_z, _, _ = facing_info(facing, kid_delta, ROTATION_90)
+                if not isinstance(delta, (float, int)) or not isinstance(kid_delta, (float, int)):
+                    raise ValueError('Deltas must be floats when using "facing" name')
+            except KeyError:
+                raise ValueError('%s: Unknown "facing" with no "rotation"' % facing)
+        else:
+            self.rotation = facing
+            self.delta_x, self.delta_z = delta
+            self.kid_x, self.kid_z = kid_delta
         self._cur = [start_x, start_y, start_z]
 
-    def summon(self, mobs: Iterable[EntityDef] | EntityDef, *, on_stand: bool | Callable[Entity] = False) -> Tuple[
+    def summon(self, mobs: Iterable[EntityDef] | EntityDef, *, on_stand: bool | Callable[Entity] = False, tags=None,
+               nbt=None) -> Tuple[
         Command, ...]:
         if isinstance(mobs, (Entity, str)):
             mobs = (mobs,)
@@ -876,12 +887,16 @@ class MobPlacer:
             tmpl = mob.clone()
             if self.nbt:
                 tmpl.merge_nbt(self.nbt)
+            if nbt:
+                tmpl.merge_nbt(nbt)
             rotation___ = {'NoAI': True, 'PersistenceRequired': True, 'Silent': True, 'Rotation': [self.rotation, 0.0]}
             tmpl.merge_nbt(
                 rotation___)
             tmpl.set_name_visible(True)
             if self.tags:
                 tmpl.tag(*self.tags)
+            if tags:
+                tmpl.tag(*tags)
             if self.auto_tag:
                 tmpl.tag(tmpl.kind)
 
@@ -964,6 +979,42 @@ def global_room():
         for c in restworld.clocks():
             ex = ex.unless().score(c.time).matches((0, 1))
         return ex.run().function('restworld:global/kill_em')
+
+    def levitation_body(_: Score, i: int, _2: int) -> Commands:
+        if i == 1:
+            yield mc.execute().at(entities().tag('sleeping_bat')).run().clone(*r(0, 1, 0, 0, 1, 0, 0, 3, 0)).replace(
+                MOVE),
+            yield mc.execute().at(entities().tag('turtle_eggs_home')).run().clone(
+                *r(1, 2, 0, -2, 2, 0, -2, -4, 0)).replace(
+                MOVE),
+            # yield mc.execute().at(entities().tag('brown_horses', 'kid')).run().clone(*r(2, 0, 0, 2, 0, 0, 2, 2, 0)).replace(
+            #     MOVE),
+            for mob_room in ("friendlies", "monsters", "aquatic", "wither", "nether", "enders", "ancient"):
+                room_home = mob_room + '_home'
+                yield mc.execute().as_(entities().tag(room_home)).run().data().merge(
+                    EntityData(self()), {'Invisible': True})
+                yield mc.execute().as_(entities().tag(room_home, '!blockers_home')).at(self()).run().tp().pos(
+                    *r(0, 2, 0),
+                    self())
+                yield mc.execute().as_(entities().tag(mob_room, '!passenger').type('!item_frame')).at(
+                    self()).run().tp().pos(*r(0, 2, 0), self())
+        else:
+            yield mc.execute().at(entities().tag('sleeping_bat')).run().clone(*r(0, 1, 0, 0, 1, 0, 0, -1, 0)).replace(
+                MOVE),
+            yield mc.execute().at(entities().tag('turtle_eggs_home')).run().clone(
+                *r(1, 4, 0, -2, 4, 0, -2, 2, 0)).replace(
+                MOVE),
+            # yield mc.execute().at(entities().tag('brown_horses', 'kid')).run().clone(*r(2, 0, 0, 2, 0, 0, 2, 2, 0)).replace(
+            #     MOVE),
+            for mob_room in ("friendlies", "monsters", "aquatic", "wither", "nether", "enders", "ancient"):
+                room_home = mob_room + '_home'
+                yield mc.execute().as_(entities().tag(room_home)).run().data().merge(
+                    EntityData(self()), {'Invisible': False})
+                yield mc.execute().as_(entities().tag(room_home, '!blockers_home')).at(self()).run().tp().pos(
+                    *r(0, -2, 0),
+                    self())
+                yield mc.execute().as_(entities().tag(mob_room, '!passenger').type('!item_frame')).at(
+                    self()).run().tp().pos(*r(0, -2, 0), self())
 
     room = Room('global', restworld)
     clock_toggle = room.score('clock_toggle')
@@ -1078,39 +1129,80 @@ def global_room():
     ))
 
 
-def levitation_body(score: Score, i: int, which: int) -> Commands:
-    if i == 1:
-        yield mc.execute().at(entities().tag('sleeping_bat')).run().clone(*r(0, 1, 0, 0, 1, 0, 0, 3, 0)).replace(MOVE),
-        yield mc.execute().at(entities().tag('turtle_eggs_home')).run().clone(*r(1, 2, 0, -2, 2, 0, -2, -4, 0)).replace(
-            MOVE),
-        # yield mc.execute().at(entities().tag('brown_horses', 'kid')).run().clone(*r(2, 0, 0, 2, 0, 0, 2, 2, 0)).replace(
-        #     MOVE),
-        for mob_room in ("friendlies", "monsters", "aquatic", "wither", "nether", "enders", "ancient"):
-            room_home = mob_room + '_home'
-            yield mc.execute().as_(entities().tag(room_home)).run().data().merge(
-                EntityData(self()), {'Invisible': True})
-            yield mc.execute().as_(entities().tag(room_home, '!blockers_home')).at(self()).run().tp().pos(*r(0, 2, 0),
-                                                                                                          self())
-            yield mc.execute().as_(entities().tag(mob_room, '!passenger').type('!item_frame')).at(
-                self()).run().tp().pos(*r(0, 2, 0), self())
-    else:
-        yield mc.execute().at(entities().tag('sleeping_bat')).run().clone(*r(0, 1, 0, 0, 1, 0, 0, -1, 0)).replace(MOVE),
-        yield mc.execute().at(entities().tag('turtle_eggs_home')).run().clone(*r(1, 4, 0, -2, 4, 0, -2, 2, 0)).replace(
-            MOVE),
-        # yield mc.execute().at(entities().tag('brown_horses', 'kid')).run().clone(*r(2, 0, 0, 2, 0, 0, 2, 2, 0)).replace(
-        #     MOVE),
-        for mob_room in ("friendlies", "monsters", "aquatic", "wither", "nether", "enders", "ancient"):
-            room_home = mob_room + '_home'
-            yield mc.execute().as_(entities().tag(room_home)).run().data().merge(
-                EntityData(self()), {'Invisible': False})
-            yield mc.execute().as_(entities().tag(room_home, '!blockers_home')).at(self()).run().tp().pos(*r(0, -2, 0),
-                                                                                                          self())
-            yield mc.execute().as_(entities().tag(mob_room, '!passenger').type('!item_frame')).at(
-                self()).run().tp().pos(*r(0, -2, 0), self())
+def aquatic_room():
+    def loop_n_fish(count: int):
+        def fish_loop(_: Score, i: int, _2: int):
+            for f in [f for f in fishes if len(f[1]) == count]:
+                tag, variants = f
+                v = variants[i]
+                yield mc.data().merge(EntityData(entities().tag(tag).limit(1)), {'Variant': v[0], 'CustomName': v[1]})
+
+        return fish_loop
+
+    def tropical_fish_funcs(room):
+        body = Score('body', 'fish')
+        pattern = Score('pattern', 'fish')
+        num_colors = Score('NUM_COLORS', 'fish')
+        body_scale = Score('BODY_SCALE', 'fish')
+        pattern_scale = Score('PATTERN_SCALE', 'fish')
+        pattern_variant = Score('pattern_variant', 'fish')
+        variant = Score('variant', 'fish')
+
+        def all_fish_init():
+            yield Sign((None, 'All Possible', 'Tropical Fish', '-------->')).place(*r(0, 2, 0), WEST, water=True)
+            # , nbt={'Invulnerable': True}
+            placer = MobPlacer(*r(0, 1.2, 0), WEST, 1, adults=True)
+            for i in range(0, 12):
+                if i == 6:
+                    placer = MobPlacer(*r(1, 1.2, 0), WEST, 1)
+                yield placer.summon('tropical_fish', tags=('fish%d' % i,))
+            yield (
+                mc.scoreboard().objectives().remove('fish'),
+                mc.scoreboard().objectives().add('fish', ScoreCriteria.DUMMY),
+                num_colors.set(len(COLORS)),
+                body_scale.set(0x10000),
+                pattern_scale.set(0x1000000),
+                body.set(0),
+                pattern.set(0),
+            )
+
+        def all_fish():
+            yield (
+                pattern.add(1),
+                pattern.operation(MOD, num_colors),
+                mc.execute().if_().score(pattern).matches(0).run(body.add(1)),
+                body.operation(MOD, num_colors),
+                pattern_variant.operation(EQ, pattern),
+                pattern_variant.operation(MULT, pattern_scale),
+                variant.operation(EQ, body),
+                variant.operation(MULT, body_scale),
+                variant.operation(PLUS, pattern_variant),
+            )
+            for i in range(0, 12):
+                yield mc.execute().store(RESULT).entity(entities().tag('fish%d' % i).limit(1), 'Variant', LONG, 1).run(
+                    variant.get())
+                if i == 6:
+                    yield variant.add(1)
+                yield variant.add(256)
+
+        room.add(Function('all_fish_init').add(all_fish_init()))
+        room.loop('all_fish', fast_clock).add(all_fish())
+
+    room = Room('aquatic', restworld, NORTH, (None, 'Aquatic'))
+
+    room.loop('2_fish', main_clock).loop(loop_n_fish(2), range(0, 2))
+    room.loop('3_fish', main_clock).loop(loop_n_fish(3), range(0, 3))
+    tropical_fish_funcs(room)
+    room.add(Function('axolotl_init').add(MobPlacer(*r(1.3, 1.5, 1.3), 135, (0, 0), (-1.4, -1.4)).summon('axolotl')))
+    axolotls = ('Lucy', 'Wild', 'Gold', 'Cyan', 'Blue')
+    room.loop('axolotl', main_clock).loop(
+        lambda _, i, thing: mc.execute().as_(entities().tag('axoltol')).run().data().merge(
+            EntityData(self()), {'Variant': i, 'CustomName': thing + ' Axolotl'}), axolotls)
+    room.add(Function('elder_guardian').add(Thing('Elder Guardian').summon(*r(2, 1, 0), rotation=225)))
 
 
 def main():
-    for f in (ancient_room, global_room):
+    for f in (ancient_room, global_room, aquatic_room):
         f()
     restworld.save()
 
