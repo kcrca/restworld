@@ -3,6 +3,7 @@ from __future__ import annotations
 import collections
 from copy import deepcopy
 from functools import total_ordering
+from html.parser import HTMLParser
 
 from pyker.function import *
 from pyker.simpler import Sign, WallSign, Book
@@ -607,12 +608,21 @@ def _to_list(text):
 class Restworld(DataPack):
     def __init__(self, dir: str):
         super().__init__('restworld', dir, 4)
+        self._suffixes = ['tick', 'init', 'enter', 'incr', 'decr', 'cur', 'exit', 'finish']
+        self._suffixes.extend(list(x.name for x in self.clocks()))
+
+    def finalize(self):
+        for kid in self.function_set.children():
+            if isinstance(kid, Room):
+                kid.finalize()
 
     def save(self):
+        self.finalize()
         gs = self.function_set.child('global')
         if gs is None:
             gs = FunctionSet('global', self.function_set)
         gs.add(self.control_book_func())
+        self.function_set.add(*self.world_funcs())
         super().save()
 
     def clocks(self):
@@ -667,10 +677,28 @@ class Restworld(DataPack):
         return JsonText.text(txt).color(DARK_GREEN).underlined().click_event().run_command(
             mc.function('restworld:' + act)).hover_event().show_text(tooltip)
 
+    def _home_func_name(self, base):
+        for f in self._suffixes:
+            if base.endswith('_' + f):
+                base = base[:-(len(f) + 1)]
+                break
+        return base + '_home'
+
+    def world_funcs(self):
+        for f in self._suffixes:
+            fname = '_' + f
+            func = Function(fname)
+            for room in self.function_set.children():
+                func.add(
+                    list(mc.function(x.full_name) for x in filter(lambda x: x.name == fname, room.functions()))
+                )
+            yield func
+
 
 class Room(FunctionSet):
     def __init__(self, name: str, dp: DataPack, facing: str = None, text: SignText = None):
         super().__init__(name, dp.function_set)
+        self._pack = dp
         self._clocks = {}
         self._home_stand = Entity('armor_stand', {
             'tags': ['homer', '%s_homer' % self.name], 'NoGravity': True, 'Small': True})
@@ -727,10 +755,8 @@ class Room(FunctionSet):
             self.add(self.home_func(loop.name))
         return loop
 
-    def save(self, dir: Path):
-        rf = self.room_funcs()
-        self.add(*rf)
-        super().save(dir)
+    def finalize(self):
+        self.add(*(self.room_funcs()))
 
     def room_funcs(self):
         return list(self._functions) + list(self._room_funcs())
@@ -784,19 +810,24 @@ class Room(FunctionSet):
     def _yield_other_funcs(self):
         added_commands = {}
         added_commands['_enter'] = (mc.weather(CLEAR),)
-        for f in ('init', 'enter', 'exit'):
+        for f in self._pack._suffixes:
             f_name = '_' + f
-            relevant = filter(lambda x: x.name.endswith(f_name), self._functions)
+            relevant = filter(lambda x: self.is_f(x, f_name), self._functions)
             func = Function(f_name)
-            names = (x.name for x in relevant)
-            func.add((mc.execute().at(entities().tag(x + '_home')).run().function(x) for x in names))
+            func.add((mc.execute().at(entities().tag(self._home_func_name(x.name))).run().function(x.full_name) for x in
+                      relevant))
             func.add(added_commands.setdefault(f, tuple()))
-            cmds = func.commands()
-            if cmds:
+            if len(func.commands()) > 1:
                 yield func
+
+    def is_f(self, x, f_name):
+        return x.name.endswith(f_name)
 
     def score(self, name):
         return Score(name, self.name)
+
+    def _home_func_name(self, base):
+        return self.pack._home_func_name(base)
 
 
 class MobPlacer:
@@ -892,11 +923,12 @@ def say_score(*scores):
     return mc.tellraw(all(), *say)
 
 
-restworld = Restworld('/Users/kcrca/clarity/home/saves/NewRest')
 clock = Clock('clock')
 slow_clock = Clock('slow', 90)
 main_clock = Clock('main', 60)
 fast_clock = Clock('fast', 15)
+tick_clock = Clock('clock')
+restworld = Restworld('/Users/kcrca/clarity/home/saves/NewRest')
 
 
 def ancient_room():
@@ -930,13 +962,14 @@ def global_room():
     clock_toggle = room.score('clock_toggle')
     room.add(
         Function('arena').add(
-            mc.execute().in_(OVERWORLD).run().tp().pos(1126, 103, 1079).facing(1139, 104, 1079), ),
+            mc.execute().in_(OVERWORLD).run().tp().pos(1126, 103, 1079, player()).facing(1139, 104, 1079), ),
         room.home_func('clock'),
         Function('clock_init').add(
             mc.scoreboard().objectives().remove('clocks'),
             mc.scoreboard().objectives().add('clocks', ScoreCriteria.DUMMY),
-            (c.speed.set(c.init_speed) for c in restworld.clocks()),
-            (c.time.set(-1) for c in restworld.clocks()),
+            list(c.speed.set(c.init_speed) for c in restworld.clocks()),
+            list(c.time.set(-1) for c in restworld.clocks()),
+            tick_clock.time.set(0),
             mc.function('restworld:global/clock_off'),
         ),
         Function('clock_on').add(
