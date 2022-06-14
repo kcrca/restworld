@@ -559,9 +559,10 @@ def crops(loop_index: int, stages, crop, x, y, z, name='age'):
 def label(x: Coord, y: Coord, z: Coord, txt: str, facing) -> Commands:
     return (
         mc.execute().positioned(x, y, z).run().
-            kill(entities().type('item_frame').tag('label'), sort=NEAREST, limit=1),
+            kill(entities().type('item_frame').tag('label').sort(NEAREST).limit(1)),
         mc.summon('item_frame', x, y, z,
-                  {'Invisible': True, 'Facing': facing, 'Tags': [label, named_frame_item(Thing('stone_button'), txt)]}),
+                  {'Invisible': True, 'Facing': facing,
+                   'Tags': [label, named_frame_item(Thing('stone_button'), txt)]}),
     )
 
 
@@ -650,7 +651,29 @@ class Room(FunctionSet):
             marker.summon(r(0), r(0.5), r(0)),
         )
 
+    def function(self, name: str, clock: Clock = None, /, needs_home=None) -> Function:
+        base_name, name = self._name_with_clock(name, clock)
+        if needs_home is None:
+            needs_home = not name.endswith('_home')
+        return self._add_func(Function(name, base_name=base_name), name, clock, needs_home)
+
     def loop(self, name: str, clock: Clock = None, /, needs_home=True) -> Loop:
+        base_name, name = self._name_with_clock(name, clock)
+        return self._add_func(Loop(name, self.name, base_name=base_name), name, clock, needs_home)
+
+    def _add_func(self, func, name, clock, needs_home):
+        base_name, name = self._name_with_clock(name, clock)
+        if clock:
+            self._clocks.setdefault(clock, []).append(func)
+            clock.add(func)
+
+        self.add(func)
+
+        if needs_home:
+            self.add(self.home_func(base_name))
+        return func
+
+    def _name_with_clock(self, name, clock):
         if not clock:
             base_name = name
         else:
@@ -658,17 +681,8 @@ class Room(FunctionSet):
                 base_name = name
                 name += '_' + clock.name
             else:
-                base_name = name[:len(clock.name) + 1]
-        loop = Loop(name, self.name, base_name=base_name)
-        if clock:
-            self._clocks.setdefault(clock, []).append(loop)
-            clock.add(loop)
-
-        self.add(loop)
-
-        if needs_home:
-            self.add(self.home_func(base_name))
-        return loop
+                base_name = name[:-len(clock.name) - 1]
+        return base_name, name
 
     def finalize(self):
         self.add(*(self.room_funcs()))
@@ -710,7 +724,7 @@ class Room(FunctionSet):
         loops = filter(lambda x: isinstance(x, Loop), self._functions)
         homes = self._homes()
         for loop in loops:
-            name = loop.base_name + '_cur'
+            name = loop._base_name + '_cur'
             yield Function(name).add(loop.cur())
             yield Function('_cur').add(
                 (mc.execute().at(entities().tag(x.name)).run().function(loop.name) for x in homes),
