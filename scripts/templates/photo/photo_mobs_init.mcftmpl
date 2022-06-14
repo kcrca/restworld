@@ -3,14 +3,14 @@ import enum
 import math
 
 class Mob:
-    def __init__(self, dist, degrees, mob, nbt='', y=0):
+    def __init__(cls, dist, degrees, mob, nbt='', y=0):
 	radians = math.radians(degrees)
-	self.x = format(dist * math.cos(radians), '.4f')
-	self.z = format(dist * math.sin(radians), '.4f')
-	self.rotation = degrees + 90 + 50
-	self.y = 8 + y
-	self.mob = mob
-	self.nbt = nbt
+	cls.x = format(dist * math.cos(radians), '.4f')
+	cls.z = format(dist * math.sin(radians), '.4f')
+	cls.rotation = degrees + 90 + 50
+	cls.y = 8 + y
+	cls.mob = mob
+	cls.nbt = nbt
   
 mobs = (
     Mob( 3.5,  -42, 'parrot'),

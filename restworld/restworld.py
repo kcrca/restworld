@@ -6,9 +6,9 @@ from pyker.commands import mc, entities, JsonText, player, DARK_GREEN, Commands,
     Score, MOVE, EntityData, self, OVERWORLD, EQ, MOD, THE_END, RAIN, CREATIVE, SIDEBAR, COLORS, MULT, PLUS, RESULT, \
     LONG, Entity, all_
 from pyker.enums import ScoreCriteria
-from pyker.function import DataPack, FunctionSet, Function, Loop
+from pyker.function import FunctionSet, Function, Loop
 from pyker.simpler import Book, Sign, WallSign
-from rooms import Room, Clock, MobPlacer, fishes, Thing, label
+from rooms import Room, Clock, MobPlacer, fishes, Thing, label, RoomPack
 
 
 def kill_em(target):
@@ -18,11 +18,11 @@ def kill_em(target):
 marker_tmpl = Entity('armor_stand', {'NoGravity': True, 'Small': True, })
 
 
-class Restworld(DataPack):
+class Restworld(RoomPack):
     def __init__(self, dir: str):
-        super().__init__('restworld', dir, 4)
-        self._suffixes = ['tick', 'init', 'enter', 'incr', 'decr', 'cur', 'exit', 'finish']
-        self._suffixes.extend(list(x.name for x in self.clocks()))
+        suffixes = ['tick', 'init', 'enter', 'incr', 'decr', 'cur', 'exit', 'finish']
+        suffixes.extend(list(x.name for x in self.clocks()))
+        super().__init__('restworld', dir, suffixes, 4)
 
     def finalize(self):
         for kid in self.function_set.children():
@@ -39,7 +39,7 @@ class Restworld(DataPack):
         super().save()
 
     def clocks(self):
-        return (slow_clock, main_clock, fast_clock)
+        return slow_clock, main_clock, fast_clock
 
     def control_book_func(self) -> Function:
         cb = Book()
@@ -86,7 +86,8 @@ class Restworld(DataPack):
 
         return Function('control_book').add(mc.give(player(), cb.item()))
 
-    def _action(self, txt: str, tooltip: str, act: str, more=None) -> JsonText:
+    @staticmethod
+    def _action(txt: str, tooltip: str, act: str) -> JsonText:
         return JsonText.text(txt).color(DARK_GREEN).underlined().click_event().run_command(
             mc.function('restworld:' + act)).hover_event().show_text(tooltip)
 
@@ -110,10 +111,10 @@ class Restworld(DataPack):
 
 class Fencelike:
     @classmethod
-    def update(self, id, text2, text3='') -> Commands:
+    def update(cls, id, text2, text3='') -> Commands:
         return (
-            mc.fill(*r(8, 3, 6, 0, 2, 0), id, REPLACE).filter('#restworld:fencelike'),
-            mc.data().merge(BlockData(*r(5, 2, 0)), Sign.lines_nbt(('', text2, text3, '')))
+            mc.fill(r(8, 3, 6), r(0, 2, 0), id, REPLACE).filter('#restworld:fencelike'),
+            mc.data().merge(BlockData(r(5, 2, 0)), Sign.lines_nbt(('', text2, text3, '')))
         )
 
 
@@ -127,15 +128,14 @@ restworld = Restworld('/Users/kcrca/clarity/home/saves/NewRest')
 
 def ancient_room():
     Room('ancient', restworld, NORTH, (None, 'Warden')).add(
-        Function('warden_mob_init').add((MobPlacer(*r(0, 2, 0), WEST, adults=True).summon('warden'),)),
+        Function('warden_mob_init').add((MobPlacer(r(0, 2, 0), WEST, adults=True).summon('warden'),)),
     )
 
 
 def global_room():
-    def use_min_fill(y, filler, fillee):
-        # execute at @e[tag=min_home] run fill ~0 ${y} ~0 ~166 ${y} ~180 ${filler}                                                  |
-        return mc.execute().at(entities().tag('min_hom')).run().fill(r(0), y, r(0), r(166), y, r(180), filler,
-                                                                     REPLACE).filter(fillee)
+    def use_min_fill(y, filler, filter):
+        return mc.execute().at(entities().tag('min_hom')).run().fill(r(0, y, 0), r(166, y, 180), filler,
+                                                                     REPLACE).filter(filter)
 
     def clock_lights(turn_on):
         lights = ('red_concrete', 'lime_concrete')
@@ -143,7 +143,7 @@ def global_room():
         after = lights[1 - int(turn_on)]
         return (
             use_min_fill(100, after, before),
-            mc.execute().at(entities().tag('min_home')).run().setblock(0, 105, -78, after)
+            mc.execute().at(entities().tag('min_home')).run().setblock((0, 105, -78), after)
         )
 
     def kill_if_time():
@@ -155,10 +155,11 @@ def global_room():
     def levitation_body(_: Score, i: int, _2: int) -> Commands:
         mob_rooms = ("friendlies", "monsters", "aquatic", "wither", "nether", "enders", "ancient")
         if i == 1:
-            yield mc.execute().at(entities().tag('sleeping_bat')).run().clone(*r(0, 1, 0, 0, 1, 0, 0, 3, 0)).replace(
+            yield mc.execute().at(entities().tag('sleeping_bat')).run().clone(r(0, 1, 0), r(0, 1, 0),
+                                                                              r(0, 3, 0)).replace(
                 MOVE),
-            yield mc.execute().at(entities().tag('turtle_eggs_home')).run().clone(
-                *r(1, 2, 0, -2, 2, 0, -2, -4, 0)).replace(
+            yield mc.execute().at(entities().tag('turtle_eggs_home')).run().clone(r(1, 2, 0), r(-2, 2, 0),
+                                                                                  r(-2, -4, 0)).replace(
                 MOVE),
             # yield mc.execute().at(entities().tag('brown_horses', 'kid')).run().clone(*r(2, 0, 0, 2, 0, 0, 2, 2, 0)).replace(
             #     MOVE),
@@ -167,16 +168,15 @@ def global_room():
                 yield mc.execute().as_(entities().tag(room_home)).run().data().merge(
                     EntityData(self()), {'Invisible': True})
                 yield mc.execute().as_(entities().tag(room_home, '!blockers_home')).at(self()).run().tp().pos(
-                    *r(0, 2, 0),
+                    r(0, 2, 0),
                     self())
                 yield mc.execute().as_(entities().tag(mob_room, '!passenger').type('!item_frame')).at(
-                    self()).run().tp().pos(*r(0, 2, 0), self())
+                    self()).run().tp().pos(r(0, 2, 0), self())
         else:
-            yield mc.execute().at(entities().tag('sleeping_bat')).run().clone(*r(0, 1, 0, 0, 1, 0, 0, -1, 0)).replace(
-                MOVE),
+            yield mc.execute().at(entities().tag('sleeping_bat')).run().clone(r(0, 1, 0), r(0, 1, 0),
+                                                                              r(0, -1, 0)).replace(MOVE),
             yield mc.execute().at(entities().tag('turtle_eggs_home')).run().clone(
-                *r(1, 4, 0, -2, 4, 0, -2, 2, 0)).replace(
-                MOVE),
+                r(1, 4, 0), r(-2, 4, 0), r(-2, 2, 0)).replace(MOVE),
             # yield mc.execute().at(entities().tag('brown_horses', 'kid')).run().clone(*r(2, 0, 0, 2, 0, 0, 2, 2, 0)).replace(
             #     MOVE),
             for mob_room in mob_rooms:
@@ -184,16 +184,15 @@ def global_room():
                 yield mc.execute().as_(entities().tag(room_home)).run().data().merge(
                     EntityData(self()), {'Invisible': False})
                 yield mc.execute().as_(entities().tag(room_home, '!blockers_home')).at(self()).run().tp().pos(
-                    *r(0, -2, 0),
-                    self())
+                    r(0, -2, 0), self())
                 yield mc.execute().as_(entities().tag(mob_room, '!passenger').type('!item_frame')).at(
-                    self()).run().tp().pos(*r(0, -2, 0), self())
+                    self()).run().tp().pos(r(0, -2, 0), self())
 
     room = Room('global', restworld)
     clock_toggle = room.score('clock_toggle')
     room.add(
         Function('arena').add(
-            mc.execute().in_(OVERWORLD).run().tp().pos(1126, 103, 1079, player()).facing(1139, 104, 1079), ))
+            mc.execute().in_(OVERWORLD).run().tp().pos((1126, 103, 1079), player()).facing((1139, 104, 1079)), ))
     room.add(
         room.home_func('clock'),
         Function('clock_init').add(
@@ -211,9 +210,9 @@ def global_room():
             kill_if_time()
         ),
         Function('clock_on').add(
-            mc.execute().at(entities().tag('clock_home')).run().setblock(*r(0, -2, 1), 'redstone_block')),
+            mc.execute().at(entities().tag('clock_home')).run().setblock(r(0, -2, 1), 'redstone_block')),
         Function('clock_off').add(
-            mc.execute().at(entities().tag('clock_home')).run().setblock(*r(0, -2, 1), 'diamond_block')),
+            mc.execute().at(entities().tag('clock_home')).run().setblock(r(0, -2, 1), 'diamond_block')),
         Function('clock_switched_on').add(
             clock_lights(True)),
         Function('clock_switched_off').add(
@@ -223,7 +222,7 @@ def global_room():
         ),
         Function('clock_toggle').add(
             clock_toggle.set(0),
-            mc.execute().at(entities().tag('clock_home')).if_().block(*r(0, -2, 1), 'redstone_block').run(
+            mc.execute().at(entities().tag('clock_home')).if_().block(r(0, -2, 1), 'redstone_block').run(
                 clock_toggle.set(1)),
             mc.execute().if_().score(clock_toggle).matches(0).run().function('restworld:global/clock_on'),
             mc.execute().if_().score(clock_toggle).matches(1).run().function('restworld:global/clock_off'),
@@ -232,7 +231,7 @@ def global_room():
     death_home = room.home_func('death')
     room.add(death_home)
     room.add(Function('death_init').add(
-        mc.execute().positioned(0, 1.5, 0).run().function(death_home.full_name),
+        mc.execute().positioned((0, 1.5, 0)).run().function(death_home.full_name),
         mc.tag(entities().tag(death_home.name)).add('death'),
         mc.tag(entities().tag(death_home.name)).add('immortal'),
     ))
@@ -246,7 +245,7 @@ def global_room():
         ),
         Function('full_reset').add(
             mc.function('restworld:global/clock_off'),
-            mc.execute().positioned(*r(0, -3, 0)).run().function('restworld:global/min_home'),
+            mc.execute().positioned(r(0, -3, 0)).run().function('restworld:global/min_home'),
             mc.kill(entities().tag('home', '!min_home')),
             # Death must be ready before any other initialization
             mc.function('restworld:global/death_init'),
@@ -283,9 +282,9 @@ def global_room():
             ('photo', OVERWORLD, (-1000, 101, -1000), (-1000, 80, -970)),
             ('arena', OVERWORLD, (1014, 106, -1000), (1000, 100, -1000))):
         room.add(
-            Function('goto_' + p[0]).add(mc.execute().in_(p[1]).run().teleport().pos(*p[2], player()).facing(*p[3])))
+            Function('goto_' + p[0]).add(mc.execute().in_(p[1]).run().teleport().pos(p[2], player()).facing(p[3])))
     room.add(Function('goto_weather').add(
-        mc.execute().in_(OVERWORLD).run().teleport().pos(1009, 101, 1000, player()).facing(1004, 102, 1000),
+        mc.execute().in_(OVERWORLD).run().teleport().pos((1009, 101, 1000), player()).facing((1004, 102, 1000)),
         mc.weather(RAIN)))
     room.add(room.home_func('min'))
 
@@ -296,7 +295,7 @@ def global_room():
         mc.clear(player()),
         mc.gamemode(CREATIVE, player()),
         mc.function('restworld:global/control_book'),
-        mc.tp().pos(0, 101, 0, player()).facing(0, 100, 5),
+        mc.tp().pos((0, 101, 0), player()).facing((0, 100, 5)),
         mc.scoreboard().objectives().setdisplay(SIDEBAR),
         mc.function('restworld:center/reset_clocks'),
         mc.function('restworld:global/clock_on'),
@@ -323,12 +322,12 @@ def aquatic_room():
         variant = Score('variant', 'fish')
 
         def all_fish_init():
-            yield Sign((None, 'All Possible', 'Tropical Fish', '-------->')).place(*r(0, 2, 0), WEST, water=True)
+            yield Sign((None, 'All Possible', 'Tropical Fish', '-------->')).place(r(0, 2, 0), WEST, water=True)
             # , nbt={'Invulnerable': True}
-            placer = MobPlacer(*r(0, 1.2, 0), WEST, 1, adults=True)
+            placer = MobPlacer(r(0, 1.2, 0), WEST, 1, adults=True)
             for i in range(0, 12):
                 if i == 6:
-                    placer = MobPlacer(*r(1, 1.2, 0), WEST, 1)
+                    placer = MobPlacer(r(1, 1.2, 0), WEST, 1)
                 yield placer.summon('tropical_fish', tags=('fish%d' % i,))
             yield (
                 mc.scoreboard().objectives().remove('fish'),
@@ -367,12 +366,12 @@ def aquatic_room():
     room.loop('2_fish', main_clock).loop(loop_n_fish(2), range(0, 2))
     room.loop('3_fish', main_clock).loop(loop_n_fish(3), range(0, 3))
     tropical_fish_funcs(room)
-    room.add(Function('axolotl_init').add(MobPlacer(*r(1.3, 1.5, 1.3), 135, (0, 0), (-1.4, -1.4)).summon('axolotl')))
+    room.add(Function('axolotl_init').add(MobPlacer(r(1.3, 1.5, 1.3), 135, (0, 0), (-1.4, -1.4)).summon('axolotl')))
     axolotls = ('Lucy', 'Wild', 'Gold', 'Cyan', 'Blue')
     room.loop('axolotl', main_clock).loop(
         lambda _, i, thing: mc.execute().as_(entities().tag('axoltol')).run().data().merge(
             EntityData(self()), {'Variant': i, 'CustomName': thing + ' Axolotl'}), axolotls)
-    room.add(Function('elder_guardian').add(Thing('Elder Guardian').summon(*r(2, 1, 0), rotation=225)))
+    room.add(Function('elder_guardian').add(Thing('Elder Guardian').summon(r(2, 1, 0), rotation=225)))
 
 
 def arena_room():
@@ -428,16 +427,16 @@ def arena_room():
         ('Zombie:c', 'Iron Golem'),
         ('Zombified Piglin', 'Vindicator'),
     ]
-    ## Lower priority ones that can be used as filler
-    ##    ('Axolotl:w', 'Elder Guardian'),
-    ##    ('Axolotl:w', 'Guardian'),
-    ##    ('Ocelot', 'Chicken'),
-    ##    ('Slime', 'Iron Golem'),
-    ##    ('Magma Cube', 'Iron Golem'),
-    ## These don't work unelss we figure out how to kill the ones that spawn when a larger is killed. For
-    ## now, we just make sure they are the smallest size.
-    ##  ('Slime', 'Iron Golem'),
-    ##  ('Magma Cube', 'Iron Golem'),
+    # Lower priority ones that can be used as filler
+    #    ('Axolotl:w', 'Elder Guardian'),
+    #    ('Axolotl:w', 'Guardian'),
+    #    ('Ocelot', 'Chicken'),
+    #    ('Slime', 'Iron Golem'),
+    #    ('Magma Cube', 'Iron Golem'),
+    # These don't work unelss we figure out how to kill the ones that spawn when a larger is killed. For
+    # now, we just make sure they are the smallest size.
+    #  ('Slime', 'Iron Golem'),
+    #  ('Magma Cube', 'Iron Golem'),
 
     stride_length = 6
     num_rows = 2
@@ -468,7 +467,7 @@ def arena_room():
                     score.set(to),
                     mc.execute().at(entities().tag('controls_home')).run().function(
                         'restworld:arena/%s_cur' % score.target)
-                )).glowing(True).place(*r(x, 2, z), 'east')
+                )).glowing(True).place(r(x, 2, z), 'east')
             for s in range(0, stride_length):
                 args = thing[s] + (None,) * (4 - len(thing[s]))
                 y = 3 - int(s / row_length)
@@ -497,12 +496,12 @@ def arena_room():
                 data_change = mc.execute().at(monitor_home).run().data()
                 sign_commands = (
                     start_battle_type.set(battle_type),
-                    data_change.merge(BlockData(*r(2, 0, 0)), {'Command': incr_cmd('hunter', hunter)}),
-                    data_change.merge(BlockData(*r(2, 0, 0)), {'Command': incr_cmd('victim', victim)}),
+                    data_change.merge(BlockData(r(2, 0, 0)), {'Command': incr_cmd('hunter', hunter)}),
+                    data_change.merge(BlockData(r(2, 0, 0)), {'Command': incr_cmd('victim', victim)}),
                     mc.function('restworld:arena/start_battle')
                 )
                 sign = WallSign((None, hunter, vs, victim), sign_commands)
-                yield sign.place(*r(-2, y, z), 'east')
+                yield sign.place(r(-2, y, z), 'east')
 
                 run_type = Score('arena_run_type', 'arena')
                 yield mc.execute().unless().score(run_type).matches((0, None)).run(run_type.set(0))
@@ -517,7 +516,7 @@ def arena_room():
         max_z = +end
         x = -2
 
-        loop.add(mc.fill(*r(x, 2, min_z - 1), *r(x, 2 + num_rows - 1, max_z + 1), 'air'))
+        loop.add(mc.fill(r(x, 2, min_z - 1), r(x, 2 + num_rows - 1, max_z + 1), 'air'))
         loop.loop(arena_run_loop, chunks)
         return loop
 
@@ -527,7 +526,7 @@ def arena_room():
         stand = marker_tmpl.clone().merge_nbt({'Tags': [var, 'home', 'arena_home']})
         for x in range(-1, 2):
             for z in range(-1, 2):
-                yield stand.summon(*r(x, -0.5, z))
+                yield stand.summon(r(x, -0.5, z))
 
     place_battlers = Score('place_batters', 'arena')
 
@@ -542,19 +541,19 @@ def arena_room():
             mc.execute().as_(entities().tag(actor)).run(count.add(1)),
             close.set(0),
             mc.execute().at(
-                entities().tag(other + '_home').pos(*r(-2, 0, -2))).as_(entities().tag(actor).delta(4, 5, 4)).run(
+                entities().tag(other + '_home').pos(r(-2, 0, -2))).as_(entities().tag(actor).delta((4, 5, 4))).run(
                 close.add(1)),
             athome.set(0),
             mc.execute().at(
-                entities().tag(actor + '_home').pos(*r(-2, 0, -2))).as_(entities().tag(actor).delta(4, 5, 4)).run(
+                entities().tag(actor + '_home').pos(r(-2, 0, -2))).as_(entities().tag(actor).delta((4, 5, 4))).run(
                 athome.add(1)),
         )
 
     def toggle_peace(_: Score, _2: int, thing: bool):
         return (
-            mc.execute().at(entities().tag('monitor_home')).run().fill(*r(2, -1, 0, 3, -1, 0),
+            mc.execute().at(entities().tag('monitor_home')).run().fill(r(2, -1, 0), r(3, -1, 0),
                                                                        'redstone_torch' if thing else 'air'),
-            mc.setblock(*r(0, 1, 0), '%s_concrete' % ('red' if thing else 'lime')),
+            mc.setblock(r(0, 1, 0), '%s_concrete' % ('red' if thing else 'lime')),
         )
 
     room = Room('arena', restworld)
@@ -570,7 +569,7 @@ def arena_room():
     room.function('arena_count_init').add(arena_count_cur)
     room.loop('arena_count', main_clock).loop(
         lambda _, i, thing: mc.execute().at(entities().tag('controls_home')).run(
-        ).data().merge(BlockData(*r(2, 4, 0)), {'Text2': '%d vs. %d' % (thing, thing)}), range(0, 6))
+        ).data().merge(BlockData(r(2, 4, 0)), {'Text2': '%d vs. %d' % (thing, thing)}), range(0, 6))
 
     room.function('arena_run_init').add(mc.function('restworld:arena/arena_run_cur'))
     # This is NOT intended to be run on the clock. It is only called "_main" because that gives us a
@@ -580,7 +579,7 @@ def arena_room():
     room.function('controls_init').add(
         arena_run_loop.score.set(0),
         mc.function('restworld:arena/arena_run_cur'),
-        label(*r(1, 3, 0), 'Go Home', facing=1),
+        label(r(1, 3, 0), 'Go Home', facing=1),
         mc.tag(entities().tag('controls_home')).add('controls_action_home')
     )
 
@@ -592,9 +591,9 @@ def arena_room():
                                  mc.kill(entities().type('item').distance((None, 50))),
                                  mc.kill(entities().type('experience_orb').distance((None, 50)))),
 
-    ## Types: 0-normal, 1-water, 2-undead
-    fill_arena_coords = r(-12, 4, -12, 12, 2, 12)
-    roof_coords = r(-12, 250, -12, 12, 250, 12)
+    # Types: 0-normal, 1-water, 2-undead
+    fill_arena_coords = r(-12, 4), r(-12, 12, 2, 12)
+    roof_coords = r(-12, 250, -12), r(12, 250, 12)
     room.function('start_battle').add(
         mc.execute().unless().score(start_battle_type).matches((0, None)).run(start_battle_type.set(0)),
         mc.execute().if_().score(start_battle_type).matches(0).at(monitor_home).run().fill(*fill_arena_coords, 'air'),

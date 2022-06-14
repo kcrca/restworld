@@ -40,30 +40,26 @@ class Thing:
         return id
 
     def sign_text(self, pre=None, skip=()):
-        lines = self.to_sign_text()
+        txt = self.to_sign_text()
         if pre:
-            lines = [pre, ] + lines
-        if len(lines) == 4:
-            start = 0
-        else:
-            start = 1
-            lines = ["", ] + lines
-        while len(lines) < 4:
-            lines += ("",)
+            txt = [pre] + txt
+        if len(txt) != 4:
+            txt = [""] + txt
+        txt.extend([""] * (4 - len(txt)))
         s = ''
         for i in range(0, 4):
             if i not in skip:
                 if len(s) > 0:
                     s += ','
-                s += "Text%d:%s" % (i + 1, text(lines[i]))
+                s += "Text%d:%s" % (i + 1, text(txt[i]))
         return s
 
     def to_sign_text(self):
         lines = self.text.split("|")
         return lines
 
-    def summon(self, x, y, z, rotation):
-        return Entity(self.id, nbt={'CustomName': self.name, 'Rotation': [rotation, 0]}).summon(x, y, z)
+    def summon(self, pos: Position, rotation):
+        return Entity(self.id, nbt={'CustomName': self.name, 'Rotation': [rotation, 0]}).summon(pos)
 
 
 class Nicknamed(Thing):
@@ -128,7 +124,7 @@ class Stepable(Thing):
 
 
 class ActionSign(Thing):
-    def __init__(self, name, id=None, note=None, priority=None, comment=None):
+    def __init__(self, name, id=None, note=None):
         Thing.__init__(self, name, id)
         self.note = "(%s)" % note if note else None
 
@@ -518,13 +514,8 @@ def named_frame_item(thing: Thing, name=None, damage=None):
     return Nbt({'Item': {'id': thing.id, 'Count': 1, 'tag': tag_nbt}})
 
 
-rooms = ('funcs')
-
-
-def ensure(x, y, z, block, nbt=None):
-    mc.execute().unless().block(x, y, z, block).run().setblock(x, y, z, block).nbt(
-        Nbt.as_nbt(nbt)
-    )
+def ensure(pos, block, nbt=None):
+    mc.execute().unless().block(pos, block).run().setblock(pos, block).nbt(Nbt.as_nbt(nbt))
 
 
 def extract_arg(name, default_value, kwargs, keep=False):
@@ -542,27 +533,26 @@ def _to_iterable(tags):
         return tags
     if isinstance(tags, Iterable) and not isinstance(tags, str):
         return tags
-    return (tags,)
+    return tuple(tags)
 
 
-def crops(loop_index: int, stages, crop, x, y, z, name='age'):
+def crops(loop_index: int, stages, crop, pos, name='age'):
     results = []
+    x, y, z = pos
     for i in range(0, 3):
         stage = stages[(loop_index + i) % len(stages)]
-        results.append(mc.fill(r(x), r(y), r(z) - i, r(x) + 2, r(y), r(z) - i, Block(crop, {name: stage})))
+        results.append(mc.fill(r(x, y, z - i), r(x + 2, y, z - i), Block(crop, {name: stage})))
     stage = stages[(loop_index + 1) % len(stages)]
     text_nbt = Sign.lines_nbt((None, 'Stage: %d' % stages[stage]))
-    results.append(mc.data().merge(BlockData(r(x) + 3, r(2), r(z) - 1), text_nbt))
+    results.append(mc.data().merge(BlockData((r(x) + 3, r(2), r(z) - 1)), text_nbt))
     return lines(results)
 
 
-def label(x: Coord, y: Coord, z: Coord, txt: str, facing) -> Commands:
+def label(pos: Position, txt: str, facing) -> Commands:
     return (
-        mc.execute().positioned(x, y, z).run().
-            kill(entities().type('item_frame').tag('label').sort(NEAREST).limit(1)),
-        mc.summon('item_frame', x, y, z,
-                  {'Invisible': True, 'Facing': facing,
-                   'Tags': [label, named_frame_item(Thing('stone_button'), txt)]}),
+        mc.execute().positioned(pos).run().kill(entities().type('item_frame').tag('label').sort(NEAREST).limit(1)),
+        mc.summon('item_frame', pos,
+                  {'Invisible': True, 'Facing': facing, 'Tags': [label, named_frame_item(Thing('stone_button'), txt)]}),
     )
 
 
@@ -576,7 +566,7 @@ class Clock:
 
     @classmethod
     def stop_all_clocks(cls) -> Command:
-        return mc.setblock(0, 1, 0, 'redstone_block')
+        return mc.setblock((0, 1, 0), 'redstone_block'())
 
     def add(self, function: Function):
         self._funcs.append(function)
@@ -592,7 +582,8 @@ class Clock:
                 yield mc.execute().at(entities().tag(self._tag(f))).run(). \
                     schedule().function(loop_finish, 1).replace()
 
-    def _tag(self, f):
+    @staticmethod
+    def _tag(f):
         return f.name.split(':')[-1]
 
 
@@ -604,8 +595,19 @@ def _to_list(text):
     return text
 
 
+class RoomPack(DataPack):
+    def __init__(self, name: str, dir: Path | str, suffixes: Iterable[str, ...],
+                 format_version: int = LATEST_PACK_VERSION, /):
+        super().__init__(name, dir, format_version)
+        self._suffixes = suffixes
+
+    @property
+    def suffixes(self):
+        return self._suffixes
+
+
 class Room(FunctionSet):
-    def __init__(self, name: str, dp: DataPack, facing: str = None, text: SignText = None):
+    def __init__(self, name: str, dp: RoomPack, facing: str = None, text: SignText = None):
         super().__init__(name, dp.function_set)
         self._pack = dp
         self._clocks = {}
@@ -624,7 +626,7 @@ class Room(FunctionSet):
         # I think this score is unused, but not sure, so I'm commenting it out.
         # score = Score('ancient', 'goto')
         self.add(Function('%s_room_init' % self.name).add(
-            sign.place(*r(x, 6, z), facing),
+            sign.place(r(x, 6, z), facing),
             # score.init(),
             # score.set(rot),
         ))
@@ -646,9 +648,8 @@ class Room(FunctionSet):
         tags.append(marker_tag)
         return Function(marker_tag).add(
             mc.kill(entities().tag(marker_tag)),
-            mc.execute().positioned(r(-0.5), r(0), r(0.5)).run().
-                kill(entities().type('armor_stand').delta(1, 2, 1)),
-            marker.summon(r(0), r(0.5), r(0)),
+            mc.execute().positioned(r(-0.5, 0, 0.5)).run().kill(entities().type('armor_stand').delta((1, 2, 1))),
+            marker.summon(r(0, 0.5, 0)),
         )
 
     def function(self, name: str, clock: Clock = None, /, needs_home=None) -> Function:
@@ -673,7 +674,8 @@ class Room(FunctionSet):
             self.add(self.home_func(base_name))
         return func
 
-    def _name_with_clock(self, name, clock):
+    @staticmethod
+    def _name_with_clock(name, clock):
         if not clock:
             base_name = name
         else:
@@ -737,9 +739,8 @@ class Room(FunctionSet):
                 mc.function('_cur'))
 
     def _yield_other_funcs(self):
-        added_commands = {}
-        added_commands['_enter'] = (mc.weather(CLEAR),)
-        for f in self._pack._suffixes:
+        added_commands = {'_enter': (mc.weather(CLEAR),)}
+        for f in self._pack.suffixes:
             f_name = '_' + f
             relevant = filter(lambda x: self.is_f(x, f_name), self._functions)
             func = Function(f_name)
@@ -749,7 +750,8 @@ class Room(FunctionSet):
             if len(func.commands()) > 1:
                 yield func
 
-    def is_f(self, x, f_name):
+    @staticmethod
+    def is_f(x, f_name):
         return x.name.endswith(f_name)
 
     def score(self, name):
@@ -762,15 +764,11 @@ class Room(FunctionSet):
 class MobPlacer:
     _armor_stand_tmpl = Entity('armor_stand').merge_nbt({'Invisible': True, 'Small': True, 'NoGravity': True})
 
-    def __init__(self,
-                 start_x: Coord, start_y: Coord, start_z: Coord,
-                 facing: str | int,
+    def __init__(self, start: Position, facing: str | int,
                  delta: float | tuple[float, float] = 2, kid_delta: float | tuple[float, float] = 1.2, *,
                  tags: Tuple[str, ...] = None,
                  nbt=None, kids=None, adults=None, auto_tag=True):
-        self.start_x = start_x
-        self.start_y = start_y
-        self.start_z = start_z
+        self.start = start
         self.nbt = nbt if nbt else Nbt()
         self.tags = _to_iterable(tags)
         if (kids, adults) == (None, None):
@@ -794,11 +792,10 @@ class MobPlacer:
             self.rotation = facing
             self.delta_x, self.delta_z = delta
             self.kid_x, self.kid_z = kid_delta
-        self._cur = [start_x, start_y, start_z]
+        self._cur = list(self.start)
 
     def summon(self, mobs: Iterable[EntityDef] | EntityDef, *, on_stand: bool | Callable[Entity] = False, tags=None,
-               nbt=None) -> Tuple[
-        Command, ...]:
+               nbt=None) -> Tuple[Command, ...]:
         if isinstance(mobs, (Entity, str)):
             mobs = (mobs,)
         for mob in mobs:
@@ -835,31 +832,31 @@ class MobPlacer:
             self._cur[0] += self.delta_x
             self._cur[2] += self.delta_z
 
-    def _do_summoning(self, tmpl, on_stand, pos):
+    @staticmethod
+    def _do_summoning(tmpl, on_stand, pos):
         if on_stand:
             stand = MobPlacer._armor_stand_tmpl.clone()
             stand.tag(*tmpl.nbt().get('Tags'))
             tmpl.merge_nbt({'id': tmpl.full_id()})
             stand.nbt().get_list('Passengers').append(tmpl.nbt())
             tmpl = stand
-        return tmpl.summon(*pos)
+        return tmpl.summon(pos)
 
 
 def say_score(*scores):
-    say = []
-    say.append(JsonText.text("scores:"))
+    say = [JsonText.text("scores:")]
     for s in scores:
         s = good_score(s)
         say.append(JsonText.text(str(s.target) + '='))
         say.append(JsonText.score(s))
-    return mc.tellraw(all(), *say)
+    return mc.tellraw(all_(), say)
 
 
 particles = [
     ActionSign("Ambient Entity|Effect", "ambient"),
     ActionSign("Angry Villager"),
     ActionSign("Ash"),
-    ActionSign("Barrier", priority=2, comment="not hard to find"),
+    ActionSign("Barrier"),
     ActionSign("Bubbles|Currents|Whirlpools", "bubbles"),
     ActionSign("Clouds", note="Evaporation"),
     ActionSign("Composter"),
@@ -882,25 +879,25 @@ particles = [
     ActionSign("Explosion"),
     ActionSign("Explosion Emitter"),
     ActionSign("Falling Dust"),
-    ActionSign("Falling Nectar", priority=2, comment="shown with bees"),
+    ActionSign("Falling Nectar"),
     ActionSign("Fireworks", note="and Flash"),
     ActionSign("Fishing"),
-    ActionSign("Flame", priority=2, comment="seen with blocks"),
+    ActionSign("Flame"),
     ActionSign("Happy Villager"),
     ActionSign("Heart"),
     ActionSign("Instant Effect"),
     ActionSign("Item Slime"),
     ActionSign("Item Snowball"),
     ActionSign("Large Smoke"),
-    ActionSign("Lava", priority=2, comment="seen in materials, with ores"),
+    ActionSign("Lava"),
     ActionSign("Light"),
-    ActionSign("Mycelium", priority=2, comment="seen in plants"),
+    ActionSign("Mycelium"),
     ActionSign("Nautilus", note="with Conduit"),
     ActionSign("Poof", note="Small Explosion"),
     ActionSign("Sculk Sensor"),
     ActionSign("Sculk Soul"),
     ActionSign("Shriek"),
-    ActionSign("Smoke", priority=2, comment="seen with items in blocks"),
+    ActionSign("Smoke"),
     ActionSign("Sneeze"),
     ActionSign("Snow and Rain"),
     ActionSign("Soul"),
