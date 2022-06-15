@@ -4,10 +4,10 @@ import sys
 
 from pyker.commands import mc, entities, JsonText, player, DARK_GREEN, Commands, r, REPLACE, BlockData, NORTH, WEST, \
     Score, MOVE, EntityData, self, OVERWORLD, EQ, MOD, THE_END, RAIN, CREATIVE, SIDEBAR, COLORS, MULT, PLUS, RESULT, \
-    LONG, Entity, all_
+    LONG, Entity, all_, Block, good_color_num, INT, WHITE, SOUTH
 from pyker.enums import ScoreCriteria
 from pyker.function import FunctionSet, Function, Loop
-from pyker.simpler import Book, Sign, WallSign
+from pyker.simpler import Book, Sign, WallSign, Shield, Pattern
 from rooms import Room, Clock, MobPlacer, fishes, Thing, label, RoomPack
 
 
@@ -20,7 +20,7 @@ marker_tmpl = Entity('armor_stand', {'NoGravity': True, 'Small': True, })
 
 class Restworld(RoomPack):
     def __init__(self, dir: str):
-        suffixes = ['tick', 'init', 'enter', 'incr', 'decr', 'cur', 'exit', 'finish']
+        suffixes = list(RoomPack.base_suffixes)
         suffixes.extend(list(x.name for x in self.clocks()))
         super().__init__('restworld', dir, suffixes, 4)
 
@@ -190,9 +190,8 @@ def global_room():
 
     room = Room('global', restworld)
     clock_toggle = room.score('clock_toggle')
-    room.add(
-        Function('arena').add(
-            mc.execute().in_(OVERWORLD).run().tp().pos((1126, 103, 1079), player()).facing((1139, 104, 1079)), ))
+    room.function('arena').add(
+        mc.execute().in_(OVERWORLD).run().tp().pos((1126, 103, 1079), player()).facing((1139, 104, 1079)))
     room.add(
         room.home_func('clock'),
         Function('clock_init').add(
@@ -230,32 +229,30 @@ def global_room():
     )
     death_home = room.home_func('death')
     room.add(death_home)
-    room.add(Function('death_init').add(
+    room.function('death_init').add(
         mc.execute().positioned((0, 1.5, 0)).run().function(death_home.full_name),
         mc.tag(entities().tag(death_home.name)).add('death'),
         mc.tag(entities().tag(death_home.name)).add('immortal'),
-    ))
-
-    room.add(
-        Function('full_finish').add(
-            mc.function('restworld:_init'),
-            mc.function('restworld:_cur'),
-            # Some of these functions leave dropped items behind, this cleans that up'
-            mc.kill(entities().type('item')),
-        ),
-        Function('full_reset').add(
-            mc.function('restworld:global/clock_off'),
-            mc.execute().positioned(r(0, -3, 0)).run().function('restworld:global/min_home'),
-            mc.kill(entities().tag('home', '!min_home')),
-            # Death must be ready before any other initialization
-            mc.function('restworld:global/death_init'),
-            use_min_fill(97, 'redstone_block', 'dried_kelp_block'),
-            use_min_fill(97, 'dried_kelp_block', 'redstone_block'),
-            use_min_fill(97, 'redstone_block', 'pumpkin'),
-            use_min_fill(97, 'pumpkin', 'redstone_block'),
-        ),
     )
-    room.add(Function('gamerules').add(
+
+    room.function('full_finish').add(
+        mc.function('restworld:_init'),
+        mc.function('restworld:_cur'),
+        # Some of these functions leave dropped items behind, this cleans that up'
+        mc.kill(entities().type('item')),
+    )
+    room.function('full_reset').add(
+        mc.function('restworld:global/clock_off'),
+        mc.execute().positioned(r(0, -3, 0)).run().function('restworld:global/min_home'),
+        mc.kill(entities().tag('home', '!min_home')),
+        # Death must be ready before any other initialization
+        mc.function('restworld:global/death_init'),
+        use_min_fill(97, 'redstone_block', 'dried_kelp_block'),
+        use_min_fill(97, 'dried_kelp_block', 'redstone_block'),
+        use_min_fill(97, 'redstone_block', 'pumpkin'),
+        use_min_fill(97, 'pumpkin', 'redstone_block'),
+    )
+    room.function('gamerules').add(
         (mc.gamerule(*args) for args in (
             ('announceAdvancements', False),
             ('commandBlockOutput', False),
@@ -272,7 +269,7 @@ def global_room():
             ('randomTickSpeed', 0),
             ('spawnRadius', 0),
         ))
-    ))
+    )
     for p in (
             ('biomes', OVERWORLD, (-1000, 101, -1000), (-1000, 80, -970)),
             ('connected', OVERWORLD, (1000, 101, 1000), (990, 101, 1000)),
@@ -281,17 +278,16 @@ def global_room():
             ('nether', OVERWORLD, (-1000, 101, -1000), (-1000, 80, -970)),
             ('photo', OVERWORLD, (-1000, 101, -1000), (-1000, 80, -970)),
             ('arena', OVERWORLD, (1014, 106, -1000), (1000, 100, -1000))):
-        room.add(
-            Function('goto_' + p[0]).add(mc.execute().in_(p[1]).run().teleport().pos(p[2], player()).facing(p[3])))
-    room.add(Function('goto_weather').add(
+        room.function('goto_' + p[0]).add(mc.execute().in_(p[1]).run().teleport().pos(p[2], player()).facing(p[3]))
+    room.function('goto_weather').add(
         mc.execute().in_(OVERWORLD).run().teleport().pos((1009, 101, 1000), player()).facing((1004, 102, 1000)),
-        mc.weather(RAIN)))
+        mc.weather(RAIN))
     room.add(room.home_func('min'))
 
     levloop = room.loop('mob_levitation', main_clock)
     levloop.loop(levitation_body, range(0, 2))
 
-    room.add(Function('ready').add(
+    room.function('ready').add(
         mc.clear(player()),
         mc.gamemode(CREATIVE, player()),
         mc.function('restworld:global/control_book'),
@@ -299,7 +295,7 @@ def global_room():
         mc.scoreboard().objectives().setdisplay(SIDEBAR),
         mc.function('restworld:center/reset_clocks'),
         mc.function('restworld:global/clock_on'),
-    ))
+    )
 
 
 def aquatic_room():
@@ -358,7 +354,7 @@ def aquatic_room():
                     yield variant.add(1)
                 yield variant.add(256)
 
-        room.add(Function('all_fish_init').add(all_fish_init()))
+        room.function('all_fish_init').add(all_fish_init())
         room.loop('all_fish', fast_clock).add(all_fish())
 
     room = Room('aquatic', restworld, NORTH, (None, 'Aquatic'))
@@ -366,12 +362,12 @@ def aquatic_room():
     room.loop('2_fish', main_clock).loop(loop_n_fish(2), range(0, 2))
     room.loop('3_fish', main_clock).loop(loop_n_fish(3), range(0, 3))
     tropical_fish_funcs(room)
-    room.add(Function('axolotl_init').add(MobPlacer(r(1.3, 1.5, 1.3), 135, (0, 0), (-1.4, -1.4)).summon('axolotl')))
+    room.function('axolotl_init').add(MobPlacer(r(1.3, 1.5, 1.3), 135, (0, 0), (-1.4, -1.4)).summon('axolotl'))
     axolotls = ('Lucy', 'Wild', 'Gold', 'Cyan', 'Blue')
     room.loop('axolotl', main_clock).loop(
         lambda _, i, thing: mc.execute().as_(entities().tag('axoltol')).run().data().merge(
             EntityData(self()), {'Variant': i, 'CustomName': thing + ' Axolotl'}), axolotls)
-    room.add(Function('elder_guardian').add(Thing('Elder Guardian').summon(r(2, 1, 0), rotation=225)))
+    room.function('elder_guardian').add(Thing('Elder Guardian').summon(r(2, 1, 0), rotation=225))
 
 
 def arena_room():
@@ -611,6 +607,252 @@ def arena_room():
     room.loop('toggle_peace').loop(toggle_peace, (True, False)).add(mc.function('restworld:arena/start_battle'))
 
 
+def die(*msg: str):
+    sys.stderr.write(*msg)
+    sys.exit(1)
+
+
+def banners_room():
+    stand_tmpl = Entity('armor_stand', {
+        'Invisible': True, 'NoGravity': True, 'ShowArms': True, 'Pose': {'LeftArm': [0, 90, 90]}, 'HandItems': [{}],
+        'Tags': ['banner_stand']})
+
+    adjustments = {}
+    # [xz]n: Adjustments (nudge) for shield's armor stand
+    # b[xz]: Adjustments for banner position
+    #                 x   xn  xd   z   zn  zd             bx  bz
+    adjustments[0] = (1, 0.07, 1, -1, 0.30, 0, 0, 'south', 0, +1)
+    adjustments[11] = (13, -0.30, 0, 1, 0.07, 1, 90, 'west', -1, 0)
+    adjustments[21] = (11, -0.07, -1, 13, -0.30, 0, 180, 'north', 0, -1)
+    adjustments[31] = (-1, 0.30, 0, 11, -0.07, -1, 270, 'east', +1, 0)
+
+    authored_patterns = (
+        (Block('blue_banner', nbt={'Patterns': [
+            {'Color': 0, 'Pattern': "bri"}, {'Color': 11, 'Pattern': "hhb"}, {'Color': 15, 'Pattern': "sc"},
+            {'Color': 11, 'Pattern': "sc"}, {'Color': 15, 'Pattern': "bo"}, {'Color': 11, 'Pattern': "bo"}]}),
+         'Tardis', 'Pikachu'),
+        (Block('purple_banner', nbt={'Patterns': [
+            {'Color': 2, 'Pattern': "ss"}, {'Color': 10, 'Pattern': "bri"}, {'Color': 2, 'Pattern': "cbo"},
+            {'Color': 15, 'Pattern': "bo"}]}),
+         'Portail du Nether', 'Akkta'),
+        (Block('white_banner', nbt={'Patterns': [
+            {'Color': 15, 'Pattern': "mr"}, {'Color': 1, 'Pattern': "cbo"}, {'Color': 1, 'Pattern': "mc"},
+            {'Color': 1, 'Pattern': "cre"}, {'Color': 1, 'Pattern': "tt"}, {'Color': 1, 'Pattern': "tts"}]}),
+         'Fox', 'mr.crafteur'),
+        (Block('white_banner', nbt={'Patterns': [
+            {'Color': 15, 'Pattern': "mc"}, {'Color': 0, 'Pattern': "flo"}, {'Color': 15, 'Pattern': "tt"},
+            {'Color': 0, 'Pattern': "cr"}, {'Color': 15, 'Pattern': "cbo"}, {'Color': 0, 'Pattern': "bts"}]}),
+         'Rabbit', 'googolplexbyte'),
+        (Block('light_blue_banner', nbt={'Patterns': [
+            {'Color': 11, 'Pattern': "gra"}, {'Color': 0, 'Pattern': "cbo"}, {'Color': 0, 'Pattern': "cr"},
+            {'Color': 0, 'Pattern': "mc"}, {'Color': 11, 'Pattern': "flo"}, {'Color': 0, 'Pattern': "tt"}]}),
+         'Angel', 'PK?'),
+        (Block('white_banner', nbt={'Patterns': [
+            {'Color': 15, 'Pattern': "sc"}, {'Color': 0, 'Pattern': "sc"}, {'Color': 15, 'Pattern': "flo"},
+            {'Color': 0, 'Pattern': "flo"}]}),
+         'Quartz sculpte', 'Pikachu'),
+        (Block('black_banner', nbt={'Patterns': [
+            {'Color': 5, 'Pattern': "cbo"}, {'Color': 15, 'Pattern': "rs"}, {'Color': 14, 'Pattern': "flo"},
+            {'Color': 5, 'Pattern': "ms"}, {'Color': 15, 'Pattern': "tt"}, {'Color': 5, 'Pattern': "moj"}]}),
+         'DRAGON !', 'kraftime'),
+        (Block('white_banner', nbt={'Patterns': [
+            {'Color': 15, 'Pattern': "ts"}, {'Color': 0, 'Pattern': "sc"}, {'Color': 14, 'Pattern': "hhb"},
+            {'Color': 0, 'Pattern': "bo"}, {'Color': 0, 'Pattern': "bs"}, {'Color': 4, 'Pattern': "ms"}]}),
+         'Poule', 'mish80'),
+        (Block('black_banner', nbt={'Patterns': [
+            {'Color': 14, 'Pattern': "gru"}, {'Color': 14, 'Pattern': "bt"}, {'Color': 0, 'Pattern': "bts"},
+            {'Color': 0, 'Pattern': "tts"}]}),
+         'Bouche', 'entonix69'),
+        (Block('lime_banner', nbt={'Patterns': [
+            {'Color': 4, 'Pattern': "gra"}, {'Color': 3, 'Pattern': "gru"}, {'Color': 0, 'Pattern': "cbo"},
+            {'Color': 0, 'Pattern': "cr"}, {'Color': 0, 'Pattern': "mr"}, {'Color': 5, 'Pattern': "mc"}]}),
+         'Like pls ^-^', 'Harmony'),
+    )
+
+    def armor_stands(x, xn, z, zn, angle, facing, bx, bz, y_banner, y_shield, pattern, handback=None):
+        shield = Shield(0).add_pattern(pattern, 9)
+        stand = stand_tmpl.clone()
+        stand.merge_nbt({'CustomName': ' '.join(Pattern.sign_text(pattern)), 'Rotation': [angle, 0]})
+        stand.nbt()['HandItems'].append(shield.nbt())
+        yield stand.summon(r(x + xn, y_shield, z + zn))
+
+    def render_banners(render, handback=None):
+        # These are in the first adjustment, but python doesn't know that, so this keeps it happy
+        x = z = xd = zd = xn = zn = angle = facing = bx = bz = 0
+        for i, pattern in enumerate(Pattern):
+            try:
+                x, xn, xd, z, zn, zd, angle, facing, bx, bz = adjustments[i]
+            except KeyError:
+                x += xd
+                z += zd
+            if i > 10 and i % 10 == 6:
+                x += xd
+                z += zd
+            yield render(x, xn, z, zn, angle, facing, bx, bz, 3.65, 3.65, pattern, handback)
+
+    def custom_banner(x, z, nudge):
+        stand1 = stand_tmpl.clone()
+        stand1.nbt().get_list('Tags').extend(('banner_stand', 'banner_pattern_custom'))
+        stand2 = stand_tmpl.clone()
+        stand2.nbt().get_list('Tags').extend(('banner_stand', 'banner_pattern_custom_author'))
+        return stand1.summon(r(x + nudge, 3.1, z + nudge)), stand2.summon(r(x + nudge, 2.8, z + nudge))
+
+    def authored_banners(pattern, x, z, rot):
+        return (
+            mc.setblock(r(x, 3, z), pattern[0].merge_state({'rotation': rot})),
+            mc.execute().positioned(r(x, 3, z)).as_(
+                entities().tag('banner_pattern_custom').distance((None, 2))).run().data().merge(
+                EntityData(self()), {'CustomName': pattern[1]}),
+            mc.execute().positioned(r(x, 3, z)).as_(
+                entities().tag('banner_pattern_custom_author').distance((None, 2))).run().data().merge(
+                EntityData(self()), {'CustomName': pattern[2]}),
+        )
+
+    half = int(len(authored_patterns) / 2)
+
+    def render_authored_banners(_: Score, i: int, _2):
+        return (
+            authored_banners(authored_patterns[i], 0.2, 0.2, 14),
+            authored_banners(authored_patterns[i + half], 11.8, 11.8, 6),
+        )
+
+    def render_known_banner(x, xn, z, zn, angle, facing, bx, bz, y, pattern, color, ink, handback=None):
+        return mc.setblock(r(x + bx, y, z + bz), Block(color + '_wall_banner', {'facing': facing},
+                                                       {'Patterns': {'Color': ink, 'Pattern': pattern}}))
+
+    def render_most(x, xn, z, zn, angle, facing, bx, bz, y_banner, y_shield, pattern, handback=None):
+        color = handback
+        return render_known_banner(x, xn, z, zn, angle, facing, bx, bz, y_banner, pattern, color, 9)
+
+    def render_banner_ink(x, xn, z, zn, angle, facing, bx, bz, y_banner, y_shield, pattern, handback=None):
+        return (
+            mc.execute().store(RESULT).block(r(x + bx, y_banner, z + bz), 'Patterns[0].Color', INT, 1).run(
+                banner_ink.get()),
+            mc.execute().as_(entities().tag('banner_stand')).run().data().modify(
+                EntityData(self()), 'HandItems[1].tag.BlockEntityTag.Patterns[0]').merge().value({'Color': handback}),
+        )
+
+    def banner_color_loop(_, _2, color: str):
+        return (render_banners(render_most, handback=color),
+                mc.execute().as_(entities().tag('banner_stand')).run(
+                ).data().modify(EntityData(self()), 'HandItems[1].tag.BlockEntityTag.Base').set().value(
+                    good_color_num(color))
+                )
+
+    def banner_ink_loop(_, _2, color: str):
+        return render_banners(render_banner_ink, handback=color)
+
+    def switch_banners(which):
+        mc.tag(entities().tag('all_banners_home')).remove('banner_color_action_home')
+        mc.tag(entities().tag('all_banners_home')).remove('banner_color_home')
+        mc.tag(entities().tag('all_banners_home')).remove('banner_ink_action_home')
+        mc.tag(entities().tag('all_banners_home')).remove('banner_ink_home')
+        mc.tag(entities().tag('all_banners_home')).add('banner_' + which + '_action_home')
+        mc.tag(entities().tag('all_banners_home')).add('banner_' + which + '_home')
+        mc.tag(entities().tag('all_banners_home')).add('banners_action_home')
+
+    room = Room('banners', restworld, SOUTH, (None, 'Banners &', 'Shields'))
+
+    banner_color = room.score('banner_color')
+    banner_ink = room.score('banner_ink')
+    banner_color_init = mc.function('restworld:banners/switch_to_color')
+    room.function('all_banners_init').add(
+        banner_color.set(0),
+        banner_ink.set(9),
+        mc.kill(entities().tag('banner_stand')),
+        mc.fill(r(-2, -2, -2), r(16, 16, 16), 'air', REPLACE).filter('#banners'),
+        render_banners(armor_stands),
+        mc.setblock(r(-0.2, 3, 11.8), Block('white_banner', {'rotation': 10}, {
+            'Patterns': [{'Pattern': "mr", 'Color': 9}, {'Pattern': "bs", 'Color': 8}, {'Pattern': "cs", 'Color': 7},
+                         {'Pattern': "bo", 'Color': 8}, {'Pattern': "ms", 'Color': 15}, {'Pattern': "hh", 'Color': 8},
+                         {'Pattern': "mc", 'Color': 8}, {'Pattern': "bo", 'Color': 15}]})),
+        mc.setblock(r(-11.8, 3, 0.2), Block('magenta_banner', {'rotation': 2}, {
+            'Patterns': [{'Pattern': "bt", 'Color': 15}, {'Pattern': "tt", 'Color': 15}]})),
+        custom_banner(0.2, 0.2, 0.1),
+        custom_banner(11.8, 11.8, -0.1),
+        banner_color_init,
+        mc.function('restworld:banners/banner_color_cur'),
+    )
+
+    if len(authored_patterns) % 2 != 0:
+        die('Must have an even number of custom patterns')
+    room.loop('all_banners', main_clock).add(
+        mc.setblock(r(0, 3, 0), 'air'),
+        mc.setblock(r(11, 3, 11), 'air'),
+    ).loop(render_authored_banners, range(0, half))
+
+    room.function('banner_color_init').add(banner_color_init)
+    loop = room.loop('banner_color', main_clock).add(
+        mc.fill(r(1, 3, 0), r(11, 5, 0), 'air', REPLACE).filter('#banners'),
+        mc.fill(r(12, 3, 1), r(12, 5, 11), 'air', REPLACE).filter('#banners'),
+        mc.fill(r(1, 3, 12), r(11, 5, 12), 'air', REPLACE).filter('#banners'),
+        mc.fill(r(0, 3, 11), r(0, 5, 1), 'air', REPLACE).filter('#banners'),
+    ).loop(banner_color_loop, COLORS)
+    loop.add(render_banners(render_banner_ink))
+
+    banner_controls = room.function('banner_controls').add(
+        mc.function('restworld:banners/banner_controls_remove'),
+        mc.function('restworld:global/clock_off'),
+        WallSign((None, 'Set Banner', 'Color'), (mc.function('restworld:banners/switch_to_color', )),
+                 wood='dark_oak').color(WHITE).place(r(4, 3, 1), SOUTH),
+        WallSign((None, 'Set Banner', 'Ink'), (mc.function('restworld:banners/switch_to_ink', )),
+                 wood='dark_oak').color(WHITE).place(r(4, 2, 2), SOUTH),
+    )
+    for i, c in enumerate(COLORS):
+        x = i % 8
+        # Leave room for the middle signs
+        if x >= 4:
+            x += 1
+        row = int(i / 8)
+        y = 3 if row == 0 else 2
+        z = 1 if row == 0 else 2
+        if_colors = mc.execute().at(entities().tag('banner_color_home'))
+        if_ink = mc.execute().at(entities().tag('banner_ink_home'))
+        banner_controls.add(WallSign((None, c), (
+            if_colors.run(banner_color.set(i)),
+            if_colors.run().function('restworld:banners/banner_color_cur'),
+            if_ink.run(banner_ink.set(i)),
+            if_ink.run().function('restworld:banners/banner_ink_cur'),
+        )))
+    room.function('banner_controls_init').add(
+        label((5, 2, 4), 'Banner / Ink'),
+        label((3, 2, 4), 'Labels'),
+        label((4, 2, 3), 'Controls'),
+        mc.function('restworld:banners/switch_to_color'),
+    )
+    room.function('banner_controls_remove', needs_home=False).add(
+        mc.fill(r(0, 2, 0), r(8, 4, 4), 'air', REPLACE).filter('#wall_signs'))
+
+    room.loop('banner_ink', main_clock).loop(banner_ink_loop, COLORS)
+
+    # ^Cyan Lozenge
+    # ^Light Gray Base
+    # ^Gray Pale
+    # ^Light Gray Bordure
+    # ^Black Fess
+    # ^Light Gray Per Fess
+    # ^Light Gray Roundel
+    # ^Black Bordure
+    room.function('ominous_banner').add(
+        mc.setblock(r(0, 0, 0), Block('white_banner', nbt={
+            'Patterns': [{'Pattern': "mr", 'Color': 9}, {'Pattern': "bs", 'Color': 8}, {'Pattern': "cs", 'Color': 7},
+                         {'Pattern': "bo", 'Color': 8}, {'Pattern': "ms", 'Color': 15}, {'Pattern': "hh", 'Color': 8},
+                         {'Pattern': "mc", 'Color': 8}, {'Pattern': "bo", 'Color': 15}]})))
+
+    room.function('switch_to_color').add(switch_banners('color'))
+    room.function('switch_to_ink').add(switch_banners('ink'))
+
+
+def main():
+    for f in (ancient_room, global_room, aquatic_room, arena_room, banners_room):
+        f()
+    restworld.save()
+
+
+if __name__ == '__main__':
+    main()
+
+
 class Wall:
     def __init__(self, width, used, facing, block_at, y_first=3, y_last=1, used_widths=None, start=None, skip=None):
         self.width = width
@@ -661,13 +903,3 @@ class Wall:
             if y < self.y_last:
                 return None, None
         return x, y
-
-
-def main():
-    for f in (ancient_room, global_room, aquatic_room, arena_room):
-        f()
-    restworld.save()
-
-
-if __name__ == '__main__':
-    main()

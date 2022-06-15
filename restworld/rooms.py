@@ -548,7 +548,7 @@ def crops(loop_index: int, stages, crop, pos, name='age'):
     return lines(results)
 
 
-def label(pos: Position, txt: str, facing) -> Commands:
+def label(pos: Position, txt: str, facing=1) -> Commands:
     return (
         mc.execute().positioned(pos).run().kill(entities().type('item_frame').tag('label').sort(NEAREST).limit(1)),
         mc.summon('item_frame', pos,
@@ -566,7 +566,7 @@ class Clock:
 
     @classmethod
     def stop_all_clocks(cls) -> Command:
-        return mc.setblock((0, 1, 0), 'redstone_block'())
+        return mc.setblock((0, 1, 0), 'redstone_block')
 
     def add(self, function: Function):
         self._funcs.append(function)
@@ -596,6 +596,9 @@ def _to_list(text):
 
 
 class RoomPack(DataPack):
+    base_suffixes = ('tick', 'init', 'enter', 'incr', 'decr', 'cur', 'exit', 'finish')
+    base_suffixes_re = re.compile(r'(\w+)_(' + '|'.join(base_suffixes) + ')')
+
     def __init__(self, name: str, dir: Path | str, suffixes: Iterable[str, ...],
                  format_version: int = LATEST_PACK_VERSION, /):
         super().__init__(name, dir, format_version)
@@ -655,7 +658,7 @@ class Room(FunctionSet):
     def function(self, name: str, clock: Clock = None, /, needs_home=None) -> Function:
         base_name, name = self._name_with_clock(name, clock)
         if needs_home is None:
-            needs_home = not name.endswith('_home')
+            needs_home = not RoomPack.base_suffixes_re.match(name)
         return self._add_func(Function(name, base_name=base_name), name, clock, needs_home)
 
     def loop(self, name: str, clock: Clock = None, /, needs_home=True) -> Loop:
