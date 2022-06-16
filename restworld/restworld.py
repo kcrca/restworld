@@ -128,7 +128,7 @@ restworld = Restworld('/Users/kcrca/clarity/home/saves/NewRest')
 
 def ancient_room():
     Room('ancient', restworld, NORTH, (None, 'Warden')).add(
-        Function('warden_mob_init').add((MobPlacer(r(0, 2, 0), WEST, adults=True).summon('warden'),)),
+        Function('warden_init').add((MobPlacer(r(0, 2, 0), WEST, adults=True).summon('warden'),)),
     )
 
 
