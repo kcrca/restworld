@@ -537,12 +537,12 @@ def arena_room():
             mc.execute().as_(entities().tag(actor)).run(count.add(1)),
             close.set(0),
             mc.execute().at(
-                entities().tag(other + '_home').pos(r(-2, 0, -2))).as_(entities().tag(actor).delta((4, 5, 4))).run(
-                close.add(1)),
+                entities().tag(other + '_home')).positioned(r(-2, 0, -2)).as_(
+                entities().tag(actor).delta((4, 5, 4))).run(close.add(1)),
             athome.set(0),
             mc.execute().at(
-                entities().tag(actor + '_home').pos(r(-2, 0, -2))).as_(entities().tag(actor).delta((4, 5, 4))).run(
-                athome.add(1)),
+                entities().tag(actor + '_home')).positioned(r(-2, 0, -2)).as_(
+                entities().tag(actor).delta((4, 5, 4))).run(athome.add(1)),
         )
 
     def toggle_peace(_: Score, _2: int, thing: bool):
@@ -575,7 +575,7 @@ def arena_room():
     room.function('controls_init').add(
         arena_run_loop.score.set(0),
         mc.function('restworld:arena/arena_run_cur'),
-        label(r(1, 3, 0), 'Go Home', facing=1),
+        label(r(1, 3, 0), 'Go Home'),
         mc.tag(entities().tag('controls_home')).add('controls_action_home')
     )
 
@@ -808,16 +808,18 @@ def banners_room():
         z = 1 if row == 0 else 2
         if_colors = mc.execute().at(entities().tag('banner_color_home'))
         if_ink = mc.execute().at(entities().tag('banner_ink_home'))
-        banner_controls.add(WallSign((None, c), (
-            if_colors.run(banner_color.set(i)),
-            if_colors.run().function('restworld:banners/banner_color_cur'),
-            if_ink.run(banner_ink.set(i)),
-            if_ink.run().function('restworld:banners/banner_ink_cur'),
-        )))
+        banner_controls.add(
+            WallSign((None, c), (
+                if_colors.run(banner_color.set(i)),
+                if_colors.run().function('restworld:banners/banner_color_cur'),
+                if_ink.run(banner_ink.set(i)),
+                if_ink.run().function('restworld:banners/banner_ink_cur'),
+            )).place(r(x, y, z), SOUTH)
+        )
     room.function('banner_controls_init').add(
-        label((5, 2, 4), 'Banner / Ink'),
-        label((3, 2, 4), 'Labels'),
-        label((4, 2, 3), 'Controls'),
+        label(r(5, 2, 4), 'Banner / Ink'),
+        label(r(3, 2, 4), 'Labels'),
+        label(r(4, 2, 3), 'Controls'),
         mc.function('restworld:banners/switch_to_color'),
     )
     room.function('banner_controls_remove', needs_home=False).add(

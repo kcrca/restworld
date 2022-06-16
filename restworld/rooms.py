@@ -508,7 +508,7 @@ def render_tmpl(tmpl, var_name, **kwargs):
 
 def named_frame_item(thing: Thing, name=None, damage=None):
     # <%def name="named_frame_item(thing, name=None, damage=None)">Item:{id:${thing.id},Count:1,tag:{display:{Name:'{"text":"${name if name else thing.name}"}'}${damage if damage else ""}}},Fixed:True</%def>
-    tag_nbt = Nbt({'display': {'Name': {'"text"': '"' + str(name if name else thing.name) + '"'}, }})
+    tag_nbt = Nbt({'display': {'Name': str(JsonText.text(str(name if name else thing.name))), }})
     if damage:
         tag_nbt.update(damage)
     return Nbt({'Item': {'id': thing.id, 'Count': 1, 'tag': tag_nbt}})
@@ -552,7 +552,8 @@ def label(pos: Position, txt: str, facing=1) -> Commands:
     return (
         mc.execute().positioned(pos).run().kill(entities().type('item_frame').tag('label').sort(NEAREST).limit(1)),
         mc.summon('item_frame', pos,
-                  {'Invisible': True, 'Facing': facing, 'Tags': [label, named_frame_item(Thing('stone_button'), txt)]}),
+                  named_frame_item(Thing('stone_button'), txt).merge(
+                      {'Invisible': True, 'Facing': facing, 'Tags': ['label'], 'Fixed': True})),
     )
 
 
