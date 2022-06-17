@@ -8,11 +8,11 @@ from pyker.commands import mc, entities, JsonText, player, DARK_GREEN, Commands,
 from pyker.enums import ScoreCriteria
 from pyker.function import FunctionSet, Function, Loop
 from pyker.simpler import Book, Sign, WallSign, Shield, Pattern
-from rooms import Room, Clock, MobPlacer, fishes, Thing, label, RoomPack
+from rooms import Room, Clock, fishes, Thing, label, RoomPack
 
 
 def kill_em(target):
-    return mc.tp().to(entities().tag('death').limit(1), target)
+    return mc.tp().to(target, entities().tag('death').limit(1))
 
 
 marker_tmpl = Entity('armor_stand', {'NoGravity': True, 'Small': True, })
@@ -103,9 +103,7 @@ class Restworld(RoomPack):
             fname = '_' + f
             func = Function(fname)
             for room in self.function_set.children():
-                func.add(
-                    list(mc.function(x.full_name) for x in filter(lambda x: x.name == fname, room.functions()))
-                )
+                func.add(mc.function(room.full_name + '/' + fname))
             yield func
 
 
@@ -127,8 +125,9 @@ restworld = Restworld('/Users/kcrca/clarity/home/saves/NewRest')
 
 
 def ancient_room():
-    Room('ancient', restworld, NORTH, (None, 'Warden')).add(
-        Function('warden_init').add((MobPlacer(r(0, 2, 0), WEST, adults=True).summon('warden'),)),
+    room = Room('ancient', restworld, NORTH, (None, 'Warden'))
+    room.add(
+        Function('warden_init').add((room.mob_placer(r(0, 2, 0), WEST, adults=True).summon('warden'),)),
     )
 
 
@@ -234,6 +233,12 @@ def global_room():
         mc.tag(entities().tag(death_home.name)).add('death'),
         mc.tag(entities().tag(death_home.name)).add('immortal'),
     )
+    killables = entities().not_type('player').not_tag('death').distance((None, 30))
+    room.function('kill_em').add(
+        mc.execute().at(entities().tag('death')).run().kill(killables),
+        mc.execute().at(entities().tag('death')).as_(killables).run().data().merge(EntityData(self()),
+                                                                                   {'DeathTime': -1200}),
+    )
 
     room.function('full_finish').add(
         mc.function('restworld:_init'),
@@ -278,8 +283,8 @@ def global_room():
             ('nether', OVERWORLD, (-1000, 101, -1000), (-1000, 80, -970)),
             ('photo', OVERWORLD, (-1000, 101, -1000), (-1000, 80, -970)),
             ('arena', OVERWORLD, (1014, 106, -1000), (1000, 100, -1000))):
-        room.function('goto_' + p[0]).add(mc.execute().in_(p[1]).run().teleport().pos(p[2], player()).facing(p[3]))
-    room.function('goto_weather').add(
+        room.function('goto_' + p[0], needs_home=False).add(mc.execute().in_(p[1]).run().teleport().pos(p[2], player()).facing(p[3]))
+    room.function('goto_weather', needs_home=False).add(
         mc.execute().in_(OVERWORLD).run().teleport().pos((1009, 101, 1000), player()).facing((1004, 102, 1000)),
         mc.weather(RAIN))
     room.add(room.home_func('min'))
@@ -318,12 +323,12 @@ def aquatic_room():
         variant = Score('variant', 'fish')
 
         def all_fish_init():
-            yield Sign((None, 'All Possible', 'Tropical Fish', '-------->')).place(r(0, 2, 0), WEST, water=True)
+            yield WallSign((None, 'All Possible', 'Tropical Fish', '-------->')).place(r(0, 2, 0), WEST, water=True)
             # , nbt={'Invulnerable': True}
-            placer = MobPlacer(r(0, 1.2, 0), WEST, 1, adults=True)
+            placer = room.mob_placer(r(0, 1.2, 0), WEST, 1, adults=True)
             for i in range(0, 12):
                 if i == 6:
-                    placer = MobPlacer(r(1, 1.2, 0), WEST, 1)
+                    placer = room.mob_placer(r(1, 1.2, 0), WEST, 1)
                 yield placer.summon('tropical_fish', tags=('fish%d' % i,))
             yield (
                 mc.scoreboard().objectives().remove('fish'),
@@ -357,18 +362,31 @@ def aquatic_room():
         room.function('all_fish_init').add(all_fish_init())
         room.loop('all_fish', fast_clock).add(all_fish())
 
+    def squids(_, i, _2):
+        placer = room.mob_placer(r(1.8, 4, 0), WEST, adults=True, tags=('squidy',), nbt={'NoGravity': True})
+        return placer.summon('squid' if i == 0 else 'glow_squid')
+
     room = Room('aquatic', restworld, NORTH, (None, 'Aquatic'))
 
     room.loop('2_fish', main_clock).loop(loop_n_fish(2), range(0, 2))
     room.loop('3_fish', main_clock).loop(loop_n_fish(3), range(0, 3))
     tropical_fish_funcs(room)
-    room.function('axolotl_init').add(MobPlacer(r(1.3, 1.5, 1.3), 135, (0, 0), (-1.4, -1.4)).summon('axolotl'))
+    room.function('axolotl_init').add(room.mob_placer(r(1.3, 4, 1.3), 135, (0, 0), (-1.4, -1.4)).summon('axolotl'))
     axolotls = ('Lucy', 'Wild', 'Gold', 'Cyan', 'Blue')
     room.loop('axolotl', main_clock).loop(
         lambda _, i, thing: mc.execute().as_(entities().tag('axoltol')).run().data().merge(
             EntityData(self()), {'Variant': i, 'CustomName': thing + ' Axolotl'}), axolotls)
-    room.function('elder_guardian').add(Thing('Elder Guardian').summon(r(2, 1, 0), rotation=225))
-
+    room.function('elder_guardian_init').add(room.mob_placer(r(2, 3, 0), 225, adults=True).summon('elder_guardian'))
+    room.function('guardian_init').add(room.mob_placer(r(-0.6, 3, 0), 180, adults=True).summon('guardian'))
+    room.function('fishies_init').add(
+        room.mob_placer(r(1.8, 4, 0), WEST, adults=True).summon(Entity('dolphin', nbt={'Invulnerable': True})),
+        room.mob_placer(r(1.8, 4, -4), WEST, 1, adults=True).summon(
+            ('salmon', 'cod', 'pufferfish', Entity('tadpole', nbt={'Invulnerable': True, 'Age': -2147483648}))),
+    )
+    room.loop('fishies', main_clock).loop(
+        lambda _, _2, x: mc.data().merge(EntityData(entities().tag('pufferfish').limit(1)), {'PuffState': x}),
+        range(0, 3), bounce=True)
+    room.loop('squid', main_clock).add(kill_em(entities().tag('squidy'))).loop(squids, range(0, 2))
 
 def arena_room():
     start_battle_type = Score('battle_type', 'arena')

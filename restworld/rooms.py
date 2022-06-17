@@ -588,12 +588,12 @@ class Clock:
         return f.name.split(':')[-1]
 
 
-def _to_list(text):
-    if not isinstance(text, list):
-        if isinstance(text, str):
-            return [text]
-        return list(text)
-    return text
+def _to_list(obj):
+    if not isinstance(obj, list):
+        if isinstance(obj, str):
+            return [obj]
+        return list(obj)
+    return obj
 
 
 class RoomPack(DataPack):
@@ -615,6 +615,7 @@ class Room(FunctionSet):
         super().__init__(name, dp.function_set)
         self._pack = dp
         self._clocks = {}
+        self._homes = set()
         self._home_stand = Entity('armor_stand', {
             'tags': ['homer', '%s_homer' % self.name], 'NoGravity': True, 'Small': True})
         self.title = None
@@ -656,15 +657,27 @@ class Room(FunctionSet):
             marker.summon(r(0, 0.5, 0)),
         )
 
-    def function(self, name: str, clock: Clock = None, /, needs_home=None) -> Function:
+    def mob_placer(self, *args, **kwargs):
+        tag_list = kwargs.setdefault('tags', [])
+        if not isinstance(tag_list, list):
+            tag_list = list(tag_list)
+        tag_list.append(self.name)
+        kwargs['tags'] = tag_list
+        return MobPlacer(*args, **kwargs)
+
+    def function(self, name: str, clock: Clock = None, /, needs_home=True) -> Function:
         base_name, name = self._name_with_clock(name, clock)
-        if needs_home is None:
-            needs_home = not RoomPack.base_suffixes_re.match(name)
+        if base_name[0] == '_':
+            needs_home = False
+        if base_name in self._homes:
+            needs_home = False
         return self._add_func(Function(name, base_name=base_name), name, clock, needs_home)
 
     def loop(self, name: str, clock: Clock = None, /, needs_home=True) -> Loop:
         base_name, name = self._name_with_clock(name, clock)
-        return self._add_func(Loop(name, self.name, base_name=base_name), name, clock, needs_home)
+        loop = self._add_func(Loop(name, self.name, base_name=base_name), name, clock, needs_home)
+        self.function(base_name + '_cur').add(loop.cur())
+        return loop
 
     def _add_func(self, func, name, clock, needs_home):
         base_name, name = self._name_with_clock(name, clock)
@@ -675,7 +688,9 @@ class Room(FunctionSet):
         self.add(func)
 
         if needs_home:
-            self.add(self.home_func(base_name))
+            home_func = self.home_func(base_name)
+            self.add(home_func)
+            self._homes.add(home_func)
         return func
 
     @staticmethod
@@ -691,72 +706,78 @@ class Room(FunctionSet):
         return base_name, name
 
     def finalize(self):
-        self.add(*(self.room_funcs()))
+        self.add_room_funcs()
 
-    def room_funcs(self):
-        return list(self._functions) + list(self._room_funcs())
+    def add_room_funcs(self):
+        self._add_clock_funcs()
+        self._add_loop_funcs()
+        self._add_other_funcs()
 
-    def _room_funcs(self):
-        yield from self._yield_clock_funcs()
-        yield from self._yield_loop_funcs()
-        yield from self._yield_other_funcs()
-
-    def _yield_clock_funcs(self):
-        tick_func = Function('_tick')
+    def _add_clock_funcs(self):
+        tick_func = self.function('_tick')
         for clock, loops in self._clocks.items():
-            name1 = '_' + clock.name
-            yield Function(name1)
             name = '_%s' % clock.name
-            tick_func.add(
-                mc.execute().if_().score(clock.time).matches(0).run().function(name))
-        # The '1' is for the generated warning
-        if len(list(tick_func.commands())) > 1:
-            yield tick_func
+            clock_func = self.function(name).add((
+                mc.execute().at(entities().tag(x._base_name + '_home')).run().function(x.full_name) for x in loops))
+            tick_func.add(mc.execute().if_().score(clock.time).matches(0).run().function(clock_func.full_name))
+        tick_func.add(mc.function(x.full_name) for x in filter(
+            lambda x: self._is_func_type(x, '_tick'), self.functions()))
+
         finish_funcs = {}
         clock_re = str('(' + '|'.join(x.name for x in self._clocks.keys()) + ')')
         finish_funcs_re = re.compile('(.*)_finish_%s$' % clock_re)
-        for f in self._functions:
+        for f in self.functions():
             m = finish_funcs_re.match(f.name)
             if m:
                 finish_funcs.setdefault('_finish_' + m.group(2), []).append(f)
-        yield Function('_finish').add((mc.function(x) for x in finish_funcs.keys()))
+        self.function('_finish').add((mc.function(self._path(x)) for x in finish_funcs.keys()))
         for cf in finish_funcs.keys():
-            yield Function(cf).add((mc.function(x) for x in finish_funcs))
+            self.function(cf).add((mc.function(x.full_name) for x in finish_funcs[cf]))
 
-    def _homes(self):
-        return filter(lambda x: x.name.endswith('_home'), self._functions)
+    def _path(self, name):
+        return self._full_name + '/' + name
 
-    def _yield_loop_funcs(self):
-        loops = filter(lambda x: isinstance(x, Loop), self._functions)
-        homes = self._homes()
+    def _add_loop_funcs(self):
+        incr_f = self.function('_incr')
+        decr_f = self.function('_decr')
+        loops = filter(lambda x: isinstance(x, Loop), self.functions())
         for loop in loops:
-            name = loop._base_name + '_cur'
-            yield Function(name).add(loop.cur())
-            yield Function('_cur').add(
-                (mc.execute().at(entities().tag(x.name)).run().function(loop.name) for x in homes),
-                mc.function('_finish'))
-            yield Function('_incr').add(
-                (mc.execute().at(entities().tag(x.name)).run(loop.score.add(1)) for x in homes),
-                mc.function('_cur'))
-            yield Function('_decr').add(
-                (mc.execute().at(entities().tag(x.name)).run(loop.score.remove(1)) for x in homes),
-                mc.function('_cur'))
+            home_f = loop._base_name + '_home'
+            at_home = mc.execute().at(entities().tag(home_f))
+            incr_f.add(at_home.run(loop.score.add(1)))
+            decr_f.add(at_home.run(loop.score.remove(1)))
+        cur_f = self.full_name + '/_cur'
+        incr_f.add(mc.function(cur_f))
+        decr_f.add(mc.function(cur_f))
 
-    def _yield_other_funcs(self):
-        added_commands = {'_enter': (mc.weather(CLEAR),)}
+    def _add_other_funcs(self):
+        loops = list(filter(lambda x: isinstance(x, Loop), self.functions()))
+        before_commands = {
+            'init': [mc.scoreboard().objectives().add(self.name, ScoreCriteria.DUMMY),
+                     mc.scoreboard().objectives().add(self.name + '_max', ScoreCriteria.DUMMY),
+                     self.score('_to_incr').set(1),
+                     (x.score.set(0) for x in loops)] + [
+                        mc.tp().to(entities().tag(self.name), entities().tag('death').limit(1)), ]}
+        after_commands = {
+            'enter': [mc.weather(CLEAR)]
+        }
         for f in self._pack.suffixes:
             f_name = '_' + f
-            relevant = filter(lambda x: self.is_f(x, f_name), self._functions)
-            func = Function(f_name)
-            func.add((mc.execute().at(entities().tag(self._home_func_name(x.name))).run().function(x.full_name) for x in
-                      relevant))
-            func.add(added_commands.setdefault(f, tuple()))
-            if len(func.commands()) > 1:
-                yield func
+            if f_name in self._functions:
+                continue
+            relevant = filter(lambda x: self._is_func_type(x, f_name), self.functions())
+            commands = []
+            commands.extend(before_commands.setdefault(f, []))
+            commands.extend(
+                (mc.execute().at(entities().tag(self._home_func_name(x.name))).run().function(x.full_name) for x in
+                 relevant))
+            commands.extend(after_commands.setdefault(f, tuple()))
+            if len(commands) > 1:
+                self.function(f_name).add(*commands)
 
     @staticmethod
-    def is_f(x, f_name):
-        return x.name.endswith(f_name)
+    def _is_func_type(x, f_name):
+        return x.name.endswith(f_name) and len(x.name) > len(f_name)
 
     def score(self, name):
         return Score(name, self.name)
@@ -765,11 +786,15 @@ class Room(FunctionSet):
         return self.pack._home_func_name(base)
 
 
+def _name_for(kind):
+    return kind.replace('_', ' ').title()
+
+
 class MobPlacer:
     _armor_stand_tmpl = Entity('armor_stand').merge_nbt({'Invisible': True, 'Small': True, 'NoGravity': True})
 
-    def __init__(self, start: Position, facing: str | int,
-                 delta: float | tuple[float, float] = 2, kid_delta: float | tuple[float, float] = 1.2, *,
+    def __init__(self, start: Position, facing: str | float,
+                 delta: float | tuple[float, float] = None, kid_delta: float | tuple[float, float] = None, *,
                  tags: Tuple[str, ...] = None,
                  nbt=None, kids=None, adults=None, auto_tag=True):
         self.start = start
@@ -785,14 +810,18 @@ class MobPlacer:
         self.adults = adults
         self.auto_tag = auto_tag
         if isinstance(facing, str):
+            delta = delta if delta else 2
+            kid_delta = kid_delta if kid_delta else 1.2
             try:
-                self.delta_x, self.delta_z, self.rotation, _ = facing_info(facing, delta)
-                self.kid_x, self.kid_z, _, _ = facing_info(facing, kid_delta, ROTATION_90)
                 if not isinstance(delta, (float, int)) or not isinstance(kid_delta, (float, int)):
                     raise ValueError('Deltas must be floats when using "facing" name')
+                self.delta_x, self.delta_z, _, _ = facing_info(facing, delta, ROTATION_90)
+                self.kid_x, self.kid_z, self.rotation, _ = facing_info(facing, kid_delta)
             except KeyError:
                 raise ValueError('%s: Unknown "facing" with no "rotation"' % facing)
         else:
+            delta = delta if delta else (0, 0)
+            kid_delta = kid_delta if kid_delta else (0, 0)
             self.rotation = facing
             self.delta_x, self.delta_z = delta
             self.kid_x, self.kid_z = kid_delta
@@ -812,7 +841,7 @@ class MobPlacer:
             rotation___ = {'NoAI': True, 'PersistenceRequired': True, 'Silent': True, 'Rotation': [self.rotation, 0.0]}
             tmpl.merge_nbt(
                 rotation___)
-            tmpl.set_name_visible(True)
+            tmpl.set_name(_name_for(mob.kind))
             if self.tags:
                 tmpl.tag(*self.tags)
             if tags:
@@ -845,6 +874,14 @@ class MobPlacer:
             stand.nbt().get_list('Passengers').append(tmpl.nbt())
             tmpl = stand
         return tmpl.summon(pos)
+
+    @classmethod
+    def adult(cls, which: EntityDef, pos, facing: str | float, **kwargs):
+        if isinstance(facing, (float, int)):
+            delta = kid_delta = (0, 0)
+        else:
+            delta = kid_delta = 0
+        return MobPlacer(pos, facing, delta, kid_delta, adults=True, **kwargs).summon([which])
 
 
 def say_score(*scores):
