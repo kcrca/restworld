@@ -666,35 +666,40 @@ class Room(FunctionSet):
         return MobPlacer(*args, **kwargs)
 
     def function(self, name: str, clock: Clock = None, /, needs_home=True) -> Function:
-        base_name, name = self._name_with_clock(name, clock)
-        if base_name[0] == '_':
-            needs_home = False
-        if base_name in self._homes:
-            needs_home = False
+        base_name, name = self._base_name(name, clock)
+        if needs_home:
+            if base_name[0] == '_':
+                needs_home = False
+            if base_name in self._homes:
+                needs_home = False
         return self._add_func(Function(name, base_name=base_name), name, clock, needs_home)
 
     def loop(self, name: str, clock: Clock = None, /, needs_home=True) -> Loop:
-        base_name, name = self._name_with_clock(name, clock)
+        base_name, name = self._base_name(name, clock)
         loop = self._add_func(Loop(name, self.name, base_name=base_name), name, clock, needs_home)
         self.function(base_name + '_cur').add(loop.cur())
         return loop
 
     def _add_func(self, func, name, clock, needs_home):
-        base_name, name = self._name_with_clock(name, clock)
+        base_name, name = self._base_name(name, clock)
         if clock:
             self._clocks.setdefault(clock, []).append(func)
             clock.add(func)
 
         self.add(func)
 
-        if needs_home:
+        if needs_home and base_name not in self._homes:
             home_func = self.home_func(base_name)
             self.add(home_func)
-            self._homes.add(home_func)
         return func
 
-    @staticmethod
-    def _name_with_clock(name, clock):
+    def add(self, *functions: Function) -> FunctionSet:
+        for f in functions:
+            if f.name.endswith('_home'):
+                self._homes.add(f.name[:-len('_home')])
+        return super().add(*functions)
+
+    def _base_name(self, name, clock):
         if not clock:
             base_name = name
         else:
@@ -703,6 +708,13 @@ class Room(FunctionSet):
                 name += '_' + clock.name
             else:
                 base_name = name[:-len(clock.name) - 1]
+            return base_name, name
+        if name[0] != '_':
+            for s in self._pack.suffixes:
+                tail = '_' + s
+                if name.endswith(tail):
+                    base_name = name[:-len(tail)]
+                    break
         return base_name, name
 
     def finalize(self):

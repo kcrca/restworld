@@ -4,7 +4,7 @@ import sys
 
 from pyker.commands import mc, entities, JsonText, player, DARK_GREEN, Commands, r, REPLACE, BlockData, NORTH, WEST, \
     Score, MOVE, EntityData, self, OVERWORLD, EQ, MOD, THE_END, RAIN, CREATIVE, SIDEBAR, COLORS, MULT, PLUS, RESULT, \
-    LONG, Entity, all_, Block, good_color_num, INT, WHITE, SOUTH
+    LONG, Entity, all_, Block, good_color_num, INT, WHITE, SOUTH, EAST
 from pyker.enums import ScoreCriteria
 from pyker.function import FunctionSet, Function, Loop
 from pyker.simpler import Book, Sign, WallSign, Shield, Pattern
@@ -283,7 +283,8 @@ def global_room():
             ('nether', OVERWORLD, (-1000, 101, -1000), (-1000, 80, -970)),
             ('photo', OVERWORLD, (-1000, 101, -1000), (-1000, 80, -970)),
             ('arena', OVERWORLD, (1014, 106, -1000), (1000, 100, -1000))):
-        room.function('goto_' + p[0], needs_home=False).add(mc.execute().in_(p[1]).run().teleport().pos(p[2], player()).facing(p[3]))
+        room.function('goto_' + p[0], needs_home=False).add(
+            mc.execute().in_(p[1]).run().teleport().pos(p[2], player()).facing(p[3]))
     room.function('goto_weather', needs_home=False).add(
         mc.execute().in_(OVERWORLD).run().teleport().pos((1009, 101, 1000), player()).facing((1004, 102, 1000)),
         mc.weather(RAIN))
@@ -313,7 +314,7 @@ def aquatic_room():
 
         return fish_loop
 
-    def tropical_fish_funcs(room):
+    def all_fish_funcs(room):
         body = Score('body', 'fish')
         pattern = Score('pattern', 'fish')
         num_colors = Score('NUM_COLORS', 'fish')
@@ -325,10 +326,10 @@ def aquatic_room():
         def all_fish_init():
             yield WallSign((None, 'All Possible', 'Tropical Fish', '-------->')).place(r(0, 2, 0), WEST, water=True)
             # , nbt={'Invulnerable': True}
-            placer = room.mob_placer(r(0, 1.2, 0), WEST, 1, adults=True)
+            placer = room.mob_placer(r(0.5, 3.2, 0), WEST, -1, adults=True)
             for i in range(0, 12):
                 if i == 6:
-                    placer = room.mob_placer(r(1, 1.2, 0), WEST, 1)
+                    placer = room.mob_placer(r(1.5, 3.2, 0), WEST, -1, adults=True)
                 yield placer.summon('tropical_fish', tags=('fish%d' % i,))
             yield (
                 mc.scoreboard().objectives().remove('fish'),
@@ -370,7 +371,14 @@ def aquatic_room():
 
     room.loop('2_fish', main_clock).loop(loop_n_fish(2), range(0, 2))
     room.loop('3_fish', main_clock).loop(loop_n_fish(3), range(0, 3))
-    tropical_fish_funcs(room)
+    all_fish_funcs(room)
+    t_fish = room.function('tropical_fish_init')
+    for i in range(0, 12):
+        tag, variants = fishes[i]
+        fish = Entity('tropical_fish', nbt={'Variant': variants[0][0]}).tag(tag).set_name(variants[0][1])
+        t_fish.add(room.mob_placer(r(int(i / 6) + 0.5, 3.2, int(i % 6)), WEST, adults=True).summon(fish))
+    t_fish.add(WallSign(("Naturally", "Occurring", "Tropical Fish", "<--------")).place(
+        r(int((len(fishes) - 1) / 6) - 1, 2, (len(fishes) - 1) % 6), WEST, water=True))
     room.function('axolotl_init').add(room.mob_placer(r(1.3, 4, 1.3), 135, (0, 0), (-1.4, -1.4)).summon('axolotl'))
     axolotls = ('Lucy', 'Wild', 'Gold', 'Cyan', 'Blue')
     room.loop('axolotl', main_clock).loop(
@@ -379,14 +387,15 @@ def aquatic_room():
     room.function('elder_guardian_init').add(room.mob_placer(r(2, 3, 0), 225, adults=True).summon('elder_guardian'))
     room.function('guardian_init').add(room.mob_placer(r(-0.6, 3, 0), 180, adults=True).summon('guardian'))
     room.function('fishies_init').add(
-        room.mob_placer(r(1.8, 4, 0), WEST, adults=True).summon(Entity('dolphin', nbt={'Invulnerable': True})),
-        room.mob_placer(r(1.8, 4, -4), WEST, 1, adults=True).summon(
+        room.mob_placer(r(1.8, 4, 0), EAST, adults=True).summon(Entity('dolphin', nbt={'Invulnerable': True})),
+        room.mob_placer(r(1.8, 4, -4), EAST, -1, adults=True).summon(
             ('salmon', 'cod', 'pufferfish', Entity('tadpole', nbt={'Invulnerable': True, 'Age': -2147483648}))),
     )
     room.loop('fishies', main_clock).loop(
         lambda _, _2, x: mc.data().merge(EntityData(entities().tag('pufferfish').limit(1)), {'PuffState': x}),
         range(0, 3), bounce=True)
     room.loop('squid', main_clock).add(kill_em(entities().tag('squidy'))).loop(squids, range(0, 2))
+
 
 def arena_room():
     start_battle_type = Score('battle_type', 'arena')
@@ -481,7 +490,7 @@ def arena_room():
                     score.set(to),
                     mc.execute().at(entities().tag('controls_home')).run().function(
                         'restworld:arena/%s_cur' % score.target)
-                )).glowing(True).place(r(x, 2, z), 'east')
+                )).glowing(True).place(r(x, 2, z), WEST)
             for s in range(0, stride_length):
                 args = thing[s] + (None,) * (4 - len(thing[s]))
                 y = 3 - int(s / row_length)
@@ -515,7 +524,7 @@ def arena_room():
                     mc.function('restworld:arena/start_battle')
                 )
                 sign = WallSign((None, hunter, vs, victim), sign_commands)
-                yield sign.place(r(-2, y, z), 'east')
+                yield sign.place(r(-2, y, z), WEST)
 
                 run_type = Score('arena_run_type', 'arena')
                 yield mc.execute().unless().score(run_type).matches((0, None)).run(run_type.set(0))
