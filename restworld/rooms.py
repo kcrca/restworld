@@ -600,9 +600,9 @@ class RoomPack(DataPack):
     base_suffixes = ('tick', 'init', 'enter', 'incr', 'decr', 'cur', 'exit', 'finish')
     base_suffixes_re = re.compile(r'(\w+)_(' + '|'.join(base_suffixes) + ')')
 
-    def __init__(self, name: str, dir: Path | str, suffixes: Iterable[str, ...],
+    def __init__(self, name: str, path: Path | str, suffixes: Iterable[str, ...],
                  format_version: int = LATEST_PACK_VERSION, /):
-        super().__init__(name, dir, format_version)
+        super().__init__(name, path, format_version)
         self._suffixes = suffixes
 
     @property
@@ -649,7 +649,7 @@ class Room(FunctionSet):
     def home_func(self, name):
         marker_tag = '%s_home' % name
         marker = deepcopy(self._home_stand)
-        tags = marker.nbt().get_list('Tags')
+        tags = marker.nbt.get_list('Tags')
         tags.append(marker_tag)
         return Function(marker_tag).add(
             mc.kill(entity().tag(marker_tag)),
@@ -730,7 +730,7 @@ class Room(FunctionSet):
         for clock, loops in self._clocks.items():
             name = '_%s' % clock.name
             clock_func = self.function(name).add((
-                mc.execute().at(entity().tag(x._base_name + '_home')).run().function(x.full_name) for x in loops))
+                mc.execute().at(entity().tag(x.base_name + '_home')).run().function(x.full_name) for x in loops))
             tick_func.add(mc.execute().if_().score(clock.time).matches(0).run().function(clock_func.full_name))
         tick_func.add(mc.function(x.full_name) for x in filter(
             lambda x: self._is_func_type(x, '_tick'), self.functions()))
@@ -747,14 +747,14 @@ class Room(FunctionSet):
             self.function(cf).add((mc.function(x.full_name) for x in finish_funcs[cf]))
 
     def _path(self, name):
-        return self._full_name + '/' + name
+        return self.full_name + '/' + name
 
     def _add_loop_funcs(self):
         incr_f = self.function('_incr')
         decr_f = self.function('_decr')
         loops = filter(lambda x: isinstance(x, Loop), self.functions())
         for loop in loops:
-            home_f = loop._base_name + '_home'
+            home_f = loop.base_name + '_home'
             at_home = mc.execute().at(entity().tag(home_f))
             incr_f.add(at_home.run(loop.score.add(1)))
             decr_f.add(at_home.run(loop.score.remove(1)))
@@ -783,7 +783,7 @@ class Room(FunctionSet):
             commands.extend(
                 (mc.execute().at(entity().tag(self._home_func_name(x.name))).run().function(x.full_name) for x in
                  relevant))
-            commands.extend(after_commands.setdefault(f, tuple()))
+            commands.extend(after_commands.setdefault(f, []))
             if len(commands) > 1:
                 self.function(f_name).add(*commands)
 
@@ -881,9 +881,9 @@ class MobPlacer:
     def _do_summoning(tmpl, on_stand, pos):
         if on_stand:
             stand = MobPlacer._armor_stand_tmpl.clone()
-            stand.tag(*tmpl.nbt().get('Tags'))
+            stand.tag(*tmpl.nbt.get('Tags'))
             tmpl.merge_nbt({'id': tmpl.full_id()})
-            stand.nbt().get_list('Passengers').append(tmpl.nbt())
+            stand.nbt.get_list('Passengers').append(tmpl.nbt())
             tmpl = stand
         return tmpl.summon(pos)
 

@@ -2,9 +2,9 @@ from __future__ import annotations
 
 import sys
 
-from pyker.commands import mc, entity, JsonText, player, DARK_GREEN, Commands, r, REPLACE, blockdata, north, west, \
-    score, move, entityData, self, OVERWORLD, EQ, MOD, THE_END, RAIN, CREATIVE, SIDEBAR, COLORS, MULT, PLUS, RESULT, \
-    LONG, Entity, all_, Block, good_color_num, INT, WHITE, SOUTH, EAST
+from pyker.commands import mc, entity, JsonText, player, DARK_GREEN, Commands, r, REPLACE, self, OVERWORLD, EQ, MOD, \
+    THE_END, RAIN, CREATIVE, SIDEBAR, COLORS, MULT, PLUS, RESULT, \
+    LONG, Entity, all_, Block, good_color_num, INT, WHITE, SOUTH, EAST, Score, WEST, NORTH, MOVE
 from pyker.enums import ScoreCriteria
 from pyker.function import FunctionSet, Function, Loop
 from pyker.simpler import Book, Sign, WallSign, Shield, Pattern
@@ -19,10 +19,10 @@ marker_tmpl = Entity('armor_stand', {'NoGravity': True, 'Small': True, })
 
 
 class Restworld(RoomPack):
-    def __init__(self, dir: str):
+    def __init__(self, path: str):
         suffixes = list(RoomPack.base_suffixes)
         suffixes.extend(list(x.name for x in self.clocks()))
-        super().__init__('restworld', dir, suffixes, 4)
+        super().__init__('restworld', path, suffixes, 4)
 
     def finalize(self):
         for kid in self.function_set.children():
@@ -43,7 +43,7 @@ class Restworld(RoomPack):
 
     def control_book_func(self) -> Function:
         cb = Book()
-        cb.sign('Control Book', 'Restworld', 'Useful Commands')
+        cb.sign_book('Control Book', 'Restworld', 'Useful Commands')
 
         cb.add(r'Clock State:\\n      ',
                self._action(r'|\\u25c0\\u25c0', 'Previous', '_decr').extra('  '),
@@ -574,8 +574,8 @@ def arena_room():
 
     def toggle_peace(_: Score, _2: int, thing: bool):
         return (
-            mc.execute().at(entity().tag('monitor_home')).run().fill(r(2, -1, 0), r(3, -1, 0),
-                                                                       'redstone_torch' if thing else 'air'),
+            mc.execute().at(entity().tag('monitor_home')).run().fill(
+                r(2, -1, 0), r(3, -1, 0), 'redstone_torch' if thing else 'air'),
             mc.setblock(r(0, 1, 0), '%s_concrete' % ('red' if thing else 'lime')),
         )
 
@@ -644,14 +644,13 @@ def banners_room():
         'Invisible': True, 'NoGravity': True, 'ShowArms': True, 'Pose': {'LeftArm': [0, 90, 90]}, 'HandItems': [{}],
         'Tags': ['banner_stand']})
 
-    adjustments = {}
     # [xz]n: Adjustments (nudge) for shield's armor stand
     # b[xz]: Adjustments for banner position
-    #                 x   xn  xd   z   zn  zd             bx  bz
-    adjustments[0] = (1, 0.07, 1, -1, 0.30, 0, 0, 'south', 0, +1)
-    adjustments[11] = (13, -0.30, 0, 1, 0.07, 1, 90, 'west', -1, 0)
-    adjustments[21] = (11, -0.07, -1, 13, -0.30, 0, 180, 'north', 0, -1)
-    adjustments[31] = (-1, 0.30, 0, 11, -0.07, -1, 270, 'east', +1, 0)
+    #                  x   xn  xd   z   zn  zd             bx  bz
+    adjustments = {0: (1, 0.07, 1, -1, 0.30, 0, 0, 'south', 0, +1),
+                   11: (13, -0.30, 0, 1, 0.07, 1, 90, 'west', -1, 0),
+                   21: (11, -0.07, -1, 13, -0.30, 0, 180, 'north', 0, -1),
+                   31: (-1, 0.30, 0, 11, -0.07, -1, 270, 'east', +1, 0)}
 
     authored_patterns = (
         (Block('blue_banner', nbt={'Patterns': [
@@ -696,11 +695,12 @@ def banners_room():
          'Like pls ^-^', 'Harmony'),
     )
 
+    # noinspection PyUnusedLocal
     def armor_stands(x, xn, z, zn, angle, facing, bx, bz, y_banner, y_shield, pattern, handback=None):
         shield = Shield(0).add_pattern(pattern, 9)
         stand = stand_tmpl.clone()
         stand.merge_nbt({'CustomName': ' '.join(Pattern.sign_text(pattern)), 'Rotation': [angle, 0]})
-        stand.nbt()['HandItems'].append(shield.nbt())
+        stand.nbt['HandItems'].append(shield.nbt)
         yield stand.summon(r(x + xn, y_shield, z + zn))
 
     def render_banners(render, handback=None):
@@ -719,9 +719,9 @@ def banners_room():
 
     def custom_banner(x, z, nudge):
         stand1 = stand_tmpl.clone()
-        stand1.nbt().get_list('Tags').extend(('banner_stand', 'banner_pattern_custom'))
+        stand1.nbt.get_list('Tags').extend(('banner_stand', 'banner_pattern_custom'))
         stand2 = stand_tmpl.clone()
-        stand2.nbt().get_list('Tags').extend(('banner_stand', 'banner_pattern_custom_author'))
+        stand2.nbt.get_list('Tags').extend(('banner_stand', 'banner_pattern_custom_author'))
         return stand1.summon(r(x + nudge, 3.1, z + nudge)), stand2.summon(r(x + nudge, 2.8, z + nudge))
 
     def authored_banners(pattern, x, z, rot):
@@ -743,14 +743,17 @@ def banners_room():
             authored_banners(authored_patterns[i + half], 11.8, 11.8, 6),
         )
 
+    # noinspection PyUnusedLocal
     def render_known_banner(x, xn, z, zn, angle, facing, bx, bz, y, pattern, color, ink, handback=None):
         return mc.setblock(r(x + bx, y, z + bz), Block(color + '_wall_banner', {'facing': facing},
                                                        {'Patterns': {'Color': ink, 'Pattern': pattern}}))
 
+    # noinspection PyUnusedLocal
     def render_most(x, xn, z, zn, angle, facing, bx, bz, y_banner, y_shield, pattern, handback=None):
         color = handback
         return render_known_banner(x, xn, z, zn, angle, facing, bx, bz, y_banner, pattern, color, 9)
 
+    # noinspection PyUnusedLocal
     def render_banner_ink(x, xn, z, zn, angle, facing, bx, bz, y_banner, y_shield, pattern, handback=None):
         return (
             mc.execute().store(RESULT).block(r(x + bx, y_banner, z + bz), 'Patterns[0].Color', INT, 1).run(
