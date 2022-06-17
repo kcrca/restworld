@@ -544,13 +544,13 @@ def crops(loop_index: int, stages, crop, pos, name='age'):
         results.append(mc.fill(r(x, y, z - i), r(x + 2, y, z - i), Block(crop, {name: stage})))
     stage = stages[(loop_index + 1) % len(stages)]
     text_nbt = Sign.lines_nbt((None, 'Stage: %d' % stages[stage]))
-    results.append(mc.data().merge(BlockData((r(x) + 3, r(2), r(z) - 1)), text_nbt))
+    results.append(mc.data().merge((r(x) + 3, r(2), r(z) - 1), text_nbt))
     return lines(results)
 
 
 def label(pos: Position, txt: str, facing=1) -> Commands:
     return (
-        mc.execute().positioned(pos).run().kill(entities().type('item_frame').tag('label').sort(NEAREST).limit(1)),
+        mc.execute().positioned(pos).run().kill(entity().type('item_frame').tag('label').sort(NEAREST).limit(1)),
         mc.summon('item_frame', pos,
                   named_frame_item(Thing('stone_button'), txt).merge(
                       {'Invisible': True, 'Facing': facing, 'Tags': ['label'], 'Fixed': True})),
@@ -575,12 +575,12 @@ class Clock:
     def tick_cmds(self, other_funcs=()):
         # execute at @e[tag=cage_home] run function restworld:enders/cage_main
         for f in self._funcs:
-            yield mc.execute().at(entities().tag(self._tag(f))).run().function(f.name)
+            yield mc.execute().at(entity().tag(self._tag(f))).run().function(f.name)
         yield '\n'
         for f in self._funcs:
             loop_finish = f.name[-len(self.name):] + 'finish'
             if loop_finish in other_funcs:
-                yield mc.execute().at(entities().tag(self._tag(f))).run(). \
+                yield mc.execute().at(entity().tag(self._tag(f))).run(). \
                     schedule().function(loop_finish, 1).replace()
 
     @staticmethod
@@ -652,8 +652,8 @@ class Room(FunctionSet):
         tags = marker.nbt().get_list('Tags')
         tags.append(marker_tag)
         return Function(marker_tag).add(
-            mc.kill(entities().tag(marker_tag)),
-            mc.execute().positioned(r(-0.5, 0, 0.5)).run().kill(entities().type('armor_stand').delta((1, 2, 1))),
+            mc.kill(entity().tag(marker_tag)),
+            mc.execute().positioned(r(-0.5, 0, 0.5)).run().kill(entity().type('armor_stand').delta((1, 2, 1))),
             marker.summon(r(0, 0.5, 0)),
         )
 
@@ -730,7 +730,7 @@ class Room(FunctionSet):
         for clock, loops in self._clocks.items():
             name = '_%s' % clock.name
             clock_func = self.function(name).add((
-                mc.execute().at(entities().tag(x._base_name + '_home')).run().function(x.full_name) for x in loops))
+                mc.execute().at(entity().tag(x._base_name + '_home')).run().function(x.full_name) for x in loops))
             tick_func.add(mc.execute().if_().score(clock.time).matches(0).run().function(clock_func.full_name))
         tick_func.add(mc.function(x.full_name) for x in filter(
             lambda x: self._is_func_type(x, '_tick'), self.functions()))
@@ -755,7 +755,7 @@ class Room(FunctionSet):
         loops = filter(lambda x: isinstance(x, Loop), self.functions())
         for loop in loops:
             home_f = loop._base_name + '_home'
-            at_home = mc.execute().at(entities().tag(home_f))
+            at_home = mc.execute().at(entity().tag(home_f))
             incr_f.add(at_home.run(loop.score.add(1)))
             decr_f.add(at_home.run(loop.score.remove(1)))
         cur_f = self.full_name + '/_cur'
@@ -769,7 +769,7 @@ class Room(FunctionSet):
                      mc.scoreboard().objectives().add(self.name + '_max', ScoreCriteria.DUMMY),
                      self.score('_to_incr').set(1),
                      (x.score.set(0) for x in loops)] + [
-                        mc.tp().to(entities().tag(self.name), entities().tag('death').limit(1)), ]}
+                        mc.tp().to(entity().tag(self.name), entity().tag('death').limit(1)), ]}
         after_commands = {
             'enter': [mc.weather(CLEAR)]
         }
@@ -781,7 +781,7 @@ class Room(FunctionSet):
             commands = []
             commands.extend(before_commands.setdefault(f, []))
             commands.extend(
-                (mc.execute().at(entities().tag(self._home_func_name(x.name))).run().function(x.full_name) for x in
+                (mc.execute().at(entity().tag(self._home_func_name(x.name))).run().function(x.full_name) for x in
                  relevant))
             commands.extend(after_commands.setdefault(f, tuple()))
             if len(commands) > 1:

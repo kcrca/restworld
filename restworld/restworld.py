@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import sys
 
-from pyker.commands import mc, entities, JsonText, player, DARK_GREEN, Commands, r, REPLACE, BlockData, NORTH, WEST, \
-    Score, MOVE, EntityData, self, OVERWORLD, EQ, MOD, THE_END, RAIN, CREATIVE, SIDEBAR, COLORS, MULT, PLUS, RESULT, \
+from pyker.commands import mc, entity, JsonText, player, DARK_GREEN, Commands, r, REPLACE, blockdata, north, west, \
+    score, move, entityData, self, OVERWORLD, EQ, MOD, THE_END, RAIN, CREATIVE, SIDEBAR, COLORS, MULT, PLUS, RESULT, \
     LONG, Entity, all_, Block, good_color_num, INT, WHITE, SOUTH, EAST
 from pyker.enums import ScoreCriteria
 from pyker.function import FunctionSet, Function, Loop
@@ -12,7 +12,7 @@ from rooms import Room, Clock, fishes, Thing, label, RoomPack
 
 
 def kill_em(target):
-    return mc.tp().to(target, entities().tag('death').limit(1))
+    return mc.tp().to(target, entity().tag('death').limit(1))
 
 
 marker_tmpl = Entity('armor_stand', {'NoGravity': True, 'Small': True, })
@@ -112,7 +112,7 @@ class Fencelike:
     def update(cls, id, text2, text3='') -> Commands:
         return (
             mc.fill(r(8, 3, 6), r(0, 2, 0), id, REPLACE).filter('#restworld:fencelike'),
-            mc.data().merge(BlockData(r(5, 2, 0)), Sign.lines_nbt(('', text2, text3, '')))
+            mc.data().merge(r(5, 2, 0), Sign.lines_nbt(('', text2, text3, '')))
         )
 
 
@@ -133,8 +133,8 @@ def ancient_room():
 
 def global_room():
     def use_min_fill(y, filler, filter):
-        return mc.execute().at(entities().tag('min_hom')).run().fill(r(0, y, 0), r(166, y, 180), filler,
-                                                                     REPLACE).filter(filter)
+        return mc.execute().at(entity().tag('min_hom')).run().fill(r(0, y, 0), r(166, y, 180), filler,
+                                                                   REPLACE).filter(filter)
 
     def clock_lights(turn_on):
         lights = ('red_concrete', 'lime_concrete')
@@ -142,7 +142,7 @@ def global_room():
         after = lights[1 - int(turn_on)]
         return (
             use_min_fill(100, after, before),
-            mc.execute().at(entities().tag('min_home')).run().setblock((0, 105, -78), after)
+            mc.execute().at(entity().tag('min_home')).run().setblock((0, 105, -78), after)
         )
 
     def kill_if_time():
@@ -154,37 +154,37 @@ def global_room():
     def levitation_body(_: Score, i: int, _2: int) -> Commands:
         mob_rooms = ("friendlies", "monsters", "aquatic", "wither", "nether", "enders", "ancient")
         if i == 1:
-            yield mc.execute().at(entities().tag('sleeping_bat')).run().clone(r(0, 1, 0), r(0, 1, 0),
-                                                                              r(0, 3, 0)).replace(
+            yield mc.execute().at(entity().tag('sleeping_bat')).run().clone(r(0, 1, 0), r(0, 1, 0),
+                                                                            r(0, 3, 0)).replace(
                 MOVE),
-            yield mc.execute().at(entities().tag('turtle_eggs_home')).run().clone(r(1, 2, 0), r(-2, 2, 0),
-                                                                                  r(-2, -4, 0)).replace(
+            yield mc.execute().at(entity().tag('turtle_eggs_home')).run().clone(r(1, 2, 0), r(-2, 2, 0),
+                                                                                r(-2, -4, 0)).replace(
                 MOVE),
             # yield mc.execute().at(entities().tag('brown_horses', 'kid')).run().clone(*r(2, 0, 0, 2, 0, 0, 2, 2, 0)).replace(
             #     MOVE),
             for mob_room in mob_rooms:
                 room_home = mob_room + '_home'
-                yield mc.execute().as_(entities().tag(room_home)).run().data().merge(
-                    EntityData(self()), {'Invisible': True})
-                yield mc.execute().as_(entities().tag(room_home, '!blockers_home')).at(self()).run().tp().pos(
+                yield mc.execute().as_(entity().tag(room_home)).run().data().merge(
+                    self(), {'Invisible': True})
+                yield mc.execute().as_(entity().tag(room_home, '!blockers_home')).at(self()).run().tp().pos(
                     r(0, 2, 0),
                     self())
-                yield mc.execute().as_(entities().tag(mob_room, '!passenger').type('!item_frame')).at(
+                yield mc.execute().as_(entity().tag(mob_room, '!passenger').type('!item_frame')).at(
                     self()).run().tp().pos(r(0, 2, 0), self())
         else:
-            yield mc.execute().at(entities().tag('sleeping_bat')).run().clone(r(0, 1, 0), r(0, 1, 0),
-                                                                              r(0, -1, 0)).replace(MOVE),
-            yield mc.execute().at(entities().tag('turtle_eggs_home')).run().clone(
+            yield mc.execute().at(entity().tag('sleeping_bat')).run().clone(r(0, 1, 0), r(0, 1, 0),
+                                                                            r(0, -1, 0)).replace(MOVE),
+            yield mc.execute().at(entity().tag('turtle_eggs_home')).run().clone(
                 r(1, 4, 0), r(-2, 4, 0), r(-2, 2, 0)).replace(MOVE),
             # yield mc.execute().at(entities().tag('brown_horses', 'kid')).run().clone(*r(2, 0, 0, 2, 0, 0, 2, 2, 0)).replace(
             #     MOVE),
             for mob_room in mob_rooms:
                 room_home = mob_room + '_home'
-                yield mc.execute().as_(entities().tag(room_home)).run().data().merge(
-                    EntityData(self()), {'Invisible': False})
-                yield mc.execute().as_(entities().tag(room_home, '!blockers_home')).at(self()).run().tp().pos(
+                yield mc.execute().as_(entity().tag(room_home)).run().data().merge(
+                    self(), {'Invisible': False})
+                yield mc.execute().as_(entity().tag(room_home, '!blockers_home')).at(self()).run().tp().pos(
                     r(0, -2, 0), self())
-                yield mc.execute().as_(entities().tag(mob_room, '!passenger').type('!item_frame')).at(
+                yield mc.execute().as_(entity().tag(mob_room, '!passenger').type('!item_frame')).at(
                     self()).run().tp().pos(r(0, -2, 0), self())
 
     room = Room('global', restworld)
@@ -208,9 +208,9 @@ def global_room():
             kill_if_time()
         ),
         Function('clock_on').add(
-            mc.execute().at(entities().tag('clock_home')).run().setblock(r(0, -2, 1), 'redstone_block')),
+            mc.execute().at(entity().tag('clock_home')).run().setblock(r(0, -2, 1), 'redstone_block')),
         Function('clock_off').add(
-            mc.execute().at(entities().tag('clock_home')).run().setblock(r(0, -2, 1), 'diamond_block')),
+            mc.execute().at(entity().tag('clock_home')).run().setblock(r(0, -2, 1), 'diamond_block')),
         Function('clock_switched_on').add(
             clock_lights(True)),
         Function('clock_switched_off').add(
@@ -220,7 +220,7 @@ def global_room():
         ),
         Function('clock_toggle').add(
             clock_toggle.set(0),
-            mc.execute().at(entities().tag('clock_home')).if_().block(r(0, -2, 1), 'redstone_block').run(
+            mc.execute().at(entity().tag('clock_home')).if_().block(r(0, -2, 1), 'redstone_block').run(
                 clock_toggle.set(1)),
             mc.execute().if_().score(clock_toggle).matches(0).run().function('restworld:global/clock_on'),
             mc.execute().if_().score(clock_toggle).matches(1).run().function('restworld:global/clock_off'),
@@ -230,26 +230,26 @@ def global_room():
     room.add(death_home)
     room.function('death_init').add(
         mc.execute().positioned((0, 1.5, 0)).run().function(death_home.full_name),
-        mc.tag(entities().tag(death_home.name)).add('death'),
-        mc.tag(entities().tag(death_home.name)).add('immortal'),
+        mc.tag(entity().tag(death_home.name)).add('death'),
+        mc.tag(entity().tag(death_home.name)).add('immortal'),
     )
-    killables = entities().not_type('player').not_tag('death').distance((None, 30))
+    killables = entity().not_type('player').not_tag('death').distance((None, 30))
     room.function('kill_em').add(
-        mc.execute().at(entities().tag('death')).run().kill(killables),
-        mc.execute().at(entities().tag('death')).as_(killables).run().data().merge(EntityData(self()),
-                                                                                   {'DeathTime': -1200}),
+        mc.execute().at(entity().tag('death')).run().kill(killables),
+        mc.execute().at(entity().tag('death')).as_(killables).run().data().merge(self(),
+                                                                                 {'DeathTime': -1200}),
     )
 
     room.function('full_finish').add(
         mc.function('restworld:_init'),
         mc.function('restworld:_cur'),
         # Some of these functions leave dropped items behind, this cleans that up'
-        mc.kill(entities().type('item')),
+        mc.kill(entity().type('item')),
     )
     room.function('full_reset').add(
         mc.function('restworld:global/clock_off'),
         mc.execute().positioned(r(0, -3, 0)).run().function('restworld:global/min_home'),
-        mc.kill(entities().tag('home', '!min_home')),
+        mc.kill(entity().tag('home', '!min_home')),
         # Death must be ready before any other initialization
         mc.function('restworld:global/death_init'),
         use_min_fill(97, 'redstone_block', 'dried_kelp_block'),
@@ -310,7 +310,7 @@ def aquatic_room():
             for f in [f for f in fishes if len(f[1]) == count]:
                 tag, variants = f
                 v = variants[i]
-                yield mc.data().merge(EntityData(entities().tag(tag).limit(1)), {'Variant': v[0], 'CustomName': v[1]})
+                yield mc.data().merge(entity().tag(tag).limit(1), {'Variant': v[0], 'CustomName': v[1]})
 
         return fish_loop
 
@@ -354,7 +354,7 @@ def aquatic_room():
                 variant.operation(PLUS, pattern_variant),
             )
             for i in range(0, 12):
-                yield mc.execute().store(RESULT).entity(entities().tag('fish%d' % i).limit(1), 'Variant', LONG, 1).run(
+                yield mc.execute().store(RESULT).entity(entity().tag('fish%d' % i).limit(1), 'Variant', LONG, 1).run(
                     variant.get())
                 if i == 6:
                     yield variant.add(1)
@@ -382,8 +382,8 @@ def aquatic_room():
     room.function('axolotl_init').add(room.mob_placer(r(1.3, 4, 1.3), 135, (0, 0), (-1.4, -1.4)).summon('axolotl'))
     axolotls = ('Lucy', 'Wild', 'Gold', 'Cyan', 'Blue')
     room.loop('axolotl', main_clock).loop(
-        lambda _, i, thing: mc.execute().as_(entities().tag('axoltol')).run().data().merge(
-            EntityData(self()), {'Variant': i, 'CustomName': thing + ' Axolotl'}), axolotls)
+        lambda _, i, thing: mc.execute().as_(entity().tag('axoltol')).run().data().merge(
+            self(), {'Variant': i, 'CustomName': thing + ' Axolotl'}), axolotls)
     room.function('elder_guardian_init').add(room.mob_placer(r(2, 3, 0), 225, adults=True).summon('elder_guardian'))
     room.function('guardian_init').add(room.mob_placer(r(-0.6, 3, 0), 180, adults=True).summon('guardian'))
     room.function('fishies_init').add(
@@ -392,9 +392,9 @@ def aquatic_room():
             ('salmon', 'cod', 'pufferfish', Entity('tadpole', nbt={'Invulnerable': True, 'Age': -2147483648}))),
     )
     room.loop('fishies', main_clock).loop(
-        lambda _, _2, x: mc.data().merge(EntityData(entities().tag('pufferfish').limit(1)), {'PuffState': x}),
+        lambda _, _2, x: mc.data().merge(entity().tag('pufferfish').limit(1), {'PuffState': x}),
         range(0, 3), bounce=True)
-    room.loop('squid', main_clock).add(kill_em(entities().tag('squidy'))).loop(squids, range(0, 2))
+    room.loop('squid', main_clock).add(kill_em(entity().tag('squidy'))).loop(squids, range(0, 2))
 
 
 def arena_room():
@@ -479,7 +479,7 @@ def arena_room():
 
     battles.sort()
 
-    monitor_home = entities().tag('monitor_home')
+    monitor_home = entity().tag('monitor_home')
 
     def arena_run_main(loop: Loop):
         def arena_run_loop(score: Score, i: int, thing):
@@ -488,7 +488,7 @@ def arena_room():
                 text, z = ('<--', max_z + 1) if which_dir == -1 else ('-->', min_z - 1)
                 yield WallSign((None, text), (
                     score.set(to),
-                    mc.execute().at(entities().tag('controls_home')).run().function(
+                    mc.execute().at(entity().tag('controls_home')).run().function(
                         'restworld:arena/%s_cur' % score.target)
                 )).glowing(True).place(r(x, 2, z), WEST)
             for s in range(0, stride_length):
@@ -519,8 +519,8 @@ def arena_room():
                 data_change = mc.execute().at(monitor_home).run().data()
                 sign_commands = (
                     start_battle_type.set(battle_type),
-                    data_change.merge(BlockData(r(2, 0, 0)), {'Command': incr_cmd('hunter', hunter)}),
-                    data_change.merge(BlockData(r(2, 0, 0)), {'Command': incr_cmd('victim', victim)}),
+                    data_change.merge(r(2, 0, 0), {'Command': incr_cmd('hunter', hunter)}),
+                    data_change.merge(r(2, 0, 0), {'Command': incr_cmd('victim', victim)}),
                     mc.function('restworld:arena/start_battle')
                 )
                 sign = WallSign((None, hunter, vs, victim), sign_commands)
@@ -545,7 +545,7 @@ def arena_room():
 
     def random_stand(actor: str):
         var = actor + '_home'
-        yield mc.kill(entities().tag(var))
+        yield mc.kill(entity().tag(var))
         stand = marker_tmpl.clone().merge_nbt({'Tags': [var, 'home', 'arena_home']})
         for x in range(-1, 2):
             for z in range(-1, 2):
@@ -559,22 +559,22 @@ def arena_room():
         close = Score(actor + '_close', 'arena')
         athome = Score(actor + '_athome', 'arena')
         return (
-            mc.execute().unless().entity(entities().tag(actor)).run(place_battlers.set(1)),
+            mc.execute().unless().entity(entity().tag(actor)).run(place_battlers.set(1)),
             count.set(0),
-            mc.execute().as_(entities().tag(actor)).run(count.add(1)),
+            mc.execute().as_(entity().tag(actor)).run(count.add(1)),
             close.set(0),
             mc.execute().at(
-                entities().tag(other + '_home')).positioned(r(-2, 0, -2)).as_(
-                entities().tag(actor).delta((4, 5, 4))).run(close.add(1)),
+                entity().tag(other + '_home')).positioned(r(-2, 0, -2)).as_(
+                entity().tag(actor).delta((4, 5, 4))).run(close.add(1)),
             athome.set(0),
             mc.execute().at(
-                entities().tag(actor + '_home')).positioned(r(-2, 0, -2)).as_(
-                entities().tag(actor).delta((4, 5, 4))).run(athome.add(1)),
+                entity().tag(actor + '_home')).positioned(r(-2, 0, -2)).as_(
+                entity().tag(actor).delta((4, 5, 4))).run(athome.add(1)),
         )
 
     def toggle_peace(_: Score, _2: int, thing: bool):
         return (
-            mc.execute().at(entities().tag('monitor_home')).run().fill(r(2, -1, 0), r(3, -1, 0),
+            mc.execute().at(entity().tag('monitor_home')).run().fill(r(2, -1, 0), r(3, -1, 0),
                                                                        'redstone_torch' if thing else 'air'),
             mc.setblock(r(0, 1, 0), '%s_concrete' % ('red' if thing else 'lime')),
         )
@@ -591,8 +591,8 @@ def arena_room():
     room.function('arena_count_incr').add(arena_count.add(1), arena_count_cur)
     room.function('arena_count_init').add(arena_count_cur)
     room.loop('arena_count', main_clock).loop(
-        lambda _, i, thing: mc.execute().at(entities().tag('controls_home')).run(
-        ).data().merge(BlockData(r(2, 4, 0)), {'Text2': '%d vs. %d' % (thing, thing)}), range(0, 6))
+        lambda _, i, thing: mc.execute().at(entity().tag('controls_home')).run(
+        ).data().merge(r(2, 4, 0), {'Text2': '%d vs. %d' % (thing, thing)}), range(0, 6))
 
     room.function('arena_run_init').add(mc.function('restworld:arena/arena_run_cur'))
     # This is NOT intended to be run on the clock. It is only called "_main" because that gives us a
@@ -603,7 +603,7 @@ def arena_room():
         arena_run_loop.score.set(0),
         mc.function('restworld:arena/arena_run_cur'),
         label(r(1, 3, 0), 'Go Home'),
-        mc.tag(entities().tag('controls_home')).add('controls_action_home')
+        mc.tag(entity().tag('controls_home')).add('controls_action_home')
     )
 
     room.function('hunter_home').add(random_stand('hunter'))
@@ -611,8 +611,8 @@ def arena_room():
 
     # monitor_init function looks out-of-date and unused
     room.function('monitor').add(monitor('hunter'), monitor('victim'),
-                                 mc.kill(entities().type('item').distance((None, 50))),
-                                 mc.kill(entities().type('experience_orb').distance((None, 50)))),
+                                 mc.kill(entity().type('item').distance((None, 50))),
+                                 mc.kill(entity().type('experience_orb').distance((None, 50)))),
 
     # Types: 0-normal, 1-water, 2-undead
     fill_arena_coords = r(-12, 4), r(-12, 12, 2, 12)
@@ -625,10 +625,10 @@ def arena_room():
         mc.execute().if_().score(start_battle_type).matches((0, 1)).at(monitor_home).run().fill(*roof_coords, 'air'),
         mc.execute().if_().score(start_battle_type).matches(2).at(monitor_home).run().fill(*roof_coords, 'glowstone'),
         mc.tag(all_()).add('arena_safe'),
-        mc.tag(entities().type('armor_stand')).add('arena_safe'),
-        mc.kill(entities().not_tag('arena_safe').distance((None, 100))),
-        mc.kill(entities().not_tag('arena_safe').distance((None, 100))),
-        mc.kill(entities().not_tag('arena_safe').distance((None, 100))),
+        mc.tag(entity().type('armor_stand')).add('arena_safe'),
+        mc.kill(entity().not_tag('arena_safe').distance((None, 100))),
+        mc.kill(entity().not_tag('arena_safe').distance((None, 100))),
+        mc.kill(entity().not_tag('arena_safe').distance((None, 100))),
     )
 
     room.loop('toggle_peace').loop(toggle_peace, (True, False)).add(mc.function('restworld:arena/start_battle'))
@@ -728,11 +728,11 @@ def banners_room():
         return (
             mc.setblock(r(x, 3, z), pattern[0].merge_state({'rotation': rot})),
             mc.execute().positioned(r(x, 3, z)).as_(
-                entities().tag('banner_pattern_custom').distance((None, 2))).run().data().merge(
-                EntityData(self()), {'CustomName': pattern[1]}),
+                entity().tag('banner_pattern_custom').distance((None, 2))).run().data().merge(
+                self(), {'CustomName': pattern[1]}),
             mc.execute().positioned(r(x, 3, z)).as_(
-                entities().tag('banner_pattern_custom_author').distance((None, 2))).run().data().merge(
-                EntityData(self()), {'CustomName': pattern[2]}),
+                entity().tag('banner_pattern_custom_author').distance((None, 2))).run().data().merge(
+                self(), {'CustomName': pattern[2]}),
         )
 
     half = int(len(authored_patterns) / 2)
@@ -755,14 +755,14 @@ def banners_room():
         return (
             mc.execute().store(RESULT).block(r(x + bx, y_banner, z + bz), 'Patterns[0].Color', INT, 1).run(
                 banner_ink.get()),
-            mc.execute().as_(entities().tag('banner_stand')).run().data().modify(
-                EntityData(self()), 'HandItems[1].tag.BlockEntityTag.Patterns[0]').merge().value({'Color': handback}),
+            mc.execute().as_(entity().tag('banner_stand')).run().data().modify(
+                self(), 'HandItems[1].tag.BlockEntityTag.Patterns[0]').merge().value({'Color': handback}),
         )
 
     def banner_color_loop(_, _2, color: str):
         return (render_banners(render_most, handback=color),
-                mc.execute().as_(entities().tag('banner_stand')).run(
-                ).data().modify(EntityData(self()), 'HandItems[1].tag.BlockEntityTag.Base').set().value(
+                mc.execute().as_(entity().tag('banner_stand')).run(
+                ).data().modify(self(), 'HandItems[1].tag.BlockEntityTag.Base').set().value(
                     good_color_num(color))
                 )
 
@@ -770,13 +770,13 @@ def banners_room():
         return render_banners(render_banner_ink, handback=color)
 
     def switch_banners(which):
-        mc.tag(entities().tag('all_banners_home')).remove('banner_color_action_home')
-        mc.tag(entities().tag('all_banners_home')).remove('banner_color_home')
-        mc.tag(entities().tag('all_banners_home')).remove('banner_ink_action_home')
-        mc.tag(entities().tag('all_banners_home')).remove('banner_ink_home')
-        mc.tag(entities().tag('all_banners_home')).add('banner_' + which + '_action_home')
-        mc.tag(entities().tag('all_banners_home')).add('banner_' + which + '_home')
-        mc.tag(entities().tag('all_banners_home')).add('banners_action_home')
+        mc.tag(entity().tag('all_banners_home')).remove('banner_color_action_home')
+        mc.tag(entity().tag('all_banners_home')).remove('banner_color_home')
+        mc.tag(entity().tag('all_banners_home')).remove('banner_ink_action_home')
+        mc.tag(entity().tag('all_banners_home')).remove('banner_ink_home')
+        mc.tag(entity().tag('all_banners_home')).add('banner_' + which + '_action_home')
+        mc.tag(entity().tag('all_banners_home')).add('banner_' + which + '_home')
+        mc.tag(entity().tag('all_banners_home')).add('banners_action_home')
 
     room = Room('banners', restworld, SOUTH, (None, 'Banners &', 'Shields'))
 
@@ -786,7 +786,7 @@ def banners_room():
     room.function('all_banners_init').add(
         banner_color.set(0),
         banner_ink.set(9),
-        mc.kill(entities().tag('banner_stand')),
+        mc.kill(entity().tag('banner_stand')),
         mc.fill(r(-2, -2, -2), r(16, 16, 16), 'air', REPLACE).filter('#banners'),
         render_banners(armor_stands),
         mc.setblock(r(-0.2, 3, 11.8), Block('white_banner', {'rotation': 10}, {
@@ -833,8 +833,8 @@ def banners_room():
         row = int(i / 8)
         y = 3 if row == 0 else 2
         z = 1 if row == 0 else 2
-        if_colors = mc.execute().at(entities().tag('banner_color_home'))
-        if_ink = mc.execute().at(entities().tag('banner_ink_home'))
+        if_colors = mc.execute().at(entity().tag('banner_color_home'))
+        if_ink = mc.execute().at(entity().tag('banner_ink_home'))
         banner_controls.add(
             WallSign((None, c), (
                 if_colors.run(banner_color.set(i)),
