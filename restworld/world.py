@@ -5,7 +5,7 @@ import sys
 from pyker.commands import mc, entity, JsonText, player, DARK_GREEN, Commands, r, REPLACE, Entity
 from pyker.function import FunctionSet, Function
 from pyker.simpler import Book, Sign
-from rooms import Room, Clock, RoomPack
+from restworld.rooms import Room, Clock, RoomPack
 
 
 def kill_em(target):
