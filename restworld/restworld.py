@@ -4,7 +4,7 @@ import sys
 
 from pyker.commands import mc, entity, JsonText, player, DARK_GREEN, Commands, r, REPLACE, self, OVERWORLD, EQ, MOD, \
     THE_END, RAIN, CREATIVE, SIDEBAR, COLORS, MULT, PLUS, RESULT, \
-    LONG, Entity, all_, Block, good_color_num, INT, WHITE, SOUTH, EAST, Score, WEST, NORTH, MOVE
+    LONG, Entity, all_, Block, INT, WHITE, SOUTH, EAST, Score, WEST, NORTH, MOVE
 from pyker.enums import ScoreCriteria
 from pyker.function import FunctionSet, Function, Loop
 from pyker.simpler import Book, Sign, WallSign, Shield, Pattern
@@ -695,6 +695,11 @@ def banners_room():
          'Like pls ^-^', 'Harmony'),
     )
 
+    room = Room('banners', restworld, SOUTH, (None, 'Banners &', 'Shields'))
+
+    banner_color = room.score('banner_color')
+    banner_ink = room.score('banner_ink')
+
     # noinspection PyUnusedLocal
     def armor_stands(x, xn, z, zn, angle, facing, bx, bz, y_banner, y_shield, pattern, handback=None):
         shield = Shield(0).add_pattern(pattern, 9)
@@ -744,34 +749,29 @@ def banners_room():
         )
 
     # noinspection PyUnusedLocal
-    def render_known_banner(x, xn, z, zn, angle, facing, bx, bz, y, pattern, color, ink, handback=None):
-        return mc.setblock(r(x + bx, y, z + bz), Block(color + '_wall_banner', {'facing': facing},
-                                                       {'Patterns': [{'Color': ink, 'Pattern': pattern}]}))
-
-    # noinspection PyUnusedLocal
-    def render_most(x, xn, z, zn, angle, facing, bx, bz, y_banner, y_shield, pattern, handback=None):
+    def render_banner_color(x, xn, z, zn, angle, facing, bx, bz, y_banner, y_shield, pattern, handback=None):
         color = handback
-        return render_known_banner(x, xn, z, zn, angle, facing, bx, bz, y_banner, pattern, color, 9)
+        return mc.setblock(r(x + bx, y_banner, z + bz), Block(color + '_wall_banner', {'facing': facing},
+                                                              {'Patterns': [{'Color': 9, 'Pattern': pattern}]}))
 
     # noinspection PyUnusedLocal
     def render_banner_ink(x, xn, z, zn, angle, facing, bx, bz, y_banner, y_shield, pattern, handback=None):
         return (
-            #/execute as @e[tag=banner_stand] run execute store result entity @s HandItems[1].tag.BlockEntityTag.Patterns[0].Color int 1 run scoreboard players get banner_ink banners
+            # /execute as @e[tag=banner_stand] run execute store result entity @s HandItems[1].tag.BlockEntityTag.Patterns[0].Color int 1 run scoreboard players get banner_ink banners
             mc.execute().store(RESULT).block(r(x + bx, y_banner, z + bz), 'Patterns[0].Color', INT, 1).run(
-                banner_ink.get()),
-            mc.execute().as_(entity().tag('banner_stand')).run().execute().store(RESULT).entity(self(), 'HandItems[1].tag.BlockEntityTag.Patterns[0].Color', INT, 1).run(
                 banner_ink.get()),
         )
 
-    def banner_color_loop(_, _2, color: str):
-        return (render_banners(render_most, handback=color),
-                mc.execute().as_(entity().tag('banner_stand')).run(
-                ).data().modify(self(), 'HandItems[1].tag.BlockEntityTag.Base').set().value(
-                    good_color_num(color))
-                )
+    set_banner_ink = mc.execute().as_(entity().tag('banner_stand')).run(
+    ).execute().store(RESULT).entity(self(), 'HandItems[1].tag.BlockEntityTag.Patterns[0].Color', INT, 1).run(
+        banner_ink.get())
 
-    def banner_ink_loop(_, _2, color: str):
-        return render_banners(render_banner_ink, handback=COLORS.index(color))
+    def banner_color_loop(_, _2, color: str):
+        return render_banners(render_banner_color, handback=color)
+
+    def banner_ink_change():
+        yield from render_banners(render_banner_ink)
+        yield set_banner_ink
 
     def switch_banners(which):
         return (
@@ -784,10 +784,6 @@ def banners_room():
             mc.tag(entity().tag('all_banners_home')).add('banners_action_home'),
         )
 
-    room = Room('banners', restworld, SOUTH, (None, 'Banners &', 'Shields'))
-
-    banner_color = room.score('banner_color')
-    banner_ink = room.score('banner_ink')
     banner_color_init = mc.function('restworld:banners/switch_to_color')
     room.function('all_banners_init').add(
         banner_color.set(0),
@@ -820,8 +816,12 @@ def banners_room():
         mc.fill(r(12, 3, 1), r(12, 5, 11), 'air', REPLACE).filter('#banners'),
         mc.fill(r(1, 3, 12), r(11, 5, 12), 'air', REPLACE).filter('#banners'),
         mc.fill(r(0, 3, 11), r(0, 5, 1), 'air', REPLACE).filter('#banners'),
-    ).loop(banner_color_loop, COLORS)
-    loop.add(render_banners(render_banner_ink))
+    ).loop(banner_color_loop, COLORS).add(
+        mc.execute().as_(entity().tag('banner_stand')).run(
+        ).execute().store(RESULT).entity(self(), 'HandItems[1].tag.BlockEntityTag.Base', INT, 1).run(
+            banner_color.get()),
+        mc.function('restworld:banners/banner_ink_cur'),
+    )
 
     banner_controls = room.function('banner_controls').add(
         mc.function('restworld:banners/banner_controls_remove'),
@@ -858,7 +858,7 @@ def banners_room():
     room.function('banner_controls_remove', needs_home=False).add(
         mc.fill(r(0, 2, 0), r(8, 4, 4), 'air', REPLACE).filter('#wall_signs'))
 
-    room.loop('banner_ink', main_clock).loop(banner_ink_loop, COLORS)
+    room.loop('banner_ink', main_clock).loop(None, COLORS).add(*banner_ink_change())
 
     # ^Cyan Lozenge
     # ^Light Gray Base
