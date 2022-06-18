@@ -68,8 +68,8 @@ def room():
     clock_toggle = room.score('clock_toggle')
     room.function('arena').add(
         mc.execute().in_(OVERWORLD).run().tp().pos((1126, 103, 1079), player()).facing((1139, 104, 1079)))
+    room.home_func('clock'),
     room.add(
-        room.home_func('clock'),
         Function('clock_init').add(
             mc.scoreboard().objectives().remove('clocks'),
             mc.scoreboard().objectives().add('clocks', ScoreCriteria.DUMMY),
@@ -104,7 +104,6 @@ def room():
         ),
     )
     death_home = room.home_func('death')
-    room.add(death_home)
     room.function('death_init').add(
         mc.execute().positioned((0, 1.5, 0)).run().function(death_home.full_name),
         mc.tag(entity().tag(death_home.name)).add('death'),
@@ -165,7 +164,7 @@ def room():
     room.function('goto_weather', needs_home=False).add(
         mc.execute().in_(OVERWORLD).run().teleport().pos((1009, 101, 1000), player()).facing((1004, 102, 1000)),
         mc.weather(RAIN))
-    room.add(room.home_func('min'))
+    room.home_func('min')
 
     levloop = room.loop('mob_levitation', main_clock)
     levloop.loop(levitation_body, range(0, 2))

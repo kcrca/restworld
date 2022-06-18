@@ -635,7 +635,7 @@ class Room(FunctionSet):
             # score.init(),
             # score.set(rot),
         ))
-        self.add(self.home_func(self.name + '_room'))
+        self.home_func(self.name + '_room')
 
     def _record_room(self, text):
         while len(text) > 0 and text[0] is None:
@@ -651,7 +651,7 @@ class Room(FunctionSet):
         marker = deepcopy(self._home_stand)
         tags = marker.nbt.get_list('Tags')
         tags.append(marker_tag)
-        return Function(marker_tag).add(
+        return self.function(marker_tag, needs_home=False).add(
             mc.kill(entity().tag(marker_tag)),
             mc.execute().positioned(r(-0.5, 0, 0.5)).run().kill(entity().type('armor_stand').delta((1, 2, 1))),
             marker.summon(r(0, 0.5, 0)),
@@ -689,8 +689,7 @@ class Room(FunctionSet):
         self.add(func)
 
         if needs_home and base_name not in self._homes:
-            home_func = self.home_func(base_name)
-            self.add(home_func)
+            self.home_func(base_name)
         return func
 
     def add(self, *functions: Function) -> FunctionSet:
