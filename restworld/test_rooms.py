@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from restworld.restworld import Restworld
 from restworld.rooms import *
+from restworld.world import Restworld
 
 
 def test_unclocked_room():
