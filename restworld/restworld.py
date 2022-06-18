@@ -746,7 +746,7 @@ def banners_room():
     # noinspection PyUnusedLocal
     def render_known_banner(x, xn, z, zn, angle, facing, bx, bz, y, pattern, color, ink, handback=None):
         return mc.setblock(r(x + bx, y, z + bz), Block(color + '_wall_banner', {'facing': facing},
-                                                       {'Patterns': {'Color': ink, 'Pattern': pattern}}))
+                                                       {'Patterns': [{'Color': ink, 'Pattern': pattern}]}))
 
     # noinspection PyUnusedLocal
     def render_most(x, xn, z, zn, angle, facing, bx, bz, y_banner, y_shield, pattern, handback=None):
@@ -756,10 +756,11 @@ def banners_room():
     # noinspection PyUnusedLocal
     def render_banner_ink(x, xn, z, zn, angle, facing, bx, bz, y_banner, y_shield, pattern, handback=None):
         return (
+            #/execute as @e[tag=banner_stand] run execute store result entity @s HandItems[1].tag.BlockEntityTag.Patterns[0].Color int 1 run scoreboard players get banner_ink banners
             mc.execute().store(RESULT).block(r(x + bx, y_banner, z + bz), 'Patterns[0].Color', INT, 1).run(
                 banner_ink.get()),
-            mc.execute().as_(entity().tag('banner_stand')).run().data().modify(
-                self(), 'HandItems[1].tag.BlockEntityTag.Patterns[0]').merge().value({'Color': handback}),
+            mc.execute().as_(entity().tag('banner_stand')).run().execute().store(RESULT).entity(self(), 'HandItems[1].tag.BlockEntityTag.Patterns[0].Color', INT, 1).run(
+                banner_ink.get()),
         )
 
     def banner_color_loop(_, _2, color: str):
@@ -770,16 +771,18 @@ def banners_room():
                 )
 
     def banner_ink_loop(_, _2, color: str):
-        return render_banners(render_banner_ink, handback=color)
+        return render_banners(render_banner_ink, handback=COLORS.index(color))
 
     def switch_banners(which):
-        mc.tag(entity().tag('all_banners_home')).remove('banner_color_action_home')
-        mc.tag(entity().tag('all_banners_home')).remove('banner_color_home')
-        mc.tag(entity().tag('all_banners_home')).remove('banner_ink_action_home')
-        mc.tag(entity().tag('all_banners_home')).remove('banner_ink_home')
-        mc.tag(entity().tag('all_banners_home')).add('banner_' + which + '_action_home')
-        mc.tag(entity().tag('all_banners_home')).add('banner_' + which + '_home')
-        mc.tag(entity().tag('all_banners_home')).add('banners_action_home')
+        return (
+            mc.tag(entity().tag('all_banners_home')).remove('banner_color_action_home'),
+            mc.tag(entity().tag('all_banners_home')).remove('banner_color_home'),
+            mc.tag(entity().tag('all_banners_home')).remove('banner_ink_action_home'),
+            mc.tag(entity().tag('all_banners_home')).remove('banner_ink_home'),
+            mc.tag(entity().tag('all_banners_home')).add('banner_' + which + '_action_home'),
+            mc.tag(entity().tag('all_banners_home')).add('banner_' + which + '_home'),
+            mc.tag(entity().tag('all_banners_home')).add('banners_action_home'),
+        )
 
     room = Room('banners', restworld, SOUTH, (None, 'Banners &', 'Shields'))
 
@@ -796,7 +799,7 @@ def banners_room():
             'Patterns': [{'Pattern': "mr", 'Color': 9}, {'Pattern': "bs", 'Color': 8}, {'Pattern': "cs", 'Color': 7},
                          {'Pattern': "bo", 'Color': 8}, {'Pattern': "ms", 'Color': 15}, {'Pattern': "hh", 'Color': 8},
                          {'Pattern': "mc", 'Color': 8}, {'Pattern': "bo", 'Color': 15}]})),
-        mc.setblock(r(-11.8, 3, 0.2), Block('magenta_banner', {'rotation': 2}, {
+        mc.setblock(r(11.8, 3, 0.2), Block('magenta_banner', {'rotation': 2}, {
             'Patterns': [{'Pattern': "bt", 'Color': 15}, {'Pattern': "tt", 'Color': 15}]})),
         custom_banner(0.2, 0.2, 0.1),
         custom_banner(11.8, 11.8, -0.1),
