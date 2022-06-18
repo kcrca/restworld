@@ -133,8 +133,8 @@ def ancient_room():
 
 def global_room():
     def use_min_fill(y, filler, filter):
-        return mc.execute().at(entity().tag('min_hom')).run().fill(r(0, y, 0), r(166, y, 180), filler,
-                                                                   REPLACE).filter(filter)
+        return mc.execute().at(entity().tag('min_home')).run().fill((r(0), y, r(0)), (r(166), y, r(180)), filler,
+                                                                    REPLACE).filter(filter)
 
     def clock_lights(turn_on):
         lights = ('red_concrete', 'lime_concrete')
