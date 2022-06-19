@@ -732,12 +732,12 @@ class Room(FunctionSet):
                 mc.execute().at(entity().tag(x.base_name + '_home')).run().function(x.full_name) for x in loops))
             tick_func.add(mc.execute().if_().score(clock.time).matches(0).run().function(clock_func.full_name))
         tick_func.add(mc.function(x.full_name) for x in filter(
-            lambda x: self._is_func_type(x, '_tick'), self.functions()))
+            lambda x: self._is_func_type(x, '_tick'), self.functions.values()))
 
         finish_funcs = {}
         clock_re = str('(' + '|'.join(x.name for x in self._clocks.keys()) + ')')
         finish_funcs_re = re.compile('(.*)_finish_%s$' % clock_re)
-        for f in self.functions():
+        for f in self.functions.values():
             m = finish_funcs_re.match(f.name)
             if m:
                 finish_funcs.setdefault('_finish_' + m.group(2), []).append(f)
@@ -751,7 +751,7 @@ class Room(FunctionSet):
     def _add_loop_funcs(self):
         incr_f = self.function('_incr')
         decr_f = self.function('_decr')
-        loops = filter(lambda x: isinstance(x, Loop), self.functions())
+        loops = filter(lambda x: isinstance(x, Loop), self.functions.values())
         for loop in loops:
             home_f = loop.base_name + '_home'
             at_home = mc.execute().at(entity().tag(home_f))
@@ -762,7 +762,7 @@ class Room(FunctionSet):
         decr_f.add(mc.function(cur_f))
 
     def _add_other_funcs(self):
-        loops = list(filter(lambda x: isinstance(x, Loop), self.functions()))
+        loops = list(filter(lambda x: isinstance(x, Loop), self.functions.values()))
         before_commands = {
             'init': [mc.scoreboard().objectives().add(self.name, ScoreCriteria.DUMMY),
                      mc.scoreboard().objectives().add(self.name + '_max', ScoreCriteria.DUMMY),
@@ -776,7 +776,7 @@ class Room(FunctionSet):
             f_name = '_' + f
             if f_name in self._functions:
                 continue
-            relevant = filter(lambda x: self._is_func_type(x, f_name), self.functions())
+            relevant = filter(lambda x: self._is_func_type(x, f_name), self.functions.values())
             commands = []
             commands.extend(before_commands.setdefault(f, []))
             commands.extend(

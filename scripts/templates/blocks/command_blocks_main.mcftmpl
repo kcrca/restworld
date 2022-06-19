@@ -6,5 +6,5 @@ ${when(i)} setblock ~0 ~3 ~0 ${thing.id}[facing=west,conditional=${str(thing.con
     words = thing.name.split(' ')
     modifier = "" if len(words) == 2 else words[0]
 %>\
-${when(i)} data merge block ~0 ~2 ~-1 {Text2:${text(modifier)},Text4:${text("(Conditional)" if thing.conditional else "")}}
+${when(i)} data merge block ~0 ~2 ~1 {Text2:${text(modifier)},Text4:${text("(Conditional)" if thing.conditional else "")}}
 </%base:loop>

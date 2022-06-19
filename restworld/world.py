@@ -22,7 +22,7 @@ class Restworld(RoomPack):
         super().__init__('restworld', path, suffixes, 4)
 
     def finalize(self):
-        for kid in self.function_set.children():
+        for kid in self.function_set.children:
             if isinstance(kid, Room):
                 kid.finalize()
 
@@ -61,7 +61,7 @@ class Restworld(RoomPack):
 
         cb.next_page()
         cb.add(r'Click on room name to go there: \\n\\n')
-        rooms = filter(lambda x: isinstance(x, Room) and x.title is not None, self.function_set.children())
+        rooms = filter(lambda x: isinstance(x, Room) and x.title is not None, self.function_set.children)
         rooms = sorted(rooms, key=lambda x: x.title)
         first = True
         for r in rooms:
@@ -99,7 +99,7 @@ class Restworld(RoomPack):
         for f in self._suffixes:
             fname = '_' + f
             func = Function(fname)
-            for room in self.function_set.children():
+            for room in self.function_set.children:
                 func.add(mc.function(room.full_name + '/' + fname))
             yield func
 
