@@ -94,17 +94,17 @@ def room():
     monitor_home = entity().tag('monitor_home')
 
     def arena_run_main(loop: Loop):
-        def arena_run_loop(score: Score, i: int, thing):
+        def arena_run_loop(step):
             for which_dir in (-1, 1):
                 to = (i + which_dir + num_pages) % num_pages
                 text, z = ('<--', max_z + 1) if which_dir == -1 else ('-->', min_z - 1)
                 yield WallSign((None, text), (
-                    score.set(to),
+                    step.loop.score.set(to),
                     mc.execute().at(entity().tag('controls_home')).run().function(
-                        'restworld:arena/%s_cur' % score.target)
+                        'restworld:arena/%s_cur' % step.loop.score.target)
                 )).glowing(True).place(r(x, 2, z), WEST)
             for s in range(0, stride_length):
-                args = thing[s] + (None,) * (4 - len(thing[s]))
+                args = step.item[s] + (None,) * (4 - len(step.item[s]))
                 y = 3 - int(s / row_length)
                 z = max_z - (s % row_length)
                 hunter, victim, hunter_nbt, victim_nbt = args
@@ -184,11 +184,11 @@ def room():
                 entity().tag(actor).delta((4, 5, 4))).run(athome.add(1)),
         )
 
-    def toggle_peace(_: Score, _2: int, thing: bool):
+    def toggle_peace(step):
         return (
             mc.execute().at(entity().tag('monitor_home')).run().fill(
-                r(2, -1, 0), r(3, -1, 0), 'redstone_torch' if thing else 'air'),
-            mc.setblock(r(0, 1, 0), '%s_concrete' % ('red' if thing else 'lime')),
+                r(2, -1, 0), r(3, -1, 0), 'redstone_torch' if step.item else 'air'),
+            mc.setblock(r(0, 1, 0), '%s_concrete' % ('red' if step.item else 'lime')),
         )
 
     room = Room('arena', restworld)
@@ -203,8 +203,8 @@ def room():
     room.function('arena_count_incr').add(arena_count.add(1), arena_count_cur)
     room.function('arena_count_init').add(arena_count_cur)
     room.loop('arena_count', main_clock).loop(
-        lambda _, i, thing: mc.execute().at(entity().tag('controls_home')).run(
-        ).data().merge(r(2, 4, 0), {'Text2': '%d vs. %d' % (thing, thing)}), range(0, 6))
+        lambda step: mc.execute().at(entity().tag('controls_home')).run(
+        ).data().merge(r(2, 4, 0), {'Text2': '%d vs. %d' % (step.item, step.item)}), range(0, 6))
 
     room.function('arena_run_init').add(mc.function('restworld:arena/arena_run_cur'))
     # This is NOT intended to be run on the clock. It is only called "_main" because that gives us a

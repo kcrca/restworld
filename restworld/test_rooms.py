@@ -6,7 +6,7 @@ from restworld.world import Restworld
 
 def test_unclocked_room():
     room = Room('foo', DataPack('dp', 'none'), NORTH, ('foo'), )
-    room.loop('bar').loop(lambda var, i, item: mc.say('var %s, i %s, item %s' % (var, i, item)), range(0, 5))
+    room.loop('bar').loop(lambda step: mc.say('var %s, i %s, item %s' % (step.loop.score, step.i, item)), range(0, 5))
     func_names = sorted(list(x.name for x in (room.room_funcs())))
     assert func_names == ['_cur', '_decr', '_enter', '_exit', '_finish', '_incr', '_init', 'bar', 'bar_cur', 'bar_home',
                           'foo_room_home', 'foo_room_init']
@@ -21,7 +21,8 @@ def test_unclocked_room():
 def test_clocked_room():
     room = Room('foo', DataPack('dp', 'none'), NORTH, ('foo'), )
     clock = Clock('main')
-    room.loop('bar', clock).loop(lambda var, i, item: mc.say('var %s, i %s, item %s' % (var, i, item)), range(0, 5))
+    room.loop('bar', clock).loop(lambda step: mc.say('var %s, i %s, item %s' % (step.loop.score, step.i, item)),
+                                 range(0, 5))
     func_names = sorted(list(x.name for x in (room.room_funcs())))
     assert func_names == ['_cur', '_decr', '_enter', '_exit', '_finish', '_incr', '_init', '_main', '_tick', 'bar',
                           'bar_cur', 'bar_home', 'foo_room_home', 'foo_room_init']

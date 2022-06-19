@@ -83,14 +83,14 @@ def trigger(biome, prefix, i, x, y, z, handback):
     yield mc.setblock(r(x, y - 1, z), 'air')
 
 
-def load_biome_loop(_, _2, biome):
+def load_biome_loop(step):
     def setup(biome, prefix, i, x, y, z, handback):
         if i > 4:
             yield mc.setblock(r(x, y, z), 'structure_block')
         yield mc.data().merge(r(x, y, z), {'name': 'restworld:%s_%d' % (to_id(biome), i + 1), 'mode': 'LOAD'})
 
-    yield mc.say('Switching to biome', biome)
-    yield from load_biome(setup, biome)
+    yield mc.say('Switching to biome', step.item)
+    yield from load_biome(setup, step.item)
 
 
 def save_biome(biome, prefix, i, x, z, handback, raised=False):

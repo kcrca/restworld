@@ -43,7 +43,8 @@ def room():
             names = room.function(name + '_names', needs_home=False)
             all_names.add(mc.function(names.full_name))
 
-        def blocks_loop_body(_, i, _2):
+        def blocks_loop_body(step):
+            i = step.i
             x = z = 0
             x_size = 0
 
@@ -89,8 +90,15 @@ def room():
         mc.kill(entity().tag('block_list'))
     )
 
-    for 
+    for f in ('amethyst',):
+        room.function(f + '_init').add(mc.tag(entity().tag(f + '_Home')).add('no_expansion'))
 
+    amethyst_phases = (
+        'Amethyst Block', 'Budding Amethyst', 'Small Amethyst|Bud', 'Medium Amethyst|Bud', 'Large Amethyst|Bud',
+        'Amethyst Cluster')
+    # room.loop('amethyst', main_clock).add(mc.fill(r(-1, 3, -1), r(1, 5, 1), 'air')).loop(amethyst_loop,
+    #                                                                                      amethyst_phases).add(
+    #     mc.kill(entity().type('item').nbt(Item.nbt('amethyst_shard'))))
     blocks('cobble', ("Cobblestone", "Mossy|Cobblestone", "Cobbled|Deepslate"), NORTH)
 
     woodlike = woods + stems

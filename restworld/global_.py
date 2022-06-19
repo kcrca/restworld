@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from pyker.commands import mc, entity, r, REPLACE, Score, Commands, MOVE, self, OVERWORLD, player, EQ, MOD, THE_END, \
+from pyker.commands import mc, entity, r, REPLACE, Commands, MOVE, self, OVERWORLD, player, EQ, MOD, THE_END, \
     RAIN, CREATIVE, SIDEBAR
 from pyker.enums import ScoreCriteria
 from pyker.function import Function
@@ -28,9 +28,9 @@ def room():
             ex = ex.unless().score(c.time).matches((0, 1))
         return ex.run().function('restworld:global/kill_em')
 
-    def levitation_body(_: Score, i: int, _2: int) -> Commands:
+    def levitation_body(step) -> Commands:
         mob_rooms = ("friendlies", "monsters", "aquatic", "wither", "nether", "enders", "ancient")
-        if i == 1:
+        if step.i == 1:
             yield mc.execute().at(entity().tag('sleeping_bat')).run().clone(r(0, 1, 0), r(0, 1, 0),
                                                                             r(0, 3, 0)).replace(
                 MOVE),

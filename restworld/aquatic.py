@@ -10,10 +10,10 @@ from restworld.world import fast_clock, restworld, main_clock, kill_em
 
 def room():
     def loop_n_fish(count: int):
-        def fish_loop(_: Score, i: int, _2: int):
+        def fish_loop(step):
             for f in [f for f in fishes if len(f[1]) == count]:
                 tag, variants = f
-                v = variants[i]
+                v = variants[step.i]
                 yield mc.data().merge(entity().tag(tag).limit(1), {'Variant': v[0], 'CustomName': v[1]})
 
         return fish_loop
@@ -86,8 +86,8 @@ def room():
     room.function('axolotl_init').add(room.mob_placer(r(1.3, 4, 1.3), 135, (0, 0), (-1.4, -1.4)).summon('axolotl'))
     axolotls = ('Lucy', 'Wild', 'Gold', 'Cyan', 'Blue')
     room.loop('axolotl', main_clock).loop(
-        lambda _, i, thing: mc.execute().as_(entity().tag('axoltol')).run().data().merge(
-            self(), {'Variant': i, 'CustomName': thing + ' Axolotl'}), axolotls)
+        lambda step: mc.execute().as_(entity().tag('axoltol')).run().data().merge(
+            self(), {'Variant': step.i, 'CustomName': step.item + ' Axolotl'}), axolotls)
     room.function('elder_guardian_init').add(room.mob_placer(r(2, 3, 0), 225, adults=True).summon('elder_guardian'))
     room.function('guardian_init').add(room.mob_placer(r(-0.6, 3, 0), 180, adults=True).summon('guardian'))
     room.function('fishies_init').add(
@@ -96,6 +96,6 @@ def room():
             ('salmon', 'cod', 'pufferfish', Entity('tadpole', nbt={'Invulnerable': True, 'Age': -2147483648}))),
     )
     room.loop('fishies', main_clock).loop(
-        lambda _, _2, x: mc.data().merge(entity().tag('pufferfish').limit(1), {'PuffState': x}),
+        lambda step: mc.data().merge(entity().tag('pufferfish').limit(1), {'PuffState': step.item}),
         range(0, 3), bounce=True)
     room.loop('squid', main_clock).add(kill_em(entity().tag('squidy'))).loop(squids, range(0, 2))
