@@ -67,9 +67,9 @@ def room():
         room.function('all_fish_init').add(all_fish_init())
         room.loop('all_fish', fast_clock).add(all_fish())
 
-    def squids(_, i, _2):
+    def squids(step):
         placer = room.mob_placer(r(1.8, 4, 0), WEST, adults=True, tags=('squidy',), nbt={'NoGravity': True})
-        return placer.summon('squid' if i == 0 else 'glow_squid')
+        return placer.summon('squid' if step.i == 0 else 'glow_squid')
 
     room = Room('aquatic', restworld, NORTH, (None, 'Aquatic'))
 
@@ -87,7 +87,7 @@ def room():
     axolotls = ('Lucy', 'Wild', 'Gold', 'Cyan', 'Blue')
     room.loop('axolotl', main_clock).loop(
         lambda step: mc.execute().as_(entity().tag('axoltol')).run().data().merge(
-            self(), {'Variant': step.i, 'CustomName': step.item + ' Axolotl'}), axolotls)
+            self(), {'Variant': step.i, 'CustomName': step.elem + ' Axolotl'}), axolotls)
     room.function('elder_guardian_init').add(room.mob_placer(r(2, 3, 0), 225, adults=True).summon('elder_guardian'))
     room.function('guardian_init').add(room.mob_placer(r(-0.6, 3, 0), 180, adults=True).summon('guardian'))
     room.function('fishies_init').add(
@@ -96,6 +96,6 @@ def room():
             ('salmon', 'cod', 'pufferfish', Entity('tadpole', nbt={'Invulnerable': True, 'Age': -2147483648}))),
     )
     room.loop('fishies', main_clock).loop(
-        lambda step: mc.data().merge(entity().tag('pufferfish').limit(1), {'PuffState': step.item}),
+        lambda step: mc.data().merge(entity().tag('pufferfish').limit(1), {'PuffState': step.elem}),
         range(0, 3), bounce=True)
     room.loop('squid', main_clock).add(kill_em(entity().tag('squidy'))).loop(squids, range(0, 2))

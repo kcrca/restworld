@@ -104,7 +104,7 @@ def room():
                         'restworld:arena/%s_cur' % step.loop.score.target)
                 )).glowing(True).place(r(x, 2, z), WEST)
             for s in range(0, stride_length):
-                args = step.item[s] + (None,) * (4 - len(step.item[s]))
+                args = step.elem[s] + (None,) * (4 - len(step.elem[s]))
                 y = 3 - int(s / row_length)
                 z = max_z - (s % row_length)
                 hunter, victim, hunter_nbt, victim_nbt = args
@@ -187,8 +187,8 @@ def room():
     def toggle_peace(step):
         return (
             mc.execute().at(entity().tag('monitor_home')).run().fill(
-                r(2, -1, 0), r(3, -1, 0), 'redstone_torch' if step.item else 'air'),
-            mc.setblock(r(0, 1, 0), '%s_concrete' % ('red' if step.item else 'lime')),
+                r(2, -1, 0), r(3, -1, 0), 'redstone_torch' if step.elem else 'air'),
+            mc.setblock(r(0, 1, 0), '%s_concrete' % ('red' if step.elem else 'lime')),
         )
 
     room = Room('arena', restworld)
@@ -204,7 +204,7 @@ def room():
     room.function('arena_count_init').add(arena_count_cur)
     room.loop('arena_count', main_clock).loop(
         lambda step: mc.execute().at(entity().tag('controls_home')).run(
-        ).data().merge(r(2, 4, 0), {'Text2': '%d vs. %d' % (step.item, step.item)}), range(0, 6))
+        ).data().merge(r(2, 4, 0), {'Text2': '%d vs. %d' % (step.elem, step.elem)}), range(0, 6))
 
     room.function('arena_run_init').add(mc.function('restworld:arena/arena_run_cur'))
     # This is NOT intended to be run on the clock. It is only called "_main" because that gives us a

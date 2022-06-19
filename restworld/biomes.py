@@ -89,8 +89,8 @@ def load_biome_loop(step):
             yield mc.setblock(r(x, y, z), 'structure_block')
         yield mc.data().merge(r(x, y, z), {'name': 'restworld:%s_%d' % (to_id(biome), i + 1), 'mode': 'LOAD'})
 
-    yield mc.say('Switching to biome', step.item)
-    yield from load_biome(setup, step.item)
+    yield mc.say('Switching to biome', step.elem)
+    yield from load_biome(setup, step.elem)
 
 
 def save_biome(biome, prefix, i, x, z, handback, raised=False):

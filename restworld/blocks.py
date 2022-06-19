@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from typing import Iterable
 
-from pyker.commands import EAST, r, mc, entity, Entity, facing_info, good_block, Block, NORTH, SOUTH
-from pyker.simpler import Sign
+from pyker.commands import EAST, r, mc, entity, Entity, facing_info, good_block, Block, NORTH, SOUTH, WEST
+from pyker.simpler import Sign, Item
 from restworld.rooms import Room, label, woods, stems
 from restworld.world import restworld, main_clock
 
@@ -82,6 +82,20 @@ def room():
 
         return block_init, block_loop
 
+    def amethyst_loop(step):
+        block = good_block(step.elem)
+        if step.elem == amethyst_phases[0]:
+            yield mc.setblock(r(0, 4, 0), block.kind)
+        else:
+            yield mc.setblock(r(0, 4, 0), 'budding_amethyst')
+            if ' Bud' in block.display_name or 'Cluster' in block.display_name:
+                yield mc.setblock(r(0, 3, 0), block.clone().merge_state({'facing': 'down'}))
+                yield mc.setblock(r(0, 3, 0), block.clone().merge_state({'facing': 'up'}))
+                for offset in (NORTH, EAST, WEST, SOUTH):
+                    face = facing_info(offset)
+                    yield mc.setblock(r(face[0], 4, face[1]), block.clone().merge_state({'facing': offset}))
+        mc.data().merge(r(0, 2, -1), block.sign_nbt())
+
     room.functions['blocks_room_init'].add(
         label(r(-16, 2, 3), 'List Blocks'),
         label(r(-16, 2, -3), 'List Blocks'),
@@ -96,9 +110,10 @@ def room():
     amethyst_phases = (
         'Amethyst Block', 'Budding Amethyst', 'Small Amethyst|Bud', 'Medium Amethyst|Bud', 'Large Amethyst|Bud',
         'Amethyst Cluster')
-    # room.loop('amethyst', main_clock).add(mc.fill(r(-1, 3, -1), r(1, 5, 1), 'air')).loop(amethyst_loop,
-    #                                                                                      amethyst_phases).add(
-    #     mc.kill(entity().type('item').nbt(Item.nbt('amethyst_shard'))))
+    room.loop('amethyst', main_clock).add(mc.fill(r(-1, 3, -1), r(1, 5, 1), 'air')).loop(amethyst_loop,
+                                                                                         amethyst_phases,
+                                                                                         bounce=True).add(
+        mc.kill(entity().type('item').nbt(Item.nbt('amethyst_shard'))))
     blocks('cobble', ("Cobblestone", "Mossy|Cobblestone", "Cobbled|Deepslate"), NORTH)
 
     woodlike = woods + stems

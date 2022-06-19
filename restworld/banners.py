@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from pyker.commands import Entity, Block, SOUTH, r, mc, entity, self, Score, RESULT, INT, REPLACE, COLORS, WHITE, d
+from pyker.commands import Entity, Block, SOUTH, r, mc, entity, self, RESULT, INT, REPLACE, COLORS, WHITE, d
 from pyker.enums import Pattern
 from pyker.simpler import Shield, WallSign
 from restworld.rooms import Room, label
@@ -111,10 +111,10 @@ def room():
 
     half = int(len(authored_patterns) / 2)
 
-    def render_authored_banners(_: Score, i: int, _2):
+    def render_authored_banners(step):
         return (
-            authored_banners(authored_patterns[i], 0.2, 0.2, 14),
-            authored_banners(authored_patterns[i + half], 11.8, 11.8, 6),
+            authored_banners(authored_patterns[step.i], 0.2, 0.2, 14),
+            authored_banners(authored_patterns[step.i + half], 11.8, 11.8, 6),
         )
 
     # noinspection PyUnusedLocal
@@ -130,8 +130,8 @@ def room():
                 banner_ink.get()),
         )
 
-    def banner_color_loop(_, _2, color: str):
-        return render_banners(render_banner_color, handback=color)
+    def banner_color_loop(step):
+        return render_banners(render_banner_color, handback=step.elem)
 
     def banner_ink_change():
         yield mc.execute().as_(stands).at(stands).run(
