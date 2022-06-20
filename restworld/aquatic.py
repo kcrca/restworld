@@ -93,7 +93,8 @@ def room():
     room.function('fishies_init').add(
         room.mob_placer(r(1.8, 4, 0), EAST, adults=True).summon(Entity('dolphin', nbt={'Invulnerable': True})),
         room.mob_placer(r(1.8, 4, -4), EAST, -1, adults=True).summon(
-            ('salmon', 'cod', 'pufferfish', Entity('tadpole', nbt={'Invulnerable': True, 'Age': -2147483648}))),
+            ('salmon', 'cod', 'pufferfish',
+             Entity('tadpole', nbt={'Invulnerable': True, 'Age': -2147483648}).tag('kid'))),
     )
     room.loop('fishies', main_clock).loop(
         lambda step: mc.data().merge(entity().tag('pufferfish').limit(1), {'PuffState': step.elem}),

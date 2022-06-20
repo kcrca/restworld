@@ -615,6 +615,7 @@ class Room(FunctionSet):
         super().__init__(name, dp.function_set)
         self._pack = dp
         self._clocks = {}
+        self._scores = set()
         self._homes = set()
         self._home_stand = Entity('armor_stand', {
             'tags': ['homer', '%s_homer' % self.name], 'NoGravity': True, 'Small': True})
@@ -647,11 +648,18 @@ class Room(FunctionSet):
         self.title = room_name
 
     def home_func(self, name):
+        home_marker_comment = 'Default home function'
         marker_tag = '%s_home' % name
+        if marker_tag in self.functions:
+            f = self.functions[marker_tag]
+            for c in f.commands():
+                if home_marker_comment in c:
+                    return
         marker = deepcopy(self._home_stand)
         tags = marker.nbt.get_list('Tags')
-        tags.append(marker_tag)
-        return self.function(marker_tag, needs_home=False).add(
+        tags.extend((marker_tag, self.name + '_home', 'homer'))
+        return self.function(marker_tag, needs_home=False, exists_ok=True).add(
+            mc.comment(home_marker_comment),
             mc.kill(entity().tag(marker_tag)),
             mc.execute().positioned(r(-0.5, 0, 0.5)).run().kill(entity().type('armor_stand').delta((1, 2, 1))),
             marker.summon(r(0, 0.5, 0)),
@@ -665,8 +673,10 @@ class Room(FunctionSet):
         kwargs['tags'] = tag_list
         return MobPlacer(*args, **kwargs)
 
-    def function(self, name: str, clock: Clock = None, /, needs_home=True) -> Function:
+    def function(self, name: str, clock: Clock = None, /, needs_home=True, exists_ok=False) -> Function:
         base_name, name = self._base_name(name, clock)
+        if exists_ok and name in self.functions:
+            return self.functions[name]
         if needs_home:
             if base_name[0] == '_':
                 needs_home = False
@@ -678,6 +688,8 @@ class Room(FunctionSet):
         base_name, name = self._base_name(name, clock)
         loop = self._add_func(Loop(name, self.name, base_name=base_name), name, clock, needs_home)
         self.function(base_name + '_cur').add(loop.cur())
+        self._scores.add(loop.score)
+        self._scores.add(loop._to_incr)
         return loop
 
     def _add_func(self, func, name, clock, needs_home):
@@ -763,11 +775,12 @@ class Room(FunctionSet):
 
     def _add_other_funcs(self):
         loops = list(filter(lambda x: isinstance(x, Loop), self.functions.values()))
+        to_incr = self.score('_to_incr')
         before_commands = {
             'init': [mc.scoreboard().objectives().add(self.name, ScoreCriteria.DUMMY),
                      mc.scoreboard().objectives().add(self.name + '_max', ScoreCriteria.DUMMY),
-                     self.score('_to_incr').set(1),
-                     (x.score.set(0) for x in loops)] + [
+                     (x.set(0) for x in self._scores),
+                     to_incr.set(1)] + [
                         mc.tp().to(entity().tag(self.name), entity().tag('death').limit(1)), ]}
         after_commands = {
             'enter': [mc.weather(CLEAR)]
@@ -791,7 +804,9 @@ class Room(FunctionSet):
         return x.name.endswith(f_name) and len(x.name) > len(f_name)
 
     def score(self, name):
-        return Score(name, self.name)
+        score = Score(name, self.name)
+        self._scores.add(score)
+        return score
 
     def _home_func_name(self, base):
         return self.pack._home_func_name(base)
