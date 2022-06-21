@@ -829,8 +829,7 @@ def expansion_functions(room):
         mc.execute().unless().entity(entity().tag('fire_home').distance((None, 1))).unless().entity(
             entity().tag('dripstone_home').distance((None, 1))).run().function('restworld:blocks/contract_generic'),
     )
-
-    room.function('contract_all').add(
+    room.function('contract_all', needs_home=False).add(
         mc.execute().as_(entity().tag('blocks_home', '!no_expansion', 'expander')).run().execute().at(
             self()).run().function('restworld:blocks/toggle_expand_at'))
     room.function('contract_dripstone').add(
@@ -845,7 +844,7 @@ def expansion_functions(room):
     room.function('contract_fire').add(
         mc.fill(r(1, 5, 1), r(-1, 3, -1), 'air'),
         mc.function('restworld:blocks/fire_cur'))
-    room.function('contract_gen4ric').add(
+    room.function('contract_generic').add(
         mc.clone(r(0, 5, 0), r(0, 6, 0), r(0, -10, 0)),
         mc.fill(r(-1, 3, -1), r(1, 6, 1), 'air'),
         mc.clone(r(0, -9, 0), r(0, -10, 0), r(0, 3, 0)).replace(MOVE),
