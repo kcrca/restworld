@@ -38,9 +38,9 @@ def category_sign(category, x):
 def illuminate(biome, prefix, i, x, y, z, handback):
     illuminate_score = handback
     yield mc.execute().if_().score(illuminate_score).matches(1).run().fill(r(x, y + 1, z), r(x + 31, y + 32, z + 31),
-                                                                           'light', REPLACE).filter('#restworld:air'),
+                                                                           'light').replace('#restworld:air'),
     yield mc.execute().unless().score(illuminate_score).matches(1).run().fill(r(x, y + 1, z), r(x + 31, y + 32, z + 31),
-                                                                              'air', REPLACE).filter('light'),
+                                                                              'air').replace('light'),
 
 
 def load_biome(renderer, biome, handback=None):
@@ -128,10 +128,10 @@ def room():
         entity().type('!player').tag('!homer').delta((74, 42, 74))),
 
     room.function('clear_biome').add(
-        mc.fill(r(-2, -4, -2), r(-1, 42, 66), 'air', REPLACE).filter('#restworld:liquid'),
-        mc.fill(r(-2, -4, -2), r(66, 42, -1), 'air', REPLACE).filter('#restworld:liquid'),
-        mc.fill(r(-2, -4, 65), r(65, 42, 64), 'air', REPLACE).filter('#restworld:liquid'),
-        mc.fill(r(64, -4, -2), r(65, 42, 65), 'air', REPLACE).filter('#restworld:liquid'),
+        mc.fill(r(-2, -4, -2), r(-1, 42, 66), 'air').replace('#restworld:liquid'),
+        mc.fill(r(-2, -4, -2), r(66, 42, -1), 'air').replace('#restworld:liquid'),
+        mc.fill(r(-2, -4, 65), r(65, 42, 64), 'air').replace('#restworld:liquid'),
+        mc.fill(r(64, -4, -2), r(65, 42, 65), 'air').replace('#restworld:liquid'),
         mc.fill(r(0, 34, 0), r(31, 65, 31), 'air'),
         mc.fill(r(32, 34, 0), r(63, 65, 31), 'air'),
         mc.fill(r(0, 34, 32), r(31, 65, 63), 'air'),

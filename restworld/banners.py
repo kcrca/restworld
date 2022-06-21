@@ -156,7 +156,7 @@ def room():
         banner_color.set(0),
         banner_ink.set(9),
         mc.kill(stands),
-        mc.fill(r(-2, -2, -2), r(16, 16, 16), 'air', REPLACE).filter('#banners'),
+        mc.fill(r(-2, -2, -2), r(16, 16, 16), 'air').replace('#banners'),
         render_banners(armor_stands),
         mc.setblock(r(-0.2, 3, 11.8), Block('white_banner', {'rotation': 10}, {
             'Patterns': [{'Pattern': "mr", 'Color': 9}, {'Pattern': "bs", 'Color': 8}, {'Pattern': "cs", 'Color': 7},
@@ -179,10 +179,10 @@ def room():
 
     room.function('banner_color_init').add(banner_color_init)
     loop = room.loop('banner_color', main_clock).add(
-        mc.fill(r(1, 3, 0), r(11, 5, 0), 'air', REPLACE).filter('#banners'),
-        mc.fill(r(12, 3, 1), r(12, 5, 11), 'air', REPLACE).filter('#banners'),
-        mc.fill(r(1, 3, 12), r(11, 5, 12), 'air', REPLACE).filter('#banners'),
-        mc.fill(r(0, 3, 11), r(0, 5, 1), 'air', REPLACE).filter('#banners'),
+        mc.fill(r(1, 3, 0), r(11, 5, 0), 'air').replace('#banners'),
+        mc.fill(r(12, 3, 1), r(12, 5, 11), 'air').replace('#banners'),
+        mc.fill(r(1, 3, 12), r(11, 5, 12), 'air').replace('#banners'),
+        mc.fill(r(0, 3, 11), r(0, 5, 1), 'air').replace('#banners'),
     ).loop(banner_color_loop, COLORS).add(
         mc.execute().as_(stands).run(
         ).execute().store(RESULT).entity(self(), 'HandItems[1].tag.BlockEntityTag.Base', INT, 1).run(
@@ -223,7 +223,7 @@ def room():
         mc.function('restworld:banners/switch_to_color'),
     )
     room.function('banner_controls_remove', needs_home=False).add(
-        mc.fill(r(0, 2, 0), r(8, 4, 4), 'air', REPLACE).filter('#wall_signs'))
+        mc.fill(r(0, 2, 0), r(8, 4, 4), 'air').replace('#wall_signs'))
 
     room.loop('banner_ink', main_clock).loop(None, COLORS).add(*banner_ink_change())
 

@@ -2,8 +2,7 @@ from __future__ import annotations
 
 from typing import Iterable
 
-from pyker.commands import EAST, r, mc, entity, Entity, facing_info, good_block, Block, NORTH, SOUTH, WEST, REPLACE, \
-    self, MOVE
+from pyker.commands import EAST, r, mc, entity, Entity, facing_info, good_block, Block, NORTH, SOUTH, WEST, self, MOVE
 from pyker.info import colors, Color
 from pyker.simpler import Sign, Item, WallSign
 from restworld.rooms import Room, label, woods, stems
@@ -154,6 +153,13 @@ def room():
     blocks('clay', SOUTH, ('Clay', 'Mud', 'Muddy|Mangrove Roots', 'Packed Mud'))
     blocks('cobble', NORTH, ('Cobblestone', 'Mossy|Cobblestone', 'Cobbled|Deepslate'))
 
+    # types = ("Copper Block", "Exposed Copper", "Weathered|Copper", "Oxidized Copper")
+    # block = list(x.replace('Copper', 'Cut Copper').replace(' Block', '').replace(' Cut', '|Cut') for x in types)
+    # waxed_types = tuple("Waxed|%s" % x for x in types)
+    # waxed_block = tuple("Waxed|%s" % x for x in block)
+    # prefs=('execute if score waxed_copper funcs matches 0 run', 'execute if score waxed_copper funcs matches 1 run')
+    # blocks(types, waxed_types, block, waxed_block, dx=-3, prefixes=(prefs, prefs))
+
     woodlike = woods + stems
     leaves = ['%s Leaves' % x for x in woods] + ['Warped Wart Block', 'Nether Wart Block']
     logs = ['%s Log' % x for x in woods] + [('%s Stem' % x) for x in stems]
@@ -270,6 +276,31 @@ def room():
         ("Repeating Command Block", False), ("Repeating Command Block", True),
     ))
 
+    room.function('contract_all').add(
+        mc.execute().as_(entity().tag('blocks_home', '!no_expansion', 'expander')).run().execute().at(
+            self()).run().function("restworld:blocks/toggle_expand_at"))
+    room.function('contract_dripstone').add(
+        # Erase the front and back lines
+        mc.fill(r(1, 12, 1), r(-1, 3, 1), 'air'),
+        mc.fill(r(1, 12, -1), r(-1, 3, -1), 'air'),
+
+        ## Erase either side
+        mc.fill(r(1, 12, 0), r(1, 3, 0), 'air'),
+        mc.fill(r(-1, 12, 0), r(-1, 3, 0), 'air'),
+    )
+    room.function('contract_fire').add(
+        mc.fill(r(1, 5, 1), r(-1, 3, -1), 'air'),
+        mc.function('restworld:blocks/fire_cur'))
+    room.function('contract_gen4ric').add(
+        mc.clone(r(0, 5, 0), r(0, 6, 0), r(0, -10, 0)),
+        mc.fill(r(-1, 3, -1), r(1, 6, 1), 'air'),
+        mc.clone(r(0, -9, 0), r(0, -10, 0), r(0, 3, 0)).replace(MOVE),
+        mc.setblock(r(0, 2, 0), 'stone'),
+        mc.fill(r(-1, 2, -1), r(1, 2, 1), 'air').replace('barrier'),
+        mc.setblock(r(0, 2, 0), 'barrier')
+    )
+
+
     def colorings(is_plain, color):
         fills = (
             'stained_glass', 'stained_glass_pane', 'wool', 'banner', 'shulker_box', 'carpet', 'concrete',
@@ -287,7 +318,7 @@ def room():
                 filler = plain_fills[i]
             else:
                 filler = Block('%s_%s' % (color.id, which), state)
-            yield mc.fill(*coloring_coords, filler, REPLACE).filter('#restworld:' + which)
+            yield mc.fill(*coloring_coords, filler).replace('#restworld:' + which)
 
         for candle in candles:
             candle = Block('candle' if is_plain else color.name + '_candle', {'lit': True})
@@ -298,17 +329,15 @@ def room():
                 else:
                     candle = Block(candle.kind + '_cake', {'lit': True})
                     filter = '#restworld:candle_cake'
-                yield mc.execute().if_().score(lit_candles).matches(0).run().fill(*coloring_coords, candle,
-                                                                                  REPLACE).filter(filter)
+                yield mc.execute().if_().score(lit_candles).matches(0).run().fill(*coloring_coords, candle).replace(filter)
                 candle.merge_state({'lit': False})
-                yield mc.execute().unless().score(lit_candles).matches(0).run().fill(*coloring_coords, candle,
-                                                                                     REPLACE).filter(filter)
+                yield mc.execute().unless().score(lit_candles).matches(0).run().fill(*coloring_coords, candle).replace(filter)
 
         yield mc.data().merge(r(-7, 0, 3), {'name': 'restworld:%s_terra' % color.id, 'showboundingbox': False})
 
         if is_plain:
             mc.fill(r(-9, 2, 2), r(-9, 2, 3), 'air')
-            mc.fill(*coloring_coords, 'air', REPLACE).filter('#standing_signs')
+            mc.fill(*coloring_coords, 'air').replace('#standing_signs')
             mc.data().merge(entity().tag('colorings_item_frame').limit(1), {'Item': {'Count': 0}})
         else:
             mc.setblock(r(-9, 2, 2), Block('%s_bed' % color.id, {'facing': NORTH, 'part': 'head'}))
@@ -458,27 +487,4 @@ def room():
             "restworld:blocks/contract_dripstone"),
         mc.execute().unless().entity(entity().tag('fire_home').distance((None, 1))).unless().entity(
             entity().tag('dripstone_home').distance((None, 1))).run().function("restworld:blocks/contract_generic"),
-    )
-    room.function('contract_all').add(
-        mc.execute().as_(entity().tag('blocks_home', '!no_expansion', 'expander')).run().execute().at(
-            self()).run().function("restworld:blocks/toggle_expand_at"))
-    room.function('contract_dripstone').add(
-        # Erase the front and back lines
-        mc.fill(r(1, 12, 1), r(-1, 3, 1), 'air'),
-        mc.fill(r(1, 12, -1), r(-1, 3, -1), 'air'),
-
-        ## Erase either side
-        mc.fill(r(1, 12, 0), r(1, 3, 0), 'air'),
-        mc.fill(r(-1, 12, 0), r(-1, 3, 0), 'air'),
-    )
-    room.function('contract_fire').add(
-        mc.fill(r(1, 5, 1), r(-1, 3, -1), 'air'),
-        mc.function('restworld:blocks/fire_cur'))
-    room.function('contract_gen4ric').add(
-        mc.clone(r(0, 5, 0), r(0, 6, 0), r(0, -10, 0)),
-        mc.fill(r(-1, 3, -1), r(1, 6, 1), 'air'),
-        mc.clone(r(0, -9, 0), r(0, -10, 0), r(0, 3, 0)).replace(MOVE),
-        mc.setblock(r(0, 2, 0), 'stone'),
-        mc.fill(r(-1, 2, -1), r(1, 2, 1), 'air', REPLACE).filter('barrier'),
-        mc.setblock(r(0, 2, 0), 'barrier')
     )

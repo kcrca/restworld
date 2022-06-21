@@ -108,7 +108,7 @@ class Fencelike:
     @classmethod
     def update(cls, id, text2, text3='') -> Commands:
         return (
-            mc.fill(r(8, 3, 6), r(0, 2, 0), id, REPLACE).filter('#restworld:fencelike'),
+            mc.fill(r(8, 3, 6), r(0, 2, 0), id).replace('#restworld:fencelike'),
             mc.data().merge(r(5, 2, 0), Sign.lines_nbt(('', text2, text3, '')))
         )
 
