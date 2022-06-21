@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import sys
 
-from pyker.commands import mc, entity, JsonText, player, DARK_GREEN, Commands, r, REPLACE, Entity
+from pyker.commands import mc, entity, JsonText, player, DARK_GREEN, Commands, r, Entity
 from pyker.function import FunctionSet, Function
 from pyker.simpler import Book, Sign
 from restworld.rooms import Room, Clock, RoomPack

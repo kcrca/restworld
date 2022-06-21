@@ -1,6 +1,6 @@
 import collections
 
-from pyker.commands import NORTH, mc, CLEAR, OVERWORLD, r, entity, REPLACE
+from pyker.commands import NORTH, mc, CLEAR, OVERWORLD, r, entity
 from pyker.simpler import WallSign
 from restworld.rooms import Room, label
 from restworld.world import restworld

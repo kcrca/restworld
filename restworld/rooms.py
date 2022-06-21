@@ -684,9 +684,9 @@ class Room(FunctionSet):
                 needs_home = False
         return self._add_func(Function(name, base_name=base_name), name, clock, needs_home)
 
-    def loop(self, name: str, clock: Clock = None, /, needs_home=True) -> Loop:
+    def loop(self, name: str, clock: Clock = None, /, needs_home=True, score=None) -> Loop:
         base_name, name = self._base_name(name, clock)
-        loop = self._add_func(Loop(name, self.name, base_name=base_name), name, clock, needs_home)
+        loop = self._add_func(Loop(name, self.name, base_name=base_name, score=score), name, clock, needs_home)
         self.function(base_name + '_cur').add(loop.cur())
         self._scores.add(loop.score)
         self._scores.add(loop._to_incr)
