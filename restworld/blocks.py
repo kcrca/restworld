@@ -94,40 +94,7 @@ def room():
                 all.append(Block(b))
         blocks(name, facing, all)
 
-    def amethyst_loop(step):
-        block = good_block(step.elem)
-        if step.elem == amethyst_phases[0]:
-            yield mc.setblock(r(0, 4, 0), block.kind)
-        else:
-            yield mc.setblock(r(0, 4, 0), 'budding_amethyst')
-            if ' Bud' in block.display_name or 'Cluster' in block.display_name:
-                yield mc.setblock(r(0, 3, 0), block.clone().merge_state({'facing': 'down'}))
-                yield mc.setblock(r(0, 5, 0), block.clone().merge_state({'facing': 'up'}))
-                for offset in (NORTH, EAST, WEST, SOUTH):
-                    face = facing_info(offset)
-                    yield mc.setblock(r(face[0], 4, face[1]), block.clone().merge_state({'facing': offset}))
-        mc.data().merge(r(0, 2, -1), block.sign_nbt())
-
-    room.functions['blocks_room_init'].add(
-        label(r(-16, 2, 3), 'List Blocks'),
-        label(r(-16, 2, -3), 'List Blocks'),
-        label(r(-43, 2, 3), 'List Blocks'),
-        label(r(-43, 2, -3), 'List Blocks'),
-        mc.kill(entity().tag('block_list'))
-    )
-
-    room.function('blocks_sign_init').add(
-        mc.execute().at(entity().tag('blocks_home', '!no_expansion')).run().data().merge(r(0, 2, -1), {
-            'Text1': 'function restworld:blocks/toggle_expand'}),
-        mc.execute().at(entity().tag('blocks_home', '!no_expansion')).run().data().merge(r(0, 2, 1), {
-            'Text1': 'function restworld:blocks/toggle_expand'}),
-
-        mc.execute().at(entity().tag('blocks_home', 'no_expansion')).run().data().merge(r(0, 2, -1), {
-            'Text1': 'say Sorry, cannot expand this block'}),
-        mc.execute().at(entity().tag('blocks_home', 'no_expansion')).run().data().merge(r(0, 2, 1), {
-            'Text1': 'say Sorry, cannot expand this block'}),
-        mc.tag(entity().tag('block_sign_home')).add('no_expansion'),
-    )
+    room_init_functions(room)
 
     room.function('anvil_init', exists_ok=True).add(Sign((None, 'Anvil')).place(r(0, 2, -1), NORTH))
     blocks('anvil', NORTH, list(Block(b, state={'facing': WEST}) for b in ('Anvil', 'Chipped Anvil', 'Damaged Anvil')))
@@ -196,6 +163,20 @@ def room():
         'Amethyst Block', 'Budding Amethyst', 'Small Amethyst|Bud', 'Medium Amethyst|Bud', 'Large Amethyst|Bud',
         'Amethyst Cluster')
 
+    def amethyst_loop(step):
+        block = good_block(step.elem)
+        if step.elem == amethyst_phases[0]:
+            yield mc.setblock(r(0, 4, 0), block.kind)
+        else:
+            yield mc.setblock(r(0, 4, 0), 'budding_amethyst')
+            if ' Bud' in block.display_name or 'Cluster' in block.display_name:
+                yield mc.setblock(r(0, 3, 0), block.clone().merge_state({'facing': 'down'}))
+                yield mc.setblock(r(0, 5, 0), block.clone().merge_state({'facing': 'up'}))
+                for offset in (NORTH, EAST, WEST, SOUTH):
+                    face = facing_info(offset)
+                    yield mc.setblock(r(face[0], 4, face[1]), block.clone().merge_state({'facing': offset}))
+        mc.data().merge(r(0, 2, -1), block.sign_nbt())
+
     room.loop('amethyst', main_clock).add(
         mc.fill(r(-1, 3, -1), r(1, 5, 1), 'air')
     ).loop(
@@ -250,17 +231,9 @@ def room():
         else:
             yield mc.setblock(r(-1, 3, 0), 'air')
 
-    types = (
-        Block('Chest'),
-        Block('Ender Chest'),
-        Block('Trapped Chest'),
-        Block('Chest', state={'type': 'right'}),
-        Block('Trapped Chest', state={'type': 'right'}),
-    )
-    room.loop('chest', main_clock).loop(chest_loop, types)
-
-    coloring_coords = (r(1, 4, 6), r(-13, 2, -1))
-    lit_candles = room.score('lit_candles')
+    room.loop('chest', main_clock).loop(chest_loop, (
+        Block('Chest'), Block('Ender Chest'), Block('Trapped Chest'), Block('Chest', state={'type': 'right'}),
+        Block('Trapped Chest', state={'type': 'right'})))
 
     def command_block_loop(step):
         block = Block(step.elem[0], {'facing': WEST, 'conditional': str(step.elem[1]).lower()})
@@ -315,6 +288,42 @@ def room():
     room.function('fire_init').add(WallSign((None, 'Fire')).place(r(0, 2, -1), NORTH))
     room.loop('fire', main_clock).add(mc.fill(r(0, 3, 0), r(0, 5, 0), 'air')).loop(fire_loop, (
         'oak_log', 'oak_log', 'oak_log', 'soul_soil'))
+
+    color_functions(room)
+    expansion_functions(room)
+
+    for b in (
+            'amethyst', 'anvil', 'bell', 'brewing_stand', 'cake', 'campfire', 'cauldron', 'chest', 'colored_beam',
+            'colorings', 'composter', 'frosted_ice'):
+        room.function(b + '_init', exists_ok=True).add(mc.tag(entity().tag(b + '_home')).add('no_expansion'))
+
+
+
+def room_init_functions(room):
+    room.functions['blocks_room_init'].add(
+        label(r(-16, 2, 3), 'List Blocks'),
+        label(r(-16, 2, -3), 'List Blocks'),
+        label(r(-43, 2, 3), 'List Blocks'),
+        label(r(-43, 2, -3), 'List Blocks'),
+        mc.kill(entity().tag('block_list'))
+    )
+    room.function('blocks_sign_init').add(
+        mc.execute().at(entity().tag('blocks_home', '!no_expansion')).run().data().merge(r(0, 2, -1), {
+            'Text1': 'function restworld:blocks/toggle_expand'}),
+        mc.execute().at(entity().tag('blocks_home', '!no_expansion')).run().data().merge(r(0, 2, 1), {
+            'Text1': 'function restworld:blocks/toggle_expand'}),
+
+        mc.execute().at(entity().tag('blocks_home', 'no_expansion')).run().data().merge(r(0, 2, -1), {
+            'Text1': 'say Sorry, cannot expand this block'}),
+        mc.execute().at(entity().tag('blocks_home', 'no_expansion')).run().data().merge(r(0, 2, 1), {
+            'Text1': 'say Sorry, cannot expand this block'}),
+        mc.tag(entity().tag('block_sign_home')).add('no_expansion'),
+    )
+
+
+def color_functions(room):
+    coloring_coords = (r(1, 4, 6), r(-13, 2, -1))
+    lit_candles = room.score('lit_candles')
 
     def colorings(is_plain, color):
         fills = (
@@ -490,13 +499,6 @@ def room():
         mc.execute().as_(entity().tag('colorings_names')).run().data().merge(self(), {'CustomNameVisible': False}))
     room.function('colored_beam_enter').add(mc.setblock(r(0, 1, 0), 'iron_block'))
     room.function('colored_beam_exit').add(mc.setblock(r(0, 1, 0), 'white_concrete'))
-
-    for b in (
-            'amethyst', 'anvil', 'bell', 'brewing_stand', 'cake', 'campfire', 'cauldron', 'chest', 'colored_beam',
-            'colorings', 'composter', 'frosted_ice'):
-        room.function(b + '_init', exists_ok=True).add(mc.tag(entity().tag(b + '_home')).add('no_expansion'))
-
-    expansion_functions(room)
 
 
 def expansion_functions(room):
