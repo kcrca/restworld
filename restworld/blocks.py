@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Iterable
+from typing import Iterable, Union
 
 from pyker.commands import EAST, r, mc, entity, Entity, facing_info, good_block, Block, NORTH, SOUTH, WEST, self, MOVE
 from pyker.info import colors, Color
@@ -18,8 +18,8 @@ def room():
     name_stand.tag('block_list')
     all_names = room.function('all_names', needs_home=False)
 
-    def blocks(name, facing, block_lists: Iterable[Block, str] | Iterable[Iterable[Block, str]], dx=0, dz=0, size=0,
-               labels=None):
+    def blocks(name, facing, block_lists: Iterable[Union[Block, str]] | Iterable[Iterable[Union[Block, str]]], dx=0,
+               dz=0, size=0, labels=None):
         facing_data = facing_info(facing)
 
         if not isinstance(block_lists, list):
@@ -152,13 +152,28 @@ def room():
     room.function('campfire_exit').add(mc.setblock(r(0, 3, 0), Block('campfire', {'lit': False})))
     blocks('clay', SOUTH, ('Clay', 'Mud', 'Muddy|Mangrove Roots', 'Packed Mud'))
     blocks('cobble', NORTH, ('Cobblestone', 'Mossy|Cobblestone', 'Cobbled|Deepslate'))
+    blocks('deepslate', NORTH, (
+        'Deepslate', 'Chiseled|Deepslate', 'Polished|Deepslate', 'Cracked|Deepslate|Bricks', 'Cracked|Deepslate|Tiles',
+        'Deepslate|Bricks', 'Deepslate|Tiles', 'Cobbled|Deepslate', 'Reinforced|Deepslate'))
+    blocks('dirt', SOUTH, ('Dirt', 'Coarse Dirt', 'Rooted Dirt', 'Farmland'))
+    blocks('end', NORTH, ('End Stone', 'End Stone Bricks'))
+    blocks('frosted_ice', SOUTH, list(Block('Frosted Ice', {'age': i}) for i in range(0, 4)))
 
-    # types = ("Copper Block", "Exposed Copper", "Weathered|Copper", "Oxidized Copper")
-    # block = list(x.replace('Copper', 'Cut Copper').replace(' Block', '').replace(' Cut', '|Cut') for x in types)
-    # waxed_types = tuple("Waxed|%s" % x for x in types)
-    # waxed_block = tuple("Waxed|%s" % x for x in block)
-    # prefs=('execute if score waxed_copper funcs matches 0 run', 'execute if score waxed_copper funcs matches 1 run')
-    # blocks(types, waxed_types, block, waxed_block, dx=-3, prefixes=(prefs, prefs))
+    types = ('Copper Block', 'Exposed Copper', 'Weathered|Copper', 'Oxidized Copper')
+    block = list(x.replace('Copper', 'Cut Copper').replace(' Block', '').replace(' Cut', '|Cut') for x in types)
+    waxed_types = tuple('Waxed|%s' % x for x in types)
+    waxed_block = tuple('Waxed|%s' % x for x in block)
+    blocks('copper', NORTH, (types, block), dx=-3)
+    blocks('waxed_copper', NORTH, (waxed_types, waxed_block), dx=-3)
+    room.function('copper_init', exists_ok=True).add(
+        mc.tag(entity().tag('copper_home')).add('copper_base'),
+        mc.tag(entity().tag('waxed_copper_home')).add('copper_base'))
+    room.function('switch_to_copper').add(
+        mc.tag(entity().tag('copper_base')).add('copper_home'),
+        mc.tag(entity().tag('copper_base')).remove('copper_waxed_home'))
+    room.function('switch_to_waxed_copper').add(
+        mc.tag(entity().tag('copper_base')).remove('copper_home'),
+        mc.tag(entity().tag('copper_base')).add('copper_waxed_home'))
 
     woodlike = woods + stems
     leaves = ['%s Leaves' % x for x in woods] + ['Warped Wart Block', 'Nether Wart Block']
@@ -167,22 +182,11 @@ def room():
     stripped_logs = ['Stripped|%s Log' % x for x in woods] + [('Stripped|%s Stem' % x) for x in stems]
     stripped_woods = ['Stripped|%s Wood' % x for x in woods] + [('Stripped|%s Hyphae' % x) for x in stems]
     blocks('wood_blocks', SOUTH, (tuple('%s Planks' % f for f in woodlike),
-                                  stripped_logs,
-                                  logs,
-                                  wood,
-                                  leaves,
-                                  stripped_woods), dx=-3, dz=-3, size=2)
+                                  stripped_logs, logs, wood, leaves, stripped_woods), dx=-3, dz=-3, size=2)
 
-    sites = (
-        'Cauldron',
-        'Water Cauldron',
-        'Lava Cauldron',
-        'Powder Snow Cauldron',
-    )
-    stages = {
-        'Water Cauldron': list({'level': t} for t in range(1, 4)),
-        'Powder Snow Cauldron': list({'level': t} for t in range(3, 0, -1)),
-    }
+    sites = ('Cauldron', 'Water Cauldron', 'Lava Cauldron', 'Powder Snow Cauldron')
+    stages = {'Water Cauldron': list({'level': t} for t in range(1, 4)),
+              'Powder Snow Cauldron': list({'level': t} for t in range(3, 0, -1)), }
     job_sites('cauldron', NORTH, sites, stages)
     job_sites('composter', NORTH, ('Composter',), {'Composter': tuple({'level': t} for t in range(0, 9))})
 
@@ -268,44 +272,54 @@ def room():
 
     room.function('command_blocks_init').add(WallSign((None, None, 'Command Block', None)).place(r(0, 2, 1), SOUTH))
     room.loop('command_blocks', main_clock).loop(command_block_loop, (
-        ("Command Block", True), ("Command Block", False),
-        ("Chain Command Block", False), ("Chain Command Block", True),
-        ("Repeating Command Block", True), ("Repeating Command Block", False),
-        ("Command Block", False), ("Command Block", True),
-        ("Chain Command Block", True), ("Chain Command Block", False),
-        ("Repeating Command Block", False), ("Repeating Command Block", True),
+        ('Command Block', True), ('Command Block', False),
+        ('Chain Command Block', False), ('Chain Command Block', True),
+        ('Repeating Command Block', True), ('Repeating Command Block', False),
+        ('Command Block', False), ('Command Block', True),
+        ('Chain Command Block', True), ('Chain Command Block', False),
+        ('Repeating Command Block', False), ('Repeating Command Block', True),
     ))
 
-    room.function('contract_all').add(
-        mc.execute().as_(entity().tag('blocks_home', '!no_expansion', 'expander')).run().execute().at(
-            self()).run().function("restworld:blocks/toggle_expand_at"))
-    room.function('contract_dripstone').add(
-        # Erase the front and back lines
-        mc.fill(r(1, 12, 1), r(-1, 3, 1), 'air'),
-        mc.fill(r(1, 12, -1), r(-1, 3, -1), 'air'),
+    def dripstone_loop(step):
+        for j in range(0, step.elem):
+            yield mc.setblock(r(0, 4 + j, 0), Block('pointed_dripstone', {
+                'thickness': 'tip', 'vertical_direction': 'up'}))
+            yield mc.setblock(r(0, 11 - j, 0), Block('pointed_dripstone', {
+                'thickness': 'tip_merge' if j == step.elem - 1 else 'tip', 'vertical_direction': 'down'}))
+        if step.elem != 4:
+            yield mc.fill(r(0, 4 + step.elem, 0), r(0, 11 - step.elem, 0), 'air')
 
-        ## Erase either side
-        mc.fill(r(1, 12, 0), r(1, 3, 0), 'air'),
-        mc.fill(r(-1, 12, 0), r(-1, 3, 0), 'air'),
+    room.function('dripstone_init').add(
+        mc.setblock(r(0, 3, 0), 'dripstone_block'),
+        mc.setblock(r(0, 12, 0), 'dripstone_block'),
+        WallSign((None, 'Dripstone')).place(r(0, 2, -1), NORTH),
     )
-    room.function('contract_fire').add(
-        mc.fill(r(1, 5, 1), r(-1, 3, -1), 'air'),
-        mc.function('restworld:blocks/fire_cur'))
-    room.function('contract_gen4ric').add(
-        mc.clone(r(0, 5, 0), r(0, 6, 0), r(0, -10, 0)),
-        mc.fill(r(-1, 3, -1), r(1, 6, 1), 'air'),
-        mc.clone(r(0, -9, 0), r(0, -10, 0), r(0, 3, 0)).replace(MOVE),
-        mc.setblock(r(0, 2, 0), 'stone'),
-        mc.fill(r(-1, 2, -1), r(1, 2, 1), 'air').replace('barrier'),
-        mc.setblock(r(0, 2, 0), 'barrier')
-    )
+    room.loop('dripstone', main_clock).loop(dripstone_loop, range(1, 5), bounce=True)
 
+    def fire_loop(step):
+        dirs = ({'up': True}, {'north': True}, {})
+        surround = ((-1, 0, 'west'), (1, 0, 'east'), (0, 1, 'south'), (0, -1, 'north'),)
+        if 'soul' in step.elem:
+            yield mc.setblock(r(0, 3, 0), step.elem)
+            yield mc.setblock(r(0, 4, 0), 'soul_fire')
+        else:
+            yield mc.setblock(r(0, 3 + step.i, 0), step.elem)
+            if step.i == 1:
+                for j in range(0, 4):
+                    s = surround[j]
+                    yield mc.setblock(r(s[0], 4, s[1]), Block('fire', {s[2]: True}))
+            else:
+                yield mc.setblock(r(0, 4, -1 if step.i == 1 else 0), Block('fire', dirs[step.i]))
+        yield mc.data().merge(r(0, 2, -1), Sign.lines_nbt((None, 'Soul Fire' if step.elem == 'soul_soil' else 'Fire')))
+
+    room.function('fire_init').add(WallSign((None, 'Fire')).place(r(0, 2, -1), NORTH))
+    room.loop('fire', main_clock).add(mc.fill(r(0, 3, 0), r(0, 5, 0), 'air')).loop(fire_loop, (
+        'oak_log', 'oak_log', 'oak_log', 'soul_soil'))
 
     def colorings(is_plain, color):
         fills = (
             'stained_glass', 'stained_glass_pane', 'wool', 'banner', 'shulker_box', 'carpet', 'concrete',
-            'concrete_powder',
-            'terracotta')
+            'concrete_powder', 'terracotta')
         plain_fills = tuple(
             Block(x) for x in ('glass', 'glass_pane', 'air', 'air', 'shulker_box', 'air', 'air', 'air', 'terracotta'))
         candles = [Block('candle' if is_plain else color.name + '_candle', {'candles': x, 'lit': True}) for x in
@@ -329,9 +343,11 @@ def room():
                 else:
                     candle = Block(candle.kind + '_cake', {'lit': True})
                     filter = '#restworld:candle_cake'
-                yield mc.execute().if_().score(lit_candles).matches(0).run().fill(*coloring_coords, candle).replace(filter)
+                yield mc.execute().if_().score(lit_candles).matches(0).run().fill(*coloring_coords, candle).replace(
+                    filter)
                 candle.merge_state({'lit': False})
-                yield mc.execute().unless().score(lit_candles).matches(0).run().fill(*coloring_coords, candle).replace(filter)
+                yield mc.execute().unless().score(lit_candles).matches(0).run().fill(*coloring_coords, candle).replace(
+                    filter)
 
         yield mc.data().merge(r(-7, 0, 3), {'name': 'restworld:%s_terra' % color.id, 'showboundingbox': False})
 
@@ -477,14 +493,137 @@ def room():
 
     for b in (
             'amethyst', 'anvil', 'bell', 'brewing_stand', 'cake', 'campfire', 'cauldron', 'chest', 'colored_beam',
-            'colorings', 'composter'):
+            'colorings', 'composter', 'frosted_ice'):
         room.function(b + '_init', exists_ok=True).add(mc.tag(entity().tag(b + '_home')).add('no_expansion'))
+
+    expansion_functions(room)
+
+
+def expansion_functions(room):
+    ''''
+    `Expansion is complex.
+
+    Each 'homer' armor stand is assumed to be an expander for its block
+    or blocks. Though it can be tagged 'no_expansion' if the block is
+    not to be expanded, typically in its _init file.
+
+    During the _init phase, every expanding homer modifies its sign to
+    toggle expansion when tapped. Non-expanding homers modify the sign
+    to say 'Sorry' when tapped.
+
+    Toggling actual expansion for a single target is in toggle_expand_at.
+    It places or removes the 'expander' tag on the homer, and runs
+    either the expander or contracter function as itself as appropriate
+    to give the immediate effect.
+
+    Expanding or contracting all simply runs this script on all expanding
+    homers. Which means, frankly, that it doesn't 'expand all' it
+    'toggles all'.
+
+    Homers that handle multiple blocks are helped by 'just_expand'
+    armor stands under the blocks it manages. These are expander homers
+    that do nothing but the expansion work for the blocks above them.
+    So if homer X puts up blocks X and Y, a regular homer will be under
+    X and a 'just_expand' homer will be under Y.
+
+    Each main tick, the 'expand' function is run at every 'expender'
+    during the 'main_finish' phase. This keeps the block expanded as
+    it changes.
+    '''
+    room.function('expander').add(
+        mc.execute().if_().entity(entity().tag('fire_home').distance((None, 1))).run().function(
+            'restworld:blocks/expand_fire'),
+        mc.execute().if_().entity(entity().tag('dripstone_home').distance((None, 1))).run().function(
+            'restworld:blocks/expand_dripstone'),
+        mc.execute().unless().entity(entity().tag('fire_home').distance((None, 1))).unless().entity(
+            entity().tag('dripstone_home').distance((None, 1))).run().function('restworld:blocks/expand_generic')
+    )
+    room.function('expand_all', needs_home=False).add(
+        mc.execute().as_(entity().tag('blocks_home', '!no_expansion', '!expander')).run().execute().at(
+            self()).run().function('restworld:blocks/toggle_expand_at'))
+    room.function('expand_finish_main').add(
+        mc.execute().at(entity().tag('expander', 'generic_home')).run().function('restworld:blocks/expander'))
+    room.function('expand_dripstone', needs_home=False).add(
+        # Clone the original stack to either side to form a line, including anything on top of the block
+        mc.clone(r(0, 12, 0), r(0, 3, 0), r(-1, 3, 0)),
+        mc.clone(r(0, 12, 0), r(0, 3, 0), r(1, 3, 0)),
+
+        # Clone the line to either side to get a 3x3 level
+        mc.clone(r(1, 12, 0), r(-1, 3, 0), r(-1, 3, -1)),
+        mc.clone(r(1, 12, 0), r(-1, 3, 0), r(-1, 3, 1)),
+    )
+    fire_score = room.score('fire')
+    room.function('expand_fire', needs_home=False).add(
+        mc.execute().unless().score(fire_score).matches(1).run().fill(r(-2, 4, 1), r(-2, 4, -1), 'air'),
+        mc.execute().unless().score(fire_score).matches(1).run().fill(r(2, 4, 1), r(2, 4, -1), 'air'),
+        mc.execute().unless().score(fire_score).matches(1).run().fill(r(1, 4, -2), r(-1, 4, -2), 'air'),
+        mc.execute().unless().score(fire_score).matches(1).run().fill(r(1, 4, 2), r(-1, 4, 2), 'air'),
+        mc.clone(r(0, 5, 0), r(0, 3, 0), r(1, 3, 0)),
+        mc.clone(r(0, 5, 0), r(0, 3, 0), r(-1, 3, 0)),
+        mc.clone(r(1, 5, 0), r(-1, 3, 0), r(-1, 3, 1)),
+        mc.clone(r(1, 5, 0), r(-1, 3, 0), r(-1, 3, -1)),
+        mc.execute().if_().score(fire_score).matches(1).run().fill(r(-2, 4, 1), r(-2, 4, -1), 'fire[west=true]'),
+        mc.execute().if_().score(fire_score).matches(1).run().fill(r(2, 4, 1), r(2, 4, -1), 'fire[east=true]'),
+        mc.execute().if_().score(fire_score).matches(1).run().fill(r(1, 4, -2), r(-1, 4, -2), 'fire[north=true]'),
+        mc.execute().if_().score(fire_score).matches(1).run().fill(r(1, 4, 2), r(-1, 4, 2), 'fire[south=true]'),
+    )
+    room.function('expand_generic', needs_home=False).add(
+        ## Sand blocks will fall if they aren't supported, so we place barriers under them
+        mc.execute().if_().block(r(0, 3, 0), '#restworld:sand').run().fill(r(-1, 2, -1), r(1, 2, 1), 'barrier').replace(
+            'air'),
+
+        # We want to clone up the snow topper, if_().it exists. If it doesn't, we need that layer
+        # mc.to be cleared (it might have something from a previous expansion). And snow is the
+        # mc.only thing that is normally placed on that level. </%doc>
+        mc.execute().unless().block(r(0, 4, 0), 'snow').run().fill(r(-1, 4, -1), r(1, 4, 1), 'air'),
+
+        ## Clone the original block to either side to form a line, including anything on top of the block
+        mc.clone(r(0, 4, 0), r(0, 3, 0), r(-1, 3, 0)),
+        mc.clone(r(0, 4, 0), r(0, 3, 0), r(1, 3, 0)),
+
+        ## Clone the line to either side to get a 3x3 level
+        mc.clone(r(1, 4, 0), r(-1, 3, 0), r(-1, 3, -1)),
+        mc.clone(r(1, 4, 0), r(-1, 3, 0), r(-1, 3, 1)),
+
+        ## Clone the fill bottom level to the top
+        mc.clone(r(1, 4, 1), r(-1, 3, -1), r(-1, 5, -1)),
+
+        ## Soil needs the middle level filled with dirt
+        mc.execute().if_().block(r(0, 5, 0), '#restworld:soil').run().fill(r(-1, 3, -1), r(1, 4, 1), 'dirt'),
+
+        ## Otherwise fill the middle level with the top level
+        mc.execute().unless().block(r(0, 5, 0), '#restworld:soil').run().clone(r(1, 5, 1), r(-1, 5, -1), r(-1, 4, -1)),
+    )
 
     room.function('contracter').add(
         mc.execute().if_().entity(entity().tag('fire_home').distance((None, 1))).run().function(
-            "restworld:blocks/contract_fire"),
+            'restworld:blocks/contract_fire'),
         mc.execute().if_().entity(entity().tag('dripstone_home').distance((None, 1))).run().function(
-            "restworld:blocks/contract_dripstone"),
+            'restworld:blocks/contract_dripstone'),
         mc.execute().unless().entity(entity().tag('fire_home').distance((None, 1))).unless().entity(
-            entity().tag('dripstone_home').distance((None, 1))).run().function("restworld:blocks/contract_generic"),
+            entity().tag('dripstone_home').distance((None, 1))).run().function('restworld:blocks/contract_generic'),
+    )
+
+    room.function('contract_all').add(
+        mc.execute().as_(entity().tag('blocks_home', '!no_expansion', 'expander')).run().execute().at(
+            self()).run().function('restworld:blocks/toggle_expand_at'))
+    room.function('contract_dripstone').add(
+        # Erase the front and back lines
+        mc.fill(r(1, 12, 1), r(-1, 3, 1), 'air'),
+        mc.fill(r(1, 12, -1), r(-1, 3, -1), 'air'),
+
+        ## Erase either side
+        mc.fill(r(1, 12, 0), r(1, 3, 0), 'air'),
+        mc.fill(r(-1, 12, 0), r(-1, 3, 0), 'air'),
+    )
+    room.function('contract_fire').add(
+        mc.fill(r(1, 5, 1), r(-1, 3, -1), 'air'),
+        mc.function('restworld:blocks/fire_cur'))
+    room.function('contract_gen4ric').add(
+        mc.clone(r(0, 5, 0), r(0, 6, 0), r(0, -10, 0)),
+        mc.fill(r(-1, 3, -1), r(1, 6, 1), 'air'),
+        mc.clone(r(0, -9, 0), r(0, -10, 0), r(0, 3, 0)).replace(MOVE),
+        mc.setblock(r(0, 2, 0), 'stone'),
+        mc.fill(r(-1, 2, -1), r(1, 2, 1), 'air').replace('barrier'),
+        mc.setblock(r(0, 2, 0), 'barrier')
     )
