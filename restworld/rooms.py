@@ -774,7 +774,6 @@ class Room(FunctionSet):
         decr_f.add(mc.function(cur_f))
 
     def _add_other_funcs(self):
-        loops = list(filter(lambda x: isinstance(x, Loop), self.functions.values()))
         to_incr = self.score('_to_incr')
         before_commands = {
             'init': [mc.scoreboard().objectives().add(self.name, ScoreCriteria.DUMMY),

@@ -1,11 +1,12 @@
 from __future__ import annotations
 
-from restworld import ancient, global_, aquatic, arena, banners, biomes, tags, blocks
+from restworld import ancient, global_, aquatic, arena, banners, biomes, tags, blocks, center
 from restworld.world import restworld
 
 
 def main():
-    for f in (ancient.room, global_.room, aquatic.room, arena.room, banners.room, biomes.room, blocks.room):
+    for f in (
+    ancient.room, global_.room, aquatic.room, arena.room, banners.room, biomes.room, blocks.room, center.room):
         f()
     tags.tags()
     restworld.save()
