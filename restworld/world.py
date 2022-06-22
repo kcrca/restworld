@@ -42,25 +42,25 @@ class Restworld(RoomPack):
         cb = Book()
         cb.sign_book('Control Book', 'Restworld', 'Useful Commands')
 
-        cb.add(r'Clock State:\\n      ',
-               self._action(r'|\\u25c0\\u25c0', 'Previous', '_decr').extra('  '),
+        cb.add(r'Clock State:\n      ',
+               self._action(r'|\u25c0\u25c0', 'Previous', '_decr'), r'  ',
                self._action(r'||', 'Play/Pause', 'global/clock_toggle').bold(),
-               self._action(r'/\\u25b6', 'Play/Pause', 'global/clock_toggle').extra('  '),
-               self._action(r'\\u25b6\\u25b6|', 'Next', '_incr').extra(r'\\n', r'\\nClock Speed:\\n      '),
-               self._action(r'<<', 'Slower Clock Speed', 'center/slower_clocks').extra('   '),
-               self._action(r'\\u27f2', 'Reset Clock Speed', 'center/reset_clocks').extra('   '),
-               self._action(r'>>', 'Faster Clock Speed', 'center/faster_clocks').extra(r'\\n', r'\\nPlaces:\\n   '),
-               self._action('Home', 'Starting Point', 'global/go_home').extra(r'\\n   '),
-               self._action('Photo Shoot', 'Scenic View', 'global/go_photo').extra(r'\\n   '),
-               self._action('Battle Arena', 'Battle Arena', 'arena/go_arena').extra(r'\\n   '),
-               self._action('Biome Sampler', 'Biome Sampler', 'global/go_biomes').extra(r'\\n   '),
-               self._action('Connected Textures', 'Connected Textures', 'global/go_connected').extra(r'\\n   '),
-               self._action('Nether Home', 'Nether Starting Point', 'global/go_nether_home').extra(r'\\n   '),
-               self._action('End Home', 'End Starting Point', 'global/go_end_home').extra(r'\\n   '),
-               )
+               self._action(r'/\u25b6', 'Play/Pause', 'global/clock_toggle'), '  ',
+               self._action(r'\u25b6\u25b6|', 'Next', '_incr'), r'\n', r'\nClock Speed:\n      ',
+               self._action(r'<<', 'Slower Clock Speed', 'center/slower_clocks'), '   ',
+               self._action(r'\u27f2', 'Reset Clock Speed', 'center/reset_clocks'), '   ',
+               self._action(r'>>', 'Faster Clock Speed', 'center/faster_clocks'), r'\n', r'\nPlaces:\n   ',
+               self._action('Home', 'Starting Point', 'global/go_home'), r'\n   ',
+               self._action('Photo Shoot', 'Scenic View', 'global/go_photo'), r'\n   ',
+               self._action('Battle Arena', 'Battle Arena', 'arena/go_arena'), r'\n   ',
+               self._action('Biome Sampler', 'Biome Sampler', 'global/go_biomes'), r'\n   ',
+               self._action('Connected Textures', 'Connected Textures', 'global/go_connected'), r'\n   ',
+               self._action('Nether Home', 'Nether Starting Point', 'global/go_nether_home'), r'\n   ',
+               self._action('End Home', 'End Starting Point', 'global/go_end_home'), r'\n   ',
+           )
 
         cb.next_page()
-        cb.add(r'Click on room name to go there: \\n\\n')
+        cb.add(r'Click on room name to go there: \n\n')
         rooms = filter(lambda x: isinstance(x, Room) and x.title is not None, self.function_set.children)
         rooms = sorted(rooms, key=lambda x: x.title)
         first = True
@@ -73,12 +73,12 @@ class Restworld(RoomPack):
 
         cb.next_page()
         cb.add(
-            r'Credits:\\n\\n',
-            JsonText.text(r'BlueMeanial:\\n').bold(),
-            r'  Command Blocks\\n  Software Design\\n  Programming\\n\\n',
-            JsonText.text(r'JUMBOshrimp277:\\n').bold(),
-            r'  World Design\\n  Testing\\n  Rubber Duck\\n',
-            r'\\nMinecraft Version:\\n   1.19, May 2022',
+            r'Credits:\n\n',
+            JsonText.text(r'BlueMeanial:\n').bold(),
+            r'  Command Blocks\n  Software Design\n  Programming\n\n',
+            JsonText.text(r'JUMBOshrimp277:\n').bold(),
+            r'  World Design\n  Testing\n  Rubber Duck\n',
+            r'\nMinecraft Version:\n   1.19, June 2022',
         )
 
         return Function('control_book').add(mc.give(player(), cb.item()))
