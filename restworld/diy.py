@@ -62,8 +62,8 @@ def room():
         mc.execute().at(entity().tag('diy_cloner')).if_().block(r(0, 4, -1), 'air').run(custom_reset.set(1)),
         mc.execute().if_().score(custom_reset).matches(1).at(entity().tag('diy_starter')
                                                              ).run().tp(entity().tag('diy_cloner'), r(0, 2, 0)),
-        mc.execute().if_().score(custom_reset).matches(0).as_(entity().tag('diy_cloner')).run(
-        ).tp(entity().tag('diy_cloner'), d(0, 0, 1)),
+        mc.execute().if_().score(custom_reset).matches(0).as_(entity().tag('diy_cloner')).at(
+            entity().tag('diy_cloner')).run().tp(entity().tag('diy_cloner'), d(0, 0, 1)),
         mc.execute().at(entity().tag('diy_cloner')).unless().block(r(0, 4, 0), 'air').run(
         ).setblock(r(0, 3, 0), 'magenta_glazed_terracotta'),
         mc.execute().at(entity().tag('diy_cloner')).run(
