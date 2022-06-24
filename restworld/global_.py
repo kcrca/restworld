@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from pyker.commands import mc, entity, r, REPLACE, Commands, MOVE, self, OVERWORLD, player, EQ, MOD, THE_END, \
+from pyker.commands import mc, entity, r, Commands, MOVE, self, OVERWORLD, player, EQ, MOD, THE_END, \
     RAIN, CREATIVE, SIDEBAR
 from pyker.enums import ScoreCriteria
 from pyker.function import Function
@@ -158,9 +158,9 @@ def room():
             ('nether', OVERWORLD, (-1000, 101, -1000), (-1000, 80, -970)),
             ('photo', OVERWORLD, (-1000, 101, -1000), (-1000, 80, -970)),
             ('arena', OVERWORLD, (1014, 106, -1000), (1000, 100, -1000))):
-        room.function('goto_' + p[0], needs_home=False).add(
+        room.function('goto_' + p[0], home=False).add(
             mc.execute().in_(p[1]).run().teleport().pos(p[2], player()).facing(p[3]))
-    room.function('goto_weather', needs_home=False).add(
+    room.function('goto_weather', home=False).add(
         mc.execute().in_(OVERWORLD).run().teleport().pos((1009, 101, 1000), player()).facing((1004, 102, 1000)),
         mc.weather(RAIN))
     room.home_func('min')

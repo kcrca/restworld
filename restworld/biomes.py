@@ -120,7 +120,7 @@ def room():
     )
     load_biome_score = room.score('load_biome')
     for g in biome_groups:
-        room.function(to_id(g) + '_signs', needs_home=False).add(group_signs(g, load_biome_score))
+        room.function(to_id(g) + '_signs', home=False).add(group_signs(g, load_biome_score))
 
     room.function('cleanup_biome').add(mc.kill(entity().type('item')))
     clear_previous_mobs = mc.execute().at(entity().tag('biome_loading_action_home')).positioned(

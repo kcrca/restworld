@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from pyker.commands import Entity, Block, SOUTH, r, mc, entity, self, RESULT, INT, REPLACE, COLORS, WHITE, d
+from pyker.commands import Entity, Block, SOUTH, r, mc, entity, self, RESULT, INT, COLORS, WHITE, d
 from pyker.enums import Pattern
 from pyker.simpler import Shield, WallSign
 from restworld.rooms import Room, label
@@ -222,7 +222,7 @@ def room():
         label(r(4, 2, 3), 'Controls'),
         mc.function('restworld:banners/switch_to_color'),
     )
-    room.function('banner_controls_remove', needs_home=False).add(
+    room.function('banner_controls_remove', home=False).add(
         mc.fill(r(0, 2, 0), r(8, 4, 4), 'air').replace('#wall_signs'))
 
     room.loop('banner_ink', main_clock).loop(None, COLORS).add(*banner_ink_change())

@@ -658,7 +658,7 @@ class Room(FunctionSet):
         marker = deepcopy(self._home_stand)
         tags = marker.nbt.get_list('Tags')
         tags.extend((marker_tag, self.name + '_home', 'homer'))
-        return self.function(marker_tag, needs_home=False, exists_ok=True).add(
+        return self.function(marker_tag, home=False, exists_ok=True).add(
             mc.comment(home_marker_comment),
             mc.kill(entity().tag(marker_tag)),
             mc.execute().positioned(r(-0.5, 0, 0.5)).run().kill(entity().type('armor_stand').delta((1, 2, 1))),
@@ -673,16 +673,16 @@ class Room(FunctionSet):
         kwargs['tags'] = tag_list
         return MobPlacer(*args, **kwargs)
 
-    def function(self, name: str, clock: Clock = None, /, needs_home=True, exists_ok=False) -> Function:
+    def function(self, name: str, clock: Clock = None, /, home=True, exists_ok=False) -> Function:
         base_name, name = self._base_name(name, clock)
         if exists_ok and name in self.functions:
             return self.functions[name]
-        if needs_home:
+        if home:
             if base_name[0] == '_':
-                needs_home = False
+                home = False
             if base_name in self._homes:
-                needs_home = False
-        return self._add_func(Function(name, base_name=base_name), name, clock, needs_home)
+                home = False
+        return self._add_func(Function(name, base_name=base_name), name, clock, home)
 
     def loop(self, name: str, clock: Clock = None, /, needs_home=True, score=None) -> Loop:
         base_name, name = self._base_name(name, clock)

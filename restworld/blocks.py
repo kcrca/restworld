@@ -17,7 +17,7 @@ def room():
 
     name_stand = Entity('armor_stand', nbt={'Invisible': True, 'NoGravity': True, 'CustomNameVisible': True})
     name_stand.tag('block_list')
-    all_names = room.function('all_names', needs_home=False)
+    all_names = room.function('all_names', home=False)
 
     def blocks(name, facing, block_lists: Iterable[Union[Block, str]] | Iterable[Iterable[Union[Block, str]]], dx=0,
                dz=0, size=0, labels=None, clock=main_clock, score=None):
@@ -42,7 +42,7 @@ def room():
             block_init.add(
                 mc.execute().if_().score(block_list_score).matches(0).run().kill(entity().tag('block_list_%s' % name))
             )
-            names = room.function(name + '_names', needs_home=False)
+            names = room.function(name + '_names', home=False)
             all_names.add(mc.function(names.full_name))
 
         def blocks_loop_body(step):
@@ -255,9 +255,19 @@ def room():
     facing = (NORTH, WEST, NORTH, WEST)
     room.loop('bell', main_clock).add(mc.setblock(r(0, 3, 0), 'air')).loop(bell_loop, attachments)
 
+    def brewing_stand_loop(step):
+        for j in range(0, 3):
+            if j in step.elem:
+                yield mc.item().replace().block(r(0, 3, 0), 'container.%d' % j).with_(Block('potion', nbt={'Potion': "water"}), 1)
+            else:
+                yield mc.item().replace().block(r(0, 3, 0), 'container.%d' % j).with_('air')
+
     room.function('brewing_stand_init').add(mc.function('restworld:containers/brewing_init'))
-    room.function('brewing_stand', main_clock).add(
-        mc.execute().positioned(r(0, 1, 0)).run().function('restworld:containers/brewing_main'))
+    room.loop('brewing_stand', main_clock).add(
+        mc.item().replace().block(r(0, 3, 0), 'container.3').with_('air'),
+        mc.item().replace().block(r(0, 3, 0), 'container.4').with_('air'),
+        mc.data().merge(r(0, 3, 0), {'BrewTime': 0, 'Fuel': 0}),
+    ).loop(brewing_stand_loop, ((), (0,), (1,), (2,), (2, 0), (1, 2), (0, 1), (0, 1, 2)))
 
     def cake_loop(step):
         yield mc.setblock(r(0, 3, 0), Block('cake', {'bites': step.elem}))
@@ -729,10 +739,10 @@ def expansion_functions(room):
     it changes.
     '''
 
-    room.function('toggle_expand', needs_home=False).add(
+    room.function('toggle_expand', home=False).add(
         mc.execute().positioned(r(0, -2, -1)).run().function('restworld:blocks/toggle_expand_at'),
         mc.execute().positioned(r(0, -2, 1)).run().function('restworld:blocks/toggle_expand_at'))
-    room.function('toggle_expand_at', needs_home=False).add(
+    room.function('toggle_expand_at', home=False).add(
         ## There are two possible cases: Either this homer is already
         ## expanding or it is not.  We need to swap that.
 
@@ -764,12 +774,12 @@ def expansion_functions(room):
         mc.execute().unless().entity(entity().tag('fire_home').distance((None, 1))).unless().entity(
             entity().tag('dripstone_home').distance((None, 1))).run().function('restworld:blocks/expand_generic')
     )
-    room.function('expand_all', needs_home=False).add(
+    room.function('expand_all', home=False).add(
         mc.execute().as_(entity().tag('blocks_home', '!no_expansion', '!expander')).run().execute().at(
             self()).run().function('restworld:blocks/toggle_expand_at'))
     room.function('expand_finish_main').add(
         mc.execute().at(entity().tag('expander', 'generic_home')).run().function('restworld:blocks/expander'))
-    room.function('expand_dripstone', needs_home=False).add(
+    room.function('expand_dripstone', home=False).add(
         # Clone the original stack to either side to form a line, including anything on top of the block
         mc.clone(r(0, 12, 0), r(0, 3, 0), r(-1, 3, 0)),
         mc.clone(r(0, 12, 0), r(0, 3, 0), r(1, 3, 0)),
@@ -779,7 +789,7 @@ def expansion_functions(room):
         mc.clone(r(1, 12, 0), r(-1, 3, 0), r(-1, 3, 1)),
     )
     fire_score = room.score('fire')
-    room.function('expand_fire', needs_home=False).add(
+    room.function('expand_fire', home=False).add(
         mc.execute().unless().score(fire_score).matches(1).run().fill(r(-2, 4, 1), r(-2, 4, -1), 'air'),
         mc.execute().unless().score(fire_score).matches(1).run().fill(r(2, 4, 1), r(2, 4, -1), 'air'),
         mc.execute().unless().score(fire_score).matches(1).run().fill(r(1, 4, -2), r(-1, 4, -2), 'air'),
@@ -793,7 +803,7 @@ def expansion_functions(room):
         mc.execute().if_().score(fire_score).matches(1).run().fill(r(1, 4, -2), r(-1, 4, -2), 'fire[north=true]'),
         mc.execute().if_().score(fire_score).matches(1).run().fill(r(1, 4, 2), r(-1, 4, 2), 'fire[south=true]'),
     )
-    room.function('expand_generic', needs_home=False).add(
+    room.function('expand_generic', home=False).add(
         ## Sand blocks will fall if they aren't supported, so we place barriers under them
         mc.execute().if_().block(r(0, 3, 0), '#restworld:sand').run().fill(r(-1, 2, -1), r(1, 2, 1), 'barrier').replace(
             'air'),
@@ -829,7 +839,7 @@ def expansion_functions(room):
         mc.execute().unless().entity(entity().tag('fire_home').distance((None, 1))).unless().entity(
             entity().tag('dripstone_home').distance((None, 1))).run().function('restworld:blocks/contract_generic'),
     )
-    room.function('contract_all', needs_home=False).add(
+    room.function('contract_all', home=False).add(
         mc.execute().as_(entity().tag('blocks_home', '!no_expansion', 'expander')).run().execute().at(
             self()).run().function('restworld:blocks/toggle_expand_at'))
     room.function('contract_dripstone').add(
