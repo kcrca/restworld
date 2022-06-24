@@ -10,7 +10,8 @@ from restworld.world import restworld, tick_clock, clock, main_clock
 
 def room():
     def use_min_fill(y, filler, filter):
-        return mc.execute().at(entity().tag('min_home')).run().fill((r(0), y, r(0)), (r(166), y, r(180)), filler).replace(filter)
+        return mc.execute().at(entity().tag('min_home')).run().fill((r(0), y, r(0)), (r(166), y, r(180)),
+                                                                    filler).replace(filter)
 
     def clock_lights(turn_on):
         lights = ('red_concrete', 'lime_concrete')
@@ -42,11 +43,10 @@ def room():
                 room_home = mob_room + '_home'
                 yield mc.execute().as_(entity().tag(room_home)).run().data().merge(
                     self(), {'Invisible': True})
-                yield mc.execute().as_(entity().tag(room_home, '!blockers_home')).at(self()).run().tp().pos(
-                    r(0, 2, 0),
-                    self())
+                yield mc.execute().as_(entity().tag(room_home, '!blockers_home')).at(self()).run().tp(self(),
+                                                                                                      r(0, 2, 0))
                 yield mc.execute().as_(entity().tag(mob_room, '!passenger').type('!item_frame')).at(
-                    self()).run().tp().pos(r(0, 2, 0), self())
+                    self()).run().tp(self(), r(0, 2, 0))
         else:
             yield mc.execute().at(entity().tag('sleeping_bat')).run().clone(r(0, 1, 0), r(0, 1, 0),
                                                                             r(0, -1, 0)).replace(MOVE),
@@ -58,15 +58,15 @@ def room():
                 room_home = mob_room + '_home'
                 yield mc.execute().as_(entity().tag(room_home)).run().data().merge(
                     self(), {'Invisible': False})
-                yield mc.execute().as_(entity().tag(room_home, '!blockers_home')).at(self()).run().tp().pos(
-                    r(0, -2, 0), self())
+                yield mc.execute().as_(entity().tag(room_home, '!blockers_home')).at(self()).run().tp(self(),
+                                                                                                      r(0, -2, 0))
                 yield mc.execute().as_(entity().tag(mob_room, '!passenger').type('!item_frame')).at(
-                    self()).run().tp().pos(r(0, -2, 0), self())
+                    self()).run().tp(self(),r(0, -2, 0))
 
     room = Room('global', restworld)
     clock_toggle = room.score('clock_toggle')
     room.function('arena').add(
-        mc.execute().in_(OVERWORLD).run().tp().pos((1126, 103, 1079), player()).facing((1139, 104, 1079)))
+        mc.execute().in_(OVERWORLD).run().tp(player(), (1126, 103, 1079)).facing((1139, 104, 1079)))
     room.home_func('clock'),
     room.add(
         Function('clock_init').add(
@@ -159,9 +159,9 @@ def room():
             ('photo', OVERWORLD, (-1000, 101, -1000), (-1000, 80, -970)),
             ('arena', OVERWORLD, (1014, 106, -1000), (1000, 100, -1000))):
         room.function('goto_' + p[0], home=False).add(
-            mc.execute().in_(p[1]).run().teleport().pos(p[2], player()).facing(p[3]))
+            mc.execute().in_(p[1]).run().teleport(player(), p[2]).facing(p[3]))
     room.function('goto_weather', home=False).add(
-        mc.execute().in_(OVERWORLD).run().teleport().pos((1009, 101, 1000), player()).facing((1004, 102, 1000)),
+        mc.execute().in_(OVERWORLD).run().teleport(player(), (1009, 101, 1000)).facing((1004, 102, 1000)),
         mc.weather(RAIN))
     room.home_func('min')
 
@@ -172,7 +172,7 @@ def room():
         mc.clear(player()),
         mc.gamemode(CREATIVE, player()),
         mc.function('restworld:global/control_book'),
-        mc.tp().pos((0, 101, 0), player()).facing((0, 100, 5)),
+        mc.tp(player(),(0, 101, 0)).facing((0, 100, 5)),
         mc.scoreboard().objectives().setdisplay(SIDEBAR),
         mc.function('restworld:center/reset_clocks'),
         mc.function('restworld:global/clock_on'),

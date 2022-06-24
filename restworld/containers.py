@@ -284,7 +284,7 @@ def room():
             yield mc.item().replace().block(r(1, -5, -1), 'container.%d' % i).with_(t)
         yield mc.clone(r(1, -5, -1), r(1, -5, -1), r(1, 1, -1))
 
-        yield WallSign(('Items Not', 'in Creative', 'Iventory')).place(r(2, 2, -1, ), NORTH)
+        yield WallSign((None, 'Items Not', 'in Creative', 'Iventory')).place(r(2, 2, -1, ), NORTH)
 
     giveable = non_inventory[:-1]
     giveable.append(Entity('Elytra', {'Damage': 450}))

@@ -9,7 +9,7 @@ from restworld.rooms import Room, Clock, RoomPack
 
 
 def kill_em(target):
-    return mc.tp().to(target, entity().tag('death').limit(1))
+    return mc.tp(target, entity().tag('death').limit(1))
 
 
 marker_tmpl = Entity('armor_stand', {'NoGravity': True, 'Small': True, })
@@ -57,7 +57,7 @@ class Restworld(RoomPack):
                self._action('Connected Textures', 'Connected Textures', 'global/go_connected'), r'\n   ',
                self._action('Nether Home', 'Nether Starting Point', 'global/go_nether_home'), r'\n   ',
                self._action('End Home', 'End Starting Point', 'global/go_end_home'), r'\n   ',
-           )
+               )
 
         cb.next_page()
         cb.add(r'Click on room name to go there: \n\n')

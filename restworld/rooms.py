@@ -779,8 +779,7 @@ class Room(FunctionSet):
             'init': [mc.scoreboard().objectives().add(self.name, ScoreCriteria.DUMMY),
                      mc.scoreboard().objectives().add(self.name + '_max', ScoreCriteria.DUMMY),
                      (x.set(0) for x in self._scores),
-                     to_incr.set(1)] + [
-                        mc.tp().to(entity().tag(self.name), entity().tag('death').limit(1)), ]}
+                     to_incr.set(1)] + [mc.tp(entity().tag(self.name), entity().tag('death').limit(1))]}
         after_commands = {
             'enter': [mc.weather(CLEAR)]
         }
