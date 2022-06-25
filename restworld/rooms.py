@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import collections
 from copy import deepcopy
+from enum import Enum
 from functools import total_ordering
 from html.parser import HTMLParser
 
@@ -123,21 +124,31 @@ class Stepable(Thing):
         self.base_id = to_id(base_id)
 
 
-class ActionSign(Thing):
-    def __init__(self, name, id=None, note=None):
-        Thing.__init__(self, name, id)
+class ActionDesc:
+    def __init__(self, enum: Enum, display_name=None, note=None):
+        if display_name is None:
+            display_name = type(enum).display_name(enum)
+        self.enum = enum
+        self.display_name = display_name
         self.note = "(%s)" % note if note else None
 
-    def to_sign_text(self):
-        t = super(ActionSign, self).to_sign_text()
-        if self.note:
-            t += self.note.split("|")
-        return t
+    def __lt__(self, other):
+        assert self.__class__ == other.__class__
+        assert self.enum.__class__ == other.enum.__class__
+        return self.display_name < other.display_name
 
-    def __cmp__(self, other):
-        my_text = ' '.join(self.to_sign_text())
-        other_text = ' '.join(other.to_sign_text())
-        return cmp(my_text, other_text)
+    def sign_text(self):
+        block = Block(self.enum.value, display_name=self.display_name)
+        sign_text = list(block.sign_text)
+        if self.note:
+            sign_text.append(self.note)
+        if len(sign_text) < 4:
+            sign_text.insert(0, None)
+        while len(sign_text) > 4:
+            if sign_text[0]:
+                raise ValueError("%s: Too much sign text for action" % sign_text)
+            sign_text = sign_text[1:]
+        return sign_text
 
 
 colors = (
@@ -498,7 +509,7 @@ def render_tmpl(tmpl, var_name, **kwargs):
         biome_groups=biome_groups,
         biomes=biomes,
         normal_blocks=normal_blocks,
-        effects=effects,
+        # effects=effects,
         moon_phases=moon_phases,
         non_inventory=non_inventory,
         coloring_coords=coloring_coords,
@@ -794,7 +805,7 @@ class Room(FunctionSet):
                 (mc.execute().at(entity().tag(self._home_func_name(x.name))).run().function(x.full_name) for x in
                  relevant))
             commands.extend(after_commands.setdefault(f, []))
-            if len(commands) > 1:
+            if len(commands) > 0:
                 self.function(f_name).add(*commands)
 
     @staticmethod
@@ -917,104 +928,60 @@ def say_score(*scores):
     return mc.tellraw(all_(), say)
 
 
-particles = [
-    ActionSign("Ambient Entity|Effect", "ambient"),
-    ActionSign("Angry Villager"),
-    ActionSign("Ash"),
-    ActionSign("Barrier"),
-    ActionSign("Bubbles|Currents|Whirlpools", "bubbles"),
-    ActionSign("Clouds", note="Evaporation"),
-    ActionSign("Composter"),
-    ActionSign("Crimson Spore"),
-    ActionSign("Crit"),
-    ActionSign("Damage Indicator"),
-    ActionSign("Dolphin"),
-    ActionSign("Dragon Breath"),
-    ActionSign("Dripping Lava", note="Falling, Landing"),
-    ActionSign("Dripping Water", note="Falling"),
-    ActionSign("Dripping|Obsidian Tear", note="Falling, Landing"),
-    ActionSign("Dripping Honey", note="Falling, Landing"),
-    ActionSign("Dust", note="Redstone Dust"),
-    ActionSign("Effect"),
-    ActionSign("Electric Spark"),
-    ActionSign("Enchant"),
-    ActionSign("Enchanted Hit"),
-    ActionSign("End Rod"),
-    ActionSign("Entity Effect"),
-    ActionSign("Explosion"),
-    ActionSign("Explosion Emitter"),
-    ActionSign("Falling Dust"),
-    ActionSign("Falling Nectar"),
-    ActionSign("Fireworks", note="and Flash"),
-    ActionSign("Fishing"),
-    ActionSign("Flame"),
-    ActionSign("Happy Villager"),
-    ActionSign("Heart"),
-    ActionSign("Instant Effect"),
-    ActionSign("Item Slime"),
-    ActionSign("Item Snowball"),
-    ActionSign("Large Smoke"),
-    ActionSign("Lava"),
-    ActionSign("Light"),
-    ActionSign("Mycelium"),
-    ActionSign("Nautilus", note="with Conduit"),
-    ActionSign("Poof", note="Small Explosion"),
-    ActionSign("Sculk Sensor"),
-    ActionSign("Sculk Soul"),
-    ActionSign("Shriek"),
-    ActionSign("Smoke"),
-    ActionSign("Sneeze"),
-    ActionSign("Snow and Rain"),
-    ActionSign("Soul"),
-    ActionSign("Spit"),
-    ActionSign("Spore Blossom"),
-    ActionSign("Splash"),
-    ActionSign("Squid Ink", note="and Glow Squid"),
-    ActionSign("Sweep Attack"),
-    ActionSign("Totem of Undying"),
-    ActionSign("Underwater"),
-    ActionSign("Wax", note="and Copper"),
-    ActionSign("Warped Spore"),
-    ActionSign("White Ash"),
-    ActionSign("Witch"),
-]
-particles.sort()
+class Wall:
+    def __init__(self, width, facing, x, z, used):
+        self.width = width
+        self.facing = facing
+        self.used = used
+        self.x = x
+        self.z = z
 
-effects = (
-    ActionSign("Speed"),
-    ActionSign("Slowness", note="Negative"),
-    ActionSign("Haste"),
-    ActionSign("Mining Fatigue", note="Negative"),
-    ActionSign("Strength"),
-    ActionSign("Weakness", note="Negative"),
-    ActionSign("Instant Health"),
-    ActionSign("Instant Damage", note="Negative"),
-    ActionSign("Jump Boost"),
-    ActionSign("Nausea", note="Negative"),
-    ActionSign("Regeneration"),
-    ActionSign("Resistance"),
-    ActionSign("Fire Resistance"),
-    ActionSign("Water Breathing"),
-    ActionSign("Invisibility"),
-    ActionSign("Blindness", note="Negative"),
-    ActionSign("Night Vision"),
-    ActionSign("Hunger", note="Negative"),
-    ActionSign("Poison", note="Negative"),
-    ActionSign("Wither", note="Negative"),
-    ActionSign("Health Boost"),
-    ActionSign("Absorption"),
-    ActionSign("Saturation"),
-    ActionSign("Glowing", note="Neutral"),
-    ActionSign("Levitation", note="Negative"),
-    ActionSign("Luck"),
-    ActionSign("Bad Luck", id="unluck", note="Negative"),
-    ActionSign("Slow Falling"),
-    ActionSign("Conduit Power"),
-    ActionSign("Dolphin's Grace", id="dolphins_grace"),
-    ActionSign("Bad Omen", note="Negative"),
-    ActionSign("Hero|of the Village"),
-    ActionSign("Darkness"),
-)
+    def signs(self, desc_iter, get_sign):
+        dx, dz, _, _2 = facing_info(self.facing, 1, ROTATION_270)
+        for y in self.used.keys():
+            for h in self.used[y]:
+                sign = get_sign(next(desc_iter), self)
+                x = self.x + h * dx
+                z = self.z + h * dz
+                yield sign.place(r(x, y, z), self.facing)
+
+
+class SignedRoom(Room):
+    def __init__(self, name: str, dp: RoomPack, facing, sign_txt, get_sign, signs: Iterable[ActionDesc],
+                 walls: Iterable[Wall]):
+        super().__init__(name, dp, facing, sign_txt)
+        self.get_sign = get_sign
+        self.walls = walls
+        self.function('signs').add(self.init(signs))
+
+    def init(self, descs):
+        i = iter(descs)
+        try:
+            for w in self.walls:
+                yield from w.signs(i, self.get_sign)
+        except StopIteration:
+            return None
+
+
+def span(start, end):
+    return range(start, end + 1)
+
+
+particle_note = {
+    "Ambient Entity|Effect": "ambient",
+    "Bubbles|Currents|Whirlpools": "bubbles",
+    "Clouds": "Evaporation",
+    "Dripping Lava": "Falling, Landing",
+    "Dripping Water": "Falling",
+    "Dripping|Obsidian Tear": "Falling, Landing",
+    "Dripping Honey": "Falling, Landing",
+    "Dust": "Redstone Dust",
+    "Fireworks": "and Flash",
+    "Nautilus": "with Conduit",
+    "Poof": "Small Explosion",
+    "Squid Ink": "and Glow Squid",
+    "Wax": "and Copper"}
+particles = [ActionDesc(e, particle_note.get(e, None)) for e in Particle]
 
 
 def write_function(func_dir, func_name, rendered):
