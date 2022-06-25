@@ -132,6 +132,9 @@ class ActionDesc:
         self.display_name = display_name
         self.note = "(%s)" % note if note else None
 
+    def __str__(self):
+        return self.display_name + ' [' + self.enum + ']'
+
     def __lt__(self, other):
         assert self.__class__ == other.__class__
         assert self.enum.__class__ == other.enum.__class__

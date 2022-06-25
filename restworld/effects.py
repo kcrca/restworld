@@ -7,28 +7,30 @@ from restworld.rooms import label, SignedRoom, Wall, span, ActionDesc
 from restworld.world import restworld
 
 effect_note = {
-    "Slowness": "Negative",
-    "Mining Fatigue": "Negative",
-    "Weakness": "Negative",
-    "Instant Damage": "Negative",
-    "Nausea": "Negative",
-    "Blindness": "Negative",
-    "Hunger": "Negative",
-    "Poison": "Negative",
-    "Wither": "Negative",
-    "Glowing": "Neutral",
-    "Levitation": "Negative",
-    "unluck": "Negative",
-    "Bad Omen": "Negative",
+    'Slowness': 'Negative',
+    'Mining Fatigue': 'Negative',
+    'Weakness': 'Negative',
+    'Instant Damage': 'Negative',
+    'Nausea': 'Negative',
+    'Blindness': 'Negative',
+    'Hunger': 'Negative',
+    'Poison': 'Negative',
+    'Wither': 'Negative',
+    'Glowing': 'Neutral',
+    'Levitation': 'Negative',
+    'unluck': 'Negative',
+    'Bad Omen': 'Negative',
 }
-display_names = {'unluck': 'Bad Luck'}
+display_names = {
+    Effect.BAD_LUCK: 'Bad Luck',
+    Effect.HERO_OF_THE_VILLAGE: 'Hero|of the Village',
+}
 effects = [ActionDesc(e, display_names.get(e, None), 'Negative' if Effect.negative(e) else None) for e in Effect]
 effects.sort()
 
 
 def room():
     def effect_sign(action_desc, wall):
-        # execute at @e[tag=effects_signer] run setblock ^-2 ^3 ^0 oak_wall_sign[facing=east]{Text2:"{\"text\":\"Absorption\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"setblock ^-1 ^0 ^0 emerald_block\"}}",Text3:"{\"text\":\"\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"effect give @p absorption 100000\"}}"} replace
         dx, dy, _, _2 = facing_info(wall.facing)
         return WallSign(action_desc.sign_text(), (
             mc.setblock(d(-dx, 0, -dy), 'emerald_block'),
@@ -67,5 +69,5 @@ def room():
         no_effects.place(r(2, 2, 0), SOUTH),
     )
     room.function('effects_signs_init').add(
-        mc.execute().positioned(r(0, 1, 0)).run().function("restworld:effects/signs"),
+        mc.execute().positioned(r(0, 1, 0)).run().function('restworld:effects/signs'),
     )
