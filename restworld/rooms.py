@@ -125,12 +125,16 @@ class Stepable(Thing):
 
 
 class ActionDesc:
-    def __init__(self, enum: Enum, display_name=None, note=None):
+    def __init__(self, enum: Enum, display_name=None, note=None, also=()):
+        self.enum = enum
         if display_name is None:
             display_name = type(enum).display_name(enum)
-        self.enum = enum
         self.display_name = display_name
         self.note = "(%s)" % note if note else None
+        if isinstance(also, Iterable):
+            self.also = also
+        else:
+            self.also = (also,)
 
     def __str__(self):
         return self.display_name + ' [' + self.enum + ']'
@@ -964,6 +968,11 @@ class SignedRoom(Room):
                 yield from w.signs(i, self.get_sign)
         except StopIteration:
             return None
+        try:
+            desc = next(i)
+            raise ValueError('%s...: Remaining descs after all signs are placed' % desc.display_name)
+        except StopIteration:
+            return
 
 
 def span(start, end):
