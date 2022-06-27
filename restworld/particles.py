@@ -12,19 +12,6 @@ from pyker.simpler import WallSign
 from restworld.rooms import SignedRoom, Wall, span, ActionDesc
 from restworld.world import restworld, fast_clock, main_clock, slow_clock, kill_em
 
-particle_note = {
-    Particle.CLOUD: "Evaporation",
-    Particle.DRIPPING_LAVA: "Falling, Landing",
-    Particle.DRIPPING_WATER: "Falling",
-    Particle.DRIPPING_OBSIDIAN_TEAR: "Falling, Landing",
-    Particle.DRIPPING_HONEY: "Falling, Landing",
-    Particle.DUST: "Redstone Dust",
-    Particle.FIREWORK: "and Flash",
-    Particle.NAUTILUS: "with Conduit",
-    Particle.POOF: "Small Explosion",
-    Particle.SQUID_INK: "and Glow Squid",
-    Particle.WAX_ON: "and Wax off",
-}
 particles = [
     ActionDesc(Particle.AMBIENT_ENTITY_EFFECT, "Ambient|Entity|Effect"),
     ActionDesc(Particle.ANGRY_VILLAGER),
@@ -39,15 +26,15 @@ particles = [
     ActionDesc(Particle.DAMAGE_INDICATOR),
     ActionDesc(Particle.DOLPHIN),
     ActionDesc(Particle.DRAGON_BREATH),
-    ActionDesc(Particle.DRIPPING_LAVA, note="Falling,Landing", also=(
+    ActionDesc(Particle.DRIPPING_LAVA, note="Falling, Landing", also=(
         Particle.FALLING_LAVA, Particle.LANDING_LAVA, Particle.DRIPPING_DRIPSTONE_LAVA,
         Particle.FALLING_DRIPSTONE_LAVA)),
     ActionDesc(Particle.DRIPPING_WATER, note="Falling",
                also=(Particle.FALLING_WATER, Particle.DRIPPING_DRIPSTONE_WATER, Particle.FALLING_DRIPSTONE_WATER)),
-    ActionDesc(Particle.DRIPPING_OBSIDIAN_TEAR, "Dripping|Obsidian Tear", note="Falling,Landing",
+    ActionDesc(Particle.DRIPPING_OBSIDIAN_TEAR, "Dripping|Obsidian Tear", note="Falling, Landing",
                also=(Particle.FALLING_OBSIDIAN_TEAR, Particle.LANDING_OBSIDIAN_TEAR)),
-    ActionDesc(Particle.DRIPPING_HONEY, note="Falling,Landing", also=(Particle.FALLING_HONEY, Particle.LANDING_HONEY)),
-    ActionDesc(Particle.DUST, note="Redstone_Dust"),
+    ActionDesc(Particle.DRIPPING_HONEY, note="Falling, Landing", also=(Particle.FALLING_HONEY, Particle.LANDING_HONEY)),
+    ActionDesc(Particle.DUST, note="Redstone Dust"),
     ActionDesc(Particle.EFFECT),
     ActionDesc(Particle.ELECTRIC_SPARK),
     ActionDesc(Particle.ENCHANT),
@@ -58,7 +45,7 @@ particles = [
     ActionDesc(Particle.EXPLOSION_EMITTER),
     ActionDesc(Particle.FALLING_DUST),
     ActionDesc(Particle.FALLING_NECTAR),
-    ActionDesc(Particle.FIREWORK, note="and_Flash", also=Particle.FLASH),
+    ActionDesc(Particle.FIREWORK, note="and Flash", also=Particle.FLASH),
     ActionDesc(Particle.FISHING),
     ActionDesc(Particle.FLAME, also=Particle.SOUL_FIRE_FLAME),
     ActionDesc(Particle.HAPPY_VILLAGER),
@@ -71,7 +58,7 @@ particles = [
     ActionDesc(Particle.LIGHT, also=(Particle.BLOCK_MARKER)),
     ActionDesc(Particle.MYCELIUM),
     ActionDesc(Particle.NAUTILUS, note="with Conduit"),
-    ActionDesc(Particle.POOF, note="Small_Explosion"),
+    ActionDesc(Particle.POOF, note="Small Explosion"),
     ActionDesc(Particle.PORTAL),
     ActionDesc(Particle.VIBRATION, 'Sculk Sensor'),
     ActionDesc(Particle.SCULK_SOUL, also=(Particle.SCULK_CHARGE, Particle.SCULK_CHARGE_POP)),
@@ -82,16 +69,34 @@ particles = [
     ActionDesc(Particle.SOUL),
     ActionDesc(Particle.SPORE_BLOSSOM_AIR, 'Spore Blossom', also=Particle.FALLING_SPORE_BLOSSOM),
     ActionDesc(Particle.SPLASH),
-    ActionDesc(Particle.SQUID_INK, note="and_Glow_Squid", also=Particle.GLOW_SQUID_INK),
+    ActionDesc(Particle.SQUID_INK, note="and Glow Squid", also=(Particle.GLOW, Particle.GLOW_SQUID_INK)),
     ActionDesc(Particle.SWEEP_ATTACK),
     ActionDesc(Particle.TOTEM_OF_UNDYING),
     ActionDesc(Particle.UNDERWATER),
-    ActionDesc(Particle.WAX_ON, 'Wax', note="and_Copper", also=(Particle.WAX_OFF, Particle.SCRAPE)),
+    ActionDesc(Particle.WAX_ON, 'Wax', note="and Copper", also=(Particle.WAX_OFF, Particle.SCRAPE)),
     ActionDesc(Particle.WARPED_SPORE),
     ActionDesc(Particle.WHITE_ASH),
     ActionDesc(Particle.WITCH),
 ]
+unused_particles = {
+    Particle.BLOCK, # This just happens in the game, plus I can't see how to generate it.
+    Particle.CAMPFIRE_COSY_SMOKE, # In block room
+    Particle.CAMPFIRE_SIGNAL_SMOKE, # Same as regular campfire smoke, just goes higher
+    Particle.DUST_COLOR_TRANSITION, # Can the player control its look? AFAICT, it's just when the power level changes?
+    Particle.ELDER_GUARDIAN, # Just the elder guardian face in your face, anbd makes it hard to turn off.
+    Particle.ITEM, # Same as BLOCK
+    Particle.NOTE, # Always shown in the redstone room (as is DUST, FWIW)
+    Particle.SPIT, # Broke at 1.19, can't get the summond spit to move.
+}
 particles.sort()
+# Notes:
+#    Maybe spit can be made to work with a live llama hitting a wolf, but the llama must be penned in, etc.
+#    Lower priority, easily seen around: DUST, NOTE, UNDERWATER (also not much to see), SPORE_BLOSSOM (right outside
+#    the room), PORTAL (which can be seen in Materials).
+#
+#    Could loop the BLOCK_MARKER types in one thing.
+#    Could loop WHITE_ASH, CRIMSON_SPRE, etc.?
+#    Could loop various explosions?
 
 villager_types = ("Desert", "Jungle", "Plains", "Savanna", "Snow", "Swamp", "Taiga")
 villager_data = []
@@ -132,14 +137,16 @@ def floor(block):
 
 
 def room():
+    # Check for unexpectedly unhandle particles
     used = set()
     for p in particles:
         used.add(p.enum)
         for a in p.also:
             used.add(a)
-    avail = set(x for x in Particle)
+    avail = set(x for x in Particle) - unused_particles
     unused = tuple(sorted((str(x) for x in (avail - used))))
-    print('\n'.join(unused))
+    if unused:
+        raise ValueError('Unused particles: %s', unused)
 
     def particle_sign(action_desc, wall):
         dx, dy, _, _2 = facing_info(wall.facing)
@@ -429,7 +436,7 @@ def room():
 
     def squid_ink_loop(step):
         yield summon(step.elem, 4, {'NoAI': True})
-        yield mc.particle(step.elem + '_ink', r(0, 2, -0), 0.2, 1, 0.2, 0.03, 10)
+        yield mc.particle(step.elem + '_ink', r(0, 2.8, -0), 0.15, 0.3, 0.15, 0.01, 30)
 
     room.loop('squid_ink_run').add(
         kill_em(entity().tag('particler'))).loop(
