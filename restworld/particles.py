@@ -79,14 +79,14 @@ particles = [
     ActionDesc(Particle.WITCH),
 ]
 unused_particles = {
-    Particle.BLOCK, # This just happens in the game, plus I can't see how to generate it.
-    Particle.CAMPFIRE_COSY_SMOKE, # In block room
-    Particle.CAMPFIRE_SIGNAL_SMOKE, # Same as regular campfire smoke, just goes higher
-    Particle.DUST_COLOR_TRANSITION, # Can the player control its look? AFAICT, it's just when the power level changes?
-    Particle.ELDER_GUARDIAN, # Just the elder guardian face in your face, anbd makes it hard to turn off.
-    Particle.ITEM, # Same as BLOCK
-    Particle.NOTE, # Always shown in the redstone room (as is DUST, FWIW)
-    Particle.SPIT, # Broke at 1.19, can't get the summond spit to move.
+    Particle.BLOCK,  # This just happens in the game, plus I can't see how to generate it.
+    Particle.CAMPFIRE_COSY_SMOKE,  # In block room
+    Particle.CAMPFIRE_SIGNAL_SMOKE,  # Same as regular campfire smoke, just goes higher
+    Particle.DUST_COLOR_TRANSITION,  # Can the player control its look? AFAICT, it's just when the power level changes?
+    Particle.ELDER_GUARDIAN,  # Just the elder guardian face in your face, anbd makes it hard to turn off.
+    Particle.ITEM,  # Same as BLOCK
+    Particle.NOTE,  # Always shown in the redstone room (as is DUST, FWIW)
+    Particle.SPIT,  # Broke at 1.19, can't get the summond spit to move.
 }
 particles.sort()
 # Notes:
@@ -137,16 +137,7 @@ def floor(block):
 
 
 def room():
-    # Check for unexpectedly unhandle particles
-    used = set()
-    for p in particles:
-        used.add(p.enum)
-        for a in p.also:
-            used.add(a)
-    avail = set(x for x in Particle) - unused_particles
-    unused = tuple(sorted((str(x) for x in (avail - used))))
-    if unused:
-        raise ValueError('Unused particles: %s', unused)
+    check_for_unused()
 
     def particle_sign(action_desc, wall):
         dx, dy, _, _2 = facing_info(wall.facing)
@@ -474,3 +465,16 @@ def room():
     room.function('white_ash_init', home=False).add(floor('basalt'))
     room.function('witch', home=False).add(fast().particle(Particle.WITCH, r(0, 2.3, 0), 0.3, 0.3, 0.3, 0, 6))
     room.function('witch_init', home=False).add(summon('witch', 0, {'NoAI': True}))
+
+
+def check_for_unused():
+    # Check for unexpectedly unhandled particles
+    used = set()
+    for p in particles:
+        used.add(p.enum)
+        for a in p.also:
+            used.add(a)
+    avail = set(x for x in Particle) - unused_particles
+    unused = tuple(sorted((str(x) for x in (avail - used))))
+    if unused:
+        raise ValueError('Unused particles: %s', unused)

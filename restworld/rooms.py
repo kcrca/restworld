@@ -568,7 +568,8 @@ def crops(loop_index: int, stages, crop, pos, name='age'):
 
 def label(pos: Position, txt: str, facing=1) -> Commands:
     return (
-        mc.execute().positioned(pos).run().kill(entity().type('item_frame').tag('label').sort(NEAREST).limit(1)),
+        mc.execute().positioned(pos).run().kill(
+            entity().type('item_frame').tag('label').sort(NEAREST).distance((None, 2)).limit(1)),
         mc.summon('item_frame', pos,
                   named_frame_item(Thing('stone_button'), txt).merge(
                       {'Invisible': True, 'Facing': facing, 'Tags': ['label'], 'Fixed': True})),
@@ -873,6 +874,8 @@ class MobPlacer:
                nbt=None) -> Tuple[Command, ...]:
         if isinstance(mobs, (Entity, str)):
             mobs = (mobs,)
+        if tags and isinstance(tags, str):
+            tags = list(tags)
         for mob in mobs:
             mob = good_entity(mob)
             tmpl = mob.clone()
