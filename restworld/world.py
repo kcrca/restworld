@@ -81,7 +81,7 @@ class Restworld(RoomPack):
             r'\nMinecraft Version:\n   1.19, June 2022',
         )
 
-        return Function('control_book').add(mc.give(player(), cb.item()))
+        return Function('control_book').add(mc.give(player(), cb.as_entity()))
 
     @staticmethod
     def _action(txt: str, tooltip: str, act: str) -> JsonText:

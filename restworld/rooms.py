@@ -532,8 +532,10 @@ def named_frame_item(thing: Thing, name=None, damage=None):
     return Nbt({'Item': {'id': thing.id, 'Count': 1, 'tag': tag_nbt}})
 
 
-def ensure(pos, block, nbt=None):
-    mc.execute().unless().block(pos, block).run().setblock(pos, block).nbt(Nbt.as_nbt(nbt))
+def ensure(pos: Position, block: BlockDef, nbt=None):
+    block = good_block(block)
+    to_place = block.clone().merge_nbt(nbt)
+    return mc.execute().unless().block(pos, good_block(block)).run().setblock(pos, to_place)
 
 
 def extract_arg(name, default_value, kwargs, keep=False):
