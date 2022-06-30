@@ -206,7 +206,7 @@ def room():
 
     placer = room.mob_placer(r(0, 2, -1), EAST, tags=('item_holder', 'item_hands'), adults=True, nbt={'ShowArms': True})
     room.function('item_init').add(
-        placer.summon('armor_stand'),
+        placer.summon('armor_stand', tags=('holder_stand')),
         mc.setblock(r(0, 2, 1), 'barrier'),
         mc.summon('item_frame', r(1, 2, 1),
                   {'Facing': 5, 'Tags': ['containers', 'item_holder', 'item_src'], 'Item': Item.nbt('iron_pickaxe')}),
