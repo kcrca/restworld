@@ -1,9 +1,11 @@
 from __future__ import annotations
 
+import math
+
 from pyker.commands import mc, r, Block, WEST, entity, EAST, Entity, SOUTH, self
 from pyker.simpler import WallSign
 from restworld.rooms import Room, label
-from restworld.world import restworld, main_clock, kill_em
+from restworld.world import restworld, main_clock, kill_em, fast_clock
 
 
 def room():
@@ -75,6 +77,23 @@ def room():
 
     basic_functions(room)
 
+    points = (2, 6, 16, 36, 72, 148, 306, 616, 1236, 2476, 32767)
+    each = 2 * math.pi / len(points)
+    radius = 4
+
+    def experience_orbs_loop(step):
+        i = step.i
+        p = points[i]
+        angle = i * each
+        x = radius * math.cos(angle)
+        z = radius * math.sin(angle)
+        f = -32768 if i == 0 else points[i - 1]
+        yield mc.summon('experience_orb', r(0, 3, 0), {'Value': p, 'Age': 6000 - 40})
+        yield mc.data().merge(r(1, 2, 0), {'Text3': 'Size %d' % (i + 1), 'Text4': '%d - %d' % (f, p)})
+
+    room.loop('experience_orbs', fast_clock).loop(experience_orbs_loop, points)
+    room.function('experience_orbs_init').add(WallSign((None, 'Experience Orb')).place(r(1, 2, 0), EAST))
+
 
 def basic_functions(room):
     stand = Entity('armor_stand', {'Tags': ['basic_stand', 'material_static'], 'ShowArms': True, 'NoGravity': True})
@@ -85,10 +104,12 @@ def basic_functions(room):
     )
     for i in range(0, 5):
         basic_init.add(
-            invis_stand.summon(r(-(0.8 + i * 0.7), 2.0, 0), facing=SOUTH, nbt={'Tags': ['material_%d' % (4 + i), 'material_static']}))
+            invis_stand.summon(r(-(0.8 + i * 0.7), 2.0, 0), facing=SOUTH,
+                               nbt={'Tags': ['material_%d' % (4 + i), 'material_static']}))
         if i < 4:
             basic_init.add(
-                invis_stand.summon(r(+(0.6 + i * 0.7), 2.0, 0), facing=SOUTH, nbt={'Tags': ['material_%d' % (3 - i), 'material_static']}))
+                invis_stand.summon(r(+(0.6 + i * 0.7), 2.0, 0), facing=SOUTH,
+                                   nbt={'Tags': ['material_%d' % (3 - i), 'material_static']}))
 
     basic_init.add(
         mc.fill(r(-3, 2, 2), r(-3, 5, 2), 'stone'),
