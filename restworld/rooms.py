@@ -802,7 +802,8 @@ class Room(FunctionSet):
                      (x.set(0) for x in self._scores),
                      to_incr.set(1)] + [mc.tp(entity().tag(self.name), entity().tag('death').limit(1))]}
         after_commands = {
-            'enter': [mc.weather(CLEAR)]
+            'enter': [mc.weather(CLEAR)],
+            'init': [mc.function('%s/_cur' % self.full_name)],
         }
         for f in self._pack.suffixes:
             f_name = '_' + f
@@ -831,8 +832,10 @@ class Room(FunctionSet):
         return self.pack._home_func_name(base)
 
 
-def _name_for(kind):
-    return kind.replace('_', ' ').title()
+def _name_for(mob):
+    if mob.display_name:
+        return mob.display_name
+    return mob.kind.replace('_', ' ').title()
 
 
 class MobPlacer:
@@ -872,8 +875,11 @@ class MobPlacer:
             self.kid_x, self.kid_z = kid_delta
         self._cur = list(self.start)
 
+    def clone(self) -> MobPlacer:
+        return copy.deepcopy(self)
+
     def summon(self, mobs: Iterable[EntityDef] | EntityDef, *, on_stand: bool | Callable[Entity] = False, tags=None,
-               nbt=None) -> Tuple[Command, ...]:
+               nbt=None, auto_tag=None) -> Tuple[Command, ...]:
         if isinstance(mobs, (Entity, str)):
             mobs = (mobs,)
         if tags and isinstance(tags, str):
@@ -885,15 +891,16 @@ class MobPlacer:
                 tmpl.merge_nbt(self.nbt)
             if nbt:
                 tmpl.merge_nbt(nbt)
-            rotation___ = {'NoAI': True, 'PersistenceRequired': True, 'Silent': True, 'Rotation': [self.rotation, 0.0]}
             tmpl.merge_nbt(
-                rotation___)
-            tmpl.set_name(_name_for(mob.kind))
+                {'NoAI': True, 'PersistenceRequired': True, 'Silent': True, 'Rotation': [self.rotation, 0.0]})
+            tmpl.set_name(_name_for(mob))
             if self.tags:
                 tmpl.tag(*self.tags)
             if tags:
                 tmpl.tag(*tags)
-            if self.auto_tag:
+            if auto_tag is None:
+                auto_tag = self.auto_tag
+            if auto_tag:
                 tmpl.tag(tmpl.kind)
 
             if self.adults:

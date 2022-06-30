@@ -6,5 +6,5 @@ from restworld.world import restworld
 
 
 def room():
-    room = Room('ancient', restworld, NORTH, (None, 'Warden'))
+    room = Room('ancient', restworld, WEST, (None, 'Warden'))
     room.function('warden_init').add((room.mob_placer(r(0, 2, 0), WEST, adults=True).summon('warden'),))

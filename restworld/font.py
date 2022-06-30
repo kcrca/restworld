@@ -92,10 +92,9 @@ def room():
         y = 5 - i % 4
         font_run_init.add(
             WallSign((None, 'Use', c.name, 'Text'),
-                     (mc.execute().at(entity().tag('font_action_home')).run().data().modify(r(0, -3, -3),
-                                                                                            'Color').set().value(
-                         c.id),),
-                     nbt={'Color': c.id}).place(r(x, y, -3), SOUTH))
+                     (mc.execute().at(entity().tag('font_action_home')).run(
+                     ).data().modify(r(0, -3, -3), 'Color').set().value(c.id),), nbt={'Color': c.id}).place(r(x, y, -3),
+                                                                                                            SOUTH))
 
     maybe_glow = room.function('maybe_glow')
     font_glow = room.score('font_glow')

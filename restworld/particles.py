@@ -7,7 +7,7 @@ from pyker.base import Nbt
 from pyker.commands import SOUTH, mc, EAST, WEST, facing_info, d, entity, r, Block, NORTH, player, OVERWORLD, \
     CLEAR, all_, RAIN
 from pyker.enums import Particle
-from pyker.info import professions
+from pyker.info import villager_professions
 from pyker.simpler import WallSign
 from restworld.rooms import SignedRoom, Wall, span, ActionDesc
 from restworld.world import restworld, fast_clock, main_clock, slow_clock, kill_em
@@ -101,7 +101,7 @@ particles.sort()
 villager_types = ("Desert", "Jungle", "Plains", "Savanna", "Snow", "Swamp", "Taiga")
 villager_data = []
 for t in villager_types:
-    for p in professions:
+    for p in villager_professions:
         villager_data.append({'profession': p.lower(), 'type': t.lower()})
     random.shuffle(villager_data)
 
