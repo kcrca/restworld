@@ -4,7 +4,7 @@ import math
 
 from pyker.commands import mc, r, Block, WEST, entity, EAST, Entity, SOUTH, self, NORTH
 from pyker.info import woods, stems
-from pyker.simpler import WallSign, Volume, ItemFrame
+from pyker.simpler import WallSign, Volume, ItemFrame, Item
 from restworld.friendlies import _to_id
 from restworld.rooms import Room, label
 from restworld.world import restworld, main_clock, kill_em, fast_clock
@@ -29,7 +29,7 @@ def room():
         slabs.append((None, None) + tuple('%s Slab' % b for b in subtypes))
         stairs.append((None, None) + tuple(('%s Stairs' % b if 'Cut' not in b else None) for b in subtypes))
         walls.append('%sstone Wall' % ty)
-    assert len(blocks) == 2 # allows us to use "replace previous type" because there are only two types
+    assert len(blocks) == 2  # allows us to use "replace previous type" because there are only two types
 
     volume = Volume(r(0, 1, 0), r(10, 6, 7))
     fill = (r(0, 1, 0), r(10, 6, 7))
@@ -78,63 +78,68 @@ def room():
 
     room.loop('experience_orbs', fast_clock).loop(experience_orbs_loop, points)
     room.function('experience_orbs_init').add(WallSign((None, 'Experience Orb')).place(r(1, 2, 0), EAST))
-    # room.function('ores_init').add(
-    #     frame = Entity('item_frame', nbt={'Facing': 3,'Tags':  [room.name,'ore_ingot_frame' ],'Item': {'id': 'coal','Count': 1},'Fixed': True})
-    #     mc.summon(frame,r(3, 3, 3 ),)
-    #     mc.summon(frame.merge_nbt({'Invisible': True})
-    #     label(r(3, 2, 7), 'Deepslate')
+    frame = ItemFrame(SOUTH, {'Tags': [room.name, 'ore_ingot_frame']})
+    room.function('ores_init').add(
+        mc.summon(frame, r(3, 3, 3)),
+        mc.summon(frame.merge_nbt({'Invisible': True}), r(4, 3, 3)),
+        label(r(3, 2, 7), 'Deepslate'))
 
-    blocks = (
-           ('Coal Ore', 'Coal Block', 'Coal', None),
-           ('Iron Ore', 'Iron Block', 'Iron Ingot', 'Raw Iron'),
-           ('Copper Ore', 'Copper Block', 'Copper Ingot', 'Raw Copper'),
-           ('Gold Ore', 'Gold Block', 'Gold Ingot', 'Raw Gold'),
-           ('Redstone Ore', 'Redstone Block', 'Redstone', None),
-           ('Lapis Ore', 'Lapis Block', 'Lapis Lazuli', None),
-           ('Diamond Ore', 'Diamond Block', 'Diamond', None),
-           ('Emerald Ore', 'Emerald Block', 'Emerald', None),
-           ('Nether Gold Ore', 'Gold Block', 'Gold Nugget', None),
-           ('Nether Quartz Ore', 'Quartz Block', 'Quartz', None),
-           ('Ancient Debris', 'Netherite Block', 'Netherite Ingot', 'Netherite Scrap'),
-       )
     raw_frame = 'ore_raw_frame'
     volume = Volume(r(7, 5, 6), r(0, 2, 0))
-    deepslate_materials  = room.score('deepslate_materials')
+    deepslate_materials = room.score('deepslate_materials')
 
-    # def ore_loop(step):
-    #     ore, block, item, raw = (Block(s) if s else None for s in step.elem)
-    #     yield from volume.replace(block.kind, '#restworld:ore_blocks')
-    #     yield data().merge(r(3, 2, 6 ), {'Text2': ore.name.replace(' Ore', '')})
-    #     if 'Nether' in ore.name or 'Ancient' in ore.'name':
-    #         yield volume.replace(ore.kind, '#restworld:ores')
-    #         yield volume.replace('netherrack', '#restworld:ore_background')
-    #         yield volume.replace('soul_sand' 'dirt')
-    #         yield volume.replace(' soul_soil', 'andesite')
-    #         yield volume.replace(' blackstone', 'diorite')
-    #         yield volume.replace(' basalt', 'granite')
-    #     else:
-    #         yield mc.execute.if_().score(deepslate_materials).matches(0).run(volume.replace(ore.kind '#restworld:ores'))
-    #         yield mc.execute.if_().score(deepslate_materials).matches(0).run(volume.replace('stone', '#restworld:ore_background'))
-    #         yield mc.execute.if_().score(deepslate_materials).matches(1).run(volume.replace('deepslate%s' % ore.kind, '#restworld:ores'))
-    #         yield mc.execute.if_().score(deepslate_materials).matches(1).run(volume.replace('deepslate', '#restworld:ore_background'))
-    #         yield volume.replace('dirt', 'soul_sand')
-    #         yield volume.replace('andesite', 'soul_soil')
-    #         yield volume.replace('diorite', 'blackstone')
-    #         yield volume.replace('granite', 'basalt')
-    #
-    #     if 'Netherite' in item.display_name:
-    #         yield mc.data().merge(r(3, 2, 6 ), {'Text3': '/ Netherite'})
-    #     if 'raw':
-    #         if 'Raw' in raw.name:
-    #             yield setblock(r(3, 4, 2 ), '%s_block' % raw.kind)
-    #         yield summon('item_frame', r(3, 4, 3 ), {'Facing': 3,'Tags':  ['raw_frame',room.name ],base.named_frame_item(raw),'Fixed': True}
-    #     yield execute as entity().tag('ore_ingot_frame').dx(8).dy(5).dz(8) run data merge entity self() {'Item': {'id': item.id,'Count': 1}}
-    #
-    # room.loop('ores', main_clock).add(
-    #         mc.kill(entity().tag(raw_frame)),
-    #         mc.data().merge(r(3, 2, 6 ), {'Text3': ''}),
-    #         mc.setblock(r(3, 4, 2), 'air')
-    #     ).loop(ore_loop
+    def ore_loop(step):
+        ore, block, item, raw = (Block(s) if s else None for s in step.elem)
+        yield from volume.replace(block.kind, '#restworld:ore_blocks')
+        yield mc.data().merge(r(3, 2, 6), {'Text2': ore.display_name.replace(' Ore', '')})
+        if 'Nether' in ore.display_name or 'Ancient' in ore.display_name:
+            yield volume.replace(ore.kind, '#restworld:ores')
+            yield volume.replace('netherrack', '#restworld:ore_background')
+            yield volume.replace('soul_sand', 'dirt')
+            yield volume.replace('soul_soil', 'andesite')
+            yield volume.replace('blackstone', 'diorite')
+            yield volume.replace('basalt', 'granite')
+        else:
+            yield mc.execute().if_().score(deepslate_materials).matches(0).run(
+                volume.replace(ore.kind, '#restworld:ores'))
+            yield mc.execute().if_().score(deepslate_materials).matches(0).run(
+                volume.replace('stone', '#restworld:ore_background'))
+            yield mc.execute().if_().score(deepslate_materials).matches(1).run(
+                volume.replace('deepslate_%s' % ore.kind, '#restworld:ores'))
+            yield mc.execute().if_().score(deepslate_materials).matches(1).run(
+                volume.replace('deepslate', '#restworld:ore_background'))
+            yield volume.replace('dirt', 'soul_sand')
+            yield volume.replace('andesite', 'soul_soil')
+            yield volume.replace('diorite', 'blackstone')
+            yield volume.replace('granite', 'basalt')
+
+        if 'Netherite' in item.display_name:
+            yield mc.data().merge(r(3, 2, 6), {'Text3': '/ Netherite'})
+        if raw:
+            if 'Raw' in raw.display_name:
+                yield mc.setblock(r(3, 4, 2), '%s_block' % raw.kind)
+            yield mc.summon(ItemFrame(SOUTH, {'Tags': ['raw_frame', room.name]}).show_item_name(raw.display_name),
+                            r(3, 4, 3))
+        yield mc.execute().as_(entity().tag('ore_ingot_frame').delta((8, 5, 8))).run().data().merge(self(), {
+            'Item': Item.nbt_for(item.kind)})
+
+    room.loop('ores', main_clock).add(
+        mc.kill(entity().tag(raw_frame)),
+        mc.data().merge(r(3, 2, 6), {'Text3': ''}),
+        mc.setblock(r(3, 4, 2), 'air')
+    ).loop(ore_loop, (
+        ('Coal Ore', 'Coal Block', 'Coal', None),
+        ('Iron Ore', 'Iron Block', 'Iron Ingot', 'Raw Iron'),
+        ('Copper Ore', 'Copper Block', 'Copper Ingot', 'Raw Copper'),
+        ('Gold Ore', 'Gold Block', 'Gold Ingot', 'Raw Gold'),
+        ('Redstone Ore', 'Redstone Block', 'Redstone', None),
+        ('Lapis Ore', 'Lapis Block', 'Lapis Lazuli', None),
+        ('Diamond Ore', 'Diamond Block', 'Diamond', None),
+        ('Emerald Ore', 'Emerald Block', 'Emerald', None),
+        ('Nether Gold Ore', 'Gold Block', 'Gold Nugget', None),
+        ('Nether Quartz Ore', 'Quartz Block', 'Quartz', None),
+        ('Ancient Debris', 'Netherite Block', 'Netherite Ingot', 'Netherite Scrap'),
+    ))
 
     basic_functions(room)
     wood_functions(room)
@@ -324,7 +329,8 @@ def wood_functions(room):
             leaves = '%s_leaves' % id
             saplings = (Block('%s_sapling' % id), Block('%s_sapling' % id, {'stage': 0}), 'grass_block')
             if step.elem == 'Mangrove':
-                saplings = (Block('mangrove_propagule', {'age': 1}), Block('mangrove_propagule', {'age': 4}), 'grass_block')
+                saplings = (
+                    Block('mangrove_propagule', {'age': 1}), Block('mangrove_propagule', {'age': 4}), 'grass_block')
 
         # Remove special cases
         yield from volume.fill('air', 'vine')
@@ -356,10 +362,10 @@ def wood_functions(room):
         if name == ('Jungle', 'Mangrove'):
             yield mc.fill(r(-4, 2, -2), r(-4, 4, -2), ('vine', {'north': True}))
 
-        yield mc.setblock(r(-2, 2, -1 ), saplings[0])
-        yield mc.setblock(r(0, 2, -1 ), saplings[1])
-        yield mc.setblock(r(-2, 1, -1 ), saplings[2])
-        yield mc.setblock(r(0, 1, -1 ), saplings[2])
+        yield mc.setblock(r(-2, 2, -1), saplings[0])
+        yield mc.setblock(r(0, 2, -1), saplings[1])
+        yield mc.setblock(r(-2, 1, -1), saplings[2])
+        yield mc.setblock(r(0, 1, -1), saplings[2])
 
         workplace = 'air'
         if id == 'dark_oak':
@@ -377,7 +383,8 @@ def wood_functions(room):
         yield mc.setblock(r(4, 2, 2), ('%s_door' % id, {'facing': WEST, 'half': 'lower'}))
         yield mc.setblock(r(4, 3, 2), ('%s_door' % id, {'facing': WEST, 'half': 'upper'}))
 
-        yield mc.execute().as_(entity().tag('wood_sign_frame')).run().data().merge(self(), ItemFrame(NORTH).framed_item('%s_sign'% id).show_item_name('%s Sign' % name).nbt)
+        yield mc.execute().as_(entity().tag('wood_sign_frame')).run().data().merge(self(), ItemFrame(NORTH).framed_item(
+            '%s_sign' % id).show_item_name('%s Sign' % name).nbt)
 
         if log == 'log':
             wood_boat_chest = room.score('wood_boat_chest')
@@ -388,11 +395,13 @@ def wood_functions(room):
             chest_boat = Entity('chest_boat', boat_state)
             yield mc.execute().if_().score(wood_boat_chest).matches(0).run().summon(boat, location)
             yield mc.execute().if_().score(wood_boat_chest).matches(1).run().summon(chest_boat, location)
-            yield mc.execute().if_().score(wood_boat_chest).matches(0).as_(entity().tag('wood_boat_frame')).run().data().merge(self(), ItemFrame(NORTH).framed_item('%s_boat'% id).show_item_name('%s Boat' % name).nbt)
-            yield mc.execute().if_().score(wood_boat_chest).matches(1).as_(entity().tag('wood_boat_frame')).run().data().merge(self(), ItemFrame(NORTH).framed_item('%s_chest_boat'% id).show_item_name('%s Chest Boat' % name).nbt)
+            yield mc.execute().if_().score(wood_boat_chest).matches(0).as_(
+                entity().tag('wood_boat_frame')).run().data().merge(self(), ItemFrame(NORTH).framed_item(
+                '%s_boat' % id).show_item_name('%s Boat' % name).nbt)
+            yield mc.execute().if_().score(wood_boat_chest).matches(1).as_(
+                entity().tag('wood_boat_frame')).run().data().merge(self(), ItemFrame(NORTH).framed_item(
+                '%s_chest_boat' % id).show_item_name('%s Chest Boat' % name).nbt)
         else:
-            yield mc.data().remove(entity().tag('wood_boat_frame').limit(1) , 'Item.id')
-
-
+            yield mc.data().remove(entity().tag('wood_boat_frame').limit(1), 'Item.id')
 
     room.loop('wood', main_clock).add(kill_em(entity().tag('wood_boat'))).loop(wood_loop, woods + stems)
