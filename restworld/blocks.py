@@ -258,7 +258,8 @@ def room():
     def brewing_stand_loop(step):
         for j in range(0, 3):
             if j in step.elem:
-                yield mc.item().replace().block(r(0, 3, 0), 'container.%d' % j).with_(Block('potion', nbt={'Potion': "water"}), 1)
+                yield mc.item().replace().block(r(0, 3, 0), 'container.%d' % j).with_(
+                    Block('potion', nbt={'Potion': "water"}), 1)
             else:
                 yield mc.item().replace().block(r(0, 3, 0), 'container.%d' % j).with_('air')
 
@@ -348,7 +349,7 @@ def room():
 
     def item_frame_loop(step):
         yield Entity(step.elem.kind, {
-            'Facing': 2, 'Tags': ['item_frame_as_block'], 'Item': Item.nbt('lapis_lazuli'), 'Fixed': True}).summon(
+            'Facing': 2, 'Tags': ['item_frame_as_block'], 'Item': Item.nbt_for('lapis_lazuli'), 'Fixed': True}).summon(
             r(0, 3, -1)),
         yield mc.data().merge(r(0, 2, -1), Sign.lines_nbt((None, *step.elem.sign_text)))
 
@@ -573,7 +574,7 @@ def color_functions(room):
         else:
             mc.setblock(r(-9, 2, 2), Block('%s_bed' % color.id, {'facing': NORTH, 'part': 'head'}))
             mc.setblock(r(-9, 2, 3), Block('%s_bed' % color.id, {'facing': NORTH, 'part': 'foot'}))
-            frame_nbt = {'Item': Item.nbt('%s_dye' % color.id)}
+            frame_nbt = {'Item': Item.nbt_for('%s_dye' % color.id)}
             frame_nbt['ItemRotation'] = 0
             mc.data().merge(entity().tag('colorings_item_frame').limit(1), frame_nbt)
 
@@ -590,18 +591,20 @@ def color_functions(room):
 
         if is_plain:
             yield kill_em(entity().tag('colorings_horse'))
-            horse = Entity('horse', nbt=
-            {'Variant': 5, 'ArmorItem': {'id': 'leather_horse_armor', 'Count': 1}, 'Rotation': [0, 0],
-             'Tame': True, 'NoAI': True, 'Silent': True}).tag('colorings_horse', 'colorings_item',
-                                                              'colorings_names')
+            horse = Entity('horse', nbt={'Variant': 5, 'ArmorItem': {'id': 'leather_horse_armor', 'Count': 1},
+                                         'Rotation': [0, 0], 'Tame': True, 'NoAI': True, 'Silent': True}).tag(
+                'colorings_horse',
+                'colorings_item',
+                'colorings_names')
             yield horse.summon(r(0.2, 2, 4.4))
 
         yield mc.data().merge(entity().tag('colorings_armor_stand').limit(1), {
-            'ArmorItems': [Item.nbt('leather_boots', nbt=leather_color), Item.nbt('leather_leggins', nbt=leather_color),
-                           Item.nbt('leather_chestplate', nbt=leather_color),
-                           Item.nbt('leather_helmet', nbt=leather_color)]})
+            'ArmorItems': [Item.nbt_for('leather_boots', nbt=leather_color),
+                           Item.nbt_for('leather_leggins', nbt=leather_color),
+                           Item.nbt_for('leather_chestplate', nbt=leather_color),
+                           Item.nbt_for('leather_helmet', nbt=leather_color)]})
         yield mc.data().merge(entity().tag('colorings_horse').limit(1),
-                              {'ArmorItem': Item.nbt('leather_horse_armor', nbt=horse_leather_color)})
+                              {'ArmorItem': Item.nbt_for('leather_horse_armor', nbt=horse_leather_color)})
         yield mc.data().merge(entity().tag('colorings_llama').limit(1), {'DecorItem': llama_decor})
         yield mc.data().merge(entity().tag('colorings_sheep').limit(1), sheep_nbt)
 
@@ -639,11 +642,11 @@ def color_functions(room):
         mc.kill(entity().tag('colorings_item')),
 
         Entity('item_frame', {
-            'Facing': 3, 'Tags': ['colorings_item_frame', 'colorings_item'], 'Item': Item.nbt('stone'),
+            'Facing': 3, 'Tags': ['colorings_item_frame', 'colorings_item'], 'Item': Item.nbt_for('stone'),
             'Fixed': True}).summon(r(-4.5, 4, 0.5)),
         Entity('horse', {
             'Variant': 5, 'Tags': ['colorings_horse', 'colorings_item', 'colorings_names'],
-            'ArmorItem': Item.nbt('leather_horse_armor'), 'Rotation': [0, 0], 'Tame': True, 'NoAI': True,
+            'ArmorItem': Item.nbt_for('leather_horse_armor'), 'Rotation': [0, 0], 'Tame': True, 'NoAI': True,
             'Silent': True}).summon(r(0.2, 2, 4.4)),
         Entity('armor_stand', {
             'Tags': ['colorings_armor_stand', 'colorings_item'], 'Rotation': [30, 0]}).summon(r(-1.1, 2, 3)),

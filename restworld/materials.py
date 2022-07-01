@@ -2,8 +2,10 @@ from __future__ import annotations
 
 import math
 
-from pyker.commands import mc, r, Block, WEST, entity, EAST, Entity, SOUTH, self
-from pyker.simpler import WallSign
+from pyker.commands import mc, r, Block, WEST, entity, EAST, Entity, SOUTH, self, NORTH
+from pyker.info import woods, stems
+from pyker.simpler import WallSign, Volume, ItemFrame
+from restworld.friendlies import _to_id
 from restworld.rooms import Room, label
 from restworld.world import restworld, main_clock, kill_em, fast_clock
 
@@ -75,8 +77,6 @@ def room():
         Block('Spectral Arrow'),
         Block('arrow', display_name='Tipped Arrow')))
 
-    basic_functions(room)
-
     points = (2, 6, 16, 36, 72, 148, 306, 616, 1236, 2476, 32767)
     each = 2 * math.pi / len(points)
     radius = 4
@@ -93,6 +93,66 @@ def room():
 
     room.loop('experience_orbs', fast_clock).loop(experience_orbs_loop, points)
     room.function('experience_orbs_init').add(WallSign((None, 'Experience Orb')).place(r(1, 2, 0), EAST))
+    # room.function('ores_init').add(
+    #     frame = Entity('item_frame', nbt={'Facing': 3,'Tags':  [room.name,'ore_ingot_frame' ],'Item': {'id': 'coal','Count': 1},'Fixed': True})
+    #     mc.summon(frame,r(3, 3, 3 ),)
+    #     mc.summon(frame.merge_nbt({'Invisible': True})
+    #     label(r(3, 2, 7), 'Deepslate')
+
+    blocks = (
+           ('Coal Ore', 'Coal Block', 'Coal', None),
+           ('Iron Ore', 'Iron Block', 'Iron Ingot', 'Raw Iron'),
+           ('Copper Ore', 'Copper Block', 'Copper Ingot', 'Raw Copper'),
+           ('Gold Ore', 'Gold Block', 'Gold Ingot', 'Raw Gold'),
+           ('Redstone Ore', 'Redstone Block', 'Redstone', None),
+           ('Lapis Ore', 'Lapis Block', 'Lapis Lazuli', None),
+           ('Diamond Ore', 'Diamond Block', 'Diamond', None),
+           ('Emerald Ore', 'Emerald Block', 'Emerald', None),
+           ('Nether Gold Ore', 'Gold Block', 'Gold Nugget', None),
+           ('Nether Quartz Ore', 'Quartz Block', 'Quartz', None),
+           ('Ancient Debris', 'Netherite Block', 'Netherite Ingot', 'Netherite Scrap'),
+       )
+    raw_frame = 'ore_raw_frame'
+    volume = Volume(r(7, 5, 6), r(0, 2, 0))
+    deepslate_materials  = room.score('deepslate_materials')
+
+    # def ore_loop(step):
+    #     ore, block, item, raw = (Block(s) if s else None for s in step.elem)
+    #     yield from volume.replace(block.kind, '#restworld:ore_blocks')
+    #     yield data().merge(r(3, 2, 6 ), {'Text2': ore.name.replace(' Ore', '')})
+    #     if 'Nether' in ore.name or 'Ancient' in ore.'name':
+    #         yield volume.replace(ore.kind, '#restworld:ores')
+    #         yield volume.replace('netherrack', '#restworld:ore_background')
+    #         yield volume.replace('soul_sand' 'dirt')
+    #         yield volume.replace(' soul_soil', 'andesite')
+    #         yield volume.replace(' blackstone', 'diorite')
+    #         yield volume.replace(' basalt', 'granite')
+    #     else:
+    #         yield mc.execute.if_().score(deepslate_materials).matches(0).run(volume.replace(ore.kind '#restworld:ores'))
+    #         yield mc.execute.if_().score(deepslate_materials).matches(0).run(volume.replace('stone', '#restworld:ore_background'))
+    #         yield mc.execute.if_().score(deepslate_materials).matches(1).run(volume.replace('deepslate%s' % ore.kind, '#restworld:ores'))
+    #         yield mc.execute.if_().score(deepslate_materials).matches(1).run(volume.replace('deepslate', '#restworld:ore_background'))
+    #         yield volume.replace('dirt', 'soul_sand')
+    #         yield volume.replace('andesite', 'soul_soil')
+    #         yield volume.replace('diorite', 'blackstone')
+    #         yield volume.replace('granite', 'basalt')
+    #
+    #     if 'Netherite' in item.display_name:
+    #         yield mc.data().merge(r(3, 2, 6 ), {'Text3': '/ Netherite'})
+    #     if 'raw':
+    #         if 'Raw' in raw.name:
+    #             yield setblock(r(3, 4, 2 ), '%s_block' % raw.kind)
+    #         yield summon('item_frame', r(3, 4, 3 ), {'Facing': 3,'Tags':  ['raw_frame',room.name ],base.named_frame_item(raw),'Fixed': True}
+    #     yield execute as entity().tag('ore_ingot_frame').dx(8).dy(5).dz(8) run data merge entity self() {'Item': {'id': item.id,'Count': 1}}
+    #
+    # room.loop('ores', main_clock).add(
+    #         mc.kill(entity().tag(raw_frame)),
+    #         mc.data().merge(r(3, 2, 6 ), {'Text3': ''}),
+    #         mc.setblock(r(3, 4, 2), 'air')
+    #     ).loop(ore_loop
+
+    basic_functions(room)
+    wood_functions(room)
 
 
 def basic_functions(room):
@@ -253,3 +313,101 @@ def basic_functions(room):
     room.function('basic_update').add(
         mc.execute().at(entity().tag('basic_home')).run().function('restworld:materials/basic_cur'),
         mc.execute().at(entity().tag('basic_home')).run().function('restworld:materials/basic_finish_main'))
+
+
+def wood_functions(room):
+    room.function('wood_init').add(
+        mc.summon('item_frame', r(2, 3, -3), {
+            'Tags': ['wood_boat_frame', room.name], 'Facing': 3, 'Fixed': True, 'Item': {'id': 'stone', 'Count': 1}}),
+        mc.summon('item_frame', r(3, 3, -3), {
+            'Tags': ['wood_sign_frame', room.name], 'Facing': 3, 'Fixed': True, 'Item': {'id': 'stone', 'Count': 1}}),
+        label(r(-1, 2, 4), 'Chest Boat'))
+
+    volume = Volume(r(-5, 1, -5), r(6, 5, 3))
+
+    def wood_loop(step):
+        name = step.elem
+        id = _to_id(name)
+        if name in stems:
+            log = 'stem'
+            wood = 'hyphae'
+            leaves = 'nether_wart_block' if name == 'Crimson' else '%s_wart_block' % id
+            saplings = ('%s_roots' % id, '%s_fungus' % id, '%s_nylium' % id)
+        else:
+            log = 'log'
+            wood = 'wood'
+            leaves = '%s_leaves' % id
+            saplings = (Block('%s_sapling' % id), Block('%s_sapling' % id, {'stage': 0}), 'grass_block')
+            if step.elem == 'Mangrove':
+                saplings = (Block('mangrove_propagule', {'age': 1}), Block('mangrove_propagule', {'age': 4}), 'grass_block')
+
+        # Remove special cases
+        yield from volume.fill('air', 'vine')
+        yield kill_em(entity().tag('wood_boat'))
+        yield mc.fill(r(4, 2, -1), r(3, 2, -1), 'air')
+        yield mc.fill(r(4, 2, 1), r(4, 3, 2), 'air')
+
+        # General replacement
+        yield from volume.replace('%s_%s' % (id, wood), '#restworld:woodlike')
+        yield from volume.replace(leaves, '#restworld:leaflike')
+        yield from volume.replace('%s_planks' % (id), '#planks')
+        yield from volume.replace_slabs('%s_slab' % (id), '#slabs')
+        yield from volume.replace_stairs('%s_stairs' % (id), '#stairs')
+        yield from volume.replace('%s_fence' % id, '#wooden_fences')
+        yield from volume.replace_facing('%s_fence_gate' % id, '#restworld:gatelike')
+        yield from volume.replace_buttons('%s_button' % (id))
+        yield from volume.replace('%s_pressure_plate' % (id), '#pressure_plates')
+        yield from volume.replace_axes('%s_%s' % (id, log), '#restworld:loglike')
+        yield from volume.replace_axes('stripped_%s_%s' % (id, log), '#restworld:stripped_loglike')
+        yield from volume.replace_axes('stripped_%s_%s' % (id, wood), '#restworld:stripped_woodlike')
+        yield from volume.replace_doors('%s_door' % (id), '#doors')
+        yield from volume.replace_trapdoors('%s_trapdoor' % (id), '#trapdoors')
+        yield from volume.replace_facing(Block('%s_wall_sign' % id, nbt={'Text2': "%s Wall Sign" % name}),
+                                         '#wall_signs')
+        yield from volume.replace(Block('%s_sign' % id, nbt={'Text2': "%s Sign" % name}), '#signs',
+                                  added_states=({'rotation': x} for x in range(0, 16, 4)))
+
+        # Add special cases
+        if name == ('Jungle', 'Mangrove'):
+            yield mc.fill(r(-4, 2, -2), r(-4, 4, -2), ('vine', {'north': True}))
+
+        yield mc.setblock(r(-2, 2, -1 ), saplings[0])
+        yield mc.setblock(r(0, 2, -1 ), saplings[1])
+        yield mc.setblock(r(-2, 1, -1 ), saplings[2])
+        yield mc.setblock(r(0, 1, -1 ), saplings[2])
+
+        workplace = 'air'
+        if id == 'dark_oak':
+            workplace = Block('cartography_table')
+        elif id == 'oak':
+            workplace = Block('lectern', {'facing': WEST})
+        elif id == 'birch':
+            workplace = Block('fletching_table')
+        yield mc.setblock(r(4, 2, 0), workplace)
+
+        yield mc.setblock(r(4, 2, -1), ('%s_door' % id, {'facing': WEST, 'half': 'lower'}))
+        yield mc.setblock(r(4, 3, -1), ('%s_door' % id, {'facing': WEST, 'half': 'upper'}))
+        yield mc.setblock(r(4, 2, 1), ('%s_door' % id, {'facing': WEST, 'half': 'lower', 'hinge': 'right'}))
+        yield mc.setblock(r(4, 3, 1), ('%s_door' % id, {'facing': WEST, 'half': 'upper', 'hinge': 'right'}))
+        yield mc.setblock(r(4, 2, 2), ('%s_door' % id, {'facing': WEST, 'half': 'lower'}))
+        yield mc.setblock(r(4, 3, 2), ('%s_door' % id, {'facing': WEST, 'half': 'upper'}))
+
+        yield mc.execute().as_(entity().tag('wood_sign_frame')).run().data().merge(self(), ItemFrame(NORTH).framed_item('%s_sign'% id).show_item_name('%s Sign' % name).nbt)
+
+        if log == 'log':
+            wood_boat_chest = room.score('wood_boat_chest')
+            location = r(-0.5, 1.525, 2)
+            boat_state = {'Type': id, 'Tags': ['wood_boat', room.name], 'Rotation': [90, 0], 'CustomName': name,
+                          'CustomNameVisible': True}
+            boat = Entity('boat', boat_state)
+            chest_boat = Entity('chest_boat', boat_state)
+            yield mc.execute().if_().score(wood_boat_chest).matches(0).run().summon(boat, location)
+            yield mc.execute().if_().score(wood_boat_chest).matches(1).run().summon(chest_boat, location)
+            yield mc.execute().if_().score(wood_boat_chest).matches(0).as_(entity().tag('wood_boat_frame')).run().data().merge(self(), ItemFrame(NORTH).framed_item('%s_boat'% id).show_item_name('%s Boat' % name).nbt)
+            yield mc.execute().if_().score(wood_boat_chest).matches(1).as_(entity().tag('wood_boat_frame')).run().data().merge(self(), ItemFrame(NORTH).framed_item('%s_chest_boat'% id).show_item_name('%s Chest Boat' % name).nbt)
+        else:
+            yield mc.data().remove(entity().tag('wood_boat_frame').limit(1) , 'Item.id')
+
+
+
+    room.loop('wood', main_clock).add(kill_em(entity().tag('wood_boat'))).loop(wood_loop, woods + stems)

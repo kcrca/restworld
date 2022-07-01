@@ -2,6 +2,8 @@ import re
 
 from pyker.commands import COLORS
 from pyker.function import BLOCKS
+from pyker.info import woods, stems
+from restworld.friendlies import _to_id
 from restworld.world import restworld
 
 
@@ -84,6 +86,31 @@ def tags():
             'warped_fence_gate',
             'crimson_fence_gate',
             'spruce_fence_gate'
+        ]
+    }
+    blocks['leaflike'] = {
+        'values': ['%s_leaves' % _to_id(x) for x in woods] + [
+            'nether_wart_block',
+            'warped_wart_block',
+        ]
+    }
+    blocks['woodlike'] = {'values': ['%s_wood' % _to_id(x) for x in woods] + ['%s_hyphae' % _to_id(x) for x in stems]}
+    blocks['loglike'] = {'values': ['%s_log' % _to_id(x) for x in woods] + ['%s_stem' % _to_id(x) for x in stems]}
+    blocks['stripped_loglike'] = {'values': ['stripped_%s' % _to_id(x) for x in blocks['loglike']['values']]}
+    blocks['stripped_woodlike'] = {'values': ['stripped_%s' % _to_id(x) for x in blocks['woodlike']['values']]}
+    blocks['saplinglike'] = {
+        'values': [
+            'acacia_sapling',
+            'birch_sapling',
+            'jungle_sapling',
+            'mangrove_propagule',
+            'oak_sapling',
+            'dark_oak_sapling',
+            'spruce_sapling',
+            'warped_roots',
+            'warped_fungus',
+            'crimson_roots',
+            'crimson_fungus'
         ]
     }
     blocks['liquid'] = {

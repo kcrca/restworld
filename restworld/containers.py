@@ -209,7 +209,7 @@ def room():
         placer.summon('armor_stand', tags=('holder_stand')),
         mc.setblock(r(0, 2, 1), 'barrier'),
         mc.summon('item_frame', r(1, 2, 1),
-                  {'Facing': 5, 'Tags': ['containers', 'item_holder', 'item_src'], 'Item': Item.nbt('iron_pickaxe')}),
+                  {'Facing': 5, 'Tags': ['containers', 'item_holder', 'item_src'], 'Item': Item.nbt_for('iron_pickaxe')}),
         mc.summon('item_frame', r(1, -1, 1), {'Facing': 5, 'Tags': ['containers', 'item_holder', 'item_dst']}),
 
         mc.setblock(r(-1, 2, 0), 'air'),
@@ -228,7 +228,7 @@ def room():
     room.function('item_update').add(
         mc.execute().unless().entity(entity().tag('item_ground')).at(entity().tag('item_home')).run().summon(
             'item', r(0, 3, 1),
-            {'Item': Item.nbt('iron_pickaxe'), 'Age': -32768, 'PickupDelay': 2147483647, 'Tags': ['item_ground']}),
+            {'Item': Item.nbt_for('iron_pickaxe'), 'Age': -32768, 'PickupDelay': 2147483647, 'Tags': ['item_ground']}),
         mc.data().modify(entity().tag('item_ground').limit(1), 'Item').set().from_(entity().tag('item_src').limit(1),
                                                                                    'Item'),
         mc.data().merge(entity().tag('item_ground').limit(1), {'Age': -32768, 'PickupDelay': 2147483647}),
@@ -279,7 +279,7 @@ def room():
             tag_nbt = Nbt({'tag': {'display': JsonText.text(t.display_name)}})
             if t.kind == 'elytra':
                 tag_nbt = tag_nbt.merge({'Damage': 450})
-            nbt = {'Fixed': True, 'Item': Item.nbt(t.kind).merge({'tag': tag_nbt})}
+            nbt = {'Fixed': True, 'Item': Item.nbt_for(t.kind).merge({'tag': tag_nbt})}
             yield mc.data().merge(entity().tag('only_item_frame_%s' % t.kind).limit(1), nbt)
             yield mc.item().replace().block(r(1, -5, -1), 'container.%d' % i).with_(t)
         yield mc.clone(r(1, -5, -1), r(1, -5, -1), r(1, 1, -1))
