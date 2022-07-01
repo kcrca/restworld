@@ -29,36 +29,21 @@ def room():
         slabs.append((None, None) + tuple('%s Slab' % b for b in subtypes))
         stairs.append((None, None) + tuple(('%s Stairs' % b if 'Cut' not in b else None) for b in subtypes))
         walls.append('%sstone Wall' % ty)
-    assert len(blocks) == 2
+    assert len(blocks) == 2 # allows us to use "replace previous type" because there are only two types
 
+    volume = Volume(r(0, 1, 0), r(10, 6, 7))
     fill = (r(0, 1, 0), r(10, 6, 7))
 
     def all_sand_loop(step):
         i = step.i
+        o = 1 - i
         for j in range(0, len(blocks[i])):
-            o = 1 - i
-            pl_id, sl_id, st_id = blocks[i][j], slabs[i][j], stairs[i][j]
-            opl_id, osl_id, ost_id = blocks[o][j], slabs[o][j], stairs[o][j]
-            pl, sl, st = Block(pl_id) if pl_id else None, Block(sl_id) if sl_id else None, Block(
-                st_id) if st_id else None
-            opl, osl, ost = Block(opl_id) if opl_id else None, Block(osl_id) if osl_id else None, Block(
-                ost_id) if ost_id else None
-            yield mc.fill(*fill, Block(walls[i]).kind).replace(Block(walls[o]).kind)
-            yield mc.fill(*fill, pl.kind).replace(opl.kind)
-
-            if sl:
-                yield mc.fill(*fill, Block(sl.kind, {'type': 'double'})).replace(Block(osl.kind, {'type': 'double'}))
-                for t in ('top', 'bottom'):
-                    yield mc.fill(*fill, Block(sl.kind, {'type': t})).replace(Block(osl.kind, {'type': t}))
-                if st:
-                    for f in ('north', 'east', 'west', 'south'):
-                        yield mc.fill(*fill, Block(st.kind, state={'half': t, 'facing': f})).replace(
-                            Block(ost.kind, {'half': t, 'facing': f}))
-                        for s in ('inner_left', 'inner_right', 'outer_left', 'outer_right'):
-                            yield mc.fill(*fill,
-                                          Block(st.kind, state={'half': t, 'facing': f, 'shape': s})).replace(
-                                Block(ost.kind, {'half': t, 'facing': f, 'shape': s}))
-
+            yield from volume.replace(walls[i], walls[o])
+            yield from volume.replace(blocks[i][j], blocks[o][j])
+            if slabs[i][j]:
+                yield from volume.replace_slabs(slabs[i][j], slabs[o][j])
+            if stairs[i][j]:
+                yield from volume.replace_stairs(stairs[i][j], stairs[o][j])
         yield mc.data().merge(r(0, 2, 3), {'Text2': blocks[i][0]})
 
     room.loop('all_sand', main_clock).loop(all_sand_loop, range(0, 2))

@@ -5,7 +5,7 @@ from typing import Iterable, Union
 
 from pyker.commands import EAST, r, mc, entity, Entity, facing_info, good_block, Block, NORTH, SOUTH, WEST, self, MOVE
 from pyker.info import colors, Color
-from pyker.simpler import Sign, Item, WallSign
+from pyker.simpler import Sign, Item, WallSign, Volume
 from restworld.rooms import Room, label, woods, stems
 from restworld.world import restworld, main_clock, kill_em, slow_clock, fast_clock
 
@@ -148,20 +148,20 @@ def room():
            labels=tuple((None, 'Charges: %d' % x) for x in range(0, 5)))
     red_sandstone = ('Red Sandstone', 'Smooth|Red Sandstone', 'Cut|Red Sandstone', 'Chiseled|Red Sandstone')
     blocks('sandstone', SOUTH, (red_sandstone, tuple(re.sub(' *Red *', '', f) for f in red_sandstone)), dx=3)
-    blocks('slabs', NORTH, ("Smooth Stone|Slab", "Petrified Oak|Slab"))
-    _, loop = blocks('snow_blocks', SOUTH, ("Powder Snow", "Snow Block"))
-    loop.add(mc.execute().if_().block(r(0, 3, 0), 'powder_snow').run().data().merge(r(0, 2, 1), {"Text3": "Step In!"}))
-    _, loop = blocks('soil', SOUTH, ("Grass Block", "Podzol", "Mycelium", "Dirt Path"))
+    blocks('slabs', NORTH, ('Smooth Stone|Slab', 'Petrified Oak|Slab'))
+    _, loop = blocks('snow_blocks', SOUTH, ('Powder Snow', 'Snow Block'))
+    loop.add(mc.execute().if_().block(r(0, 3, 0), 'powder_snow').run().data().merge(r(0, 2, 1), {'Text3': 'Step In!'}))
+    _, loop = blocks('soil', SOUTH, ('Grass Block', 'Podzol', 'Mycelium', 'Dirt Path'))
     # Make sure the block above is air so it doesn't turn dirt path to dirt instantly.
     loop.add(mc.setblock(r(0, 4, 0), 'air'))
-    blocks('soul_stuff', NORTH, ("Soul Sand", "Soul Soil"))
-    blocks('sponge', SOUTH, ("Sponge", "Wet Sponge"))
-    blocks('sticky', SOUTH, ("Slime Block", "Honey block"))
+    blocks('soul_stuff', NORTH, ('Soul Sand', 'Soul Soil'))
+    blocks('sponge', SOUTH, ('Sponge', 'Wet Sponge'))
+    blocks('sticky', SOUTH, ('Slime Block', 'Honey block'))
     blocks('stone_bricks', NORTH, (
-        "Stone Bricks", "Mossy|Stone Bricks", "Cracked|Stone Bricks", "Chiseled|Stone Bricks",
-        "Polished|Blackstone Bricks", "Cracked Polished|Blackstone Bricks", 'End Stone|Bricks'))
-    stone_types = ("Basalt", "Stone", "Deepslate", "Andesite", "Diorite", "Granite", "Blackstone", "Basalt")
-    blocks('stone', NORTH, ("Smooth Basalt", "Smooth Stone") + tuple("Polished|%s" % t for t in stone_types[2:]))
+        'Stone Bricks', 'Mossy|Stone Bricks', 'Cracked|Stone Bricks', 'Chiseled|Stone Bricks',
+        'Polished|Blackstone Bricks', 'Cracked Polished|Blackstone Bricks', 'End Stone|Bricks'))
+    stone_types = ('Basalt', 'Stone', 'Deepslate', 'Andesite', 'Diorite', 'Granite', 'Blackstone', 'Basalt')
+    blocks('stone', NORTH, ('Smooth Basalt', 'Smooth Stone') + tuple('Polished|%s' % t for t in stone_types[2:]))
 
     types = ('Copper Block', 'Exposed Copper', 'Weathered|Copper', 'Oxidized Copper')
     block = list(x.replace('Copper', 'Cut Copper').replace(' Block', '').replace(' Cut', '|Cut') for x in types)
@@ -259,7 +259,7 @@ def room():
         for j in range(0, 3):
             if j in step.elem:
                 yield mc.item().replace().block(r(0, 3, 0), 'container.%d' % j).with_(
-                    Block('potion', nbt={'Potion': "water"}), 1)
+                    Block('potion', nbt={'Potion': 'water'}), 1)
             else:
                 yield mc.item().replace().block(r(0, 3, 0), 'container.%d' % j).with_('air')
 
@@ -433,45 +433,45 @@ def room():
     skulk_loop = room.functions['sculk_blocks_main']
     skulk_loop.add(
         mc.execute().if_().score(skulk_loop.score).matches(6).positioned(r(0, 3, 0)).run().function(
-            "restworld:particles/shriek_particles"),
+            'restworld:particles/shriek_particles'),
         mc.execute().if_().score(skulk_loop.score).matches(8).positioned(r(0, 3, 0)).run().function(
-            "restworld:particles/shriek_particles"),
+            'restworld:particles/shriek_particles'),
     )
 
     def snow_loop(step):
         yield mc.setblock(r(0, 3, 0), Block('grass_block', {'snowy': True}))
         yield mc.setblock(r(0, 4, 0), Block('snow', {'layers': step.elem}))
-        yield mc.data().merge(r(0, 2, 1), {"Text3": 'Layers: %d' % step.elem})
+        yield mc.data().merge(r(0, 2, 1), {'Text3': 'Layers: %d' % step.elem})
 
     room.loop('snow', main_clock).loop(snow_loop, range(1, 9), bounce=True)
 
     def spanwer_loop(step):
-        yield mc.data().merge(r(0, 3, 0), {"SpawnData": {"entity": {"id": Entity(step.elem).kind}}})
-        yield mc.data().merge(r(0, 2, -1), {"Text2": step.elem})
+        yield mc.data().merge(r(0, 3, 0), {'SpawnData': {'entity': {'id': Entity(step.elem).kind}}})
+        yield mc.data().merge(r(0, 2, -1), {'Text2': step.elem})
 
     room.function('spawner_init').add(mc.setblock(r(0, 3, 0), 'spawner'))
-    room.loop('spawner', main_clock).loop(spanwer_loop, ("Pig", "Zombie", "Skeleton", "Spider", "Cave Spider", "Blaze"))
+    room.loop('spawner', main_clock).loop(spanwer_loop, ('Pig', 'Zombie', 'Skeleton', 'Spider', 'Cave Spider', 'Blaze'))
 
     def structure_blocks_loop(step):
         yield mc.data().merge(r(0, 2, 1), {'Text2': step.elem})
         yield mc.data().merge(r(0, 3, 0), {'mode': step.elem.upper()})
 
-    room.function('structure_blocks_init').add(mc.data().merge(r(0, 2, 1), {'Text3': "Structure Block"}))
-    room.loop('structure_blocks', main_clock).loop(structure_blocks_loop, ("Data", "Save", "Load", "Corner"))
+    room.function('structure_blocks_init').add(mc.data().merge(r(0, 2, 1), {'Text3': 'Structure Block'}))
+    room.loop('structure_blocks', main_clock).loop(structure_blocks_loop, ('Data', 'Save', 'Load', 'Corner'))
 
     def tnt_loop(step):
         yield mc.kill(entity().type('tnt').distance((None, 10)))
         yield mc.setblock(r(0, 3, 0), Block('tnt', {'unstable': step.elem == 'unstable'}))
-        yield mc.data().merge(r(0, 2, -1), {"Text3": step.elem.title()})
+        yield mc.data().merge(r(0, 2, -1), {'Text3': step.elem.title()})
 
     room.loop('tnt', main_clock).loop(tnt_loop, ('stable', 'unstable'))
 
-    torches = (Block("Torch"), Block("Soul Torch"), Block("Redstone Torch"), Block("Redstone Torch"))
+    torches = (Block('Torch'), Block('Soul Torch'), Block('Redstone Torch'), Block('Redstone Torch'))
     wall_torches = tuple(Block(x.display_name.replace('Torch', 'Wall Torch')) for x in torches)
 
     def torches_loop(step):
-        text = ({'Text2': "", 'Text4': ""}, {'Text2': "Soul", 'Text4': ""}, {'Text2': "Redstone", 'Text4': "(On)"},
-                {'Text2': "Redstone", 'Text4': "(Off)"})
+        text = ({'Text2': '', 'Text4': ''}, {'Text2': 'Soul', 'Text4': ''}, {'Text2': 'Redstone', 'Text4': '(On)'},
+                {'Text2': 'Redstone', 'Text4': '(Off)'})
         yield mc.data().merge(r(0, 2, -1), text[step.i])
         if step.i == len(torches) - 1:
             yield mc.execute().if_().score(wall_torches_score).matches(0).run().setblock(r(0, 2, 0), 'redstone_block')
@@ -482,13 +482,13 @@ def room():
     wall_torches_score = room.score('wall_torches')
     room.function('torches_init').add(
         WallSign((None, None, 'Torch')).place(r(0, 2, -1), NORTH),
-        label(r(-1, 2, 0), "Wall-ness"),
+        label(r(-1, 2, 0), 'Wall-ness'),
         wall_torches_score.set(0)
     )
     room.loop('torches', main_clock).add(
-        mc.execute().if_().score(wall_torches_score).matches(0).run().data().merge(r(0, 2, -1), {'Text3': "Torch"}),
+        mc.execute().if_().score(wall_torches_score).matches(0).run().data().merge(r(0, 2, -1), {'Text3': 'Torch'}),
         mc.execute().if_().score(wall_torches_score).matches(1).run().data().merge(r(0, 2, -1),
-                                                                                   {'Text3': "Wall Torch"}),
+                                                                                   {'Text3': 'Wall Torch'}),
         mc.setblock(r(0, 3, 0), 'air'),
         mc.execute().unless().block(r(0, 3, 1), 'air').run().setblock(r(0, 3, 1), 'air'),
         mc.execute().unless().block(r(0, 2, 0), 'air').run().setblock(r(0, 2, 0), 'barrier'),
@@ -749,14 +749,14 @@ def expansion_functions(room):
         ## There are two possible cases: Either this homer is already
         ## expanding or it is not.  We need to swap that.
 
-        ## If it's an expander, add a temporary "to be stopped" tag to it
+        ## If it's an expander, add a temporary 'to be stopped' tag to it
         mc.execute().as_(entity().tag('expander').distance((None, 1))).run().tag(self()).add('stop_expanding'),
         ## If it's not an mc.expander, tag it as one
         mc.execute().as_(entity().tag('!expander', '!no_expansion').distance((None, 1))).run().tag(self()).add(
             'expander'),
-        ## If it has the "to be stopped" tag, remove the mc.expander tag
+        ## If it has the 'to be stopped' tag, remove the mc.expander tag
         mc.execute().as_(entity().tag('stop_expanding').distance((None, 1))).run().tag(self()).remove('expander'),
-        ## ... and then remove the "to be stopped' tag
+        ## ... and then remove the 'to be stopped' tag
         mc.execute().as_(entity().tag('stop_expanding').distance((None, 1))).run().tag(self()).remove('stop_expanding'),
 
         ## Now it has the right tagging, do an immediate().action on it
@@ -765,9 +765,9 @@ def expansion_functions(room):
             'restworld:blocks/contracter'),
 
         ## And, as a cleanup, if it never will be an mc.expander, say 'sorry'
-        mc.execute().at(entity().tag('no_expansion').distance((None, 1))).run().say("Sorry, cannot expand this."),
+        mc.execute().at(entity().tag('no_expansion').distance((None, 1))).run().say('Sorry, cannot expand this.'),
         mc.execute().at(entity().tag('no_expansion', 'fire_home').distance((None, 1))).run().say(
-            "Sorry, cannot expand this."),
+            'Sorry, cannot expand this.'),
     )
     room.function('expander').add(
         mc.execute().if_().entity(entity().tag('fire_home').distance((None, 1))).run().function(
@@ -881,60 +881,49 @@ def expansion_functions(room):
 
 def stepable_functions(room):
     def stepable_loop(step):
-        def fill(block, fliter=None):
-            fill = mc.fill(r(0, 2, 0), r(3, 6, 6), block)
-            if filter:
-                return fill.replace(fliter)
-            return fill
-
+        volume = Volume(r(0, 2, 0), r(3, 6, 6))
         i = step.i
-        pl, sl, st = Block(step.elem), Block(slabs[i]), Block(stairs[i])
-        yield fill(pl, "#restworld:stepable_planks")
-        yield fill(sl.merge_state({'type': 'double'}), "#restworld:stepable_slabs[type=double]")
-        for t in ('top', 'bottom'):
-            yield fill(sl.merge_state({'type': t}), "#restworld:stepable_slabs[type=%s]" % t)
-            for f in ("north", "east", "west", "south"):
-                for s in ('straight', "inner_left", "inner_right", "outer_left", "outer_right"):
-                    yield fill(st.merge_state({'half': t, 'facing': f, 'shape': s}),
-                               "#restworld:stepable_stairs[half=%s,facing=%s,shape=%s]" % (t, f, s))
-        sign_text = Sign.lines_nbt(pl.full_text)
+        yield volume.replace(step.elem, '#restworld:stepable_planks')
+        yield volume.replace_slabs(slabs[i], '#restworld:stepable_slabs')
+        yield volume.replace_stairs(stairs[i], '#restworld:stepable_stairs')
+        sign_text = Sign.lines_nbt(Block(step.elem).full_text)
         yield mc.data().merge(r(1, 2, -1), sign_text)
 
     blocks = (
-        "Stone", "Cobblestone", "Mossy|Cobblestone",
-        "Bricks", "Stone Bricks", "Mossy|Stone Bricks", "Mud Bricks",
-        "Sandstone", "Smooth|Sandstone", "Red|Sandstone", "Smooth Red|Sandstone",
-        "Andesite", "Polished|Andesite",
-        "Diorite", "Polished|Diorite",
-        "Granite", "Polished|Granite",
-        "Cobbled|Deepslate",
-        "Polished|Deepslate",
-        "Deepslate|Bricks",
-        "Deepslate|Tiles",
-        "Cut Copper",
-        "Exposed Cut Copper",
-        "Weathered Cut Copper",
-        "Oxidized Cut Copper",
-        "Prismarine", "Prismarine|Bricks", "Dark|Prismarine",
-        "Acacia Planks", "Birch Planks", "Jungle Planks",
-        "Mangrove Planks",
-        "Oak Planks", "Dark Oak Planks", "Spruce Planks",
-        "Warped Planks", "Crimson Planks",
-        "Nether Bricks", "Red|Nether Bricks",
-        "Blackstone", "Polished|Blackstone",
-        "Polished|Blackstone Bricks", "Quartz Block", "Smooth|Quartz",
-        "End Stone Bricks", "Purpur Block",
+        'Stone', 'Cobblestone', 'Mossy|Cobblestone',
+        'Bricks', 'Stone Bricks', 'Mossy|Stone Bricks', 'Mud Bricks',
+        'Sandstone', 'Smooth|Sandstone', 'Red|Sandstone', 'Smooth Red|Sandstone',
+        'Andesite', 'Polished|Andesite',
+        'Diorite', 'Polished|Diorite',
+        'Granite', 'Polished|Granite',
+        'Cobbled|Deepslate',
+        'Polished|Deepslate',
+        'Deepslate|Bricks',
+        'Deepslate|Tiles',
+        'Cut Copper',
+        'Exposed Cut Copper',
+        'Weathered Cut Copper',
+        'Oxidized Cut Copper',
+        'Prismarine', 'Prismarine|Bricks', 'Dark|Prismarine',
+        'Acacia Planks', 'Birch Planks', 'Jungle Planks',
+        'Mangrove Planks',
+        'Oak Planks', 'Dark Oak Planks', 'Spruce Planks',
+        'Warped Planks', 'Crimson Planks',
+        'Nether Bricks', 'Red|Nether Bricks',
+        'Blackstone', 'Polished|Blackstone',
+        'Polished|Blackstone Bricks', 'Quartz Block', 'Smooth|Quartz',
+        'End Stone Bricks', 'Purpur Block',
     )
-    stairs = tuple(re.sub("(marine|ite)$", r"\1 Stairs", re.sub("[Ss]tone$", "stone Stairs",
-                                                                f.replace("Planks", "Stairs").replace("Tiles",
-                                                                                                      "Tile Stairs").replace(
-                                                                    "Copper", "Copper Stairs").replace("Bricks",
-                                                                                                       "Brick Stairs").replace(
-                                                                    "Block", "Stairs").replace("|Quartz",
-                                                                                               " Quartz Stairs").replace(
+    stairs = tuple(re.sub('(marine|ite)$', r'\1 Stairs', re.sub('[Ss]tone$', 'stone Stairs',
+                                                                f.replace('Planks', 'Stairs').replace('Tiles',
+                                                                                                      'Tile Stairs').replace(
+                                                                    'Copper', 'Copper Stairs').replace('Bricks',
+                                                                                                       'Brick Stairs').replace(
+                                                                    'Block', 'Stairs').replace('|Quartz',
+                                                                                               ' Quartz Stairs').replace(
                                                                     '|Deepslate', '|Deepslate Stairs'))) for f in
                    blocks)
-    slabs = tuple(f.replace("Stairs", "Slab") for f in stairs)
+    slabs = tuple(f.replace('Stairs', 'Slab') for f in stairs)
 
     room.function('stepable_init').add(
         WallSign((None, 'Block')).place(r(3, 4, 5, ), NORTH),
