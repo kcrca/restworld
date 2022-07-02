@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import math
 
-from pyker.commands import mc, r, Block, WEST, entity, EAST, Entity, SOUTH, self, NORTH
-from pyker.info import woods, stems
+from pyker.commands import mc, r, Block, WEST, entity, EAST, Entity, SOUTH, self, NORTH, BlockDef, good_block
+from pyker.info import woods, stems, colors
 from pyker.simpler import WallSign, Volume, ItemFrame, Item
 from restworld.friendlies import _to_id
 from restworld.rooms import Room, label
@@ -142,6 +142,7 @@ def room():
     ))
 
     basic_functions(room)
+    fencelike_functions(room)
     wood_functions(room)
 
 
@@ -303,6 +304,45 @@ def basic_functions(room):
     room.function('basic_update').add(
         mc.execute().at(entity().tag('basic_home')).run().function('restworld:materials/basic_cur'),
         mc.execute().at(entity().tag('basic_home')).run().function('restworld:materials/basic_finish_main'))
+
+
+def fencelike_functions(room):
+    volume = Volume(r(8, 3, 6), r(0, 2, 0))
+
+    room.function('fencelike_init').add(WallSign(()).place(r(6, 2, 0), NORTH))
+
+    def fencelike(block: BlockDef):
+        block = good_block(block)
+        yield volume.replace(block, '#restworld:fencelike')
+        yield mc.execute().at(entity().tag('fencelike_home')).run().data().merge(r(6, 2, 0), block.sign_nbt)
+
+    def switch_to_fencelike(which):
+        room.function('switch_to_%s' % which, home=False).add(
+            mc.kill(entity().tag('which_fencelike_home')),
+            mc.execute().at(entity().tag('fencelike_home')).positioned(r(1, -0.5, 0)).run().function(
+                'restworld:materials/%s_home' % which),
+            mc.tag(entity().tag('%s_home' % which)).add('which_fencelike_home'),
+            mc.execute().at(entity().tag('%s_home' % which)).run().function('restworld:materials/%s_cur' % which))
+
+    def fence_loop(step):
+        yield from fencelike(step.elem)
+        if step.elem[:-len(' Fence')] in woods + stems:
+            yield volume.replace_facing(step.elem + ' Gate', '#restworld:gatelike')
+
+    room.loop('panes', main_clock).loop(lambda step: fencelike(step.elem),
+                                        tuple('%s Stained Glass Pane' % x.name for x in colors) + ('Glass Pane',))
+    switch_to_fencelike('panes')
+    room.loop('fences', main_clock).loop(fence_loop,
+                                         tuple('%s Fence' % x for x in woods + stems + ('Nether Brick',)) + (
+                                             'Iron Bars',))
+    switch_to_fencelike('fences')
+    room.loop('walls', main_clock).loop(lambda step: fencelike(step.elem), (x + ' Wall' for x in (
+        'Cobblestone', 'Mossy|Cobblestone', 'Sandstone', 'Red Sandstone', 'Brick', 'Mud|Brick', 'Stone|Brick',
+        'Mossy Stone|Brick', 'Nether|Brick', 'Red Nether|Brick', 'End Stone|Brick', 'Polished|Blackstone|Brick',
+        'Polished|Blackstone', 'Blackstone', 'Andesite', 'Granite', 'Diorite', 'Deepslate|Brick', 'Deepslate|Tile',
+        'Cobbled|Deepslate', 'Polished|Deepslate', 'Prismarine',
+    )))
+    switch_to_fencelike('walls')
 
 
 def wood_functions(room):

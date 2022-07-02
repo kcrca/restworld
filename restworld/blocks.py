@@ -222,7 +222,7 @@ def room():
                 for offset in (NORTH, EAST, WEST, SOUTH):
                     face = facing_info(offset)
                     yield mc.setblock(r(face[0], 4, face[1]), block.clone().merge_state({'facing': offset}))
-        mc.data().merge(r(0, 2, -1), block.sign_nbt())
+        mc.data().merge(r(0, 2, -1), block.sign_nbt)
 
     room.loop('amethyst', main_clock).add(
         mc.fill(r(-1, 3, -1), r(1, 5, 1), 'air')
