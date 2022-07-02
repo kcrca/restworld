@@ -836,7 +836,7 @@ class Room(FunctionSet):
 def _name_for(mob):
     if mob.display_name:
         return mob.display_name
-    return mob.kind.replace('_', ' ').title()
+    return mob.id.replace('_', ' ').title()
 
 
 class MobPlacer:
@@ -904,7 +904,7 @@ class MobPlacer:
             if auto_tag is None:
                 auto_tag = self.auto_tag
             if auto_tag:
-                tmpl.tag(tmpl.kind)
+                tmpl.tag(tmpl.id)
 
             if self.adults:
                 adult = tmpl.clone()

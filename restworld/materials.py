@@ -90,10 +90,10 @@ def room():
 
     def ore_loop(step):
         ore, block, item, raw = (Block(s) if s else None for s in step.elem)
-        yield from volume.replace(block.kind, '#restworld:ore_blocks')
+        yield from volume.replace(block.id, '#restworld:ore_blocks')
         yield mc.data().merge(r(3, 2, 6), {'Text2': ore.display_name.replace(' Ore', '')})
         if 'Nether' in ore.display_name or 'Ancient' in ore.display_name:
-            yield volume.replace(ore.kind, '#restworld:ores')
+            yield volume.replace(ore.id, '#restworld:ores')
             yield volume.replace('netherrack', '#restworld:ore_background')
             yield volume.replace('soul_sand', 'dirt')
             yield volume.replace('soul_soil', 'andesite')
@@ -101,11 +101,11 @@ def room():
             yield volume.replace('basalt', 'granite')
         else:
             yield mc.execute().if_().score(deepslate_materials).matches(0).run(
-                volume.replace(ore.kind, '#restworld:ores'))
+                volume.replace(ore.id, '#restworld:ores'))
             yield mc.execute().if_().score(deepslate_materials).matches(0).run(
                 volume.replace('stone', '#restworld:ore_background'))
             yield mc.execute().if_().score(deepslate_materials).matches(1).run(
-                volume.replace('deepslate_%s' % ore.kind, '#restworld:ores'))
+                volume.replace('deepslate_%s' % ore.id, '#restworld:ores'))
             yield mc.execute().if_().score(deepslate_materials).matches(1).run(
                 volume.replace('deepslate', '#restworld:ore_background'))
             yield volume.replace('dirt', 'soul_sand')
@@ -117,11 +117,11 @@ def room():
             yield mc.data().merge(r(3, 2, 6), {'Text3': '/ Netherite'})
         if raw:
             if 'Raw' in raw.display_name:
-                yield mc.setblock(r(3, 4, 2), '%s_block' % raw.kind)
+                yield mc.setblock(r(3, 4, 2), '%s_block' % raw.id)
             yield mc.summon(ItemFrame(SOUTH, {'Tags': ['raw_frame', room.name]}).show_item_name(raw.display_name),
                             r(3, 4, 3))
         yield mc.execute().as_(entity().tag('ore_ingot_frame').delta((8, 5, 8))).run().data().merge(self(), {
-            'Item': Item.nbt_for(item.kind)})
+            'Item': Item.nbt_for(item.id)})
 
     room.loop('ores', main_clock).add(
         mc.kill(entity().tag(raw_frame)),
@@ -225,9 +225,9 @@ def basic_functions(room):
                 'ArmorItems': [{'id': '%s_boots' % armor, 'Count': 1}, {'id': '%s_leggings' % armor, 'Count': 1},
                                {'id': '%s_chestplate' % armor, 'Count': 1}, {'id': '%s_helmet' % armor, 'Count': 1}]})
 
-        yield mc.fill(r(-3, 2, 2), r(-3, 5, 2), background.kind)
-        yield mc.setblock(r(3, 2, 2), background.kind)
-        yield mc.setblock(r(4, 4, 2), background.kind)
+        yield mc.fill(r(-3, 2, 2), r(-3, 5, 2), background.id)
+        yield mc.setblock(r(3, 2, 2), background.id)
+        yield mc.setblock(r(4, 4, 2), background.id)
 
         yield mc.data().merge(entity().tag('armor_boots').limit(1), {
             'Item': {'id': '%s_boots' % armor, 'Count': 1}, 'ItemRotation': 0})

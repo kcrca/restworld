@@ -33,7 +33,7 @@ def room():
             for block in sublist:
                 nsublist.append(good_block(block))
             block_lists[i] = nsublist
-        show_list = len(set(x.kind for x in block_lists[0])) > 1
+        show_list = len(set(x.id for x in block_lists[0])) > 1
 
         block_loop = room.loop(name, clock, score=score)
         block_init = room.function(name + '_init', exists_ok=True).add(
@@ -214,7 +214,7 @@ def room():
     def amethyst_loop(step):
         block = good_block(step.elem)
         if step.elem == amethyst_phases[0]:
-            yield mc.setblock(r(0, 4, 0), block.kind)
+            yield mc.setblock(r(0, 4, 0), block.id)
         else:
             yield mc.setblock(r(0, 4, 0), 'budding_amethyst')
             if ' Bud' in block.display_name or 'Cluster' in block.display_name:
@@ -349,7 +349,7 @@ def room():
         'oak_log', 'oak_log', 'oak_log', 'soul_soil'))
 
     def item_frame_loop(step):
-        yield Entity(step.elem.kind, {
+        yield Entity(step.elem.id, {
             'Facing': 2, 'Tags': ['item_frame_as_block'], 'Item': Item.nbt_for('lapis_lazuli'), 'Fixed': True}).summon(
             r(0, 3, -1)),
         yield mc.data().merge(r(0, 2, -1), Sign.lines_nbt((None, *step.elem.sign_text)))
@@ -447,7 +447,7 @@ def room():
     room.loop('snow', main_clock).loop(snow_loop, range(1, 9), bounce=True)
 
     def spanwer_loop(step):
-        yield mc.data().merge(r(0, 3, 0), {'SpawnData': {'entity': {'id': Entity(step.elem).kind}}})
+        yield mc.data().merge(r(0, 3, 0), {'SpawnData': {'entity': {'id': Entity(step.elem).id}}})
         yield mc.data().merge(r(0, 2, -1), {'Text2': step.elem})
 
     room.function('spawner_init').add(mc.setblock(r(0, 3, 0), 'spawner'))
@@ -558,7 +558,7 @@ def color_functions(room):
                 candle.merge_state({'candles': count})
                 filter = '#restworld:candle[candles=%d]' % count
             else:
-                candle = Block(candle.kind + '_cake', {'lit': True})
+                candle = Block(candle.id + '_cake', {'lit': True})
                 filter = '#restworld:candle_cake'
             yield mc.execute().if_().score(lit_candles).matches(0).run().fill(*coloring_coords, candle).replace(
                 filter)
@@ -667,7 +667,7 @@ def color_functions(room):
         WallSign((None, 'Glass')).place(r(-7, 3, 1), SOUTH),
 
         colored_signs(None,
-                      lambda x, y, z, _, wood: Sign((wood.kind, 'Sign With', 'Default', 'Text')).place(r(x, y, z), 14)),
+                      lambda x, y, z, _, wood: Sign((wood.id, 'Sign With', 'Default', 'Text')).place(r(x, y, z), 14)),
         WallSign([]).place(r(-4, 2, 4, ), SOUTH),
 
         mc.kill(entity().type('item')),

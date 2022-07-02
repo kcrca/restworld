@@ -271,16 +271,16 @@ def room():
             for i in range(0, end):
                 t = items.pop(0)
                 yield mc.summon('item_frame', r(x, 2, 5 - z),
-                                {'Facing': 2, 'Tags': ['containers', 'only_item_frame', 'only_item_frame_%s' % t.kind]})
+                                {'Facing': 2, 'Tags': ['containers', 'only_item_frame', 'only_item_frame_%s' % t.id]})
                 z += dz
             x += dx
 
         for i, t in enumerate(non_inventory):
             tag_nbt = Nbt({'tag': {'display': JsonText.text(t.display_name)}})
-            if t.kind == 'elytra':
+            if t.id == 'elytra':
                 tag_nbt = tag_nbt.merge({'Damage': 450})
-            nbt = {'Fixed': True, 'Item': Item.nbt_for(t.kind).merge({'tag': tag_nbt})}
-            yield mc.data().merge(entity().tag('only_item_frame_%s' % t.kind).limit(1), nbt)
+            nbt = {'Fixed': True, 'Item': Item.nbt_for(t.id).merge({'tag': tag_nbt})}
+            yield mc.data().merge(entity().tag('only_item_frame_%s' % t.id).limit(1), nbt)
             yield mc.item().replace().block(r(1, -5, -1), 'container.%d' % i).with_(t)
         yield mc.clone(r(1, -5, -1), r(1, -5, -1), r(1, 1, -1))
 

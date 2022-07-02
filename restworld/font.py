@@ -49,7 +49,7 @@ def room():
     copy_sign = room.function('copy_sign')
     for i, thing in enumerate(materials):
         x, y = i % 3 - 1, 5 - int(i / 3)
-        copy_sign.add(ensure(r(x, y, -1), WallSign((None, str(i)), state={'facing': SOUTH}, wood=thing.kind)))
+        copy_sign.add(ensure(r(x, y, -1), WallSign((None, str(i)), state={'facing': SOUTH}, wood=thing.id)))
 
         for path in tuple('Text%d' % i for i in range(1, 5)):
             copy_sign.add(

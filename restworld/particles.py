@@ -262,8 +262,8 @@ def room():
     room.function('falling_dust', home=False).add(main().function('restworld:particles/falling_dust_change'))
 
     def falling_dust_loop(step):
-        yield mc.fill(r(-2, 5, -2), r(2, 5, 2), step.elem.kind)
-        yield mc.particle(Particle.FALLING_DUST, step.elem.kind, r(0, 4.9, 0), 1.5, 0, 1.5, 0, 50)
+        yield mc.fill(r(-2, 5, -2), r(2, 5, 2), step.elem.id)
+        yield mc.particle(Particle.FALLING_DUST, step.elem.id, r(0, 4.9, 0), 1.5, 0, 1.5, 0, 50)
 
     room.loop('falling_dust_change').loop(falling_dust_loop, (
         Block('Dragon Egg'), Block('Sand'), Block('Red Sand'), Block('Gravel'), Block('Green Concrete Powder')))
