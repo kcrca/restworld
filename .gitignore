@@ -9,3 +9,4 @@
 *.zip
 /build/
 scripts/functions
+/venv
