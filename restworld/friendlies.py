@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from pyker.commands import r, NORTH, SOUTH, mc, entity, self, Entity, EAST, WEST, EQ, Score, MOD, JsonText
+from pyker.commands import r, NORTH, SOUTH, mc, entity, self, Entity, EAST, WEST, EQ, Score, MOD
 from pyker.info import colors, horses, villager_professions, villager_types
 from pyker.simpler import WallSign
 from restworld.rooms import Room, label
@@ -13,19 +13,19 @@ def _to_id(tag):
 
 def room():
     room = Room('friendlies', restworld, NORTH, ('Villagers,', 'Animals,', 'Mobs,', 'Bosses'))
-    north_placer = r(0, 2, -0.2), NORTH, 2, -2.2
+    south_placer = r(0, 2, -0.2), SOUTH, -2, 2.2
     mid_east_placer = r(-1.2, 2, 0), EAST, 2, 2.2
     mid_west_placer = r(0.2, 2, 0), WEST, -2, 2.2
 
     def placer(*args, **kwargs):
         return room.mob_placer(*args, **kwargs)
 
-    room.function('allay_init').add(placer(r(0, 3, 0), SOUTH, tags=('allay'), adults=True).summon('Allay'))
+    room.function('allay_init').add(placer(r(0, 3, 0), NORTH, tags=('allay'), adults=True).summon('Allay'))
     room.function('bat_init').add(
-        placer(r(0, 3, -2), SOUTH, 2, adults=True).summon('bat'),
-        placer(r(0, 3.5, 1), SOUTH, 2, adults=True).summon('bat', nbt={'BatFlags': 1}, tags=('sleeping_bat',)))
+        placer(r(0, 3, -2), NORTH, 2, adults=True).summon('bat'),
+        placer(r(0, 3.5, 1), NORTH, 2, adults=True).summon('bat', nbt={'BatFlags': 1}, tags=('sleeping_bat',)))
     room.function('bee_init').add(
-        placer(r(0, 3, 0), SOUTH, 0, -2).summon('bee'),
+        placer(r(0, 3, 0), NORTH, 0, -2).summon('bee'),
         label((-1, 2, -2), 'Stinger'),
         label((1, 2, -2), 'Pollen'))
 
@@ -44,7 +44,7 @@ def room():
 
     room.loop('bee', main_clock).loop(bee_loop, range(0, 4))
 
-    p = placer(*north_placer)
+    p = placer(*south_placer)
     e = Entity('wolf', nbt={'Owner': 'dummy'}, display_name='Dog')
     room.function('canine_init').add(
         p.summon('wolf'),
@@ -55,7 +55,7 @@ def room():
         lambda step: mc.execute().as_(entity().tag('wolf')).run().data().merge(self(), {'Angry': step.elem}),
         (True, False))
     room.function('cat_init').add(
-        placer(*north_placer, tags=('collared',)).summon('cat'),
+        placer(*south_placer, tags=('collared',)).summon('cat'),
         label(r(1, 2, 2), 'Cat Collar'))
     room.loop('cat', main_clock).loop(
         lambda step: mc.execute().as_(entity().tag('cat')).run().data().merge(self(), {
@@ -98,7 +98,7 @@ def room():
         yield mc.execute().as_(entity().tag('fox')).run().data().merge(self(), nbt)
 
     room.loop('fox', main_clock).loop(fox_loop, (('',) + fox_postures) * 2)
-    room.function('frog_init').add(placer(r(0, 2, 0.2), SOUTH, adults=True).summon('frog'))
+    room.function('frog_init').add(placer(r(0, 2, 0.2), NORTH, adults=True).summon('frog'))
 
     room.loop('frog', main_clock).loop(
         lambda step: mc.execute().as_(entity().tag('frog')).run().data().merge(
@@ -109,12 +109,12 @@ def room():
             yield kill_em(entity().tag('tadpole'))
             yield mc.setblock(r(0, 2, -1), 'frogspawn')
         else:
-            yield placer(r(0, 2, -1), SOUTH, kids=True).summon(Entity('tadpole', {'Invulnerable': True}))
+            yield placer(r(0, 2, -1), NORTH, kids=True).summon(Entity('tadpole', {'Invulnerable': True}))
             yield mc.setblock(r(0, 2, -1), 'air')
         yield kill_em(entity().type('tadpole').not_tag('tadpole'))
 
     room.loop('frogspawn', main_clock).loop(frogspawn_loop, range(0, 2))
-    room.function('goat_init').add(placer(r(0, 2, -0.4), NORTH, 0, -2.4).summon('goat'))
+    room.function('goat_init').add(placer(*south_placer).summon('goat'))
     room.loop('goat', main_clock).loop(
         lambda step: mc.execute().as_(entity().tag('goat').tag('adult')).run().data().merge(
             self(), {'HasLeftHorn': step.i & 1, 'HasRightHorn': step.i & 2}), range(0, 4))
@@ -176,17 +176,17 @@ def room():
         lambda step: mc.execute().as_(entity().tag('llama')).run().data().merge(self(), {
             'Variant': step.i, 'CustomName': step.elem}),
         ('Creamy', 'White', 'Brown', 'Gray'))
-    room.function('ocelot_init').add(placer(*north_placer).summon('ocelot'))
+    room.function('ocelot_init').add(placer(*south_placer).summon('ocelot'))
     room.function('outlines_on').add((mc.execute().as_(
         entity().tag(rm).tag('!homer').type('!item_frame')).run().data().merge(self(), {'Glowing': True})
                                       for rm in ('friendlies', 'monsters', 'wither', 'ender', 'aquatic', 'ancient')))
-    room.function('panda_init').add(placer(*north_placer).summon('panda'))
+    room.function('panda_init').add(placer(*south_placer).summon('panda'))
     room.loop('panda', main_clock).loop(
         lambda step: mc.execute().as_(entity().type('panda')).run().data().merge(
             self(),
             {'CustomName': '%s Panda' % step.elem, 'MainGene': step.elem.lower(), 'HiddenGene': step.elem.lower()}),
         ('Aggressive', 'Lazy', 'Weak', 'Worried', 'Playful', 'Normal', 'Brown'))
-    room.function('parrot_init').add(placer(r(0, 3, 1), SOUTH, adults=True).summon('parrot'))
+    room.function('parrot_init').add(placer(r(0, 3, 1), NORTH, adults=True).summon('parrot'))
 
     parrots = ('Red', 'Blue', 'Green', 'Cyan', 'Gray')
     parrot_settings = []
@@ -206,7 +206,7 @@ def room():
     room.loop('pig', main_clock).loop(
         lambda step: mc.execute().as_(entity().tag('pig').tag('!kid')).run().data().merge(
             self(), {'Saddle': step.i}), (True, False))
-    room.function('polar_bear_init').add(placer(*north_placer).summon('Polar Bear'))
+    room.function('polar_bear_init').add(placer(*south_placer).summon('Polar Bear'))
     room.function('rabbit_init').add(placer(*mid_east_placer).summon('rabbit'))
 
     def rabbit_loop(step):
@@ -266,7 +266,7 @@ def room():
         yield mc.data().merge(r(0, 2, 2), {'Text3': 'Hatch Age:  %d' % step.elem})
 
     room.loop('turtle_eggs', main_clock).loop(turtle_egg_loop, range(0, 3), bounce=True)
-    room.function('turtle_init').add(placer(r(0, 2, 0.2), SOUTH, 2, -2).summon('turtle'))
+    room.function('turtle_init').add(placer(r(0, 2, 0.2), NORTH, 2, -2).summon('turtle'))
 
     villager_funcs(room)
 

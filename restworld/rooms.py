@@ -649,7 +649,8 @@ class Room(FunctionSet):
         self._record_room(text)
         text = tuple((JsonText.text(x).bold().italic() if x else x) for x in text)
         sign = WallSign(text)
-        x, z, rot, _ = facing_info(facing)
+        facing = good_facing(facing)
+        x, z, rot = facing.dx, facing.dz, facing.yaw
         # I think this score is unused, but not sure, so I'm commenting it out.
         # score = Score('ancient', 'goto')
         self.add(Function('%s_room_init' % self.name).add(
@@ -863,8 +864,10 @@ class MobPlacer:
             try:
                 if not isinstance(delta, (float, int)) or not isinstance(kid_delta, (float, int)):
                     raise ValueError('Deltas must be floats when using "facing" name')
-                self.delta_x, self.delta_z, _, _ = facing_info(facing, delta, ROTATION_90)
-                self.kid_x, self.kid_z, self.rotation, _ = facing_info(facing, kid_delta)
+                self.delta_x, _, self.delta_z = rotated_facing(facing, ROTATION_90).scale(delta)
+                kid_rot = rotated_facing(facing)
+                self.kid_x, _, self.kid_z = kid_rot.scale(kid_delta)
+                self.rotation = kid_rot.yaw
             except KeyError:
                 raise ValueError('%s: Unknown "facing" with no "rotation"' % facing)
         else:
@@ -950,13 +953,13 @@ def say_score(*scores):
 class Wall:
     def __init__(self, width, facing, x, z, used):
         self.width = width
-        self.facing = facing
+        self.facing = good_facing(facing)
         self.used = used
         self.x = x
         self.z = z
 
     def signs(self, desc_iter, get_sign):
-        dx, dz, _, _2 = facing_info(self.facing, 1, ROTATION_270)
+        dx, _, dz = rotated_facing(self.facing, ROTATION_270).scale(1)
         for y in self.used.keys():
             for h in self.used[y]:
                 sign = get_sign(next(desc_iter), self)

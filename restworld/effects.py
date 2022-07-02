@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from pyker.commands import SOUTH, mc, player, entity, r, EAST, WEST, MAX_EFFECT_SECONDS, facing_info, d
+from pyker.commands import SOUTH, mc, player, entity, r, EAST, WEST, MAX_EFFECT_SECONDS, rotated_facing, d
 from pyker.enums import Effect
 from pyker.simpler import WallSign
 from restworld.rooms import label, SignedRoom, Wall, span, ActionDesc
@@ -31,9 +31,9 @@ effects.sort()
 
 def room():
     def effect_sign(action_desc, wall):
-        dx, dy, _, _2 = facing_info(wall.facing)
+        dx, _, dz = rotated_facing(wall.facing).scale(1)
         return WallSign(action_desc.sign_text(), (
-            mc.setblock(d(-dx, 0, -dy), 'emerald_block'),
+            mc.setblock(d(-dx, 0, -dz), 'emerald_block'),
             mc.effect().give(player(), action_desc.enum, MAX_EFFECT_SECONDS)))
 
     wall_used = {4: span(2, 4), 3: span(1, 5), 2: span(2, 4)}

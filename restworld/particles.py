@@ -4,7 +4,7 @@ import math
 import random
 
 from pyker.base import Nbt
-from pyker.commands import SOUTH, mc, EAST, WEST, facing_info, d, entity, r, Block, NORTH, player, OVERWORLD, \
+from pyker.commands import SOUTH, mc, EAST, WEST, rotated_facing, d, entity, r, Block, NORTH, player, OVERWORLD, \
     CLEAR, all_, RAIN
 from pyker.enums import Particle
 from pyker.info import villager_professions
@@ -140,7 +140,7 @@ def room():
     check_for_unused()
 
     def particle_sign(action_desc, wall):
-        dx, dy, _, _2 = facing_info(wall.facing)
+        dx, _, dz = rotated_facing(wall.facing).scale(1)
         run_at = mc.execute().at(entity().tag('particles_action_home')).positioned(r(0, 2, 0)).run()
         return WallSign(action_desc.sign_text(), (
             run_at.setblock(r(0, -4, 0), 'redstone_block'),
@@ -148,7 +148,7 @@ def room():
                 'Command': "%s function restworld:particles/%s_init" % (str(run_at), action_desc.enum)}),
             run_at.data().merge(r(-1, -2, 0),
                                 {'Command': "%s function restworld:particles/%s" % (str(run_at), action_desc.enum)}),
-            mc.setblock(d(-dx, 0, -dy), 'emerald_block')
+            mc.setblock(d(-dx, 0, -dz), 'emerald_block')
         ))
 
     e_wall_used = {5: (1, 2, 5, 6), 4: span(1, 6), 3: span(1, 6), 2: span(1, 6)}

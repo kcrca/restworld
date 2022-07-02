@@ -3,7 +3,8 @@ from __future__ import annotations
 import re
 from typing import Iterable, Union
 
-from pyker.commands import EAST, r, mc, entity, Entity, facing_info, good_block, Block, NORTH, SOUTH, WEST, self, MOVE
+from pyker.commands import EAST, r, mc, entity, Entity, good_block, Block, NORTH, SOUTH, WEST, self, MOVE, \
+    good_facing
 from pyker.info import colors, Color
 from pyker.simpler import Sign, Item, WallSign, Volume
 from restworld.rooms import Room, label, woods, stems
@@ -21,7 +22,7 @@ def room():
 
     def blocks(name, facing, block_lists: Iterable[Union[Block, str]] | Iterable[Iterable[Union[Block, str]]], dx=0,
                dz=0, size=0, labels=None, clock=main_clock, score=None):
-        facing_data = facing_info(facing)
+        facing = good_facing(facing)
 
         if not isinstance(block_lists, list):
             block_lists = list(block_lists)
@@ -36,7 +37,7 @@ def room():
 
         block_loop = room.loop(name, clock, score=score)
         block_init = room.function(name + '_init', exists_ok=True).add(
-            WallSign(()).place(r(facing_data[0], 2, facing_data[1]), facing)
+            WallSign(()).place(r(facing.dx, 2, facing.dz), facing)
         )
         if show_list:
             block_init.add(
@@ -58,7 +59,7 @@ def room():
                     signage = signage + ('',) * (4 - len(signage))
 
                 yield mc.setblock(r(x, 3, z), block)
-                yield mc.data().merge(r(x + facing_data[0], 2, z + facing_data[1]), Sign.lines_nbt(signage))
+                yield mc.data().merge(r(x + facing.dz, 2, z + facing.dz), Sign.lines_nbt(signage))
 
                 if show_list:
                     stand = name_stand.clone()
@@ -220,8 +221,8 @@ def room():
                 yield mc.setblock(r(0, 3, 0), block.clone().merge_state({'facing': 'down'}))
                 yield mc.setblock(r(0, 5, 0), block.clone().merge_state({'facing': 'up'}))
                 for offset in (NORTH, EAST, WEST, SOUTH):
-                    face = facing_info(offset)
-                    yield mc.setblock(r(face[0], 4, face[1]), block.clone().merge_state({'facing': offset}))
+                    facing = good_facing(offset)
+                    yield mc.setblock(r(facing.dx, 4, facing.dz), block.clone().merge_state({'facing': offset}))
         mc.data().merge(r(0, 2, -1), block.sign_nbt)
 
     room.loop('amethyst', main_clock).add(
