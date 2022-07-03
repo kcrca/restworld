@@ -842,6 +842,8 @@ def _name_for(mob):
 class MobPlacer:
     _armor_stand_tmpl = Entity('armor_stand').merge_nbt({'Invisible': True, 'Small': True, 'NoGravity': True})
 
+    base_nbt = {'NoAI': True, 'PersistenceRequired': True, 'Silent': True}
+
     def __init__(self, start: Position, facing: str | float,
                  delta: float | tuple[float, float] = None, kid_delta: float | tuple[float, float] = None, *,
                  tags: Tuple[str, ...] = None,
@@ -894,8 +896,8 @@ class MobPlacer:
                 tmpl.merge_nbt(self.nbt)
             if nbt:
                 tmpl.merge_nbt(nbt)
-            tmpl.merge_nbt(
-                {'NoAI': True, 'PersistenceRequired': True, 'Silent': True, 'Rotation': [self.rotation, 0.0]})
+            tmpl.merge_nbt(MobPlacer.base_nbt)
+            tmpl.merge_nbt({'Rotation': [self.rotation, 0]})
             tmpl.set_name(_name_for(mob))
             if self.tags:
                 tmpl.tag(*self.tags)

@@ -1,9 +1,8 @@
 from __future__ import annotations
 
-from pyker.base import Nbt
 from pyker.commands import mc, r, NORTH, entity, WEST, all_, Block, RESULT, VISIBLE, STYLE, VALUE, PLAYERS, COLOR, \
-    SOUTH, EAST, self, player, Entity, JsonText, SURVIVAL, LEVELS, CREATIVE
-from pyker.simpler import WallSign, Item
+    SOUTH, EAST, self, player, Entity, SURVIVAL, LEVELS, CREATIVE
+from pyker.simpler import WallSign, Item, ItemFrame
 from restworld.rooms import Room, label
 from restworld.world import restworld, slow_clock, main_clock, fast_clock
 
@@ -209,7 +208,8 @@ def room():
         placer.summon('armor_stand', tags=('holder_stand')),
         mc.setblock(r(0, 2, 1), 'barrier'),
         mc.summon('item_frame', r(1, 2, 1),
-                  {'Facing': 5, 'Tags': ['containers', 'item_holder', 'item_src'], 'Item': Item.nbt_for('iron_pickaxe')}),
+                  {'Facing': 5, 'Tags': ['containers', 'item_holder', 'item_src'],
+                   'Item': Item.nbt_for('iron_pickaxe')}),
         mc.summon('item_frame', r(1, -1, 1), {'Facing': 5, 'Tags': ['containers', 'item_holder', 'item_dst']}),
 
         mc.setblock(r(-1, 2, 0), 'air'),
@@ -241,7 +241,7 @@ def room():
             entity().tag('item_hands').limit(1), 'ArmorItems[3]').set().from_(entity().tag('item_src').limit(1), 'Item')
     )
 
-    non_inventory = list(Block(s) for s in (
+    non_inventory = list(Entity(s) for s in (
         "Knowledge Book",
         "Debug Stick",
         "Suspicious Stew",
@@ -270,18 +270,17 @@ def room():
             z, end = rows.pop(0)
             for i in range(0, end):
                 t = items.pop(0)
-                yield mc.summon('item_frame', r(x, 2, 5 - z),
-                                {'Facing': 2, 'Tags': ['containers', 'only_item_frame', 'only_item_frame_%s' % t.id]})
+                # yield mc.summon('item_frame', r(x, 2, 5 - z),
+                #                {'Facing': 2, 'Tags': ['containers', 'only_item_frame', 'only_item_frame_%s' % t.id]})
+                frame = ItemFrame(NORTH).framed_item(t).show_item_name(t.display_name)
+                frame.tag('containers', 'only_item_frame', 'only_item_frame_%s' % t.id)
+                if t.id == 'elytra':
+                    frame.merge_nbt({'Item': {'tag': {'Damage': 450}}})
+                yield frame.summon(r(x, 2, 5 - z), facing=NORTH)
+                yield mc.item().replace().block(r(1, -5, -1), 'container.%d' % i).with_(t)
                 z += dz
             x += dx
 
-        for i, t in enumerate(non_inventory):
-            tag_nbt = Nbt({'tag': {'display': JsonText.text(t.display_name)}})
-            if t.id == 'elytra':
-                tag_nbt = tag_nbt.merge({'Damage': 450})
-            nbt = {'Fixed': True, 'Item': Item.nbt_for(t.id).merge({'tag': tag_nbt})}
-            yield mc.data().merge(entity().tag('only_item_frame_%s' % t.id).limit(1), nbt)
-            yield mc.item().replace().block(r(1, -5, -1), 'container.%d' % i).with_(t)
         yield mc.clone(r(1, -5, -1), r(1, -5, -1), r(1, 1, -1))
 
         yield WallSign((None, 'Items Not', 'in Creative', 'Iventory')).place(r(2, 2, -1, ), NORTH)
