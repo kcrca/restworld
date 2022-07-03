@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from restworld import ancient, global_, aquatic, arena, banners, biomes, tags, blocks, center, containers, diy, effects, \
-    particles, enders, font, friendlies, materials, monsters, nether, paintings, photo
+    particles, enders, font, friendlies, materials, monsters, nether, paintings, photo, plants
 from restworld.world import restworld
 
 
@@ -9,7 +9,7 @@ def main():
     for f in (
             ancient.room, global_.room, aquatic.room, arena.room, banners.room, biomes.room, blocks.room, center.room,
             containers.room, diy.room, effects.room, particles.room, enders.room, font.room, friendlies.room,
-            materials.room, monsters.room, nether.room, paintings.room, photo.room):
+            materials.room, monsters.room, nether.room, paintings.room, photo.room, plants.room):
         f()
     tags.tags()
     restworld.save()

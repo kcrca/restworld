@@ -2,7 +2,7 @@ import re
 
 from pyker.commands import COLORS
 from pyker.function import BLOCKS
-from pyker.info import woods, stems
+from pyker.info import woods, stems, corals
 from restworld.friendlies import _to_id
 from restworld.world import restworld
 
@@ -113,6 +113,12 @@ def tags():
             'crimson_fungus'
         ]
     }
+    coral_ids = tuple(x.lower() for x in corals)
+    blocks['coral_fans'] = {'values': ['%s_coral_fan' % x for x in coral_ids]}
+    blocks['dead_coral_plants'] = {'values': ['dead_%s_coral' % x for x in coral_ids]}
+    blocks['dead_coral_blocks'] = {'values': ['dead_%s_coral_block' % x for x in coral_ids]}
+    blocks['dead_coral_fans'] = {'values': ['dead_%s_coral_fan' % x for x in coral_ids]}
+    blocks['dead_wall_corals'] = {'values': ['dead_%s_coral_wall_fan' % x for x in coral_ids]}
     blocks['liquid'] = {
         'values': [
             'lava',

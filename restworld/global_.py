@@ -154,7 +154,7 @@ def room():
             ('biomes', OVERWORLD, (-1000, 101, -1000), (-1000, 80, -970)),
             ('connected', OVERWORLD, (1000, 101, 1000), (990, 101, 1000)),
             ('end_home', THE_END, (100, 49, 0), (-1000, 80, -970)),
-            ('home', OVERWORLD, (-1000, 101, -1000), (-1000, 80, -970)),
+            ('home', OVERWORLD, (0, 101, 0), (0, 101, 10)),
             ('nether', OVERWORLD, (-1000, 101, -1000), (-1000, 80, -970)),
             ('arena', OVERWORLD, (1014, 106, -1000), (1000, 100, -1000))):
         room.function('goto_' + p[0], home=False).add(
