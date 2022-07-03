@@ -156,10 +156,10 @@ def room():
             ('end_home', THE_END, (100, 49, 0), (-1000, 80, -970)),
             ('home', OVERWORLD, (-1000, 101, -1000), (-1000, 80, -970)),
             ('nether', OVERWORLD, (-1000, 101, -1000), (-1000, 80, -970)),
-            ('photo', OVERWORLD, (-1000, 101, -1000), (-1000, 80, -970)),
             ('arena', OVERWORLD, (1014, 106, -1000), (1000, 100, -1000))):
         room.function('goto_' + p[0], home=False).add(
             mc.execute().in_(p[1]).run().teleport(player(), p[2]).facing(p[3]))
+    room.function('goto_photo').add(mc.function('restworld:photo/photo_example_view'))
     room.function('goto_weather', home=False).add(
         mc.execute().in_(OVERWORLD).run().teleport(player(), (1009, 101, 1000)).facing((1004, 102, 1000)),
         mc.weather(RAIN))
