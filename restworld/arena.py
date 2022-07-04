@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import sys
 
-from pyker.commands import Score, entity, mc, r, WEST, all_
+from pyker.commands import Score, entity, mc, r, all_, EAST
 from pyker.function import Loop
 from pyker.simpler import WallSign
 from restworld.rooms import Thing, Room, label
@@ -16,6 +16,7 @@ def room():
         'Drowned': 'HandItems:[{id:trident,Count:1}]',
         'Goat': 'IsScreamingGoat:True',
         'Hoglin': 'IsImmuneToZombification:True',
+        'Llama': 'Strength:5',
         'Magma Cube': 'Size:0',
         'Panda': 'MainGene:aggressive',
         'Phantom': 'AX:1000,AY:110,AZ:-1000',
@@ -26,6 +27,7 @@ def room():
         'Slime': 'Size:0',
         'Stray': 'HandItems:[{id:bow,Count:1}],ArmorItems:[{id:iron_boots,Count:1,tag:{RepairCost:1,Enchantments:[{lvl:9,id:protection}]}},{},{},{}]',
         'Vindicator': 'Johnny:True,HandItems:[{id:iron_axe,Count:1},{}]',
+        'Vindicator:2': 'Johnny:True',
         'Wither Skeleton': 'HandItems:[{id:stone_sword,Count:1},{}]',
         'Zombified Piglin': 'HandItems:[{id:golden_sword,Count:1}]',
     }
@@ -39,7 +41,7 @@ def room():
         ('Evoker', 'Iron Golem'),
         ('Fox', 'Chicken'),
         ('Frog', 'Slime'),
-        ('Goat', 'Sheep'),
+        ('Llama', 'Vindicator'),
         ('Hoglin', 'Vindicator'),
         ('Illusioner', 'Snow Golem'),
         ('Panda', 'Vindicator'),
@@ -60,7 +62,7 @@ def room():
         ('Wolf', 'Sheep'),
         ('Zoglin', 'Vindicator'),
         ('Zombie:c', 'Iron Golem'),
-        ('Zombified Piglin', 'Vindicator'),
+        ('Zombified Piglin:c', 'Vindicator'),
     ]
     # Lower priority ones that can be used as filler
     #    ('Axolotl:w', 'Elder Guardian'),
@@ -68,6 +70,7 @@ def room():
     #    ('Ocelot', 'Chicken'),
     #    ('Slime', 'Iron Golem'),
     #    ('Magma Cube', 'Iron Golem'),
+    #    ('Goat', 'Sheep'),
     # These don't work unelss we figure out how to kill the ones that spawn when a larger is killed. For
     # now, we just make sure they are the smallest size.
     #  ('Slime', 'Iron Golem'),
@@ -95,6 +98,7 @@ def room():
 
     def arena_run_main(loop: Loop):
         def arena_run_loop(step):
+            i = step.i
             for which_dir in (-1, 1):
                 to = (i + which_dir + num_pages) % num_pages
                 text, z = ('<--', max_z + 1) if which_dir == -1 else ('-->', min_z - 1)
@@ -102,7 +106,7 @@ def room():
                     step.loop.score.set(to),
                     mc.execute().at(entity().tag('controls_home')).run().function(
                         'restworld:arena/%s_cur' % step.loop.score.target)
-                )).glowing(True).place(r(x, 2, z), WEST)
+                )).glowing(True).place(r(x, 2, z), EAST)
             for s in range(0, stride_length):
                 args = step.elem[s] + (None,) * (4 - len(step.elem[s]))
                 y = 3 - int(s / row_length)
@@ -122,21 +126,19 @@ def room():
                     if which == 'hunter':
                         my_nbts.append('Rotation:[180f,0f]')
                     incr = 'summon %s ~0 ~2 ~0 {%s}' % (Thing(mob).id, ','.join(my_nbts))
-                    incr_cmd = 'execute if score %s_count funcs < arena_count funcs at @e[tag=%s_home,sort=random,limit=1] run %s' % (
+                    incr_cmd = 'execute if score %s_count arena < arena_count arena at @e[tag=%s_home,sort=random,limit=1] run %s' % (
                         which, which, incr)
                     return incr_cmd
-
-                vs = 'vs.'
 
                 data_change = mc.execute().at(monitor_home).run().data()
                 sign_commands = (
                     start_battle_type.set(battle_type),
-                    data_change.merge(r(2, 0, 0), {'Command': incr_cmd('hunter', hunter)}),
+                    data_change.merge(r(3, 0, 0), {'Command': incr_cmd('hunter', hunter)}),
                     data_change.merge(r(2, 0, 0), {'Command': incr_cmd('victim', victim)}),
                     mc.function('restworld:arena/start_battle')
                 )
-                sign = WallSign((None, hunter, vs, victim), sign_commands)
-                yield sign.place(r(-2, y, z), WEST)
+                sign = WallSign((None, hunter, 'vs.', victim), sign_commands)
+                yield sign.place(r(-2, y, z), EAST)
 
                 run_type = Score('arena_run_type', 'arena')
                 yield mc.execute().unless().score(run_type).matches((0, None)).run(run_type.set(0))
@@ -209,7 +211,7 @@ def room():
     room.function('arena_run_init').add(mc.function('restworld:arena/arena_run_cur'))
     # This is NOT intended to be run on the clock. It is only called "_main" because that gives us a
     # "_cur" function, which is useful when paging through the signs. Do not create the _home armor stand.
-    arena_run_loop = arena_run_main(room.loop('arena_run', main_clock, needs_home=False))
+    arena_run_loop = arena_run_main(room.loop('arena_run', main_clock, home=False))
 
     room.function('controls_init').add(
         arena_run_loop.score.set(0),

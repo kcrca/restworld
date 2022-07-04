@@ -706,16 +706,16 @@ class Room(FunctionSet):
                 home = False
         return self._add_func(Function(name, base_name=base_name), name, clock, home)
 
-    def loop(self, name: str, clock: Clock = None, /, needs_home=True, score=None) -> Loop:
+    def loop(self, name: str, clock: Clock = None, /, home=True, score=None) -> Loop:
         base_name, name = self._base_name(name, clock)
-        loop = self._add_func(Loop(name, self.name, base_name=base_name, score=score), name, clock, needs_home)
+        loop = self._add_func(Loop(name, self.name, base_name=base_name, score=score), name, clock, home)
         if not base_name + '_cur' in self.functions:
             self.function(base_name + '_cur').add(loop.cur())
         self._scores.add(loop.score)
         self._scores.add(loop._to_incr)
         return loop
 
-    def _add_func(self, func, name, clock, needs_home):
+    def _add_func(self, func, name, clock, home):
         base_name, name = self._base_name(name, clock)
         if clock:
             self._clocks.setdefault(clock, []).append(func)
@@ -723,7 +723,7 @@ class Room(FunctionSet):
 
         self.add(func)
 
-        if needs_home and base_name not in self._homes:
+        if home and base_name not in self._homes:
             self.home_func(base_name)
         return func
 
