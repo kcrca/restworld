@@ -22,12 +22,12 @@ def room():
         mc.function('restworld:global/clock_off'),
         mc.execute().at(entity().tag('diy_starter')).run().fill(r(0, 5, 0), r(0, 5, -6), 'sand'),
         mc.execute().at(entity().tag('diy_ender')).run().tp(entity().tag('diy_cloner'), r(0, 2, 0)),
-        mc.function("restworld:diy/_tick"))
+        mc.function('restworld:diy/_tick'))
     room.function('restore').add(
         mc.setblock(r(0, -2, 0), Block(
             'structure_block',
-            nbt={"ignoreEntities": True, "name": "restworld:sequence", "mode": "SAVE", "posX": 0, "posY": 4, "posZ": -6,
-                 "sizeX": 1, "sizeY": 1, "sizeZ": 7, "showboundingbox": False})),
+            nbt={'ignoreEntities': True, 'name': 'restworld:sequence', 'mode': 'SAVE', 'posX': 0, 'posY': 4, 'posZ': -6,
+                 'sizeX': 1, 'sizeY': 1, 'sizeZ': 7, 'showboundingbox': False})),
         mc.setblock(r(0, -4, 0), 'redstone_torch'),
         mc.setblock(r(0, -4, 0), 'air'),
         mc.setblock(r(0, -2, 0), 'stone'),
@@ -36,8 +36,8 @@ def room():
     room.function('save').add(
         mc.execute().at(entity().tag('diy_ender')).run().setblock(r(0, -1, 0), Block(
             r'structure_block',
-            nbt={"ignoreEntities": True, "name": "restworld:sequence", "mode": "SAVE", "posX": 0, "posY": 7,
-                 "posZ": 0, "sizeX": 1, "sizeY": 1, "sizeZ": 7, "showboundingbox": False})),
+            nbt={'ignoreEntities': True, 'name': 'restworld:sequence', 'mode': 'SAVE', 'posX': 0, 'posY': 7,
+                 'posZ': 0, 'sizeX': 1, 'sizeY': 1, 'sizeZ': 7, 'showboundingbox': False})),
         mc.execute().at(entity().tag('diy_ender')).run().setblock(r(0, -2, 0), 'redstone_torch'),
         mc.execute().at(entity().tag('diy_ender')).run().setblock(r(0, -2, 0), 'air'),
         mc.execute().at(entity().tag('diy_ender')).run().setblock(r(0, -1, 0), 'stone'),
@@ -52,7 +52,7 @@ def room():
         stand.clone().tag('diy_displayer').summon(r(2, -1, -3))
     )
     for i in range(0, 5):
-        tick_init.add(label(r(-(3 + i), 2, -7), "Save"), label(r(-(3 + i), 2, 1), "Restore"))
+        tick_init.add(label(r(-(3 + i), 2, -7), 'Save'), label(r(-(3 + i), 2, 1), 'Restore'))
 
     custom_reset = room.score('custom_reset')
     room.loop('tick', main_clock).add(
@@ -68,9 +68,9 @@ def room():
         ).setblock(r(0, 3, 0), 'magenta_glazed_terracotta'),
         mc.execute().at(entity().tag('diy_cloner')).run(
         ).setblock(r(0, -1, 0), Block('structure_block',
-                                      nbt={"ignoreEntities": True, "name": "restworld:singleton", "mode": "SAVE",
-                                           "posX": 0, "posY": 5, "posZ": 0, "sizeX": 1, "sizeY": 1, "sizeZ": 1,
-                                           "showboundingbox": False})),
+                                      nbt={'ignoreEntities': True, 'name': 'restworld:singleton', 'mode': 'SAVE',
+                                           'posX': 0, 'posY': 5, 'posZ': 0, 'sizeX': 1, 'sizeY': 1, 'sizeZ': 1,
+                                           'showboundingbox': False})),
         mc.execute().at(entity().tag('diy_cloner')).run().setblock(r(0, -2, 0), 'redstone_torch'),
         mc.execute().at(entity().tag('diy_cloner')).run().setblock(r(0, -2, 0), 'air'),
         mc.execute().at(entity().tag('diy_cloner')).run().setblock(r(0, -1, 0), 'stone'),

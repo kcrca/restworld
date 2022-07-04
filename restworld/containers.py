@@ -36,7 +36,7 @@ def room():
     bossbar_value = room.score('bossbar_value')
     room.function('bossbar_init').add(
         mc.kill(entity().tag('bossbar_current')),
-        mc.bossbar().add('restworld:bossbar', "Ornamental Stud"),
+        mc.bossbar().add('restworld:bossbar', 'Ornamental Stud'),
         mc.bossbar().set('restworld:bossbar', PLAYERS, all_()),
         mc.bossbar().set('restworld:bossbar', VALUE, 50),
         bossbar_value.set(3),
@@ -88,7 +88,7 @@ def room():
     room.function('bossbar_value_init').add(bossbar_param('value'))
     room.loop('bossbar_value', main_clock).loop(bossbar_value_loop, (0, 25, 50, 75, 100))
 
-    water_potion = Block('potion', nbt={'Potion': "water"})
+    water_potion = Block('potion', nbt={'Potion': 'water'})
 
     def brewing_loop(step):
         for j in range(0, 3):
@@ -100,7 +100,7 @@ def room():
 
     room.function('brewing_init').add(
         mc.function('restworld:containers/switch_brewing_off'),
-        label(r(1, 1, -1), "Brew"))
+        label(r(1, 1, -1), 'Brew'))
     room.loop('brewing_rotate', main_clock).add(
         mc.item().replace().block(r(0, 2, 0), 'container.3').with_('air'),
         mc.item().replace().block(r(0, 2, 0), 'container.4').with_('air'),
@@ -136,7 +136,7 @@ def room():
         mc.setblock(r(0, 2, 0), Block('furnace', {'facing': WEST}, {'CookTime': 0})),
         mc.setblock(r(3, 2, 0), Block('blast_furnace', {'facing': WEST}, {'CookTime': 0})),
         mc.setblock(r(0, 2, 3), Block('smoker', {'facing': WEST}, {'CookTime': 0})),
-        label(r(-1, 2, 1), "Cook"))
+        label(r(-1, 2, 1), 'Cook'))
     room.function('cookers_run', home=False).add(
         mc.item().replace().block(r(0, 2, 0), 'container.1').with_('minecraft:stick', 64),
         mc.item().replace().block(r(0, 2, 0), 'container.0').with_('minecraft:stone', 64),
@@ -215,7 +215,7 @@ def room():
         mc.setblock(r(-1, 2, 0), 'air'),
         WallSign(('Item put in frame', 'shown in "fixed",', '"ground", and 3rd', 'party hands')).place(r(-1, 2, 0),
                                                                                                        EAST),
-        label(r(1, 2, -1), "On Head"),
+        label(r(1, 2, -1), 'On Head'),
     )
     item_new = room.score('item_new')
     room.function('item_run').add(
@@ -242,22 +242,22 @@ def room():
     )
 
     non_inventory = list(Entity(s) for s in (
-        "Knowledge Book",
-        "Debug Stick",
-        "Suspicious Stew",
-        "Firework Star",
-        "Bundle",
-        "Jigsaw",
-        "Structure Block",
-        "Structure Void",
-        "Barrier",
-        "Light",
-        "Dragon Egg",
-        "Command Block",
-        "Command Block Minecart",
-        "Spawner",
+        'Knowledge Book',
+        'Debug Stick',
+        'Suspicious Stew',
+        'Firework Star',
+        'Bundle',
+        'Jigsaw',
+        'Structure Block',
+        'Structure Void',
+        'Barrier',
+        'Light',
+        'Dragon Egg',
+        'Command Block',
+        'Command Block Minecart',
+        'Spawner',
     ))
-    non_inventory.append(Entity("elytra", nbt={'Damage': 450}, display_name='Damaged Elytra'))
+    non_inventory.append(Entity('elytra', nbt={'Damage': 450}, display_name='Damaged Elytra'))
 
     def only_items_init_func():
         rows = [(0, 5), (0, 5), (0, 5)]
@@ -294,7 +294,7 @@ def room():
         mc.give(player(), 'firework_rocket'),
     )
     room.function('only_items_init').add(
-        label(r(3, 2, -1), "Give"),
+        label(r(3, 2, -1), 'Give'),
         mc.setblock(r(1, -5, -1), Block('chest', {'facing': EAST}))
     ).add(list(only_items_init_func()))
 
@@ -303,7 +303,7 @@ def room():
         lambda step: mc.xp().set(player(), step.elem, LEVELS), (0, 9, 20, 30))
     room.function('survival_init').add(
         mc.gamemode(SURVIVAL, player()),
-        mc.function("restworld:containers/survival_cur"))
+        mc.function('restworld:containers/survival_cur'))
     room.function('survival_stop', home=False).add(
         mc.gamemode(CREATIVE, player()),
         mc.kill(entity().tag('survival_home'))

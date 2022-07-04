@@ -106,10 +106,10 @@ def room():
 
     room.function('arrive_biome').add(mc.execute().in_(OVERWORLD).run().weather(CLEAR))
     room.function('arrive_biome_init').add(
-        label(r(0, 3, -6), "Go Home"),
-        label(r(-1, 3, -6), "Go Home"),
-        label(r(0, 3, -2), "Go Home"),
-        label(r(-1, 3, -2), "Go Home"),
+        label(r(0, 3, -6), 'Go Home'),
+        label(r(-1, 3, -6), 'Go Home'),
+        label(r(0, 3, -2), 'Go Home'),
+        label(r(-1, 3, -2), 'Go Home'),
     )
     room.home_func('biome_loading_action')
 

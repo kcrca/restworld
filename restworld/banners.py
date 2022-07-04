@@ -20,44 +20,44 @@ adjustments = {0: (1, 0.07, 1, -1, 0.30, 0, 0, 'south', 0, +1),
 
 authored_patterns = (
     (Block('blue_banner', nbt={'Patterns': [
-        {'Color': 0, 'Pattern': "bri"}, {'Color': 11, 'Pattern': "hhb"}, {'Color': 15, 'Pattern': "sc"},
-        {'Color': 11, 'Pattern': "sc"}, {'Color': 15, 'Pattern': "bo"}, {'Color': 11, 'Pattern': "bo"}]}),
+        {'Color': 0, 'Pattern': 'bri'}, {'Color': 11, 'Pattern': 'hhb'}, {'Color': 15, 'Pattern': 'sc'},
+        {'Color': 11, 'Pattern': 'sc'}, {'Color': 15, 'Pattern': 'bo'}, {'Color': 11, 'Pattern': 'bo'}]}),
      'Tardis', 'Pikachu'),
     (Block('purple_banner', nbt={'Patterns': [
-        {'Color': 2, 'Pattern': "ss"}, {'Color': 10, 'Pattern': "bri"}, {'Color': 2, 'Pattern': "cbo"},
-        {'Color': 15, 'Pattern': "bo"}]}),
+        {'Color': 2, 'Pattern': 'ss'}, {'Color': 10, 'Pattern': 'bri'}, {'Color': 2, 'Pattern': 'cbo'},
+        {'Color': 15, 'Pattern': 'bo'}]}),
      'Portail du Nether', 'Akkta'),
     (Block('white_banner', nbt={'Patterns': [
-        {'Color': 15, 'Pattern': "mr"}, {'Color': 1, 'Pattern': "cbo"}, {'Color': 1, 'Pattern': "mc"},
-        {'Color': 1, 'Pattern': "cre"}, {'Color': 1, 'Pattern': "tt"}, {'Color': 1, 'Pattern': "tts"}]}),
+        {'Color': 15, 'Pattern': 'mr'}, {'Color': 1, 'Pattern': 'cbo'}, {'Color': 1, 'Pattern': 'mc'},
+        {'Color': 1, 'Pattern': 'cre'}, {'Color': 1, 'Pattern': 'tt'}, {'Color': 1, 'Pattern': 'tts'}]}),
      'Fox', 'mr.crafteur'),
     (Block('white_banner', nbt={'Patterns': [
-        {'Color': 15, 'Pattern': "mc"}, {'Color': 0, 'Pattern': "flo"}, {'Color': 15, 'Pattern': "tt"},
-        {'Color': 0, 'Pattern': "cr"}, {'Color': 15, 'Pattern': "cbo"}, {'Color': 0, 'Pattern': "bts"}]}),
+        {'Color': 15, 'Pattern': 'mc'}, {'Color': 0, 'Pattern': 'flo'}, {'Color': 15, 'Pattern': 'tt'},
+        {'Color': 0, 'Pattern': 'cr'}, {'Color': 15, 'Pattern': 'cbo'}, {'Color': 0, 'Pattern': 'bts'}]}),
      'Rabbit', 'googolplexbyte'),
     (Block('light_blue_banner', nbt={'Patterns': [
-        {'Color': 11, 'Pattern': "gra"}, {'Color': 0, 'Pattern': "cbo"}, {'Color': 0, 'Pattern': "cr"},
-        {'Color': 0, 'Pattern': "mc"}, {'Color': 11, 'Pattern': "flo"}, {'Color': 0, 'Pattern': "tt"}]}),
+        {'Color': 11, 'Pattern': 'gra'}, {'Color': 0, 'Pattern': 'cbo'}, {'Color': 0, 'Pattern': 'cr'},
+        {'Color': 0, 'Pattern': 'mc'}, {'Color': 11, 'Pattern': 'flo'}, {'Color': 0, 'Pattern': 'tt'}]}),
      'Angel', 'PK?'),
     (Block('white_banner', nbt={'Patterns': [
-        {'Color': 15, 'Pattern': "sc"}, {'Color': 0, 'Pattern': "sc"}, {'Color': 15, 'Pattern': "flo"},
-        {'Color': 0, 'Pattern': "flo"}]}),
+        {'Color': 15, 'Pattern': 'sc'}, {'Color': 0, 'Pattern': 'sc'}, {'Color': 15, 'Pattern': 'flo'},
+        {'Color': 0, 'Pattern': 'flo'}]}),
      'Quartz sculpte', 'Pikachu'),
     (Block('black_banner', nbt={'Patterns': [
-        {'Color': 5, 'Pattern': "cbo"}, {'Color': 15, 'Pattern': "rs"}, {'Color': 14, 'Pattern': "flo"},
-        {'Color': 5, 'Pattern': "ms"}, {'Color': 15, 'Pattern': "tt"}, {'Color': 5, 'Pattern': "moj"}]}),
+        {'Color': 5, 'Pattern': 'cbo'}, {'Color': 15, 'Pattern': 'rs'}, {'Color': 14, 'Pattern': 'flo'},
+        {'Color': 5, 'Pattern': 'ms'}, {'Color': 15, 'Pattern': 'tt'}, {'Color': 5, 'Pattern': 'moj'}]}),
      'DRAGON !', 'kraftime'),
     (Block('white_banner', nbt={'Patterns': [
-        {'Color': 15, 'Pattern': "ts"}, {'Color': 0, 'Pattern': "sc"}, {'Color': 14, 'Pattern': "hhb"},
-        {'Color': 0, 'Pattern': "bo"}, {'Color': 0, 'Pattern': "bs"}, {'Color': 4, 'Pattern': "ms"}]}),
+        {'Color': 15, 'Pattern': 'ts'}, {'Color': 0, 'Pattern': 'sc'}, {'Color': 14, 'Pattern': 'hhb'},
+        {'Color': 0, 'Pattern': 'bo'}, {'Color': 0, 'Pattern': 'bs'}, {'Color': 4, 'Pattern': 'ms'}]}),
      'Poule', 'mish80'),
     (Block('black_banner', nbt={'Patterns': [
-        {'Color': 14, 'Pattern': "gru"}, {'Color': 14, 'Pattern': "bt"}, {'Color': 0, 'Pattern': "bts"},
-        {'Color': 0, 'Pattern': "tts"}]}),
+        {'Color': 14, 'Pattern': 'gru'}, {'Color': 14, 'Pattern': 'bt'}, {'Color': 0, 'Pattern': 'bts'},
+        {'Color': 0, 'Pattern': 'tts'}]}),
      'Bouche', 'entonix69'),
     (Block('lime_banner', nbt={'Patterns': [
-        {'Color': 4, 'Pattern': "gra"}, {'Color': 3, 'Pattern': "gru"}, {'Color': 0, 'Pattern': "cbo"},
-        {'Color': 0, 'Pattern': "cr"}, {'Color': 0, 'Pattern': "mr"}, {'Color': 5, 'Pattern': "mc"}]}),
+        {'Color': 4, 'Pattern': 'gra'}, {'Color': 3, 'Pattern': 'gru'}, {'Color': 0, 'Pattern': 'cbo'},
+        {'Color': 0, 'Pattern': 'cr'}, {'Color': 0, 'Pattern': 'mr'}, {'Color': 5, 'Pattern': 'mc'}]}),
      'Like pls ^-^', 'Harmony'),
 )
 
@@ -159,11 +159,11 @@ def room():
         mc.fill(r(-2, -2, -2), r(16, 16, 16), 'air').replace('#banners'),
         render_banners(armor_stands),
         mc.setblock(r(-0.2, 3, 11.8), Block('white_banner', {'rotation': 10}, {
-            'Patterns': [{'Pattern': "mr", 'Color': 9}, {'Pattern': "bs", 'Color': 8}, {'Pattern': "cs", 'Color': 7},
-                         {'Pattern': "bo", 'Color': 8}, {'Pattern': "ms", 'Color': 15}, {'Pattern': "hh", 'Color': 8},
-                         {'Pattern': "mc", 'Color': 8}, {'Pattern': "bo", 'Color': 15}]})),
+            'Patterns': [{'Pattern': 'mr', 'Color': 9}, {'Pattern': 'bs', 'Color': 8}, {'Pattern': 'cs', 'Color': 7},
+                         {'Pattern': 'bo', 'Color': 8}, {'Pattern': 'ms', 'Color': 15}, {'Pattern': 'hh', 'Color': 8},
+                         {'Pattern': 'mc', 'Color': 8}, {'Pattern': 'bo', 'Color': 15}]})),
         mc.setblock(r(11.8, 3, 0.2), Block('magenta_banner', {'rotation': 2}, {
-            'Patterns': [{'Pattern': "bt", 'Color': 15}, {'Pattern': "tt", 'Color': 15}]})),
+            'Patterns': [{'Pattern': 'bt', 'Color': 15}, {'Pattern': 'tt', 'Color': 15}]})),
         custom_banner(0.2, 0.2, 0.1),
         custom_banner(11.8, 11.8, -0.1),
         banner_color_init,
@@ -237,9 +237,9 @@ def room():
     # ^Black Bordure
     room.function('ominous_banner').add(
         mc.setblock(r(0, 0, 0), Block('white_banner', nbt={
-            'Patterns': [{'Pattern': "mr", 'Color': 9}, {'Pattern': "bs", 'Color': 8}, {'Pattern': "cs", 'Color': 7},
-                         {'Pattern': "bo", 'Color': 8}, {'Pattern': "ms", 'Color': 15}, {'Pattern': "hh", 'Color': 8},
-                         {'Pattern': "mc", 'Color': 8}, {'Pattern': "bo", 'Color': 15}]})))
+            'Patterns': [{'Pattern': 'mr', 'Color': 9}, {'Pattern': 'bs', 'Color': 8}, {'Pattern': 'cs', 'Color': 7},
+                         {'Pattern': 'bo', 'Color': 8}, {'Pattern': 'ms', 'Color': 15}, {'Pattern': 'hh', 'Color': 8},
+                         {'Pattern': 'mc', 'Color': 8}, {'Pattern': 'bo', 'Color': 15}]})))
 
     room.function('switch_to_color').add(switch_banners('color'))
     room.function('switch_to_ink').add(switch_banners('ink'))

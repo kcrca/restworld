@@ -11,18 +11,18 @@ from pyker.simpler import Sign, WallSign
 
 
 def to_id(name):
-    return name.lower().replace(" ", "_")
+    return name.lower().replace(' ', '_')
 
 
 @total_ordering
 class Thing:
     def __init__(self, name, id=None, block_state=None):
         self.text = name
-        self.name = name.replace("|", " ").strip()  # This allows a "%s Minecart" % "" to work
+        self.name = name.replace('|', ' ').strip()  # This allows a '%s Minecart' % '' to work
         if id is None:
             id = to_id(self.name.strip())
         self.id = to_id(id.strip())
-        self.block_state = block_state if block_state else ""
+        self.block_state = block_state if block_state else ''
 
     def __repr__(self):
         return self.name
@@ -33,11 +33,11 @@ class Thing:
     def __eq__(self, other):
         return self.full_id() == other.full_id()
 
-    def full_id(self, block_state=""):
-        id = "%s" % self.id
-        state = self.block_state + ("," if block_state and self.block_state else "") + block_state
+    def full_id(self, block_state=''):
+        id = '%s' % self.id
+        state = self.block_state + (',' if block_state and self.block_state else '') + block_state
         if state:
-            id += "[%s]" % state
+            id += '[%s]' % state
         return id
 
     def sign_text(self, pre=None, skip=()):
@@ -45,18 +45,18 @@ class Thing:
         if pre:
             txt = [pre] + txt
         if len(txt) != 4:
-            txt = [""] + txt
-        txt.extend([""] * (4 - len(txt)))
+            txt = [''] + txt
+        txt.extend([''] * (4 - len(txt)))
         s = ''
         for i in range(0, 4):
             if i not in skip:
                 if len(s) > 0:
                     s += ','
-                s += "Text%d:%s" % (i + 1, text(txt[i]))
+                s += 'Text%d:%s' % (i + 1, text(txt[i]))
         return s
 
     def to_sign_text(self):
-        lines = self.text.split("|")
+        lines = self.text.split('|')
         return lines
 
     def summon(self, pos: Position, rotation):
@@ -65,7 +65,7 @@ class Thing:
 
 class Nicknamed(Thing):
     def __init__(self, nickname, kind, id=None, block_state=None):
-        Thing.__init__(self, ("%s %s" % (nickname, kind)).strip(), id, block_state)
+        Thing.__init__(self, ('%s %s' % (nickname, kind)).strip(), id, block_state)
         self.nickname = nickname
         self.kind = kind
 
@@ -90,11 +90,11 @@ class Color(Thing):
 class Horse(Thing):
     def __init__(self, name, variant=None):
         if variant is not None:
-            Thing.__init__(self, name, "horse")
-            self.tag = "%s_horses" % to_id(name)
+            Thing.__init__(self, name, 'horse')
+            self.tag = '%s_horses' % to_id(name)
         else:
             Thing.__init__(self, name)
-            self.tag = "%ss" % self.id
+            self.tag = '%ss' % self.id
         self.variant = variant
 
 
@@ -107,8 +107,8 @@ class Mob(Thing):
 
     def inner_nbt(self):
         if not self.nbt:
-            return ""
-        return ",%s" % self.nbt
+            return ''
+        return ',%s' % self.nbt
 
 
 class CommandBlock(Thing):
@@ -130,7 +130,7 @@ class ActionDesc:
         if display_name is None:
             display_name = type(enum).display_name(enum)
         self.display_name = display_name
-        self.note = "(%s)" % note if note else None
+        self.note = '(%s)' % note if note else None
         if isinstance(also, Iterable):
             self.also = also
         else:
@@ -153,103 +153,103 @@ class ActionDesc:
             sign_text.insert(0, None)
         while len(sign_text) > 4:
             if sign_text[0]:
-                raise ValueError("%s: Too much sign text for action" % sign_text)
+                raise ValueError('%s: Too much sign text for action' % sign_text)
             sign_text = sign_text[1:]
         return sign_text
 
 
 colors = (
-    Color("White", 0xf9fffe),
-    Color("Orange", 0xf9801d),
-    Color("Magenta", 0xc74ebd),
-    Color("Light Blue", 0x3ab3da),
-    Color("Yellow", 0xfed83d),
-    Color("Lime", 0x80c71f),
-    Color("Pink", 0xf38baa),
-    Color("Gray", 0x474f52),
-    Color("Light Gray", 0x9d9d97),
-    Color("Cyan", 0x169c9c),
-    Color("Purple", 0x8932b8),
-    Color("Blue", 0x3c44aa),
-    Color("Brown", 0x835432),
-    Color("Green", 0x5e7c16),
-    Color("Red", 0xb02e26),
-    Color("Black", 0x1d1d21),
+    Color('White', 0xf9fffe),
+    Color('Orange', 0xf9801d),
+    Color('Magenta', 0xc74ebd),
+    Color('Light Blue', 0x3ab3da),
+    Color('Yellow', 0xfed83d),
+    Color('Lime', 0x80c71f),
+    Color('Pink', 0xf38baa),
+    Color('Gray', 0x474f52),
+    Color('Light Gray', 0x9d9d97),
+    Color('Cyan', 0x169c9c),
+    Color('Purple', 0x8932b8),
+    Color('Blue', 0x3c44aa),
+    Color('Brown', 0x835432),
+    Color('Green', 0x5e7c16),
+    Color('Red', 0xb02e26),
+    Color('Black', 0x1d1d21),
 )
 command_blocks = (
-    CommandBlock("Command Block", True),
-    CommandBlock("Command Block", False),
-    CommandBlock("Chain Command Block", False),
-    CommandBlock("Chain Command Block", True),
-    CommandBlock("Repeating Command Block", True),
-    CommandBlock("Repeating Command Block", False),
-    CommandBlock("Command Block", False),
-    CommandBlock("Command Block", True),
-    CommandBlock("Chain Command Block", True),
-    CommandBlock("Chain Command Block", False),
-    CommandBlock("Repeating Command Block", False),
-    CommandBlock("Repeating Command Block", True),
+    CommandBlock('Command Block', True),
+    CommandBlock('Command Block', False),
+    CommandBlock('Chain Command Block', False),
+    CommandBlock('Chain Command Block', True),
+    CommandBlock('Repeating Command Block', True),
+    CommandBlock('Repeating Command Block', False),
+    CommandBlock('Command Block', False),
+    CommandBlock('Command Block', True),
+    CommandBlock('Chain Command Block', True),
+    CommandBlock('Chain Command Block', False),
+    CommandBlock('Repeating Command Block', False),
+    CommandBlock('Repeating Command Block', True),
 )
 stepables = (
-    Stepable("Sandstone", "Sand"),
-    Stepable("Red Sandstone", "Red Sand"),
-    Stepable("Quartz", "Nether Quartz Ore", block="Quartz Block"),
-    Stepable("Cobblestone", "Stone"),
-    Stepable("Stone Brick", "Stone", block="Stone Bricks"),
-    Stepable("Nether Brick", "Netherrack", block="Nether Bricks"),
-    Stepable("Brick", "Clay", block="Bricks"),
-    Stepable("Purpur", "air", block="Purpur Block"),
-    Stepable("Prismarine", "air"),
-    Stepable("Prismarine Brick", "air", block="Prismarine Bricks"),
-    Stepable("Dark Prismarine", "air"),
+    Stepable('Sandstone', 'Sand'),
+    Stepable('Red Sandstone', 'Red Sand'),
+    Stepable('Quartz', 'Nether Quartz Ore', block='Quartz Block'),
+    Stepable('Cobblestone', 'Stone'),
+    Stepable('Stone Brick', 'Stone', block='Stone Bricks'),
+    Stepable('Nether Brick', 'Netherrack', block='Nether Bricks'),
+    Stepable('Brick', 'Clay', block='Bricks'),
+    Stepable('Purpur', 'air', block='Purpur Block'),
+    Stepable('Prismarine', 'air'),
+    Stepable('Prismarine Brick', 'air', block='Prismarine Bricks'),
+    Stepable('Dark Prismarine', 'air'),
 )
 materials = (
     'Iron', 'Coal', 'Copper', 'Gold', 'Diamond', 'Emerald', 'Chainmail', 'Redstone', 'Lapis Lazuli', 'Granite',
     'Andesite', 'Diorite', 'Netherite', 'Blackstone', 'Stone', 'Cobblestone', 'End Stone', 'Sandstone', 'Red Sandstone',
     'Bone', 'Honey', 'Honeycomb', 'Grass', 'Sticky', 'Nether')
 corals = ('Horn', 'Tube', 'Fire', 'Bubble', 'Brain')
-woods = ("Acacia", "Birch", "Jungle", "Mangrove", "Oak", "Dark Oak", "Spruce")
-stems = ("Warped", "Crimson")
+woods = ('Acacia', 'Birch', 'Jungle', 'Mangrove', 'Oak', 'Dark Oak', 'Spruce')
+stems = ('Warped', 'Crimson')
 fish_data = (
-    ("kob",
-     (917504, "Red-White Kob"),
-     (65536, "Orange-White Kob"),
+    ('kob',
+     (917504, 'Red-White Kob'),
+     (65536, 'Orange-White Kob'),
      ),
-    ("sunstreak",
-     (134217984, "White-Silver Sunstreak"),
-     (50790656, "Gray-Sky SunStreak"),
-     (118161664, "Blue-Gray SunStreak"),
+    ('sunstreak',
+     (134217984, 'White-Silver Sunstreak'),
+     (50790656, 'Gray-Sky SunStreak'),
+     (118161664, 'Blue-Gray SunStreak'),
      ),
-    ((235340288, "Gray-Red Snooper"),),
-    ("dasher",
-     (117441280, "White-Gray Dasher"),
-     (101253888, "Teal-Rose Dasher"),
+    ((235340288, 'Gray-Red Snooper'),),
+    ('dasher',
+     (117441280, 'White-Gray Dasher'),
+     (101253888, 'Teal-Rose Dasher'),
      ),
-    ("brinely",
-     (117441536, "White-Gray Brinely"),
-     (50660352, "Line-Sky Dasher"),
+    ('brinely',
+     (117441536, 'White-Gray Brinely'),
+     (50660352, 'Line-Sky Dasher'),
      ),
-    ("spotty",
-     (67110144, "White-Yellow Spotter"),
-     (50726144, "Rose-Sky Spotty"),
+    ('spotty',
+     (67110144, 'White-Yellow Spotter'),
+     (50726144, 'Rose-Sky Spotty'),
      ),
-    ("flopper",
-     (117899265, "Gray Flopper"),
-     (67108865, "White-Yellow Flopper"),
+    ('flopper',
+     (117899265, 'Gray Flopper'),
+     (67108865, 'White-Yellow Flopper'),
      ),
-    ("stripey",
-     (117506305, "Orange-Gray Stripey"),
-     (67371265, "Yellow Stripey"),
+    ('stripey',
+     (117506305, 'Orange-Gray Stripey'),
+     (67371265, 'Yellow Stripey'),
      ),
-    ((117441025, "White-Gray Glitter"),),
-    ("blockfish",
-     (67764993, "Plum-Yellow Blockfish"),
-     (918273, "Red-White Blockfish"),
+    ((117441025, 'White-Gray Glitter'),),
+    ('blockfish',
+     (67764993, 'Plum-Yellow Blockfish'),
+     (918273, 'Red-White Blockfish'),
      ),
-    ((918529, "Red-White Betty"),),
-    ("clayfish",
-     (234882305, "White-Red Clayfish"),
-     (16778497, "White-Orange Clayfish"),
+    ((918529, 'Red-White Betty'),),
+    ('clayfish',
+     (234882305, 'White-Red Clayfish'),
+     (16778497, 'White-Orange Clayfish'),
      ),
 )
 fishes = []
@@ -259,96 +259,96 @@ for f in fish_data:
     else:
         fishes.append((f[0], list(v for v in f[1:])))
 horses = (
-    Horse("White", 0),
-    Horse("Creamy", 1),
-    Horse("Chestnut", 2),
-    Horse("Brown", 3),
-    Horse("Black", 4),
-    Horse("Gray", 5),
-    Horse("Dark Brown", 6),
+    Horse('White', 0),
+    Horse('Creamy', 1),
+    Horse('Chestnut', 2),
+    Horse('Brown', 3),
+    Horse('Black', 4),
+    Horse('Gray', 5),
+    Horse('Dark Brown', 6),
 )
 other_horses = (
-    Horse("Mule"),
-    Horse("Donkey"),
-    Horse("Skeleton Horse"),
-    Horse("Zombie Horse"),
+    Horse('Mule'),
+    Horse('Donkey'),
+    Horse('Skeleton Horse'),
+    Horse('Zombie Horse'),
 )
 small_flowers = (
-    Thing("Allium"),
-    Thing("Azure Bluet"),
-    Thing("Blue Orchid"),
-    Thing("Dandelion"),
-    Thing("Oxeye Daisy"),
-    Thing("Poppy"),
+    Thing('Allium'),
+    Thing('Azure Bluet'),
+    Thing('Blue Orchid'),
+    Thing('Dandelion'),
+    Thing('Oxeye Daisy'),
+    Thing('Poppy'),
 )
 tulips = (
-    "Red",
-    "Orange",
-    "Pink",
-    "White",
+    'Red',
+    'Orange',
+    'Pink',
+    'White',
 )
 professions = (
-    "Armorer",
-    "Butcher",
-    "Cartographer",
-    "Cleric",
-    "Farmer",
-    "Fisherman",
-    "Fletcher",
-    "Leatherworker",
-    "Librarian",
-    "Mason",
-    "Nitwit",
-    "Shepherd",
-    "Toolsmith",
-    "Weaponsmith",
-    "Unemployed",
+    'Armorer',
+    'Butcher',
+    'Cartographer',
+    'Cleric',
+    'Farmer',
+    'Fisherman',
+    'Fletcher',
+    'Leatherworker',
+    'Librarian',
+    'Mason',
+    'Nitwit',
+    'Shepherd',
+    'Toolsmith',
+    'Weaponsmith',
+    'Unemployed',
 )
 patterns = (
-    ("", "None"), ("drs", "Down Right Stripe"), ("dls", "Down Left Stripe"), ("cr", "Cross"),
-    ("bs", "Bottom Stripe"), ("ms", "Middle Stripe"), ("ts", "Top Stripe"), ("sc", "Square Cross"),
-    ("ls", "Left Stripe"), ("cs", "Center Stripe"), ("rs", "Right Stripe"), ("ss", "Small Stripes"),
-    ("ld", "Left Diagonal"), ("rud", "Right Upside-Down|Diagonal"), ("lud", "Left Upside-Down|Diagonal"),
-    ("rd", "Right Diagonal"),
-    ("vh", "Vertical Half|(Left)"), ("vhr", "Vertical Half|(Right)"), ("hhb", "Horizontal Half|(Bottom)"),
-    ("hh", "Horizontal Half|(Top)"),
-    ("bl", "Bottom Left|Corner"), ("br", "Bottom Right|Corner"), ("tl", "Top Left|Corner"),
-    ("tr", "Top Right|Corner"),
-    ("bt", "Bottom Triangle"), ("tt", "Top Triangle"), ("bts", "Bottom Triangle|Sawtooth"),
-    ("tts", "Top Triangle|Sawtooth"),
-    ("mc", "Middle Circle"), ("mr", "Middle Rhombus"), ("bo", "Border"), ("cbo", "Curly Border"),
-    ("gra", "Gradient"), ("gru", "Gradient|Upside-Down"), ("cre", "Creeper"), ("bri", "Brick"),
-    ("sku", "Skull"), ("flo", "Flower"), ("moj", "Mojang"), ("glb", "Globe"), ("pig", "Pig"),
+    ('', 'None'), ('drs', 'Down Right Stripe'), ('dls', 'Down Left Stripe'), ('cr', 'Cross'),
+    ('bs', 'Bottom Stripe'), ('ms', 'Middle Stripe'), ('ts', 'Top Stripe'), ('sc', 'Square Cross'),
+    ('ls', 'Left Stripe'), ('cs', 'Center Stripe'), ('rs', 'Right Stripe'), ('ss', 'Small Stripes'),
+    ('ld', 'Left Diagonal'), ('rud', 'Right Upside-Down|Diagonal'), ('lud', 'Left Upside-Down|Diagonal'),
+    ('rd', 'Right Diagonal'),
+    ('vh', 'Vertical Half|(Left)'), ('vhr', 'Vertical Half|(Right)'), ('hhb', 'Horizontal Half|(Bottom)'),
+    ('hh', 'Horizontal Half|(Top)'),
+    ('bl', 'Bottom Left|Corner'), ('br', 'Bottom Right|Corner'), ('tl', 'Top Left|Corner'),
+    ('tr', 'Top Right|Corner'),
+    ('bt', 'Bottom Triangle'), ('tt', 'Top Triangle'), ('bts', 'Bottom Triangle|Sawtooth'),
+    ('tts', 'Top Triangle|Sawtooth'),
+    ('mc', 'Middle Circle'), ('mr', 'Middle Rhombus'), ('bo', 'Border'), ('cbo', 'Curly Border'),
+    ('gra', 'Gradient'), ('gru', 'Gradient|Upside-Down'), ('cre', 'Creeper'), ('bri', 'Brick'),
+    ('sku', 'Skull'), ('flo', 'Flower'), ('moj', 'Mojang'), ('glb', 'Globe'), ('pig', 'Pig'),
 )
 moon_phases = (
-    (206000, "Full"),
-    (38000, "Waning Gibbous"),
-    (62000, "Three Quarters"),
-    (86000, "Waning Crescent"),
-    (110000, "New"),
-    (134000, "Waxing Crescent"),
-    (158000, "First Quarter"),
-    (182000, "Waxing Gibbous"),
+    (206000, 'Full'),
+    (38000, 'Waning Gibbous'),
+    (62000, 'Three Quarters'),
+    (86000, 'Waning Crescent'),
+    (110000, 'New'),
+    (134000, 'Waxing Crescent'),
+    (158000, 'First Quarter'),
+    (182000, 'Waxing Gibbous'),
 )
 non_inventory = tuple(Thing(s) for s in (
-    "Knowledge Book",
-    "Debug Stick",
-    "Suspicious Stew",
-    "Firework Star",
-    "Bundle",
-    "Jigsaw",
-    "Structure Block",
-    "Structure Void",
-    "Barrier",
-    "Light",
-    "Dragon Egg",
-    "Command Block",
-    "Command Block Minecart",
-    "Spawner",
-    "Elytra",
+    'Knowledge Book',
+    'Debug Stick',
+    'Suspicious Stew',
+    'Firework Star',
+    'Bundle',
+    'Jigsaw',
+    'Structure Block',
+    'Structure Void',
+    'Barrier',
+    'Light',
+    'Dragon Egg',
+    'Command Block',
+    'Command Block Minecart',
+    'Spawner',
+    'Elytra',
 ))
 
-villager_types = ("Desert", "Jungle", "Plains", "Savanna", "Snow", "Swamp", "Taiga")
+villager_types = ('Desert', 'Jungle', 'Plains', 'Savanna', 'Snow', 'Swamp', 'Taiga')
 villager_data = []
 for t in villager_types:
     for p in professions:
@@ -385,7 +385,7 @@ def get_normal_blocks():
         if block[0] == '#':
             continue
         block = block.strip()
-        block = block_re.sub(r'\1 Block', block)  # "Block of Foo" -> "Foo Block"
+        block = block_re.sub(r'\1 Block', block)  # 'Block of Foo' -> 'Foo Block'
         m = mod_re.match(block)
         if not m:
             m = command_re.match(block)
@@ -413,7 +413,7 @@ def get_normal_blocks():
                 'Cauldron'):
             name = 'Profession ' + name
         elif 'Glass' in name:
-            # "M" to move it away from corals so the water trough behind the coral doesn't overlap
+            # 'M' to move it away from corals so the water trough behind the coral doesn't overlap
             name = 'MGlass ' + name
         elif 'Copper' in block and 'Deepslate' not in block and name not in ('Ore', 'Raw Block'):
             name = 'Copper'
@@ -452,7 +452,7 @@ def rich_text(txt):
         def handle_data(self, data):
             node = {'text': '%s' % data}
             for a in self.attrs:
-                node[a] = "true"
+                node[a] = 'true'
             self.out.append(node)
 
         def result(self):
@@ -467,10 +467,10 @@ def rich_text(txt):
 
 def text_attrs(attrs):
     if not attrs:
-        return ""
-    s = ""
+        return ''
+    s = ''
     for k, v in attrs.items():
-        s += r',\"%s\":\"%s\"' % (k, v)
+        s += r',\'%s\':\'%s\'' % (k, v)
     return s
 
 
@@ -480,7 +480,7 @@ def to_nicknamed(kind, nicknames):
 
 
 def commas(*args):
-    return ",".join(list([s for s in args if s]))
+    return ','.join(list([s for s in args if s]))
 
 
 def has_loop(rendered):
@@ -525,7 +525,7 @@ def render_tmpl(tmpl, var_name, **kwargs):
 
 
 def named_frame_item(thing: Thing, name=None, damage=None):
-    # <%def name="named_frame_item(thing, name=None, damage=None)">Item:{id:${thing.id},Count:1,tag:{display:{Name:'{"text":"${name if name else thing.name}"}'}${damage if damage else ""}}},Fixed:True</%def>
+    # <%def name='named_frame_item(thing, name=None, damage=None)'>Item:{id:${thing.id},Count:1,tag:{display:{Name:'{'text':'${name if name else thing.name}'}'}${damage if damage else ''}}},Fixed:True</%def>
     tag_nbt = Nbt({'display': {'Name': str(JsonText.text(str(name if name else thing.name))), }})
     if damage:
         tag_nbt.update(damage)
@@ -954,7 +954,7 @@ class MobPlacer:
 
 
 def say_score(*scores):
-    say = [JsonText.text("scores:")]
+    say = [JsonText.text('scores:')]
     for s in scores:
         s = good_score(s)
         say.append(JsonText.text(str(s.target) + '='))
@@ -1007,19 +1007,19 @@ def span(start, end):
 
 
 particle_note = {
-    "Ambient Entity|Effect": "ambient",
-    "Bubbles|Currents|Whirlpools": "bubbles",
-    "Clouds": "Evaporation",
-    "Dripping Lava": "Falling, Landing",
-    "Dripping Water": "Falling",
-    "Dripping|Obsidian Tear": "Falling, Landing",
-    "Dripping Honey": "Falling, Landing",
-    "Dust": "Redstone Dust",
-    "Fireworks": "and Flash",
-    "Nautilus": "with Conduit",
-    "Poof": "Small Explosion",
-    "Squid Ink": "and Glow Squid",
-    "Wax": "and Copper"}
+    'Ambient Entity|Effect': 'ambient',
+    'Bubbles|Currents|Whirlpools': 'bubbles',
+    'Clouds': 'Evaporation',
+    'Dripping Lava': 'Falling, Landing',
+    'Dripping Water': 'Falling',
+    'Dripping|Obsidian Tear': 'Falling, Landing',
+    'Dripping Honey': 'Falling, Landing',
+    'Dust': 'Redstone Dust',
+    'Fireworks': 'and Flash',
+    'Nautilus': 'with Conduit',
+    'Poof': 'Small Explosion',
+    'Squid Ink': 'and Glow Squid',
+    'Wax': 'and Copper'}
 particles = [ActionDesc(e, particle_note.get(e, None)) for e in Particle]
 
 
@@ -1027,5 +1027,5 @@ def write_function(func_dir, func_name, rendered):
     if not os.path.exists(func_dir):
         os.mkdir(func_dir)
     out_file = os.path.join(func_dir, '%s.mcfunction' % func_name)
-    with open(out_file, "w") as out:
-        out.write(rendered.strip() + "\n")
+    with open(out_file, 'w') as out:
+        out.write(rendered.strip() + '\n')

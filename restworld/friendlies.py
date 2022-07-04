@@ -312,10 +312,10 @@ def villager_funcs(room):
         for i, pro in enumerate(villager_professions):
             if i == 7:
                 if which == 'villager':
-                    professions_init.add(p.summon(Entity('villager', display_name='Child', nbt={"Age": -2147483648})))
+                    professions_init.add(p.summon(Entity('villager', display_name='Child', nbt={'Age': -2147483648})))
                 p = placer(r(0, 2, -7), WEST, -2, tags=('villager', 'professions',), adults=True)
             professions_init.add(p.summon(Entity(
-                id, display_name=pro, nbt={"VillagerData": {"profession": pro.lower()}}),tags=('villager',) ))
+                id, display_name=pro, nbt={'VillagerData': {'profession': pro.lower()}}),tags=('villager',) ))
         professions_init.add(
             mc.function('restworld:friendlies/%s_professions_cur' % which),
             mc.function('restworld:friendlies/%s_levels_cur' % which),

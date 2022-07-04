@@ -29,7 +29,7 @@ def room():
         slabs.append((None, None) + tuple('%s Slab' % b for b in subtypes))
         stairs.append((None, None) + tuple(('%s Stairs' % b if 'Cut' not in b else None) for b in subtypes))
         walls.append('%sstone Wall' % ty)
-    assert len(blocks) == 2  # allows us to use "replace previous type" because there are only two types
+    assert len(blocks) == 2  # allows us to use 'replace previous type' because there are only two types
 
     volume = Volume(r(0, 1, 0), r(10, 6, 7))
     fill = (r(0, 1, 0), r(10, 6, 7))
@@ -393,9 +393,9 @@ def wood_functions(room):
         yield from volume.replace_axes('stripped_%s_%s' % (id, wood), '#restworld:stripped_woodlike')
         yield from volume.replace_doors('%s_door' % (id), '#doors')
         yield from volume.replace_trapdoors('%s_trapdoor' % (id), '#trapdoors')
-        yield from volume.replace_facing(Block('%s_wall_sign' % id, nbt={'Text2': "%s Wall Sign" % name}),
+        yield from volume.replace_facing(Block('%s_wall_sign' % id, nbt={'Text2': '%s Wall Sign' % name}),
                                          '#wall_signs')
-        yield from volume.replace(Block('%s_sign' % id, nbt={'Text2': "%s Sign" % name}), '#signs',
+        yield from volume.replace(Block('%s_sign' % id, nbt={'Text2': '%s Sign' % name}), '#signs',
                                   added_states=({'rotation': x} for x in range(0, 16, 4)))
 
         # Add special cases

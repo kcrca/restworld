@@ -11,7 +11,7 @@ from restworld.world import restworld, main_clock, fast_clock
 def crop(stages, which, x, y, z, step, name='age'):
     for s in range(0, 3):
         yield mc.fill(r(x, y, z - s), r(x + 2, y, z - s), Block(which, {name: stages[(step.i + s) % len(stages)]}))
-        yield mc.data().merge(r(x + 3, 2, z - 1), {'Text2': "Stage: %d" % stages[(step.i + 1) % len(stages)]})
+        yield mc.data().merge(r(x + 3, 2, z - 1), {'Text2': 'Stage: %d' % stages[(step.i + 1) % len(stages)]})
 
 
 def room():

@@ -91,7 +91,7 @@ def room():
         sys.exit(1)
     if row_length % 2 == 0:
         # Needed so we can center on the middle sign
-        sys.stderr.write("Row length(%d) is not odd" % row_length)
+        sys.stderr.write('Row length(%d) is not odd' % row_length)
         sys.exit(1)
     if len(battles) % stride_length != 0:
         sys.stderr.write(
@@ -217,8 +217,8 @@ def room():
         ).data().merge(r(2, 4, 0), {'Text2': '%d vs. %d' % (step.elem, step.elem)}), range(0, COUNT_MAX + 1))
 
     room.function('arena_run_init').add(mc.function('restworld:arena/arena_run_cur'))
-    # This is NOT intended to be run on the clock. It is only called "_main" because that gives us a
-    # "_cur" function, which is useful when paging through the signs. Do not create the _home armor stand.
+    # This is NOT intended to be run on the clock. It is only called '_main' because that gives us a
+    # '_cur' function, which is useful when paging through the signs. Do not create the _home armor stand.
     arena_run_loop = arena_run_main(room.loop('arena_run', main_clock, home=False))
 
     room.function('controls_init').add(

@@ -27,22 +27,22 @@ def room():
         list(c.speed.set(c.init_speed) for c in restworld.clocks()))
 
     room.function('lights_init').add(
-        WallSign(("This world lets", "you test how", "your resource", "pack looks.")).place((r(1), 101, r(4)), NORTH),
-        WallSign(("Everything", "is here:", "blocks, mobs,", "particles, UI, ...")).place((r(-1), 101, r(4)), NORTH),
+        WallSign(('This world lets', 'you test how', 'your resource', 'pack looks.')).place((r(1), 101, r(4)), NORTH),
+        WallSign(('Everything', 'is here:', 'blocks, mobs,', 'particles, UI, ...')).place((r(-1), 101, r(4)), NORTH),
 
-        WallSign(("Much of it runs", "on clocks that", "switch the", "variant shown.")).place(
+        WallSign(('Much of it runs', 'on clocks that', 'switch the', 'variant shown.')).place(
             (r(-4), 101, r(1)), EAST),
-        WallSign(("This uses", "less space", "so things can", "be closer together.")).place(
+        WallSign(('This uses', 'less space', 'so things can', 'be closer together.')).place(
             (r(-4), 101, r(-1)), EAST),
 
-        WallSign(("You can also", "compare things", "that you may want", "to make similar.")).place(
+        WallSign(('You can also', 'compare things', 'that you may want', 'to make similar.')).place(
             (r(-1), 101, r(-4)), SOUTH),
-        WallSign(("For example,", "wools may be the", "same pattern with", "different colors.")).place(
+        WallSign(('For example,', 'wools may be the', 'same pattern with', 'different colors.')).place(
             (r(1), 101, r(-4)), SOUTH),
 
-        WallSign(("The control book", "lets you change", "clock speeds", "and step it.")).place(
+        WallSign(('The control book', 'lets you change', 'clock speeds', 'and step it.')).place(
             (r(4), 101, r(-1)), WEST),
-        WallSign(("The color of the", "floor blocks under", "buttons show if", "clocks are on.")).place(
+        WallSign(('The color of the', 'floor blocks under', 'buttons show if', 'clocks are on.')).place(
             (r(4), 101, r(1)), WEST),
 
         mc.tag(entity().tag('lights_home')).add('fast_lights_home'),

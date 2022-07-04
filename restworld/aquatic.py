@@ -81,7 +81,7 @@ def room():
         tag, variants = fishes[i]
         fish = Entity('tropical_fish', nbt={'Variant': variants[0][0]}).tag(tag).set_name(variants[0][1])
         t_fish.add(room.mob_placer(r(int(i / 6) + 0.5, 3.2, int(i % 6)), WEST, adults=True).summon(fish))
-    t_fish.add(WallSign(("Naturally", "Occurring", "Tropical Fish", "<--------")).place(
+    t_fish.add(WallSign(('Naturally', 'Occurring', 'Tropical Fish', '<--------')).place(
         r(int((len(fishes) - 1) / 6) - 1, 2, (len(fishes) - 1) % 6), WEST, water=True))
     room.function('axolotl_init').add(room.mob_placer(r(1.3, 4, 1.3), 135, (0, 0), (-1.4, -1.4)).summon('axolotl'))
     axolotls = ('Lucy', 'Wild', 'Gold', 'Cyan', 'Blue')

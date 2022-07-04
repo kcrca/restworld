@@ -13,28 +13,28 @@ from restworld.rooms import SignedRoom, Wall, span, ActionDesc
 from restworld.world import restworld, fast_clock, main_clock, slow_clock, kill_em
 
 particles = [
-    ActionDesc(Particle.AMBIENT_ENTITY_EFFECT, "Ambient|Entity|Effect"),
+    ActionDesc(Particle.AMBIENT_ENTITY_EFFECT, 'Ambient|Entity|Effect'),
     ActionDesc(Particle.ANGRY_VILLAGER),
     ActionDesc(Particle.ASH),
     ActionDesc(Particle.BARRIER),
-    ActionDesc(Particle.BUBBLE, "Bubbles|Currents|Whirlpools",
+    ActionDesc(Particle.BUBBLE, 'Bubbles|Currents|Whirlpools',
                also=(Particle.BUBBLE_POP, Particle.BUBBLE_COLUMN_UP, Particle.CURRENT_DOWN)),
-    ActionDesc(Particle.CLOUD, note="Evaporation"),
+    ActionDesc(Particle.CLOUD, note='Evaporation'),
     ActionDesc(Particle.COMPOSTER),
     ActionDesc(Particle.CRIMSON_SPORE),
     ActionDesc(Particle.CRIT),
     ActionDesc(Particle.DAMAGE_INDICATOR),
     ActionDesc(Particle.DOLPHIN),
     ActionDesc(Particle.DRAGON_BREATH),
-    ActionDesc(Particle.DRIPPING_LAVA, note="Falling, Landing", also=(
+    ActionDesc(Particle.DRIPPING_LAVA, note='Falling, Landing', also=(
         Particle.FALLING_LAVA, Particle.LANDING_LAVA, Particle.DRIPPING_DRIPSTONE_LAVA,
         Particle.FALLING_DRIPSTONE_LAVA)),
-    ActionDesc(Particle.DRIPPING_WATER, note="Falling",
+    ActionDesc(Particle.DRIPPING_WATER, note='Falling',
                also=(Particle.FALLING_WATER, Particle.DRIPPING_DRIPSTONE_WATER, Particle.FALLING_DRIPSTONE_WATER)),
-    ActionDesc(Particle.DRIPPING_OBSIDIAN_TEAR, "Dripping|Obsidian Tear", note="Falling, Landing",
+    ActionDesc(Particle.DRIPPING_OBSIDIAN_TEAR, 'Dripping|Obsidian Tear', note='Falling, Landing',
                also=(Particle.FALLING_OBSIDIAN_TEAR, Particle.LANDING_OBSIDIAN_TEAR)),
-    ActionDesc(Particle.DRIPPING_HONEY, note="Falling, Landing", also=(Particle.FALLING_HONEY, Particle.LANDING_HONEY)),
-    ActionDesc(Particle.DUST, note="Redstone Dust"),
+    ActionDesc(Particle.DRIPPING_HONEY, note='Falling, Landing', also=(Particle.FALLING_HONEY, Particle.LANDING_HONEY)),
+    ActionDesc(Particle.DUST, note='Redstone Dust'),
     ActionDesc(Particle.EFFECT),
     ActionDesc(Particle.ELECTRIC_SPARK),
     ActionDesc(Particle.ENCHANT),
@@ -45,7 +45,7 @@ particles = [
     ActionDesc(Particle.EXPLOSION_EMITTER),
     ActionDesc(Particle.FALLING_DUST),
     ActionDesc(Particle.FALLING_NECTAR),
-    ActionDesc(Particle.FIREWORK, note="and Flash", also=Particle.FLASH),
+    ActionDesc(Particle.FIREWORK, note='and Flash', also=Particle.FLASH),
     ActionDesc(Particle.FISHING),
     ActionDesc(Particle.FLAME, also=Particle.SOUL_FIRE_FLAME),
     ActionDesc(Particle.HAPPY_VILLAGER),
@@ -57,8 +57,8 @@ particles = [
     ActionDesc(Particle.LAVA),
     ActionDesc(Particle.LIGHT, also=(Particle.BLOCK_MARKER)),
     ActionDesc(Particle.MYCELIUM),
-    ActionDesc(Particle.NAUTILUS, note="with Conduit"),
-    ActionDesc(Particle.POOF, note="Small Explosion"),
+    ActionDesc(Particle.NAUTILUS, note='with Conduit'),
+    ActionDesc(Particle.POOF, note='Small Explosion'),
     ActionDesc(Particle.PORTAL),
     ActionDesc(Particle.VIBRATION, 'Sculk Sensor'),
     ActionDesc(Particle.SCULK_SOUL, also=(Particle.SCULK_CHARGE, Particle.SCULK_CHARGE_POP)),
@@ -69,11 +69,11 @@ particles = [
     ActionDesc(Particle.SOUL),
     ActionDesc(Particle.SPORE_BLOSSOM_AIR, 'Spore Blossom', also=Particle.FALLING_SPORE_BLOSSOM),
     ActionDesc(Particle.SPLASH),
-    ActionDesc(Particle.SQUID_INK, note="and Glow Squid", also=(Particle.GLOW, Particle.GLOW_SQUID_INK)),
+    ActionDesc(Particle.SQUID_INK, note='and Glow Squid', also=(Particle.GLOW, Particle.GLOW_SQUID_INK)),
     ActionDesc(Particle.SWEEP_ATTACK),
     ActionDesc(Particle.TOTEM_OF_UNDYING),
     ActionDesc(Particle.UNDERWATER),
-    ActionDesc(Particle.WAX_ON, 'Wax', note="and Copper", also=(Particle.WAX_OFF, Particle.SCRAPE)),
+    ActionDesc(Particle.WAX_ON, 'Wax', note='and Copper', also=(Particle.WAX_OFF, Particle.SCRAPE)),
     ActionDesc(Particle.WARPED_SPORE),
     ActionDesc(Particle.WHITE_ASH),
     ActionDesc(Particle.WITCH),
@@ -98,7 +98,7 @@ particles.sort()
 #    Could loop WHITE_ASH, CRIMSON_SPRE, etc.?
 #    Could loop various explosions?
 
-villager_types = ("Desert", "Jungle", "Plains", "Savanna", "Snow", "Swamp", "Taiga")
+villager_types = ('Desert', 'Jungle', 'Plains', 'Savanna', 'Snow', 'Swamp', 'Taiga')
 villager_data = []
 for t in villager_types:
     for p in villager_professions:
@@ -128,7 +128,7 @@ def slow(delay=0):
 
 
 def summon(id, y, nbt=None):
-    nbt = Nbt({"Tags": ['particler']}).merge(nbt)
+    nbt = Nbt({'Tags': ['particler']}).merge(nbt)
     return mc.summon(id, r(0, y, 0), nbt)
 
 
@@ -145,9 +145,9 @@ def room():
         return WallSign(action_desc.sign_text(), (
             run_at.setblock(r(0, -4, 0), 'redstone_block'),
             run_at.data().merge(r(0, -4, -2), {
-                'Command': "%s function restworld:particles/%s_init" % (str(run_at), action_desc.enum)}),
+                'Command': '%s function restworld:particles/%s_init' % (str(run_at), action_desc.enum)}),
             run_at.data().merge(r(-1, -2, 0),
-                                {'Command': "%s function restworld:particles/%s" % (str(run_at), action_desc.enum)}),
+                                {'Command': '%s function restworld:particles/%s' % (str(run_at), action_desc.enum)}),
             mc.setblock(d(-dx, 0, -dz), 'emerald_block')
         ))
 

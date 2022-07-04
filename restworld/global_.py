@@ -29,7 +29,7 @@ def room():
         return ex.run().function('restworld:global/kill_em')
 
     def levitation_body(step) -> Commands:
-        mob_rooms = ("friendlies", "monsters", "aquatic", "wither", "nether", "enders", "ancient")
+        mob_rooms = ('friendlies', 'monsters', 'aquatic', 'wither', 'nether', 'enders', 'ancient')
         if step.i == 1:
             yield mc.execute().at(entity().tag('sleeping_bat')).run().clone(r(0, 1, 0), r(0, 1, 0),
                                                                             r(0, 3, 0)).replace(
