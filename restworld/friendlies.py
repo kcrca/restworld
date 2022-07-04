@@ -263,7 +263,7 @@ def room():
     def turtle_egg_loop(step):
         for count in range(4, 0, -1):
             yield mc.setblock(r(0, 2, count - 3), ('turtle_egg', {'eggs': count, 'hatch': step.elem}))
-        yield mc.data().merge(r(0, 2, 2), {'Text3': 'Hatch Age:  %d' % step.elem})
+        yield mc.data().merge(r(0, 2, 2), {'Text3': 'Hatch Age: %d' % step.elem})
 
     room.loop('turtle_eggs', main_clock).loop(turtle_egg_loop, range(0, 3), bounce=True)
     room.function('turtle_init').add(placer(r(0, 2, 0.2), NORTH, 2, -2).summon('turtle'))
