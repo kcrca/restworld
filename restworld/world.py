@@ -52,7 +52,7 @@ class Restworld(RoomPack):
                self._action(r'>>', 'Faster Clock Speed', 'center/faster_clocks'), r'\n', r'\nPlaces:\n   ',
                self._action('Home', 'Starting Point', 'global/goto_home'), r'\n   ',
                self._action('Photo Shoot', 'Scenic View', 'global/goto_photo'), r'\n   ',
-               self._action('Battle Arena', 'Battle Arena', 'arena/goto_arena'), r'\n   ',
+               self._action('Battle Arena', 'Battle Arena', 'global/goto_arena'), r'\n   ',
                self._action('Biome Sampler', 'Biome Sampler', 'global/goto_biomes'), r'\n   ',
                self._action('Connected Textures', 'Connected Textures', 'global/goto_connected'), r'\n   ',
                self._action('Nether Home', 'Nether Starting Point', 'global/goto_nether'), r'\n   ',

@@ -2,22 +2,23 @@ from __future__ import annotations
 
 import sys
 
-from pyker.commands import Score, entity, mc, r, all_, EAST
+from pyker.commands import Score, entity, mc, r, all_, EAST, GT, RANDOM
 from pyker.function import Loop
 from pyker.simpler import WallSign
 from restworld.rooms import Thing, Room, label
-from restworld.world import marker_tmpl, restworld, main_clock
+from restworld.world import marker_tmpl, restworld, main_clock, kill_em
 
 
 def room():
     start_battle_type = Score('battle_type', 'arena')
-
+    COUNT_MIN = 1
+    COUNT_MAX = 5
     fighter_nbts = {
         'Drowned': 'HandItems:[{id:trident,Count:1}]',
         'Goat': 'IsScreamingGoat:True',
         'Hoglin': 'IsImmuneToZombification:True',
         'Llama': 'Strength:5',
-        'Magma Cube': 'Size:0',
+        'Magma Cube': 'Size:3',
         'Panda': 'MainGene:aggressive',
         'Phantom': 'AX:1000,AY:110,AZ:-1000',
         'Piglin Brute': 'HandItems:[{id:golden_axe,Count:1}],IsImmuneToZombification:True',
@@ -33,7 +34,9 @@ def room():
     }
 
     battles = [
-        ('Axolotl:w', 'Drowned'),
+        ('Axolotl:w', 'Drowned'),       # low priority
+        ('Axolotl:w', 'Elder Guardian'),
+        ('Axolotl:w', 'Guardian'),
         ('Blaze', 'Snow Golem'),
         ('Cat', 'Rabbit'),
         ('Cave Spider', 'Snow Golem'),
@@ -41,9 +44,12 @@ def room():
         ('Evoker', 'Iron Golem'),
         ('Fox', 'Chicken'),
         ('Frog', 'Slime'),
-        ('Llama', 'Vindicator'),
+        ('Goat', 'Sheep'),              # medium priority (slow, but charging goat)
         ('Hoglin', 'Vindicator'),
         ('Illusioner', 'Snow Golem'),
+        ('Llama', 'Vindicator'),
+        ('Magma Cube', 'Iron Golem'),
+        ('Ocelot', 'Chicken'),
         ('Panda', 'Vindicator'),
         ('Parrot', 'Vindicator'),
         ('Phantom:c', 'Rabbit'),
@@ -52,9 +58,10 @@ def room():
         ('Polar Bear', 'Vindicator'),
         ('Ravager', 'Iron Golem'),
         ('Shulker', 'Vindicator'),
+        ('Slime', 'Iron Golem'),        # low priority, slime vs. frog
         ('Spider', 'Snow Golem'),
         ('Stray:c', 'Iron Golem'),
-        ('Vex', 'Snow Golem'),
+        ('Vex', 'Snow Golem'),          # low priority
         ('Vindicator', 'Iron Golem'),
         ('Witch', 'Snow Golem'),
         ('Wither Skeleton', 'Piglin'),
@@ -62,7 +69,7 @@ def room():
         ('Wolf', 'Sheep'),
         ('Zoglin', 'Vindicator'),
         ('Zombie:c', 'Iron Golem'),
-        ('Zombified Piglin:c', 'Vindicator'),
+        ('Zombified Piglin', 'Vindicator'),
     ]
     # Lower priority ones that can be used as filler
     #    ('Axolotl:w', 'Elder Guardian'),
@@ -80,8 +87,7 @@ def room():
     num_rows = 2
     row_length = stride_length / num_rows
     if stride_length % num_rows != 0:
-        sys.stderr.write(
-            'Stride length(%d) is not a multiple of the number of rows (%d)' % (stride_length, num_rows))
+        sys.stderr.write('rows (%d) is not a multiple of stride length (%d)' % (num_rows, stride_length))
         sys.exit(1)
     if row_length % 2 == 0:
         # Needed so we can center on the middle sign
@@ -197,16 +203,18 @@ def room():
 
     arena_count = Score('arena_count', 'arena')
 
-    arena_count_cur = (
+    arena_count_finish = room.function('arena_count_finish').add(
+        mc.execute().if_().score(arena_count).matches((None, COUNT_MIN)).run(arena_count.set(COUNT_MIN)),
+        mc.execute().if_().score(arena_count).matches((COUNT_MAX, None)).run(arena_count.set(COUNT_MAX)),
         mc.function('restworld:arena/arena_count_cur'),
-        mc.execute().unless().score(arena_count).matches((1, 5)).run(arena_count.set(1))
     )
-    room.function('arena_count_decr').add(arena_count.remove(1), arena_count_cur)
-    room.function('arena_count_incr').add(arena_count.add(1), arena_count_cur)
+    arena_count_cur = mc.function(arena_count_finish.full_name)
+    room.function('arena_count_decr', home=False).add(arena_count.remove(1), arena_count_cur)
+    room.function('arena_count_incr', home=False).add(arena_count.add(1), arena_count_cur)
     room.function('arena_count_init').add(arena_count_cur)
     room.loop('arena_count', main_clock).loop(
         lambda step: mc.execute().at(entity().tag('controls_home')).run(
-        ).data().merge(r(2, 4, 0), {'Text2': '%d vs. %d' % (step.elem, step.elem)}), range(0, 6))
+        ).data().merge(r(2, 4, 0), {'Text2': '%d vs. %d' % (step.elem, step.elem)}), range(0, COUNT_MAX + 1))
 
     room.function('arena_run_init').add(mc.function('restworld:arena/arena_run_cur'))
     # This is NOT intended to be run on the clock. It is only called "_main" because that gives us a
@@ -227,10 +235,14 @@ def room():
     room.function('monitor').add(monitor('hunter'), monitor('victim'),
                                  mc.kill(entity().type('item').distance((None, 50))),
                                  mc.kill(entity().type('experience_orb').distance((None, 50)))),
+    room.function('monitor_cleanup', home=False).add(
+        mc.execute().if_().score(room.score('%s_count' % who)).is_(GT, arena_count).run().kill(
+            entity().tag(who).sort(RANDOM).limit(1).distance((None, 100)))
+        for who in ('hunter', 'victim'))
 
     # Types: 0-normal, 1-water, 2-undead
-    fill_arena_coords = r(-12, 4), r(-12, 12, 2, 12)
-    roof_coords = r(-12, 250, -12), r(12, 250, 12)
+    fill_arena_coords = r(-12, 4, -12), r(12, 2, 12)
+    roof_coords = (r(-20), 250, r(-20)), (r(20), 250, r(20))
     room.function('start_battle').add(
         mc.execute().unless().score(start_battle_type).matches((0, None)).run(start_battle_type.set(0)),
         mc.execute().if_().score(start_battle_type).matches(0).at(monitor_home).run().fill(*fill_arena_coords, 'air'),
@@ -240,9 +252,7 @@ def room():
         mc.execute().if_().score(start_battle_type).matches(2).at(monitor_home).run().fill(*roof_coords, 'glowstone'),
         mc.tag(all_()).add('arena_safe'),
         mc.tag(entity().type('armor_stand')).add('arena_safe'),
-        mc.kill(entity().not_tag('arena_safe').distance((None, 100))),
-        mc.kill(entity().not_tag('arena_safe').distance((None, 100))),
-        mc.kill(entity().not_tag('arena_safe').distance((None, 100))),
+        kill_em(entity().not_tag('arena_safe').distance((None, 100))),
     )
 
     room.loop('toggle_peace').loop(toggle_peace, (True, False)).add(mc.function('restworld:arena/start_battle'))
