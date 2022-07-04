@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from pyker.commands import r, WEST, mc, entity, NOON, EAST, UP, DOWN, Block, SOUTH
-from pyker.info import instruments
+from pyker.info import instruments, woods, stems
 from pyker.simpler import WallSign, Item, Volume
 from restworld.rooms import Room, label
 from restworld.world import restworld, main_clock, kill_em, fast_clock
@@ -61,7 +61,6 @@ def room():
         volume = Volume(r(3, 3, -3), r(0, 0, 0))
         i = step.i
         on = powered[i]
-        yield mc.say("on:", on)
         yield volume.replace_straight_rails(step.elem, '#rails')
         if on:
             yield volume.replace('redstone_torch', 'glass')
@@ -70,6 +69,67 @@ def room():
         yield mc.data().merge(r(1, 2, -2), {'Text2': step.elem, 'Text3': '(Powered)' if on else ''})
 
     room.loop('rail', main_clock).loop(rail_loop, rails)
+    room.function('redstone_lamp_init').add(WallSign((None, 'Redstone Lamp')).place(r(-1, 3, 0), EAST))
+    room.loop('redstone_lamp', main_clock).loop(lambda step: mc.setblock(r(0, 0, 0), step.elem),
+                                                ('Redstone Torch', 'Air'))
+    room.function('redstone_wire_init').add(WallSign((None, 'Redstone Wire')).place(r(0, 2, 0), WEST))
+
+    def redstone_wire_loop(step):
+        volume = Volume(r(0, 0, 0), r(7, 0, 7))
+        if step.i == 0:
+            yield volume.replace('redstone_torch', 'glass')
+            yield mc.data().merge(r(0, 2, 0), {'Text3': '(Powered)'})
+        else:
+            yield volume.replace('glass', 'redstone_torch')
+            yield mc.data().merge(r(0, 2, 0), {'Text3': ''})
+
+    room.loop('redstone_wire', main_clock).loop(redstone_wire_loop, range(0, 2))
+    room.function('repeater_init').add(WallSign((None, 'Comparator', 'and Repeater')).place(r(0, 3, 0), WEST))
+
+    def repeater_loop(step):
+        if step.i == 0:
+            yield mc.fill(r(0, 2, -1), r(0, 2, 1), 'redstone_block').replace('air')
+        else:
+            yield mc.fill(r(0, 2, -1), r(0, 2, 1), 'air').replace('redstone_block')
+
+    room.loop('repeater', main_clock).loop(repeater_loop, range(0, 2))
+    room.function('sculk_init').add(WallSign((None, 'Sculk Sensor')).place(r(-1, 3, 0), EAST))
+    room.function('target_init').add(WallSign((None, 'Target')).place(r(1, 3, 0), WEST))
+
+    def target_loop(step):
+        yield mc.setblock(r(0, 2, 0), ('target', {'power': step.i}))
+        yield mc.data().merge(r(1, 3, 0), {'Text3': 'Power %d' % step.i})
+
+    room.loop('target', main_clock).loop(target_loop, range(0, 16))
+    room.function('wire_strength_init').add(
+        mc.fill(r(1, 2, -1), r(1, 2, -16), ('oak_wall_sign', {'facing': WEST}, {'Text3': 'Powered'})))
+
+    def wire_strength_loop(step):
+        yield mc.setblock(r(0, 2, 0), 'redstone_block' if step.i == 0 else 'air')
+        for i in range(0, 16):
+            if step.i == 0:
+                yield mc.data().merge(r(1, 2, -16 - i), {'Text2': step.i})
+            else:
+                yield mc.data().merge(r(1, 2, -16 - i), {'Text2': 0})
+
+    room.loop('wire_strength', main_clock).loop(wire_strength_loop, (0, 1))
+
+    def wood_power_loop(step):
+        wood, powered = step.elem
+        yield mc.setblock(r(1, 2, -1), ('%s_pressure_plate' % wood.id, {'powered': powered}))
+        yield mc.setblock(r(1, 3, 0), ('%s_button' % wood.id, {'facing': EAST, 'powered': powered}))
+        yield mc.setblock(r(0, 3, 0), ('redstone_lamp', {'lit': powered}))
+        yield mc.setblock(r(0, 2, -1), ('redstone_lamp', {'lit': powered}))
+        yield mc.setblock(r(1, 2, 0), ('oak_wall_sign', {'facing': EAST}))
+        yield mc.data().merge(r(1, 2, 0), wood.sign_nbt)
+        if powered == 'True':
+            yield mc.data().merge(r(1, 2, 0), {'Text4': '(Powered)'})
+
+    powerings = []
+    for t in ('Stone', 'Polished|Blackstone') + woods + stems:
+        powerings.append((Block(t), False))
+        powerings.append((Block(t), True))
+    room.loop('wood_power', main_clock).loop(wood_power_loop, powerings)
 
     light_detector_funcs(room)
     note_block_funcs(room)
