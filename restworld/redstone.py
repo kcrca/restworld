@@ -8,7 +8,7 @@ from restworld.world import restworld, main_clock, kill_em, fast_clock
 
 
 def room():
-    room = Room('redstone', restworld, WEST, (None, 'Redstone'))
+    room = Room('redstone', restworld, SOUTH, (None, 'Redstone'))
 
     room.function('dispenser_init').add(WallSign(()).place(r(0, 3, 0), WEST))
 

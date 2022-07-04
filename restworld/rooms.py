@@ -642,9 +642,9 @@ class Room(FunctionSet):
             'tags': ['homer', '%s_homer' % self.name], 'NoGravity': True, 'Small': True})
         self.title = None
         if facing:
-            self._room_sign(facing, text)
+            self._room_setup(facing, text)
 
-    def _room_sign(self, facing, text):
+    def _room_setup(self, facing, text):
         text = _to_list(text)
         self._record_room(text)
         text = tuple((JsonText.text(x).bold().italic() if x else x) for x in text)
@@ -653,11 +653,20 @@ class Room(FunctionSet):
         x, z, rot = facing.dx, facing.dz, facing.yaw
         # I think this score is unused, but not sure, so I'm commenting it out.
         # score = Score('ancient', 'goto')
+        anchor = '%s_anchor' % self.name
+        anchor_rot = rotated_facing(facing.name, ROTATION_180)
+        stand = Entity('armor_stand',
+                       {'Rotation': anchor_rot.rotation, 'Tags': [anchor, 'anchor'], 'Invisible': True, 'Small': True})
         self.add(Function('%s_room_init' % self.name).add(
             sign.place(r(x, 6, z), facing),
             # score.init(),
             # score.set(rot),
+            mc.kill(entity().tag(anchor)),
+            mc.summon(stand, r(0, 2, 0))
         ))
+        self.function('_goto').add(
+            mc.tp(player(), entity().tag(anchor).limit(1))
+        )
         self.home_func(self.name + '_room')
 
     def _record_room(self, text):
