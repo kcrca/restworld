@@ -568,13 +568,13 @@ def crops(loop_index: int, stages, crop, pos, name='age'):
     return lines(results)
 
 
-def label(pos: Position, txt: str, facing=1) -> Commands:
+def label(pos: Position, txt: str, facing=1, invis=True) -> Commands:
     return (
         mc.execute().positioned(pos).run().kill(
-            entity().type('item_frame').tag('label').sort(NEAREST).distance((None, 2)).limit(1)),
+            entity().type('item_frame').tag('label').sort(NEAREST).distance((None, 1)).limit(1)),
         mc.summon('item_frame', pos,
                   named_frame_item(Thing('stone_button'), txt).merge(
-                      {'Invisible': True, 'Facing': facing, 'Tags': ['label'], 'Fixed': True})),
+                      {'Invisible': invis, 'Facing': facing, 'Tags': ['label'], 'Fixed': True})),
     )
 
 
@@ -837,6 +837,10 @@ class Room(FunctionSet):
     def score(self, name):
         score = Score(name, self.name)
         self._scores.add(score)
+        return score
+
+    def score_max(self, name):
+        score = Score(name, '%s_max' % self.name)
         return score
 
     def _home_func_name(self, base):

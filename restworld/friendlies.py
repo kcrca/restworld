@@ -25,7 +25,7 @@ def room():
         placer(r(0, 3, -2), NORTH, 2, adults=True).summon('bat'),
         placer(r(0, 3.5, 1), NORTH, 2, adults=True).summon('bat', nbt={'BatFlags': 1}, tags=('sleeping_bat',)))
     room.function('bee_init').add(
-        placer(r(0, 3, 0), NORTH, 0, -2).summon('bee'),
+        placer(r(0, 3, 0), NORTH, 0, 2).summon('bee'),
         label((-1, 2, -2), 'Stinger'),
         label((1, 2, -2), 'Pollen'))
 

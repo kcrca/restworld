@@ -151,15 +151,15 @@ def basic_functions(room):
     invis_stand = stand.clone().merge_nbt({'Tags': ['material_static'], 'Invisible': True})
     basic_init = room.function('basic_init').add(
         mc.kill(entity().tag('material_static')),
-        stand.summon(r(0, 2.0, 0), facing=SOUTH, nbt={'CustomNameVisible': True}),
+        stand.summon(r(0, 2.0, 0), facing=NORTH, nbt={'CustomNameVisible': True}),
     )
     for i in range(0, 5):
         basic_init.add(
-            invis_stand.summon(r(-(0.8 + i * 0.7), 2.0, 0), facing=SOUTH,
+            invis_stand.summon(r(-(0.8 + i * 0.7), 2.0, 0), facing=NORTH,
                                nbt={'Tags': ['material_%d' % (4 + i), 'material_static']}))
         if i < 4:
             basic_init.add(
-                invis_stand.summon(r(+(0.6 + i * 0.7), 2.0, 0), facing=SOUTH,
+                invis_stand.summon(r(+(0.6 + i * 0.7), 2.0, 0), facing=NORTH,
                                    nbt={'Tags': ['material_%d' % (3 - i), 'material_static']}))
 
     basic_init.add(
@@ -176,10 +176,10 @@ def basic_functions(room):
         mc.summon('item_frame', r(4, 4, 1),
                   {'Facing': 2, 'Tags': ['armor_horse_frame', 'enchantable', 'armor_frame']}),
 
-        label((5, 2, -2), 'Saddle'),
-        label((3, 2, -2), 'Enchanted'),
-        label((1, 2, -2), 'Turtle Helmet'),
-        label((-1, 2, -2), 'Elytra'),
+        label(r(5, 2, -2), 'Saddle'),
+        label(r(3, 2, -2), 'Enchanted'),
+        label(r(1, 2, -2), 'Turtle Helmet'),
+        label(r(-1, 2, -2), 'Elytra'),
     )
 
     materials = (
@@ -242,7 +242,7 @@ def basic_functions(room):
 
         if horse_armor:
             yield mc.execute().unless().entity(entity().tag('armor_horse').distance((None, 10))).run(
-                room.mob_placer(r(4.5, 2, 0.5), SOUTH, adults=True).summon(
+                room.mob_placer(r(4.5, 2, 0.5), NORTH, adults=True).summon(
                     'horse', nbt={'Variant': 1, 'Tame': True, 'Tags': ['armor_horse', 'material_static']}))
             yield mc.data().merge(entity().tag('armor_horse').limit(1).sort('nearest'), {
                 'ArmorItem': {'id': '%s_horse_armor' % armor, 'Count': 1}})
@@ -309,7 +309,13 @@ def basic_functions(room):
 def fencelike_functions(room):
     volume = Volume(r(8, 3, 6), r(0, 2, 0))
 
-    room.function('fencelike_init').add(WallSign(()).place(r(6, 2, 0), NORTH))
+    room.function('fencelike_init').add(
+        WallSign(()).place(r(6, 2, 0), NORTH),
+        label(r(6, 2, -1), 'Change Height'),
+        label(r(4, 2, -1), 'Glass Panes'),
+        label(r(3, 2, -1), 'Walls'),
+        label(r(2, 2, -1), 'Fences'),
+    )
 
     def fencelike(block: BlockDef):
         block = good_block(block)

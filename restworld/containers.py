@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from pyker.commands import mc, r, NORTH, entity, WEST, all_, Block, RESULT, VISIBLE, STYLE, VALUE, PLAYERS, COLOR, \
-    SOUTH, EAST, self, player, Entity, SURVIVAL, LEVELS, CREATIVE
+    EAST, self, player, Entity, SURVIVAL, LEVELS, CREATIVE
 from pyker.simpler import WallSign, Item, ItemFrame
 from restworld.rooms import Room, label
 from restworld.world import restworld, slow_clock, main_clock, fast_clock
@@ -42,11 +42,11 @@ def room():
         bossbar_value.set(3),
         mc.function('restworld:containers/bossbar_exit'),
         WallSign('Boss Bar').place(r(0, 3, 0, ), WEST),
-        label(r(-3, 2, -100), 'Color'),
+        label(r(-3, 2, -1), 'Color'),
         WallSign('Color:').place(r(-2, 2, -1), WEST),
-        label(r(-3, 2, 000), 'Style'),
+        label(r(-3, 2, 0), 'Style'),
         WallSign('Style:').place(r(-2, 2, 0, ), WEST),
-        label(r(-3, 2, 100), 'Style'),
+        label(r(-3, 2, 1), 'Value'),
         WallSign('Value:').place(r(-2, 2, 1), WEST),
     )
     room.function('bossbar_exit').add(mc.bossbar().set('restworld:bossbar', VISIBLE, False))
@@ -100,7 +100,7 @@ def room():
 
     room.function('brewing_init').add(
         mc.function('restworld:containers/switch_brewing_off'),
-        label(r(1, 1, -1), 'Brew'))
+        label(r(-1, 2, -1), 'Brew'))
     room.loop('brewing_rotate', main_clock).add(
         mc.item().replace().block(r(0, 2, 0), 'container.3').with_('air'),
         mc.item().replace().block(r(0, 2, 0), 'container.4').with_('air'),
@@ -153,13 +153,7 @@ def room():
         'maxUses': 1000, 'buy': {'id': args[0], 'Count': args[1]}, 'buyB': {'id': args[2], 'Count': args[3]},
         'sell': {'id': args[4], 'Count': args[5]}, 'xp': 1, 'uses': args[6]}
 
-    def experience_loop(step):
-        yield mc.data().merge(entity().tag('trades').limit(1),
-                              {'VillagerData': {'level': step.elem[0]}, 'Xp': step.elem[1]}),
-        recipes = list(trade_nbt(*t) for t in trades[:(step.elem[0] * 2)])
-        yield mc.data().merge(entity().tag('trades').limit(1), {'Offers': {'Recipes': recipes}})
-
-    placer = room.mob_placer(r(0, 2, 0), SOUTH, adults=True, tags=('trades',),
+    placer = room.mob_placer(r(0, 2, 0), NORTH, adults=True, tags=('trades',), auto_tag=False,
                              nbt={'VillagerData': {'profession': 'farmer', 'level': 3}, 'CanPickUpLoot': False})
     room.function('experience_init').add(
         placer.summon('villager'),
@@ -191,6 +185,12 @@ def room():
         ('emerald', 1, 'air', 1, 'golden_carrot', 3, 1001),
         ('emerald', 1, 'melon', 1, 'glistering_melon_slice', 3, 0),
     )
+    def experience_loop(step):
+        yield mc.data().merge(entity().tag('trades').limit(1),
+                              {'VillagerData': {'level': step.elem[0]}, 'Xp': step.elem[1]}),
+        recipes = list(trade_nbt(*t) for t in trades[:(step.elem[0] * 2)])
+        yield mc.data().merge(entity().tag('trades').limit(1), {'Offers': {'Recipes': recipes}})
+
     room.loop('experience', main_clock).loop(experience_loop, xp)
     room.function('enchanting_enter').add(
         mc.data().merge(r(0, 4, 0), {'Items': [','.join(

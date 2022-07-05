@@ -1,11 +1,11 @@
 from __future__ import annotations
 
 from pyker.commands import mc, entity, r, Commands, MOVE, self, OVERWORLD, player, EQ, MOD, THE_END, \
-    RAIN, CREATIVE, SIDEBAR
+    RAIN, CREATIVE, SIDEBAR, GAMETIME, RESULT
 from pyker.enums import ScoreCriteria
 from pyker.function import Function
 from restworld.rooms import Room
-from restworld.world import restworld, tick_clock, clock, main_clock
+from restworld.world import restworld, tick_clock, clock, main_clock, kill_em
 
 
 def room():
@@ -61,7 +61,7 @@ def room():
                 yield mc.execute().as_(entity().tag(room_home, '!blockers_home')).at(self()).run().tp(self(),
                                                                                                       r(0, -2, 0))
                 yield mc.execute().as_(entity().tag(mob_room, '!passenger').type('!item_frame')).at(
-                    self()).run().tp(self(),r(0, -2, 0))
+                    self()).run().tp(self(), r(0, -2, 0))
 
     room = Room('global', restworld)
     clock_toggle = room.score('clock_toggle')
@@ -172,8 +172,28 @@ def room():
         mc.clear(player()),
         mc.gamemode(CREATIVE, player()),
         mc.function('restworld:global/control_book'),
-        mc.tp(player(),(0, 101, 0)).facing((0, 100, 5)),
+        mc.tp(player(), (0, 101, 0)).facing((0, 100, 5)),
         mc.scoreboard().objectives().setdisplay(SIDEBAR),
         mc.function('restworld:center/reset_clocks'),
         mc.function('restworld:global/clock_on'),
+    )
+
+    clean_time = room.score('ensure_clean_time')
+    clean_time_max = room.score_max('ensure_clean_time')
+    room.function('ensure_clean_init').add(clean_time_max.set(10_000))
+    room.loop('ensure_clean', tick_clock).add(
+        mc.execute().store(RESULT).score(clean_time).run().time().query(GAMETIME),
+        clean_time.operation(MOD, clean_time_max),
+        mc.execute().if_().score(clean_time).matches(0).run().function('restworld:global/ensure_clean_run')
+    ).loop(None, None)
+    room.function('ensure_clean_run').add(
+        # Make sure kids don't grow up
+        mc.execute().as_(entity().tag('kid')).run().data().merge(self(), {'Age': -2147483648, 'IsBaby': True}),
+        # Keep chickens from leaving eggs around
+        mc.execute().as_(entity().type('chicken')).run().data().merge(self(), {'EggLayTime': 1000000000}),
+        # Frog spawning seems to just happen without the random ticks, so stop it
+        mc.execute().at(entity().tag('frog_home')).run().fill(r(-2, 2, -2), r(2, 2, 2), 'frogspawn').replace(
+            'frogspawn'),
+        kill_em(entity().type('tadpole').tag('!tadpole')),
+        kill_em(entity().type('frog').tag('!frog')),
     )

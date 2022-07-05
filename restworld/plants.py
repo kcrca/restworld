@@ -230,6 +230,8 @@ def room():
         yield mc.data().merge(r(1, 2, 0), {'Text2': 'Stage: %d' % step.elem})
 
     room.loop('sweet_berry', main_clock).loop(sweet_berry_loop, range(0, 4), bounce=True)
+    room.loop('sweet_berry_soil', main_clock).loop(lambda step: mc.setblock(r(0, 2, 1), step.elem),
+                                                   ('Grass Block', 'Dirt', 'Podzol', 'Coarse Dirt'))
 
     def trees_loop(step):
         yield mc.data().merge(r(-1, 0, -1), {'mode': 'LOAD', 'name': 'restworld:%s_trees' % _to_id(step.elem)})
