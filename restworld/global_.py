@@ -13,13 +13,15 @@ def room():
         return mc.execute().at(entity().tag('min_home')).run().fill((r(0), y, r(0)), (r(166), y, r(180)),
                                                                     filler).replace(filter)
 
-    def clock_lights(turn_on):
+    def clock_blocks(turn_on):
         lights = ('red_concrete', 'lime_concrete')
         before = lights[int(turn_on)]
         after = lights[1 - int(turn_on)]
         return (
             use_min_fill(100, after, before),
-            mc.execute().at(entity().tag('min_home')).run().setblock((0, 105, -78), after)
+            mc.execute().at(entity().tag('min_home')).run().setblock((0, 105, -78), after),
+            mc.execute().at(entity().tag('aquatic_anchor')).run().fill(
+                r(-7, -1, 0), r(7, 5, 20), after).replace(before),
         )
 
     def kill_if_time():
@@ -88,9 +90,9 @@ def room():
         Function('clock_off').add(
             mc.execute().at(entity().tag('clock_home')).run().setblock(r(0, -2, 1), 'diamond_block')),
         Function('clock_switched_on').add(
-            clock_lights(True)),
+            clock_blocks(True)),
         Function('clock_switched_off').add(
-            clock_lights(False),
+            clock_blocks(False),
             (c.time.operation(EQ, c.speed) for c in restworld.clocks()),
             (c.time.remove(1) for c in restworld.clocks()),
         ),
@@ -186,7 +188,7 @@ def room():
         clean_time.operation(MOD, clean_time_max),
         mc.execute().if_().score(clean_time).matches(0).run().function('restworld:global/ensure_clean_run')
     ).loop(None, None)
-    room.function('ensure_clean_run').add(
+    room.function('ensure_clean_run', home=False).add(
         # Make sure kids don't grow up
         mc.execute().as_(entity().tag('kid')).run().data().merge(self(), {'Age': -2147483648, 'IsBaby': True}),
         # Keep chickens from leaving eggs around
@@ -194,6 +196,6 @@ def room():
         # Frog spawning seems to just happen without the random ticks, so stop it
         mc.execute().at(entity().tag('frog_home')).run().fill(r(-2, 2, -2), r(2, 2, 2), 'frogspawn').replace(
             'frogspawn'),
-        kill_em(entity().type('tadpole').tag('!tadpole')),
+        kill_em(entity().type('tadpole').tag('!keeper')),
         kill_em(entity().type('frog').tag('!frog')),
     )

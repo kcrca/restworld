@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from pyker.commands import NORTH, r, WEST, mc, entity, good_facing, EAST, RESULT, DAYTIME, FORCE
+from pyker.commands import NORTH, r, WEST, mc, entity, good_facing, EAST, RESULT, DAYTIME, NOON
 from pyker.info import moon_phases
 from pyker.simpler import WallSign, Item
 from restworld.rooms import Room, label
@@ -42,7 +42,7 @@ def room():
     noon = 6000
     day = 24000
     time = room.score('time')
-    time_forward = room.score('time_forward')
+    time_forward = room.score('run_time_forward')
     room.function('run_time').add(
         mc.execute().unless().score(time_forward).matches((0, None)).run().function('restworld:time/time_init'),
         mc.execute().store(RESULT).score(time).run().time().query(DAYTIME),
@@ -66,12 +66,14 @@ def room():
 
     room.function('run_time_init').add(
         time_forward.set(1),
-        time.set(noon),
+        mc.time().set(NOON),
         mc.fill(r(0, 7, 1), r(0, 7, -1), 'air'),
         mc.setblock(r(0, 7, 1), ('lever', {'face': 'floor', 'facing': WEST})),
         mc.setblock(r(0, 7, -1), ('lever', {'face': 'floor', 'facing': WEST})),
         mc.data().merge(r(0, 5, 1), {'powered': 0}),
-        mc.clone(r(2, 3, -1), r(0, 3, -1), r(0, 5, -1)).replace(FORCE),
+        mc.fill(r(0, 5, 1), r(2, 5, 1), 'air'),
+        mc.setblock(r(0, 5, 1), ('sticky_piston', {'facing': 'west'})),
+        mc.setblock(r(1, 5, 1), 'redstone_block'),
 
         label(r(0, 7, 1), 'Time Running'),
         label(r(0, 7, -1), 'Time Direction'),

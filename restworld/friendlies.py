@@ -106,12 +106,12 @@ def room():
 
     def frogspawn_loop(step):
         if step.i == 0:
-            yield kill_em(entity().tag('tadpole'))
+            yield kill_em(entity().tag('tadpole', room.name))
             yield mc.setblock(r(0, 2, -1), 'frogspawn')
         else:
-            yield placer(r(0, 2, -1), NORTH, kids=True).summon(Entity('tadpole', {'Invulnerable': True}))
+            yield placer(r(0, 2, -1), NORTH, kids=True).summon(Entity('tadpole', {'Invulnerable': True}), tags=('keeper',))
             yield mc.setblock(r(0, 2, -1), 'air')
-        yield kill_em(entity().type('tadpole').not_tag('tadpole'))
+        yield kill_em(entity().type('tadpole').not_tag('keeper'))
 
     room.loop('frogspawn', main_clock).loop(frogspawn_loop, range(0, 2))
     room.function('goat_init').add(placer(*south_placer).summon('goat'))
@@ -242,14 +242,11 @@ def room():
     # Meant for leashing, but it doesn't seem to work. Keeping this here for future reference.
     trader_uuid = (-6811205515094820418, 8176443325185870163)
     trader_uuid_str = {'UUIDLeast': trader_uuid[0], 'UUIDMost': trader_uuid[1]}
-    # base.adult(Block('Wandering Trader'), 2, 0, 0, 180, 'tags': '('trader_llama'',), 'nbt': 'trader_uuid_str)
 
     room.function('trader_llama_init').add(
         placer(r(0, 2, -2), WEST, adults=True).summon('wandering_trader'),
         placer(r(0, 2, 0), WEST, adults=True,
                nbt={'DespawnDelay': 2147483647, 'Leashed': True, 'Leash': trader_uuid_str}).summon('trader_llama'),
-        WallSign(()).place(r(-3, 2, 0), WEST),
-        mc.data().modify(r(-3, 2, 0), 'Text2').set().value('Trader Llama')
     )
     room.loop('trader_llama', main_clock).loop(
         lambda step: mc.execute().as_(entity().type('trader_llama')).run().data().modify(
@@ -266,7 +263,7 @@ def room():
         yield mc.data().merge(r(0, 2, 2), {'Text3': 'Hatch Age: %d' % step.elem})
 
     room.loop('turtle_eggs', main_clock).loop(turtle_egg_loop, range(0, 3), bounce=True)
-    room.function('turtle_init').add(placer(r(0, 2, 0.2), NORTH, 2, -2).summon('turtle'))
+    room.function('turtle_init').add(placer(r(0, 2, 0.2), NORTH, 2, 2).summon('turtle'))
 
     villager_funcs(room)
 
