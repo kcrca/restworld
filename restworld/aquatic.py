@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from pyker.commands import Score, mc, entity, r, WEST, COLORS, MOD, EQ, MULT, PLUS, RESULT, LONG, NORTH, Entity, self, \
+from pyker.commands import Score, mc, e, r, WEST, COLORS, MOD, EQ, MULT, PLUS, RESULT, LONG, NORTH, Entity, s, \
     EAST
 from pyker.enums import ScoreCriteria
 from pyker.simpler import WallSign
@@ -17,7 +17,7 @@ def room():
             for f in [f for f in fishes if len(f[1]) == count]:
                 tag, variants = f
                 v = variants[step.i]
-                yield mc.data().merge(entity().tag(tag).limit(1), {'Variant': v[0], 'CustomName': v[1]})
+                yield mc.data().merge(e().tag(tag).limit(1), {'Variant': v[0], 'CustomName': v[1]})
 
         return fish_loop
 
@@ -61,7 +61,7 @@ def room():
                 variant.operation(PLUS, pattern_variant),
             )
             for i in range(0, 12):
-                yield mc.execute().store(RESULT).entity(entity().tag('fish%d' % i).limit(1), 'Variant', LONG, 1).run(
+                yield mc.execute().store(RESULT).entity(e().tag('fish%d' % i).limit(1), 'Variant', LONG, 1).run(
                     variant.get())
                 if i == 6:
                     yield variant.add(1)
@@ -83,13 +83,13 @@ def room():
     room.function('axolotl_init').add(room.mob_placer(r(1.3, 3.1, 0.6), 135, (0, 0), (-1.4, -1.4)).summon('axolotl'))
     axolotls = ('Lucy', 'Wild', 'Gold', 'Cyan', 'Blue')
     room.loop('axolotl', main_clock).loop(
-        lambda step: mc.execute().as_(entity().tag('axoltol')).run().data().merge(
-            self(), {'Variant': step.i, 'CustomName': step.elem + ' Axolotl'}), axolotls)
+        lambda step: mc.execute().as_(e().tag('axoltol')).run().data().merge(
+            s(), {'Variant': step.i, 'CustomName': step.elem + ' Axolotl'}), axolotls)
     room.function('elder_guardian_init').add(room.mob_placer(r(2, 3, 0), 225, adults=True).summon('elder_guardian'))
     room.function('guardian_init').add(room.mob_placer(r(-0.6, 3, -0.2), 180, adults=True).summon('guardian'))
     room.function('fishies_init').add(
         # For some reason, at 1.19 the kill-off in the _init function misses the pufferfish
-        mc.kill(entity().tag('pufferfish')),
+        mc.kill(e().tag('pufferfish')),
         room.mob_placer(r(1.8, 4, 0.8), EAST, adults=True).summon(Entity('dolphin', nbt={'Invulnerable': True})),
         room.mob_placer(r(1.8, 4, -4), EAST, -1, adults=True).summon(
             ('salmon', 'cod', 'pufferfish',
@@ -97,9 +97,9 @@ def room():
     )
 
     def fishies_loop(step):
-        yield mc.data().merge(entity().tag('pufferfish').limit(1), {'PuffState': step.elem})
+        yield mc.data().merge(e().tag('pufferfish').limit(1), {'PuffState': step.elem})
         # Over time, the pufferfish creeps downward, so we have to put it back
-        yield mc.tp(entity().tag('pufferfish'), r(1.8, 4, -6)).facing(r(5, 4, -6))
+        yield mc.tp(e().tag('pufferfish'), r(1.8, 4, -6)).facing(r(5, 4, -6))
 
     room.loop('fishies', main_clock).loop(fishies_loop, range(0, 3), bounce=True)
 
@@ -108,4 +108,4 @@ def room():
         return placer.summon('squid' if step.i == 0 else 'glow_squid')
 
     room.function('squid_init').add(clock_wall_sign.place(r(-1, 4, 3), EAST, water=True))
-    room.loop('squid', main_clock).add(kill_em(entity().tag('squidy'))).loop(squids_loop, range(0, 2))
+    room.loop('squid', main_clock).add(kill_em(e().tag('squidy'))).loop(squids_loop, range(0, 2))

@@ -348,13 +348,6 @@ non_inventory = tuple(Thing(s) for s in (
     'Elytra',
 ))
 
-villager_types = ('Desert', 'Jungle', 'Plains', 'Savanna', 'Snow', 'Swamp', 'Taiga')
-villager_data = []
-for t in villager_types:
-    for p in professions:
-        villager_data += ['profession:%s,type:%s' % (p.lower(), t.lower()), ]
-    # random.shuffle(villager_data)
-
 biome_groups = collections.OrderedDict()
 biome_groups['Temperate'] = (
     'Plains', 'Forest', 'Flower Forest', 'Birch Forest', 'Dark Forest', 'Swamp', 'Jungle', 'Mushroom Field')
@@ -487,43 +480,6 @@ def has_loop(rendered):
     return re.search(r'<%base:(loop|bounce|increment)', rendered, flags=re.MULTILINE)
 
 
-def render_tmpl(tmpl, var_name, **kwargs):
-    return tmpl.render(
-        var=var_name,
-        func=var_name,
-        Thing=Thing,
-        Mob=Mob,
-        colors=colors,
-        command_blocks=command_blocks,
-        steppables=stepables,
-        woods=woods,
-        stems=stems,
-        fishes=fishes,
-        horses=horses,
-        other_horses=other_horses,
-        small_flowers=small_flowers,
-        tulips=tulips,
-        patterns=patterns,
-        professions=professions,
-        text=text,
-        rich_text=rich_text,
-        text_attrs=text_attrs,
-        to_nicknamed=to_nicknamed,
-        to_id=to_id,
-        commas=commas,
-        villager_data=villager_data,
-        villager_types=villager_types,
-        biome_groups=biome_groups,
-        biomes=biomes,
-        normal_blocks=normal_blocks,
-        # effects=effects,
-        moon_phases=moon_phases,
-        non_inventory=non_inventory,
-        coloring_coords=coloring_coords,
-        **kwargs
-    )
-
-
 def named_frame_item(thing: Thing, name=None, damage=None):
     # <%def name='named_frame_item(thing, name=None, damage=None)'>Item:{id:${thing.id},Count:1,tag:{display:{Name:'{'text':'${name if name else thing.name}'}'}${damage if damage else ''}}},Fixed:True</%def>
     tag_nbt = Nbt({'display': {'Name': str(JsonText.text(str(name if name else thing.name))), }})
@@ -571,7 +527,7 @@ def crops(loop_index: int, stages, crop, pos, name='age'):
 def label(pos: Position, txt: str, facing=1, invis=True) -> Commands:
     return (
         mc.execute().positioned(pos).run().kill(
-            entity().type('item_frame').tag('label').sort(NEAREST).distance((None, 1)).limit(1)),
+            e().type('item_frame').tag('label').sort(NEAREST).distance((None, 1)).limit(1)),
         mc.summon('item_frame', pos,
                   named_frame_item(Thing('stone_button'), txt).merge(
                       {'Invisible': invis, 'Facing': facing, 'Tags': ['label'], 'Fixed': True})),
@@ -596,12 +552,12 @@ class Clock:
     def tick_cmds(self, other_funcs=()):
         # execute at @e[tag=cage_home] run function restworld:enders/cage_main
         for f in self._funcs:
-            yield mc.execute().at(entity().tag(self._tag(f))).run().function(f.name)
+            yield mc.execute().at(e().tag(self._tag(f))).run().function(f.name)
         yield '\n'
         for f in self._funcs:
             loop_finish = f.name[-len(self.name):] + 'finish'
             if loop_finish in other_funcs:
-                yield mc.execute().at(entity().tag(self._tag(f))).run(). \
+                yield mc.execute().at(e().tag(self._tag(f))).run(). \
                     schedule().function(loop_finish, 1).replace()
 
     @staticmethod
@@ -661,11 +617,11 @@ class Room(FunctionSet):
             sign.place(r(x, 6, z), facing),
             # score.init(),
             # score.set(rot),
-            mc.kill(entity().tag(anchor)),
+            mc.kill(e().tag(anchor)),
             mc.summon(stand, r(0, 2, 0))
         ))
         self.function('_goto').add(
-            mc.tp(player(), entity().tag(anchor).limit(1))
+            mc.tp(p(), e().tag(anchor).limit(1))
         )
         self.home_func(self.name + '_room')
 
@@ -691,8 +647,8 @@ class Room(FunctionSet):
         tags.extend((marker_tag, self.name + '_home', 'homer'))
         return self.function(marker_tag, home=False, exists_ok=True).add(
             mc.comment(home_marker_comment),
-            mc.kill(entity().tag(marker_tag)),
-            mc.execute().positioned(r(-0.5, 0, 0.5)).run().kill(entity().type('armor_stand').delta((1, 2, 1))),
+            mc.kill(e().tag(marker_tag)),
+            mc.execute().positioned(r(-0.5, 0, 0.5)).run().kill(e().type('armor_stand').delta((1, 2, 1))),
             marker.summon(r(0, 0.5, 0)),
         )
 
@@ -773,7 +729,7 @@ class Room(FunctionSet):
         for clock, loops in self._clocks.items():
             name = '_%s' % clock.name
             clock_func = self.function(name).add((
-                mc.execute().at(entity().tag(x.base_name + '_home')).run().function(x.full_name) for x in loops))
+                mc.execute().at(e().tag(x.base_name + '_home')).run().function(x.full_name) for x in loops))
             tick_func.add(mc.execute().if_().score(clock.time).matches(0).run().function(clock_func.full_name))
         tick_func.add(mc.function(x.full_name) for x in filter(
             lambda x: self._is_func_type(x, '_tick'), self.functions.values()))
@@ -798,7 +754,7 @@ class Room(FunctionSet):
         loops = filter(lambda x: isinstance(x, Loop), self.functions.values())
         for loop in loops:
             home_f = loop.base_name + '_home'
-            at_home = mc.execute().at(entity().tag(home_f))
+            at_home = mc.execute().at(e().tag(home_f))
             incr_f.add(at_home.run(loop.score.add(1)))
             decr_f.add(at_home.run(loop.score.remove(1)))
         cur_f = self.full_name + '/_cur'
@@ -811,7 +767,7 @@ class Room(FunctionSet):
             'init': [mc.scoreboard().objectives().add(self.name, ScoreCriteria.DUMMY),
                      mc.scoreboard().objectives().add(self.name + '_max', ScoreCriteria.DUMMY),
                      (x.set(0) for x in self._scores),
-                     to_incr.set(1)] + [mc.tp(entity().tag(self.name), entity().tag('death').limit(1))]}
+                     to_incr.set(1)] + [mc.tp(e().tag(self.name), e().tag('death').limit(1))]}
         after_commands = {
             'enter': [mc.weather(CLEAR)],
             'init': [mc.function('%s/_cur' % self.full_name)],
@@ -824,7 +780,7 @@ class Room(FunctionSet):
             commands = []
             commands.extend(before_commands.setdefault(f, []))
             commands.extend(
-                (mc.execute().at(entity().tag(self._home_func_name(x.name))).run().function(x.full_name) for x in
+                (mc.execute().at(e().tag(self._home_func_name(x.name))).run().function(x.full_name) for x in
                  relevant))
             commands.extend(after_commands.setdefault(f, []))
             if len(commands) > 0:
@@ -963,7 +919,7 @@ def say_score(*scores):
         s = good_score(s)
         say.append(JsonText.text(str(s.target) + '='))
         say.append(JsonText.score(s))
-    return mc.tellraw(all_(), say)
+    return mc.tellraw(a(), say)
 
 
 class Wall:

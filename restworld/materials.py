@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import math
 
-from pyker.commands import mc, r, Block, WEST, entity, EAST, Entity, SOUTH, self, NORTH, BlockDef, good_block
+from pyker.commands import mc, r, Block, WEST, e, EAST, Entity, SOUTH, s, NORTH, BlockDef, good_block
 from pyker.info import woods, stems, colors
 from pyker.simpler import WallSign, Volume, ItemFrame, Item
 from restworld.friendlies import _to_id
@@ -56,7 +56,7 @@ def room():
         yield mc.data().merge(r(1, 2, 0), {'Text2': step.elem.display_name})
 
     room.loop('arrows', main_clock).add(
-        mc.kill(entity().tag('arrow'))
+        mc.kill(e().tag('arrow'))
     ).loop(arrows_loop, (
         Block('Arrow'),
         Block('Spectral Arrow'),
@@ -120,11 +120,11 @@ def room():
                 yield mc.setblock(r(3, 4, 2), '%s_block' % raw.id)
             yield mc.summon(ItemFrame(SOUTH, {'Tags': ['raw_frame', room.name]}).show_item_name(raw.display_name),
                             r(3, 4, 3))
-        yield mc.execute().as_(entity().tag('ore_ingot_frame').delta((8, 5, 8))).run().data().merge(self(), {
+        yield mc.execute().as_(e().tag('ore_ingot_frame').delta((8, 5, 8))).run().data().merge(s(), {
             'Item': Item.nbt_for(item.id)})
 
     room.loop('ores', main_clock).add(
-        mc.kill(entity().tag(raw_frame)),
+        mc.kill(e().tag(raw_frame)),
         mc.data().merge(r(3, 2, 6), {'Text3': ''}),
         mc.setblock(r(3, 4, 2), 'air')
     ).loop(ore_loop, (
@@ -150,7 +150,7 @@ def basic_functions(room):
     stand = Entity('armor_stand', {'Tags': ['basic_stand', 'material_static'], 'ShowArms': True, 'NoGravity': True})
     invis_stand = stand.clone().merge_nbt({'Tags': ['material_static'], 'Invisible': True})
     basic_init = room.function('basic_init').add(
-        mc.kill(entity().tag('material_static')),
+        mc.kill(e().tag('material_static')),
         stand.summon(r(0, 2.0, 0), facing=NORTH, nbt={'CustomNameVisible': True}),
     )
     for i in range(0, 5):
@@ -165,7 +165,7 @@ def basic_functions(room):
     basic_init.add(
         mc.fill(r(-3, 2, 2), r(-3, 5, 2), 'stone'),
 
-        mc.kill(entity().tag('armor_frame')),
+        mc.kill(e().tag('armor_frame')),
         mc.summon('item_frame', r(-3, 2, 1), {'Facing': 2, 'Tags': ['armor_boots', 'enchantable', 'armor_frame']}),
         mc.summon('item_frame', r(-3, 3, 1),
                   {'Facing': 2, 'Tags': ['armor_leggings', 'enchantable', 'armor_frame']}),
@@ -194,14 +194,14 @@ def basic_functions(room):
     enchanted = room.score('enchanted')
 
     def do_enchant(to_match, tag):
-        return mc.execute().if_().score(enchanted).matches(to_match).as_(entity().tag(tag)).run().data()
+        return mc.execute().if_().score(enchanted).matches(to_match).as_(e().tag(tag)).run().data()
 
     def enchant(on):
         if on:
-            value, act, arg = 1, lambda prefix, path: prefix.modify(self(), path), lambda prefix: prefix.merge().value(
+            value, act, arg = 1, lambda prefix, path: prefix.modify(s(), path), lambda prefix: prefix.merge().value(
                 {'Enchantments': [{'id': 'mending'}]})
         else:
-            value, act, arg = 0, lambda prefix, path: prefix.remove(self(), path), lambda prefix: prefix
+            value, act, arg = 0, lambda prefix, path: prefix.remove(s(), path), lambda prefix: prefix
 
         yield arg(act(do_enchant(value, 'enchantable'), 'Item.tag')),
         yield arg(act(do_enchant(value, 'armor_horse'), 'ArmorItem.tag')),
@@ -220,7 +220,7 @@ def basic_functions(room):
         material, armor, horse_armor, background, gem = step.elem
 
         yield mc.data().merge(
-            entity().tag('basic_stand').limit(1), {
+            e().tag('basic_stand').limit(1), {
                 'CustomName': material.capitalize(),
                 'ArmorItems': [{'id': '%s_boots' % armor, 'Count': 1}, {'id': '%s_leggings' % armor, 'Count': 1},
                                {'id': '%s_chestplate' % armor, 'Count': 1}, {'id': '%s_helmet' % armor, 'Count': 1}]})
@@ -229,36 +229,36 @@ def basic_functions(room):
         yield mc.setblock(r(3, 2, 2), background.id)
         yield mc.setblock(r(4, 4, 2), background.id)
 
-        yield mc.data().merge(entity().tag('armor_boots').limit(1), {
+        yield mc.data().merge(e().tag('armor_boots').limit(1), {
             'Item': {'id': '%s_boots' % armor, 'Count': 1}, 'ItemRotation': 0})
-        yield mc.data().merge(entity().tag('armor_leggings').limit(1), {
+        yield mc.data().merge(e().tag('armor_leggings').limit(1), {
             'Item': {'id': '%s_leggings' % armor, 'Count': 1}, 'ItemRotation': 0})
-        yield mc.data().merge(entity().tag('armor_chestplate').limit(1), {
+        yield mc.data().merge(e().tag('armor_chestplate').limit(1), {
             'Item': {'id': '%s_chestplate' % armor, 'Count': 1}, 'ItemRotation': 0})
-        yield mc.data().merge(entity().tag('armor_helmet').limit(1), {
+        yield mc.data().merge(e().tag('armor_helmet').limit(1), {
             'Item': {'id': '%s_helmet' % armor, 'Count': 1}, 'ItemRotation': 0})
-        yield mc.data().merge(entity().tag('armor_gem').limit(1), {
+        yield mc.data().merge(e().tag('armor_gem').limit(1), {
             'Item': {'id': gem, 'Count': 1}, 'ItemRotation': 0})
 
         if horse_armor:
-            yield mc.execute().unless().entity(entity().tag('armor_horse').distance((None, 10))).run(
+            yield mc.execute().unless().entity(e().tag('armor_horse').distance((None, 10))).run(
                 room.mob_placer(r(4.5, 2, 0.5), NORTH, adults=True).summon(
                     'horse', nbt={'Variant': 1, 'Tame': True, 'Tags': ['armor_horse', 'material_static']}))
-            yield mc.data().merge(entity().tag('armor_horse').limit(1).sort('nearest'), {
+            yield mc.data().merge(e().tag('armor_horse').limit(1).sort('nearest'), {
                 'ArmorItem': {'id': '%s_horse_armor' % armor, 'Count': 1}})
-            yield mc.data().merge(entity().tag('armor_horse_frame').limit(1),
+            yield mc.data().merge(e().tag('armor_horse_frame').limit(1),
                                   {'Item': {'id': '%s_horse_armor' % armor, 'Count': 1}, 'ItemRotation': 0})
             yield mc.execute().if_().score(horse_saddle).matches(1).run().item().replace().entity(
-                entity().tag('armor_horse'), 'horse.saddle').with_('saddle')
+                e().tag('armor_horse'), 'horse.saddle').with_('saddle')
             yield mc.execute().if_().score(horse_saddle).matches(0).run().item().replace().entity(
-                entity().tag('armor_horse'), 'horse.saddle').with_('air')
+                e().tag('armor_horse'), 'horse.saddle').with_('air')
         else:
-            yield mc.data().merge(entity().tag('armor_horse_frame').limit(1), {
+            yield mc.data().merge(e().tag('armor_horse_frame').limit(1), {
                 'Item': {'id': 'air', 'Count': 1}})
-            yield mc.execute().if_().entity(entity().tag('armor_horse').distance((None, 10))).run(
-                kill_em(entity().tag('armor_horse')))
+            yield mc.execute().if_().entity(e().tag('armor_horse').distance((None, 10))).run(
+                kill_em(e().tag('armor_horse')))
 
-        yield mc.data().merge(entity().tag('basic_stand').limit(1), {
+        yield mc.data().merge(e().tag('basic_stand').limit(1), {
             'HandItems': [{'id': '%s_sword' % material, 'Count': 1}, {'id': 'shield', 'Count': 1}]})
 
         hands_row = [None, None, '%s_shovel' % material, '%s_pickaxe' % material, '%s_hoe' % material,
@@ -277,33 +277,33 @@ def basic_functions(room):
         hands = list({'id': h if h else '', 'Count': 1} for h in hands_row)
 
         for j in range(0, 4):
-            yield mc.data().merge(entity().tag('material_%d' % j).limit(1), {'HandItems': [hands[j], {}]})
+            yield mc.data().merge(e().tag('material_%d' % j).limit(1), {'HandItems': [hands[j], {}]})
         for j in range(4, 8):
-            yield mc.data().merge(entity().tag('material_%d' % j).limit(1), {'HandItems': [{}, hands[j]]})
+            yield mc.data().merge(e().tag('material_%d' % j).limit(1), {'HandItems': [{}, hands[j]]})
         yield mc.data().merge(r(-2, 0, 1), {'name': 'restworld:material_%s' % material, 'mode': 'LOAD'})
 
     room.loop('basic', main_clock).add(
         mc.fill(r(2, 2, 2), r(-2, 5, 4), 'air'),
-        kill_em(entity().tag('material_thing'))
+        kill_em(e().tag('material_thing'))
     ).loop(basic_loop, materials).add(
         enchant(True),
         enchant(False),
         mc.execute().if_().score(turtle_helmet).matches(1).run().data().modify(
-            entity().tag('basic_stand').limit(1), 'ArmorItems[3].id').set().value('turtle_helmet'),
+            e().tag('basic_stand').limit(1), 'ArmorItems[3].id').set().value('turtle_helmet'),
         mc.execute().if_().score(turtle_helmet).matches(1).run().data().modify(
-            entity().tag('armor_helmet').limit(1), 'Item.id').set().value('turtle_helmet'),
+            e().tag('armor_helmet').limit(1), 'Item.id').set().value('turtle_helmet'),
         mc.execute().if_().score(elytra).matches(1).run().data().modify(
-            entity().tag('basic_stand').limit(1), 'ArmorItems[2].id').set().value('elytra'),
+            e().tag('basic_stand').limit(1), 'ArmorItems[2].id').set().value('elytra'),
         mc.execute().if_().score(elytra).matches(1).run().data().modify(
-            entity().tag('armor_chestplate').limit(1), 'Item.id').set().value('elytra'),
+            e().tag('armor_chestplate').limit(1), 'Item.id').set().value('elytra'),
         mc.fill(r(-2, 2, 2), r(2, 4, 4), 'air'),
         mc.setblock(r(-2, 0, 0), 'redstone_block'),
-        mc.execute().positioned(r(-2, 0, 2)).run().kill(entity().type('item').delta((5, 3, 4)))
+        mc.execute().positioned(r(-2, 0, 2)).run().kill(e().type('item').delta((5, 3, 4)))
     )
 
     room.function('basic_update').add(
-        mc.execute().at(entity().tag('basic_home')).run().function('restworld:materials/basic_cur'),
-        mc.execute().at(entity().tag('basic_home')).run().function('restworld:materials/basic_finish_main'))
+        mc.execute().at(e().tag('basic_home')).run().function('restworld:materials/basic_cur'),
+        mc.execute().at(e().tag('basic_home')).run().function('restworld:materials/basic_finish_main'))
 
 
 def fencelike_functions(room):
@@ -320,15 +320,15 @@ def fencelike_functions(room):
     def fencelike(block: BlockDef):
         block = good_block(block)
         yield volume.replace(block, '#restworld:fencelike')
-        yield mc.execute().at(entity().tag('fencelike_home')).run().data().merge(r(6, 2, 0), block.sign_nbt)
+        yield mc.execute().at(e().tag('fencelike_home')).run().data().merge(r(6, 2, 0), block.sign_nbt)
 
     def switch_to_fencelike(which):
         room.function('switch_to_%s' % which, home=False).add(
-            mc.kill(entity().tag('which_fencelike_home')),
-            mc.execute().at(entity().tag('fencelike_home')).positioned(r(1, -0.5, 0)).run().function(
+            mc.kill(e().tag('which_fencelike_home')),
+            mc.execute().at(e().tag('fencelike_home')).positioned(r(1, -0.5, 0)).run().function(
                 'restworld:materials/%s_home' % which),
-            mc.tag(entity().tag('%s_home' % which)).add('which_fencelike_home'),
-            mc.execute().at(entity().tag('%s_home' % which)).run().function('restworld:materials/%s_cur' % which))
+            mc.tag(e().tag('%s_home' % which)).add('which_fencelike_home'),
+            mc.execute().at(e().tag('%s_home' % which)).run().function('restworld:materials/%s_cur' % which))
 
     def fence_loop(step):
         yield from fencelike(step.elem)
@@ -380,7 +380,7 @@ def wood_functions(room):
 
         # Remove special cases
         yield from volume.fill('air', 'vine')
-        yield kill_em(entity().tag('wood_boat'))
+        yield kill_em(e().tag('wood_boat'))
         yield mc.fill(r(4, 2, -1), r(3, 2, -1), 'air')
         yield mc.fill(r(4, 2, 1), r(4, 3, 2), 'air')
 
@@ -429,7 +429,7 @@ def wood_functions(room):
         yield mc.setblock(r(4, 2, 2), ('%s_door' % id, {'facing': WEST, 'half': 'lower'}))
         yield mc.setblock(r(4, 3, 2), ('%s_door' % id, {'facing': WEST, 'half': 'upper'}))
 
-        yield mc.execute().as_(entity().tag('wood_sign_frame')).run().data().merge(self(), ItemFrame(NORTH).framed_item(
+        yield mc.execute().as_(e().tag('wood_sign_frame')).run().data().merge(s(), ItemFrame(NORTH).framed_item(
             '%s_sign' % id).show_item_name('%s Sign' % name).nbt)
 
         if log == 'log':
@@ -442,12 +442,12 @@ def wood_functions(room):
             yield mc.execute().if_().score(wood_boat_chest).matches(0).run().summon(boat, location)
             yield mc.execute().if_().score(wood_boat_chest).matches(1).run().summon(chest_boat, location)
             yield mc.execute().if_().score(wood_boat_chest).matches(0).as_(
-                entity().tag('wood_boat_frame')).run().data().merge(self(), ItemFrame(NORTH).framed_item(
+                e().tag('wood_boat_frame')).run().data().merge(s(), ItemFrame(NORTH).framed_item(
                 '%s_boat' % id).show_item_name('%s Boat' % name).nbt)
             yield mc.execute().if_().score(wood_boat_chest).matches(1).as_(
-                entity().tag('wood_boat_frame')).run().data().merge(self(), ItemFrame(NORTH).framed_item(
+                e().tag('wood_boat_frame')).run().data().merge(s(), ItemFrame(NORTH).framed_item(
                 '%s_chest_boat' % id).show_item_name('%s Chest Boat' % name).nbt)
         else:
-            yield mc.data().remove(entity().tag('wood_boat_frame').limit(1), 'Item.id')
+            yield mc.data().remove(e().tag('wood_boat_frame').limit(1), 'Item.id')
 
-    room.loop('wood', main_clock).add(kill_em(entity().tag('wood_boat'))).loop(wood_loop, woods + stems)
+    room.loop('wood', main_clock).add(kill_em(e().tag('wood_boat'))).loop(wood_loop, woods + stems)

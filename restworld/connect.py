@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from pyker.commands import NORTH, r, WEST, mc, entity, SOUTH, EAST
+from pyker.commands import NORTH, r, WEST, mc, e, SOUTH, EAST
 from pyker.simpler import WallSign
 from restworld.rooms import Room, label
 from restworld.world import restworld
@@ -13,10 +13,10 @@ def room():
         for x in range(-12, 13):
             for y in range(0, 5):
                 for z in range(-12, 13):
-                    yield mc.execute().at(entity().tag('connect_mid_home')).if_().block(r(x, -9 + y, z),
-                                                                                        src).run().clone(r(sx, 1, sz),
-                                                                                                         r(sx, 1, sz),
-                                                                                                         r(x, 2 + y, z))
+                    yield mc.execute().at(e().tag('connect_mid_home')).if_().block(r(x, -9 + y, z),
+                                                                                   src).run().clone(r(sx, 1, sz),
+                                                                                                    r(sx, 1, sz),
+                                                                                                    r(x, 2 + y, z))
 
     above = ('Change the block', 'in the floor', 'to change the', 'block used')
     below1 = ('These blocks are', 'templates for the', 'blocks above')

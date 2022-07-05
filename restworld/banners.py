@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from pyker.commands import Entity, Block, SOUTH, r, mc, entity, self, RESULT, INT, COLORS, WHITE, d
+from pyker.commands import Entity, Block, SOUTH, r, mc, e, s, RESULT, INT, COLORS, WHITE, d
 from pyker.enums import Pattern
 from pyker.simpler import Shield, WallSign
 from restworld.rooms import Room, label
@@ -67,7 +67,7 @@ def room():
 
     banner_color = room.score('banner_color')
     banner_ink = room.score('banner_ink')
-    stands = entity().tag('banner_stand')
+    stands = e().tag('banner_stand')
 
     # noinspection PyUnusedLocal
     def armor_stands(x, xn, z, zn, angle, facing, bx, bz, y_banner, y_shield, pattern, handback=None):
@@ -102,11 +102,11 @@ def room():
         return (
             mc.setblock(r(x, 3, z), pattern[0].merge_state({'rotation': rot})),
             mc.execute().positioned(r(x, 3, z)).as_(
-                entity().tag('banner_pattern_custom').distance((None, 2))).run().data().merge(
-                self(), {'CustomName': pattern[1]}),
+                e().tag('banner_pattern_custom').distance((None, 2))).run().data().merge(
+                s(), {'CustomName': pattern[1]}),
             mc.execute().positioned(r(x, 3, z)).as_(
-                entity().tag('banner_pattern_custom_author').distance((None, 2))).run().data().merge(
-                self(), {'CustomName': pattern[2]}),
+                e().tag('banner_pattern_custom_author').distance((None, 2))).run().data().merge(
+                s(), {'CustomName': pattern[2]}),
         )
 
     half = int(len(authored_patterns) / 2)
@@ -137,18 +137,18 @@ def room():
         yield mc.execute().as_(stands).at(stands).run(
         ).execute().store(RESULT).block((d(0, 0, 1)), 'Patterns[0].Color', INT, 1).run(banner_ink.get())
         yield mc.execute().as_(stands).run(
-        ).execute().store(RESULT).entity(self(), 'HandItems[1].tag.BlockEntityTag.Patterns[0].Color', INT, 1).run(
+        ).execute().store(RESULT).entity(s(), 'HandItems[1].tag.BlockEntityTag.Patterns[0].Color', INT, 1).run(
             banner_ink.get())
 
     def switch_banners(which):
         return (
-            mc.tag(entity().tag('all_banners_home')).remove('banner_color_action_home'),
-            mc.tag(entity().tag('all_banners_home')).remove('banner_color_home'),
-            mc.tag(entity().tag('all_banners_home')).remove('banner_ink_action_home'),
-            mc.tag(entity().tag('all_banners_home')).remove('banner_ink_home'),
-            mc.tag(entity().tag('all_banners_home')).add('banner_' + which + '_action_home'),
-            mc.tag(entity().tag('all_banners_home')).add('banner_' + which + '_home'),
-            mc.tag(entity().tag('all_banners_home')).add('banners_action_home'),
+            mc.tag(e().tag('all_banners_home')).remove('banner_color_action_home'),
+            mc.tag(e().tag('all_banners_home')).remove('banner_color_home'),
+            mc.tag(e().tag('all_banners_home')).remove('banner_ink_action_home'),
+            mc.tag(e().tag('all_banners_home')).remove('banner_ink_home'),
+            mc.tag(e().tag('all_banners_home')).add('banner_' + which + '_action_home'),
+            mc.tag(e().tag('all_banners_home')).add('banner_' + which + '_home'),
+            mc.tag(e().tag('all_banners_home')).add('banners_action_home'),
         )
 
     banner_color_init = mc.function('restworld:banners/switch_to_color')
@@ -185,7 +185,7 @@ def room():
         mc.fill(r(0, 3, 11), r(0, 5, 1), 'air').replace('#banners'),
     ).loop(banner_color_loop, COLORS).add(
         mc.execute().as_(stands).run(
-        ).execute().store(RESULT).entity(self(), 'HandItems[1].tag.BlockEntityTag.Base', INT, 1).run(
+        ).execute().store(RESULT).entity(s(), 'HandItems[1].tag.BlockEntityTag.Base', INT, 1).run(
             banner_color.get()),
         mc.function('restworld:banners/banner_ink_cur'),
     )
@@ -206,8 +206,8 @@ def room():
         row = int(i / 8)
         y = 3 if row == 0 else 2
         z = 1 if row == 0 else 2
-        if_colors = mc.execute().at(entity().tag('banner_color_home'))
-        if_ink = mc.execute().at(entity().tag('banner_ink_home'))
+        if_colors = mc.execute().at(e().tag('banner_color_home'))
+        if_ink = mc.execute().at(e().tag('banner_ink_home'))
         banner_controls.add(
             WallSign((None, c), (
                 if_colors.run(banner_color.set(i)),

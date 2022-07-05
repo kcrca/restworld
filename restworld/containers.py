@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from pyker.commands import mc, r, NORTH, entity, WEST, all_, Block, RESULT, VISIBLE, STYLE, VALUE, PLAYERS, COLOR, \
-    EAST, self, player, Entity, SURVIVAL, LEVELS, CREATIVE
+from pyker.commands import mc, r, NORTH, e, WEST, a, Block, RESULT, VISIBLE, STYLE, VALUE, PLAYERS, COLOR, \
+    EAST, s, p, Entity, SURVIVAL, LEVELS, CREATIVE
 from pyker.simpler import WallSign, Item, ItemFrame
 from restworld.rooms import Room, label
 from restworld.world import restworld, slow_clock, main_clock, fast_clock
@@ -35,9 +35,9 @@ def room():
 
     bossbar_value = room.score('bossbar_value')
     room.function('bossbar_init').add(
-        mc.kill(entity().tag('bossbar_current')),
+        mc.kill(e().tag('bossbar_current')),
         mc.bossbar().add('restworld:bossbar', 'Ornamental Stud'),
-        mc.bossbar().set('restworld:bossbar', PLAYERS, all_()),
+        mc.bossbar().set('restworld:bossbar', PLAYERS, a()),
         mc.bossbar().set('restworld:bossbar', VALUE, 50),
         bossbar_value.set(3),
         mc.function('restworld:containers/bossbar_exit'),
@@ -59,10 +59,10 @@ def room():
 
     def bossbar_param(which):
         return (
-            mc.kill(entity().tag('bossbar_current')),
-            mc.execute().at(entity().tag('bossbar_home')).run().summon(
+            mc.kill(e().tag('bossbar_current')),
+            mc.execute().at(e().tag('bossbar_home')).run().summon(
                 'armor_stand', r(-2, 0, -1), {'Tags': ['bossbar_current', 'bossbar_%s_home' % which], 'Small': True}),
-            mc.execute().at(entity().tag('bossbar_%s_home' % which)).run().function(
+            mc.execute().at(e().tag('bossbar_%s_home' % which)).run().function(
                 'restworld:containers/bossbar_%s_cur' % which),
             mc.bossbar().set('restworld:bossbar', VISIBLE, True),
         )
@@ -117,10 +117,10 @@ def room():
         mc.item().replace().block(r(0, 2, 0), 'container.3').with_('air'),
         mc.item().replace().block(r(0, 2, 0), 'container.4').with_('air'),
         mc.data().merge(r(0, 2, 0), {'Fuel': 0}),
-        mc.kill(entity().tag('brewing_run_home'))
+        mc.kill(e().tag('brewing_run_home'))
     )
     room.function('switch_brewing_on', home=False).add(
-        mc.execute().at(entity().tag('brewing_home')).run().summon(
+        mc.execute().at(e().tag('brewing_home')).run().summon(
             'armor_stand', r(0, 0, 0), {'Tags': ['homer', 'brewing_run_home'], 'NoGravity': True}))
 
     placer = room.mob_placer(r(0, 2, 0), WEST, -3, 0, tags=('carrier',), adults=True,
@@ -129,7 +129,7 @@ def room():
         placer.summon('llama', tags=('strength_llama',)),
         placer.summon('donkey'))
     room.loop('strength_llama', main_clock).loop(
-        lambda x: mc.execute().as_(entity().tag('strength_llama')).run().data().merge(self(), {'Strength': x.elem}),
+        lambda x: mc.execute().as_(e().tag('strength_llama')).run().data().merge(s(), {'Strength': x.elem}),
         range(1, 6))
 
     room.function('cookers_init').add(
@@ -185,11 +185,12 @@ def room():
         ('emerald', 1, 'air', 1, 'golden_carrot', 3, 1001),
         ('emerald', 1, 'melon', 1, 'glistering_melon_slice', 3, 0),
     )
+
     def experience_loop(step):
-        yield mc.data().merge(entity().tag('trades').limit(1),
+        yield mc.data().merge(e().tag('trades').limit(1),
                               {'VillagerData': {'level': step.elem[0]}, 'Xp': step.elem[1]}),
         recipes = list(trade_nbt(*t) for t in trades[:(step.elem[0] * 2)])
-        yield mc.data().merge(entity().tag('trades').limit(1), {'Offers': {'Recipes': recipes}})
+        yield mc.data().merge(e().tag('trades').limit(1), {'Offers': {'Recipes': recipes}})
 
     room.loop('experience', main_clock).loop(experience_loop, xp)
     room.function('enchanting_enter').add(
@@ -220,25 +221,25 @@ def room():
     item_new = room.score('item_new')
     room.function('item_run').add(
         mc.execute().store(RESULT).score(item_new).run().data().modify(
-            entity().tag('item_dst').limit(1), 'Item').set().from_(entity().tag('item_src').limit(1), 'Item'),
-        mc.execute().if_().score(item_new).matches(1).at(entity().tag('item_home')).run().function(
+            e().tag('item_dst').limit(1), 'Item').set().from_(e().tag('item_src').limit(1), 'Item'),
+        mc.execute().if_().score(item_new).matches(1).at(e().tag('item_home')).run().function(
             'restworld:containers/item_update'),
-        mc.execute().as_(entity().tag('item_holder')).run().data().modify(self(), 'ItemRotation').set().value(0),
+        mc.execute().as_(e().tag('item_holder')).run().data().modify(s(), 'ItemRotation').set().value(0),
     )
     room.function('item_update').add(
-        mc.execute().unless().entity(entity().tag('item_ground')).at(entity().tag('item_home')).run().summon(
+        mc.execute().unless().entity(e().tag('item_ground')).at(e().tag('item_home')).run().summon(
             'item', r(0, 3, 1),
             {'Item': Item.nbt_for('iron_pickaxe'), 'Age': -32768, 'PickupDelay': 2147483647, 'Tags': ['item_ground']}),
-        mc.data().modify(entity().tag('item_ground').limit(1), 'Item').set().from_(entity().tag('item_src').limit(1),
-                                                                                   'Item'),
-        mc.data().merge(entity().tag('item_ground').limit(1), {'Age': -32768, 'PickupDelay': 2147483647}),
-        mc.data().modify(entity().tag('item_hands').limit(1), 'HandItems[0]').set().from_(
-            entity().tag('item_src').limit(1), 'Item'),
-        mc.data().modify(entity().tag('item_hands').limit(1), 'HandItems[1]').set().from_(
-            entity().tag('item_src').limit(1), 'Item'),
-        mc.data().remove(entity().tag('item_hands').limit(1), 'ArmorItems[3]'),
+        mc.data().modify(e().tag('item_ground').limit(1), 'Item').set().from_(e().tag('item_src').limit(1),
+                                                                              'Item'),
+        mc.data().merge(e().tag('item_ground').limit(1), {'Age': -32768, 'PickupDelay': 2147483647}),
+        mc.data().modify(e().tag('item_hands').limit(1), 'HandItems[0]').set().from_(
+            e().tag('item_src').limit(1), 'Item'),
+        mc.data().modify(e().tag('item_hands').limit(1), 'HandItems[1]').set().from_(
+            e().tag('item_src').limit(1), 'Item'),
+        mc.data().remove(e().tag('item_hands').limit(1), 'ArmorItems[3]'),
         mc.execute().if_().score(room.score('item_head')).matches(1).run().data().modify(
-            entity().tag('item_hands').limit(1), 'ArmorItems[3]').set().from_(entity().tag('item_src').limit(1), 'Item')
+            e().tag('item_hands').limit(1), 'ArmorItems[3]').set().from_(e().tag('item_src').limit(1), 'Item')
     )
 
     non_inventory = list(Entity(s) for s in (
@@ -265,7 +266,7 @@ def room():
         dz = 1
         x = 0
         items = list(non_inventory)
-        yield mc.kill(entity().tag('only_item_frame'))
+        yield mc.kill(e().tag('only_item_frame'))
         while len(items) > 0:
             z, end = rows.pop(0)
             for i in range(0, end):
@@ -288,10 +289,10 @@ def room():
     giveable = non_inventory[:-1]
     giveable.append(Entity('Elytra', {'Damage': 450}))
     room.function('only_items_give').add(
-        mc.give(player(), 'chain_command_block'),
-        mc.give(player(), 'repeating_command_block'),
-        (mc.give(player(), x) for x in giveable),
-        mc.give(player(), 'firework_rocket'),
+        mc.give(p(), 'chain_command_block'),
+        mc.give(p(), 'repeating_command_block'),
+        (mc.give(p(), x) for x in giveable),
+        mc.give(p(), 'firework_rocket'),
     )
     room.function('only_items_init').add(
         label(r(3, 2, -1), 'Give'),
@@ -300,11 +301,11 @@ def room():
 
     enchant_chest = {'Items': [{'Slot': 0, 'id': 'lapis_lazuli', 'Count': 64}, {'Slot': 1, 'id': 'book', 'Count': 64}]}
     room.loop('survival', main_clock).add(mc.data().merge(r(-6, 6, 0), enchant_chest)).loop(
-        lambda step: mc.xp().set(player(), step.elem, LEVELS), (0, 9, 20, 30))
+        lambda step: mc.xp().set(p(), step.elem, LEVELS), (0, 9, 20, 30))
     room.function('survival_init').add(
-        mc.gamemode(SURVIVAL, player()),
+        mc.gamemode(SURVIVAL, p()),
         mc.function('restworld:containers/survival_cur'))
     room.function('survival_stop', home=False).add(
-        mc.gamemode(CREATIVE, player()),
-        mc.kill(entity().tag('survival_home'))
+        mc.gamemode(CREATIVE, p()),
+        mc.kill(e().tag('survival_home'))
     )

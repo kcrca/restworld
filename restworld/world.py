@@ -2,14 +2,14 @@ from __future__ import annotations
 
 import sys
 
-from pyker.commands import mc, entity, JsonText, player, DARK_GREEN, Commands, r, Entity
+from pyker.commands import mc, e, JsonText, p, DARK_GREEN, Commands, r, Entity
 from pyker.function import FunctionSet, Function
 from pyker.simpler import Book, Sign
 from restworld.rooms import Room, Clock, RoomPack
 
 
 def kill_em(target):
-    return mc.tp(target, entity().tag('death').limit(1))
+    return mc.tp(target, e().tag('death').limit(1))
 
 
 marker_tmpl = Entity('armor_stand', {'NoGravity': True, 'Small': True, })
@@ -81,7 +81,7 @@ class Restworld(RoomPack):
             r'\nMinecraft Version:\n   1.19, June 2022',
         )
 
-        return Function('control_book').add(mc.give(player(), cb.as_entity()))
+        return Function('control_book').add(mc.give(p(), cb.as_entity()))
 
     @staticmethod
     def _action(txt: str, tooltip: str, act: str) -> JsonText:

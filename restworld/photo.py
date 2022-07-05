@@ -4,7 +4,7 @@ import math
 import os
 import re
 
-from pyker.commands import r, mc, Block, EAST, NORTH, OVERWORLD, player, entity, Entity
+from pyker.commands import r, mc, Block, EAST, NORTH, OVERWORLD, p, e, Entity
 from pyker.info import colors, woods, stems, corals
 from restworld.rooms import Room, MobPlacer, label
 from restworld.world import restworld
@@ -160,28 +160,28 @@ def room():
     room.function('all_blocks').add(all_blocks())
 
     room.function('photo_mobs_init').add(
-        mc.tp(entity().tag('photo_mob'), r(0, 15, 0)),
-        mc.kill(entity().tag('photo_mob')),
-        mc.kill(entity().type('item')),
+        mc.tp(e().tag('photo_mob'), r(0, 15, 0)),
+        mc.kill(e().tag('photo_mob')),
+        mc.kill(e().type('item')),
         (Entity(m.mob, m.nbt).tag('photo_mob').merge_nbt(MobPlacer.base_nbt).summon(r(m.x, m.y, m.z),
                                                                                     {'Rotation': [m.rotation, 0],
                                                                                      'OnGround': True}) for m in mobs))
 
     room.function('photo_example_view').add(
-        mc.execute().in_(OVERWORLD).run().tp(player(), (-1000, 100, 1000)).facing((-1011, 93, 989)),
-        mc.kill(entity().type('item'))
+        mc.execute().in_(OVERWORLD).run().tp(p(), (-1000, 100, 1000)).facing((-1011, 93, 989)),
+        mc.kill(e().type('item'))
     )
     room.function('photo_mobs_view').add(
-        mc.tp(player(), (-996.5, 100, 1002.5)).facing((-950.5, 78, 1002.5)),
-        mc.kill(entity().type('item')))
+        mc.tp(p(), (-996.5, 100, 1002.5)).facing((-950.5, 78, 1002.5)),
+        mc.kill(e().type('item')))
     room.function('photo_quilt_view').add(
-        mc.tp(player(), entity().tag('photo_quilt_view').limit(1)),
-        mc.execute().at(entity().tag('photo_quilt_view').limit(1)).run().tp(
-            player(), r(0, 0, -0.5)).facing((-1000, 100, 1016)),
-        mc.kill(entity().type('item')))
+        mc.tp(p(), e().tag('photo_quilt_view').limit(1)),
+        mc.execute().at(e().tag('photo_quilt_view').limit(1)).run().tp(
+            p(), r(0, 0, -0.5)).facing((-1000, 100, 1016)),
+        mc.kill(e().type('item')))
 
     room.function('photo_shoot_init').add(
-        mc.kill(entity().tag('photo_view')),
+        mc.kill(e().tag('photo_view')),
         mc.summon('armor_stand', r(0, 10, -3),
                   {'Tags': ['photo_view', 'photo_example_view'], 'NoGravity': True, 'Small': True,
                    'PersistenceRequired': True, 'Invisible': True}),

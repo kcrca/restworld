@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from pyker.commands import r, mc, entity, Entity, Score, NORTH, EAST, SOUTH, WEST
+from pyker.commands import r, mc, e, Entity, Score, NORTH, EAST, SOUTH, WEST
 from pyker.simpler import WallSign
 from restworld.rooms import Room
 from restworld.world import restworld, fast_clock, slow_clock, main_clock
@@ -10,7 +10,7 @@ def room():
     room = Room('center', restworld)
 
     room.function('example_painting_init').add(
-        mc.kill(entity().tag('center_painting')),
+        mc.kill(e().tag('center_painting')),
         mc.summon(Entity('painting', {'variant': 'skeleton', 'Facing': 3, 'Tags': ['center_painting']}), r(0, 3, 0)))
     speed_fast = Score('SPEED_FAST', 'clocks')
     speed_main = Score('SPEED_MAIN', 'clocks')
@@ -45,9 +45,9 @@ def room():
         WallSign(('The color of the', 'floor blocks under', 'buttons show if', 'clocks are on.')).place(
             (r(4), 101, r(1)), WEST),
 
-        mc.tag(entity().tag('lights_home')).add('fast_lights_home'),
-        mc.tag(entity().tag('lights_home')).add('main_lights_home'),
-        mc.tag(entity().tag('lights_home')).add('slow_lights_home'),
+        mc.tag(e().tag('lights_home')).add('fast_lights_home'),
+        mc.tag(e().tag('lights_home')).add('main_lights_home'),
+        mc.tag(e().tag('lights_home')).add('slow_lights_home'),
     )
 
     def lights_loop(y, block):
@@ -62,7 +62,7 @@ def room():
 
     all = {'Tags': ['center', 'mob_display'], 'PersistenceRequired': True}
     room.function('mobs_display_init').add(
-        mc.kill(entity().tag('mob_display')),
+        mc.kill(e().tag('mob_display')),
 
         mc.summon('cow', r(-6, 2.5, 0), all),
         mc.summon('polar_bear', r(-6, 2.5, 0), all),
@@ -74,5 +74,5 @@ def room():
         mc.summon('mooshroom', r(6, 2.5, 0), all),
         mc.summon('pig', r(6, 2.5, 0), all),
 
-        mc.kill(entity().type('item')),
+        mc.kill(e().type('item')),
     )

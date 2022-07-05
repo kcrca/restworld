@@ -3,7 +3,7 @@ from __future__ import annotations
 import re
 from typing import Iterable, Union
 
-from pyker.commands import EAST, r, mc, entity, Entity, good_block, Block, NORTH, SOUTH, WEST, self, MOVE, \
+from pyker.commands import EAST, r, mc, e, Entity, good_block, Block, NORTH, SOUTH, WEST, s, MOVE, \
     good_facing
 from pyker.info import colors, Color
 from pyker.simpler import Sign, Item, WallSign, Volume
@@ -41,7 +41,7 @@ def room():
         )
         if show_list:
             block_init.add(
-                mc.execute().if_().score(block_list_score).matches(0).run().kill(entity().tag('block_list_%s' % name))
+                mc.execute().if_().score(block_list_score).matches(0).run().kill(e().tag('block_list_%s' % name))
             )
             names = room.function(name + '_names', home=False)
             all_names.add(mc.function(names.full_name))
@@ -171,16 +171,16 @@ def room():
     blocks('copper', NORTH, (types, block), dx=-3)
     blocks('waxed_copper', NORTH, (waxed_types, waxed_block), dx=-3, score=room.score('copper'))
     room.function('copper_init', exists_ok=True).add(
-        mc.tag(entity().tag('copper_home')).add('copper_base'),
-        mc.tag(entity().tag('waxed_copper_home')).add('copper_base'))
+        mc.tag(e().tag('copper_home')).add('copper_base'),
+        mc.tag(e().tag('waxed_copper_home')).add('copper_base'))
     room.function('switch_to_copper').add(
-        mc.tag(entity().tag('copper_base')).add('copper_home'),
-        mc.tag(entity().tag('copper_base')).remove('copper_waxed_home'),
-        mc.execute().at(entity().tag('copper_base')).run().function('restworld:blocks/copper_cur'))
+        mc.tag(e().tag('copper_base')).add('copper_home'),
+        mc.tag(e().tag('copper_base')).remove('copper_waxed_home'),
+        mc.execute().at(e().tag('copper_base')).run().function('restworld:blocks/copper_cur'))
     room.function('switch_to_waxed_copper').add(
-        mc.tag(entity().tag('copper_base')).remove('copper_home'),
-        mc.tag(entity().tag('copper_base')).add('copper_waxed_home'),
-        mc.execute().at(entity().tag('copper_base')).run().function('restworld:blocks/waxed_copper_cur'))
+        mc.tag(e().tag('copper_base')).remove('copper_home'),
+        mc.tag(e().tag('copper_base')).add('copper_waxed_home'),
+        mc.execute().at(e().tag('copper_base')).run().function('restworld:blocks/waxed_copper_cur'))
 
     woodlike = woods + stems
     leaves = ['%s Leaves' % x for x in woods] + ['Warped Wart Block', 'Nether Wart Block']
@@ -206,7 +206,7 @@ def room():
                'Lectern': ({'has_book': False}, {'has_book': True})})
 
     for f in ('amethyst',):
-        room.function(f + '_init').add(mc.tag(entity().tag(f + '_home')))
+        room.function(f + '_init').add(mc.tag(e().tag(f + '_home')))
     amethyst_phases = (
         'Amethyst Block', 'Budding Amethyst', 'Small Amethyst|Bud', 'Medium Amethyst|Bud', 'Large Amethyst|Bud',
         'Amethyst Cluster')
@@ -230,7 +230,7 @@ def room():
     ).loop(
         amethyst_loop, amethyst_phases, bounce=True
     ).add(
-        mc.kill(entity().type('item').nbt({'Item': {'id': 'minecraft:amethyst_shard'}}))
+        mc.kill(e().type('item').nbt({'Item': {'id': 'minecraft:amethyst_shard'}}))
     )
 
     def bell_loop(step):
@@ -354,7 +354,7 @@ def room():
             r(0, 3, -1)),
         yield mc.data().merge(r(0, 2, -1), Sign.lines_nbt((None, *step.elem.sign_text)))
 
-    item_frame_init = mc.kill(entity().tag('item_frame_as_block'))
+    item_frame_init = mc.kill(e().tag('item_frame_as_block'))
     room.function('item_frame_init').add(item_frame_init)
     room.loop('item_frame', main_clock).add(item_frame_init).loop(item_frame_loop,
                                                                   (Block('Item Frame'), Block('Glow Item Frame')))
@@ -387,16 +387,16 @@ def room():
     blocks('ore_blocks', NORTH, (ores, ore_blocks), dz=3)
     blocks('deepslate_ore_blocks', NORTH, (slate_ores, ore_blocks), dz=3, score=room.score('ore_blocks'))
     room.function('ore_blocks_init', exists_ok=True).add(
-        mc.tag(entity().tag('ore_blocks_home')).add('ore_blocks_base'),
-        mc.tag(entity().tag('deepslate_ore_blocks_home')).add('ore_blocks_base'))
+        mc.tag(e().tag('ore_blocks_home')).add('ore_blocks_base'),
+        mc.tag(e().tag('deepslate_ore_blocks_home')).add('ore_blocks_base'))
     room.function('switch_to_ore_blocks').add(
-        mc.tag(entity().tag('ore_blocks_base')).add('ore_blocks_home'),
-        mc.tag(entity().tag('ore_blocks_base')).remove('deepslate_ore_blocks_home'),
-        mc.execute().at(entity().tag('ore_blocks_base')).run().function('restworld:blocks/ore_blocks_cur'))
+        mc.tag(e().tag('ore_blocks_base')).add('ore_blocks_home'),
+        mc.tag(e().tag('ore_blocks_base')).remove('deepslate_ore_blocks_home'),
+        mc.execute().at(e().tag('ore_blocks_base')).run().function('restworld:blocks/ore_blocks_cur'))
     room.function('switch_to_deepslate_ore_blocks').add(
-        mc.tag(entity().tag('ore_blocks_base')).remove('ore_blocks_home'),
-        mc.tag(entity().tag('ore_blocks_base')).add('deepslate_ore_blocks_home'),
-        mc.execute().at(entity().tag('ore_blocks_base')).run().function('restworld:blocks/deepslate_ore_blocks_cur'))
+        mc.tag(e().tag('ore_blocks_base')).remove('ore_blocks_home'),
+        mc.tag(e().tag('ore_blocks_base')).add('deepslate_ore_blocks_home'),
+        mc.execute().at(e().tag('ore_blocks_base')).run().function('restworld:blocks/deepslate_ore_blocks_cur'))
 
     def scaffolding_loop(step):
         i = step.i
@@ -461,7 +461,7 @@ def room():
     room.loop('structure_blocks', main_clock).loop(structure_blocks_loop, ('Data', 'Save', 'Load', 'Corner'))
 
     def tnt_loop(step):
-        yield mc.kill(entity().type('tnt').distance((None, 10)))
+        yield mc.kill(e().type('tnt').distance((None, 10)))
         yield mc.setblock(r(0, 3, 0), Block('tnt', {'unstable': step.elem == 'unstable'}))
         yield mc.data().merge(r(0, 2, -1), {'Text3': step.elem.title()})
 
@@ -503,7 +503,7 @@ def room():
             'amethyst', 'anvil', 'bell', 'brewing_stand', 'cake', 'campfire', 'cauldron', 'chest', 'colored_beam',
             'colorings', 'composter', 'frosted_ice', 'grindstone', 'item_frame', 'job_sites_1', 'job_sites_2',
             'lantern'):
-        room.function(b + '_init', exists_ok=True).add(mc.tag(entity().tag(b + '_home')).add('no_expansion'))
+        room.function(b + '_init', exists_ok=True).add(mc.tag(e().tag(b + '_home')).add('no_expansion'))
 
 
 def room_init_functions(room, block_list_score):
@@ -512,19 +512,19 @@ def room_init_functions(room, block_list_score):
         label(r(-16, 2, -3), 'List Blocks'),
         label(r(-43, 2, 3), 'List Blocks'),
         label(r(-43, 2, -3), 'List Blocks'),
-        mc.kill(entity().tag('block_list'))
+        mc.kill(e().tag('block_list'))
     )
     room.function('blocks_sign_init').add(
-        mc.execute().at(entity().tag('blocks_home', '!no_expansion')).run().data().merge(r(0, 2, -1), {
+        mc.execute().at(e().tag('blocks_home', '!no_expansion')).run().data().merge(r(0, 2, -1), {
             'Text1': 'function restworld:blocks/toggle_expand'}),
-        mc.execute().at(entity().tag('blocks_home', '!no_expansion')).run().data().merge(r(0, 2, 1), {
+        mc.execute().at(e().tag('blocks_home', '!no_expansion')).run().data().merge(r(0, 2, 1), {
             'Text1': 'function restworld:blocks/toggle_expand'}),
 
-        mc.execute().at(entity().tag('blocks_home', 'no_expansion')).run().data().merge(r(0, 2, -1), {
+        mc.execute().at(e().tag('blocks_home', 'no_expansion')).run().data().merge(r(0, 2, -1), {
             'Text1': 'say Sorry, cannot expand this block'}),
-        mc.execute().at(entity().tag('blocks_home', 'no_expansion')).run().data().merge(r(0, 2, 1), {
+        mc.execute().at(e().tag('blocks_home', 'no_expansion')).run().data().merge(r(0, 2, 1), {
             'Text1': 'say Sorry, cannot expand this block'}),
-        mc.tag(entity().tag('block_sign_home')).add('no_expansion'),
+        mc.tag(e().tag('block_sign_home')).add('no_expansion'),
     )
     room.loop('toggle_block_list', score=block_list_score).loop(None, range(0, 2)).add(
         mc.function('restworld:blocks/_cur'))
@@ -571,13 +571,13 @@ def color_functions(room):
         if is_plain:
             mc.fill(r(-9, 2, 2), r(-9, 2, 3), 'air')
             mc.fill(*coloring_coords, 'air').replace('#standing_signs')
-            mc.data().merge(entity().tag('colorings_item_frame').limit(1), {'Item': {'Count': 0}})
+            mc.data().merge(e().tag('colorings_item_frame').limit(1), {'Item': {'Count': 0}})
         else:
             mc.setblock(r(-9, 2, 2), Block('%s_bed' % color.id, {'facing': NORTH, 'part': 'head'}))
             mc.setblock(r(-9, 2, 3), Block('%s_bed' % color.id, {'facing': NORTH, 'part': 'foot'}))
             frame_nbt = {'Item': Item.nbt_for('%s_dye' % color.id)}
             frame_nbt['ItemRotation'] = 0
-            mc.data().merge(entity().tag('colorings_item_frame').limit(1), frame_nbt)
+            mc.data().merge(e().tag('colorings_item_frame').limit(1), frame_nbt)
 
         if is_plain:
             leather_color = {}
@@ -591,7 +591,7 @@ def color_functions(room):
             sheep_nbt = {'Color': color.num, 'Sheared': False}
 
         if is_plain:
-            yield kill_em(entity().tag('colorings_horse'))
+            yield kill_em(e().tag('colorings_horse'))
             horse = Entity('horse', nbt={'Variant': 5, 'ArmorItem': {'id': 'leather_horse_armor', 'Count': 1},
                                          'Rotation': [0, 0], 'Tame': True, 'NoAI': True, 'Silent': True}).tag(
                 'colorings_horse',
@@ -599,18 +599,18 @@ def color_functions(room):
                 'colorings_names')
             yield horse.summon(r(0.2, 2, 4.4))
 
-        yield mc.data().merge(entity().tag('colorings_armor_stand').limit(1), {
+        yield mc.data().merge(e().tag('colorings_armor_stand').limit(1), {
             'ArmorItems': [Item.nbt_for('leather_boots', nbt=leather_color),
                            Item.nbt_for('leather_leggins', nbt=leather_color),
                            Item.nbt_for('leather_chestplate', nbt=leather_color),
                            Item.nbt_for('leather_helmet', nbt=leather_color)]})
-        yield mc.data().merge(entity().tag('colorings_horse').limit(1),
+        yield mc.data().merge(e().tag('colorings_horse').limit(1),
                               {'ArmorItem': Item.nbt_for('leather_horse_armor', nbt=horse_leather_color)})
-        yield mc.data().merge(entity().tag('colorings_llama').limit(1), {'DecorItem': llama_decor})
-        yield mc.data().merge(entity().tag('colorings_sheep').limit(1), sheep_nbt)
+        yield mc.data().merge(e().tag('colorings_llama').limit(1), {'DecorItem': llama_decor})
+        yield mc.data().merge(e().tag('colorings_sheep').limit(1), sheep_nbt)
 
         yield mc.data().merge(r(-4, 2, 4), {'Text2': color.name})
-        yield mc.execute().as_(entity().tag('colorings_names')).run().data().merge(self(), {'CustomName': color.name})
+        yield mc.execute().as_(e().tag('colorings_names')).run().data().merge(s(), {'CustomName': color.name})
 
         yield mc.data().merge(r(0, 0, -1), {'name': 'restworld:%s_terra' % 'plain' if is_plain else color.id})
         yield mc.data().merge(r(1, 2, -0), {'Text1': color.name})
@@ -640,7 +640,7 @@ def color_functions(room):
         yield from colored_signs(step.elem, render_signs)
 
     room.function('colorings_init').add(
-        mc.kill(entity().tag('colorings_item')),
+        mc.kill(e().tag('colorings_item')),
 
         Entity('item_frame', {
             'Facing': 3, 'Tags': ['colorings_item_frame', 'colorings_item'], 'Item': Item.nbt_for('stone'),
@@ -658,7 +658,7 @@ def color_functions(room):
             'Tags': ['colorings_sheep', 'colorings_item'], 'Variant': 1, 'NoAI': True, 'Silent': True,
             'Rotation': [-35, 0], 'Leashed': True}).summon(r(-9.0, 2, 5.0)),
 
-        mc.execute().as_(entity().tag('colorings_names')).run().data().merge(self(), {'CustomNameVisible': True}),
+        mc.execute().as_(e().tag('colorings_names')).run().data().merge(s(), {'CustomNameVisible': True}),
 
         WallSign((None, 'Terracotta')).place(r(-1, 3, 1), SOUTH),
         WallSign((None, 'Shulker Box')).place(r(-3, 3, 1), SOUTH),
@@ -670,7 +670,7 @@ def color_functions(room):
                       lambda x, y, z, _, wood: Sign((wood.id, 'Sign With', 'Default', 'Text')).place(r(x, y, z), 14)),
         WallSign([]).place(r(-4, 2, 4, ), SOUTH),
 
-        mc.kill(entity().type('item')),
+        mc.kill(e().type('item')),
 
         label(r(-1, 2, 7), 'Lit Candles'),
         label(r(-7, 2, 7), 'Plain'),
@@ -688,25 +688,25 @@ def color_functions(room):
                  (coloring_coords[1][0], 0, coloring_coords[1][2]),
                  (coloring_coords[1][0], coloring_coords[1][1] - 1, coloring_coords[1][2])),
 
-        mc.tag(entity().tag('colorings_base_home')).add('colorings_home'),
-        mc.execute().at(entity().tag('colorings_home')).run().function('restworld:/blocks/colorings_cur'),
-        mc.kill(entity().type('item').distance((None, 20))),
+        mc.tag(e().tag('colorings_base_home')).add('colorings_home'),
+        mc.execute().at(e().tag('colorings_home')).run().function('restworld:/blocks/colorings_cur'),
+        mc.kill(e().type('item').distance((None, 20))),
     )
     room.function('colorings_plain_on').add(
-        mc.tag(entity().tag('colorings_base_home')).remove('colorings_home'),
+        mc.tag(e().tag('colorings_base_home')).remove('colorings_home'),
         mc.clone((coloring_coords[0][0], coloring_coords[0][1], coloring_coords[0][2]),
                  (coloring_coords[1][0], coloring_coords[1][1] - 1, coloring_coords[1][2]),
                  (coloring_coords[0][0], 0, coloring_coords[0][2])),
         colorings(True, Color('Plain', 0x0)),
         mc.setblock(r(-7, -1, 3), 'redstone_torch'),
         mc.setblock(r(-7, -1, 3), 'air'),
-        mc.kill(entity().type('item').distance((None, 20))),
+        mc.kill(e().type('item').distance((None, 20))),
     )
-    room.functions['colorings_home'].add(mc.tag(entity().tag('colorings_home')).add('colorings_base_home'))
+    room.functions['colorings_home'].add(mc.tag(e().tag('colorings_home')).add('colorings_base_home'))
     room.function('colorings_enter').add(
-        mc.execute().as_(entity().tag('colorings_names')).run().data().merge(self(), {'CustomNameVisible': True}))
+        mc.execute().as_(e().tag('colorings_names')).run().data().merge(s(), {'CustomNameVisible': True}))
     room.function('colorings_exit').add(
-        mc.execute().as_(entity().tag('colorings_names')).run().data().merge(self(), {'CustomNameVisible': False}))
+        mc.execute().as_(e().tag('colorings_names')).run().data().merge(s(), {'CustomNameVisible': False}))
     room.function('colored_beam_enter').add(mc.setblock(r(0, 1, 0), 'iron_block'))
     room.function('colored_beam_exit').add(mc.setblock(r(0, 1, 0), 'white_concrete'))
 
@@ -751,38 +751,38 @@ def expansion_functions(room):
         ## expanding or it is not.  We need to swap that.
 
         ## If it's an expander, add a temporary 'to be stopped' tag to it
-        mc.execute().as_(entity().tag('expander').distance((None, 1))).run().tag(self()).add('stop_expanding'),
+        mc.execute().as_(e().tag('expander').distance((None, 1))).run().tag(s()).add('stop_expanding'),
         ## If it's not an mc.expander, tag it as one
-        mc.execute().as_(entity().tag('!expander', '!no_expansion').distance((None, 1))).run().tag(self()).add(
+        mc.execute().as_(e().tag('!expander', '!no_expansion').distance((None, 1))).run().tag(s()).add(
             'expander'),
         ## If it has the 'to be stopped' tag, remove the mc.expander tag
-        mc.execute().as_(entity().tag('stop_expanding').distance((None, 1))).run().tag(self()).remove('expander'),
+        mc.execute().as_(e().tag('stop_expanding').distance((None, 1))).run().tag(s()).remove('expander'),
         ## ... and then remove the 'to be stopped' tag
-        mc.execute().as_(entity().tag('stop_expanding').distance((None, 1))).run().tag(self()).remove('stop_expanding'),
+        mc.execute().as_(e().tag('stop_expanding').distance((None, 1))).run().tag(s()).remove('stop_expanding'),
 
         ## Now it has the right tagging, do an immediate().action on it
-        mc.execute().at(entity().tag('expander').distance((None, 1))).run().function('restworld:blocks/expander'),
-        mc.execute().at(entity().tag('!expander', '!no_expansion').distance((None, 1))).run().function(
+        mc.execute().at(e().tag('expander').distance((None, 1))).run().function('restworld:blocks/expander'),
+        mc.execute().at(e().tag('!expander', '!no_expansion').distance((None, 1))).run().function(
             'restworld:blocks/contracter'),
 
         ## And, as a cleanup, if it never will be an mc.expander, say 'sorry'
-        mc.execute().at(entity().tag('no_expansion').distance((None, 1))).run().say('Sorry, cannot expand this.'),
-        mc.execute().at(entity().tag('no_expansion', 'fire_home').distance((None, 1))).run().say(
+        mc.execute().at(e().tag('no_expansion').distance((None, 1))).run().say('Sorry, cannot expand this.'),
+        mc.execute().at(e().tag('no_expansion', 'fire_home').distance((None, 1))).run().say(
             'Sorry, cannot expand this.'),
     )
     room.function('expander').add(
-        mc.execute().if_().entity(entity().tag('fire_home').distance((None, 1))).run().function(
+        mc.execute().if_().entity(e().tag('fire_home').distance((None, 1))).run().function(
             'restworld:blocks/expand_fire'),
-        mc.execute().if_().entity(entity().tag('dripstone_home').distance((None, 1))).run().function(
+        mc.execute().if_().entity(e().tag('dripstone_home').distance((None, 1))).run().function(
             'restworld:blocks/expand_dripstone'),
-        mc.execute().unless().entity(entity().tag('fire_home').distance((None, 1))).unless().entity(
-            entity().tag('dripstone_home').distance((None, 1))).run().function('restworld:blocks/expand_generic')
+        mc.execute().unless().entity(e().tag('fire_home').distance((None, 1))).unless().entity(
+            e().tag('dripstone_home').distance((None, 1))).run().function('restworld:blocks/expand_generic')
     )
     room.function('expand_all', home=False).add(
-        mc.execute().as_(entity().tag('blocks_home', '!no_expansion', '!expander')).run().execute().at(
-            self()).run().function('restworld:blocks/toggle_expand_at'))
+        mc.execute().as_(e().tag('blocks_home', '!no_expansion', '!expander')).run().execute().at(
+            s()).run().function('restworld:blocks/toggle_expand_at'))
     room.function('expand_finish_main').add(
-        mc.execute().at(entity().tag('expander', 'generic_home')).run().function('restworld:blocks/expander'))
+        mc.execute().at(e().tag('expander', 'generic_home')).run().function('restworld:blocks/expander'))
     room.function('expand_dripstone', home=False).add(
         # Clone the original stack to either side to form a line, including anything on top of the block
         mc.clone(r(0, 12, 0), r(0, 3, 0), r(-1, 3, 0)),
@@ -836,16 +836,16 @@ def expansion_functions(room):
     )
 
     room.function('contracter').add(
-        mc.execute().if_().entity(entity().tag('fire_home').distance((None, 1))).run().function(
+        mc.execute().if_().entity(e().tag('fire_home').distance((None, 1))).run().function(
             'restworld:blocks/contract_fire'),
-        mc.execute().if_().entity(entity().tag('dripstone_home').distance((None, 1))).run().function(
+        mc.execute().if_().entity(e().tag('dripstone_home').distance((None, 1))).run().function(
             'restworld:blocks/contract_dripstone'),
-        mc.execute().unless().entity(entity().tag('fire_home').distance((None, 1))).unless().entity(
-            entity().tag('dripstone_home').distance((None, 1))).run().function('restworld:blocks/contract_generic'),
+        mc.execute().unless().entity(e().tag('fire_home').distance((None, 1))).unless().entity(
+            e().tag('dripstone_home').distance((None, 1))).run().function('restworld:blocks/contract_generic'),
     )
     room.function('contract_all', home=False).add(
-        mc.execute().as_(entity().tag('blocks_home', '!no_expansion', 'expander')).run().execute().at(
-            self()).run().function('restworld:blocks/toggle_expand_at'))
+        mc.execute().as_(e().tag('blocks_home', '!no_expansion', 'expander')).run().execute().at(
+            s()).run().function('restworld:blocks/toggle_expand_at'))
     room.function('contract_dripstone').add(
         # Erase the front and back lines
         mc.fill(r(1, 12, 1), r(-1, 3, 1), 'air'),
@@ -868,14 +868,14 @@ def expansion_functions(room):
     )
 
     room.home_func('generic').add(
-        mc.kill(entity().tag('generic_home').distance((None, 2))),
+        mc.kill(e().tag('generic_home').distance((None, 2))),
         mc.summon('armor_stand', r(0, 0.5, 0),
                   {'Tags': ['generic_home', 'homer', 'blocks_home'], 'NoGravity': True, 'Small': True}),
     )
     # generic_home is used for entirely static blocks. This is used for blocks that are changed, but
     # by a different command block than the one under it. These want to be expanded as they change,
     room.home_func('just_expand').add(
-        mc.kill(entity().tag('just_expand_home').distance((None, 2))),
+        mc.kill(e().tag('just_expand_home').distance((None, 2))),
         mc.summon('armor_stand', r(0, 0.5, 0),
                   {'Tags': ['just_expand_home', 'homer', 'blocks_home'], 'NoGravity': True, 'Small': True}))
 

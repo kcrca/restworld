@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from pyker.commands import r, NORTH, SOUTH, mc, entity, self, Entity, EAST, WEST, EQ, Score, MOD
+from pyker.commands import r, NORTH, SOUTH, mc, e, s, Entity, EAST, WEST, EQ, Score, MOD
 from pyker.info import colors, horses, villager_professions, villager_types
 from pyker.simpler import WallSign
 from restworld.rooms import Room, label
@@ -33,10 +33,10 @@ def room():
         bee_home = 'beehive' if step.i == 0 else 'bee_nest'
         # The 'air' check is for if we're levitated
         yield mc.execute().unless().block(r(0, 1, 0), 'air').at(
-            entity().tag('bee_home')).run().setblock(r(0, 2, 2), (bee_home, {'facing': NORTH}))
+            e().tag('bee_home')).run().setblock(r(0, 2, 2), (bee_home, {'facing': NORTH}))
         on_ground = step.i < 2
         base = 'iron_bars' if on_ground else 'air'
-        yield mc.execute().as_(entity().tag('bee')).run().data().merge(self(), {
+        yield mc.execute().as_(e().tag('bee')).run().data().merge(s(), {
             'OnGround': on_ground, 'AngerTime': (step.i % 2) * 100000,
             'CustomName': 'Bee' if step.i % 2 == 0 else 'Angry Bee'})
         yield mc.execute().unless().block(r(0, 1, 0), 'air').run().setblock(r(0, 2, 0), base)
@@ -45,31 +45,30 @@ def room():
     room.loop('bee', main_clock).loop(bee_loop, range(0, 4))
 
     p = placer(*south_placer)
-    e = Entity('wolf', nbt={'Owner': 'dummy'}, display_name='Dog')
     room.function('canine_init').add(
         p.summon('wolf'),
-        p.summon(e, tags=('collared',)),
+        p.summon(Entity('wolf', nbt={'Owner': 'dummy'}, display_name='Dog'), tags=('collared',)),
         label(r(1, 2, 2), 'Sit'))
 
     room.loop('canine', main_clock).loop(
-        lambda step: mc.execute().as_(entity().tag('wolf')).run().data().merge(self(), {'Angry': step.elem}),
+        lambda step: mc.execute().as_(e().tag('wolf')).run().data().merge(s(), {'Angry': step.elem}),
         (True, False))
     room.function('cat_init').add(
         placer(*south_placer, tags=('collared',)).summon('cat'),
         label(r(1, 2, 2), 'Cat Collar'))
     room.loop('cat', main_clock).loop(
-        lambda step: mc.execute().as_(entity().tag('cat')).run().data().merge(self(), {
+        lambda step: mc.execute().as_(e().tag('cat')).run().data().merge(s(), {
             'CatType': step.i, 'CustomName': step.elem}), (
             'Tabby', 'Tuxedo', 'Red', 'Siamese', 'British Shorthair', 'Calico', 'Persian', 'Ragdoll', 'White', 'Jellie',
             'Black'))
     room.function('chicken_exit').add(
-        mc.execute().as_(entity().type('chicken')).run().data().merge(self(), {'EggLayTime': 1000000000}))
+        mc.execute().as_(e().type('chicken')).run().data().merge(s(), {'EggLayTime': 1000000000}))
     room.function('chicken_init').add(
         placer(*mid_east_placer).summon('chicken'),
-        mc.execute().as_(entity().tag('chicken')).run().data().merge(self(), {'EggLayTime': 1000000})
+        mc.execute().as_(e().tag('chicken')).run().data().merge(s(), {'EggLayTime': 1000000})
     )
     room.loop('chicken', main_clock).loop(
-        lambda step: mc.execute().as_(entity().tag('chicken')).run().data().merge(self(), {
+        lambda step: mc.execute().as_(e().tag('chicken')).run().data().merge(s(), {
             'OnGround': step.elem, 'EggLayTime': 1000000000}), (True, False))
     room.function('colored_mobs_init').add(
         label(r(0, 2, -1), 'Glow'),
@@ -77,13 +76,13 @@ def room():
     )
 
     def colored_mobs_loop(step):
-        yield mc.execute().as_(entity().tag('colorable')).run().data().merge(
-            self(), {'Color': step.i, 'CustomName': step.elem.name})
-        yield mc.execute().as_(entity().tag('collared')).run().data().merge(
-            self(), {'CollarColor': step.i})
+        yield mc.execute().as_(e().tag('colorable')).run().data().merge(
+            s(), {'Color': step.i, 'CustomName': step.elem.name})
+        yield mc.execute().as_(e().tag('collared')).run().data().merge(
+            s(), {'CollarColor': step.i})
 
     room.loop('colored_mobs', main_clock).loop(colored_mobs_loop, colors)
-    room.loop('cow', main_clock).add(kill_em(entity().tag('cowish'))).loop(
+    room.loop('cow', main_clock).add(kill_em(e().tag('cowish'))).loop(
         lambda step: placer(*mid_east_placer, tags=('cowish',)).summon(step.elem),
         ('cow', 'mooshroom', Entity('mooshroom', {'Type': 'brown'})))
     room.function('fox_init').add(placer(*mid_east_placer).summon('fox'))
@@ -95,36 +94,37 @@ def room():
         nbt = {'Type': which, 'CustomName': '%s Fox' % which.title()}
         for p in fox_postures:
             nbt[p] = step.elem == p
-        yield mc.execute().as_(entity().tag('fox')).run().data().merge(self(), nbt)
+        yield mc.execute().as_(e().tag('fox')).run().data().merge(s(), nbt)
 
     room.loop('fox', main_clock).loop(fox_loop, (('',) + fox_postures) * 2)
     room.function('frog_init').add(placer(r(0, 2, 0.2), NORTH, adults=True).summon('frog'))
 
     room.loop('frog', main_clock).loop(
-        lambda step: mc.execute().as_(entity().tag('frog')).run().data().merge(
-            self(), {'variant': step.elem.lower(), 'CustomName': step.elem}), ('Temperate', 'Warm', 'Cold'))
+        lambda step: mc.execute().as_(e().tag('frog')).run().data().merge(
+            s(), {'variant': step.elem.lower(), 'CustomName': step.elem}), ('Temperate', 'Warm', 'Cold'))
 
     def frogspawn_loop(step):
         if step.i == 0:
-            yield kill_em(entity().tag('tadpole', room.name))
+            yield kill_em(e().tag('tadpole', room.name))
             yield mc.setblock(r(0, 2, -1), 'frogspawn')
         else:
-            yield placer(r(0, 2, -1), NORTH, kids=True).summon(Entity('tadpole', {'Invulnerable': True}), tags=('keeper',))
+            yield placer(r(0, 2, -1), NORTH, kids=True).summon(Entity('tadpole', {'Invulnerable': True}),
+                                                               tags=('keeper',))
             yield mc.setblock(r(0, 2, -1), 'air')
-        yield kill_em(entity().type('tadpole').not_tag('keeper'))
+        yield kill_em(e().type('tadpole').not_tag('keeper'))
 
     room.loop('frogspawn', main_clock).loop(frogspawn_loop, range(0, 2))
     room.function('goat_init').add(placer(*south_placer).summon('goat'))
     room.loop('goat', main_clock).loop(
-        lambda step: mc.execute().as_(entity().tag('goat').tag('adult')).run().data().merge(
-            self(), {'HasLeftHorn': step.i & 1, 'HasRightHorn': step.i & 2}), range(0, 4))
+        lambda step: mc.execute().as_(e().tag('goat').tag('adult')).run().data().merge(
+            s(), {'HasLeftHorn': step.i & 1, 'HasRightHorn': step.i & 2}), range(0, 4))
 
     # base.mobs_init('z_delta_init': -2, 'kid_x_init': 1.4, 'adult_x_init': -1.2, 'rotation_init': 270, 'tags_init': '('saddle'',))
     p = placer(r(-1.2, 2, 0), EAST, -2, 1.6, tags=('saddle',), nbt={'Tame': True})
     room.function('horse_init').add(
         (p.summon(Entity('horse', display_name=horse.name(), nbt={'Variant': h}), tags=(horse.tag,)) for h, horse in
          enumerate(horses)),
-        mc.execute().at(entity().tag(_to_id(horses[3].tag), 'kid')).run(
+        mc.execute().at(e().tag(_to_id(horses[3].tag), 'kid')).run(
             WallSign((None, 'Variant:')).place(r(2, 0, 0), EAST)),
         label(r(1, 2, 1), 'Lead'),
         label(r(1, 2, -7), 'Saddles'),
@@ -133,8 +133,8 @@ def room():
 
     def horse_loop(step):
         for h, horse in enumerate(horses):
-            yield mc.execute().as_(entity().tag(horse.tag)).run().data().merge(self(), {'Variant': step.i * 256 + h})
-        yield mc.execute().at(entity().tag(horses[3].tag).tag('kid')).run().data().merge(r(2, 0, 0), {
+            yield mc.execute().as_(e().tag(horse.tag)).run().data().merge(s(), {'Variant': step.i * 256 + h})
+        yield mc.execute().at(e().tag(horses[3].tag).tag('kid')).run().data().merge(r(2, 0, 0), {
             'Text3': horse_variants[step.i]})
 
     room.loop('horse', main_clock).loop(horse_loop, horse_variants)
@@ -150,16 +150,16 @@ def room():
 
     def iron_golem_loop(step):
         i = step.i
-        yield mc.execute().as_(entity().tag('iron_golem')).run().data().merge(self(), {'Health': step.elem * 25 - 5})
+        yield mc.execute().as_(e().tag('iron_golem')).run().data().merge(s(), {'Health': step.elem * 25 - 5})
         yield mc.data().merge(r(2, 2, 0), {'Text3': 'Damage: %d' % (i if i < 4 else 3 - (i - 3))})
 
     room.loop('iron_golem', main_clock).loop(iron_golem_loop, range(4, 0, -1), bounce=True)
-    room.function('lead_off').add(mc.kill(entity().type('leash_knot')))
+    room.function('lead_off').add(mc.kill(e().type('leash_knot')))
     room.function('lead_on').add(
-        mc.execute().as_(entity().tag('white_horses').tag('!kid')).run().data().merge(self(), {
+        mc.execute().as_(e().tag('white_horses').tag('!kid')).run().data().merge(s(), {
             'Leash': {'X': -12, 'Y': 101, 'Z': 35}}))
     room.loop('llamas_carpets', main_clock).loop(
-        lambda step: mc.execute().as_(entity().tag('llama').tag('!kid')).run().data().merge(self(), {
+        lambda step: mc.execute().as_(e().tag('llama').tag('!kid')).run().data().merge(s(), {
             'DecorItem': {'id': step.elem.id + '_carpet', 'Count': 1}}), colors)
 
     room.function('llamas_init').add(
@@ -173,17 +173,17 @@ def room():
     )
 
     room.loop('llamas', main_clock).loop(
-        lambda step: mc.execute().as_(entity().tag('llama')).run().data().merge(self(), {
+        lambda step: mc.execute().as_(e().tag('llama')).run().data().merge(s(), {
             'Variant': step.i, 'CustomName': step.elem}),
         ('Creamy', 'White', 'Brown', 'Gray'))
     room.function('ocelot_init').add(placer(*south_placer).summon('ocelot'))
     room.function('outlines_on').add((mc.execute().as_(
-        entity().tag(rm).tag('!homer').type('!item_frame')).run().data().merge(self(), {'Glowing': True})
+        e().tag(rm).tag('!homer').type('!item_frame')).run().data().merge(s(), {'Glowing': True})
                                       for rm in ('friendlies', 'monsters', 'wither', 'ender', 'aquatic', 'ancient')))
     room.function('panda_init').add(placer(*south_placer).summon('panda'))
     room.loop('panda', main_clock).loop(
-        lambda step: mc.execute().as_(entity().type('panda')).run().data().merge(
-            self(),
+        lambda step: mc.execute().as_(e().type('panda')).run().data().merge(
+            s(),
             {'CustomName': '%s Panda' % step.elem, 'MainGene': step.elem.lower(), 'HiddenGene': step.elem.lower()}),
         ('Aggressive', 'Lazy', 'Weak', 'Worried', 'Playful', 'Normal', 'Brown'))
     room.function('parrot_init').add(placer(r(0, 3, 1), NORTH, adults=True).summon('parrot'))
@@ -196,30 +196,30 @@ def room():
 
     def parrot_loop(step):
         name, flying, variant = step.elem
-        yield mc.execute().as_(entity().tag('parrot')).run().data().merge(
-            self(), {'CustomName': name, 'Variant': variant, 'OnGround': not flying, 'Sitting': not flying})
+        yield mc.execute().as_(e().tag('parrot')).run().data().merge(
+            s(), {'CustomName': name, 'Variant': variant, 'OnGround': not flying, 'Sitting': not flying})
         yield mc.execute().unless().block(r(0, 1, 0), 'air').run().setblock(
             r(0, 2, 1), 'air' if flying else 'oak_fence_gate')
 
     room.loop('parrot', main_clock).loop(parrot_loop, parrot_settings)
     room.function('pig_init').add(placer(*mid_west_placer).summon('pig'))
     room.loop('pig', main_clock).loop(
-        lambda step: mc.execute().as_(entity().tag('pig').tag('!kid')).run().data().merge(
-            self(), {'Saddle': step.i}), (True, False))
+        lambda step: mc.execute().as_(e().tag('pig').tag('!kid')).run().data().merge(
+            s(), {'Saddle': step.i}), (True, False))
     room.function('polar_bear_init').add(placer(*south_placer).summon('Polar Bear'))
     room.function('rabbit_init').add(placer(*mid_east_placer).summon('rabbit'))
 
     def rabbit_loop(step):
         i = 99 if step.elem.startswith('Killer') else step.i
-        yield mc.execute().as_(entity().tag('rabbit')).run().data().merge(self(),
-                                                                          {'RabbitType': i, 'CustomName': step.elem})
+        yield mc.execute().as_(e().tag('rabbit')).run().data().merge(s(),
+                                                                     {'RabbitType': i, 'CustomName': step.elem})
 
     room.loop('rabbit', main_clock).loop(rabbit_loop, (
         'Brown', 'White', 'Black', 'Black & White', 'Gold', 'Salt & Pepper', 'Killer Rabbit (unused)'))
     room.function('reset_collars').add(
-        kill_em(entity().tag('cat')),
-        mc.execute().at(entity().tag('cat_home')).run().function('restworld:friendlies/cat_init'),
-        mc.execute().at(entity().tag('cat_home')).run().function('restworld:friendlies/cat_cur'))
+        kill_em(e().tag('cat')),
+        mc.execute().at(e().tag('cat_home')).run().function('restworld:friendlies/cat_init'),
+        mc.execute().at(e().tag('cat_home')).run().function('restworld:friendlies/cat_cur'))
     p = placer(*mid_west_placer)
     room.function('sheep_init').add(
         p.summon('Sheep', tags=('colorable',)),
@@ -228,16 +228,16 @@ def room():
     room.function('snow_golem_init').add(
         placer(r(-1.2, 2, 0), EAST, adults=True).summon('snow_golem'))
     room.loop('snow_golem', main_clock).loop(
-        lambda step: mc.execute().as_(entity().tag('snow_golem')).run().data().merge(
-            self(), {'Pumpkin': step.elem}), (True, False))
+        lambda step: mc.execute().as_(e().tag('snow_golem')).run().data().merge(
+            s(), {'Pumpkin': step.elem}), (True, False))
     room.function('switch_carpets_on').add(
-        mc.execute().at(entity().tag('llamas_home')).positioned(r(-2, -0.5, 0)).run().function(
+        mc.execute().at(e().tag('llamas_home')).positioned(r(-2, -0.5, 0)).run().function(
             'restworld:friendlies/llamas_carpets_home'),
-        mc.execute().at(entity().tag('llamas_carpets_home')).run().function('restworld:friendlies/llamas_carpets_cur'))
+        mc.execute().at(e().tag('llamas_carpets_home')).run().function('restworld:friendlies/llamas_carpets_cur'))
     room.function('switch_carpets_off').add(
-        mc.execute().as_(entity().tag('llama')).run().data().merge(
-            self(), {'DecorItem': {'id': 'white_carpet', 'Count': 0}}),
-        mc.kill(entity().tag('llamas_carpets_home')))
+        mc.execute().as_(e().tag('llama')).run().data().merge(
+            s(), {'DecorItem': {'id': 'white_carpet', 'Count': 0}}),
+        mc.kill(e().tag('llamas_carpets_home')))
 
     # Meant for leashing, but it doesn't seem to work. Keeping this here for future reference.
     trader_uuid = (-6811205515094820418, 8176443325185870163)
@@ -249,10 +249,10 @@ def room():
                nbt={'DespawnDelay': 2147483647, 'Leashed': True, 'Leash': trader_uuid_str}).summon('trader_llama'),
     )
     room.loop('trader_llama', main_clock).loop(
-        lambda step: mc.execute().as_(entity().type('trader_llama')).run().data().modify(
-            self(), 'Variant').set().value(step.i), ('Creamy', 'White', 'Brown', 'Gray'))
+        lambda step: mc.execute().as_(e().type('trader_llama')).run().data().modify(
+            s(), 'Variant').set().value(step.i), ('Creamy', 'White', 'Brown', 'Gray'))
     room.function('turtle_eggs_init').add(
-        mc.execute().as_(entity().tag('turtle_home')).run().tag(self()).add('blockers_home'),
+        mc.execute().as_(e().tag('turtle_home')).run().tag(s()).add('blockers_home'),
         WallSign((None, 'Turtle Eggs')).place(r(0, 2, 2, ), NORTH),
         label(r(1, 2, -2), 'On Sand')
     )
@@ -284,11 +284,11 @@ def villager_funcs(room):
 
     def init_villagers(num, which):
         return mc.execute().if_().score(which_villagers).matches(num).at(
-            entity().tag('cur_villagers_home')).run().function('restworld:friendlies/%s_init' % which)
+            e().tag('cur_villagers_home')).run().function('restworld:friendlies/%s_init' % which)
 
     def home_villagers(num, which):
         return mc.execute().if_().score(which_villagers).matches(num).at(
-            entity().tag('which_villagers_home').limit(1)).run().summon(
+            e().tag('which_villagers_home').limit(1)).run().summon(
             'armor_stand', r(0, 0, 1),
             {'Tags': ['%s_home' % which, 'cur_villagers_home'], 'Small': True, 'NoGravity': True})
 
@@ -304,7 +304,7 @@ def villager_funcs(room):
 
     def professions_init_funcs(which):
         id, kind = kind_names(which)
-        professions_init = room.function('%s_professions_init' % which).add(mc.kill(entity().tag('villager')))
+        professions_init = room.function('%s_professions_init' % which).add(mc.kill(e().tag('villager')))
         p = placer(r(-2, 2, -6), WEST, -2, tags=('villager', 'professions',), adults=True)
         for i, pro in enumerate(villager_professions):
             if i == 7:
@@ -312,7 +312,7 @@ def villager_funcs(room):
                     professions_init.add(p.summon(Entity('villager', display_name='Child', nbt={'Age': -2147483648})))
                 p = placer(r(0, 2, -7), WEST, -2, tags=('villager', 'professions',), adults=True)
             professions_init.add(p.summon(Entity(
-                id, display_name=pro, nbt={'VillagerData': {'profession': pro.lower()}}),tags=('villager',) ))
+                id, display_name=pro, nbt={'VillagerData': {'profession': pro.lower()}}), tags=('villager',)))
         professions_init.add(
             mc.function('restworld:friendlies/%s_professions_cur' % which),
             mc.function('restworld:friendlies/%s_levels_cur' % which),
@@ -321,7 +321,7 @@ def villager_funcs(room):
     professions_init_funcs('villager')
 
     def villager_professions_loop(step):
-        yield mc.execute().as_(entity().tag('villager')).run().data().modify(self(), 'VillagerData.type').set().value(
+        yield mc.execute().as_(e().tag('villager')).run().data().modify(s(), 'VillagerData.type').set().value(
             step.elem.lower())
         yield mc.data().modify(r(-5, 2, 0), 'Text2').set().value(step.elem)
 
@@ -330,7 +330,7 @@ def villager_funcs(room):
     def types_init_funcs(which):
         id, kind = kind_names(which)
         p = placer(r(-2, 2, -2), WEST, -2, tags=('villager', 'types',), adults=True)
-        types_init = room.function('%s_types_init' % which).add(mc.kill(entity().tag('villager')))
+        types_init = room.function('%s_types_init' % which).add(mc.kill(e().tag('villager')))
         for i, ty in enumerate(villager_types):
             if i == 3:
                 p = placer(r(0, 2, -3), WEST, -2, tags=('villager', 'types',), adults=True)
@@ -346,17 +346,17 @@ def villager_funcs(room):
     def villager_types_loop(step):
         if step.elem == 'Child':
             # Skip over child for zombies, there are no zombie children
-            yield mc.execute().as_(entity().tag('zombie_villager').limit(1)).run(villager_types_cur.set(0))
-        yield mc.execute().as_(entity().tag('villager')).run().data().modify(
-            self(), 'VillagerData.profession').set().value(step.elem.lower())
-        yield mc.execute().as_(entity().tag('villager')).run().data().modify(
-            self(), 'Age').set().value(-2147483648 if step.elem == 'Child' else 21474836487)
+            yield mc.execute().as_(e().tag('zombie_villager').limit(1)).run(villager_types_cur.set(0))
+        yield mc.execute().as_(e().tag('villager')).run().data().modify(
+            s(), 'VillagerData.profession').set().value(step.elem.lower())
+        yield mc.execute().as_(e().tag('villager')).run().data().modify(
+            s(), 'Age').set().value(-2147483648 if step.elem == 'Child' else 21474836487)
         yield mc.data().modify(r(-5, 2, 0), 'Text2').set().value(step.elem)
 
     roles = villager_professions + ('Child',)
     room.loop('villager_types', main_clock).loop(villager_types_loop, roles).add(
-        mc.execute().as_(entity().tag('villager')).run().execute().at(self()).as_(self()).align('xyz').run().tp(
-            self(), r(0.5, 0.0, 0.5)))
+        mc.execute().as_(e().tag('villager')).run().execute().at(s()).as_(s()).align('xyz').run().tp(
+            s(), r(0.5, 0.0, 0.5)))
 
     professions_init_funcs('zombie')
     room.loop('zombie_professions', main_clock).loop(None, list()).add(
@@ -384,7 +384,7 @@ def villager_funcs(room):
 
         # Replace the villagers being shown if they've changed
         mc.execute().unless().score(which_villagers_needed).is_(EQ, which_villagers_needed_prev).run((
-            kill_em(entity().tag('villager')),
+            kill_em(e().tag('villager')),
             init_villagers(0, 'villager_professions'),
             init_villagers(1, 'villager_types'),
             init_villagers(2, 'zombie_professions'),
@@ -393,7 +393,7 @@ def villager_funcs(room):
         which_villagers_needed_prev.operation(EQ, which_villagers_needed),
         mc.execute().if_().score(cur_villagers_levels).matches(1).run(which_villagers.add(4)),
 
-        mc.kill(entity().tag('cur_villagers_home')),
+        mc.kill(e().tag('cur_villagers_home')),
         home_villagers(0, 'villager_professions'),
         home_villagers(1, 'villager_types'),
         home_villagers(2, 'zombie_professions'),
@@ -419,8 +419,8 @@ def villager_funcs(room):
         mc.function('restworld:friendlies/switch_villagers'))
 
     def villager_level_loop(step):
-        yield mc.execute().as_(entity().tag('villager')).run().data().modify(
-            self(), 'VillagerData.level').set().value(step.i + 1)
+        yield mc.execute().as_(e().tag('villager')).run().data().modify(
+            s(), 'VillagerData.level').set().value(step.i + 1)
         yield mc.data().modify(r(-5, 2, 0), 'Text2').set().value('%s Level' % step.elem)
 
     room.loop('villager_levels', main_clock).loop(villager_level_loop, ('Stone', 'Iron', 'Gold', 'Emerald', 'Diamond'))

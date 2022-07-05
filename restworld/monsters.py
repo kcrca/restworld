@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import copy
 
-from pyker.commands import NORTH, r, WEST, EAST, mc, entity, self, Entity, good_facing
+from pyker.commands import NORTH, r, WEST, EAST, mc, e, s, Entity, good_facing
 from pyker.simpler import Item
 from restworld.rooms import Room, MobPlacer, label
 from restworld.world import restworld, main_clock, kill_em
@@ -19,14 +19,14 @@ def room():
 
     room.function('creeper_init').add(placer(*west_placer, adults=True).summon('creeper'))
     room.loop('creeper', main_clock).loop(
-        lambda step: mc.execute().as_(entity().tag('creeper').limit(1)).run().data().merge(
-            self(), {'powered': step.elem}), (True, False))
+        lambda step: mc.execute().as_(e().tag('creeper').limit(1)).run().data().merge(
+            s(), {'powered': step.elem}), (True, False))
 
     slime_placer = copy.deepcopy(west_placer)
     slime_placer[0][1] = r(3)
     room.function('slime_init').add(placer(*slime_placer, adults=True).summon('slime'))
     room.loop('slime', main_clock).loop(
-        lambda step: mc.data().modify(entity().tag('slime').limit(1), 'Size').set().value(step.elem),
+        lambda step: mc.data().modify(e().tag('slime').limit(1), 'Size').set().value(step.elem),
         range(0, 3), bounce=True)
 
     illagers = (Entity('Vindicator'), Entity('Evoker'), Entity('Pillager'),
@@ -41,7 +41,7 @@ def room():
                 Entity('vex', nbt={'HandItems': [Item.nbt_for('iron_sword')], 'LifeTicks': 2147483647}))
             yield placer(r(-1, 2.5, 1), WEST, adults=True, tags=tags).summon(Entity('Evoker Fangs', nbt={'Warmup': 0}))
 
-    room.loop('illager', main_clock).add(kill_em(entity().tag(*tags))).loop(illager_loop, illagers)
+    room.loop('illager', main_clock).add(kill_em(e().tag(*tags))).loop(illager_loop, illagers)
 
     room.function('phantom_init').add(placer(r(-0.5, 4, 0), WEST, adults=True).summon('phantom'))
 
@@ -51,7 +51,7 @@ def room():
             ravager.passenger(Entity(step.elem, {'Rotation': good_facing(EAST).rotation}).merge_nbt(MobPlacer.base_nbt))
         yield placer(r(1, 2, 0), EAST, adults=True).summon(ravager)
 
-    room.loop('ravager', main_clock).add(kill_em(entity().tag('ravager'))).loop(
+    room.loop('ravager', main_clock).add(kill_em(e().tag('ravager'))).loop(
         ravager_loop, (None, 'Pillager', 'Vindicator', 'Evoker'))
 
     room.function('silverfish_init').add(placer(r(0.2, 2, 0), EAST, adults=True).summon('silverfish'))
@@ -75,7 +75,7 @@ def room():
         yield placer(*east_placer, adults=True).summon(horse)
 
     room.loop('skeleton_horse').add(
-        kill_em(entity().tag('skeleton_horse', '!kid'))
+        kill_em(e().tag('skeleton_horse', '!kid'))
     ).loop(skeleton_horse_loop, range(0, 2))
 
     room.function('skeleton_horse_init').add(
@@ -88,7 +88,7 @@ def room():
         MobPlacer.base_nbt)
 
     room.loop('skeleton', main_clock).add(
-        kill_em(entity().tag('skeletal'))
+        kill_em(e().tag('skeletal'))
     ).loop(lambda step: placer(*west_placer, adults=True).summon(Entity(step.elem, nbt=bow).tag('skeletal')),
            ('Skeleton', 'Stray'))
 
@@ -101,7 +101,7 @@ def room():
             yield p.summon(spider)
 
     room.loop('spiders').add(
-        kill_em(entity().tag('spiders'))
+        kill_em(e().tag('spiders'))
     ).loop(spider_loop, range(0, 2))
     room.function('spiders_init').add(
         mc.function('restworld:monsters/spiders_cur'),
@@ -113,8 +113,8 @@ def room():
     zombie_jockey = room.score('zombie_jockey')
     room.function('zombie_init').add(
         zombie_jockey.set(0),
-        mc.execute().as_(entity().tag('zombie_home')).run().tag(self()).add('zombie_home_selector'),
-        mc.execute().as_(entity().tag('zombie_jockey_home')).run().tag(self()).add('zombie_home_selector'),
+        mc.execute().as_(e().tag('zombie_home')).run().tag(s()).add('zombie_home_selector'),
+        mc.execute().as_(e().tag('zombie_jockey_home')).run().tag(s()).add('zombie_home_selector'),
         label(r(3, 2, 0), 'Jockey'))
 
     def zombie_loop(step):
@@ -129,8 +129,8 @@ def room():
         p = placer(r(2.0, 2, 0), EAST, 0, 2.2, tags=('zombieish',), kids=True)
         yield mc.execute().if_().score(zombie_jockey).matches(1).run(p.summon(chicken))
         if step.elem == 'Drowned':
-            yield mc.execute().as_(entity().tag('zombieish').tag('!kid')).run().data().merge(self(), {
+            yield mc.execute().as_(e().tag('zombieish').tag('!kid')).run().data().merge(s(), {
                 'HandItems': [Item.nbt_for('trident')]})
 
-    room.loop('zombie', main_clock).add(kill_em(entity().tag('zombieish'))).loop(
+    room.loop('zombie', main_clock).add(kill_em(e().tag('zombieish'))).loop(
         zombie_loop, ('Zombie', 'Husk', 'Drowned'))

@@ -1,5 +1,5 @@
-import re
 import csv
+import re
 
 with open("blocks.txt") as fp:
     blocks = tuple(x.replace('_', ' ').rstrip() for x in fp.readlines())

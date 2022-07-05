@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import sys
 
-from pyker.commands import Score, entity, mc, r, all_, EAST, GT, RANDOM
+from pyker.commands import Score, e, mc, r, a, EAST, GT, RANDOM
 from pyker.function import Loop
 from pyker.simpler import WallSign
 from restworld.rooms import Thing, Room, label
@@ -34,7 +34,7 @@ def room():
     }
 
     battles = [
-        ('Axolotl:w', 'Drowned'),       # low priority
+        ('Axolotl:w', 'Drowned'),  # low priority
         ('Axolotl:w', 'Elder Guardian'),
         ('Axolotl:w', 'Guardian'),
         ('Blaze', 'Snow Golem'),
@@ -44,7 +44,7 @@ def room():
         ('Evoker', 'Iron Golem'),
         ('Fox', 'Chicken'),
         ('Frog', 'Slime'),
-        ('Goat', 'Sheep'),              # medium priority (slow, but charging goat)
+        ('Goat', 'Sheep'),  # medium priority (slow, but charging goat)
         ('Hoglin', 'Vindicator'),
         ('Illusioner', 'Snow Golem'),
         ('Llama', 'Vindicator'),
@@ -58,10 +58,10 @@ def room():
         ('Polar Bear', 'Vindicator'),
         ('Ravager', 'Iron Golem'),
         ('Shulker', 'Vindicator'),
-        ('Slime', 'Iron Golem'),        # low priority, slime vs. frog
+        ('Slime', 'Iron Golem'),  # low priority, slime vs. frog
         ('Spider', 'Snow Golem'),
         ('Stray:c', 'Iron Golem'),
-        ('Vex', 'Snow Golem'),          # low priority
+        ('Vex', 'Snow Golem'),  # low priority
         ('Vindicator', 'Iron Golem'),
         ('Witch', 'Snow Golem'),
         ('Wither Skeleton', 'Piglin'),
@@ -100,7 +100,7 @@ def room():
 
     battles.sort()
 
-    monitor_home = entity().tag('monitor_home')
+    monitor_home = e().tag('monitor_home')
 
     def arena_run_main(loop: Loop):
         def arena_run_loop(step):
@@ -110,7 +110,7 @@ def room():
                 text, z = ('<--', max_z + 1) if which_dir == -1 else ('-->', min_z - 1)
                 yield WallSign((None, text), (
                     step.loop.score.set(to),
-                    mc.execute().at(entity().tag('controls_home')).run().function(
+                    mc.execute().at(e().tag('controls_home')).run().function(
                         'restworld:arena/%s_cur' % step.loop.score.target)
                 )).glowing(True).place(r(x, 2, z), EAST)
             for s in range(0, stride_length):
@@ -165,7 +165,7 @@ def room():
 
     def random_stand(actor: str):
         var = actor + '_home'
-        yield mc.kill(entity().tag(var))
+        yield mc.kill(e().tag(var))
         stand = marker_tmpl.clone().merge_nbt({'Tags': [var, 'home', 'arena_home']})
         for x in range(-1, 2):
             for z in range(-1, 2):
@@ -179,22 +179,22 @@ def room():
         close = Score(actor + '_close', 'arena')
         athome = Score(actor + '_athome', 'arena')
         return (
-            mc.execute().unless().entity(entity().tag(actor)).run(place_battlers.set(1)),
+            mc.execute().unless().entity(e().tag(actor)).run(place_battlers.set(1)),
             count.set(0),
-            mc.execute().as_(entity().tag(actor)).run(count.add(1)),
+            mc.execute().as_(e().tag(actor)).run(count.add(1)),
             close.set(0),
             mc.execute().at(
-                entity().tag(other + '_home')).positioned(r(-2, 0, -2)).as_(
-                entity().tag(actor).delta((4, 5, 4))).run(close.add(1)),
+                e().tag(other + '_home')).positioned(r(-2, 0, -2)).as_(
+                e().tag(actor).delta((4, 5, 4))).run(close.add(1)),
             athome.set(0),
             mc.execute().at(
-                entity().tag(actor + '_home')).positioned(r(-2, 0, -2)).as_(
-                entity().tag(actor).delta((4, 5, 4))).run(athome.add(1)),
+                e().tag(actor + '_home')).positioned(r(-2, 0, -2)).as_(
+                e().tag(actor).delta((4, 5, 4))).run(athome.add(1)),
         )
 
     def toggle_peace(step):
         return (
-            mc.execute().at(entity().tag('monitor_home')).run().fill(
+            mc.execute().at(e().tag('monitor_home')).run().fill(
                 r(2, -1, 0), r(3, -1, 0), 'redstone_torch' if step.elem else 'air'),
             mc.setblock(r(0, 1, 0), '%s_concrete' % ('red' if step.elem else 'lime')),
         )
@@ -213,7 +213,7 @@ def room():
     room.function('arena_count_incr', home=False).add(arena_count.add(1), arena_count_cur)
     room.function('arena_count_init').add(arena_count_cur)
     room.loop('arena_count', main_clock).loop(
-        lambda step: mc.execute().at(entity().tag('controls_home')).run(
+        lambda step: mc.execute().at(e().tag('controls_home')).run(
         ).data().merge(r(2, 4, 0), {'Text2': '%d vs. %d' % (step.elem, step.elem)}), range(0, COUNT_MAX + 1))
 
     room.function('arena_run_init').add(mc.function('restworld:arena/arena_run_cur'))
@@ -225,7 +225,7 @@ def room():
         arena_run_loop.score.set(0),
         mc.function('restworld:arena/arena_run_cur'),
         label(r(1, 3, 0), 'Go Home'),
-        mc.tag(entity().tag('controls_home')).add('controls_action_home')
+        mc.tag(e().tag('controls_home')).add('controls_action_home')
     )
 
     room.function('hunter_home').add(random_stand('hunter'))
@@ -233,11 +233,11 @@ def room():
 
     # monitor_init function looks out-of-date and unused
     room.function('monitor').add(monitor('hunter'), monitor('victim'),
-                                 mc.kill(entity().type('item').distance((None, 50))),
-                                 mc.kill(entity().type('experience_orb').distance((None, 50)))),
+                                 mc.kill(e().type('item').distance((None, 50))),
+                                 mc.kill(e().type('experience_orb').distance((None, 50)))),
     room.function('monitor_cleanup', home=False).add(
         mc.execute().if_().score(room.score('%s_count' % who)).is_(GT, arena_count).run().kill(
-            entity().tag(who).sort(RANDOM).limit(1).distance((None, 100)))
+            e().tag(who).sort(RANDOM).limit(1).distance((None, 100)))
         for who in ('hunter', 'victim'))
 
     # Types: 0-normal, 1-water, 2-undead
@@ -250,9 +250,9 @@ def room():
         mc.execute().if_().score(start_battle_type).matches(1).at(monitor_home).run().fill(*fill_arena_coords, 'water'),
         mc.execute().if_().score(start_battle_type).matches((0, 1)).at(monitor_home).run().fill(*roof_coords, 'air'),
         mc.execute().if_().score(start_battle_type).matches(2).at(monitor_home).run().fill(*roof_coords, 'glowstone'),
-        mc.tag(all_()).add('arena_safe'),
-        mc.tag(entity().type('armor_stand')).add('arena_safe'),
-        kill_em(entity().not_tag('arena_safe').distance((None, 100))),
+        mc.tag(a()).add('arena_safe'),
+        mc.tag(e().type('armor_stand')).add('arena_safe'),
+        kill_em(e().not_tag('arena_safe').distance((None, 100))),
     )
 
     room.loop('toggle_peace').loop(toggle_peace, (True, False)).add(mc.function('restworld:arena/start_battle'))

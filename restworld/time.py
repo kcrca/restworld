@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from pyker.commands import NORTH, r, WEST, mc, entity, good_facing, EAST, RESULT, DAYTIME, NOON
+from pyker.commands import NORTH, r, WEST, mc, e, good_facing, EAST, RESULT, DAYTIME, NOON
 from pyker.info import moon_phases
 from pyker.simpler import WallSign, Item
 from restworld.rooms import Room, label
@@ -14,7 +14,7 @@ def room():
 
     def moon_sign(x, y, z, time, name):
         return WallSign((None, name, 'Moon'), (
-            mc.execute().at(entity().tag('moon_home')).run(barriers),
+            mc.execute().at(e().tag('moon_home')).run(barriers),
             mc.time().set(time),
             mc.setblock(r(1, 0, 0), 'emerald_block'))).place(r(x, y, z), WEST)
 
@@ -22,7 +22,7 @@ def room():
         mc.fill(r(1, 8, 0), r(0, 8, 8), 'air'),
         barriers,
         (moon_sign(0, 8, i + (1 if i > 3 else 0), *phase) for i, phase in enumerate(moon_phases)),
-        mc.kill(entity().tag('time_frame')),
+        mc.kill(e().tag('time_frame')),
         mc.summon(('item_frame',
                    {'Facing': good_facing(WEST).number, 'Item': Item.nbt_for('clock'),
                     'Tags': ['time_frame', room.name], 'Fixed': True}),

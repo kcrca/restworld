@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from pyker.commands import r, WEST, mc, entity, NOON, EAST, UP, DOWN, Block, SOUTH
+from pyker.commands import r, WEST, mc, e, NOON, EAST, UP, DOWN, Block, SOUTH
 from pyker.info import instruments, woods, stems
 from pyker.simpler import WallSign, Item, Volume
 from restworld.rooms import Room, label
@@ -34,7 +34,7 @@ def room():
                           ('', 'Chest|', 'Furnace|', 'TNT|', 'Hopper|', 'Spawner|', 'Command Block|'))
 
     def minecart_loop(step):
-        yield kill_em(entity().tag('minecart_type'))
+        yield kill_em(e().tag('minecart_type'))
         yield mc.summon(step.elem.merge_nbt({'Tags': ['minecart_type']}), r(0, 3, 0))
         yield mc.data().merge(r(-1, 2, 0), step.elem.sign_nbt)
 
@@ -159,15 +159,15 @@ def light_detector_funcs(room):
                 r(inv, height, inv), r(-inv, height, -inv), 'stone')
 
     room.loop('daylight_detector', main_clock).add(
-        mc.execute().at(entity().tag('daylight_detector_setup_home')).run().function(
+        mc.execute().at(e().tag('daylight_detector_setup_home')).run().function(
             'restworld:redstone/daylight_detector_setup'),
         mc.fill(r(3, height, 3), r(-3, height, -3), 'air')
     ).loop(daylight_detector_loop, day_times)
     room.function('daylight_detector_reset').add(
         mc.time().set(NOON),
-        mc.execute().at(entity().tag('daylight_detector_home')).run().fill(r(3, 8, 3), r(-3, 8, -3), 'air'),
+        mc.execute().at(e().tag('daylight_detector_home')).run().fill(r(3, 8, 3), r(-3, 8, -3), 'air'),
         daylight_detector.set(0),
-        mc.kill(entity().tag('daylight_detector_home'))
+        mc.kill(e().tag('daylight_detector_home'))
     )
     room.function('daylight_detector_setup').add(
         daylight_inv.set(0),
@@ -179,7 +179,7 @@ def light_detector_funcs(room):
     )
     room.function('daylight_detector_setup_init').add(
         WallSign(()).place(r(0, 2, 0), EAST),
-        mc.execute().at(entity().tag('daylight_detector_setup_home')).run().function(
+        mc.execute().at(e().tag('daylight_detector_setup_home')).run().function(
             'restworld:redstone/daylight_detector_setup'),
         label(r(2, 2, 2), 'Daylight Changing'),
         label(r(2, 2, 0), 'Invert Detector'))
@@ -220,7 +220,7 @@ def note_block_funcs(room):
             WallSign(
                 (None, instr.name, '(%s)' % instr.exemplar.display_name),
                 (instrument.set(i),
-                 mc.execute().at(entity().tag('note_block_home')).run().setblock(r(0, 2, 0), instr.exemplar))
+                 mc.execute().at(e().tag('note_block_home')).run().setblock(r(0, 2, 0), instr.exemplar))
             ).place(r(x, y, 1), SOUTH),
             label(r(0, 2, 1), 'Powered')
         )
@@ -239,25 +239,25 @@ def pressure_plate_funcs(room):
     room.function('pressure_plate_init').add(label(r(2, 2, 0), 'Pressure Plate Type'))
 
     room.function('pressure_plate_cur').add(
-        mc.kill(entity().tag('plate_items')),
+        mc.kill(e().tag('plate_items')),
         (mc.execute().if_().score(pressure_plate).matches((i, None)).run().function(
             'restworld:redstone/pressure_plate_add') for i in range(1, 16)
         ))
 
     room.loop('pressure_plate', main_clock).add(
-        mc.execute().if_().score(pressure_plate).matches(0).run().kill(entity().tag('plate_items')),
+        mc.execute().if_().score(pressure_plate).matches(0).run().kill(e().tag('plate_items')),
         mc.execute().unless().score(pressure_plate).matches(0).run().function('restworld:redstone/pressure_plate_add')
     ).loop(None, range(0, 16))
 
     def plate(heavy):
         which = 'Heavy' if heavy else 'Light'
         plate_heavy = room.score('plate_heavy')
-        yield mc.execute().at(entity().tag('pressure_plate_home')).run().setblock(
+        yield mc.execute().at(e().tag('pressure_plate_home')).run().setblock(
             r(0, 3, 0), '%s_weighted_pressure_plate' % which.lower())
-        yield mc.execute().at(entity().tag('pressure_plate_home')).run().data().merge(
+        yield mc.execute().at(e().tag('pressure_plate_home')).run().data().merge(
             r(1, 2, 0), {'Text2': which, 'Text3': 'Pressure Plate'})
         yield plate_heavy.set(int(heavy))
-        yield mc.kill(entity().tag('plate_items'))
+        yield mc.kill(e().tag('plate_items'))
         yield pressure_plate.set(0)
 
     room.function('switch_to_heavy', home=False).add(plate(True))

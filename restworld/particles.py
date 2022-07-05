@@ -4,8 +4,8 @@ import math
 import random
 
 from pyker.base import Nbt
-from pyker.commands import SOUTH, mc, EAST, WEST, rotated_facing, d, entity, r, Block, NORTH, player, OVERWORLD, \
-    CLEAR, all_, RAIN
+from pyker.commands import SOUTH, mc, EAST, WEST, rotated_facing, d, e, r, Block, NORTH, p, OVERWORLD, \
+    CLEAR, RAIN, a
 from pyker.enums import Particle
 from pyker.info import villager_professions
 from pyker.simpler import WallSign
@@ -101,17 +101,17 @@ particles.sort()
 villager_types = ('Desert', 'Jungle', 'Plains', 'Savanna', 'Snow', 'Swamp', 'Taiga')
 villager_data = []
 for t in villager_types:
-    for p in villager_professions:
-        villager_data.append({'profession': p.lower(), 'type': t.lower()})
+    for pro in villager_professions:
+        villager_data.append({'profession': pro.lower(), 'type': t.lower()})
     random.shuffle(villager_data)
 
 
 def at_center():
-    return mc.execute().at(entity().tag('particles_action_home')).positioned(r(0, 2, 0)).run()
+    return mc.execute().at(e().tag('particles_action_home')).positioned(r(0, 2, 0)).run()
 
 
 def clock(which, delay=0):
-    return mc.execute().if_().score(which.time).matches(delay).at(entity().tag('particles_action_home')).positioned(
+    return mc.execute().if_().score(which.time).matches(delay).at(e().tag('particles_action_home')).positioned(
         r(0, 2, 0)).run()
 
 
@@ -141,7 +141,7 @@ def room():
 
     def particle_sign(action_desc, wall):
         dx, _, dz = rotated_facing(wall.facing).scale(1)
-        run_at = mc.execute().at(entity().tag('particles_action_home')).positioned(r(0, 2, 0)).run()
+        run_at = mc.execute().at(e().tag('particles_action_home')).positioned(r(0, 2, 0)).run()
         return WallSign(action_desc.sign_text(), (
             run_at.setblock(r(0, -4, 0), 'redstone_block'),
             run_at.data().merge(r(0, -4, -2), {
@@ -200,7 +200,7 @@ def room():
     room.function('dragon_breath', home=False).add(slow().function('restworld:particles/dragon_breath_run'))
     room.function('dragon_breath_init', home=False).add(room.score('dragon_breath_run').set(-1))
     room.function('dragon_breath_run', home=False).add(
-        mc.kill(entity().tag('particle_dragonball')),
+        mc.kill(e().tag('particle_dragonball')),
         mc.summon('dragon_fireball', r(0, 4, 4),
                   {'direction': {0.0, 0.0, 0.0}, 'power': {0.0, -0.05, -0.05}, 'ExplosionPower': 0,
                    'Tags': ['particle_dragonball', 'particler']}),
@@ -300,7 +300,7 @@ def room():
         mc.fill(r(-2, 0, -2), r(2, 1, 2), 'barrier'),
         mc.fill(r(-1, 0, -1), r(1, 1, 1), 'air'),
         summon('slime', 0, {'Size': 1}),
-        mc.tp(player().distance((None, 7)), r(0, 0, -3)).facing(r(0, 0, 5)))
+        mc.tp(p().distance((None, 7)), r(0, 0, -3)).facing(r(0, 0, 5)))
     room.function('item_snowball', home=False).add(
         fast().item().replace().block(r(0, 2, -1), 'container.0').with_('snowball', 1),
         fast().setblock(r(0, 3, -1), ('stone_button', {'powered': True, 'face': 'floor'})),
@@ -337,7 +337,7 @@ def room():
         mc.fill(r(2, 0, 2), r(-2, 6, -2), 'water'),
     )
     room.function('particles_clear', home=False).add(
-        kill_em(entity().tag('particler')),
+        kill_em(e().tag('particler')),
         mc.fill(r(20, 0, 20), r(-20, 10, -20), 'air').replace('snow'),
         mc.execute().in_(OVERWORLD).run().weather(CLEAR))
     room.function('poof', home=False).add(main().particle(Particle.POOF, r(0, 1, 0), 0.25, 0.25, 0.25, 0, 30))
@@ -405,7 +405,7 @@ def room():
         mc.setblock(r(1, 0, 0), 'soul_torch'))
     room.function('sneeze', home=False).add(
         main().particle(Particle.SNEEZE, r(0, 0.25, 1.25), 0.05, 0.05, 0.5, 0.0, 2),
-        main().playsound('entity.panda.sneeze', 'neutral', all_(), r(0, 0, 0)))
+        main().playsound('entity.panda.sneeze', 'neutral', a(), r(0, 0, 0)))
     room.function('sneeze_init', home=False).add(summon('panda', 0, {'NoAI': True, 'Age': -2147483648}))
     room.function('rain_init', home=False).add(mc.weather(RAIN))
     room.function('rain_exit', home=False).add(mc.weather(CLEAR))
@@ -430,7 +430,7 @@ def room():
         yield mc.particle(step.elem + '_ink', r(0, 2.8, -0), 0.15, 0.3, 0.15, 0.01, 30)
 
     room.loop('squid_ink_run').add(
-        kill_em(entity().tag('particler'))).loop(
+        kill_em(e().tag('particler'))).loop(
         squid_ink_loop, ('squid', 'glow_squid'))
     room.function('sweep_attack', home=False).add(
         main().particle(Particle.SWEEP_ATTACK, r(0, 1, 0), 0.3, 0.2, 0.3, 0, 3))
@@ -448,7 +448,7 @@ def room():
         summon('armor_stand', 0, {'Invisible': True, 'Small': True, 'CustomNameVisible': True}))
 
     def wax_on_run_loop(step):
-        yield mc.data().merge(entity().tag('particler').limit(1),
+        yield mc.data().merge(e().tag('particler').limit(1),
                               {'CustomName': step.elem, 'CustomNameVisible': len(step.elem) > 0})
         if step.i == 0:
             yield mc.setblock(r(0, 0, 0), 'exposed_cut_copper')

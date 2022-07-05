@@ -1,6 +1,6 @@
 import collections
 
-from pyker.commands import NORTH, mc, CLEAR, OVERWORLD, r, entity
+from pyker.commands import NORTH, mc, CLEAR, OVERWORLD, r, e
 from pyker.simpler import WallSign
 from restworld.rooms import Room, label
 from restworld.world import restworld
@@ -31,7 +31,7 @@ def category_sign(category, x):
     yield WallSign((None, category, text3), (
         None,
         None,
-        mc.execute().at(entity().tag('category_home')).run().function('restworld:biomes/%s_signs' % to_id(category))),
+        mc.execute().at(e().tag('category_home')).run().function('restworld:biomes/%s_signs' % to_id(category))),
                    ).place(r(x, 1, 6), NORTH)
 
 
@@ -45,18 +45,18 @@ def illuminate(biome, prefix, i, x, y, z, handback):
 
 def load_biome(renderer, biome, handback=None):
     for i in range(0, 4):
-        yield from renderer(biome, mc.execute().at(entity().tag('biome_loading_action_home')).run(),
-                 i + 4, 32 * int(i / 2), 33, 32 * int(i % 2), handback)
+        yield from renderer(biome, mc.execute().at(e().tag('biome_loading_action_home')).run(),
+                            i + 4, 32 * int(i / 2), 33, 32 * int(i % 2), handback)
     for i in range(0, 4):
-        yield from renderer(biome, mc.execute().at(entity().tag('biome_loading_action_home')).run(),
-                 i, 32 * int(i / 2), 1, 32 * int(i % 2), handback)
+        yield from renderer(biome, mc.execute().at(e().tag('biome_loading_action_home')).run(),
+                            i, 32 * int(i / 2), 1, 32 * int(i % 2), handback)
 
 
 def group_signs(group, score):
     yield from categories()
 
     x = list(biome_groups.keys()).index(group)
-    at_biome_loading = mc.execute().at(entity().tag('biome_loading_action_home')).run()
+    at_biome_loading = mc.execute().at(e().tag('biome_loading_action_home')).run()
     for i, biome in enumerate(list(biome_groups[group])):
         yield WallSign((None, biome), (
             at_biome_loading.function('restworld:biomes/clear_biome'),
@@ -65,7 +65,7 @@ def group_signs(group, score):
             at_biome_loading.function('restworld:biomes/cleanup_biome'),
         )).place(r(6 - i - x, 0, 6), NORTH)
     yield WallSign((None, group),
-                   (mc.execute().at(entity().tag('category_home')).run().function('restworld:biomes/category')),
+                   (mc.execute().at(e().tag('category_home')).run().function('restworld:biomes/category')),
                    'birch'
                    ).place(r(6 - x, 1, 6), NORTH)
 
@@ -122,10 +122,10 @@ def room():
     for g in biome_groups:
         room.function(to_id(g) + '_signs', home=False).add(group_signs(g, load_biome_score))
 
-    room.function('cleanup_biome').add(mc.kill(entity().type('item')))
-    clear_previous_mobs = mc.execute().at(entity().tag('biome_loading_action_home')).positioned(
+    room.function('cleanup_biome').add(mc.kill(e().type('item')))
+    clear_previous_mobs = mc.execute().at(e().tag('biome_loading_action_home')).positioned(
         r(-5, -5, -5)).run().kill(
-        entity().type('!player').tag('!homer').delta((74, 42, 74))),
+        e().type('!player').tag('!homer').delta((74, 42, 74))),
 
     room.function('clear_biome').add(
         mc.fill(r(-2, -4, -2), r(-1, 42, 66), 'air').replace('#restworld:liquid'),
@@ -145,8 +145,8 @@ def room():
         clear_previous_mobs,
         clear_previous_mobs,
 
-        mc.kill(entity().type('item')))
-    illuminate_score  = room.score('illuminate')
+        mc.kill(e().type('item')))
+    illuminate_score = room.score('illuminate')
     room.function('illuminate_biome').add(load_biome(illuminate, 'illuminate', handback=illuminate_score))
     room.loop('load_biome').loop(load_biome_loop, biomes).add(
         load_biome(trigger, 'trigger'),
