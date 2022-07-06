@@ -178,7 +178,7 @@ def room():
     ).loop(render_authored_banners, range(0, half))
 
     room.function('banner_color_init').add(banner_color_init)
-    loop = room.loop('banner_color', main_clock).add(
+    room.loop('banner_color', main_clock).add(
         mc.fill(r(1, 3, 0), r(11, 5, 0), 'air').replace('#banners'),
         mc.fill(r(12, 3, 1), r(12, 5, 11), 'air').replace('#banners'),
         mc.fill(r(1, 3, 12), r(11, 5, 12), 'air').replace('#banners'),
