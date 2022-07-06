@@ -5,7 +5,7 @@ from pyker.commands import mc, e, r, Commands, MOVE, s, OVERWORLD, EQ, MOD, THE_
 from pyker.enums import ScoreCriteria
 from pyker.function import Function
 from restworld.rooms import Room
-from restworld.world import restworld, tick_clock, clock, main_clock, kill_em
+from restworld.world import restworld, tick_clock, clock, kill_em
 
 
 def room():
@@ -30,15 +30,13 @@ def room():
             ex = ex.unless().score(c.time).matches((0, 1))
         return ex.run().function('restworld:global/kill_em')
 
-    def levitation_body(step) -> Commands:
+    def mob_levitation_loop(step) -> Commands:
         mob_rooms = ('friendlies', 'monsters', 'aquatic', 'wither', 'nether', 'enders', 'ancient')
         if step.i == 1:
-            yield mc.execute().at(e().tag('sleeping_bat')).run().clone(r(0, 1, 0), r(0, 1, 0),
-                                                                       r(0, 3, 0)).replace(
-                MOVE),
-            yield mc.execute().at(e().tag('turtle_eggs_home')).run().clone(r(1, 2, 0), r(-2, 2, 0),
-                                                                           r(-2, -4, 0)).replace(
-                MOVE),
+            yield mc.execute().at(e().tag('sleeping_bat')).run().clone(
+                r(0, 1, 0), r(0, 1, 0), r(0, 3, 0)).replace(MOVE),
+            yield mc.execute().at(e().tag('turtle_eggs_home')).run().clone(
+                r(1, 2, 0), r(-2, 2, 0), r(-2, -4, 0)).replace(MOVE),
             # yield mc.execute().at(entities().tag('brown_horses', 'kid')).run().clone(*r(2, 0, 0, 2, 0, 0, 2, 2, 0)).replace(
             #     MOVE),
             for mob_room in mob_rooms:
@@ -50,8 +48,8 @@ def room():
                 yield mc.execute().as_(e().tag(mob_room, '!passenger').type('!item_frame')).at(
                     s()).run().tp(s(), r(0, 2, 0))
         else:
-            yield mc.execute().at(e().tag('sleeping_bat')).run().clone(r(0, 1, 0), r(0, 1, 0),
-                                                                       r(0, -1, 0)).replace(MOVE),
+            yield mc.execute().at(e().tag('sleeping_bat')).run().clone(
+                r(0, 1, 0), r(0, 1, 0), r(0, -1, 0)).replace(MOVE),
             yield mc.execute().at(e().tag('turtle_eggs_home')).run().clone(
                 r(1, 4, 0), r(-2, 4, 0), r(-2, 2, 0)).replace(MOVE),
             # yield mc.execute().at(entities().tag('brown_horses', 'kid')).run().clone(*r(2, 0, 0, 2, 0, 0, 2, 2, 0)).replace(
@@ -167,8 +165,7 @@ def room():
         mc.weather(RAIN))
     room.home_func('min')
 
-    levloop = room.loop('mob_levitation', main_clock)
-    levloop.loop(levitation_body, range(0, 2))
+    room.loop('mob_levitation').loop(mob_levitation_loop, range(0, 2))
 
     room.function('ready').add(
         mc.clear(p()),

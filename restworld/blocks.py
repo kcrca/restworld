@@ -4,7 +4,7 @@ import re
 from typing import Iterable, Union
 
 from pyker.commands import EAST, r, mc, e, Entity, good_block, Block, NORTH, SOUTH, WEST, s, MOVE, \
-    good_facing
+    good_facing, DOWN
 from pyker.info import colors, Color
 from pyker.simpler import Sign, Item, WallSign, Volume
 from restworld.rooms import Room, label, woods, stems
@@ -59,7 +59,7 @@ def room():
                     signage = signage + ('',) * (4 - len(signage))
 
                 yield mc.setblock(r(x, 3, z), block)
-                yield mc.data().merge(r(x + facing.dz, 2, z + facing.dz), Sign.lines_nbt(signage))
+                yield mc.data().merge(r(x + facing.dx, 2, z + facing.dz), Sign.lines_nbt(signage))
 
                 if show_list:
                     stand = name_stand.clone()
@@ -420,7 +420,7 @@ def room():
     room.loop('scaffolding', main_clock).loop(scaffolding_loop, range(0, 5), bounce=True)
 
     blocks('sculk_blocks', NORTH, (
-        Block('Sculk Vein', {NORTH: True}),
+        Block('Sculk Vein', {SOUTH: True, DOWN: True}),
         'Sculk', 'Sculk Sensor',
         Block('Sculk Catalyst'),
         Block('sculk_catalyst', {'bloom': True}, display_name='Sculk Catalyst|Blooming'),
@@ -560,9 +560,10 @@ def color_functions(room):
             else:
                 candle = Block(candle.id + '_cake', {'lit': True})
                 filter = '#restworld:candle_cake'
+            candle.merge_state({'lit': False})
             yield mc.execute().if_().score(lit_candles).matches(0).run().fill(*coloring_coords, candle).replace(
                 filter)
-            candle.merge_state({'lit': False})
+            candle.merge_state({'lit': True})
             yield mc.execute().unless().score(lit_candles).matches(0).run().fill(*coloring_coords, candle).replace(
                 filter)
 
@@ -693,10 +694,11 @@ def color_functions(room):
         mc.kill(e().type('item').distance((None, 20))),
     )
     room.function('colorings_plain_on').add(
-        mc.tag(e().tag('colorings_base_home')).remove('colorings_home'),
         mc.clone((coloring_coords[0][0], coloring_coords[0][1], coloring_coords[0][2]),
                  (coloring_coords[1][0], coloring_coords[1][1] - 1, coloring_coords[1][2]),
                  (coloring_coords[0][0], 0, coloring_coords[0][2])),
+
+        mc.tag(e().tag('colorings_base_home')).remove('colorings_home'),
         colorings(True, Color('Plain', 0x0)),
         mc.setblock(r(-7, -1, 3), 'redstone_torch'),
         mc.setblock(r(-7, -1, 3), 'air'),

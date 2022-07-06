@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from pyker.commands import mc, r, e, WEST, MOVE, s, NORTH, EAST, SOUTH
-from pyker.info import colors
 from pyker.simpler import WallSign
 from restworld.rooms import Room, label
 from restworld.world import restworld, main_clock
@@ -53,7 +52,7 @@ def room():
         mc.execute().as_(e().tag('var_home')).run().tag(s()).add('blockers_home'))
 
     def end_portal_loop(step):
-        before = 'end_portal' if step.elem == 'True' else 'air'
+        before = 'end_portal' if step.elem else 'air'
         after = 'air' if before != 'end_portal' else 'end_portal'
         yield mc.fill(r(2, 2, 1), r(2, 2, -1), ('end_portal_frame', {'facing': WEST, 'eye': step.elem}))
         yield mc.fill(r(1, 2, 2), r(-1, 2, 2), ('end_portal_frame', {'facing': NORTH, 'eye': step.elem}))
@@ -75,9 +74,6 @@ def room():
     placer = room.mob_placer(r(0, 2, -0.2), SOUTH, adults=True)
     room.function('endermite_init').add(placer.summon('endermite'))
 
-    room.loop('shulker_color', main_clock).loop(
-        lambda step: mc.data().merge(e().tag('shulker').limit(1), {'Color': step.i}), colors)
-
     # I don't know why I need to do this explicitly after setting the rotation above, but it works
     # mc.data modify entity entity().tag('shulker').limit(1) Rotation set value  {0,0 }
     placer = room.mob_placer(r(0, 3, 0), SOUTH, adults=True)
@@ -86,7 +82,6 @@ def room():
         room.mob_placer(r(1, 3, 1), SOUTH, adults=True).summon(
             'shulker_bullet', nbt={'NoGravity': True, 'TXD': 0, 'TYD': 0, 'TZD': 0, 'Steps': 0, 'Motion': [0, 0, 0]}),
         WallSign((None, 'Shulker Bullet')).place(r(1, 2, 2), SOUTH),
-        label(r(-1, 2, 0), 'Color'),
         label(r(1, 2, 6), 'Change Height'),
     )
 

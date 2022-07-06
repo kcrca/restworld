@@ -97,7 +97,7 @@ def room():
         for s in ('Spider', 'Cave Spider'):
             spider = Entity(s)
             if step.i == 1:
-                spider.passenger(rider.merge_nbt(east_rot))
+                spider.passenger(rider.merge_nbt(east_rot).merge_nbt(MobPlacer.base_nbt))
             yield p.summon(spider)
 
     room.loop('spiders').add(

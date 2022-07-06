@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from pyker.commands import r, NORTH, SOUTH, mc, e, s, Entity, EAST, WEST, EQ, Score, MOD
-from pyker.info import colors, horses, villager_professions, villager_types
+from pyker.info import colors, horses, villager_professions, villager_types, music_discs
 from pyker.simpler import WallSign
 from restworld.rooms import Room, label
 from restworld.world import restworld, main_clock, kill_em
@@ -26,8 +26,8 @@ def room():
         placer(r(0, 3.5, 1), NORTH, 2, adults=True).summon('bat', nbt={'BatFlags': 1}, tags=('sleeping_bat',)))
     room.function('bee_init').add(
         placer(r(0, 3, 0), NORTH, 0, 2).summon('bee'),
-        label((-1, 2, -2), 'Stinger'),
-        label((1, 2, -2), 'Pollen'))
+        label(r(-1, 2, -2), 'Stinger'),
+        label(r(1, 2, -2), 'Pollen'))
 
     def bee_loop(step):
         bee_home = 'beehive' if step.i == 0 else 'bee_nest'
@@ -179,14 +179,18 @@ def room():
     room.function('ocelot_init').add(placer(*south_placer).summon('ocelot'))
     room.function('outlines_on').add((mc.execute().as_(
         e().tag(rm).tag('!homer').type('!item_frame')).run().data().merge(s(), {'Glowing': True})
-                                      for rm in ('friendlies', 'monsters', 'wither', 'ender', 'aquatic', 'ancient')))
+                                      for rm in ('friendlies', 'monsters', 'wither', 'nether', 'enders', 'aquatic', 'ancient')))
     room.function('panda_init').add(placer(*south_placer).summon('panda'))
     room.loop('panda', main_clock).loop(
         lambda step: mc.execute().as_(e().type('panda')).run().data().merge(
             s(),
             {'CustomName': '%s Panda' % step.elem, 'MainGene': step.elem.lower(), 'HiddenGene': step.elem.lower()}),
         ('Aggressive', 'Lazy', 'Weak', 'Worried', 'Playful', 'Normal', 'Brown'))
-    room.function('parrot_init').add(placer(r(0, 3, 1), NORTH, adults=True).summon('parrot'))
+    room.function('parrot_init').add(
+        placer(r(0, 3, 1), NORTH, adults=True).summon('parrot'),
+        mc.function('restworld:friendlies/parrot_enter'))
+    room.function('parrot_enter').add(
+        (mc.item().replace().block(r(-1, 1, 0), 'container.%d' % i).with_(d) for i, d in enumerate(music_discs)))
 
     parrots = ('Red', 'Blue', 'Green', 'Cyan', 'Gray')
     parrot_settings = []
