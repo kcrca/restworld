@@ -140,7 +140,7 @@ def room():
         load_biome(clear, 'clear'),
         load_biome(trigger, 'trigger'),
 
-        ## Three times because slimes take three to kill
+        # Three times because slimes take three to kill
         clear_previous_mobs,
         clear_previous_mobs,
         clear_previous_mobs,
