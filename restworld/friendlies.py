@@ -122,7 +122,7 @@ def room():
     # base.mobs_init('z_delta_init': -2, 'kid_x_init': 1.4, 'adult_x_init': -1.2, 'rotation_init': 270, 'tags_init': '('saddle'',))
     p = placer(r(-1.2, 2, 0), EAST, -2, 1.6, tags=('saddle',), nbt={'Tame': True})
     room.function('horse_init').add(
-        (p.summon(Entity('horse', display_name=horse.name(), nbt={'Variant': h}), tags=(horse.tag,)) for h, horse in
+        (p.summon(Entity('horse', display_name=horse.display_name, nbt={'Variant': h}), tags=(horse.tag,)) for h, horse in
          enumerate(horses)),
         mc.execute().at(e().tag(_to_id(horses[3].tag), 'kid')).run(
             WallSign((None, 'Variant:')).place(r(2, 0, 0), EAST)),
