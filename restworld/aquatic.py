@@ -80,7 +80,7 @@ def all_fish_funcs(room, clock_wall_sign):
         for i in range(0, 12):
             if i == 6:
                 placer = room.mob_placer(r(1.5, 3.2, 0), WEST, -1, adults=True)
-            yield placer.summon('tropical_fish', tags=('fish%d' % i,))
+            yield placer.summon('tropical_fish', tags=(f'fish{i:d}',))
         yield (
             mc.scoreboard().objectives().remove('fish'),
             mc.scoreboard().objectives().add('fish', ScoreCriteria.DUMMY),
@@ -104,7 +104,7 @@ def all_fish_funcs(room, clock_wall_sign):
             variant.operation(PLUS, pattern_variant),
         )
         for i in range(0, 12):
-            yield mc.execute().store(RESULT).entity(e().tag('fish%d' % i).limit(1), 'Variant', LONG, 1).run(
+            yield mc.execute().store(RESULT).entity(e().tag(f'fish{i:d}').limit(1), 'Variant', LONG, 1).run(
                 variant.get())
             if i == 6:
                 yield variant.add(1)

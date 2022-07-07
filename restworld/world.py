@@ -149,8 +149,7 @@ class Wall:
         self.end = self.start + self.used_widths[self.line]
 
     def to_next_wall(self, tag):
-        return 'execute as @e[tag=%s] run execute at @s run teleport @s ^-%d ^0 ^0 ~90 ~' % (
-            tag, self.width - 1)
+        return f'execute as @e[tag={tag}] run execute at @s run teleport @s ^-{self.width - 1:d} ^0 ^0 ~90 ~'
 
     def start_pos(self):
         return self.start, self.y_first

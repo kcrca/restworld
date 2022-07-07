@@ -32,7 +32,7 @@ def category_sign(category, x):
     yield WallSign((None, category, text3), (
         None,
         None,
-        mc.execute().at(e().tag('category_home')).run().function('restworld:biomes/%s_signs' % to_id(category))),
+        mc.execute().at(e().tag('category_home')).run().function(f'restworld:biomes/{to_id(category)}_signs')),
                    ).place(r(x, 1, 6), NORTH)
 
 
@@ -88,7 +88,7 @@ def load_biome_loop(step):
     def setup(biome, prefix, i, x, y, z, handback):
         if i > 4:
             yield mc.setblock(r(x, y, z), 'structure_block')
-        yield mc.data().merge(r(x, y, z), {'name': 'restworld:%s_%d' % (to_id(biome), i + 1), 'mode': 'LOAD'})
+        yield mc.data().merge(r(x, y, z), {'name': f'restworld:{to_id(biome)}_{i + 1:d}', 'mode': 'LOAD'})
 
     yield mc.say('Switching to biome', step.elem)
     yield from load_biome(setup, step.elem)

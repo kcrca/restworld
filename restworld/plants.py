@@ -234,16 +234,16 @@ def room():
                                                    ('Grass Block', 'Dirt', 'Podzol', 'Coarse Dirt'))
 
     def trees_loop(step):
-        yield mc.data().merge(r(-1, 0, -1), {'mode': 'LOAD', 'name': 'restworld:%s_trees' % _to_id(step.elem)})
+        yield mc.data().merge(r(-1, 0, -1), {'mode': 'LOAD', 'name': f'restworld:{_to_id(step.elem)}_trees'})
         yield mc.setblock(r(-1, -1, -1), 'redstone_block')
         yield mc.setblock(r(-1, -1, -1), 'air')
-        yield WallSign((None, '%s Trees' % step.elem)).place(r(1, 2, 7), WEST)
+        yield WallSign((None, f'{step.elem} Trees')).place(r(1, 2, 7), WEST)
         yield WallSign((None, 'Lilly')).place(r(4, 2, 15), WEST)
 
     room.loop('trees', main_clock).loop(trees_loop, woods)
 
     def tulips_loop(step):
-        yield mc.setblock(r(0, 3, 0), '%s_tulip' % _to_id(step.elem))
+        yield mc.setblock(r(0, 3, 0), f'{_to_id(step.elem)}_tulip')
         yield mc.data().merge(r(1, 2, 0), {'Text3': step.elem})
         yield mc.data().merge(r(-1, 2, 0), {'Text3': step.elem})
 
@@ -266,7 +266,7 @@ def bamboo_funcs(room):
             else:
                 height = max
             age = 0 if step.i <= max else 1
-            yield mc.data().merge(r(1, 2, 0), {'Text3': 'Shoot' if step.i == 0 else 'Age: %d' % age})
+            yield mc.data().merge(r(1, 2, 0), {'Text3': 'Shoot' if step.i == 0 else f'Age: {age:d}'})
             yield mc.fill(r(0, 3, 0), r(0, 3 + height - 1, 0), Block('bamboo', {'age': age, 'leaves': 'none'}))
             if height < max:
                 yield mc.fill(r(0, 3 + max - 1, 0), r(0, 3 + height, 0), 'air')

@@ -114,11 +114,11 @@ def tags():
         ]
     }
     coral_ids = tuple(x.lower() for x in corals)
-    blocks['coral_fans'] = {'values': ['%s_coral_fan' % x for x in coral_ids]}
-    blocks['dead_coral_plants'] = {'values': ['dead_%s_coral' % x for x in coral_ids]}
-    blocks['dead_coral_blocks'] = {'values': ['dead_%s_coral_block' % x for x in coral_ids]}
-    blocks['dead_coral_fans'] = {'values': ['dead_%s_coral_fan' % x for x in coral_ids]}
-    blocks['dead_wall_corals'] = {'values': ['dead_%s_coral_wall_fan' % x for x in coral_ids]}
+    blocks['coral_fans'] = {'values': [f'{x}_coral_fan' for x in coral_ids]}
+    blocks['dead_coral_plants'] = {'values': [f'dead_{x}_coral' for x in coral_ids]}
+    blocks['dead_coral_blocks'] = {'values': [f'dead_{x}_coral_block' for x in coral_ids]}
+    blocks['dead_coral_fans'] = {'values': [f'dead_{x}_coral_fan' for x in coral_ids]}
+    blocks['dead_wall_corals'] = {'values': [f'dead_{x}_coral_wall_fan' for x in coral_ids]}
     blocks['liquid'] = {
         'values': [
             'lava',

@@ -41,7 +41,7 @@ def room():
         )
         if show_list:
             block_init.add(
-                mc.execute().if_().score(block_list_score).matches(0).run().kill(e().tag('block_list_%s' % name))
+                mc.execute().if_().score(block_list_score).matches(0).run().kill(e().tag(f'block_list_{name}'))
             )
             names = room.function(name + '_names', home=False)
             all_names.add(mc.function(names.full_name))
@@ -63,9 +63,9 @@ def room():
 
                 if show_list:
                     stand = name_stand.clone()
-                    block_list_name = 'block_list_%s_%d_%d' % (name, x, z)
-                    block_list_block_name = 'block_list_%s_%d_%d_%d' % (name, x, z, i)
-                    stand.tag('block_list_%s' % name, block_list_name, block_list_block_name)
+                    block_list_name = f'block_list_{name}_{x:d}_{z:d}'
+                    block_list_block_name = f'block_list_{name}_{x:d}_{z:d}_{i:d}'
+                    stand.tag(f'block_list_{name}', block_list_name, block_list_block_name)
                     stand.merge_nbt({'CustomName': block.display_name})
                     stand_y = 2.5 + i * 0.24
                     names.add(
@@ -133,7 +133,7 @@ def room():
         'Glowstone', 'Sea Lantern', 'Shroomlight', 'Ochre Froglight', 'Pearlescent|Froglight', 'Verdant Froglight',
         'End Rod'))
     blocks('light', SOUTH, (Block('light', {'level': x}) for x in range(0, 15)),
-           labels=tuple(('light', 'Level: %d' % i) for i in range(0, 15)), clock=slow_clock)
+           labels=tuple(('light', f'Level: {i:d}') for i in range(0, 15)), clock=slow_clock)
     blocks('music', SOUTH, (
         Block('Note Block'), Block('Jukebox'), Block('jukebox', {'has_record': True}, display_name='Jukebox Playing')))
     blocks('netherrack', NORTH, ('Netherrack', 'Warped Nylium', 'Crimson Nylium'))
@@ -146,7 +146,7 @@ def room():
         'Quartz Block', 'Smooth Quartz', 'Quartz Pillar', 'Chiseled Quartz Block', 'Quartz Bricks'))
     blocks('raw_metal', NORTH, ('Raw Iron|Block', 'Raw Copper|Block', 'Raw Gold|Block'))
     blocks('respawn_anchor', NORTH, (Block('Respawn Anchor', {'charges': x}) for x in range(0, 5)),
-           labels=tuple((None, 'Charges: %d' % x) for x in range(0, 5)))
+           labels=tuple((None, f'Charges: {x:d}') for x in range(0, 5)))
     red_sandstone = ('Red Sandstone', 'Smooth|Red Sandstone', 'Cut|Red Sandstone', 'Chiseled|Red Sandstone')
     blocks('sandstone', SOUTH, (red_sandstone, tuple(re.sub(' *Red *', '', f) for f in red_sandstone)), dx=3)
     blocks('slabs', NORTH, ('Smooth Stone|Slab', 'Petrified Oak|Slab'))
@@ -162,12 +162,12 @@ def room():
         'Stone Bricks', 'Mossy|Stone Bricks', 'Cracked|Stone Bricks', 'Chiseled|Stone Bricks',
         'Polished|Blackstone Bricks', 'Cracked Polished|Blackstone Bricks', 'End Stone|Bricks'))
     stone_types = ('Basalt', 'Stone', 'Deepslate', 'Andesite', 'Diorite', 'Granite', 'Blackstone', 'Basalt')
-    blocks('stone', NORTH, ('Smooth Basalt', 'Smooth Stone') + tuple('Polished|%s' % t for t in stone_types[2:]))
+    blocks('stone', NORTH, ('Smooth Basalt', 'Smooth Stone') + tuple(f'Polished|{t}' for t in stone_types[2:]))
 
     types = ('Copper Block', 'Exposed Copper', 'Weathered|Copper', 'Oxidized Copper')
     block = list(x.replace('Copper', 'Cut Copper').replace(' Block', '').replace(' Cut', '|Cut') for x in types)
-    waxed_types = tuple('Waxed|%s' % x for x in types)
-    waxed_block = tuple('Waxed|%s' % x for x in block)
+    waxed_types = tuple(f'Waxed|{x}' for x in types)
+    waxed_block = tuple(f'Waxed|{x}' for x in block)
     blocks('copper', NORTH, (types, block), dx=-3)
     blocks('waxed_copper', NORTH, (waxed_types, waxed_block), dx=-3, score=room.score('copper'))
     room.function('copper_init', exists_ok=True).add(
@@ -183,12 +183,12 @@ def room():
         mc.execute().at(e().tag('copper_base')).run().function('restworld:blocks/waxed_copper_cur'))
 
     woodlike = woods + stems
-    leaves = ['%s Leaves' % x for x in woods] + ['Warped Wart Block', 'Nether Wart Block']
-    logs = ['%s Log' % x for x in woods] + [('%s Stem' % x) for x in stems]
-    wood = ['%s Wood' % x for x in woods] + [('%s Hyphae' % x) for x in stems]
-    stripped_logs = ['Stripped|%s Log' % x for x in woods] + [('Stripped|%s Stem' % x) for x in stems]
-    stripped_woods = ['Stripped|%s Wood' % x for x in woods] + [('Stripped|%s Hyphae' % x) for x in stems]
-    blocks('wood_blocks', SOUTH, (tuple('%s Planks' % f for f in woodlike),
+    leaves = [f'{x} Leaves' for x in woods] + ['Warped Wart Block', 'Nether Wart Block']
+    logs = [f'{x} Log' for x in woods] + [f'{x} Stem' for x in stems]
+    wood = [f'{x} Wood' for x in woods] + [f'{x} Hyphae' for x in stems]
+    stripped_logs = [f'Stripped|{x} Log' for x in woods] + [(f'Stripped|{x} Stem') for x in stems]
+    stripped_woods = [f'Stripped|{x} Wood' for x in woods] + [(f'Stripped|{x} Hyphae') for x in stems]
+    blocks('wood_blocks', SOUTH, (tuple(f'{f} Planks' for f in woodlike),
                                   stripped_logs, logs, wood, leaves, stripped_woods), dx=-3, dz=-3, size=2)
 
     sites = ('Cauldron', 'Water Cauldron', 'Lava Cauldron', 'Powder Snow Cauldron')
@@ -259,10 +259,10 @@ def room():
     def brewing_stand_loop(step):
         for j in range(0, 3):
             if j in step.elem:
-                yield mc.item().replace().block(r(0, 3, 0), 'container.%d' % j).with_(
+                yield mc.item().replace().block(r(0, 3, 0), f'container.{j:d}').with_(
                     Block('potion', nbt={'Potion': 'water'}), 1)
             else:
-                yield mc.item().replace().block(r(0, 3, 0), 'container.%d' % j).with_('air')
+                yield mc.item().replace().block(r(0, 3, 0), f'container.{j:d}').with_('air')
 
     room.function('brewing_stand_init').add(mc.function('restworld:containers/brewing_init'))
     room.loop('brewing_stand', main_clock).add(
@@ -273,7 +273,7 @@ def room():
 
     def cake_loop(step):
         yield mc.setblock(r(0, 3, 0), Block('cake', {'bites': step.elem}))
-        yield mc.data().merge(r(0, 2, -1), {'Text3': 'Bites: %d' % step.elem})
+        yield mc.data().merge(r(0, 2, -1), {'Text3': f'Bites: {step.elem:d}'})
 
     room.function('cake_init').add(mc.data().merge(r(0, 2, -1), {'Text2': 'Cake'}))
     room.loop('cake', main_clock).loop(cake_loop, range(0, 7), bounce=True)
@@ -380,10 +380,10 @@ def room():
     room.function('ore_blocks_init').add(label(r(-1, 2, 0), 'Deepslate'))
     basic = ['Coal', 'Iron', 'Copper', 'Gold', 'Lapis', 'Redstone', 'Diamond', 'Emerald']
     odder = ['Nether Quartz', 'Nether Gold']
-    ores = list('%s Ore' % t for t in basic + odder) + ['Ancient Debris', ]
-    slate_ores = list('Deepslate|%s Ore' % t for t in basic)
+    ores = list(f'{t} Ore' for t in basic + odder) + ['Ancient Debris', ]
+    slate_ores = list(f'Deepslate|{t} Ore' for t in basic)
     slate_ores.extend(ores[len(slate_ores):])
-    ore_blocks = ['%s Block' % x for x in basic + ['Quartz', 'Gold']] + ['Netherite Block', ]
+    ore_blocks = [f'{x} Block' for x in basic + ['Quartz', 'Gold']] + ['Netherite Block', ]
     blocks('ore_blocks', NORTH, (ores, ore_blocks), dz=3)
     blocks('deepslate_ore_blocks', NORTH, (slate_ores, ore_blocks), dz=3, score=room.score('ore_blocks'))
     room.function('ore_blocks_init', exists_ok=True).add(
@@ -442,16 +442,16 @@ def room():
     def snow_loop(step):
         yield mc.setblock(r(0, 3, 0), Block('grass_block', {'snowy': True}))
         yield mc.setblock(r(0, 4, 0), Block('snow', {'layers': step.elem}))
-        yield mc.data().merge(r(0, 2, 1), {'Text3': 'Layers: %d' % step.elem})
+        yield mc.data().merge(r(0, 2, 1), {'Text3': f'Layers: {step.elem:d}'})
 
     room.loop('snow', main_clock).loop(snow_loop, range(1, 9), bounce=True)
 
-    def spanwer_loop(step):
+    def spawner_loop(step):
         yield mc.data().merge(r(0, 3, 0), {'SpawnData': {'entity': {'id': Entity(step.elem).id}}})
         yield mc.data().merge(r(0, 2, -1), {'Text2': step.elem})
 
     room.function('spawner_init').add(mc.setblock(r(0, 3, 0), 'spawner'))
-    room.loop('spawner', main_clock).loop(spanwer_loop, ('Pig', 'Zombie', 'Skeleton', 'Spider', 'Cave Spider', 'Blaze'))
+    room.loop('spawner', main_clock).loop(spawner_loop, ('Pig', 'Zombie', 'Skeleton', 'Spider', 'Cave Spider', 'Blaze'))
 
     def structure_blocks_loop(step):
         yield mc.data().merge(r(0, 2, 1), {'Text2': step.elem})
@@ -549,14 +549,14 @@ def color_functions(room):
             if is_plain:
                 filler = plain_fills[i]
             else:
-                filler = Block('%s_%s' % (color.id, which), state)
+                filler = Block(f'{color.id}_{which}', state)
             yield mc.fill(*coloring_coords, filler).replace('#restworld:' + which)
 
         candle = Block('candle' if is_plain else color.name + '_candle', {'lit': True})
         for count in range(1, 6):
             if count < 5:
                 candle.merge_state({'candles': count})
-                filter = '#restworld:candle[candles=%d]' % count
+                filter = f'#restworld:candle[candles={count:d}]'
             else:
                 candle = Block(candle.id + '_cake', {'lit': True})
                 filter = '#restworld:candle_cake'
@@ -567,17 +567,16 @@ def color_functions(room):
             yield mc.execute().unless().score(lit_candles).matches(0).run().fill(*coloring_coords, candle).replace(
                 filter)
 
-        yield mc.data().merge(r(-7, 0, 3), {'name': 'restworld:%s_terra' % color.id, 'showboundingbox': False})
+        yield mc.data().merge(r(-7, 0, 3), {'name': f'restworld:{color.id}_terra', 'showboundingbox': False})
 
         if is_plain:
             mc.fill(r(-9, 2, 2), r(-9, 2, 3), 'air')
             mc.fill(*coloring_coords, 'air').replace('#standing_signs')
             mc.data().merge(e().tag('colorings_item_frame').limit(1), {'Item': {'Count': 0}})
         else:
-            mc.setblock(r(-9, 2, 2), Block('%s_bed' % color.id, {'facing': NORTH, 'part': 'head'}))
-            mc.setblock(r(-9, 2, 3), Block('%s_bed' % color.id, {'facing': NORTH, 'part': 'foot'}))
-            frame_nbt = {'Item': Item.nbt_for('%s_dye' % color.id)}
-            frame_nbt['ItemRotation'] = 0
+            mc.setblock(r(-9, 2, 2), Block(f'{color.id}_bed', {'facing': NORTH, 'part': 'head'}))
+            mc.setblock(r(-9, 2, 3), Block(f'{color.id}_bed', {'facing': NORTH, 'part': 'foot'}))
+            frame_nbt = {'Item': Item.nbt_for(f'{color.id}_dye'), 'ItemRotation': 0}
             mc.data().merge(e().tag('colorings_item_frame').limit(1), frame_nbt)
 
         if is_plain:
@@ -602,7 +601,7 @@ def color_functions(room):
 
         yield mc.data().merge(e().tag('colorings_armor_stand').limit(1), {
             'ArmorItems': [Item.nbt_for('leather_boots', nbt=leather_color),
-                           Item.nbt_for('leather_leggins', nbt=leather_color),
+                           Item.nbt_for('leather_leggings', nbt=leather_color),
                            Item.nbt_for('leather_chestplate', nbt=leather_color),
                            Item.nbt_for('leather_helmet', nbt=leather_color)]})
         yield mc.data().merge(e().tag('colorings_horse').limit(1),
@@ -613,7 +612,7 @@ def color_functions(room):
         yield mc.data().merge(r(-4, 2, 4), {'Text2': color.name})
         yield mc.execute().as_(e().tag('colorings_names')).run().data().merge(s(), {'CustomName': color.name})
 
-        yield mc.data().merge(r(0, 0, -1), {'name': 'restworld:%s_terra' % 'plain' if is_plain else color.id})
+        yield mc.data().merge(r(0, 0, -1), {'name': f'restworld:{"plain" if is_plain else color.id}_terra'})
         yield mc.data().merge(r(1, 2, -0), {'Text1': color.name})
 
     def colored_signs(color, render):
@@ -714,7 +713,7 @@ def color_functions(room):
 
 
 def expansion_functions(room):
-    ''''
+    """'
     `Expansion is complex.
 
     Each 'homer' armor stand is assumed to be an expander for its block
@@ -740,34 +739,34 @@ def expansion_functions(room):
     So if homer X puts up blocks X and Y, a regular homer will be under
     X and a 'just_expand' homer will be under Y.
 
-    Each main tick, the 'expand' function is run at every 'expender'
+    Each main tick, the 'expand' function is run at every 'expander'
     during the 'main_finish' phase. This keeps the block expanded as
     it changes.
-    '''
+    """
 
     room.function('toggle_expand', home=False).add(
         mc.execute().positioned(r(0, -2, -1)).run().function('restworld:blocks/toggle_expand_at'),
         mc.execute().positioned(r(0, -2, 1)).run().function('restworld:blocks/toggle_expand_at'))
     room.function('toggle_expand_at', home=False).add(
-        ## There are two possible cases: Either this homer is already
-        ## expanding or it is not.  We need to swap that.
+        # There are two possible cases: Either this homer is already
+        # expanding or it is not.  We need to swap that.
 
-        ## If it's an expander, add a temporary 'to be stopped' tag to it
+        # If it's an expander, add a temporary 'to be stopped' tag to it
         mc.execute().as_(e().tag('expander').distance((None, 1))).run().tag(s()).add('stop_expanding'),
-        ## If it's not an mc.expander, tag it as one
+        # If it's not an mc.expander, tag it as one
         mc.execute().as_(e().tag('!expander', '!no_expansion').distance((None, 1))).run().tag(s()).add(
             'expander'),
-        ## If it has the 'to be stopped' tag, remove the mc.expander tag
+        # If it has the 'to be stopped' tag, remove the mc.expander tag
         mc.execute().as_(e().tag('stop_expanding').distance((None, 1))).run().tag(s()).remove('expander'),
-        ## ... and then remove the 'to be stopped' tag
+        # ... and then remove the 'to be stopped' tag
         mc.execute().as_(e().tag('stop_expanding').distance((None, 1))).run().tag(s()).remove('stop_expanding'),
 
-        ## Now it has the right tagging, do an immediate().action on it
+        # Now it has the right tagging, do an immediate().action on it
         mc.execute().at(e().tag('expander').distance((None, 1))).run().function('restworld:blocks/expander'),
         mc.execute().at(e().tag('!expander', '!no_expansion').distance((None, 1))).run().function(
             'restworld:blocks/contracter'),
 
-        ## And, as a cleanup, if it never will be an mc.expander, say 'sorry'
+        # And, as a cleanup, if it never will be an mc.expander, say 'sorry'
         mc.execute().at(e().tag('no_expansion').distance((None, 1))).run().say('Sorry, cannot expand this.'),
         mc.execute().at(e().tag('no_expansion', 'fire_home').distance((None, 1))).run().say(
             'Sorry, cannot expand this.'),
@@ -810,30 +809,30 @@ def expansion_functions(room):
         mc.execute().if_().score(fire_score).matches(1).run().fill(r(1, 4, 2), r(-1, 4, 2), 'fire[south=true]'),
     )
     room.function('expand_generic', home=False).add(
-        ## Sand blocks will fall if they aren't supported, so we place barriers under them
+        # Sand blocks will fall if they aren't supported, so we place barriers under them
         mc.execute().if_().block(r(0, 3, 0), '#restworld:sand').run().fill(r(-1, 2, -1), r(1, 2, 1), 'barrier').replace(
             'air'),
 
         # We want to clone up the snow topper, if_().it exists. If it doesn't, we need that layer
         # mc.to be cleared (it might have something from a previous expansion). And snow is the
-        # mc.only thing that is normally placed on that level. </%doc>
+        # mc.only thing that is normally placed on that level.
         mc.execute().unless().block(r(0, 4, 0), 'snow').run().fill(r(-1, 4, -1), r(1, 4, 1), 'air'),
 
-        ## Clone the original block to either side to form a line, including anything on top of the block
+        # Clone the original block to either side to form a line, including anything on top of the block
         mc.clone(r(0, 4, 0), r(0, 3, 0), r(-1, 3, 0)),
         mc.clone(r(0, 4, 0), r(0, 3, 0), r(1, 3, 0)),
 
-        ## Clone the line to either side to get a 3x3 level
+        # Clone the line to either side to get a 3x3 level
         mc.clone(r(1, 4, 0), r(-1, 3, 0), r(-1, 3, -1)),
         mc.clone(r(1, 4, 0), r(-1, 3, 0), r(-1, 3, 1)),
 
-        ## Clone the fill bottom level to the top
+        # Clone the fill bottom level to the top
         mc.clone(r(1, 4, 1), r(-1, 3, -1), r(-1, 5, -1)),
 
-        ## Soil needs the middle level filled with dirt
+        # Soil needs the middle level filled with dirt
         mc.execute().if_().block(r(0, 5, 0), '#restworld:soil').run().fill(r(-1, 3, -1), r(1, 4, 1), 'dirt'),
 
-        ## Otherwise fill the middle level with the top level
+        # Otherwise fill the middle level with the top level
         mc.execute().unless().block(r(0, 5, 0), '#restworld:soil').run().clone(r(1, 5, 1), r(-1, 5, -1), r(-1, 4, -1)),
     )
 
@@ -853,7 +852,7 @@ def expansion_functions(room):
         mc.fill(r(1, 12, 1), r(-1, 3, 1), 'air'),
         mc.fill(r(1, 12, -1), r(-1, 3, -1), 'air'),
 
-        ## Erase either side
+        # Erase either side
         mc.fill(r(1, 12, 0), r(1, 3, 0), 'air'),
         mc.fill(r(-1, 12, 0), r(-1, 3, 0), 'air'),
     )

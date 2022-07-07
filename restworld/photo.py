@@ -72,7 +72,7 @@ def get_normal_blocks():
     modifiers = tuple(c.name for c in colors) + woods + stems + materials + stepables + corals + (
         'Weathered', 'Oxidized', 'Exposed')
     modifiers = tuple(sorted(set(modifiers), key=lambda x: len(x), reverse=True))
-    mod_re = re.compile(r'^(.*? ?)(\b(?:Mossy )?%s\b)($| (.*))' % '|'.join(modifiers))
+    mod_re = re.compile(fr'^(.*? ?)(\b(?:Mossy )?{"|".join(modifiers)}\b)($| (.*))')
     block_re = re.compile(r'Block of (.*)')
     command_re = re.compile(r'(.*)Command Block')
     with open(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'some_blocks')) as f:

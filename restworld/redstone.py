@@ -30,7 +30,7 @@ def room():
     room.loop('lightning_rod', main_clock).loop(
         lightning_rod_loop, (Block('Lightning Rod'), Block('Lightning Rod', {'powered': True})))
 
-    minecart_types = list(Block('%sMinecart' % t) for t in
+    minecart_types = list(Block(f'{t}Minecart') for t in
                           ('', 'Chest|', 'Furnace|', 'TNT|', 'Hopper|', 'Spawner|', 'Command Block|'))
 
     def minecart_loop(step):
@@ -98,7 +98,7 @@ def room():
 
     def target_loop(step):
         yield mc.setblock(r(0, 2, 0), ('target', {'power': step.i}))
-        yield mc.data().merge(r(1, 3, 0), {'Text3': 'Power %d' % step.i})
+        yield mc.data().merge(r(1, 3, 0), {'Text3': f'Power {step.i:d}'})
 
     room.loop('target', main_clock).loop(target_loop, range(0, 16))
     room.function('wire_strength_init').add(
@@ -116,8 +116,8 @@ def room():
 
     def wood_power_loop(step):
         wood, powered = step.elem
-        yield mc.setblock(r(1, 2, -1), ('%s_pressure_plate' % wood.id, {'powered': powered}))
-        yield mc.setblock(r(1, 3, 0), ('%s_button' % wood.id, {'facing': EAST, 'powered': powered}))
+        yield mc.setblock(r(1, 2, -1), (f'{wood.id}_pressure_plate', {'powered': powered}))
+        yield mc.setblock(r(1, 3, 0), (f'{wood.id}_button', {'facing': EAST, 'powered': powered}))
         yield mc.setblock(r(0, 3, 0), ('redstone_lamp', {'lit': powered}))
         yield mc.setblock(r(0, 2, -1), ('redstone_lamp', {'lit': powered}))
         yield mc.setblock(r(1, 2, 0), ('oak_wall_sign', {'facing': EAST}))
@@ -218,7 +218,7 @@ def note_block_funcs(room):
         y = 3 - int(i / row_len)
         note_block_init.add(
             WallSign(
-                (None, instr.name, '(%s)' % instr.exemplar.display_name),
+                (None, instr.name, f'({instr.exemplar.display_name})'),
                 (instrument.set(i),
                  mc.execute().at(e().tag('note_block_home')).run().setblock(r(0, 2, 0), instr.exemplar))
             ).place(r(x, y, 1), SOUTH),
@@ -253,7 +253,7 @@ def pressure_plate_funcs(room):
         which = 'Heavy' if heavy else 'Light'
         plate_heavy = room.score('plate_heavy')
         yield mc.execute().at(e().tag('pressure_plate_home')).run().setblock(
-            r(0, 3, 0), '%s_weighted_pressure_plate' % which.lower())
+            r(0, 3, 0), f'{which.lower()}_weighted_pressure_plate')
         yield mc.execute().at(e().tag('pressure_plate_home')).run().data().merge(
             r(1, 2, 0), {'Text2': which, 'Text3': 'Pressure Plate'})
         yield plate_heavy.set(int(heavy))

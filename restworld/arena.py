@@ -87,15 +87,15 @@ def room():
     num_rows = 2
     row_length = stride_length / num_rows
     if stride_length % num_rows != 0:
-        sys.stderr.write('rows (%d) is not a multiple of stride length (%d)' % (num_rows, stride_length))
+        sys.stderr.write(f'rows ({num_rows:d}) is not a multiple of stride length ({stride_length:d})')
         sys.exit(1)
     if row_length % 2 == 0:
         # Needed so we can center on the middle sign
-        sys.stderr.write('Row length(%d) is not odd' % row_length)
+        sys.stderr.write(f'Row length({row_length:d}) is not odd')
         sys.exit(1)
     if len(battles) % stride_length != 0:
         sys.stderr.write(
-            'Stride length (%d) is not a multiple of battle count (%d)\n' % (stride_length, len(battles)))
+            f'Stride length ({stride_length:d}) is not a multiple of battle count ({len(battles):d})\n')
         sys.exit(1)
 
     battles.sort()
@@ -111,7 +111,7 @@ def room():
                 yield WallSign((None, text), (
                     step.loop.score.set(to),
                     mc.execute().at(e().tag('controls_home')).run().function(
-                        'restworld:arena/%s_cur' % step.loop.score.target)
+                        f'restworld:arena/{step.loop.score.target}_cur')
                 )).glowing(True).place(r(x, 2, z), EAST)
             for s in range(0, stride_length):
                 args = step.elem[s] + (None,) * (4 - len(step.elem[s]))
@@ -125,15 +125,14 @@ def room():
                     hunter = hunter[0:-2]
 
                 def incr_cmd(which, mob):
-                    my_nbts = ['Tags:[battler,%s]' % which]
+                    my_nbts = [f'Tags:[battler,{which}]']
                     added_nbt = fighter_nbts.get(mob, None)
                     if added_nbt:
                         my_nbts.append(added_nbt)
                     if which == 'hunter':
                         my_nbts.append('Rotation:[180f,0f]')
-                    incr = 'summon %s ~0 ~2 ~0 {%s}' % (Thing(mob).id, ','.join(my_nbts))
-                    incr_cmd = 'execute if score %s_count arena < arena_count arena at @e[tag=%s_home,sort=random,limit=1] run %s' % (
-                        which, which, incr)
+                    incr = f'summon {Thing(mob).id} ~0 ~2 ~0 {{{",".join(my_nbts)}}}'
+                    incr_cmd = f'execute if score {which}_count arena < arena_count arena at @e[tag={which}_home,sort=random,limit=1] run {incr}'
                     return incr_cmd
 
                 data_change = mc.execute().at(monitor_home).run().data()
@@ -196,7 +195,7 @@ def room():
         return (
             mc.execute().at(e().tag('monitor_home')).run().fill(
                 r(2, -1, 0), r(3, -1, 0), 'redstone_torch' if step.elem else 'air'),
-            mc.setblock(r(0, 1, 0), '%s_concrete' % ('red' if step.elem else 'lime')),
+            mc.setblock(r(0, 1, 0), f'{"red" if step.elem else "lime"}_concrete'),
         )
 
     room = Room('arena', restworld)
@@ -215,7 +214,7 @@ def room():
     room.function('arena_count_init').add(arena_count_cur)
     room.loop('arena_count', main_clock).loop(
         lambda step: mc.execute().at(e().tag('controls_home')).run(
-        ).data().merge(r(2, 4, 0), {'Text2': '%d vs. %d' % (step.elem, step.elem)}), range(0, COUNT_MAX + 1))
+        ).data().merge(r(2, 4, 0), {'Text2': f'{step.elem:d} vs. {step.elem:d}'}), range(0, COUNT_MAX + 1))
 
     room.function('arena_run_init').add(mc.function('restworld:arena/arena_run_cur'))
     # This is NOT intended to be run on the clock. It is only called '_main' because that gives us a
@@ -237,7 +236,7 @@ def room():
                                  mc.kill(e().type('item').distance((None, 50))),
                                  mc.kill(e().type('experience_orb').distance((None, 50)))),
     room.function('monitor_cleanup', home=False).add(
-        mc.execute().if_().score(room.score('%s_count' % who)).is_(GT, arena_count).run().kill(
+        mc.execute().if_().score(room.score(f'{who}_count')).is_(GT, arena_count).run().kill(
             e().tag(who).sort(RANDOM).limit(1).distance((None, 100)))
         for who in ('hunter', 'victim'))
 

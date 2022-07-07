@@ -367,13 +367,13 @@ def wood_functions(room):
         if name in stems:
             log = 'stem'
             wood = 'hyphae'
-            leaves = 'nether_wart_block' if name == 'Crimson' else '%s_wart_block' % id
-            saplings = ('%s_roots' % id, '%s_fungus' % id, '%s_nylium' % id)
+            leaves = 'nether_wart_block' if name == 'Crimson' else f'{id}_wart_block'
+            saplings = (f'{id}_roots', f'{id}_fungus', f'{id}_nylium')
         else:
             log = 'log'
             wood = 'wood'
-            leaves = '%s_leaves' % id
-            saplings = (Block('%s_sapling' % id), Block('%s_sapling' % id, {'stage': 0}), 'grass_block')
+            leaves = f'{id}_leaves'
+            saplings = (Block(f'{id}_sapling'), Block(f'{id}_sapling', {'stage': 0}), 'grass_block')
             if step.elem == 'Mangrove':
                 saplings = (
                     Block('mangrove_propagule', {'age': 1}), Block('mangrove_propagule', {'age': 4}), 'grass_block')
@@ -385,23 +385,23 @@ def wood_functions(room):
         yield mc.fill(r(4, 2, 1), r(4, 3, 2), 'air')
 
         # General replacement
-        yield from volume.replace('%s_%s' % (id, wood), '#restworld:woodlike')
+        yield from volume.replace(f'{id}_{wood}', '#restworld:woodlike')
         yield from volume.replace(leaves, '#restworld:leaflike')
-        yield from volume.replace('%s_planks' % (id), '#planks')
-        yield from volume.replace_slabs('%s_slab' % (id), '#slabs')
-        yield from volume.replace_stairs('%s_stairs' % (id), '#stairs')
-        yield from volume.replace('%s_fence' % id, '#wooden_fences')
-        yield from volume.replace_facing('%s_fence_gate' % id, '#restworld:gatelike')
-        yield from volume.replace_buttons('%s_button' % (id))
-        yield from volume.replace('%s_pressure_plate' % (id), '#pressure_plates')
-        yield from volume.replace_axes('%s_%s' % (id, log), '#restworld:loglike')
-        yield from volume.replace_axes('stripped_%s_%s' % (id, log), '#restworld:stripped_loglike')
-        yield from volume.replace_axes('stripped_%s_%s' % (id, wood), '#restworld:stripped_woodlike')
-        yield from volume.replace_doors('%s_door' % (id), '#doors')
-        yield from volume.replace_trapdoors('%s_trapdoor' % (id), '#trapdoors')
-        yield from volume.replace_facing(Block('%s_wall_sign' % id, nbt={'Text2': '%s Wall Sign' % name}),
+        yield from volume.replace(f'{id}_planks', '#planks')
+        yield from volume.replace_slabs(f'{id}_slab', '#slabs')
+        yield from volume.replace_stairs(f'{id}_stairs', '#stairs')
+        yield from volume.replace(f'{id}_fence', '#wooden_fences')
+        yield from volume.replace_facing(f'{id}_fence_gate', '#restworld:gatelike')
+        yield from volume.replace_buttons(f'{id}_button')
+        yield from volume.replace(f'{id}_pressure_plate', '#pressure_plates')
+        yield from volume.replace_axes(f'{id}_{log}', '#restworld:loglike')
+        yield from volume.replace_axes(f'stripped_{id}_{log}', '#restworld:stripped_loglike')
+        yield from volume.replace_axes(f'stripped_{id}_{wood}', '#restworld:stripped_woodlike')
+        yield from volume.replace_doors(f'{id}_door', '#doors')
+        yield from volume.replace_trapdoors(f'{id}_trapdoor', '#trapdoors')
+        yield from volume.replace_facing(Block(f'{id}_wall_sign', nbt={'Text2': f'{name} Wall Sign'}),
                                          '#wall_signs')
-        yield from volume.replace(Block('%s_sign' % id, nbt={'Text2': '%s Sign' % name}), '#signs',
+        yield from volume.replace(Block(f'{id}_sign', nbt={'Text2': f'{name} Sign'}), '#signs',
                                   added_states=({'rotation': x} for x in range(0, 16, 4)))
 
         # Add special cases
@@ -422,15 +422,15 @@ def wood_functions(room):
             workplace = Block('fletching_table')
         yield mc.setblock(r(4, 2, 0), workplace)
 
-        yield mc.setblock(r(4, 2, -1), ('%s_door' % id, {'facing': WEST, 'half': 'lower'}))
-        yield mc.setblock(r(4, 3, -1), ('%s_door' % id, {'facing': WEST, 'half': 'upper'}))
-        yield mc.setblock(r(4, 2, 1), ('%s_door' % id, {'facing': WEST, 'half': 'lower', 'hinge': 'right'}))
-        yield mc.setblock(r(4, 3, 1), ('%s_door' % id, {'facing': WEST, 'half': 'upper', 'hinge': 'right'}))
-        yield mc.setblock(r(4, 2, 2), ('%s_door' % id, {'facing': WEST, 'half': 'lower'}))
-        yield mc.setblock(r(4, 3, 2), ('%s_door' % id, {'facing': WEST, 'half': 'upper'}))
+        yield mc.setblock(r(4, 2, -1), (f'{id}_door', {'facing': WEST, 'half': 'lower'}))
+        yield mc.setblock(r(4, 3, -1), (f'{id}_door', {'facing': WEST, 'half': 'upper'}))
+        yield mc.setblock(r(4, 2, 1), (f'{id}_door', {'facing': WEST, 'half': 'lower', 'hinge': 'right'}))
+        yield mc.setblock(r(4, 3, 1), (f'{id}_door', {'facing': WEST, 'half': 'upper', 'hinge': 'right'}))
+        yield mc.setblock(r(4, 2, 2), (f'{id}_door', {'facing': WEST, 'half': 'lower'}))
+        yield mc.setblock(r(4, 3, 2), (f'{id}_door', {'facing': WEST, 'half': 'upper'}))
 
         yield mc.execute().as_(e().tag('wood_sign_frame')).run().data().merge(s(), ItemFrame(NORTH).framed_item(
-            '%s_sign' % id).show_item_name('%s Sign' % name).nbt)
+            f'{id}_sign').show_item_name(f'{name} Sign').nbt)
 
         if log == 'log':
             wood_boat_chest = room.score('wood_boat_chest')
@@ -443,10 +443,10 @@ def wood_functions(room):
             yield mc.execute().if_().score(wood_boat_chest).matches(1).run().summon(chest_boat, location)
             yield mc.execute().if_().score(wood_boat_chest).matches(0).as_(
                 e().tag('wood_boat_frame')).run().data().merge(s(), ItemFrame(NORTH).framed_item(
-                '%s_boat' % id).show_item_name('%s Boat' % name).nbt)
+                f'{id}_boat').show_item_name(f'{name} Boat').nbt)
             yield mc.execute().if_().score(wood_boat_chest).matches(1).as_(
                 e().tag('wood_boat_frame')).run().data().merge(s(), ItemFrame(NORTH).framed_item(
-                '%s_chest_boat' % id).show_item_name('%s Chest Boat' % name).nbt)
+                f'{id}_chest_boat').show_item_name(f'{name} Chest Boat').nbt)
         else:
             yield mc.data().remove(e().tag('wood_boat_frame').limit(1), 'Item.id')
 

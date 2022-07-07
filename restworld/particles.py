@@ -145,9 +145,9 @@ def room():
         return WallSign(action_desc.sign_text(), (
             run_at.setblock(r(0, -4, 0), 'redstone_block'),
             run_at.data().merge(r(0, -4, -2), {
-                'Command': '%s function restworld:particles/%s_init' % (str(run_at), action_desc.enum)}),
+                'Command': f'{str(run_at)} function restworld:particles/{action_desc.enum}_init'}),
             run_at.data().merge(r(-1, -2, 0),
-                                {'Command': '%s function restworld:particles/%s' % (str(run_at), action_desc.enum)}),
+                                {'Command': f'{str(run_at)} function restworld:particles/{action_desc.enum}'}),
             mc.setblock(d(-dx, 0, -dz), 'emerald_block')
         ))
 
@@ -274,7 +274,7 @@ def room():
     room.function('firework', home=False).add(main().function('restworld:particles/fireworks_change'))
     room.loop('firework_change').loop(
         lambda step: mc.item().replace().block(r(0, 1, 0), 'container.0').with_('firework_rocket' + str(Nbt({
-            'Fireworks': {'Explosions': [{'Colors': '[I;%d]' % step.elem, 'Trail': 1, 'Type': step.i}],
+            'Fireworks': {'Explosions': [{'Colors': f'[I;{step.elem:d}]', 'Trail': 1, 'Type': step.i}],
                           'Flight': 0}})).replace('"', '')), (11743532, 6719955, 14602026, 3887386, 15790320)).add(
         mc.setblock(r(0, 0, 0), 'redstone_torch'),
         mc.setblock(r(0, 0, 0), 'air'))
@@ -477,4 +477,4 @@ def check_for_unused():
     avail = set(x for x in Particle) - unused_particles
     unused = tuple(sorted((str(x) for x in (avail - used))))
     if unused:
-        raise ValueError('Unused particles: %s', unused)
+        raise ValueError(f'Unused particles: {unused}')

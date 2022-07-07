@@ -195,7 +195,7 @@ def room():
     room.loop('experience', main_clock).loop(experience_loop, xp)
     room.function('enchanting_enter').add(
         mc.data().merge(r(0, 4, 0), {'Items': [','.join(
-            '{Slot:%d,id:book,Count:64},{Slot:%d,id:lapis_lazuli,Count:64}' % (i, i + 9) for i in range(0, 9))]}))
+            f'{{Slot:{i:d},id:book,Count:64}},{{Slot:{i + 9:d},id:lapis_lazuli,Count:64}}' for i in range(0, 9))]}))
 
     room.function('ingredients_enter', home=False).add(
         mc.clone(r(20, -5, 27), r(-15, -5, 1), r(-15, 1, 1)).filtered('chest'))
@@ -271,14 +271,12 @@ def room():
             z, end = rows.pop(0)
             for i in range(0, end):
                 t = items.pop(0)
-                # yield mc.summon('item_frame', r(x, 2, 5 - z),
-                #                {'Facing': 2, 'Tags': ['containers', 'only_item_frame', 'only_item_frame_%s' % t.id]})
                 frame = ItemFrame(NORTH).framed_item(t).show_item_name(t.display_name)
-                frame.tag('containers', 'only_item_frame', 'only_item_frame_%s' % t.id)
+                frame.tag('containers', 'only_item_frame', f'only_item_frame_{t.id}')
                 if t.id == 'elytra':
                     frame.merge_nbt({'Item': {'tag': {'Damage': 450}}})
                 yield frame.summon(r(x, 2, 5 - z), facing=NORTH)
-                yield mc.item().replace().block(r(1, -5, -1), 'container.%d' % i).with_(t)
+                yield mc.item().replace().block(r(1, -5, -1), f'container.{i:d}').with_(t)
                 z += dz
             x += dx
 

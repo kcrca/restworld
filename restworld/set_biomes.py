@@ -61,7 +61,7 @@ def set_water_biomes(level):
     x = -1008
     x_width = 16
     for i, biome in enumerate(water_biomes):
-        biome_id = 'universal_minecraft:%s' % biome.replace(' ', '_').lower()
+        biome_id = f'universal_minecraft:{biome.replace(" ", "_").lower()}'
         box = SelectionBox((x, 95, z), (x + x_width - 1, 125, z + 15))
         for chunk, slices, _ in (level.get_chunk_slice_box(dimension, box, True)):
             set_biome(level, biome_id, chunk, slices)
