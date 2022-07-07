@@ -588,7 +588,7 @@ class RoomPack(DataPack):
 
 
 class Room(FunctionSet):
-    def __init__(self, name: str, dp: RoomPack, facing: str = None, text: SignText = None):
+    def __init__(self, name: str, dp: RoomPack, facing: str = None, text: SignText = None, room_name:str =None):
         super().__init__(name, dp.function_set)
         self._pack = dp
         self._clocks = {}
@@ -598,11 +598,11 @@ class Room(FunctionSet):
             'tags': ['homer', '%s_homer' % self.name], 'NoGravity': True, 'Small': True})
         self.title = None
         if facing:
-            self._room_setup(facing, text)
+            self._room_setup(facing, text, room_name)
 
-    def _room_setup(self, facing, text):
+    def _room_setup(self, facing, text, room_name):
         text = _to_list(text)
-        self._record_room(text)
+        self._record_room(text, room_name)
         text = tuple((JsonText.text(x).bold().italic() if x else x) for x in text)
         sign = WallSign(text)
         facing = good_facing(facing)
@@ -625,13 +625,14 @@ class Room(FunctionSet):
         )
         self.home_func(self.name + '_room')
 
-    def _record_room(self, text):
+    def _record_room(self, text, room_name):
         while len(text) > 0 and text[0] is None:
             text = text[1:]
-        room_name = text[0]
-        if text[0][-1] == '&':
-            room_name += ' ' + text[1]
-        room_name = room_name.replace(',', '').replace(':', '')
+        if not room_name:
+            room_name = text[0]
+            if text[0][-1] == '&':
+                room_name += ' ' + text[1]
+            room_name = room_name.replace(',', '').replace(':', '')
         self.title = room_name
 
     def home_func(self, name):

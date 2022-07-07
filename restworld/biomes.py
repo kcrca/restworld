@@ -103,7 +103,7 @@ def save_biome(biome, prefix, i, x, z, handback, raised=False):
 
 
 def room():
-    room = Room('biomes', restworld, NORTH, (None, 'Biome'))
+    room = Room('biomes', restworld)
 
     room.function('arrive_biome').add(mc.execute().in_(OVERWORLD).run().weather(CLEAR))
     room.function('arrive_biome_init').add(
@@ -161,5 +161,5 @@ def room():
     room.function('maintain_oceans').add(
         mc.execute().positioned(
             r(-16, -16, 0)).if_().entity(p().volume((32, 32, end_z))).at(
-            'maintain_oceans_home').run().fill(
+            e().tag('maintain_oceans_home')).run().fill(
             r(-1, 1, -17), r(15, 1, end_z), 'water').replace('ice'))

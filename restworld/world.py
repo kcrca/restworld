@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import sys
+from datetime import date
 
 from pyker.commands import mc, e, JsonText, p, DARK_GREEN, Commands, r, Entity
 from pyker.function import FunctionSet, Function
@@ -78,7 +79,7 @@ class Restworld(RoomPack):
             r'  Command Blocks\n  Software Design\n  Programming\n\n',
             JsonText.text(r'JUMBOshrimp277:\n').bold(),
             r'  World Design\n  Testing\n  Rubber Duck\n',
-            r'\nMinecraft Version:\n   1.19, June 2022',
+            r'\nMinecraft Version:\n   1.19, ' + date.today().strftime('%-d %b %Y'),
         )
 
         return Function('control_book').add(mc.give(p(), cb.as_entity()))

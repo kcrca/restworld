@@ -12,7 +12,7 @@ def _to_id(tag):
 
 
 def room():
-    room = Room('friendlies', restworld, NORTH, ('Villagers,', 'Animals,', 'Mobs,', 'Bosses'))
+    room = Room('friendlies', restworld, NORTH, ('Villagers,', 'Animals,', 'Mobs,', 'Bosses'), 'Friendly Mobs')
     south_placer = r(0, 2, -0.2), SOUTH, -2, 2.2
     mid_east_placer = r(-1.2, 2, 0), EAST, 2, 2.2
     mid_west_placer = r(0.2, 2, 0), WEST, -2, 2.2

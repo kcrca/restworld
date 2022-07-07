@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from pyker.commands import mc, e, r, Commands, MOVE, s, OVERWORLD, EQ, MOD, THE_END, \
-    RAIN, CREATIVE, SIDEBAR, GAMETIME, RESULT, p
+    RAIN, CREATIVE, SIDEBAR, GAMETIME, RESULT, p, THE_NETHER
 from pyker.enums import ScoreCriteria
 from pyker.function import Function
 from restworld.rooms import Room
@@ -153,9 +153,9 @@ def room():
     for place in (
             ('biomes', OVERWORLD, (-1000, 101, -1000), (-1000, 80, -970)),
             ('connected', OVERWORLD, (1000, 101, 1000), (990, 101, 1000)),
-            ('end_home', THE_END, (100, 49, 0), (-1000, 80, -970)),
+            ('end_home', THE_END, (100, 49, 0), (90, 50, 0)),
             ('home', OVERWORLD, (0, 101, 0), (0, 101, 10)),
-            ('nether', OVERWORLD, (-1000, 101, -1000), (-1000, 80, -970)),
+            ('nether', THE_NETHER, (22 ,99, -13), (28, 100, -13)),
             ('arena', OVERWORLD, (1014, 106, -1000), (1000, 100, -1000))):
         room.function('goto_' + place[0], home=False).add(
             mc.execute().in_(place[1]).run().teleport(p(), place[2]).facing(place[3]))
