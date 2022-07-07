@@ -185,11 +185,11 @@ def room():
             close.set(0),
             mc.execute().at(
                 e().tag(other + '_home')).positioned(r(-2, 0, -2)).as_(
-                e().tag(actor).delta((4, 5, 4))).run(close.add(1)),
+                e().tag(actor).volume((4, 5, 4))).run(close.add(1)),
             athome.set(0),
             mc.execute().at(
                 e().tag(actor + '_home')).positioned(r(-2, 0, -2)).as_(
-                e().tag(actor).delta((4, 5, 4))).run(athome.add(1)),
+                e().tag(actor).volume((4, 5, 4))).run(athome.add(1)),
         )
 
     def toggle_peace(step):

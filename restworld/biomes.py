@@ -1,8 +1,9 @@
 import collections
 
-from pyker.commands import NORTH, mc, CLEAR, OVERWORLD, r, e
+from pyker.commands import NORTH, mc, CLEAR, OVERWORLD, r, e, p
 from pyker.simpler import WallSign
 from restworld.rooms import Room, label
+from restworld.set_biomes import water_biomes
 from restworld.world import restworld
 
 biome_groups = collections.OrderedDict()
@@ -125,7 +126,7 @@ def room():
     room.function('cleanup_biome').add(mc.kill(e().type('item')))
     clear_previous_mobs = mc.execute().at(e().tag('biome_loading_action_home')).positioned(
         r(-5, -5, -5)).run().kill(
-        e().type('!player').tag('!homer').delta((74, 42, 74))),
+        e().type('!player').tag('!homer').volume((74, 42, 74))),
 
     room.function('clear_biome').add(
         mc.fill(r(-2, -4, -2), r(-1, 42, 66), 'air').replace('#restworld:liquid'),
@@ -155,3 +156,10 @@ def room():
     room.home_func('reaper')
 
     room.function('save_biome').add(load_biome(save_biome, 'save'))
+
+    end_z = 17 - len(water_biomes) * 16
+    room.function('maintain_oceans').add(
+        mc.execute().positioned(
+            r(-16, -16, 0)).if_().entity(p().volume((32, 32, end_z))).at(
+            'maintain_oceans_home').run().fill(
+            r(-1, 1, -17), r(15, 1, end_z), 'water').replace('ice'))

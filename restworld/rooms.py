@@ -648,7 +648,7 @@ class Room(FunctionSet):
         return self.function(marker_tag, home=False, exists_ok=True).add(
             mc.comment(home_marker_comment),
             mc.kill(e().tag(marker_tag)),
-            mc.execute().positioned(r(-0.5, 0, 0.5)).run().kill(e().type('armor_stand').delta((1, 2, 1))),
+            mc.execute().positioned(r(-0.5, 0, 0.5)).run().kill(e().type('armor_stand').volume((1, 2, 1))),
             marker.summon(r(0, 0.5, 0)),
         )
 

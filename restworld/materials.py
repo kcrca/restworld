@@ -120,7 +120,7 @@ def room():
                 yield mc.setblock(r(3, 4, 2), '%s_block' % raw.id)
             yield mc.summon(ItemFrame(SOUTH, {'Tags': ['raw_frame', room.name]}).show_item_name(raw.display_name),
                             r(3, 4, 3))
-        yield mc.execute().as_(e().tag('ore_ingot_frame').delta((8, 5, 8))).run().data().merge(s(), {
+        yield mc.execute().as_(e().tag('ore_ingot_frame').volume((8, 5, 8))).run().data().merge(s(), {
             'Item': Item.nbt_for(item.id)})
 
     room.loop('ores', main_clock).add(
@@ -298,7 +298,7 @@ def basic_functions(room):
             e().tag('armor_chestplate').limit(1), 'Item.id').set().value('elytra'),
         mc.fill(r(-2, 2, 2), r(2, 4, 4), 'air'),
         mc.setblock(r(-2, 0, 0), 'redstone_block'),
-        mc.execute().positioned(r(-2, 0, 2)).run().kill(e().type('item').delta((5, 3, 4)))
+        mc.execute().positioned(r(-2, 0, 2)).run().kill(e().type('item').volume((5, 3, 4)))
     )
 
     room.function('basic_update').add(
