@@ -66,7 +66,7 @@ def room():
                     block_list_name = f'block_list_{name}_{x:d}_{z:d}'
                     block_list_block_name = f'block_list_{name}_{x:d}_{z:d}_{i:d}'
                     stand.tag(f'block_list_{name}', block_list_name, block_list_block_name)
-                    stand.merge_nbt({'CustomName': block.display_name})
+                    stand.merge_nbt({'CustomName': block.name})
                     stand_y = 2.5 + i * 0.24
                     names.add(
                         stand.summon(r(x, stand_y, z))
@@ -113,9 +113,9 @@ def room():
         'Chiseled|Nether Bricks', 'Red|Nether Bricks'))
     blocks('campfire', NORTH, (
         Block('Campfire', {'lit': True}),
-        Block('campfire', {'lit': False}, display_name='Campfire|Unlit'),
+        Block('campfire', {'lit': False}, name='Campfire|Unlit'),
         Block('Soul Campfire', {'lit': True}),
-        Block('soul_campfire', {'lit': False}, display_name='Soul Campfire|Unlit'),
+        Block('soul_campfire', {'lit': False}, name='Soul Campfire|Unlit'),
     ))
     room.function('campfire_enter').add(mc.function('restworld:/blocks/campfire_cur'))
     room.function('campfire_exit').add(mc.setblock(r(0, 3, 0), Block('campfire', {'lit': False})))
@@ -135,7 +135,7 @@ def room():
     blocks('light', SOUTH, (Block('light', {'level': x}) for x in range(0, 15)),
            labels=tuple(('light', f'Level: {i:d}') for i in range(0, 15)), clock=slow_clock)
     blocks('music', SOUTH, (
-        Block('Note Block'), Block('Jukebox'), Block('jukebox', {'has_record': True}, display_name='Jukebox Playing')))
+        Block('Note Block'), Block('Jukebox'), Block('jukebox', {'has_record': True}, name='Jukebox Playing')))
     blocks('netherrack', NORTH, ('Netherrack', 'Warped Nylium', 'Crimson Nylium'))
     blocks('obsidian', NORTH, ('Obsidian', 'Crying Obsidian'))
     blocks('prismarine', NORTH, ('Prismarine', 'Prismarine Bricks', 'Dark Prismarine'))
@@ -217,7 +217,7 @@ def room():
             yield mc.setblock(r(0, 4, 0), block.id)
         else:
             yield mc.setblock(r(0, 4, 0), 'budding_amethyst')
-            if ' Bud' in block.display_name or 'Cluster' in block.display_name:
+            if ' Bud' in block.name or 'Cluster' in block.name:
                 yield mc.setblock(r(0, 3, 0), block.clone().merge_state({'facing': 'down'}))
                 yield mc.setblock(r(0, 5, 0), block.clone().merge_state({'facing': 'up'}))
                 for offset in (NORTH, EAST, WEST, SOUTH):
@@ -281,7 +281,7 @@ def room():
     def chest_loop(step):
         step.elem.merge_state({'facing': NORTH})
         yield mc.setblock(r(0, 3, 0), step.elem)
-        txt = {'Text2': 'Trapped' if 'T' in step.elem.display_name else '',
+        txt = {'Text2': 'Trapped' if 'T' in step.elem.name else '',
                'Text3': 'Double Chest' if 'type' in step.elem.state else 'Chest'}
         yield mc.data().merge(r(0, 2, -1), txt)
         if 'type' in step.elem.state:
@@ -370,7 +370,7 @@ def room():
             yield mc.setblock(r(0, 3, 0), lantern),
             yield mc.setblock(r(0, 4, 0), 'chain'),
             yield mc.data().merge(r(0, 2, -1), {'Text2': 'Hanging', 'Text4': 'and Chain'}),
-        yield mc.data().merge(r(0, 2, -1), {'Text3': lantern.display_name})
+        yield mc.data().merge(r(0, 2, -1), {'Text3': lantern.name})
 
     room.function('lantern_init').add(
         WallSign([]).place(r(0, 2, -1, ), NORTH),
@@ -423,13 +423,13 @@ def room():
         Block('Sculk Vein', {SOUTH: True, DOWN: True}),
         'Sculk', 'Sculk Sensor',
         Block('Sculk Catalyst'),
-        Block('sculk_catalyst', {'bloom': True}, display_name='Sculk Catalyst|Blooming'),
-        Block('sculk_shrieker', {'can_summon': True, 'shrieking': False}, display_name='Sculk Shrieker|Can Summon'),
+        Block('sculk_catalyst', {'bloom': True}, name='Sculk Catalyst|Blooming'),
+        Block('sculk_shrieker', {'can_summon': True, 'shrieking': False}, name='Sculk Shrieker|Can Summon'),
         Block('sculk_shrieker', {'can_summon': True, 'shrieking': True},
-              display_name='Sculk Shrieker|Can Summon|Shrieking'),
-        Block('sculk_shrieker', {'can_summon': False, 'shrieking': False}, display_name='Sculk Shrieker|Can\'t Summon'),
+              name='Sculk Shrieker|Can Summon|Shrieking'),
+        Block('sculk_shrieker', {'can_summon': False, 'shrieking': False}, name='Sculk Shrieker|Can\'t Summon'),
         Block('sculk_shrieker', {'can_summon': False, 'shrieking': True},
-              display_name='Sculk Shrieker|Can\'t Summon|Shrieking'),
+              name='Sculk Shrieker|Can\'t Summon|Shrieking'),
     ))
     skulk_loop = room.functions['sculk_blocks_main']
     skulk_loop.add(
@@ -468,7 +468,7 @@ def room():
     room.loop('tnt', main_clock).loop(tnt_loop, ('stable', 'unstable'))
 
     torches = (Block('Torch'), Block('Soul Torch'), Block('Redstone Torch'), Block('Redstone Torch'))
-    wall_torches = tuple(Block(x.display_name.replace('Torch', 'Wall Torch')) for x in torches)
+    wall_torches = tuple(Block(x.name.replace('Torch', 'Wall Torch')) for x in torches)
 
     def torches_loop(step):
         text = ({'Text2': '', 'Text4': ''}, {'Text2': 'Soul', 'Text4': ''}, {'Text2': 'Redstone', 'Text4': '(On)'},

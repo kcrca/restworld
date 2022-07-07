@@ -31,7 +31,7 @@ def room():
 
     illagers = (Entity('Vindicator'), Entity('Evoker'), Entity('Pillager'),
                 Entity('Pillager', nbt={'HandItems': [Item.nbt_for('crossbow')]}),
-                Entity('illusioner', display_name='Illusioner (unused)'))
+                Entity('illusioner', name='Illusioner (unused)'))
     tags = ('illager',)
 
     def illager_loop(step):
@@ -109,7 +109,7 @@ def room():
         label(r(5, 2, -2), 'Change Height'))
     room.function('witch_init').add(placer(*west_placer, adults=True).summon('witch'))
     room.function('zombie_horse_init').add(
-        placer(*east_placer).summon(Entity('zombie_horse', display_name='Zombie Horse (Unused)')))
+        placer(*east_placer).summon(Entity('zombie_horse', name='Zombie Horse (Unused)')))
     zombie_jockey = room.score('zombie_jockey')
     room.function('zombie_init').add(
         zombie_jockey.set(0),

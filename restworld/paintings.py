@@ -16,7 +16,7 @@ def room():
         pz += sz
         dir = ('south', 'west', 'north', 'east')[facing]
         yield mc.summon('painting', r(x, 3, z), {'variant': thing.id, 'facing': facing, 'Tags': ['painting']})
-        yield WallSign((None, thing.display_name, note)).place(r(x + px, 2 + sy, z + pz), dir)
+        yield WallSign((None, thing.name, note)).place(r(x + px, 2 + sy, z + pz), dir)
 
     room.function('all_paintings_init').add(
         mc.kill(e().tag('painting')),

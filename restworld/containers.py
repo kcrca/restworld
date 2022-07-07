@@ -258,7 +258,7 @@ def room():
         'Command Block Minecart',
         'Spawner',
     ))
-    non_inventory.append(Entity('elytra', nbt={'Damage': 450}, display_name='Damaged Elytra'))
+    non_inventory.append(Entity('elytra', nbt={'Damage': 450}, name='Damaged Elytra'))
 
     def only_items_init_func():
         rows = [(0, 5), (0, 5), (0, 5)]
@@ -271,7 +271,7 @@ def room():
             z, end = rows.pop(0)
             for i in range(0, end):
                 t = items.pop(0)
-                frame = ItemFrame(NORTH).framed_item(t).show_item_name(t.display_name)
+                frame = ItemFrame(NORTH).framed_item(t).show_item_name(t.name)
                 frame.tag('containers', 'only_item_frame', f'only_item_frame_{t.id}')
                 if t.id == 'elytra':
                     frame.merge_nbt({'Item': {'tag': {'Damage': 450}}})

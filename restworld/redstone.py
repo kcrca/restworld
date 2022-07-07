@@ -218,7 +218,7 @@ def note_block_funcs(room):
         y = 3 - int(i / row_len)
         note_block_init.add(
             WallSign(
-                (None, instr.name, f'({instr.exemplar.display_name})'),
+                (None, instr.name, f'({instr.exemplar.name})'),
                 (instrument.set(i),
                  mc.execute().at(e().tag('note_block_home')).run().setblock(r(0, 2, 0), instr.exemplar))
             ).place(r(x, y, 1), SOUTH),

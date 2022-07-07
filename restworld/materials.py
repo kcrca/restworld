@@ -53,14 +53,14 @@ def room():
     def arrows_loop(step):
         yield mc.summon(step.elem, r(0, 3, 0.25), {
             'Tags': ['arrow'], 'NoGravity': True, 'Color': 127, 'CustomPotionColor': 127 if step.i == 2 else ''})
-        yield mc.data().merge(r(1, 2, 0), {'Text2': step.elem.display_name})
+        yield mc.data().merge(r(1, 2, 0), {'Text2': step.elem.name})
 
     room.loop('arrows', main_clock).add(
         mc.kill(e().tag('arrow'))
     ).loop(arrows_loop, (
         Block('Arrow'),
         Block('Spectral Arrow'),
-        Block('arrow', display_name='Tipped Arrow')))
+        Block('arrow', name='Tipped Arrow')))
 
     points = (2, 6, 16, 36, 72, 148, 306, 616, 1236, 2476, 32767)
     each = 2 * math.pi / len(points)
@@ -91,8 +91,8 @@ def room():
     def ore_loop(step):
         ore, block, item, raw = (Block(s) if s else None for s in step.elem)
         yield from volume.replace(block.id, '#restworld:ore_blocks')
-        yield mc.data().merge(r(3, 2, 6), {'Text2': ore.display_name.replace(' Ore', '')})
-        if 'Nether' in ore.display_name or 'Ancient' in ore.display_name:
+        yield mc.data().merge(r(3, 2, 6), {'Text2': ore.name.replace(' Ore', '')})
+        if 'Nether' in ore.name or 'Ancient' in ore.name:
             yield volume.replace(ore.id, '#restworld:ores')
             yield volume.replace('netherrack', '#restworld:ore_background')
             yield volume.replace('soul_sand', 'dirt')
@@ -113,12 +113,12 @@ def room():
             yield volume.replace('diorite', 'blackstone')
             yield volume.replace('granite', 'basalt')
 
-        if 'Netherite' in item.display_name:
+        if 'Netherite' in item.name:
             yield mc.data().merge(r(3, 2, 6), {'Text3': '/ Netherite'})
         if raw:
-            if 'Raw' in raw.display_name:
+            if 'Raw' in raw.name:
                 yield mc.setblock(r(3, 4, 2), '%s_block' % raw.id)
-            yield mc.summon(ItemFrame(SOUTH, {'Tags': ['raw_frame', room.name]}).show_item_name(raw.display_name),
+            yield mc.summon(ItemFrame(SOUTH, {'Tags': ['raw_frame', room.name]}).show_item_name(raw.name),
                             r(3, 4, 3))
         yield mc.execute().as_(e().tag('ore_ingot_frame').volume((8, 5, 8))).run().data().merge(s(), {
             'Item': Item.nbt_for(item.id)})

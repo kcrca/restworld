@@ -47,7 +47,7 @@ def room():
     p = placer(*south_placer)
     room.function('canine_init').add(
         p.summon('wolf'),
-        p.summon(Entity('wolf', nbt={'Owner': 'dummy'}, display_name='Dog'), tags=('collared',)),
+        p.summon(Entity('wolf', nbt={'Owner': 'dummy'}, name='Dog'), tags=('collared',)),
         label(r(1, 2, 2), 'Sit'))
 
     room.loop('canine', main_clock).loop(
@@ -122,7 +122,7 @@ def room():
     # base.mobs_init('z_delta_init': -2, 'kid_x_init': 1.4, 'adult_x_init': -1.2, 'rotation_init': 270, 'tags_init': '('saddle'',))
     p = placer(r(-1.2, 2, 0), EAST, -2, 1.6, tags=('saddle',), nbt={'Tame': True})
     room.function('horse_init').add(
-        (p.summon(Entity('horse', display_name=horse.display_name, nbt={'Variant': h}), tags=(horse.tag,)) for h, horse in
+        (p.summon(Entity('horse', name=horse.name, nbt={'Variant': h}), tags=(horse.tag,)) for h, horse in
          enumerate(horses)),
         mc.execute().at(e().tag(_to_id(horses[3].tag), 'kid')).run(
             WallSign((None, 'Variant:')).place(r(2, 0, 0), EAST)),
@@ -228,8 +228,8 @@ def room():
     p = placer(*mid_west_placer)
     room.function('sheep_init').add(
         p.summon('Sheep', tags=('colorable',)),
-        p.summon(Entity('sheep', display_name='Sheared Sheep', nbt={'Sheared': True})),
-        p.summon(Entity('sheep', display_name='jeb_'), auto_tag=False))
+        p.summon(Entity('sheep', name='Sheared Sheep', nbt={'Sheared': True})),
+        p.summon(Entity('sheep', name='jeb_'), auto_tag=False))
     room.function('snow_golem_init').add(
         placer(r(-1.2, 2, 0), EAST, adults=True).summon('snow_golem'))
     room.loop('snow_golem', main_clock).loop(
@@ -314,10 +314,10 @@ def villager_funcs(room):
         for i, pro in enumerate(villager_professions):
             if i == 7:
                 if which == 'villager':
-                    professions_init.add(p.summon(Entity('villager', display_name='Child', nbt={'Age': -2147483648})))
+                    professions_init.add(p.summon(Entity('villager', name='Child', nbt={'Age': -2147483648})))
                 p = placer(r(0, 2, -7), WEST, -2, tags=('villager', 'professions',), adults=True)
             professions_init.add(p.summon(Entity(
-                id, display_name=pro, nbt={'VillagerData': {'profession': pro.lower()}}), tags=('villager',)))
+                id, name=pro, nbt={'VillagerData': {'profession': pro.lower()}}), tags=('villager',)))
         professions_init.add(
             mc.function(f'restworld:friendlies/{which}_professions_cur'),
             mc.function(f'restworld:friendlies/{which}_levels_cur'),
@@ -339,7 +339,7 @@ def villager_funcs(room):
         for i, ty in enumerate(villager_types):
             if i == 3:
                 p = placer(r(0, 2, -3), WEST, -2, tags=('villager', 'types',), adults=True)
-            types_init.add(p.summon(Entity(id, display_name=ty, nbt={'VillagerData': {'type': ty.lower()}})))
+            types_init.add(p.summon(Entity(id, name=ty, nbt={'VillagerData': {'type': ty.lower()}})))
         types_init.add(
             mc.function(f'restworld:friendlies/{which}_types_cur'),
             mc.function(f'restworld:friendlies/{which}_levels_cur'),

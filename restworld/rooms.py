@@ -125,11 +125,11 @@ class Stepable(Thing):
 
 
 class ActionDesc:
-    def __init__(self, enum: Enum, display_name=None, note=None, also=()):
+    def __init__(self, enum: Enum, name=None, note=None, also=()):
         self.enum = enum
-        if display_name is None:
-            display_name = type(enum).display_name(enum)
-        self.display_name = display_name
+        if name is None:
+            name = type(enum).name(enum)
+        self.name = name
         self.note = '(%s)' % note if note else None
         if isinstance(also, Iterable):
             self.also = also
@@ -137,15 +137,15 @@ class ActionDesc:
             self.also = (also,)
 
     def __str__(self):
-        return self.display_name + ' [' + self.enum + ']'
+        return self.name + ' [' + self.enum + ']'
 
     def __lt__(self, other):
         assert self.__class__ == other.__class__
         assert self.enum.__class__ == other.enum.__class__
-        return self.display_name < other.display_name
+        return self.name < other.name
 
     def sign_text(self):
-        block = Block(self.enum.value, display_name=self.display_name)
+        block = Block(self.enum.value, name=self.name)
         sign_text = list(block.sign_text)
         if self.note:
             sign_text.append(self.note)
@@ -805,8 +805,8 @@ class Room(FunctionSet):
 
 
 def _name_for(mob):
-    if mob.display_name:
-        return mob.display_name
+    if mob.name:
+        return mob.name
     return mob.id.replace('_', ' ').title()
 
 
@@ -958,7 +958,7 @@ class SignedRoom(Room):
             return None
         try:
             desc = next(i)
-            raise ValueError('%s...: Remaining descs after all signs are placed' % desc.display_name)
+            raise ValueError('%s...: Remaining descs after all signs are placed' % desc.name)
         except StopIteration:
             return
 
