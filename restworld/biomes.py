@@ -1,5 +1,6 @@
 import collections
 
+from pyker.base import to_id
 from pyker.commands import NORTH, mc, CLEAR, OVERWORLD, r, e, p
 from pyker.simpler import WallSign
 from restworld.rooms import Room, label
@@ -70,9 +71,6 @@ def group_signs(group, score):
                    'birch'
                    ).place(r(6 - x, 1, 6), NORTH)
 
-
-def to_id(name):
-    return name.lower().replace(' ', '_')
 
 
 def clear(biome, prefix, i, x, y, z, handback):

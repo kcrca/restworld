@@ -1,17 +1,24 @@
 from __future__ import annotations
 
 import collections
+import copy
+import json
+import os
+import re
 from copy import deepcopy
 from enum import Enum
 from functools import total_ordering
 from html.parser import HTMLParser
+from pathlib import Path
+from typing import Iterable, Tuple, Callable
 
-from pyker.function import *
+from pyker.base import to_id, Nbt, to_name
+from pyker.commands import Position, Entity, Block, JsonText, BlockDef, good_block, mc, r, lines, Commands, e, NEAREST, \
+    Score, Command, SignText, good_facing, rotated_facing, ROTATION_180, p, CLEAR, ROTATION_90, EntityDef, good_entity, \
+    good_score, a, ROTATION_270
+from pyker.enums import ScoreCriteria, Particle
+from pyker.function import Function, DataPack, LATEST_PACK_VERSION, FunctionSet, Loop
 from pyker.simpler import Sign, WallSign
-
-
-def to_id(name):
-    return name.lower().replace(' ', '_')
 
 
 @total_ordering
@@ -99,11 +106,11 @@ class Horse(Thing):
 
 
 class Mob(Thing):
-    def __init__(self, name, id=None, nbt=None, can_fly=False, acquatic=False):
+    def __init__(self, name, id=None, nbt=None, can_fly=False, aquatic=False):
         Thing.__init__(self, name, id=id)
         self.nbt = nbt
         self.can_fly = can_fly
-        self.acquatic = acquatic
+        self.aquatic = aquatic
 
     def inner_nbt(self):
         if not self.nbt:
@@ -352,8 +359,8 @@ biome_groups = collections.OrderedDict()
 biome_groups['Temperate'] = (
     'Plains', 'Forest', 'Flower Forest', 'Birch Forest', 'Dark Forest', 'Swamp', 'Jungle', 'Mushroom Field')
 biome_groups['Warm'] = ('Desert', 'Savanna', 'Badlands')
-biome_groups['Cold'] = ('Tiaga', 'Stone Shore')
-biome_groups['Snowy'] = ('Snowy Tundra', 'Ice Spikes', 'Snowy Tiaga')
+biome_groups['Cold'] = ('Taiga', 'Stone Shore')
+biome_groups['Snowy'] = ('Snowy Tundra', 'Ice Spikes', 'Snowy Taiga')
 biome_groups['Ocean'] = ('Warm Ocean', 'Ocean', 'Frozen Ocean')
 biome_groups['Caves and Cliffs'] = ('Lush Caves', 'Dripstone Caves')
 biome_groups['Nether'] = ('Nether Wastes', 'Soul Sand Valley', 'Crimson Forest', 'Warped Forest', 'Basalt Deltas')
@@ -416,7 +423,7 @@ def get_normal_blocks():
         blocks[name] += (block,)
     for b in sorted(blocks):
         for w in sorted(blocks[b]):
-            yield w.lower().replace(' ', '_').replace('_lazuli', '').replace('bale', 'block')
+            to_id(w).replace('_lazuli', '').replace('bale', 'block')
 
 
 normal_blocks = get_normal_blocks()
@@ -805,7 +812,7 @@ class Room(FunctionSet):
 def _name_for(mob):
     if mob.name:
         return mob.name
-    return mob.id.replace('_', ' ').title()
+    return to_name(mob.id)
 
 
 class MobPlacer:
@@ -852,8 +859,8 @@ class MobPlacer:
     def clone(self) -> MobPlacer:
         return copy.deepcopy(self)
 
-    def summon(self, mobs: Iterable[EntityDef] | EntityDef, *, on_stand: bool | Callable[Entity] = False, tags=None,
-               nbt=None, auto_tag=None) -> Tuple[Command, ...]:
+    def summon(self, mobs: Iterable[EntityDef] | EntityDef, *, on_stand: bool | Callable[[Entity], bool] = False,
+               tags=None, nbt=None, auto_tag=None) -> Tuple[Command, ...]:
         if isinstance(mobs, (Entity, str)):
             mobs = (mobs,)
         if tags and isinstance(tags, str):

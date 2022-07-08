@@ -4,6 +4,7 @@ import math
 import os
 import re
 
+from pyker.base import to_id
 from pyker.commands import r, mc, Block, EAST, NORTH, OVERWORLD, p, e, Entity
 from pyker.info import colors, woods, stems, corals
 from restworld.rooms import Room, MobPlacer, label
@@ -120,7 +121,7 @@ def get_normal_blocks():
         blocks[name] += (block,)
     for b in sorted(blocks):
         for w in sorted(blocks[b]):
-            yield w.lower().replace(' ', '_').replace('_lazuli', '').replace('bale', 'block')
+            yield to_id(w).replace('_lazuli', '').replace('bale', 'block')
 
 
 def room():
