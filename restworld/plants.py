@@ -1,9 +1,9 @@
 from __future__ import annotations
 
+from pyker.base import to_id
 from pyker.commands import SOUTH, mc, r, Block, EQ, EAST, WEST, NORTH
 from pyker.info import woods, tulips, small_flowers, stems
 from pyker.simpler import WallSign, Volume
-from restworld.friendlies import _to_id
 from restworld.rooms import Room, label
 from restworld.world import restworld, main_clock, fast_clock
 
@@ -234,7 +234,7 @@ def room():
                                                    ('Grass Block', 'Dirt', 'Podzol', 'Coarse Dirt'))
 
     def trees_loop(step):
-        yield mc.data().merge(r(-1, 0, -1), {'mode': 'LOAD', 'name': f'restworld:{_to_id(step.elem)}_trees'})
+        yield mc.data().merge(r(-1, 0, -1), {'mode': 'LOAD', 'name': f'restworld:{to_id(step.elem)}_trees'})
         yield mc.setblock(r(-1, -1, -1), 'redstone_block')
         yield mc.setblock(r(-1, -1, -1), 'air')
         yield WallSign((None, f'{step.elem} Trees')).place(r(1, 2, 7), WEST)
@@ -243,7 +243,7 @@ def room():
     room.loop('trees', main_clock).loop(trees_loop, woods)
 
     def tulips_loop(step):
-        yield mc.setblock(r(0, 3, 0), f'{_to_id(step.elem)}_tulip')
+        yield mc.setblock(r(0, 3, 0), f'{to_id(step.elem)}_tulip')
         yield mc.data().merge(r(1, 2, 0), {'Text3': step.elem})
         yield mc.data().merge(r(-1, 2, 0), {'Text3': step.elem})
 

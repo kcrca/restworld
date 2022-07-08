@@ -2,10 +2,10 @@ from __future__ import annotations
 
 import math
 
+from pyker.base import to_id
 from pyker.commands import mc, r, Block, WEST, e, EAST, Entity, SOUTH, s, NORTH, BlockDef, good_block
 from pyker.info import woods, stems, colors
 from pyker.simpler import WallSign, Volume, ItemFrame, Item
-from restworld.friendlies import _to_id
 from restworld.rooms import Room, label
 from restworld.world import restworld, main_clock, kill_em, fast_clock
 
@@ -363,7 +363,7 @@ def wood_functions(room):
 
     def wood_loop(step):
         name = step.elem
-        id = _to_id(name)
+        id = to_id(name)
         if name in stems:
             log = 'stem'
             wood = 'hyphae'

@@ -1,14 +1,11 @@
 from __future__ import annotations
 
+from pyker.base import to_id
 from pyker.commands import r, NORTH, SOUTH, mc, e, s, Entity, EAST, WEST, EQ, Score, MOD
 from pyker.info import colors, horses, villager_professions, villager_types, music_discs
 from pyker.simpler import WallSign
 from restworld.rooms import Room, label
 from restworld.world import restworld, main_clock, kill_em
-
-
-def _to_id(tag):
-    return tag.lower().replace(' ', '_')
 
 
 def room():
@@ -124,7 +121,7 @@ def room():
     room.function('horse_init').add(
         (p.summon(Entity('horse', name=horse.name, nbt={'Variant': h}), tags=(horse.tag,)) for h, horse in
          enumerate(horses)),
-        mc.execute().at(e().tag(_to_id(horses[3].tag), 'kid')).run(
+        mc.execute().at(e().tag(to_id(horses[3].tag), 'kid')).run(
             WallSign((None, 'Variant:')).place(r(2, 0, 0), EAST)),
         label(r(1, 2, 1), 'Lead'),
         label(r(1, 2, -7), 'Saddles'),

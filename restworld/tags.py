@@ -1,9 +1,9 @@
 import re
 
+from pyker.base import to_id
 from pyker.commands import COLORS
 from pyker.function import BLOCKS
 from pyker.info import woods, stems, corals
-from restworld.friendlies import _to_id
 from restworld.world import restworld
 
 
@@ -89,15 +89,15 @@ def tags():
         ]
     }
     blocks['leaflike'] = {
-        'values': ['%s_leaves' % _to_id(x) for x in woods] + [
+        'values': ['%s_leaves' % to_id(x) for x in woods] + [
             'nether_wart_block',
             'warped_wart_block',
         ]
     }
-    blocks['woodlike'] = {'values': ['%s_wood' % _to_id(x) for x in woods] + ['%s_hyphae' % _to_id(x) for x in stems]}
-    blocks['loglike'] = {'values': ['%s_log' % _to_id(x) for x in woods] + ['%s_stem' % _to_id(x) for x in stems]}
-    blocks['stripped_loglike'] = {'values': ['stripped_%s' % _to_id(x) for x in blocks['loglike']['values']]}
-    blocks['stripped_woodlike'] = {'values': ['stripped_%s' % _to_id(x) for x in blocks['woodlike']['values']]}
+    blocks['woodlike'] = {'values': ['%s_wood' % to_id(x) for x in woods] + ['%s_hyphae' % to_id(x) for x in stems]}
+    blocks['loglike'] = {'values': ['%s_log' % to_id(x) for x in woods] + ['%s_stem' % to_id(x) for x in stems]}
+    blocks['stripped_loglike'] = {'values': ['stripped_%s' % to_id(x) for x in blocks['loglike']['values']]}
+    blocks['stripped_woodlike'] = {'values': ['stripped_%s' % to_id(x) for x in blocks['woodlike']['values']]}
     blocks['saplinglike'] = {
         'values': [
             'acacia_sapling',
