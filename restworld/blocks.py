@@ -682,7 +682,7 @@ def color_functions(room):
         mc.setblock(r(-7, -1, 3), 'air'),
     )
     room.function('colorings_plain_off').add(
-        mc.clone((coloring_coords[0][0], coloring_coords[0][1] - coloring_coords[1][1] + 1, coloring_coords[0][2]),
+        mc.clone((coloring_coords[0][0], coloring_coords[0][1].value - coloring_coords[1][1].value + 1, coloring_coords[0][2]),
                  (coloring_coords[1][0], 0, coloring_coords[1][2]),
                  (coloring_coords[1][0], coloring_coords[1][1] - 1, coloring_coords[1][2])),
 
@@ -693,7 +693,7 @@ def color_functions(room):
     room.function('colorings_plain_on').add(
         mc.clone((coloring_coords[0][0], coloring_coords[0][1], coloring_coords[0][2]),
                  (coloring_coords[1][0], coloring_coords[1][1] - 1, coloring_coords[1][2]),
-                 (coloring_coords[0][0], 0, coloring_coords[0][2])),
+                 (coloring_coords[1][0], 0, coloring_coords[1][2])),
 
         mc.tag(e().tag('colorings_base_home')).remove('colorings_home'),
         colorings(True, Color('Plain', 0x0)),
