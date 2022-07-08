@@ -2,11 +2,11 @@ from __future__ import annotations
 
 import copy
 
-from pyker.base import NORTH, WEST, EAST, r
-from pyker.commands import mc, e, s, Entity, good_facing
+from pyker.base import EAST, NORTH, WEST, r
+from pyker.commands import Entity, e, good_facing, mc, s
 from pyker.simpler import Item
-from restworld.rooms import Room, MobPlacer, label
-from restworld.world import restworld, main_clock, kill_em
+from restworld.rooms import MobPlacer, Room, label
+from restworld.world import kill_em, main_clock, restworld
 
 
 def room():

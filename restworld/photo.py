@@ -4,10 +4,10 @@ import math
 import os
 import re
 
-from pyker.base import to_id, r, NORTH, EAST
-from pyker.commands import mc, Block, OVERWORLD, p, e, Entity
-from pyker.info import colors, woods, stems, corals
-from restworld.rooms import Room, MobPlacer, label
+from pyker.base import EAST, NORTH, OVERWORLD, r, to_id
+from pyker.commands import Block, Entity, e, mc, p
+from pyker.info import colors, corals, stems, woods
+from restworld.rooms import MobPlacer, Room, label
 from restworld.world import restworld
 
 materials = (

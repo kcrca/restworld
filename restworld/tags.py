@@ -3,7 +3,7 @@ import re
 from pyker.base import to_id
 from pyker.commands import COLORS
 from pyker.function import BLOCKS
-from pyker.info import woods, stems, corals
+from pyker.info import corals, stems, woods
 from restworld.world import restworld
 
 

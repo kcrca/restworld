@@ -1,11 +1,11 @@
 from __future__ import annotations
 
-from pyker.base import r, NORTH, WEST, EAST
-from pyker.commands import mc, e, a, Block, RESULT, VISIBLE, STYLE, VALUE, PLAYERS, COLOR, s, p, Entity, SURVIVAL, \
-    LEVELS, CREATIVE
-from pyker.simpler import WallSign, Item, ItemFrame
+from pyker.base import EAST, NORTH, WEST, r
+from pyker.commands import Block, COLOR, CREATIVE, Entity, LEVELS, PLAYERS, RESULT, STYLE, SURVIVAL, VALUE, VISIBLE, a, \
+    e, mc, p, s
+from pyker.simpler import Item, ItemFrame, WallSign
 from restworld.rooms import Room, label
-from restworld.world import restworld, slow_clock, main_clock, fast_clock
+from restworld.world import fast_clock, main_clock, restworld, slow_clock
 
 
 def room():

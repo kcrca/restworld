@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from pyker.base import r, NORTH
+from pyker.base import NORTH, r
 from restworld.rooms import Room
 from restworld.world import restworld
 

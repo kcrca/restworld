@@ -2,12 +2,12 @@ from __future__ import annotations
 
 import math
 
-from pyker.base import to_id, r, EAST, WEST, SOUTH, NORTH
-from pyker.commands import mc, Block, e, Entity, BlockDef, good_block, s
-from pyker.info import woods, stems, colors
-from pyker.simpler import WallSign, Volume, ItemFrame, Item
+from pyker.base import EAST, NORTH, SOUTH, WEST, r, to_id
+from pyker.commands import Block, BlockDef, Entity, e, good_block, mc, s
+from pyker.info import colors, stems, woods
+from pyker.simpler import Item, ItemFrame, Volume, WallSign
 from restworld.rooms import Room, label
-from restworld.world import restworld, main_clock, kill_em, fast_clock
+from restworld.world import fast_clock, kill_em, main_clock, restworld
 
 
 def room():

@@ -1,12 +1,11 @@
 from __future__ import annotations
 
-from pyker.commands import mc, e, Commands, MOVE, s, OVERWORLD, EQ, MOD, THE_END, \
-    RAIN, CREATIVE, SIDEBAR, GAMETIME, RESULT, p, THE_NETHER
-from pyker.base import r
+from pyker.base import GAMETIME, OVERWORLD, THE_END, THE_NETHER, r
+from pyker.commands import CREATIVE, Commands, EQ, MOD, MOVE, RAIN, RESULT, SIDEBAR, e, mc, p, s
 from pyker.enums import ScoreCriteria
 from pyker.function import Function
 from restworld.rooms import Room
-from restworld.world import restworld, tick_clock, clock, kill_em
+from restworld.world import clock, kill_em, restworld, tick_clock
 
 
 # -- Death: How it works:

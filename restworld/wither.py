@@ -1,10 +1,10 @@
 from __future__ import annotations
 
-from pyker.base import r, NORTH, WEST, EAST, good_facing
-from pyker.commands import mc, e
+from pyker.base import EAST, NORTH, WEST, good_facing, r
+from pyker.commands import e, mc
 from pyker.simpler import WallSign
 from restworld.rooms import Room
-from restworld.world import restworld, kill_em, main_clock
+from restworld.world import kill_em, main_clock, restworld
 
 
 def room():

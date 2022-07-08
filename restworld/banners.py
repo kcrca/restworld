@@ -1,11 +1,11 @@
 from __future__ import annotations
 
-from pyker.base import r, d, SOUTH
-from pyker.commands import Entity, Block, mc, e, s, RESULT, INT, COLORS, WHITE
+from pyker.base import SOUTH, d, r
+from pyker.commands import Block, COLORS, Entity, INT, RESULT, WHITE, e, mc, s
 from pyker.enums import Pattern
 from pyker.simpler import Shield, WallSign
 from restworld.rooms import Room, label
-from restworld.world import restworld, die, main_clock
+from restworld.world import die, main_clock, restworld
 
 stand_tmpl = Entity('armor_stand', {
     'Invisible': True, 'NoGravity': True, 'ShowArms': True, 'Pose': {'LeftArm': [0, 90, 90]}, 'HandItems': [{}],

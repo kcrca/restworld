@@ -1,11 +1,11 @@
 from __future__ import annotations
 
-from pyker.base import to_id, r, NORTH, SOUTH, EAST, WEST
-from pyker.commands import mc, e, s, Entity, EQ, Score, MOD
-from pyker.info import colors, horses, villager_professions, villager_types, music_discs
+from pyker.base import EAST, NORTH, SOUTH, WEST, r, to_id
+from pyker.commands import EQ, Entity, MOD, Score, e, mc, s
+from pyker.info import colors, horses, music_discs, villager_professions, villager_types
 from pyker.simpler import WallSign
 from restworld.rooms import Room, label
-from restworld.world import restworld, main_clock, kill_em
+from restworld.world import kill_em, main_clock, restworld
 
 
 def room():

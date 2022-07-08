@@ -3,12 +3,12 @@ from __future__ import annotations
 import re
 from typing import Iterable, Union
 
-from pyker.base import r, EAST, good_facing, NORTH, SOUTH, WEST, DOWN
-from pyker.commands import mc, e, Entity, good_block, Block, s, MOVE
-from pyker.info import colors, Color
-from pyker.simpler import Sign, Item, WallSign, Volume
-from restworld.rooms import Room, label, woods, stems
-from restworld.world import restworld, main_clock, kill_em, slow_clock, fast_clock
+from pyker.base import DOWN, EAST, NORTH, SOUTH, WEST, good_facing, r
+from pyker.commands import Block, Entity, MOVE, e, good_block, mc, s
+from pyker.info import Color, colors
+from pyker.simpler import Item, Sign, Volume, WallSign
+from restworld.rooms import Room, label, stems, woods
+from restworld.world import fast_clock, kill_em, main_clock, restworld, slow_clock
 
 
 def room():
@@ -682,7 +682,8 @@ def color_functions(room):
         mc.setblock(r(-7, -1, 3), 'air'),
     )
     room.function('colorings_plain_off').add(
-        mc.clone((coloring_coords[0][0], coloring_coords[0][1].value - coloring_coords[1][1].value + 1, coloring_coords[0][2]),
+        mc.clone((coloring_coords[0][0], coloring_coords[0][1].value - coloring_coords[1][1].value + 1,
+                  coloring_coords[0][2]),
                  (coloring_coords[1][0], 0, coloring_coords[1][2]),
                  (coloring_coords[1][0], coloring_coords[1][1] - 1, coloring_coords[1][2])),
 

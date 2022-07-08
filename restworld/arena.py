@@ -2,12 +2,12 @@ from __future__ import annotations
 
 import sys
 
-from pyker.base import r, EAST
-from pyker.commands import Score, e, mc, a, GT, RANDOM
+from pyker.base import EAST, r
+from pyker.commands import GT, RANDOM, Score, a, e, mc
 from pyker.function import Loop
 from pyker.simpler import WallSign
-from restworld.rooms import Thing, Room, label
-from restworld.world import marker_tmpl, restworld, main_clock, kill_em
+from restworld.rooms import Room, Thing, label
+from restworld.world import kill_em, main_clock, marker_tmpl, restworld
 
 COUNT_MIN = 1
 COUNT_MAX = 5

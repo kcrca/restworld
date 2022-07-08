@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from restworld import ancient, global_, aquatic, arena, banners, biomes, tags, blocks, center, containers, diy, effects, \
-    particles, enders, font, friendlies, materials, monsters, nether, paintings, photo, plants, redstone, the_end, time, \
-    wither, connect
+from restworld import ancient, aquatic, arena, banners, biomes, blocks, center, connect, containers, diy, effects, \
+    enders, font, friendlies, global_, materials, monsters, nether, paintings, particles, photo, plants, redstone, tags, \
+    the_end, time, wither
 from restworld.world import restworld
 
 

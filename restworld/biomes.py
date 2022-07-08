@@ -1,7 +1,7 @@
 import collections
 
-from pyker.base import to_id, r, NORTH
-from pyker.commands import mc, CLEAR, OVERWORLD, e, p
+from pyker.base import NORTH, OVERWORLD, r, to_id
+from pyker.commands import CLEAR, e, mc, p
 from pyker.simpler import WallSign
 from restworld.rooms import Room, label
 from restworld.set_biomes import water_biomes

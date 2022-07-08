@@ -1,10 +1,10 @@
 from __future__ import annotations
 
-from pyker.base import r, d, EAST
-from pyker.commands import mc, FORCE, e, Block, Entity
+from pyker.base import EAST, d, r
+from pyker.commands import Block, Entity, FORCE, e, mc
 from pyker.simpler import Item
 from restworld.rooms import Room, label
-from restworld.world import restworld, main_clock
+from restworld.world import main_clock, restworld
 
 
 def room():

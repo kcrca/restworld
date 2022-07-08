@@ -1,11 +1,11 @@
 from __future__ import annotations
 
-from pyker.base import to_id, r, NORTH, WEST, EAST, SOUTH
-from pyker.commands import mc, Block, EQ
-from pyker.info import woods, tulips, small_flowers, stems
-from pyker.simpler import WallSign, Volume
+from pyker.base import EAST, NORTH, SOUTH, WEST, r, to_id
+from pyker.commands import Block, EQ, mc
+from pyker.info import small_flowers, stems, tulips, woods
+from pyker.simpler import Volume, WallSign
 from restworld.rooms import Room, label
-from restworld.world import restworld, main_clock, fast_clock
+from restworld.world import fast_clock, main_clock, restworld
 
 
 def crop(stages, which, x, y, z, step, name='age'):

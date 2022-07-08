@@ -1,11 +1,11 @@
 from __future__ import annotations
 
-from pyker.base import r, NORTH, WEST, EAST
-from pyker.commands import Score, mc, e, COLORS, MOD, EQ, MULT, PLUS, RESULT, LONG, Entity, s
+from pyker.base import EAST, NORTH, WEST, r
+from pyker.commands import COLORS, EQ, Entity, LONG, MOD, MULT, PLUS, RESULT, Score, e, mc, s
 from pyker.enums import ScoreCriteria
 from pyker.simpler import WallSign
-from restworld.rooms import fishes, Room
-from restworld.world import fast_clock, restworld, main_clock, kill_em
+from restworld.rooms import Room, fishes
+from restworld.world import fast_clock, kill_em, main_clock, restworld
 
 
 def room():

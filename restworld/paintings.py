@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from pyker.base import NORTH, r
-from pyker.commands import Block, mc, e
+from pyker.commands import Block, e, mc
 from pyker.simpler import WallSign
 from restworld.rooms import Room
 from restworld.world import restworld

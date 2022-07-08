@@ -10,13 +10,13 @@ from enum import Enum
 from functools import total_ordering
 from html.parser import HTMLParser
 from pathlib import Path
-from typing import Iterable, Tuple, Callable
+from typing import Callable, Iterable, Tuple
 
-from pyker.base import to_id, Nbt, to_name, r, rotated_facing, ROTATION_180, ROTATION_90, ROTATION_270
-from pyker.commands import Position, Entity, Block, JsonText, BlockDef, good_block, mc, lines, Commands, e, NEAREST, \
-    Score, Command, SignText, good_facing, p, CLEAR, EntityDef, good_entity, good_score, a
-from pyker.enums import ScoreCriteria, Particle
-from pyker.function import Function, DataPack, LATEST_PACK_VERSION, FunctionSet, Loop
+from pyker.base import Nbt, ROTATION_180, ROTATION_270, ROTATION_90, r, rotated_facing, to_id, to_name
+from pyker.commands import Block, BlockDef, CLEAR, Command, Commands, Entity, EntityDef, JsonText, NEAREST, Position, \
+    Score, SignText, a, e, good_block, good_entity, good_facing, good_score, lines, mc, p
+from pyker.enums import Particle, ScoreCriteria
+from pyker.function import DataPack, Function, FunctionSet, LATEST_PACK_VERSION, Loop
 from pyker.simpler import Sign, WallSign
 
 
