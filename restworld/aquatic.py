@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from pyker.commands import Score, mc, e, r, WEST, COLORS, MOD, EQ, MULT, PLUS, RESULT, LONG, NORTH, Entity, s, \
-    EAST
+from pyker.base import r, NORTH, WEST, EAST
+from pyker.commands import Score, mc, e, COLORS, MOD, EQ, MULT, PLUS, RESULT, LONG, Entity, s
 from pyker.enums import ScoreCriteria
 from pyker.simpler import WallSign
 from restworld.rooms import fishes, Room

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from pyker.commands import mc, r, EAST, FORCE, e, Block, d, Entity
+from pyker.base import r, d, EAST
+from pyker.commands import mc, FORCE, e, Block, Entity
 from pyker.simpler import Item
 from restworld.rooms import Room, label
 from restworld.world import restworld, main_clock

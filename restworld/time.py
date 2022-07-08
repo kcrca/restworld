@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from pyker.commands import NORTH, r, WEST, mc, e, good_facing, EAST, RESULT, DAYTIME, NOON
+from pyker.base import r, NORTH, WEST, EAST, good_facing
+from pyker.commands import mc, e, RESULT, DAYTIME, NOON
 from pyker.info import moon_phases
 from pyker.simpler import WallSign, Item
 from restworld.rooms import Room, label

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from pyker.commands import r
+from pyker.base import r
 from restworld.rooms import Room, label
 from restworld.world import restworld
 

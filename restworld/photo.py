@@ -4,8 +4,8 @@ import math
 import os
 import re
 
-from pyker.base import to_id
-from pyker.commands import r, mc, Block, EAST, NORTH, OVERWORLD, p, e, Entity
+from pyker.base import to_id, r, NORTH, EAST
+from pyker.commands import mc, Block, OVERWORLD, p, e, Entity
 from pyker.info import colors, woods, stems, corals
 from restworld.rooms import Room, MobPlacer, label
 from restworld.world import restworld

@@ -3,7 +3,8 @@ from __future__ import annotations
 import sys
 from datetime import date
 
-from pyker.commands import mc, e, JsonText, p, DARK_GREEN, Commands, r, Entity
+from pyker.commands import mc, e, JsonText, p, DARK_GREEN, Commands, Entity
+from pyker.base import r
 from pyker.function import FunctionSet, Function
 from pyker.simpler import Book, Sign
 from restworld.rooms import Room, Clock, RoomPack

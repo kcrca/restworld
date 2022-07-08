@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from pyker.base import to_id
-from pyker.commands import SOUTH, mc, r, Block, EQ, EAST, WEST, NORTH
+from pyker.base import to_id, r, NORTH, WEST, EAST, SOUTH
+from pyker.commands import mc, Block, EQ
 from pyker.info import woods, tulips, small_flowers, stems
 from pyker.simpler import WallSign, Volume
 from restworld.rooms import Room, label

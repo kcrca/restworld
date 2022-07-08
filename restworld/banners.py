@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from pyker.commands import Entity, Block, SOUTH, r, mc, e, s, RESULT, INT, COLORS, WHITE, d
+from pyker.base import r, d, SOUTH
+from pyker.commands import Entity, Block, mc, e, s, RESULT, INT, COLORS, WHITE
 from pyker.enums import Pattern
 from pyker.simpler import Shield, WallSign
 from restworld.rooms import Room, label

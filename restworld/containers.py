@@ -1,7 +1,8 @@
 from __future__ import annotations
 
-from pyker.commands import mc, r, NORTH, e, WEST, a, Block, RESULT, VISIBLE, STYLE, VALUE, PLAYERS, COLOR, \
-    EAST, s, p, Entity, SURVIVAL, LEVELS, CREATIVE
+from pyker.base import r, NORTH, WEST, EAST
+from pyker.commands import mc, e, a, Block, RESULT, VISIBLE, STYLE, VALUE, PLAYERS, COLOR, s, p, Entity, SURVIVAL, \
+    LEVELS, CREATIVE
 from pyker.simpler import WallSign, Item, ItemFrame
 from restworld.rooms import Room, label
 from restworld.world import restworld, slow_clock, main_clock, fast_clock
@@ -242,7 +243,7 @@ def room():
             e().tag('item_hands').limit(1), 'ArmorItems[3]').set().from_(e().tag('item_src').limit(1), 'Item')
     )
 
-    non_inventory = list(Entity(s) for s in (
+    non_inventory = list(Entity(i) for i in (
         'Knowledge Book',
         'Debug Stick',
         'Suspicious Stew',

@@ -2,7 +2,8 @@ from __future__ import annotations
 
 import sys
 
-from pyker.commands import Score, e, mc, r, a, EAST, GT, RANDOM
+from pyker.base import r, EAST
+from pyker.commands import Score, e, mc, a, GT, RANDOM
 from pyker.function import Loop
 from pyker.simpler import WallSign
 from restworld.rooms import Thing, Room, label

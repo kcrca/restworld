@@ -1,7 +1,8 @@
 from __future__ import annotations
 
-from pyker.commands import mc, e, r, Commands, MOVE, s, OVERWORLD, EQ, MOD, THE_END, \
+from pyker.commands import mc, e, Commands, MOVE, s, OVERWORLD, EQ, MOD, THE_END, \
     RAIN, CREATIVE, SIDEBAR, GAMETIME, RESULT, p, THE_NETHER
+from pyker.base import r
 from pyker.enums import ScoreCriteria
 from pyker.function import Function
 from restworld.rooms import Room

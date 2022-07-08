@@ -3,8 +3,8 @@ from __future__ import annotations
 import re
 from typing import Iterable, Union
 
-from pyker.commands import EAST, r, mc, e, Entity, good_block, Block, NORTH, SOUTH, WEST, s, MOVE, \
-    good_facing, DOWN
+from pyker.base import r, EAST, good_facing, NORTH, SOUTH, WEST, DOWN
+from pyker.commands import mc, e, Entity, good_block, Block, s, MOVE
 from pyker.info import colors, Color
 from pyker.simpler import Sign, Item, WallSign, Volume
 from restworld.rooms import Room, label, woods, stems

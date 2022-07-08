@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from pyker.commands import mc, r, SOUTH, JsonText, Block, WEST, e, s, EAST, NORTH
+from pyker.base import r, SOUTH, WEST, NORTH, EAST
+from pyker.commands import mc, JsonText, Block, e, s
 from pyker.info import woods, stems, colors
 from pyker.simpler import Book, WallSign
 from restworld.rooms import Room, ensure, label

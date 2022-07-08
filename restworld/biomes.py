@@ -1,7 +1,7 @@
 import collections
 
-from pyker.base import to_id
-from pyker.commands import NORTH, mc, CLEAR, OVERWORLD, r, e, p
+from pyker.base import to_id, r, NORTH
+from pyker.commands import mc, CLEAR, OVERWORLD, e, p
 from pyker.simpler import WallSign
 from restworld.rooms import Room, label
 from restworld.set_biomes import water_biomes
@@ -70,7 +70,6 @@ def group_signs(group, score):
                    (mc.execute().at(e().tag('category_home')).run().function('restworld:biomes/category')),
                    'birch'
                    ).place(r(6 - x, 1, 6), NORTH)
-
 
 
 def clear(biome, prefix, i, x, y, z, handback):

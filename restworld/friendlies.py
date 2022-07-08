@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from pyker.base import to_id
-from pyker.commands import r, NORTH, SOUTH, mc, e, s, Entity, EAST, WEST, EQ, Score, MOD
+from pyker.base import to_id, r, NORTH, SOUTH, EAST, WEST
+from pyker.commands import mc, e, s, Entity, EQ, Score, MOD
 from pyker.info import colors, horses, villager_professions, villager_types, music_discs
 from pyker.simpler import WallSign
 from restworld.rooms import Room, label

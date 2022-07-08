@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import math
 
-from pyker.base import to_id
-from pyker.commands import mc, r, Block, WEST, e, EAST, Entity, SOUTH, s, NORTH, BlockDef, good_block
+from pyker.base import to_id, r, EAST, WEST, SOUTH, NORTH
+from pyker.commands import mc, Block, e, Entity, BlockDef, good_block, s
 from pyker.info import woods, stems, colors
 from pyker.simpler import WallSign, Volume, ItemFrame, Item
 from restworld.rooms import Room, label
@@ -89,7 +89,7 @@ def room():
     deepslate_materials = room.score('deepslate_materials')
 
     def ore_loop(step):
-        ore, block, item, raw = (Block(s) if s else None for s in step.elem)
+        ore, block, item, raw = (Block(x) if x else None for x in step.elem)
         yield from volume.replace(block.id, '#restworld:ore_blocks')
         yield mc.data().merge(r(3, 2, 6), {'Text2': ore.name.replace(' Ore', '')})
         if 'Nether' in ore.name or 'Ancient' in ore.name:
@@ -280,7 +280,7 @@ def basic_functions(room):
             yield mc.data().merge(e().tag('material_%d' % j).limit(1), {'HandItems': [hands[j], {}]})
         for j in range(4, 8):
             yield mc.data().merge(e().tag('material_%d' % j).limit(1), {'HandItems': [{}, hands[j]]})
-        yield mc.data().merge(r(-2, 0, 1), {'name': 'restworld:material_%s' % material, 'mode': 'LOAD'})
+        yield mc.data().merge(r(-2, 0, 1), {'name': f'restworld:material_{material}', 'mode': 'LOAD'})
 
     room.loop('basic', main_clock).add(
         mc.fill(r(2, 2, 2), r(-2, 5, 4), 'air'),
@@ -323,7 +323,7 @@ def fencelike_functions(room):
         yield mc.execute().at(e().tag('fencelike_home')).run().data().merge(r(6, 2, 0), block.sign_nbt)
 
     def switch_to_fencelike(which):
-        room.function('switch_to_%s' % which, home=False).add(
+        room.function(f'switch_to_{which}', home=False).add(
             mc.kill(e().tag('which_fencelike_home')),
             mc.execute().at(e().tag('fencelike_home')).positioned(r(1, -0.5, 0)).run().function(
                 'restworld:materials/%s_home' % which),
@@ -336,10 +336,10 @@ def fencelike_functions(room):
             yield volume.replace_facing(step.elem + ' Gate', '#restworld:gatelike')
 
     room.loop('panes', main_clock).loop(lambda step: fencelike(step.elem),
-                                        tuple('%s Stained Glass Pane' % x.name for x in colors) + ('Glass Pane',))
+                                        tuple(f'{x.name} Stained Glass Pane' for x in colors) + ('Glass Pane',))
     switch_to_fencelike('panes')
     room.loop('fences', main_clock).loop(fence_loop,
-                                         tuple('%s Fence' % x for x in woods + stems + ('Nether Brick',)) + (
+                                         tuple(f'{x} Fence' for x in woods + stems + ('Nether Brick',)) + (
                                              'Iron Bars',))
     switch_to_fencelike('fences')
     room.loop('walls', main_clock).loop(lambda step: fencelike(step.elem), (x + ' Wall' for x in (

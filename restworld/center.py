@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from pyker.commands import r, mc, e, Entity, Score, NORTH, EAST, SOUTH, WEST
+from pyker.base import r, NORTH, EAST, SOUTH, WEST
+from pyker.commands import mc, e, Entity, Score
 from pyker.simpler import WallSign
 from restworld.rooms import Room
 from restworld.world import restworld, fast_clock, slow_clock, main_clock
