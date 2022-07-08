@@ -68,9 +68,7 @@ def room():
                     stand.tag(f'block_list_{name}', block_list_name, block_list_block_name)
                     stand.merge_nbt({'CustomName': block.name})
                     stand_y = 2.5 + i * 0.24
-                    names.add(
-                        stand.summon(r(x, stand_y, z))
-                    )
+                    names.add(stand.summon(r(x, stand_y, z)))
 
                 x += dx
                 x_size += 1
@@ -916,7 +914,7 @@ def stepable_functions(room):
         'Polished|Blackstone Bricks', 'Quartz Block', 'Smooth|Quartz',
         'End Stone Bricks', 'Purpur Block',
     )
-    stairs = tuple(re.sub('(marine|ite)$', r'\1 Stairs', re.sub('[Ss]tone$', 'stone Stairs',
+    stairs = tuple(re.sub('(marine|ite)$', r'\1 Stairs', re.sub('[Ss]tone$', 'Stone Stairs',
                                                                 f.replace('Planks', 'Stairs').replace('Tiles',
                                                                                                       'Tile Stairs').replace(
                                                                     'Copper', 'Copper Stairs').replace('Bricks',

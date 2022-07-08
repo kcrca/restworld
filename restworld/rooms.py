@@ -128,7 +128,7 @@ class ActionDesc:
     def __init__(self, enum: Enum, name=None, note=None, also=()):
         self.enum = enum
         if name is None:
-            name = type(enum).name(enum)
+            name = type(enum).display_name(enum)
         self.name = name
         self.note = '(%s)' % note if note else None
         if isinstance(also, Iterable):
@@ -588,7 +588,7 @@ class RoomPack(DataPack):
 
 
 class Room(FunctionSet):
-    def __init__(self, name: str, dp: RoomPack, facing: str = None, text: SignText = None, room_name:str =None):
+    def __init__(self, name: str, dp: RoomPack, facing: str = None, text: SignText = None, room_name: str = None):
         super().__init__(name, dp.function_set)
         self._pack = dp
         self._clocks = {}
@@ -666,11 +666,9 @@ class Room(FunctionSet):
         if exists_ok and name in self.functions:
             return self.functions[name]
         if home:
-            if base_name[0] == '_':
+            if base_name[0] == '_' or base_name in self._homes:
                 home = False
-            if base_name in self._homes:
-                home = False
-        return self._add_func(Function(name, base_name=base_name), name, clock, home)
+        return self._add_func(Function(name), name, clock, home)
 
     def loop(self, name: str, clock: Clock = None, /, home=True, score=None) -> Loop:
         base_name, name = self._base_name(name, clock)
@@ -868,8 +866,9 @@ class MobPlacer:
             if nbt:
                 tmpl.merge_nbt(nbt)
             tmpl.merge_nbt(MobPlacer.base_nbt)
+            tmpl.custom_name(True)
             tmpl.merge_nbt({'Rotation': [self.rotation, 0]})
-            tmpl.set_name(_name_for(mob))
+            tmpl.name = _name_for(mob)
             if self.tags:
                 tmpl.tag(*self.tags)
             if tags:

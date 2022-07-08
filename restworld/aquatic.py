@@ -27,7 +27,8 @@ def room():
     t_fish = room.function('tropical_fish_init')
     for i in range(0, 12):
         tag, variants = fishes[i]
-        fish = Entity('tropical_fish', nbt={'Variant': variants[0][0]}).tag(tag).set_name(variants[0][1])
+        fish = Entity('tropical_fish', nbt={'Variant': variants[0][0]}).tag(tag)
+        fish.name = variants[0][1]
         t_fish.add(room.mob_placer(r(int(i / 6) + 0.5, 3.2, int(i % 6)), WEST, adults=True).summon(fish))
     t_fish.add(WallSign(('Naturally', 'Occurring', 'Tropical Fish', '<--------')).place(
         r(int((len(fishes) - 1) / 6) - 1, 2, (len(fishes) - 1) % 6), WEST, water=True))

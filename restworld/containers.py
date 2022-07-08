@@ -124,7 +124,7 @@ def room():
             'armor_stand', r(0, 0, 0), {'Tags': ['homer', 'brewing_run_home'], 'NoGravity': True}))
 
     placer = room.mob_placer(r(0, 2, 0), WEST, -3, 0, tags=('carrier',), adults=True,
-                             nbt={'ChestedHorse': True, 'Tame': True, 'Variant': 2})
+                             nbt={'ChestedHorse': True, 'Tame': True, 'Variant': 2}, auto_tag=False)
     room.function('carrier_init').add(
         placer.summon('llama', tags=('strength_llama',)),
         placer.summon('donkey'))

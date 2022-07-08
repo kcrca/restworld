@@ -8,11 +8,12 @@ from pyker.simpler import WallSign
 from restworld.rooms import Thing, Room, label
 from restworld.world import marker_tmpl, restworld, main_clock, kill_em
 
+COUNT_MIN = 1
+COUNT_MAX = 5
+
 
 def room():
     start_battle_type = Score('battle_type', 'arena')
-    COUNT_MIN = 1
-    COUNT_MAX = 5
     fighter_nbts = {
         'Drowned': 'HandItems:[{id:trident,Count:1}]',
         'Goat': 'IsScreamingGoat:True',
@@ -78,7 +79,7 @@ def room():
     #    ('Slime', 'Iron Golem'),
     #    ('Magma Cube', 'Iron Golem'),
     #    ('Goat', 'Sheep'),
-    # These don't work unelss we figure out how to kill the ones that spawn when a larger is killed. For
+    # These don't work unless we figure out how to kill the ones that spawn when a larger is killed. For
     # now, we just make sure they are the smallest size.
     #  ('Slime', 'Iron Golem'),
     #  ('Magma Cube', 'Iron Golem'),

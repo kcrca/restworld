@@ -8,6 +8,47 @@ from restworld.rooms import Room
 from restworld.world import restworld, tick_clock, clock, kill_em
 
 
+# -- Death: How it works:
+#
+# At the bottom of the world is an armor stand named "death". When we want to kill a mob, we teleport it to death,
+# which kills everything within a few blocks of itself. It does this every tick, except those where any of the clocks
+# is 0 or 1. This is because we're trying to keep the visual aspects of this away from the user up above. Killing
+# things directly would be very visible, and leave items behind. The teleporting is basically invisible. But it's
+# not always visually immediate. This is why the "0 or 1" exception exists: Those are the clock ticks on which
+# things are being removed. If we kill on those same ticks, the user may see the mob start to die. Keeping the
+# actual 'kill' command off those ticks reduces the chance of visual death.
+
+# -- Clocks: How they work:
+#
+# Clocks have the following properties:
+#   1. They run at specific but independent rates.
+#   2. They should all start and stop together
+#   3. There should be some visual feedback for whether they're running or not.
+#   4. They only run when a player is in the room.
+#
+# The control blocks that govern this are under the middle of the world.
+#
+# Toggling clocks on and off is done by powering a repeating block that has the 'clock_tick' function is that does
+# this arithmetic. The blocks are set such that when the redstone block that powers 'clock_tick' comes and goes it
+# fires off neighboring blocks that run either 'clock_on' or 'clock_off', which switch the red/green (really lime)
+# concrete blocks that indicate whether the buttons will start or stop the clock. 'clock_on' sets the block to
+# redstone, and 'clock_off' sets it to something else.
+#
+# The clocks have their own scoreboard objects, 'clocks'. It has an overall counter 'clock' that is bumped each
+# tick when the clocks are running. Each clock has a counter (e.g, 'main') and a rate ('SPEED_MAIN'). Every tick,
+# 'main' is updated to clock % SPEED_MAIN.
+#
+# Each room has a clock trigger at its neg-x/neg-y corner. It consists of a repeating block that continuously
+# checks if a player is in the room, using an 'execute at' command to run a simple command at the player in the
+# room. When it successfully runs, the block generates a redstone signal, which is piped into a series of command
+# blocks that run enter/exit functionality, plus the room's '_tick' function in a repeating block. When no player
+# is in the room, _tick's block is unpowered and so doesn't run at all.
+#
+# The _tick function checks each clock for whether it is zero, and if it is, runs that room's '_main'
+# (etc.) functions. These invoke every main-clock-driven function in the room, at its _home armor stand. All this
+# means that on every tick, there is only one check about whether to run many functions (rather tha one
+# check per function).
+
 def room():
     def use_min_fill(y, filler, filter):
         return mc.execute().at(e().tag('min_home')).run().fill((r(0), y, r(0)), (r(166), y, r(180)),
@@ -37,8 +78,6 @@ def room():
                 r(0, 1, 0), r(0, 1, 0), r(0, 3, 0)).replace(MOVE),
             yield mc.execute().at(e().tag('turtle_eggs_home')).run().clone(
                 r(1, 2, 0), r(-2, 2, 0), r(-2, -4, 0)).replace(MOVE),
-            # yield mc.execute().at(entities().tag('brown_horses', 'kid')).run().clone(*r(2, 0, 0, 2, 0, 0, 2, 2, 0)).replace(
-            #     MOVE),
             for mob_room in mob_rooms:
                 room_home = mob_room + '_home'
                 yield mc.execute().as_(e().tag(room_home)).run().data().merge(
@@ -64,9 +103,11 @@ def room():
                     s()).run().tp(s(), r(0, -2, 0))
 
     room = Room('global', restworld)
-    clock_toggle = room.score('clock_toggle')
     room.function('arena').add(
         mc.execute().in_(OVERWORLD).run().tp(p(), (1126, 103, 1079)).facing((1139, 104, 1079)))
+
+    # The clock functions
+    clock_toggle = room.score('clock_toggle')
     room.home_func('clock'),
     room.add(
         Function('clock_init').add(
@@ -102,6 +143,8 @@ def room():
             mc.execute().if_().score(clock_toggle).matches(1).run().function('restworld:global/clock_off'),
         ),
     )
+
+    # The death functions
     death_home = room.home_func('death')
     room.function('death_init').add(
         mc.execute().positioned((0, 1.5, 0)).run().function(death_home.full_name),
@@ -155,7 +198,7 @@ def room():
             ('connected', OVERWORLD, (1000, 101, 1000), (990, 101, 1000)),
             ('end_home', THE_END, (100, 49, 0), (90, 50, 0)),
             ('home', OVERWORLD, (0, 101, 0), (0, 101, 10)),
-            ('nether', THE_NETHER, (22 ,99, -13), (28, 100, -13)),
+            ('nether', THE_NETHER, (22, 99, -13), (28, 100, -13)),
             ('arena', OVERWORLD, (1014, 106, -1000), (1000, 100, -1000))):
         room.function('goto_' + place[0], home=False).add(
             mc.execute().in_(place[1]).run().teleport(p(), place[2]).facing(place[3]))
