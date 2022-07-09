@@ -106,21 +106,17 @@ def all_fish_funcs(room, clock_wall_sign):
             base_variant.operation(PLUS, pattern_variant),
             variant.operation(EQ, base_variant),
         )
-        for i in range(0,6):
-            yield mc.execute().store(RESULT).entity(e().tag(f'fish{i:d}').limit(1), 'Variant', LONG, 1).run((variant.get()))
+        for i in range(0, 6):
+            yield mc.execute().store(RESULT).entity(e().tag(f'fish{i:d}').limit(1), 'Variant', LONG, 1).run(
+                variant.get())
             if i < 5:
                 yield variant.add(256)
         yield variant.add(1)
         for i in range(6, 12):
-            yield mc.execute().store(RESULT).entity(e().tag(f'fish{i:d}').limit(1), 'Variant', LONG, 1).run((variant.get()))
+            yield mc.execute().store(RESULT).entity(e().tag(f'fish{i:d}').limit(1), 'Variant', LONG, 1).run(
+                variant.get())
             if i < 11:
                 yield variant.remove(256)
-        # for i in range(0, 12):
-        #     yield mc.execute().store(RESULT).entity(e().tag(f'fish{i:d}').limit(1), 'Variant', LONG, 1).run(
-        #         variant.get())
-        #     if i == 6:
-        #         yield variant.add(1)
-        #     yield variant.add(256)
 
     room.function('all_fish_init').add(all_fish_init())
     room.loop('all_fish', fast_clock).add(all_fish())
