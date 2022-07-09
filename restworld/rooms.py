@@ -674,7 +674,7 @@ class Room(FunctionSet):
         if home:
             if base_name[0] == '_' or base_name in self._homes:
                 home = False
-        return self._add_func(Function(name), name, clock, home)
+        return self._add_func(Function(name, base_name), name, clock, home)
 
     def loop(self, name: str, clock: Clock = None, /, home=True, score=None) -> Loop:
         base_name, name = self._base_name(name, clock)
