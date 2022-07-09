@@ -18,7 +18,6 @@ def room():
 
     name_stand = Entity('armor_stand', nbt={'Invisible': True, 'NoGravity': True, 'CustomNameVisible': True})
     name_stand.tag('block_list')
-    all_names = room.function('all_names', home=False)
 
     def blocks(name, facing, block_lists: Iterable[Union[Block, str]] | Iterable[Iterable[Union[Block, str]]], dx=0,
                dz=0, size=0, labels=None, clock=main_clock, score=None):
@@ -44,7 +43,7 @@ def room():
                 mc.execute().if_().score(block_list_score).matches(0).run().kill(e().tag(f'block_list_{name}'))
             )
             names = room.function(name + '_names', home=False)
-            all_names.add(mc.function(names.full_name))
+            block_init.add(mc.function(names.full_name))
 
         def blocks_loop_body(step):
             i = step.i
@@ -68,8 +67,8 @@ def room():
                     stand = name_stand.clone()
                     block_list_name = f'block_list_{name}_{x:d}_{z:d}'
                     block_list_block_name = f'block_list_{name}_{x:d}_{z:d}_{i:d}'
-                    stand.tag(f'block_list_{name}', block_list_name, block_list_block_name)
-                    stand.merge_nbt({'CustomName': block.name})
+                    stand.tag('blocks', f'block_list_{name}', block_list_name, block_list_block_name)
+                    stand.merge_nbt({'CustomName': block.name, 'CustomNameVisible': False})
                     stand_y = 2.5 + i * 0.24
                     names.add(stand.summon(r(x, stand_y, z)))
 
@@ -527,8 +526,10 @@ def room_init_functions(room, block_list_score):
             'Text1': JsonText.text("").click_event().run_command('say Sorry, cannot expand this block')}),
         mc.tag(e().tag('block_sign_home')).add('no_expansion'),
     )
-    room.loop('toggle_block_list', score=block_list_score).loop(None, range(0, 2)).add(
-        mc.function('restworld:blocks/_cur'))
+    room.loop('toggle_block_list', score=block_list_score).loop(
+        lambda step: mc.execute().as_(e().tag('block_list')).run().data().merge(s(), {"CustomNameVisible": step.i > 0}),
+        range(0, 2))
+    room.function('toggle_block_list_init').add(block_list_score.set(0))
 
 
 def color_functions(room):
