@@ -207,7 +207,6 @@ def room():
     arena_count_finish = room.function('arena_count_finish').add(
         mc.execute().if_().score(arena_count).matches((None, COUNT_MIN)).run(arena_count.set(COUNT_MIN)),
         mc.execute().if_().score(arena_count).matches((COUNT_MAX, None)).run(arena_count.set(COUNT_MAX)),
-        arena_count.set(1),
         mc.function('restworld:arena/arena_count_cur'),
     )
     arena_count_cur = mc.function(arena_count_finish.full_name)
