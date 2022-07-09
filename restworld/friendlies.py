@@ -116,7 +116,6 @@ def room():
         lambda step: mc.execute().as_(e().tag('goat').tag('adult')).run().data().merge(
             s(), {'HasLeftHorn': step.i & 1, 'HasRightHorn': step.i & 2}), range(0, 4))
 
-    # base.mobs_init('z_delta_init': -2, 'kid_x_init': 1.4, 'adult_x_init': -1.2, 'rotation_init': 270, 'tags_init': '('saddle'',))
     p = placer(r(-1.2, 2, 0), EAST, -2, 1.6, tags=('saddle',), nbt={'Tame': True})
     room.function('horse_init').add(
         (p.summon(Entity('horse', name=horse.name, nbt={'Variant': h}), tags=(horse.tag,)) for h, horse in

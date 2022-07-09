@@ -601,7 +601,7 @@ class Room(FunctionSet):
         self._scores = set()
         self._homes = set()
         self._home_stand = Entity('armor_stand', {
-            'tags': ['homer', '%s_homer' % self.name], 'NoGravity': True, 'Small': True})
+            'Tags': ['homer', '%s_home' % self.name], 'NoGravity': True, 'Small': True})
         self.title = None
         if facing:
             self._room_setup(facing, text, room_name)

@@ -525,6 +525,7 @@ def room_init_functions(room, block_list_score):
             'Text1': JsonText.text("").click_event().run_command('say Sorry, cannot expand this block')}),
         mc.execute().at(e().tag('blocks_home', 'no_expansion')).run().data().merge(r(0, 2, 1), {
             'Text1': JsonText.text("").click_event().run_command('say Sorry, cannot expand this block')}),
+        mc.tag(e().tag('block_sign_home')).add('no_expansion'),
     )
     room.loop('toggle_block_list', score=block_list_score).loop(None, range(0, 2)).add(
         mc.function('restworld:blocks/_cur'))
@@ -772,8 +773,8 @@ def expansion_functions(room):
     room.function('expand_all', home=False).add(
         mc.execute().as_(e().tag('blocks_home', '!no_expansion', '!expander')).run().execute().at(
             s()).run().function('restworld:blocks/toggle_expand_at'))
-    room.function('expand_finish_main').add(
-        mc.execute().at(e().tag('expander', 'generic_home')).run().function('restworld:blocks/expander'))
+    room.function('expand', main_clock).add(
+        mc.execute().at(e().tag('expander')).run().function('restworld:blocks/expander'))
     room.function('expand_dripstone', home=False).add(
         # Clone the original stack to either side to form a line, including anything on top of the block
         mc.clone(r(0, 12, 0), r(0, 3, 0), r(-1, 3, 0)),
