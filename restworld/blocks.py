@@ -4,7 +4,7 @@ import re
 from typing import Iterable, Union
 
 from pyker.base import DOWN, EAST, NORTH, SOUTH, WEST, good_facing, r
-from pyker.commands import Block, Entity, MOVE, e, good_block, mc, s
+from pyker.commands import Block, Entity, JsonText, MOVE, e, good_block, mc, s
 from pyker.info import Color, colors
 from pyker.simpler import Item, Sign, Volume, WallSign
 from restworld.rooms import Room, label, stems, woods
@@ -59,7 +59,10 @@ def room():
                     signage = signage + ('',) * (4 - len(signage))
 
                 yield mc.setblock(r(x, 3, z), block)
-                yield mc.data().merge(r(x + facing.dx, 2, z + facing.dz), Sign.lines_nbt(signage))
+                sign_nbt = Sign.lines_nbt(signage)
+                # Preserve the 'expand' response
+                del sign_nbt['Text1']
+                yield mc.data().merge(r(x + facing.dx, 2, z + facing.dz), sign_nbt)
 
                 if show_list:
                     stand = name_stand.clone()
@@ -514,15 +517,14 @@ def room_init_functions(room, block_list_score):
     )
     room.function('blocks_sign_init').add(
         mc.execute().at(e().tag('blocks_home', '!no_expansion')).run().data().merge(r(0, 2, -1), {
-            'Text1': 'function restworld:blocks/toggle_expand'}),
+            'Text1': JsonText.text("").click_event().run_command('function restworld:blocks/toggle_expand')}),
         mc.execute().at(e().tag('blocks_home', '!no_expansion')).run().data().merge(r(0, 2, 1), {
-            'Text1': 'function restworld:blocks/toggle_expand'}),
+            'Text1': JsonText.text("").click_event().run_command('function restworld:blocks/toggle_expand')}),
 
         mc.execute().at(e().tag('blocks_home', 'no_expansion')).run().data().merge(r(0, 2, -1), {
-            'Text1': 'say Sorry, cannot expand this block'}),
+            'Text1': JsonText.text("").click_event().run_command('say Sorry, cannot expand this block')}),
         mc.execute().at(e().tag('blocks_home', 'no_expansion')).run().data().merge(r(0, 2, 1), {
-            'Text1': 'say Sorry, cannot expand this block'}),
-        mc.tag(e().tag('block_sign_home')).add('no_expansion'),
+            'Text1': JsonText.text("").click_event().run_command('say Sorry, cannot expand this block')}),
     )
     room.loop('toggle_block_list', score=block_list_score).loop(None, range(0, 2)).add(
         mc.function('restworld:blocks/_cur'))
@@ -711,38 +713,27 @@ def color_functions(room):
     room.function('colored_beam_exit').add(mc.setblock(r(0, 1, 0), 'white_concrete'))
 
 
+# Expansion is complex.
+#
+# Each 'homer' armor stand is assumed to be an expander for its block or blocks. Though it can be tagged 'no_expansion'
+# if the block is not to be expanded, typically in its _init file.
+#
+# During the _init phase, every expanding homer modifies its sign to toggle expansion when tapped. Non-expanding
+# homers modify the sign to say 'Sorry' when tapped.
+#
+# Toggling actual expansion for a single target is in toggle_expand_at. It places or removes the 'expander' tag on
+# the homer, and runs either the expander or contracter function as itself as appropriate to give the immediate effect.
+#
+# Expanding or contracting all simply runs this script on all expanding homers. Which means, frankly, that it
+# doesn't 'expand all' it 'toggles all'.
+#
+# Homers that handle multiple blocks are helped by 'just_expand' armor stands under the blocks it manages. These
+# are expander homers that do nothing but the expansion work for the blocks above them. So if homer X puts up
+# blocks X and Y, a regular homer will be under X and a 'just_expand' homer will be under Y.
+#
+# Each main tick, the 'expand' function is run at every 'expander' during the 'main_finish' phase. This keeps the
+# block expanded as it changes.
 def expansion_functions(room):
-    """'
-    `Expansion is complex.
-
-    Each 'homer' armor stand is assumed to be an expander for its block
-    or blocks. Though it can be tagged 'no_expansion' if the block is
-    not to be expanded, typically in its _init file.
-
-    During the _init phase, every expanding homer modifies its sign to
-    toggle expansion when tapped. Non-expanding homers modify the sign
-    to say 'Sorry' when tapped.
-
-    Toggling actual expansion for a single target is in toggle_expand_at.
-    It places or removes the 'expander' tag on the homer, and runs
-    either the expander or contracter function as itself as appropriate
-    to give the immediate effect.
-
-    Expanding or contracting all simply runs this script on all expanding
-    homers. Which means, frankly, that it doesn't 'expand all' it
-    'toggles all'.
-
-    Homers that handle multiple blocks are helped by 'just_expand'
-    armor stands under the blocks it manages. These are expander homers
-    that do nothing but the expansion work for the blocks above them.
-    So if homer X puts up blocks X and Y, a regular homer will be under
-    X and a 'just_expand' homer will be under Y.
-
-    Each main tick, the 'expand' function is run at every 'expander'
-    during the 'main_finish' phase. This keeps the block expanded as
-    it changes.
-    """
-
     room.function('toggle_expand', home=False).add(
         mc.execute().positioned(r(0, -2, -1)).run().function('restworld:blocks/toggle_expand_at'),
         mc.execute().positioned(r(0, -2, 1)).run().function('restworld:blocks/toggle_expand_at'))
