@@ -70,6 +70,7 @@ def all_fish_funcs(room, clock_wall_sign):
     pattern = Score('pattern', 'fish')
     num_colors = Score('NUM_COLORS', 'fish')
     body_scale = Score('BODY_SCALE', 'fish')
+    base_variant = Score('base_variant', 'fish')
     pattern_scale = Score('PATTERN_SCALE', 'fish')
     pattern_variant = Score('pattern_variant', 'fish')
     variant = Score('variant', 'fish')
@@ -86,10 +87,10 @@ def all_fish_funcs(room, clock_wall_sign):
             mc.scoreboard().objectives().remove('fish'),
             mc.scoreboard().objectives().add('fish', ScoreCriteria.DUMMY),
             num_colors.set(len(COLORS)),
-            body_scale.set(0x10000),
-            pattern_scale.set(0x1000000),
             body.set(0),
             pattern.set(0),
+            body_scale.set(0x10000),
+            pattern_scale.set(0x1000000),
         )
 
     def all_fish():
@@ -98,18 +99,28 @@ def all_fish_funcs(room, clock_wall_sign):
             pattern.operation(MOD, num_colors),
             mc.execute().if_().score(pattern).matches(0).run(body.add(1)),
             body.operation(MOD, num_colors),
+            base_variant.operation(EQ, body),
+            base_variant.operation(MULT, body_scale),
             pattern_variant.operation(EQ, pattern),
             pattern_variant.operation(MULT, pattern_scale),
-            variant.operation(EQ, body),
-            variant.operation(MULT, body_scale),
-            variant.operation(PLUS, pattern_variant),
+            base_variant.operation(PLUS, pattern_variant),
+            variant.operation(EQ, base_variant),
         )
-        for i in range(0, 12):
-            yield mc.execute().store(RESULT).entity(e().tag(f'fish{i:d}').limit(1), 'Variant', LONG, 1).run(
-                variant.get())
-            if i == 6:
-                yield variant.add(1)
-            yield variant.add(256)
+        for i in range(0,6):
+            yield mc.execute().store(RESULT).entity(e().tag(f'fish{i:d}').limit(1), 'Variant', LONG, 1).run((variant.get()))
+            if i < 5:
+                yield variant.add(256)
+        yield variant.add(1)
+        for i in range(6, 12):
+            yield mc.execute().store(RESULT).entity(e().tag(f'fish{i:d}').limit(1), 'Variant', LONG, 1).run((variant.get()))
+            if i < 11:
+                yield variant.remove(256)
+        # for i in range(0, 12):
+        #     yield mc.execute().store(RESULT).entity(e().tag(f'fish{i:d}').limit(1), 'Variant', LONG, 1).run(
+        #         variant.get())
+        #     if i == 6:
+        #         yield variant.add(1)
+        #     yield variant.add(256)
 
     room.function('all_fish_init').add(all_fish_init())
     room.loop('all_fish', fast_clock).add(all_fish())
