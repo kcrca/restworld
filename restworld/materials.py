@@ -118,8 +118,10 @@ def room():
         if raw:
             if 'Raw' in raw.name:
                 yield mc.setblock(r(3, 4, 2), '%s_block' % raw.id)
-            yield mc.summon(ItemFrame(SOUTH, {'Tags': ['raw_frame', room.name]}).show_item_name(raw.name),
+            yield mc.summon(ItemFrame(SOUTH, {'Tags': [raw_frame, room.name]}).show_item_name(raw.name),
                             r(3, 4, 3))
+        else:
+            yield mc.kill(e().tag(raw_frame))
         yield mc.execute().as_(e().tag('ore_ingot_frame').volume((8, 5, 8))).run().data().merge(s(), {
             'Item': Item.nbt_for(item.id)})
 

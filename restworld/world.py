@@ -75,12 +75,14 @@ class Restworld(RoomPack):
 
         cb.next_page()
         cb.add(
-            r'Credits:\n\n',
+            r'Credits:\n',
             JsonText.text(r'BlueMeanial:\n').bold(),
-            r'  Command Blocks\n  Software Design\n  Programming\n\n',
+            r'  Command Blocks\n  Software Design\n  Programming\n',
             JsonText.text(r'JUMBOshrimp277:\n').bold(),
-            r'  World Design\n  Testing\n  Rubber Duck\n',
-            r'\nMinecraft Version:\n   1.19, ' + date.today().strftime('%-d %b %Y'),
+            r'  World Design\n  Testing\n  Rubber Duck\n\n',
+            r'Minecraft Version:\n   1.19, ' + date.today().strftime('%-d %b %Y'),
+            JsonText.text(r'\n\nTry the ').italic(),
+            JsonText.text(r'Clarity Pack!').underlined().italic().click_event().open_url('https://claritypack.com')
         )
 
         return Function('control_book').add(mc.give(p(), cb.as_entity()))

@@ -62,9 +62,9 @@ def room():
         return (
             mc.kill(e().tag('bossbar_current')),
             mc.execute().at(e().tag('bossbar_home')).run().summon(
-                'armor_stand', r(-2, 0, -1), {'Tags': ['bossbar_current', 'bossbar_%s_home' % which], 'Small': True}),
-            mc.execute().at(e().tag('bossbar_%s_home' % which)).run().function(
-                'restworld:containers/bossbar_%s_cur' % which),
+                'armor_stand', r(-2, 0, -1), {'Tags': ['bossbar_current', f'bossbar_{which}_home'], 'Small': True}),
+            mc.execute().at(e().tag(f'bossbar_{which}_home')).run().function(
+                f'restworld:containers/bossbar_{which}_cur'),
             mc.bossbar().set('restworld:bossbar', VISIBLE, True),
         )
 
@@ -74,11 +74,11 @@ def room():
 
     def bossbar_style_loop(step):
         yield mc.bossbar().set('restworld:bossbar', STYLE, step.elem)
-        yield mc.data().merge(r(0, 2, 0), {'Text3': step.elem})
+        yield mc.data().merge(r(0, 2, 1), {'Text3': step.elem})
 
     def bossbar_value_loop(step):
         yield mc.bossbar().set('restworld:bossbar', VALUE, step.elem)
-        yield mc.data().merge(r(0, 2, 0), {'Text3': step.elem})
+        yield mc.data().merge(r(0, 2, 2), {'Text3': f'{step.elem}'})
 
     room.function('bossbar_color_init').add(bossbar_param('color'))
     room.loop('bossbar_color', main_clock).loop(bossbar_color_loop,
