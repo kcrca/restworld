@@ -50,7 +50,7 @@ def set_land_biomes(level):
         if x == -1008:
             x += 16
         biome_id = 'universal_minecraft:%s' % biome.replace(' ', '_').lower()
-        box = SelectionBox((x, 95, -1040), (x + 15, 125, -992))
+        box = SelectionBox((x, 50, -1040), (x + 15, 150, -992))
         for chunk, slices, _ in (level.get_chunk_slice_box(dimension, box, True)):
             set_biome(level, biome_id, chunk, slices)
         x += 16
@@ -74,12 +74,12 @@ def set_water_biomes(level):
 def set_biome(level, biome_id, chunk, slices):
     new_biome = chunk.biome_palette.get_add_biome(biome_id)
     bounds = level.bounds(dimension)
-    slices = (
+    chunk_slices = (
         slice(slices[0].start // 4, math.ceil(slices[0].stop / 4)),
         slice(bounds.min_y // 4, math.ceil(bounds.max_y / 4)),
         slice(slices[2].start // 4, math.ceil(slices[2].stop / 4)),
     )
-    chunk.biomes[slices] = new_biome
+    chunk.biomes[chunk_slices] = new_biome
     chunk.changed = True
 
 
