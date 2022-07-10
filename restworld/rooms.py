@@ -605,8 +605,15 @@ class Room(FunctionSet):
         self._home_stand = Entity('armor_stand', {
             'Tags': ['homer', '%s_home' % self.name], 'NoGravity': True, 'Small': True})
         self.title = None
+        self._player_in_room_setup()
         if facing:
             self._room_setup(facing, text, room_name)
+
+    def _player_in_room_setup(self):
+        player_home = self.home_func(f'{self.name}_player')
+        self.function('_enter', exists_ok=True).add(
+            mc.execute().positioned(r(1, -1, 1)).run().function(player_home.full_name))
+        self.function('_exit', exists_ok=True).add(mc.kill(e().tag(f'{self.name}_player_home')))
 
     def _room_setup(self, facing, text, room_name):
         text = _to_list(text)
@@ -615,16 +622,12 @@ class Room(FunctionSet):
         sign = WallSign(text)
         facing = good_facing(facing)
         x, z, rot = facing.dx, facing.dz, facing.yaw
-        # I think this score is unused, but not sure, so I'm commenting it out.
-        # score = Score('ancient', 'goto')
         anchor = '%s_anchor' % self.name
         anchor_rot = rotated_facing(facing.name, ROTATION_180)
         stand = Entity('armor_stand',
                        {'Rotation': anchor_rot.rotation, 'Tags': [anchor, 'anchor'], 'Invisible': True, 'Small': True})
         self.add(Function('%s_room_init' % self.name).add(
             sign.place(r(x, 6, z), facing),
-            # score.init(),
-            # score.set(rot),
             mc.kill(e().tag(anchor)),
             mc.summon(stand, r(0, 2, 0))
         ))
@@ -781,8 +784,6 @@ class Room(FunctionSet):
         }
         for f in self._pack.suffixes:
             f_name = '_' + f
-            if f_name in self._functions:
-                continue
             relevant = filter(lambda x: self._is_func_type(x, f_name), self.functions.values())
             commands = []
             commands.extend(before_commands.setdefault(f, []))
@@ -791,7 +792,7 @@ class Room(FunctionSet):
                  relevant))
             commands.extend(after_commands.setdefault(f, []))
             if len(commands) > 0:
-                self.function(f_name).add(*commands)
+                self.function(f_name, exists_ok=True).add(*commands)
 
     @staticmethod
     def _is_func_type(x, f_name):

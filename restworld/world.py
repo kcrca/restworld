@@ -105,7 +105,10 @@ class Restworld(RoomPack):
             fname = '_' + f
             func = Function(fname)
             for room in self.function_set.children:
-                func.add(mc.function(room.full_name + '/' + fname))
+                call = mc.function(room.full_name + '/' + fname)
+                if f in ('incr', 'decr'):
+                    call = mc.execute().at(e().tag(f'{room.name}_player_home')).run(call)
+                func.add(call)
             yield func
 
 
