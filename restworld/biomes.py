@@ -154,7 +154,7 @@ def room():
 
     room.function('save_biome').add(load_biome(save_biome, 'save'))
 
-    end_z = 17 - len(water_biomes) * 16
+    end_z = -17 - len(water_biomes) * 16
     room.function('maintain_oceans').add(
         mc.execute().positioned(
             r(-16, -16, 0)).if_().entity(p().volume((32, 32, end_z))).at(
