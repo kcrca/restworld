@@ -110,7 +110,7 @@ def room():
 
     room.function('nameable_init').add(
         mc.kill(e().tag('font_mobs')),
-        room.mob_placer(r(0, 2, 0), NORTH, adults=True).summon('rabbit', tags=('nameable',)),
+        room.mob_placer(r(0, 2, 0), SOUTH, adults=True).summon('rabbit', tags=('nameable',)),
         mc.execute().as_(e().tag('font').tag('nameable').limit(1)).run().data().modify(
             s(), 'CustomNameVisible').set().value(True),
     )

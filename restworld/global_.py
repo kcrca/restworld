@@ -212,6 +212,7 @@ def room():
 
     room.function('ready').add(
         mc.clear(p()),
+        mc.kill(e().type('item')),
         mc.gamemode(CREATIVE, p()),
         mc.function('restworld:global/control_book'),
         mc.tp(p(), (0, 101, 0)).facing((0, 100, 5)),
@@ -222,7 +223,7 @@ def room():
 
     clean_time = room.score('ensure_clean_time')
     clean_time_max = room.score_max('ensure_clean_time')
-    room.function('ensure_clean_init').add(clean_time_max.set(10_000))
+    room.function('ensure_clean_init').add(clean_time_max.set(1200))
     room.loop('ensure_clean', tick_clock).add(
         mc.execute().store(RESULT).score(clean_time).run().time().query(GAMETIME),
         clean_time.operation(MOD, clean_time_max),

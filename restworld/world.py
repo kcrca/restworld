@@ -3,7 +3,7 @@ from __future__ import annotations
 import sys
 from datetime import date
 
-from pyker.base import DARK_GREEN, r
+from pyker.base import DARK_GREEN, DARK_PURPLE, r
 from pyker.commands import Commands, Entity, JsonText, e, mc, p
 from pyker.function import Function, FunctionSet
 from pyker.simpler import Book, Sign
@@ -82,7 +82,8 @@ class Restworld(RoomPack):
             r'  World Design\n  Testing\n  Rubber Duck\n\n',
             r'Minecraft Version:\n   1.19, ' + date.today().strftime('%-d %b %Y'),
             JsonText.text(r'\n\nTry the ').italic(),
-            JsonText.text(r'Clarity Pack!').underlined().italic().click_event().open_url('https://claritypack.com')
+            JsonText.text(r'Clarity Pack!').underlined().italic().color(DARK_PURPLE).click_event().open_url(
+                'https://claritypack.com')
         )
 
         return Function('control_book').add(mc.give(p(), cb.as_entity()))
@@ -122,7 +123,7 @@ slow_clock = Clock('slow', 90)
 main_clock = Clock('main', 60)
 fast_clock = Clock('fast', 15)
 tick_clock = Clock('clock')
-restworld = Restworld('/Users/kcrca/clarity/home/saves/NewRest')
+restworld = Restworld('/Users/kcrca/clarity/home/saves/RestWorld_1.19')
 
 
 def die(*msg: str):

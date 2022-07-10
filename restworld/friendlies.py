@@ -17,14 +17,14 @@ def room():
     def placer(*args, **kwargs):
         return room.mob_placer(*args, **kwargs)
 
-    room.function('allay_init').add(placer(r(0, 3, 0), NORTH, tags=('allay'), adults=True).summon('Allay'))
+    room.function('allay_init').add(placer(r(0, 3.5, 0), NORTH, tags=('allay'), adults=True).summon('Allay'))
     room.function('bat_init').add(
         placer(r(0, 3, -2), NORTH, 2, adults=True).summon('bat'),
         placer(r(0, 3.5, 1), NORTH, 2, adults=True).summon('bat', nbt={'BatFlags': 1}, tags=('sleeping_bat',)))
     room.function('bee_init').add(
         placer(r(0, 3, 0), NORTH, 0, 2).summon('bee'),
-        label(r(-1, 2, -2), 'Stinger'),
-        label(r(1, 2, -2), 'Pollen'))
+        label(r(1, 2, -2), 'Stinger'),
+        label(r(-1, 2, -2), 'Pollen'))
 
     def bee_loop(step):
         bee_home = 'beehive' if step.i == 0 else 'bee_nest'
@@ -98,16 +98,18 @@ def room():
 
     room.loop('frog', main_clock).loop(
         lambda step: mc.execute().as_(e().tag('frog')).run().data().merge(
-            s(), {'variant': step.elem.lower(), 'CustomName': step.elem}), ('Temperate', 'Warm', 'Cold'))
+            s(), {'variant': step.elem.lower(), 'CustomName': f'{step.elem} Frog'}), ('Temperate', 'Warm', 'Cold'))
 
     def frogspawn_loop(step):
         if step.i == 0:
             yield kill_em(e().tag('tadpole', room.name))
             yield mc.setblock(r(0, 2, -1), 'frogspawn')
+            yield WallSign((None, 'Frogspawn')).place(r(1, 2, -1), NORTH)
         else:
             yield placer(r(0, 2, -1), NORTH, kids=True).summon(Entity('tadpole', {'Invulnerable': True}),
                                                                tags=('keeper',))
             yield mc.setblock(r(0, 2, -1), 'air')
+            yield mc.setblock(r(1, 2, -1), 'air')
         yield kill_em(e().type('tadpole').not_tag('keeper'))
 
     room.loop('frogspawn', main_clock).loop(frogspawn_loop, range(0, 2))
@@ -200,7 +202,7 @@ def room():
         yield mc.execute().as_(e().tag('parrot')).run().data().merge(
             s(), {'CustomName': name, 'Variant': variant, 'OnGround': not flying, 'Sitting': not flying})
         yield mc.execute().unless().block(r(0, 1, 0), 'air').run().setblock(
-            r(0, 2, 1), 'air' if flying else 'oak_fence_gate')
+            r(0, 2, 1), 'air' if flying else 'oak_fence')
 
     room.loop('parrot', main_clock).loop(parrot_loop, parrot_settings)
     room.function('pig_init').add(placer(*mid_west_placer).summon('pig'))
@@ -240,14 +242,11 @@ def room():
             s(), {'DecorItem': {'id': 'white_carpet', 'Count': 0}}),
         mc.kill(e().tag('llamas_carpets_home')))
 
-    # Meant for leashing, but it doesn't seem to work. Keeping this here for future reference.
-    trader_uuid = (-6811205515094820418, 8176443325185870163)
-    trader_uuid_str = {'UUIDLeast': trader_uuid[0], 'UUIDMost': trader_uuid[1]}
 
     room.function('trader_llama_init').add(
         placer(r(0, 2, -2), WEST, adults=True).summon('wandering_trader'),
         placer(r(0, 2, 0), WEST, adults=True,
-               nbt={'DespawnDelay': 2147483647, 'Leashed': True, 'Leash': trader_uuid_str}).summon('trader_llama'),
+               nbt={'DespawnDelay': 2147483647, 'Leashed': True}).summon('trader_llama'),
     )
     room.loop('trader_llama', main_clock).loop(
         lambda step: mc.execute().as_(e().type('trader_llama')).run().data().modify(

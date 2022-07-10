@@ -3,7 +3,7 @@ from __future__ import annotations
 import re
 from typing import Iterable, Union
 
-from pyker.base import DOWN, EAST, NORTH, SOUTH, WEST, good_facing, r
+from pyker.base import DOWN, EAST, NORTH, SOUTH, WEST, good_facing, r, to_name
 from pyker.commands import Block, Entity, JsonText, MOVE, e, good_block, mc, s
 from pyker.info import Color, colors
 from pyker.simpler import Item, Sign, Volume, WallSign
@@ -40,8 +40,7 @@ def room():
         )
         if show_list:
             block_init.add(
-                mc.execute().if_().score(block_list_score).matches(0).run().kill(e().tag(f'block_list_{name}'))
-            )
+                mc.execute().if_().score(block_list_score).matches(0).run().kill(e().tag(f'block_list_{name}')))
             names = room.function(name + '_names', home=False)
             block_init.add(mc.function(names.full_name))
 
@@ -91,7 +90,13 @@ def room():
         all = []
         for b in sites:
             if b in stages:
-                all.extend(Block(b, s) for s in stages[b])
+                id = Block(b).id
+                for s in stages[b]:
+                    n = b
+                    for i, (k, v) in enumerate(s.items()):
+                        if k != 'facing':
+                            n += f'|{to_name(k)}: {to_name(str(v))}'
+                    all.append(Block(id, s, name=n))
             else:
                 all.append(Block(b))
         blocks(name, facing, all)
@@ -104,8 +109,8 @@ def room():
     bee_nests = [[], []]
     for i in range(0, 6):
         state = {'facing': SOUTH, 'honey_level': i}
-        bee_nests[0].append(Block('Beehive', state=state))
-        bee_nests[1].append(Block('Bee Nest', state=state))
+        bee_nests[0].append(Block('beehive', state=state, name=f'Beehive|Honey Level: {i}'))
+        bee_nests[1].append(Block('bee_nest', state=state, name=f'Bee Net|Honey Level: {i}'))
     blocks('bee_nest', SOUTH, bee_nests, dx=-3)
     blocks('bricks', NORTH, (
         'Bricks', 'Quartz Bricks', 'Mud Bricks', 'Deepslate|Bricks', 'Cracked|Deepslate|Bricks', 'Deepslate|Tiles',
@@ -125,17 +130,18 @@ def room():
         'Deepslate', 'Chiseled|Deepslate', 'Polished|Deepslate', 'Cracked|Deepslate|Bricks', 'Cracked|Deepslate|Tiles',
         'Deepslate|Bricks', 'Deepslate|Tiles', 'Cobbled|Deepslate', 'Reinforced|Deepslate'))
     blocks('dirt', SOUTH, ('Dirt', 'Coarse Dirt', 'Rooted Dirt', 'Farmland'))
-    blocks('end', NORTH, ('End Stone', 'End Stone Bricks'))
-    blocks('frosted_ice', SOUTH, list(Block('Frosted Ice', {'age': i}) for i in range(0, 4)))
+    blocks('end', NORTH, ('End Stone', 'End Stone|Bricks'))
+    blocks('frosted_ice', SOUTH,
+           list(Block('frosted_ice', {'age': i}, name=f'Frosted Ice|Age: {i}') for i in range(0, 4)))
     blocks('glass', NORTH, ('Glass', 'Tinted Glass'))
     blocks('ice', SOUTH, ('Ice', 'Packed Ice', 'Blue Ice'))
     blocks('lighting', SOUTH, (
-        'Glowstone', 'Sea Lantern', 'Shroomlight', 'Ochre Froglight', 'Pearlescent|Froglight', 'Verdant Froglight',
+        'Glowstone', 'Sea Lantern', 'Shroomlight', 'Ochre|Froglight', 'Pearlescent|Froglight', 'Verdant|Froglight',
         'End Rod'))
     blocks('light', SOUTH, (Block('light', {'level': x}) for x in range(0, 15)),
            labels=tuple(('light', f'Level: {i:d}') for i in range(0, 15)), clock=slow_clock)
     blocks('music', SOUTH, (
-        Block('Note Block'), Block('Jukebox'), Block('jukebox', {'has_record': True}, name='Jukebox Playing')))
+        Block('Note Block'), Block('Jukebox'), Block('jukebox', {'has_record': True}, name='Jukebox|Playing')))
     blocks('netherrack', NORTH, ('Netherrack', 'Warped Nylium', 'Crimson Nylium'))
     blocks('obsidian', NORTH, ('Obsidian', 'Crying Obsidian'))
     blocks('prismarine', NORTH, ('Prismarine', 'Prismarine Bricks', 'Dark Prismarine'))
@@ -191,7 +197,7 @@ def room():
     blocks('wood_blocks', SOUTH, (tuple(f'{f} Planks' for f in woodlike),
                                   stripped_logs, logs, wood, leaves, stripped_woods), dx=-3, dz=-3, size=2)
 
-    sites = ('Cauldron', 'Water Cauldron', 'Lava Cauldron', 'Powder Snow Cauldron')
+    sites = ('Cauldron', 'Water Cauldron', 'Lava Cauldron', 'Powder Snow|Cauldron')
     stages = {'Water Cauldron': list({'level': t} for t in range(1, 4)),
               'Powder Snow Cauldron': list({'level': t} for t in range(3, 0, -1)), }
     job_sites('cauldron', NORTH, sites, stages)
@@ -223,7 +229,7 @@ def room():
                 for offset in (NORTH, EAST, WEST, SOUTH):
                     facing = good_facing(offset)
                     yield mc.setblock(r(facing.dx, 4, facing.dz), block.clone().merge_state({'facing': offset}))
-        mc.data().merge(r(0, 2, -1), block.sign_nbt)
+        yield mc.data().merge(r(0, 2, -1), block.sign_nbt)
 
     room.loop('amethyst', main_clock).add(
         mc.fill(r(-1, 3, -1), r(1, 5, 1), 'air')
@@ -283,6 +289,8 @@ def room():
         yield mc.setblock(r(0, 3, 0), step.elem)
         txt = {'Text2': 'Trapped' if 'T' in step.elem.name else '',
                'Text3': 'Double Chest' if 'type' in step.elem.state else 'Chest'}
+        if 'Ender' in step.elem.name:
+            txt['Text2'] = 'Ender'
         yield mc.data().merge(r(0, 2, -1), txt)
         if 'type' in step.elem.state:
             step.elem.state['type'] = 'left'

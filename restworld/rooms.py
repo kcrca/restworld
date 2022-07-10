@@ -486,12 +486,12 @@ def has_loop(rendered):
     return re.search(r'<%base:(loop|bounce|increment)', rendered, flags=re.MULTILINE)
 
 
-def named_frame_item(thing: Thing, name=None, damage=None):
-    # <%def name='named_frame_item(thing, name=None, damage=None)'>Item:{id:${thing.id},Count:1,tag:{display:{Name:'{'text':'${name if name else thing.name}'}'}${damage if damage else ''}}},Fixed:True</%def>
-    tag_nbt = Nbt({'display': {'Name': str(JsonText.text(str(name if name else thing.name))), }})
+def named_frame_item(block: BlockDef, name=None, damage=None):
+    block = good_block(block)
+    tag_nbt = Nbt({'display': {'Name': str(JsonText.text(str(name if name else block.name))), }})
     if damage:
         tag_nbt.update(damage)
-    return Nbt({'Item': {'id': thing.id, 'Count': 1, 'tag': tag_nbt}})
+    return Nbt({'Item': {'id': block.id, 'Count': 1, 'tag': tag_nbt}})
 
 
 def ensure(pos: Position, block: BlockDef, nbt=None):
@@ -530,13 +530,15 @@ def crops(loop_index: int, stages, crop, pos, name='age'):
     return lines(results)
 
 
-def label(pos: Position, txt: str, facing=1, invis=True) -> Commands:
+def label(pos: Position, txt: str, facing=1, invis=True, tags=(), block=Block('stone_button')) -> Commands:
+    tags = list(tags)
+    tags.append('label')
     return (
         mc.execute().positioned(pos).run().kill(
             e().type('item_frame').tag('label').sort(NEAREST).distance((None, 1)).limit(1)),
         mc.summon('item_frame', pos,
-                  named_frame_item(Thing('stone_button'), txt).merge(
-                      {'Invisible': invis, 'Facing': facing, 'Tags': ['label'], 'Fixed': True})),
+                  named_frame_item(block, txt).merge(
+                      {'Invisible': invis, 'Facing': facing, 'Tags': tags, 'Fixed': True})),
     )
 
 
@@ -771,7 +773,7 @@ class Room(FunctionSet):
         before_commands = {
             'init': [mc.scoreboard().objectives().add(self.name, ScoreCriteria.DUMMY),
                      mc.scoreboard().objectives().add(self.name + '_max', ScoreCriteria.DUMMY),
-                     (x.set(0) for x in sorted(self._scores, key = lambda x: str(x))),
+                     (x.set(0) for x in sorted(self._scores, key=lambda x: str(x))),
                      to_incr.set(1)] + [mc.tp(e().tag(self.name), e().tag('death').limit(1))]}
         after_commands = {
             'enter': [mc.weather(CLEAR)],

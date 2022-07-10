@@ -29,21 +29,23 @@ def room():
 
     room.function('lights_init').add(
         WallSign(('This world lets', 'you test how', 'your resource', 'pack looks.')).place((r(1), 101, r(4)), NORTH),
-        WallSign(('Everything', 'is here:', 'blocks, mobs,', 'particles, UI, ...')).place((r(-1), 101, r(4)), NORTH),
+        WallSign(('Almost everything', 'is here: blocks', 'mobs, particles,', 'UI, moon phases ...')).place(
+            (r(-1), 101, r(4)), NORTH),
 
-        WallSign(('Much of it runs', 'on clocks that', 'switch the', 'variant shown.')).place(
+        WallSign(('Clocks switch', 'between variants,', 'which takes', 'less space.')).place(
             (r(-4), 101, r(1)), EAST),
-        WallSign(('This uses', 'less space', 'so things can', 'be closer together.')).place(
+        WallSign(('You can also', 'compare things', 'that you may want', 'to make similar.')).place(
             (r(-4), 101, r(-1)), EAST),
 
-        WallSign(('You can also', 'compare things', 'that you may want', 'to make similar.')).place(
+        WallSign(('Floor levers and', 'buttons control', 'modes, like floor', 'vs. wall torches.')).place(
             (r(-1), 101, r(-4)), SOUTH),
-        WallSign(('For example,', 'wools may be the', 'same pattern with', 'different colors.')).place(
+        WallSign(('Red or green', 'blocks below', 'buttons show if', 'clocks are on.')).place(
             (r(1), 101, r(-4)), SOUTH),
 
-        WallSign(('The control book', 'lets you change', 'clock speeds', 'and step it.')).place(
+        WallSign(('The control book', 'lets you change', 'clock speeds', 'and step along.')).place(
             (r(4), 101, r(-1)), WEST),
-        WallSign(('The color of the', 'floor blocks under', 'buttons show if', 'clocks are on.')).place(
+        WallSign(('Also, you might', 'like my "Clarity"', 'pack, a link is in', 'the control book!'),
+                 (lambda txt: txt.click_event().open_url('https://claritypack.com'),)).place(
             (r(4), 101, r(1)), WEST),
 
         mc.tag(e().tag('lights_home')).add('fast_lights_home'),
