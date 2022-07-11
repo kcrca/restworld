@@ -782,7 +782,11 @@ class Room(FunctionSet):
             'enter': [mc.weather(CLEAR)],
             'init': [mc.function('%s/_cur' % self.full_name)],
         }
+        clock_suffixes = set(x.name for x in self._clocks)
+        clock_suffixes.add('tick')
         for f in self._pack.suffixes:
+            if f in clock_suffixes:
+                continue
             f_name = '_' + f
             relevant = filter(lambda x: self._is_func_type(x, f_name), self.functions.values())
             commands = []

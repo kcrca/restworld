@@ -19,7 +19,7 @@ def room():
     room.function('faster_clocks', home=False).add(
         mc.execute().if_().score(speed_fast).matches((13, None)).run().scoreboard().players().remove(speed_fast, 2),
         mc.execute().if_().score(speed_main).matches((13, None)).run().scoreboard().players().remove(speed_main, 6),
-        mc.execute().if_().score(speed_slow).matches((13, None)).run().scoreboard().players().remove(speed_main, 10))
+        mc.execute().if_().score(speed_slow).matches((13, None)).run().scoreboard().players().remove(speed_slow, 10))
     room.function('slower_clocks', home=False).add(
         fast_clock.speed.add(2),
         main_clock.speed.add(6),
