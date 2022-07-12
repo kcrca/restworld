@@ -42,7 +42,7 @@ class Restworld(RoomPack):
 
     def control_book_func(self) -> Function:
         cb = Book()
-        cb.sign_book('Control Book', 'Restworld', 'Useful Commands')
+        cb.sign_book('Control Book', 'RestWorld', 'Useful Commands')
 
         cb.add(r'Clock State:\n      ',
                self._action(r'|\u25c0\u25c0', 'Previous', '_decr'), r'  ',
@@ -80,7 +80,7 @@ class Restworld(RoomPack):
             r'  Command Blocks\n  Software Design\n  Programming\n',
             JsonText.text(r'JUMBOshrimp277:\n').bold(),
             r'  World Design\n  Testing\n  Rubber Duck\n\n',
-            r'Minecraft Version:\n   1.19, ' + date.today().strftime('%-d %b %Y'),
+            r'Minecraft Version:\n   1.19.1, ' + date.today().strftime('%-d %b %Y'),
             JsonText.text(r'\n\nTry the ').italic(),
             JsonText.text(r'Clarity Pack!').underlined().italic().color(DARK_PURPLE).click_event().open_url(
                 'https://claritypack.com')
@@ -126,7 +126,7 @@ slow_clock = Clock('slow', 90)
 main_clock = Clock('main', 60)
 fast_clock = Clock('fast', 15)
 tick_clock = Clock('clock')
-restworld = Restworld('/Users/kcrca/clarity/home/saves/RestWorld_1.19')
+restworld = Restworld('/Users/kcrca/clarity/home/saves/RestWorld_1.19.1')
 
 
 def die(*msg: str):

@@ -11,7 +11,7 @@ from restworld.world import fast_clock, kill_em, main_clock, restworld
 
 
 def room():
-    room = Room('materials', restworld, WEST, ('Materials', '& Tools,', 'Time, GUI,', 'Redstone'))
+    room = Room('materials', restworld, WEST, ('Materials', '& Tools,', 'Time, GUI,', 'Redstone, Maps'))
 
     room.function('all_sand_init').add(WallSign((None, None, 'and Sandstone')).place(r(0, 2, 3), WEST))
 
@@ -118,7 +118,7 @@ def room():
         if raw:
             if 'Raw' in raw.name:
                 yield mc.setblock(r(3, 4, 2), '%s_block' % raw.id)
-            yield mc.summon(ItemFrame(SOUTH, {'Tags': [raw_frame, room.name]}).show_item_name(raw.name),
+            yield mc.summon(ItemFrame(SOUTH, {'Tags': [raw_frame, room.name]}).named(raw.name),
                             r(3, 4, 3))
         else:
             yield mc.kill(e().tag(raw_frame))
@@ -431,8 +431,8 @@ def wood_functions(room):
         yield mc.setblock(r(4, 2, 2), (f'{id}_door', {'facing': WEST, 'half': 'lower'}))
         yield mc.setblock(r(4, 3, 2), (f'{id}_door', {'facing': WEST, 'half': 'upper'}))
 
-        yield mc.execute().as_(e().tag('wood_sign_frame')).run().data().merge(s(), ItemFrame(NORTH).framed_item(
-            f'{id}_sign').show_item_name(f'{name} Sign').nbt)
+        yield mc.execute().as_(e().tag('wood_sign_frame')).run().data().merge(s(), ItemFrame(NORTH).item(
+            f'{id}_sign').named(f'{name} Sign').nbt)
 
         if log == 'log':
             wood_boat_chest = room.score('wood_boat_chest')
@@ -444,11 +444,11 @@ def wood_functions(room):
             yield mc.execute().if_().score(wood_boat_chest).matches(0).run().summon(boat, location)
             yield mc.execute().if_().score(wood_boat_chest).matches(1).run().summon(chest_boat, location)
             yield mc.execute().if_().score(wood_boat_chest).matches(0).as_(
-                e().tag('wood_boat_frame')).run().data().merge(s(), ItemFrame(NORTH).framed_item(
-                f'{id}_boat').show_item_name(f'{name} Boat').nbt)
+                e().tag('wood_boat_frame')).run().data().merge(s(), ItemFrame(NORTH).item(
+                f'{id}_boat').named(f'{name} Boat').nbt)
             yield mc.execute().if_().score(wood_boat_chest).matches(1).as_(
-                e().tag('wood_boat_frame')).run().data().merge(s(), ItemFrame(NORTH).framed_item(
-                f'{id}_chest_boat').show_item_name(f'{name} Chest Boat').nbt)
+                e().tag('wood_boat_frame')).run().data().merge(s(), ItemFrame(NORTH).item(
+                f'{id}_chest_boat').named(f'{name} Chest Boat').nbt)
         else:
             yield mc.data().remove(e().tag('wood_boat_frame').limit(1), 'Item.id')
 

@@ -272,7 +272,7 @@ def room():
             z, end = rows.pop(0)
             for i in range(0, end):
                 t = items.pop(0)
-                frame = ItemFrame(NORTH).framed_item(t).show_item_name(t.name)
+                frame = ItemFrame(NORTH).item(t).named(t.name)
                 frame.tag('containers', 'only_item_frame', f'only_item_frame_{t.id}')
                 if t.id == 'elytra':
                     frame.merge_nbt({'Item': {'tag': {'Damage': 450}}})
