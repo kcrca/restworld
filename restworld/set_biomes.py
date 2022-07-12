@@ -13,6 +13,7 @@ land_biomes = {
     'Birch Forest': ('Birch Forest',),
     'Ocean': ('Ocean', 'Cold Ocean', 'Deep Ocean', 'River'),
     'Grove': ('Grove', 'Snowy Taiga', 'Frozen River', 'Frozen Ocean'),
+    'Beach': (),
     'Meadow': ('Meadow',),
     'Taiga': ('Taiga',),
     'Stone Shore': ('Stony Shore', 'Windswept Hills', 'Windswept Forest'),
@@ -47,8 +48,6 @@ def main():
 def set_land_biomes(level):
     x = -1136
     for i, biome in enumerate(land_biomes):
-        if x == -1008:
-            x += 16
         biome_id = 'universal_minecraft:%s' % biome.replace(' ', '_').lower()
         box = SelectionBox((x, 50, -1040), (x + 16, 150, -992))
         for chunk, slices, _ in (level.get_chunk_slice_box(dimension, box, True)):
@@ -57,19 +56,18 @@ def set_land_biomes(level):
 
 
 def set_water_biomes(level):
-    z = -1040
-    x = -1008
-    x_width = 16
+    z = -1024 + 4  # "+4" here is to avoid server-side blending the near edge of the first water biome.
+    z_width = 16 + 4
+    x = -1008 - 4  # "+4" ensures the area beside the biome is the same to avoid server-side blending.
+    x_width = 16 + 8
     for i, biome in enumerate(water_biomes):
         biome_id = f'universal_minecraft:{biome.replace(" ", "_").lower()}'
-        box = SelectionBox((x, 50, z), (x + x_width, 150, z + 16))
-        print(f'{i:2d}: {biome}: {box}')
+        box = SelectionBox((x, 50, z), (x + x_width, 150, z - z_width))
         for chunk, slices, _ in (level.get_chunk_slice_box(dimension, box, True)):
             set_biome(level, biome_id, chunk, slices)
-        z -= 16
+        z -= z_width
         if i == 0:
-            x -= 16
-            x_width += 32
+            z_width = 16
 
 
 def set_biome(level, biome_id, chunk, slices):
@@ -80,7 +78,6 @@ def set_biome(level, biome_id, chunk, slices):
         slice(bounds.min_y // 4, math.ceil(bounds.max_y / 4)),
         slice(slices[2].start // 4, math.ceil(slices[2].stop / 4)),
     )
-    print(f'        {chunk.coordinates}: {chunk_slices}')
     chunk.biomes[chunk_slices] = new_biome
     chunk.changed = True
 
