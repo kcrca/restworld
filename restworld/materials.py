@@ -143,6 +143,11 @@ def room():
         ('Ancient Debris', 'Netherite Block', 'Netherite Ingot', 'Netherite Scrap'),
     ))
 
+    room.function('water_init').add(
+        WallSign((None, 'Flowing', 'Water')).place(r(0, 2, 0), WEST),
+        WallSign((None, 'Flowing', 'Lava')).place(r(0, 2, 6), WEST),
+    )
+
     basic_functions(room)
     fencelike_functions(room)
     wood_functions(room)
