@@ -1,10 +1,10 @@
 import collections
 
 from pyker.base import NORTH, OVERWORLD, r, to_id
-from pyker.commands import CLEAR, e, mc, p
+from pyker.commands import CLEAR, Entity, e, mc, p
 from pyker.simpler import WallSign
 from restworld.rooms import Room, label
-from restworld.set_biomes import water_biomes
+from restworld.set_biomes import BiomeSampler
 from restworld.world import restworld
 
 biome_groups = collections.OrderedDict()
@@ -154,9 +154,31 @@ def room():
 
     room.function('save_biome').add(load_biome(save_biome, 'save'))
 
-    end_z = -17 - len(water_biomes) * 16
+    end_z = -17 - len(BiomeSampler.water_biomes) * 16
     room.function('maintain_oceans').add(
         mc.execute().positioned(
             r(-16, -16, 0)).if_().entity(p().volume((32, 32, end_z))).at(
             e().tag('maintain_oceans_home')).run().fill(
             r(-1, 1, -17), r(15, 1, end_z), 'water').replace('ice'))
+
+    marker_tag = 'biome_marker'
+    markings = room.function('maintain_oceans_init').add(mc.kill(e().tag(marker_tag)))
+    x, z, xw, zw = BiomeSampler.land_samples.params()
+    marker = Entity('armor_stand', {'Invisible': True, 'NoGravity': True})
+    for biome, others in BiomeSampler.land_biomes.items():
+        if len(others) > 0:
+            name = biome
+            if others[0] != biome:
+                name += f', {others[0]}'
+            elif len(others) > 1 and others[1] != biome:
+                name += f', {others[1]}'
+            markings.add(marker.summon(
+                (x + xw / 2, 99.5, z + zw / 2),
+                {'Tags': [marker_tag, 'biomes'], 'CustomName': name, 'CustomNameVisible': True}))
+        x += xw
+    x, z, xw, zw = BiomeSampler.water_samples.params()
+    for biome in BiomeSampler.water_biomes:
+        markings.add(marker.summon(
+            (x + xw / 2, 99.5, z + zw / 2),
+            {'Tags': [marker_tag, 'biomes'], 'CustomName': biome, 'CustomNameVisible': True}))
+        z -= zw
