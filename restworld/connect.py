@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-from pyker.base import EAST, NORTH, SOUTH, WEST, r
-from pyker.commands import clone, execute, fill
-from pyker.commands import e
-from pyker.simpler import WallSign
+from pynecraft.base import EAST, NORTH, SOUTH, WEST, r
+from pynecraft.commands import clone, execute, fill
+from pynecraft.commands import e
+from pynecraft.simpler import WallSign
 from restworld.rooms import Room, label
 from restworld.world import restworld
 

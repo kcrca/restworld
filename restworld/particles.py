@@ -3,13 +3,13 @@ from __future__ import annotations
 import math
 import random
 
-from pyker.base import EAST, NORTH, Nbt, OVERWORLD, SOUTH, WEST, d, r, rotated_facing
-from pyker.commands import Block, CLEAR, RAIN, a, data, e, execute, fill, function, item, kill, p, particle, playsound, \
+from pynecraft.base import EAST, NORTH, Nbt, OVERWORLD, SOUTH, WEST, d, r, rotated_facing
+from pynecraft.commands import Block, CLEAR, RAIN, a, data, e, execute, fill, function, item, kill, p, particle, playsound, \
     setblock, \
     summon, tp, weather
-from pyker.enums import Particle
-from pyker.info import villager_professions
-from pyker.simpler import WallSign
+from pynecraft.enums import Particle
+from pynecraft.info import villager_professions
+from pynecraft.simpler import WallSign
 from restworld.rooms import ActionDesc, SignedRoom, Wall, span
 from restworld.world import fast_clock, kill_em, main_clock, restworld, slow_clock
 

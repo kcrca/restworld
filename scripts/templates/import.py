@@ -3,7 +3,7 @@ import re
 import sys
 from pathlib import Path
 
-from pyker.commands import Command
+from pynecraft.commands import Command
 
 
 def entity(m):

@@ -1,10 +1,10 @@
 from __future__ import annotations
 
-from pyker.base import SOUTH, d, r
-from pyker.commands import Block, COLORS, Entity, INT, RESULT, WHITE, data, e, execute, fill, function, kill, s, \
+from pynecraft.base import SOUTH, d, r
+from pynecraft.commands import Block, COLORS, Entity, INT, RESULT, WHITE, data, e, execute, fill, function, kill, s, \
     setblock, tag
-from pyker.enums import Pattern
-from pyker.simpler import Shield, WallSign
+from pynecraft.enums import Pattern
+from pynecraft.simpler import Shield, WallSign
 from restworld.rooms import Room, label
 from restworld.world import die, main_clock, restworld
 

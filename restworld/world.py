@@ -3,10 +3,10 @@ from __future__ import annotations
 import sys
 from datetime import date
 
-from pyker.base import DARK_GREEN, DARK_PURPLE, r
-from pyker.commands import Commands, Entity, JsonText, data, e, execute, fill, function, give, p, tp
-from pyker.function import Function, FunctionSet
-from pyker.simpler import Book, Sign
+from pynecraft.base import DARK_GREEN, DARK_PURPLE, r
+from pynecraft.commands import Commands, Entity, JsonText, data, e, execute, fill, function, give, p, tp
+from pynecraft.function import Function, FunctionSet
+from pynecraft.simpler import Book, Sign
 from restworld.rooms import Clock, Room, RoomPack
 
 

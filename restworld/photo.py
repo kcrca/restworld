@@ -4,9 +4,9 @@ import math
 import os
 import re
 
-from pyker.base import EAST, NORTH, OVERWORLD, r, to_id
-from pyker.commands import Block, Entity, e, execute, fill, kill, p, setblock, summon, tp
-from pyker.info import colors, corals, stems, woods
+from pynecraft.base import EAST, NORTH, OVERWORLD, r, to_id
+from pynecraft.commands import Block, Entity, e, execute, fill, kill, p, setblock, summon, tp
+from pynecraft.info import colors, corals, stems, woods
 from restworld.rooms import MobPlacer, Room, label
 from restworld.world import restworld
 

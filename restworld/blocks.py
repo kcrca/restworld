@@ -3,12 +3,12 @@ from __future__ import annotations
 import re
 from typing import Iterable, Union
 
-from pyker.base import DOWN, EAST, NORTH, SOUTH, WEST, good_facing, r, to_name
-from pyker.commands import Block, Entity, JsonText, MOVE, e, good_block, s
-from pyker.commands import clone, data, execute, fill, function, item, \
+from pynecraft.base import DOWN, EAST, NORTH, SOUTH, WEST, good_facing, r, to_name
+from pynecraft.commands import Block, Entity, JsonText, MOVE, e, good_block, s
+from pynecraft.commands import clone, data, execute, fill, function, item, \
     kill, say, setblock, summon, tag
-from pyker.info import Color, colors
-from pyker.simpler import Item, Sign, Volume, WallSign
+from pynecraft.info import Color, colors
+from pynecraft.simpler import Item, Sign, Volume, WallSign
 from restworld.rooms import Room, label, stems, woods
 from restworld.world import fast_clock, kill_em, main_clock, restworld, slow_clock
 

@@ -1,10 +1,10 @@
 from __future__ import annotations
 
-from pyker.base import EAST, d, r
-from pyker.commands import Block, Entity, e
-from pyker.commands import FORCE, tp
-from pyker.commands import clone, execute, fill, function, say, setblock
-from pyker.simpler import Item
+from pynecraft.base import EAST, d, r
+from pynecraft.commands import Block, Entity, e
+from pynecraft.commands import FORCE, tp
+from pynecraft.commands import clone, execute, fill, function, say, setblock
+from pynecraft.simpler import Item
 from restworld.rooms import Room, label
 from restworld.world import main_clock, restworld
 

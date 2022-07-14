@@ -1,10 +1,10 @@
 from __future__ import annotations
 
-from pyker import commands
-from pyker.base import EAST, NORTH, WEST, r
-from pyker.commands import Block, COLOR, CREATIVE, Entity, LEVELS, PLAYERS, RESULT, STYLE, SURVIVAL, VALUE, VISIBLE, a, \
+from pynecraft import commands
+from pynecraft.base import EAST, NORTH, WEST, r
+from pynecraft.commands import Block, COLOR, CREATIVE, Entity, LEVELS, PLAYERS, RESULT, STYLE, SURVIVAL, VALUE, VISIBLE, a, \
     bossbar, clone, data, e, execute, fill, function, gamemode, give, item, kill, p, s, setblock, summon
-from pyker.simpler import Item, ItemFrame, WallSign
+from pynecraft.simpler import Item, ItemFrame, WallSign
 from restworld.rooms import Room, label
 from restworld.world import fast_clock, main_clock, restworld, slow_clock
 

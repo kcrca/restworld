@@ -12,15 +12,15 @@ from html.parser import HTMLParser
 from pathlib import Path
 from typing import Callable, Iterable, Tuple
 
-from pyker.base import Nbt, ROTATION_180, ROTATION_270, ROTATION_90, r, rotated_facing, to_id, to_name
-from pyker.commands import Block, BlockDef, CLEAR, Command, Commands, Entity, EntityDef, JsonText, NEAREST, Position, \
+from pynecraft.base import Nbt, ROTATION_180, ROTATION_270, ROTATION_90, r, rotated_facing, to_id, to_name
+from pynecraft.commands import Block, BlockDef, CLEAR, Command, Commands, Entity, EntityDef, JsonText, NEAREST, Position, \
     Score, SignText, a, comment, data, e, execute, fill, function, good_block, good_entity, good_facing, good_score, \
     kill, \
     lines, p, \
     schedule, scoreboard, setblock, summon, tellraw, tp, weather
-from pyker.enums import Particle, ScoreCriteria
-from pyker.function import DataPack, Function, FunctionSet, LATEST_PACK_VERSION, Loop
-from pyker.simpler import Sign, WallSign
+from pynecraft.enums import Particle, ScoreCriteria
+from pynecraft.function import DataPack, Function, FunctionSet, LATEST_PACK_VERSION, Loop
+from pynecraft.simpler import Sign, WallSign
 
 
 @total_ordering

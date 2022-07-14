@@ -2,10 +2,10 @@ from __future__ import annotations
 
 import sys
 
-from pyker.base import EAST, r
-from pyker.commands import GT, RANDOM, Score, a, data, e, execute, fill, function, kill, setblock, tag
-from pyker.function import Loop
-from pyker.simpler import Volume, WallSign
+from pynecraft.base import EAST, r
+from pynecraft.commands import GT, RANDOM, Score, a, data, e, execute, fill, function, kill, setblock, tag
+from pynecraft.function import Loop
+from pynecraft.simpler import Volume, WallSign
 from restworld.rooms import Room, Thing, label
 from restworld.world import kill_em, main_clock, marker_tmpl, restworld
 

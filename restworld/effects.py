@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-from pyker.base import EAST, SOUTH, WEST, d, r, rotated_facing
-from pyker.commands import MAX_EFFECT_SECONDS, e, effect, execute, fill, function, p, setblock
-from pyker.enums import Effect
-from pyker.simpler import WallSign
+from pynecraft.base import EAST, SOUTH, WEST, d, r, rotated_facing
+from pynecraft.commands import MAX_EFFECT_SECONDS, e, effect, execute, fill, function, p, setblock
+from pynecraft.enums import Effect
+from pynecraft.simpler import WallSign
 from restworld.rooms import ActionDesc, SignedRoom, Wall, label, span
 from restworld.world import restworld
 

@@ -2,9 +2,9 @@ from __future__ import annotations
 
 import re
 
-from pyker.base import NORTH, SOUTH, WEST, r
-from pyker.commands import Block, JsonText, clone, fill, setblock
-from pyker.simpler import Book, ItemFrame, WallSign
+from pynecraft.base import NORTH, SOUTH, WEST, r
+from pynecraft.commands import Block, JsonText, clone, fill, setblock
+from pynecraft.simpler import Book, ItemFrame, WallSign
 from restworld.rooms import Room, ensure, label
 from restworld.world import restworld
 

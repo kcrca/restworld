@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from pyker.base import EAST, SOUTH, WEST, r
-from pyker.commands import Entity, data, e, execute, setblock
-from pyker.simpler import Item, WallSign
+from pynecraft.base import EAST, SOUTH, WEST, r
+from pynecraft.commands import Entity, data, e, execute, setblock
+from pynecraft.simpler import Item, WallSign
 from restworld.rooms import Room, label
 from restworld.world import kill_em, main_clock, restworld
 

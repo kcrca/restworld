@@ -2,11 +2,11 @@ from __future__ import annotations
 
 import copy
 
-from pyker.base import EAST, NORTH, WEST, r
-from pyker.commands import Entity, e, s
-from pyker.commands import data, execute, function, tag
-from pyker.commands import good_facing
-from pyker.simpler import Item
+from pynecraft.base import EAST, NORTH, WEST, r
+from pynecraft.commands import Entity, e, s
+from pynecraft.commands import data, execute, function, tag
+from pynecraft.commands import good_facing
+from pynecraft.simpler import Item
 from restworld.rooms import MobPlacer, Room, label
 from restworld.world import kill_em, main_clock, restworld
 

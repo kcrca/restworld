@@ -1,10 +1,10 @@
 from __future__ import annotations
 
-from pyker.base import GAMETIME, OVERWORLD, THE_END, THE_NETHER, r
-from pyker.commands import CREATIVE, Commands, EQ, MOD, MOVE, RAIN, RESULT, SIDEBAR, clear, clone, data, e, execute, \
+from pynecraft.base import GAMETIME, OVERWORLD, THE_END, THE_NETHER, r
+from pynecraft.commands import CREATIVE, Commands, EQ, MOD, MOVE, RAIN, RESULT, SIDEBAR, clear, clone, data, e, execute, \
     fill, function, gamemode, gamerule, kill, p, s, scoreboard, setblock, tag, teleport, time, tp, weather
-from pyker.enums import ScoreCriteria
-from pyker.function import Function
+from pynecraft.enums import ScoreCriteria
+from pynecraft.function import Function
 from restworld.rooms import Room
 from restworld.world import clock, kill_em, restworld, tick_clock
 

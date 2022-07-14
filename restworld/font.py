@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-from pyker.base import EAST, SOUTH, WEST, r
-from pyker.commands import Block, JsonText, data, e, execute, function, kill, s, setblock, tag
-from pyker.info import colors, stems, woods
-from pyker.simpler import Book, WallSign
+from pynecraft.base import EAST, SOUTH, WEST, r
+from pynecraft.commands import Block, JsonText, data, e, execute, function, kill, s, setblock, tag
+from pynecraft.info import colors, stems, woods
+from pynecraft.simpler import Book, WallSign
 from restworld.rooms import Room, ensure, label
 from restworld.world import restworld
 

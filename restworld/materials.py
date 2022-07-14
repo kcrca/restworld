@@ -2,11 +2,11 @@ from __future__ import annotations
 
 import math
 
-from pyker.base import EAST, NORTH, SOUTH, WEST, r, to_id
-from pyker.commands import Block, BlockDef, Entity, data, e, execute, fill, function, good_block, item, kill, s, \
+from pynecraft.base import EAST, NORTH, SOUTH, WEST, r, to_id
+from pynecraft.commands import Block, BlockDef, Entity, data, e, execute, fill, function, good_block, item, kill, s, \
     setblock, summon, tag
-from pyker.info import colors, stems, woods
-from pyker.simpler import Item, ItemFrame, Volume, WallSign
+from pynecraft.info import colors, stems, woods
+from pynecraft.simpler import Item, ItemFrame, Volume, WallSign
 from restworld.rooms import Room, label
 from restworld.world import fast_clock, kill_em, main_clock, restworld
 

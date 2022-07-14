@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-from pyker.base import EAST, NORTH, SOUTH, WEST, r, to_id
-from pyker.commands import Block, EQ, data, execute, fill, setblock
-from pyker.info import small_flowers, stems, tulips, woods
-from pyker.simpler import Volume, WallSign
+from pynecraft.base import EAST, NORTH, SOUTH, WEST, r, to_id
+from pynecraft.commands import Block, EQ, data, execute, fill, setblock
+from pynecraft.info import small_flowers, stems, tulips, woods
+from pynecraft.simpler import Volume, WallSign
 from restworld.rooms import Room, label
 from restworld.world import fast_clock, main_clock, restworld
 

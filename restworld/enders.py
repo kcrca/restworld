@@ -1,10 +1,10 @@
 from __future__ import annotations
 
-from pyker.base import EAST, NORTH, SOUTH, WEST, r
-from pyker.commands import MOVE
-from pyker.commands import clone, data, execute, fill, function, kill, setblock, summon, tag
-from pyker.commands import e, s
-from pyker.simpler import WallSign
+from pynecraft.base import EAST, NORTH, SOUTH, WEST, r
+from pynecraft.commands import MOVE
+from pynecraft.commands import clone, data, execute, fill, function, kill, setblock, summon, tag
+from pynecraft.commands import e, s
+from pynecraft.simpler import WallSign
 from restworld.rooms import Room, label
 from restworld.world import main_clock, restworld
 

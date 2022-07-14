@@ -1,9 +1,9 @@
 import re
 
-from pyker.base import to_id
-from pyker.commands import COLORS
-from pyker.function import BLOCKS
-from pyker.info import corals, stems, woods
+from pynecraft.base import to_id
+from pynecraft.commands import COLORS
+from pynecraft.function import BLOCKS
+from pynecraft.info import corals, stems, woods
 from restworld.world import restworld
 
 

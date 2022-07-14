@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-from pyker.base import EAST, NORTH, SOUTH, WEST, r
-from pyker.commands import Entity, clone, e, execute, fill, kill, summon, tag
-from pyker.commands import Score, scoreboard
-from pyker.simpler import WallSign
+from pynecraft.base import EAST, NORTH, SOUTH, WEST, r
+from pynecraft.commands import Entity, clone, e, execute, fill, kill, summon, tag
+from pynecraft.commands import Score, scoreboard
+from pynecraft.simpler import WallSign
 from restworld.rooms import Room
 from restworld.world import fast_clock, main_clock, restworld, slow_clock
 

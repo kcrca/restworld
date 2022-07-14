@@ -1,11 +1,11 @@
 from __future__ import annotations
 
-from pyker.base import DOWN, EAST, NOON, SOUTH, UP, WEST, r
-from pyker.commands import Block, e
-from pyker.commands import data, execute, fill, function, kill, setblock, summon
-from pyker.commands import time
-from pyker.info import instruments, stems, woods
-from pyker.simpler import Item, Volume, WallSign
+from pynecraft.base import DOWN, EAST, NOON, SOUTH, UP, WEST, r
+from pynecraft.commands import Block, e
+from pynecraft.commands import data, execute, fill, function, kill, setblock, summon
+from pynecraft.commands import time
+from pynecraft.info import instruments, stems, woods
+from pynecraft.simpler import Item, Volume, WallSign
 from restworld.rooms import Room, label
 from restworld.world import fast_clock, kill_em, main_clock, restworld
 

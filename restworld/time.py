@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-from pyker.base import DAYTIME, EAST, NOON, NORTH, WEST, good_facing, r
-from pyker.commands import RESULT, data, e, execute, fill, function, kill, setblock, summon, time, worldborder
-from pyker.info import moon_phases
-from pyker.simpler import Item, WallSign
+from pynecraft.base import DAYTIME, EAST, NOON, NORTH, WEST, good_facing, r
+from pynecraft.commands import RESULT, data, e, execute, fill, function, kill, setblock, summon, time, worldborder
+from pynecraft.info import moon_phases
+from pynecraft.simpler import Item, WallSign
 from restworld.rooms import Room, label
 from restworld.world import restworld
 

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from pyker.base import NORTH, d
-from pyker.commands import item, say
+from pynecraft.base import NORTH, d
+from pynecraft.commands import item, say
 from restworld.rooms import *
 from restworld.world import Restworld
 

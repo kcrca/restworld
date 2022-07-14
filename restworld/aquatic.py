@@ -1,13 +1,13 @@
 from __future__ import annotations
 
-from pyker.base import EAST, NORTH, WEST, r
-from pyker.commands import COLORS, LONG, MULT, PLUS, Score
-from pyker.commands import EQ, MOD, scoreboard
-from pyker.commands import Entity, RESULT, e, s
-from pyker.commands import data, execute, function, kill
-from pyker.commands import tp
-from pyker.enums import ScoreCriteria
-from pyker.simpler import WallSign
+from pynecraft.base import EAST, NORTH, WEST, r
+from pynecraft.commands import COLORS, LONG, MULT, PLUS, Score
+from pynecraft.commands import EQ, MOD, scoreboard
+from pynecraft.commands import Entity, RESULT, e, s
+from pynecraft.commands import data, execute, function, kill
+from pynecraft.commands import tp
+from pynecraft.enums import ScoreCriteria
+from pynecraft.simpler import WallSign
 from restworld.rooms import Room, fishes
 from restworld.world import fast_clock, kill_em, main_clock, restworld
 
