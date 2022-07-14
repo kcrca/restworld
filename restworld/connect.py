@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 from pyker.base import EAST, NORTH, SOUTH, WEST, r
-from pyker.commands import e, mc
+from pyker.commands import clone, execute, fill
+from pyker.commands import e
 from pyker.simpler import WallSign
 from restworld.rooms import Room, label
 from restworld.world import restworld
@@ -14,10 +15,8 @@ def room():
         for x in range(-12, 13):
             for y in range(0, 5):
                 for z in range(-12, 13):
-                    yield mc.execute().at(e().tag('connect_mid_home')).if_().block(r(x, -9 + y, z),
-                                                                                   src).run().clone(r(sx, 1, sz),
-                                                                                                    r(sx, 1, sz),
-                                                                                                    r(x, 2 + y, z))
+                    yield execute().at(e().tag('connect_mid_home')).if_(
+                    ).block(r(x, -9 + y, z), src).run(clone(r(sx, 1, sz), r(sx, 1, sz), r(x, 2 + y, z)))
 
     above = ('Change the block', 'in the floor', 'to change the', 'block used')
     below1 = ('These blocks are', 'templates for the', 'blocks above')
@@ -29,7 +28,7 @@ def room():
         WallSign(('Connected', 'Textures', '(needs OptiFine)')).place(r(2, 2, 0), WEST),
         WallSign(('Connected', 'Textures', '(needs OptiFine)')).place(r(-2, 2, 0), EAST),
 
-        mc.fill(r(2, -8, 2), r(-2, -9, -2), 'air'),
+        fill(r(2, -8, 2), r(-2, -9, -2), 'air'),
 
         WallSign(below1).place(r(0, -8, 2), SOUTH),
         WallSign(below1).place(r(0, -8, -2), NORTH),

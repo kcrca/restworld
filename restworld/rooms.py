@@ -14,7 +14,10 @@ from typing import Callable, Iterable, Tuple
 
 from pyker.base import Nbt, ROTATION_180, ROTATION_270, ROTATION_90, r, rotated_facing, to_id, to_name
 from pyker.commands import Block, BlockDef, CLEAR, Command, Commands, Entity, EntityDef, JsonText, NEAREST, Position, \
-    Score, SignText, a, e, good_block, good_entity, good_facing, good_score, lines, mc, p
+    Score, SignText, a, comment, data, e, execute, fill, function, good_block, good_entity, good_facing, good_score, \
+    kill, \
+    lines, p, \
+    schedule, scoreboard, setblock, summon, tellraw, tp, weather
 from pyker.enums import Particle, ScoreCriteria
 from pyker.function import DataPack, Function, FunctionSet, LATEST_PACK_VERSION, Loop
 from pyker.simpler import Sign, WallSign
@@ -134,7 +137,7 @@ class ActionDesc:
     def __init__(self, enum: Enum, name=None, note=None, also=()):
         self.enum = enum
         if name is None:
-            name = type(enum).display_name(enum)
+            name = enum.__class__.display_name(enum)
         self.name = name
         self.note = '(%s)' % note if note else None
         if isinstance(also, Iterable):
@@ -496,8 +499,9 @@ def named_frame_item(block: BlockDef, name=None, damage=None):
 
 def ensure(pos: Position, block: BlockDef, nbt=None):
     block = good_block(block)
-    to_place = block.clone().merge_nbt(nbt)
-    return mc.execute().unless().block(pos, good_block(block)).run().setblock(pos, to_place)
+    to_place = block.clone()
+    to_place.merge_nbt(nbt)
+    return execute().unless().block(pos, block).run(setblock(pos, to_place))
 
 
 def extract_arg(name, default_value, kwargs, keep=False):
@@ -523,10 +527,10 @@ def crops(loop_index: int, stages, crop, pos, name='age'):
     x, y, z = pos
     for i in range(0, 3):
         stage = stages[(loop_index + i) % len(stages)]
-        results.append(mc.fill(r(x, y, z - i), r(x + 2, y, z - i), Block(crop, {name: stage})))
+        results.append(fill(r(x, y, z - i), r(x + 2, y, z - i), Block(crop, {name: stage})))
     stage = stages[(loop_index + 1) % len(stages)]
     text_nbt = Sign.lines_nbt((None, 'Stage: %d' % stages[stage]))
-    results.append(mc.data().merge((r(x) + 3, r(2), r(z) - 1), text_nbt))
+    results.append(data().merge((r(x) + 3, r(2), r(z) - 1), text_nbt))
     return lines(results)
 
 
@@ -534,11 +538,11 @@ def label(pos: Position, txt: str, facing=1, invis=True, tags=(), block=Block('s
     tags = list(tags)
     tags.append('label')
     return (
-        mc.execute().positioned(pos).run().kill(
-            e().type('item_frame').tag('label').sort(NEAREST).distance((None, 1)).limit(1)),
-        mc.summon('item_frame', pos,
-                  named_frame_item(block, txt).merge(
-                      {'Invisible': invis, 'Facing': facing, 'Tags': tags, 'Fixed': True})),
+        execute().positioned(pos).run(
+            kill(e().type('item_frame').tag('label').sort(NEAREST).distance((None, 1)).limit(1))),
+        summon('item_frame', pos,
+               named_frame_item(block, txt).merge(
+                   {'Invisible': invis, 'Facing': facing, 'Tags': tags, 'Fixed': True})),
     )
 
 
@@ -552,7 +556,7 @@ class Clock:
 
     @classmethod
     def stop_all_clocks(cls) -> Command:
-        return mc.setblock((0, 1, 0), 'redstone_block')
+        return setblock((0, 1, 0), 'redstone_block')
 
     def add(self, function: Function):
         self._funcs.append(function)
@@ -560,13 +564,12 @@ class Clock:
     def tick_cmds(self, other_funcs=()):
         # execute at @e[tag=cage_home] run function restworld:enders/cage_main
         for f in self._funcs:
-            yield mc.execute().at(e().tag(self._tag(f))).run().function(f.name)
+            yield execute().at(e().tag(self._tag(f))).run(function(f.name))
         yield '\n'
         for f in self._funcs:
             loop_finish = f.name[-len(self.name):] + 'finish'
             if loop_finish in other_funcs:
-                yield mc.execute().at(e().tag(self._tag(f))).run(). \
-                    schedule().function(loop_finish, 1).replace()
+                yield execute().at(e().tag(self._tag(f))).run(schedule().function(loop_finish, 1))
 
     @staticmethod
     def _tag(f):
@@ -585,9 +588,11 @@ class RoomPack(DataPack):
     base_suffixes = ('tick', 'init', 'enter', 'incr', 'decr', 'cur', 'exit', 'finish')
     base_suffixes_re = re.compile(r'(\w+)_(' + '|'.join(base_suffixes) + ')')
 
-    def __init__(self, name: str, path: Path | str, suffixes: Iterable[str, ...],
+    def __init__(self, name: str, path: Path | str, suffixes: Iterable[str, ...] = None,
                  format_version: int = LATEST_PACK_VERSION, /):
         super().__init__(name, path, format_version)
+        if suffixes is None:
+            suffixes = RoomPack.base_suffixes
         self._suffixes = suffixes
 
     @property
@@ -612,8 +617,8 @@ class Room(FunctionSet):
     def _player_in_room_setup(self):
         player_home = self.home_func(f'{self.name}_player')
         self.function('_enter', exists_ok=True).add(
-            mc.execute().positioned(r(1, -1, 1)).run().function(player_home.full_name))
-        self.function('_exit', exists_ok=True).add(mc.kill(e().tag(f'{self.name}_player_home')))
+            execute().positioned(r(1, -1, 1)).run(function(player_home.full_name)))
+        self.function('_exit', exists_ok=True).add(kill(e().tag(f'{self.name}_player_home')))
 
     def _room_setup(self, facing, text, room_name):
         text = _to_list(text)
@@ -628,11 +633,11 @@ class Room(FunctionSet):
                        {'Rotation': anchor_rot.rotation, 'Tags': [anchor, 'anchor'], 'Invisible': True, 'Small': True})
         self.add(Function('%s_room_init' % self.name).add(
             sign.place(r(x, 6, z), facing),
-            mc.kill(e().tag(anchor)),
-            mc.summon(stand, r(0, 2, 0))
+            kill(e().tag(anchor)),
+            summon(stand, r(0, 2, 0))
         ))
         self.function('_goto').add(
-            mc.tp(p(), e().tag(anchor).limit(1))
+            tp(p(), e().tag(anchor).limit(1))
         )
         self.home_func(self.name + '_room')
 
@@ -658,9 +663,9 @@ class Room(FunctionSet):
         tags = marker.nbt.get_list('Tags')
         tags.extend((marker_tag, self.name + '_home', 'homer'))
         return self.function(marker_tag, home=False, exists_ok=True).add(
-            mc.comment(home_marker_comment),
-            mc.kill(e().tag(marker_tag)),
-            mc.execute().positioned(r(-0.5, 0, 0.5)).run().kill(e().type('armor_stand').volume((1, 2, 1))),
+            comment(home_marker_comment),
+            kill(e().tag(marker_tag)),
+            execute().positioned(r(-0.5, 0, 0.5)).run(kill(e().type('armor_stand').volume((1, 2, 1)))),
             marker.summon(r(0, 0.5, 0)),
         )
 
@@ -739,9 +744,9 @@ class Room(FunctionSet):
         for clock, loops in self._clocks.items():
             name = '_%s' % clock.name
             clock_func = self.function(name).add((
-                mc.execute().at(e().tag(x.base_name + '_home')).run().function(x.full_name) for x in loops))
-            tick_func.add(mc.execute().if_().score(clock.time).matches(0).run().function(clock_func.full_name))
-        tick_func.add(mc.function(x.full_name) for x in filter(
+                execute().at(e().tag(x.base_name + '_home')).run(function(x.full_name)) for x in loops))
+            tick_func.add(execute().if_().score(clock.time).matches(0).run(function(clock_func.full_name)))
+        tick_func.add(function(x.full_name) for x in filter(
             lambda x: self._is_func_type(x, '_tick'), self.functions.values()))
 
         finish_funcs = {}
@@ -751,9 +756,9 @@ class Room(FunctionSet):
             m = finish_funcs_re.match(f.name)
             if m:
                 finish_funcs.setdefault('_finish_' + m.group(2), []).append(f)
-        self.function('_finish').add((mc.function(self._path(x)) for x in finish_funcs.keys()))
+        self.function('_finish').add((function(self._path(x)) for x in finish_funcs.keys()))
         for cf in finish_funcs.keys():
-            self.function(cf).add((mc.function(x.full_name) for x in finish_funcs[cf]))
+            self.function(cf).add((function(x.full_name) for x in finish_funcs[cf]))
 
     def _path(self, name):
         return self.full_name + '/' + name
@@ -764,23 +769,23 @@ class Room(FunctionSet):
         loops = filter(lambda x: isinstance(x, Loop), self.functions.values())
         for loop in loops:
             home_f = loop.base_name + '_home'
-            at_home = mc.execute().at(e().tag(home_f))
+            at_home = execute().at(e().tag(home_f))
             incr_f.add(at_home.run(loop.score.add(1)))
             decr_f.add(at_home.run(loop.score.remove(1)))
         cur_f = self.full_name + '/_cur'
-        incr_f.add(mc.function(cur_f))
-        decr_f.add(mc.function(cur_f))
+        incr_f.add(function(cur_f))
+        decr_f.add(function(cur_f))
 
     def _add_other_funcs(self):
         to_incr = self.score('_to_incr')
         before_commands = {
-            'init': [mc.scoreboard().objectives().add(self.name, ScoreCriteria.DUMMY),
-                     mc.scoreboard().objectives().add(self.name + '_max', ScoreCriteria.DUMMY),
+            'init': [scoreboard().objectives().add(self.name, ScoreCriteria.DUMMY),
+                     scoreboard().objectives().add(self.name + '_max', ScoreCriteria.DUMMY),
                      (x.set(0) for x in sorted(self._scores, key=lambda x: str(x))),
-                     to_incr.set(1)] + [mc.tp(e().tag(self.name), e().tag('death').limit(1))]}
+                     to_incr.set(1)] + [tp(e().tag(self.name), e().tag('death').limit(1))]}
         after_commands = {
-            'enter': [mc.weather(CLEAR)],
-            'init': [mc.function('%s/_cur' % self.full_name)],
+            'enter': [weather(CLEAR)],
+            'init': [function('%s/_cur' % self.full_name)],
         }
         clock_suffixes = set(x.name for x in self._clocks)
         clock_suffixes.add('tick')
@@ -792,7 +797,7 @@ class Room(FunctionSet):
             commands = []
             commands.extend(before_commands.setdefault(f, []))
             commands.extend(
-                (mc.execute().at(e().tag(self._home_func_name(x.name))).run().function(x.full_name) for x in
+                (execute().at(e().tag(self._home_func_name(x.name))).run(function(x.full_name)) for x in
                  relevant))
             commands.extend(after_commands.setdefault(f, []))
             if len(commands) > 0:
@@ -932,7 +937,7 @@ def say_score(*scores):
         s = good_score(s)
         say.append(JsonText.text(str(s.target) + '='))
         say.append(JsonText.score(s))
-    return mc.tellraw(a(), say)
+    return tellraw(a(), *say)
 
 
 class Wall:

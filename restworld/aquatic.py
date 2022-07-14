@@ -1,7 +1,11 @@
 from __future__ import annotations
 
 from pyker.base import EAST, NORTH, WEST, r
-from pyker.commands import COLORS, EQ, Entity, LONG, MOD, MULT, PLUS, RESULT, Score, e, mc, s
+from pyker.commands import COLORS, LONG, MULT, PLUS, Score
+from pyker.commands import EQ, MOD, scoreboard
+from pyker.commands import Entity, RESULT, e, s
+from pyker.commands import data, execute, function, kill
+from pyker.commands import tp
 from pyker.enums import ScoreCriteria
 from pyker.simpler import WallSign
 from restworld.rooms import Room, fishes
@@ -10,14 +14,14 @@ from restworld.world import fast_clock, kill_em, main_clock, restworld
 
 def room():
     room = Room('aquatic', restworld, NORTH, (None, 'Aquatic'))
-    clock_wall_sign = WallSign((None, 'Clock', 'On / Off'), (mc.function('restworld:global/clock_toggle')))
+    clock_wall_sign = WallSign((None, 'Clock', 'On / Off'), (function('restworld:global/clock_toggle')))
 
     def n_fish_loop(count: int):
         def fish_loop(step):
             for f in [f for f in fishes if len(f[1]) == count]:
                 tag, variants = f
                 v = variants[step.i]
-                yield mc.data().merge(e().tag(tag).limit(1), {'Variant': v[0], 'CustomName': v[1]})
+                yield data().merge(e().tag(tag).limit(1), {'Variant': v[0], 'CustomName': v[1]})
 
         return fish_loop
 
@@ -36,8 +40,8 @@ def room():
 
     axolotls = ('Lucy', 'Wild', 'Gold', 'Cyan', 'Blue')
     room.loop('axolotl', main_clock).loop(
-        lambda step: mc.execute().as_(e().tag('axolotl')).run().data().merge(
-            s(), {'Variant': step.i, 'CustomName': step.elem + ' Axolotl'}), axolotls)
+        lambda step: execute().as_(e().tag('axolotl')).run(data().merge(
+            s(), {'Variant': step.i, 'CustomName': step.elem + ' Axolotl'})), axolotls)
     room.function('guardian_init').add(room.mob_placer(r(-0.6, 3, -0.2), 180, adults=True).summon('guardian'))
     room.function('elder_guardian_init').add(room.mob_placer(r(2, 3, 0), 225, adults=True).summon('elder_guardian'))
 
@@ -50,7 +54,7 @@ def room():
 
     room.function('fishies_init').add(
         # For some reason, at 1.19 the kill-off in the _init function misses the pufferfish
-        mc.kill(e().tag('pufferfish')),
+        kill(e().tag('pufferfish')),
         room.mob_placer(r(1.8, 4, 0.8), EAST, adults=True).summon(Entity('dolphin', nbt={'Invulnerable': True})),
         room.mob_placer(r(1.8, 4, -4), EAST, -1, adults=True).summon(
             ('salmon', 'cod', 'pufferfish',
@@ -58,9 +62,9 @@ def room():
     )
 
     def fishies_loop(step):
-        yield mc.data().merge(e().tag('pufferfish').limit(1), {'PuffState': step.elem})
+        yield data().merge(e().tag('pufferfish').limit(1), {'PuffState': step.elem})
         # Over time, the pufferfish creeps downward, so we have to put it back
-        yield mc.tp(e().tag('pufferfish'), r(1.8, 4, -6)).facing(r(5, 4, -6))
+        yield tp(e().tag('pufferfish'), r(1.8, 4, -6)).facing(r(5, 4, -6))
 
     room.loop('fishies', main_clock).loop(fishies_loop, range(0, 3), bounce=True)
 
@@ -84,8 +88,8 @@ def all_fish_funcs(room, clock_wall_sign):
                 placer = room.mob_placer(r(1.5, 3.2, 0), WEST, -1, adults=True)
             yield placer.summon('tropical_fish', tags=(f'fish{i:d}',))
         yield (
-            mc.scoreboard().objectives().remove('fish'),
-            mc.scoreboard().objectives().add('fish', ScoreCriteria.DUMMY),
+            scoreboard().objectives().remove('fish'),
+            scoreboard().objectives().add('fish', ScoreCriteria.DUMMY),
             num_colors.set(len(COLORS)),
             body.set(0),
             pattern.set(0),
@@ -97,7 +101,7 @@ def all_fish_funcs(room, clock_wall_sign):
         yield (
             pattern.add(1),
             pattern.operation(MOD, num_colors),
-            mc.execute().if_().score(pattern).matches(0).run(body.add(1)),
+            execute().if_().score(pattern).matches(0).run(body.add(1)),
             body.operation(MOD, num_colors),
             base_variant.operation(EQ, body),
             base_variant.operation(MULT, body_scale),
@@ -107,13 +111,13 @@ def all_fish_funcs(room, clock_wall_sign):
             variant.operation(EQ, base_variant),
         )
         for i in range(0, 6):
-            yield mc.execute().store(RESULT).entity(e().tag(f'fish{i:d}').limit(1), 'Variant', LONG, 1).run(
+            yield execute().store(RESULT).entity(e().tag(f'fish{i:d}').limit(1), 'Variant', LONG, 1).run(
                 variant.get())
             if i < 5:
                 yield variant.add(256)
         yield variant.add(1)
         for i in range(6, 12):
-            yield mc.execute().store(RESULT).entity(e().tag(f'fish{i:d}').limit(1), 'Variant', LONG, 1).run(
+            yield execute().store(RESULT).entity(e().tag(f'fish{i:d}').limit(1), 'Variant', LONG, 1).run(
                 variant.get())
             if i < 11:
                 yield variant.remove(256)

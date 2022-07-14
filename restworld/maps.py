@@ -3,7 +3,7 @@ from __future__ import annotations
 import re
 
 from pyker.base import NORTH, SOUTH, WEST, r
-from pyker.commands import Block, JsonText, mc
+from pyker.commands import Block, JsonText, clone, fill, setblock
 from pyker.simpler import Book, ItemFrame, WallSign
 from restworld.rooms import Room, ensure, label
 from restworld.world import restworld
@@ -13,10 +13,10 @@ def room():
     room = Room('maps', restworld, WEST, (None, 'Maps'))
 
     room.function('maps_room_enter', exists_ok=True).add(
-        mc.clone(r(8, -5, 0), r(8, -5, 0), r(8, 1, 0)),
-        mc.fill(r(0, -1, -3), r(9, -1, 3), 'redstone_block').replace('glass')
+        clone(r(8, -5, 0), r(8, -5, 0), r(8, 1, 0)),
+        fill(r(0, -1, -3), r(9, -1, 3), 'redstone_block').replace('glass')
     )
-    room.function('maps_room_exit').add(mc.fill(r(0, -1, -3), r(9, -1, 3), 'glass').replace('redstone_block'))
+    room.function('maps_room_exit').add(fill(r(0, -1, -3), r(9, -1, 3), 'glass').replace('redstone_block'))
     p_north = room.mob_placer(r(2, 4, -3), SOUTH, -1, adults=True)
     p_mid = room.mob_placer(r(8, 4, -1), WEST, -1, adults=True)
     room.function('maps_room_init', exists_ok=True).add(
@@ -43,7 +43,7 @@ def room():
         room.mob_placer(r(3, 4, 3), NORTH, adults=True).summon(ItemFrame(NORTH).item(map(22))),
         WallSign((None, 'Photo', 'Area'), NORTH).place(r(2, 3, 3), NORTH),
 
-        mc.setblock(r(8, 2, 2), 'cartography_table'),
+        setblock(r(8, 2, 2), 'cartography_table'),
 
         label(r(6, 2, 0), "Reset"),
     )

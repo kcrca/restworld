@@ -1,48 +1,55 @@
 from __future__ import annotations
 
+from pyker.base import NORTH, d
+from pyker.commands import item, say
 from restworld.rooms import *
 from restworld.world import Restworld
 
 
 def test_unclocked_room():
-    room = Room('foo', DataPack('dp', 'none'), NORTH, ('foo'), )
-    room.loop('bar').loop(lambda step: mc.say(f'var {step.loop.score}, i {step.i}, item {item}'), range(0, 5))
-    func_names = sorted(list(x.name for x in (room.room_funcs())))
+    room = Room('foo', RoomPack('dp', 'none'), NORTH, ('foo'), )
+    room.loop('bar').loop(lambda step: say(f'var {step.loop.score}, i {step.i}, item {item}'), range(0, 5))
+    room.add_room_funcs()
+    func_names = sorted(list(x.name for x in room.functions))
     assert func_names == ['_cur', '_decr', '_enter', '_exit', '_finish', '_incr', '_init', 'bar', 'bar_cur', 'bar_home',
                           'foo_room_home', 'foo_room_init']
 
     room.add(Function('bar_finish_main'))
     room.add(Function('xyzzy'))
-    func_names = sorted(list(x.name for x in (room.room_funcs())))
+    room.add_room_funcs()
+    func_names = sorted(list(x.name for x in room.functions))
     assert func_names == ['_cur', '_decr', '_enter', '_exit', '_finish', '_incr', '_init', 'bar', 'bar_cur',
                           'bar_finish_main', 'bar_home', 'foo_room_home', 'foo_room_init', 'xyzzy']
 
 
 def test_clocked_room():
-    room = Room('foo', DataPack('dp', 'none'), NORTH, ('foo'), )
+    room = Room('foo', RoomPack('dp', 'none'), NORTH, ('foo'), )
     clock = Clock('main')
-    room.loop('bar', clock).loop(lambda step: mc.say(f'var {step.loop.score}, i {step.i}, item {item}'),
+    room.loop('bar', clock).loop(lambda step: say(f'var {step.loop.score}, i {step.i}, item {item}'),
                                  range(0, 5))
-    func_names = sorted(list(x.name for x in (room.room_funcs())))
+    room.add_room_funcs()
+    func_names = sorted(list(x.name for x in room.functions))
     assert func_names == ['_cur', '_decr', '_enter', '_exit', '_finish', '_incr', '_init', '_main', '_tick', 'bar',
                           'bar_cur', 'bar_home', 'foo_room_home', 'foo_room_init']
 
     room.add(Function('bar_finish_main'))
     room.add(Function('xyzzy'))
-    func_names = sorted(list(x.name for x in (room.room_funcs())))
+    room.add_room_funcs()
+    func_names = sorted(list(x.name for x in room.functions))
     assert func_names == ['_cur', '_decr', '_enter', '_exit', '_finish', '_finish_main', '_incr', '_init', '_main',
                           '_tick', 'bar', 'bar_cur', 'bar_finish_main', 'bar_home', 'foo_room_home', 'foo_room_init',
                           'xyzzy']
 
 
 def test_room_sign():
-    room = Room('foo', DataPack('dp', 'none'), NORTH, ('foo'), )
-    func_names = sorted(list(x.name for x in (room.room_funcs())))
+    room = Room('foo', RoomPack('dp', 'none'), NORTH, ('foo'), )
+    room.add_room_funcs()
+    func_names = sorted(list(x.name for x in room.functions))
     assert func_names == ['_enter', '_exit', '_finish', '_init', 'foo_room_home', 'foo_room_init']
 
 
 def test_mob_placer():
-    mp = MobPlacer(1.1, 12, 2.2, 'North', 3.3, 4.4)
+    mp = MobPlacer((1.1, 12, 2.2), 'North', 3.3, 4.4)
     cmds = lines(mp.summon(((Entity('m_1')), (Entity('m_2')))))
     assert cmds[0].startswith('summon m_1 1.1 12 2.2 {')
     assert cmds[1].startswith('summon m_1 5.5 12 2.2 {')
@@ -59,14 +66,14 @@ def test_mob_placer():
     assert re.search(r'Tags:.*m_1', cmds[0])
     assert re.search(r'Tags:.*m_1', cmds[1])
 
-    mp = MobPlacer(r(1.1), r(12), r(2.2), 'North', 3.3, 4.4, tags=('gtag',), nbt={'GProp': True})
+    mp = MobPlacer(r(1.1, 12, 2.2), 'North', 3.3, 4.4, tags=('gtag',), nbt={'GProp': True})
     cmds = lines(mp.summon(((Entity('m_1')), (Entity('m_2')))))
     for c in cmds:
         assert c.count('~') == 3, c
     assert 'gtag' in cmds[0]
     assert 'GProp: true' in cmds[0]
 
-    mp = MobPlacer(d(1.1), d(12), d(2.2), 'North', 3.3, 4.4, auto_tag=False)
+    mp = MobPlacer(d(1.1, 12, 2.2), 'North', 3.3, 4.4, auto_tag=False)
     cmds = lines(mp.summon(((Entity('m_1')), (Entity('m_2')))))
     assert cmds[0].count('^') == 3
     assert cmds[1].count('^') == 3
@@ -77,7 +84,7 @@ def test_mob_placer():
     assert not re.search(r'Tags:.*m_2', cmds[2])
     assert not re.search(r'Tags:.*m_2', cmds[3])
 
-    mp = MobPlacer(1.1, 12, 2.2, 'North', 3.3, 4.4)
+    mp = MobPlacer((1.1, 12, 2.2), 'North', 3.3, 4.4)
     cmds = lines(mp.summon(((Entity('m_1')), (Entity('m_2'))), on_stand=True))
     assert cmds[0].startswith('summon armor_stand 1.1 12 2.2 {')
     assert cmds[1].startswith('summon armor_stand 5.5 12 2.2 {')
@@ -90,7 +97,7 @@ def test_mob_placer():
 
 
 def test_crops():
-    cmds = crops(15, list(range(0, 4)) + [3, 3], 'beets', 0, 3, 0)
+    cmds = crops(15, list(range(0, 4)) + [3, 3], 'beets', r(0, 3, 0))
     assert cmds == ['fill ~0 ~3 ~0 ~2 ~3 ~0 beets[age=3]',
                     'fill ~0 ~3 ~-1 ~2 ~3 ~-1 beets[age=3]',
                     'fill ~0 ~3 ~-2 ~2 ~3 ~-2 beets[age=3]',

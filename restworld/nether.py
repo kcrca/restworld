@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from pyker.base import EAST, SOUTH, WEST, r
-from pyker.commands import Entity, e, mc
+from pyker.commands import Entity, data, e, execute, setblock
 from pyker.simpler import Item, WallSign
 from restworld.rooms import Room, label
 from restworld.world import kill_em, main_clock, restworld
@@ -22,7 +22,7 @@ def room():
         WallSign((None, 'Fireball')).place(r(-4, 2, 1), SOUTH))
     room.function('magma_cube_init').add(placer(r(0, 3, 0), EAST, adults=True).summon('magma_cube'))
     room.loop('magma_cube', main_clock).loop(
-        lambda step: mc.data().modify(e().tag('magma_cube').limit(1), 'Size').set().value(step.elem),
+        lambda step: data().modify(e().tag('magma_cube').limit(1), 'Size').set().value(step.elem),
         range(0, 3), bounce=True)
     room.function('piglin_brute_init').add(
         placer(r(0, 2, 0), EAST, adults=True).summon(
@@ -42,7 +42,7 @@ def room():
         label(r(6, 2, -4), 'Change Height'))
 
     def strider_loop(step):
-        yield mc.execute().if_().score(('mob_levitation', 'global')).matches(0).run().setblock(r(0, 1, 0), step.elem)
-        yield mc.execute().if_().score(('mob_levitation', 'global')).matches(0).run().setblock(r(3, 1, 0), step.elem)
+        yield execute().if_().score(('mob_levitation', 'global')).matches(0).run(setblock(r(0, 1, 0), step.elem))
+        yield execute().if_().score(('mob_levitation', 'global')).matches(0).run(setblock(r(3, 1, 0), step.elem))
 
     room.loop('strider', main_clock).loop(strider_loop, ('lava', 'netherrack'))

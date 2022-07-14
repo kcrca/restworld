@@ -4,14 +4,14 @@ import sys
 from datetime import date
 
 from pyker.base import DARK_GREEN, DARK_PURPLE, r
-from pyker.commands import Commands, Entity, JsonText, e, mc, p
+from pyker.commands import Commands, Entity, JsonText, data, e, execute, fill, function, give, p, tp
 from pyker.function import Function, FunctionSet
 from pyker.simpler import Book, Sign
 from restworld.rooms import Clock, Room, RoomPack
 
 
 def kill_em(target):
-    return mc.tp(target, e().tag('death').limit(1))
+    return tp(target, e().tag('death').limit(1))
 
 
 marker_tmpl = Entity('armor_stand', {'NoGravity': True, 'Small': True, })
@@ -86,12 +86,12 @@ class Restworld(RoomPack):
                 'https://claritypack.com')
         )
 
-        return Function('control_book').add(mc.give(p(), cb.as_entity()))
+        return Function('control_book').add(give(p(), cb.as_entity()))
 
     @staticmethod
     def _action(txt: str, tooltip: str, act: str) -> JsonText:
         return JsonText.text(txt).color(DARK_GREEN).underlined().click_event().run_command(
-            mc.function('restworld:' + act)).hover_event().show_text(tooltip)
+            function('restworld:' + act)).hover_event().show_text(tooltip)
 
     def _home_func_name(self, base):
         for f in self._suffixes:
@@ -105,9 +105,9 @@ class Restworld(RoomPack):
             fname = '_' + f
             func = Function(fname)
             for room in self.function_set.children:
-                call = mc.function(room.full_name + '/' + fname)
+                call = function(room.full_name + '/' + fname)
                 if f in ('incr', 'decr'):
-                    call = mc.execute().at(e().tag(f'{room.name}_player_home')).run(call)
+                    call = execute().at(e().tag(f'{room.name}_player_home')).run(call)
                 func.add(call)
             yield func
 
@@ -116,8 +116,8 @@ class Fencelike:
     @classmethod
     def update(cls, id, text2, text3='') -> Commands:
         return (
-            mc.fill(r(8, 3, 6), r(0, 2, 0), id).replace('#restworld:fencelike'),
-            mc.data().merge(r(5, 2, 0), Sign.lines_nbt(('', text2, text3, '')))
+            fill(r(8, 3, 6), r(0, 2, 0), id).replace('#restworld:fencelike'),
+            data().merge(r(5, 2, 0), Sign.lines_nbt(('', text2, text3, '')))
         )
 
 
@@ -147,6 +147,8 @@ class Wall:
         self.used_widths = used_widths
         self.skip = skip if skip else {}
         self.line = 0
+        self.start = None
+        self.end = None
         self.set_line_range()
 
     def set_line_range(self):

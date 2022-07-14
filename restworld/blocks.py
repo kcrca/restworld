@@ -4,7 +4,9 @@ import re
 from typing import Iterable, Union
 
 from pyker.base import DOWN, EAST, NORTH, SOUTH, WEST, good_facing, r, to_name
-from pyker.commands import Block, Entity, JsonText, MOVE, e, good_block, mc, s
+from pyker.commands import Block, Entity, JsonText, MOVE, e, good_block, s
+from pyker.commands import clone, data, execute, fill, function, item, \
+    kill, say, setblock, summon, tag
 from pyker.info import Color, colors
 from pyker.simpler import Item, Sign, Volume, WallSign
 from restworld.rooms import Room, label, stems, woods
@@ -40,9 +42,9 @@ def room():
         )
         if show_list:
             block_init.add(
-                mc.execute().if_().score(block_list_score).matches(0).run().kill(e().tag(f'block_list_{name}')))
+                execute().if_().score(block_list_score).matches(0).run(kill(e().tag(f'block_list_{name}'))))
             names = room.function(name + '_names', home=False)
-            block_init.add(mc.function(names.full_name))
+            block_init.add(function(names.full_name))
 
         def blocks_loop_body(step):
             i = step.i
@@ -56,11 +58,11 @@ def room():
                     signage = ('', *signage)
                     signage = signage + ('',) * (4 - len(signage))
 
-                yield mc.setblock(r(x, 3, z), block)
+                yield setblock(r(x, 3, z), block)
                 sign_nbt = Sign.lines_nbt(signage)
                 # Preserve the 'expand' response
                 del sign_nbt['Text1']
-                yield mc.data().merge(r(x + facing.dx, 2, z + facing.dz), sign_nbt)
+                yield data().merge(r(x + facing.dx, 2, z + facing.dz), sign_nbt)
 
                 if show_list:
                     stand = name_stand.clone()
@@ -122,8 +124,8 @@ def room():
         Block('Soul Campfire', {'lit': True}),
         Block('soul_campfire', {'lit': False}, name='Soul Campfire|Unlit'),
     ))
-    room.function('campfire_enter').add(mc.function('restworld:/blocks/campfire_cur'))
-    room.function('campfire_exit').add(mc.setblock(r(0, 3, 0), Block('campfire', {'lit': False})))
+    room.function('campfire_enter').add(function('restworld:/blocks/campfire_cur'))
+    room.function('campfire_exit').add(setblock(r(0, 3, 0), Block('campfire', {'lit': False})))
     blocks('clay', SOUTH, ('Clay', 'Mud', 'Muddy|Mangrove Roots', 'Packed Mud'))
     blocks('cobble', NORTH, ('Cobblestone', 'Mossy|Cobblestone', 'Cobbled|Deepslate'))
     blocks('deepslate', NORTH, (
@@ -157,10 +159,10 @@ def room():
     blocks('sandstone', SOUTH, (red_sandstone, tuple(re.sub(' *Red *', '', f) for f in red_sandstone)), dx=3)
     blocks('slabs', NORTH, ('Smooth Stone|Slab', 'Petrified Oak|Slab'))
     _, loop = blocks('snow_blocks', SOUTH, ('Powder Snow', 'Snow Block'))
-    loop.add(mc.execute().if_().block(r(0, 3, 0), 'powder_snow').run().data().merge(r(0, 2, 1), {'Text3': 'Step In!'}))
+    loop.add(execute().if_().block(r(0, 3, 0), 'powder_snow').run(data().merge(r(0, 2, 1), {'Text3': 'Step In!'})))
     _, loop = blocks('soil', SOUTH, ('Grass Block', 'Podzol', 'Mycelium', 'Dirt Path'))
     # Make sure the block above is air so it doesn't turn dirt path to dirt instantly.
-    loop.add(mc.setblock(r(0, 4, 0), 'air'))
+    loop.add(setblock(r(0, 4, 0), 'air'))
     blocks('soul_stuff', NORTH, ('Soul Sand', 'Soul Soil'))
     blocks('sponge', SOUTH, ('Sponge', 'Wet Sponge'))
     blocks('sticky', SOUTH, ('Slime Block', 'Honey block'))
@@ -177,23 +179,23 @@ def room():
     blocks('copper', NORTH, (types, block), dx=-3)
     blocks('waxed_copper', NORTH, (waxed_types, waxed_block), dx=-3, score=room.score('copper'))
     room.function('copper_init', exists_ok=True).add(
-        mc.tag(e().tag('copper_home')).add('copper_base'),
-        mc.tag(e().tag('waxed_copper_home')).add('copper_base'))
+        tag(e().tag('copper_home')).add('copper_base'),
+        tag(e().tag('waxed_copper_home')).add('copper_base'))
     room.function('switch_to_copper').add(
-        mc.tag(e().tag('copper_base')).add('copper_home'),
-        mc.tag(e().tag('copper_base')).remove('copper_waxed_home'),
-        mc.execute().at(e().tag('copper_base')).run().function('restworld:blocks/copper_cur'))
+        tag(e().tag('copper_base')).add('copper_home'),
+        tag(e().tag('copper_base')).remove('copper_waxed_home'),
+        execute().at(e().tag('copper_base')).run(function('restworld:blocks/copper_cur')))
     room.function('switch_to_waxed_copper').add(
-        mc.tag(e().tag('copper_base')).remove('copper_home'),
-        mc.tag(e().tag('copper_base')).add('copper_waxed_home'),
-        mc.execute().at(e().tag('copper_base')).run().function('restworld:blocks/waxed_copper_cur'))
+        tag(e().tag('copper_base')).remove('copper_home'),
+        tag(e().tag('copper_base')).add('copper_waxed_home'),
+        execute().at(e().tag('copper_base')).run(function('restworld:blocks/waxed_copper_cur')))
 
     woodlike = woods + stems
     leaves = [f'{x} Leaves' for x in woods] + ['Warped Wart Block', 'Nether Wart Block']
     logs = [f'{x} Log' for x in woods] + [f'{x} Stem' for x in stems]
     wood = [f'{x} Wood' for x in woods] + [f'{x} Hyphae' for x in stems]
-    stripped_logs = [f'Stripped|{x} Log' for x in woods] + [(f'Stripped|{x} Stem') for x in stems]
-    stripped_woods = [f'Stripped|{x} Wood' for x in woods] + [(f'Stripped|{x} Hyphae') for x in stems]
+    stripped_logs = [f'Stripped|{x} Log' for x in woods] + [f'Stripped|{x} Stem' for x in stems]
+    stripped_woods = [f'Stripped|{x} Wood' for x in woods] + [f'Stripped|{x} Hyphae' for x in stems]
     blocks('wood_blocks', SOUTH, (tuple(f'{f} Planks' for f in woodlike),
                                   stripped_logs, logs, wood, leaves, stripped_woods), dx=-3, dz=-3, size=2)
 
@@ -212,7 +214,7 @@ def room():
                'Lectern': ({'has_book': False}, {'has_book': True})})
 
     for f in ('amethyst',):
-        room.function(f + '_init').add(mc.tag(e().tag(f + '_home')))
+        room.function(f + '_init').add(tag(e().tag(f + '_home')))
     amethyst_phases = (
         'Amethyst Block', 'Budding Amethyst', 'Small Amethyst|Bud', 'Medium Amethyst|Bud', 'Large Amethyst|Bud',
         'Amethyst Cluster')
@@ -220,83 +222,83 @@ def room():
     def amethyst_loop(step):
         block = good_block(step.elem)
         if step.elem == amethyst_phases[0]:
-            yield mc.setblock(r(0, 4, 0), block.id)
+            yield setblock(r(0, 4, 0), block.id)
         else:
-            yield mc.setblock(r(0, 4, 0), 'budding_amethyst')
+            yield setblock(r(0, 4, 0), 'budding_amethyst')
             if ' Bud' in block.name or 'Cluster' in block.name:
-                yield mc.setblock(r(0, 3, 0), block.clone().merge_state({'facing': 'down'}))
-                yield mc.setblock(r(0, 5, 0), block.clone().merge_state({'facing': 'up'}))
+                yield setblock(r(0, 3, 0), block.clone().merge_state({'facing': 'down'}))
+                yield setblock(r(0, 5, 0), block.clone().merge_state({'facing': 'up'}))
                 for offset in (NORTH, EAST, WEST, SOUTH):
                     facing = good_facing(offset)
-                    yield mc.setblock(r(facing.dx, 4, facing.dz), block.clone().merge_state({'facing': offset}))
-        yield mc.data().merge(r(0, 2, -1), block.sign_nbt)
+                    yield setblock(r(facing.dx, 4, facing.dz), block.clone().merge_state({'facing': offset}))
+        yield data().merge(r(0, 2, -1), block.sign_nbt)
 
     room.loop('amethyst', main_clock).add(
-        mc.fill(r(-1, 3, -1), r(1, 5, 1), 'air')
+        fill(r(-1, 3, -1), r(1, 5, 1), 'air')
     ).loop(
         amethyst_loop, amethyst_phases, bounce=True
     ).add(
-        mc.kill(e().type('item').nbt({'Item': {'id': 'minecraft:amethyst_shard'}}))
+        kill(e().type('item').nbt({'Item': {'id': 'minecraft:amethyst_shard'}}))
     )
 
     def bell_loop(step):
         if step.i == 0:
-            yield mc.setblock(r(-1, 3, 0), 'air')
-            yield mc.setblock(r(1, 3, 0), 'air')
-            yield mc.setblock(r(0, 4, 0), 'stone_slab')
+            yield setblock(r(-1, 3, 0), 'air')
+            yield setblock(r(1, 3, 0), 'air')
+            yield setblock(r(0, 4, 0), 'stone_slab')
         elif step.i == 1:
-            yield mc.setblock(r(-1, 3, 0), Block('stone_stairs', state={'facing': EAST}))
-            yield mc.setblock(r(1, 3, 0), 'air')
-            yield mc.setblock(r(0, 4, 0), 'air')
+            yield setblock(r(-1, 3, 0), Block('stone_stairs', state={'facing': EAST}))
+            yield setblock(r(1, 3, 0), 'air')
+            yield setblock(r(0, 4, 0), 'air')
         elif step.i == 2:
-            yield mc.setblock(r(-1, 3, 0), 'air')
-            yield mc.setblock(r(1, 3, 0), 'air')
-            yield mc.setblock(r(0, 4, 0), 'air')
+            yield setblock(r(-1, 3, 0), 'air')
+            yield setblock(r(1, 3, 0), 'air')
+            yield setblock(r(0, 4, 0), 'air')
         else:
-            yield mc.setblock(r(-1, 3, 0), Block('stone_stairs', {'facing': EAST}))
-            yield mc.setblock(r(1, 3, 0), Block('stone_stairs', {'facing': WEST}))
-            yield mc.setblock(r(0, 4, 0), 'air')
-        yield mc.setblock(r(0, 3, 0), Block('bell', state={'attachment': step.elem, 'facing': facing[step.i]}))
+            yield setblock(r(-1, 3, 0), Block('stone_stairs', {'facing': EAST}))
+            yield setblock(r(1, 3, 0), Block('stone_stairs', {'facing': WEST}))
+            yield setblock(r(0, 4, 0), 'air')
+        yield setblock(r(0, 3, 0), Block('bell', state={'attachment': step.elem, 'facing': facing[step.i]}))
 
     attachments = ('ceiling', 'single_wall', 'floor', 'double_wall')
     facing = (NORTH, WEST, NORTH, WEST)
-    room.loop('bell', main_clock).add(mc.setblock(r(0, 3, 0), 'air')).loop(bell_loop, attachments)
+    room.loop('bell', main_clock).add(setblock(r(0, 3, 0), 'air')).loop(bell_loop, attachments)
 
     def brewing_stand_loop(step):
         for j in range(0, 3):
             if j in step.elem:
-                yield mc.item().replace().block(r(0, 3, 0), f'container.{j:d}').with_(
+                yield item().replace().block(r(0, 3, 0), f'container.{j:d}').with_(
                     Block('potion', nbt={'Potion': 'water'}), 1)
             else:
-                yield mc.item().replace().block(r(0, 3, 0), f'container.{j:d}').with_('air')
+                yield item().replace().block(r(0, 3, 0), f'container.{j:d}').with_('air')
 
-    room.function('brewing_stand_init').add(mc.function('restworld:containers/brewing_init'))
+    room.function('brewing_stand_init').add(function('restworld:containers/brewing_init'))
     room.loop('brewing_stand', main_clock).add(
-        mc.item().replace().block(r(0, 3, 0), 'container.3').with_('air'),
-        mc.item().replace().block(r(0, 3, 0), 'container.4').with_('air'),
-        mc.data().merge(r(0, 3, 0), {'BrewTime': 0, 'Fuel': 0}),
+        item().replace().block(r(0, 3, 0), 'container.3').with_('air'),
+        item().replace().block(r(0, 3, 0), 'container.4').with_('air'),
+        data().merge(r(0, 3, 0), {'BrewTime': 0, 'Fuel': 0}),
     ).loop(brewing_stand_loop, ((), (0,), (1,), (2,), (2, 0), (1, 2), (0, 1), (0, 1, 2)))
 
     def cake_loop(step):
-        yield mc.setblock(r(0, 3, 0), Block('cake', {'bites': step.elem}))
-        yield mc.data().merge(r(0, 2, -1), {'Text3': f'Bites: {step.elem:d}'})
+        yield setblock(r(0, 3, 0), Block('cake', {'bites': step.elem}))
+        yield data().merge(r(0, 2, -1), {'Text3': f'Bites: {step.elem:d}'})
 
-    room.function('cake_init').add(mc.data().merge(r(0, 2, -1), {'Text2': 'Cake'}))
+    room.function('cake_init').add(data().merge(r(0, 2, -1), {'Text2': 'Cake'}))
     room.loop('cake', main_clock).loop(cake_loop, range(0, 7), bounce=True)
 
     def chest_loop(step):
         step.elem.merge_state({'facing': NORTH})
-        yield mc.setblock(r(0, 3, 0), step.elem)
+        yield setblock(r(0, 3, 0), step.elem)
         txt = {'Text2': 'Trapped' if 'T' in step.elem.name else '',
                'Text3': 'Double Chest' if 'type' in step.elem.state else 'Chest'}
         if 'Ender' in step.elem.name:
             txt['Text2'] = 'Ender'
-        yield mc.data().merge(r(0, 2, -1), txt)
+        yield data().merge(r(0, 2, -1), txt)
         if 'type' in step.elem.state:
             step.elem.state['type'] = 'left'
-            yield mc.setblock(r(-1, 3, 0), step.elem)
+            yield setblock(r(-1, 3, 0), step.elem)
         else:
-            yield mc.setblock(r(-1, 3, 0), 'air')
+            yield setblock(r(-1, 3, 0), 'air')
 
     room.loop('chest', main_clock).loop(chest_loop, (
         Block('Chest'), Block('Ender Chest'), Block('Trapped Chest'), Block('Chest', state={'type': 'right'}),
@@ -304,11 +306,11 @@ def room():
 
     def command_block_loop(step):
         block = Block(step.elem[0], {'facing': WEST, 'conditional': str(step.elem[1]).lower()})
-        yield mc.setblock(r(0, 3, 0), block)
+        yield setblock(r(0, 3, 0), block)
         words = step.elem[0].split(' ')
         modifier = '' if len(words) == 2 else words[0]
-        yield mc.data().merge(r(0, 2, 1),
-                              Sign.lines_nbt((None, modifier, None, '(Conditional)' if step.elem[1] else '')))
+        yield data().merge(r(0, 2, 1),
+                           Sign.lines_nbt((None, modifier, None, '(Conditional)' if step.elem[1] else '')))
 
     room.function('command_blocks_init').add(WallSign((None, None, 'Command Block', None)).place(r(0, 2, 1), SOUTH))
     room.loop('command_blocks', main_clock).loop(command_block_loop, (
@@ -322,16 +324,16 @@ def room():
 
     def dripstone_loop(step):
         for j in range(0, step.elem):
-            yield mc.setblock(r(0, 4 + j, 0), Block('pointed_dripstone', {
+            yield setblock(r(0, 4 + j, 0), Block('pointed_dripstone', {
                 'thickness': 'tip', 'vertical_direction': 'up'}))
-            yield mc.setblock(r(0, 11 - j, 0), Block('pointed_dripstone', {
+            yield setblock(r(0, 11 - j, 0), Block('pointed_dripstone', {
                 'thickness': 'tip_merge' if j == step.elem - 1 else 'tip', 'vertical_direction': 'down'}))
         if step.elem != 4:
-            yield mc.fill(r(0, 4 + step.elem, 0), r(0, 11 - step.elem, 0), 'air')
+            yield fill(r(0, 4 + step.elem, 0), r(0, 11 - step.elem, 0), 'air')
 
     room.function('dripstone_init').add(
-        mc.setblock(r(0, 3, 0), 'dripstone_block'),
-        mc.setblock(r(0, 12, 0), 'dripstone_block'),
+        setblock(r(0, 3, 0), 'dripstone_block'),
+        setblock(r(0, 12, 0), 'dripstone_block'),
         WallSign((None, 'Dripstone')).place(r(0, 2, -1), NORTH),
     )
     room.loop('dripstone', main_clock).loop(dripstone_loop, range(1, 5), bounce=True)
@@ -340,29 +342,29 @@ def room():
         dirs = ({'up': True}, {'north': True}, {})
         surround = ((-1, 0, 'west'), (1, 0, 'east'), (0, 1, 'south'), (0, -1, 'north'),)
         if 'soul' in step.elem:
-            yield mc.setblock(r(0, 3, 0), step.elem)
-            yield mc.setblock(r(0, 4, 0), 'soul_fire')
+            yield setblock(r(0, 3, 0), step.elem)
+            yield setblock(r(0, 4, 0), 'soul_fire')
         else:
-            yield mc.setblock(r(0, 3 + step.i, 0), step.elem)
+            yield setblock(r(0, 3 + step.i, 0), step.elem)
             if step.i == 1:
                 for j in range(0, 4):
                     s = surround[j]
-                    yield mc.setblock(r(s[0], 4, s[1]), Block('fire', {s[2]: True}))
+                    yield setblock(r(s[0], 4, s[1]), Block('fire', {s[2]: True}))
             else:
-                yield mc.setblock(r(0, 4, -1 if step.i == 1 else 0), Block('fire', dirs[step.i]))
-        yield mc.data().merge(r(0, 2, -1), Sign.lines_nbt((None, 'Soul Fire' if step.elem == 'soul_soil' else 'Fire')))
+                yield setblock(r(0, 4, -1 if step.i == 1 else 0), Block('fire', dirs[step.i]))
+        yield data().merge(r(0, 2, -1), Sign.lines_nbt((None, 'Soul Fire' if step.elem == 'soul_soil' else 'Fire')))
 
     room.function('fire_init').add(WallSign((None, 'Fire')).place(r(0, 2, -1), NORTH))
-    room.loop('fire', main_clock).add(mc.fill(r(0, 3, 0), r(0, 5, 0), 'air')).loop(fire_loop, (
+    room.loop('fire', main_clock).add(fill(r(0, 3, 0), r(0, 5, 0), 'air')).loop(fire_loop, (
         'oak_log', 'oak_log', 'oak_log', 'soul_soil'))
 
     def item_frame_loop(step):
         yield Entity(step.elem.id, {
             'Facing': 2, 'Tags': ['item_frame_as_block'], 'Item': Item.nbt_for('lapis_lazuli'), 'Fixed': True}).summon(
             r(0, 3, -1)),
-        yield mc.data().merge(r(0, 2, -1), Sign.lines_nbt((None, *step.elem.sign_text)))
+        yield data().merge(r(0, 2, -1), Sign.lines_nbt((None, *step.elem.sign_text)))
 
-    item_frame_init = mc.kill(e().tag('item_frame_as_block'))
+    item_frame_init = kill(e().tag('item_frame_as_block'))
     room.function('item_frame_init').add(item_frame_init)
     room.loop('item_frame', main_clock).add(item_frame_init).loop(item_frame_loop,
                                                                   (Block('Item Frame'), Block('Glow Item Frame')))
@@ -370,19 +372,19 @@ def room():
     def lantern_loop(step):
         lantern = Block('Lantern' if step.i < 2 else 'Soul Lantern', {'hanging': False})
         if step.i in (0, 3):
-            yield mc.setblock(r(0, 3, 0), lantern),
-            yield mc.setblock(r(0, 4, 0), 'air'),
-            yield mc.data().merge(r(0, 2, -1), {'Text2': '', 'Text4': ''}),
+            yield setblock(r(0, 3, 0), lantern),
+            yield setblock(r(0, 4, 0), 'air'),
+            yield data().merge(r(0, 2, -1), {'Text2': '', 'Text4': ''}),
         else:
             lantern.merge_state({'hanging': True}),
-            yield mc.setblock(r(0, 3, 0), lantern),
-            yield mc.setblock(r(0, 4, 0), 'chain'),
-            yield mc.data().merge(r(0, 2, -1), {'Text2': 'Hanging', 'Text4': 'and Chain'}),
-        yield mc.data().merge(r(0, 2, -1), {'Text3': lantern.name})
+            yield setblock(r(0, 3, 0), lantern),
+            yield setblock(r(0, 4, 0), 'chain'),
+            yield data().merge(r(0, 2, -1), {'Text2': 'Hanging', 'Text4': 'and Chain'}),
+        yield data().merge(r(0, 2, -1), {'Text3': lantern.name})
 
     room.function('lantern_init').add(
         WallSign([]).place(r(0, 2, -1, ), NORTH),
-        mc.data().merge(r(0, 2, -1), {'Text3': 'Lantern'}))
+        data().merge(r(0, 2, -1), {'Text3': 'Lantern'}))
     room.loop('lantern', main_clock).loop(lantern_loop, range(0, 4))
 
     room.function('ore_blocks_init').add(label(r(-1, 2, 0), 'Deepslate'))
@@ -395,35 +397,35 @@ def room():
     blocks('ore_blocks', NORTH, (ores, ore_blocks), dz=3)
     blocks('deepslate_ore_blocks', NORTH, (slate_ores, ore_blocks), dz=3, score=room.score('ore_blocks'))
     room.function('ore_blocks_init', exists_ok=True).add(
-        mc.tag(e().tag('ore_blocks_home')).add('ore_blocks_base'),
-        mc.tag(e().tag('deepslate_ore_blocks_home')).add('ore_blocks_base'))
+        tag(e().tag('ore_blocks_home')).add('ore_blocks_base'),
+        tag(e().tag('deepslate_ore_blocks_home')).add('ore_blocks_base'))
     room.function('switch_to_ore_blocks').add(
-        mc.tag(e().tag('ore_blocks_base')).add('ore_blocks_home'),
-        mc.tag(e().tag('ore_blocks_base')).remove('deepslate_ore_blocks_home'),
-        mc.execute().at(e().tag('ore_blocks_base')).run().function('restworld:blocks/ore_blocks_cur'))
+        tag(e().tag('ore_blocks_base')).add('ore_blocks_home'),
+        tag(e().tag('ore_blocks_base')).remove('deepslate_ore_blocks_home'),
+        execute().at(e().tag('ore_blocks_base')).run(function('restworld:blocks/ore_blocks_cur')))
     room.function('switch_to_deepslate_ore_blocks').add(
-        mc.tag(e().tag('ore_blocks_base')).remove('ore_blocks_home'),
-        mc.tag(e().tag('ore_blocks_base')).add('deepslate_ore_blocks_home'),
-        mc.execute().at(e().tag('ore_blocks_base')).run().function('restworld:blocks/deepslate_ore_blocks_cur'))
+        tag(e().tag('ore_blocks_base')).remove('ore_blocks_home'),
+        tag(e().tag('ore_blocks_base')).add('deepslate_ore_blocks_home'),
+        execute().at(e().tag('ore_blocks_base')).run(function('restworld:blocks/deepslate_ore_blocks_cur')))
 
     def scaffolding_loop(step):
         i = step.i
         if i == 0:
-            yield mc.setblock(r(0, 4, 0), 'scaffolding')
+            yield setblock(r(0, 4, 0), 'scaffolding')
         elif i == 1:
-            yield mc.setblock(r(0, 5, 0), 'scaffolding')
+            yield setblock(r(0, 5, 0), 'scaffolding')
         elif i == 2:
-            yield mc.setblock(r(0, 5, -1), Block('scaffolding', {'distance': 1}))
+            yield setblock(r(0, 5, -1), Block('scaffolding', {'distance': 1}))
         elif i == 3:
-            yield mc.setblock(r(0, 5, -2), Block('scaffolding', {'distance': 2}))
+            yield setblock(r(0, 5, -2), Block('scaffolding', {'distance': 2}))
         elif i == 4:
-            yield mc.setblock(r(0, 5, -2), 'air')
+            yield setblock(r(0, 5, -2), 'air')
         elif i == 5:
-            yield mc.setblock(r(0, 5, -1), 'air')
+            yield setblock(r(0, 5, -1), 'air')
         elif i == 6:
-            yield mc.setblock(r(0, 5, 0), 'air')
+            yield setblock(r(0, 5, 0), 'air')
         elif i == 7:
-            yield mc.setblock(r(0, 4, 0), 'air')
+            yield setblock(r(0, 4, 0), 'air')
 
     room.loop('scaffolding', main_clock).loop(scaffolding_loop, range(0, 5), bounce=True)
 
@@ -441,37 +443,37 @@ def room():
     ))
     skulk_loop = room.functions['sculk_blocks_main']
     skulk_loop.add(
-        mc.execute().if_().score(skulk_loop.score).matches(6).positioned(r(0, 3, 0)).run().function(
-            'restworld:particles/shriek_particles'),
-        mc.execute().if_().score(skulk_loop.score).matches(8).positioned(r(0, 3, 0)).run().function(
-            'restworld:particles/shriek_particles'),
+        execute().if_().score(skulk_loop.score).matches(6).positioned(r(0, 3, 0)).run(
+            function('restworld:particles/shriek_particles')),
+        execute().if_().score(skulk_loop.score).matches(8).positioned(r(0, 3, 0)).run(
+            function('restworld:particles/shriek_particles')),
     )
 
     def snow_loop(step):
-        yield mc.setblock(r(0, 3, 0), Block('grass_block', {'snowy': True}))
-        yield mc.setblock(r(0, 4, 0), Block('snow', {'layers': step.elem}))
-        yield mc.data().merge(r(0, 2, 1), {'Text3': f'Layers: {step.elem:d}'})
+        yield setblock(r(0, 3, 0), Block('grass_block', {'snowy': True}))
+        yield setblock(r(0, 4, 0), Block('snow', {'layers': step.elem}))
+        yield data().merge(r(0, 2, 1), {'Text3': f'Layers: {step.elem:d}'})
 
     room.loop('snow', main_clock).loop(snow_loop, range(1, 9), bounce=True)
 
     def spawner_loop(step):
-        yield mc.data().merge(r(0, 3, 0), {'SpawnData': {'entity': {'id': Entity(step.elem).id}}})
-        yield mc.data().merge(r(0, 2, -1), {'Text2': step.elem})
+        yield data().merge(r(0, 3, 0), {'SpawnData': {'entity': {'id': Entity(step.elem).id}}})
+        yield data().merge(r(0, 2, -1), {'Text2': step.elem})
 
-    room.function('spawner_init').add(mc.setblock(r(0, 3, 0), 'spawner'))
+    room.function('spawner_init').add(setblock(r(0, 3, 0), 'spawner'))
     room.loop('spawner', main_clock).loop(spawner_loop, ('Pig', 'Zombie', 'Skeleton', 'Spider', 'Cave Spider', 'Blaze'))
 
     def structure_blocks_loop(step):
-        yield mc.data().merge(r(0, 2, 1), {'Text2': step.elem})
-        yield mc.data().merge(r(0, 3, 0), {'mode': step.elem.upper()})
+        yield data().merge(r(0, 2, 1), {'Text2': step.elem})
+        yield data().merge(r(0, 3, 0), {'mode': step.elem.upper()})
 
-    room.function('structure_blocks_init').add(mc.data().merge(r(0, 2, 1), {'Text3': 'Structure Block'}))
+    room.function('structure_blocks_init').add(data().merge(r(0, 2, 1), {'Text3': 'Structure Block'}))
     room.loop('structure_blocks', main_clock).loop(structure_blocks_loop, ('Data', 'Save', 'Load', 'Corner'))
 
     def tnt_loop(step):
-        yield mc.kill(e().type('tnt').distance((None, 10)))
-        yield mc.setblock(r(0, 3, 0), Block('tnt', {'unstable': step.elem == 'unstable'}))
-        yield mc.data().merge(r(0, 2, -1), {'Text3': step.elem.title()})
+        yield kill(e().type('tnt').distance((None, 10)))
+        yield setblock(r(0, 3, 0), Block('tnt', {'unstable': step.elem == 'unstable'}))
+        yield data().merge(r(0, 2, -1), {'Text3': step.elem.title()})
 
     room.loop('tnt', main_clock).loop(tnt_loop, ('stable', 'unstable'))
 
@@ -481,12 +483,12 @@ def room():
     def torches_loop(step):
         text = ({'Text2': '', 'Text4': ''}, {'Text2': 'Soul', 'Text4': ''}, {'Text2': 'Redstone', 'Text4': '(On)'},
                 {'Text2': 'Redstone', 'Text4': '(Off)'})
-        yield mc.data().merge(r(0, 2, -1), text[step.i])
+        yield data().merge(r(0, 2, -1), text[step.i])
         if step.i == len(torches) - 1:
-            yield mc.execute().if_().score(wall_torches_score).matches(0).run().setblock(r(0, 2, 0), 'redstone_block')
-            yield mc.execute().if_().score(wall_torches_score).matches(1).run().setblock(r(0, 3, 1), 'redstone_block')
-        yield mc.execute().if_().score(wall_torches_score).matches(0).run().setblock(r(0, 3, 0), step.elem)
-        yield mc.execute().if_().score(wall_torches_score).matches(1).run().setblock(r(0, 3, 0), wall_torches[step.i])
+            yield execute().if_().score(wall_torches_score).matches(0).run(setblock(r(0, 2, 0), 'redstone_block'))
+            yield execute().if_().score(wall_torches_score).matches(1).run(setblock(r(0, 3, 1), 'redstone_block'))
+        yield execute().if_().score(wall_torches_score).matches(0).run(setblock(r(0, 3, 0), step.elem))
+        yield execute().if_().score(wall_torches_score).matches(1).run(setblock(r(0, 3, 0), wall_torches[step.i]))
 
     wall_torches_score = room.score('wall_torches')
     room.function('torches_init').add(
@@ -495,12 +497,11 @@ def room():
         wall_torches_score.set(0)
     )
     room.loop('torches', main_clock).add(
-        mc.execute().if_().score(wall_torches_score).matches(0).run().data().merge(r(0, 2, -1), {'Text3': 'Torch'}),
-        mc.execute().if_().score(wall_torches_score).matches(1).run().data().merge(r(0, 2, -1),
-                                                                                   {'Text3': 'Wall Torch'}),
-        mc.setblock(r(0, 3, 0), 'air'),
-        mc.execute().unless().block(r(0, 3, 1), 'air').run().setblock(r(0, 3, 1), 'air'),
-        mc.execute().unless().block(r(0, 2, 0), 'air').run().setblock(r(0, 2, 0), 'barrier'),
+        execute().if_().score(wall_torches_score).matches(0).run(data().merge(r(0, 2, -1), {'Text3': 'Torch'})),
+        execute().if_().score(wall_torches_score).matches(1).run(data().merge(r(0, 2, -1), {'Text3': 'Wall Torch'})),
+        setblock(r(0, 3, 0), 'air'),
+        execute().unless().block(r(0, 3, 1), 'air').run(setblock(r(0, 3, 1), 'air')),
+        execute().unless().block(r(0, 2, 0), 'air').run(setblock(r(0, 2, 0), 'barrier')),
     ).loop(torches_loop, torches)
 
     color_functions(room)
@@ -511,7 +512,7 @@ def room():
             'amethyst', 'anvil', 'bell', 'brewing_stand', 'cake', 'campfire', 'cauldron', 'chest', 'colored_beam',
             'colorings', 'composter', 'frosted_ice', 'grindstone', 'item_frame', 'job_sites_1', 'job_sites_2',
             'lantern'):
-        room.function(b + '_init', exists_ok=True).add(mc.tag(e().tag(b + '_home')).add('no_expansion'))
+        room.function(b + '_init', exists_ok=True).add(tag(e().tag(b + '_home')).add('no_expansion'))
 
 
 def room_init_functions(room, block_list_score):
@@ -520,28 +521,29 @@ def room_init_functions(room, block_list_score):
         label(r(-16, 2, -3), 'List Blocks'),
         label(r(-43, 2, 3), 'List Blocks'),
         label(r(-43, 2, -3), 'List Blocks'),
-        mc.kill(e().tag('block_list'))
+        kill(e().tag('block_list'))
     )
     room.function('blocks_sign_init').add(
-        mc.execute().at(e().tag('blocks_home', '!no_expansion')).run().data().merge(r(0, 2, -1), {
-            'Text1': JsonText.text("").click_event().run_command('function restworld:blocks/toggle_expand')}),
-        mc.execute().at(e().tag('blocks_home', '!no_expansion')).run().data().merge(r(0, 2, 1), {
-            'Text1': JsonText.text("").click_event().run_command('function restworld:blocks/toggle_expand')}),
+        execute().at(e().tag('blocks_home', '!no_expansion')).run(data().merge(r(0, 2, -1), {
+            'Text1': JsonText.text("").click_event().run_command('function restworld:blocks/toggle_expand')})),
+        execute().at(e().tag('blocks_home', '!no_expansion')).run(data().merge(r(0, 2, 1), {
+            'Text1': JsonText.text("").click_event().run_command('function restworld:blocks/toggle_expand')})),
 
-        mc.execute().at(e().tag('blocks_home', 'no_expansion')).run().data().merge(r(0, 2, -1), {
-            'Text1': JsonText.text("").click_event().run_command('say Sorry, cannot expand this block')}),
-        mc.execute().at(e().tag('blocks_home', 'no_expansion')).run().data().merge(r(0, 2, 1), {
-            'Text1': JsonText.text("").click_event().run_command('say Sorry, cannot expand this block')}),
-        mc.tag(e().tag('block_sign_home')).add('no_expansion'),
+        execute().at(e().tag('blocks_home', 'no_expansion')).run(data().merge(r(0, 2, -1), {
+            'Text1': JsonText.text("").click_event().run_command('say Sorry, cannot expand this block')})),
+        execute().at(e().tag('blocks_home', 'no_expansion')).run(data().merge(r(0, 2, 1), {
+            'Text1': JsonText.text("").click_event().run_command('say Sorry, cannot expand this block')})),
+        tag(e().tag('block_sign_home')).add('no_expansion'),
     )
     room.loop('toggle_block_list', score=block_list_score).loop(
-        lambda step: mc.execute().as_(e().tag('block_list')).run().data().merge(s(), {"CustomNameVisible": step.i > 0}),
+        lambda step: execute().as_(e().tag('block_list')).run(data().merge(s(), {"CustomNameVisible": step.i > 0})),
         range(0, 2))
     room.function('toggle_block_list_init').add(block_list_score.set(0))
 
 
 def color_functions(room):
     coloring_coords = (r(1, 4, 6), r(-13, 2, -1))
+    volume = Volume(*coloring_coords)
     lit_candles = room.score('lit_candles')
 
     def colorings(is_plain, color):
@@ -560,7 +562,7 @@ def color_functions(room):
                 filler = plain_fills[i]
             else:
                 filler = Block(f'{color.id}_{which}', state)
-            yield mc.fill(*coloring_coords, filler).replace('#restworld:' + which)
+            yield volume.replace(filler, '#restworld:' + which)
 
         candle = Block('candle' if is_plain else color.name + '_candle', {'lit': True})
         for count in range(1, 6):
@@ -571,23 +573,21 @@ def color_functions(room):
                 candle = Block(candle.id + '_cake', {'lit': True})
                 filter = '#restworld:candle_cake'
             candle.merge_state({'lit': False})
-            yield mc.execute().if_().score(lit_candles).matches(0).run().fill(*coloring_coords, candle).replace(
-                filter)
+            yield execute().if_().score(lit_candles).matches(0).run(volume.replace(candle, filter))
             candle.merge_state({'lit': True})
-            yield mc.execute().unless().score(lit_candles).matches(0).run().fill(*coloring_coords, candle).replace(
-                filter)
+            yield execute().unless().score(lit_candles).matches(0).run(volume.replace(candle, filter))
 
-        yield mc.data().merge(r(-7, 0, 3), {'name': f'restworld:{color.id}_terra', 'showboundingbox': False})
+        yield data().merge(r(-7, 0, 3), {'name': f'restworld:{color.id}_terra', 'showboundingbox': False})
 
         if is_plain:
-            mc.fill(r(-9, 2, 2), r(-9, 2, 3), 'air')
-            mc.fill(*coloring_coords, 'air').replace('#standing_signs')
-            mc.data().merge(e().tag('colorings_item_frame').limit(1), {'Item': {'Count': 0}})
+            fill(r(-9, 2, 2), r(-9, 2, 3), 'air')
+            volume.replace('air', '#standing_signs')
+            data().merge(e().tag('colorings_item_frame').limit(1), {'Item': {'Count': 0}})
         else:
-            mc.setblock(r(-9, 2, 2), Block(f'{color.id}_bed', {'facing': NORTH, 'part': 'head'}))
-            mc.setblock(r(-9, 2, 3), Block(f'{color.id}_bed', {'facing': NORTH, 'part': 'foot'}))
+            setblock(r(-9, 2, 2), Block(f'{color.id}_bed', {'facing': NORTH, 'part': 'head'}))
+            setblock(r(-9, 2, 3), Block(f'{color.id}_bed', {'facing': NORTH, 'part': 'foot'}))
             frame_nbt = {'Item': Item.nbt_for(f'{color.id}_dye'), 'ItemRotation': 0}
-            mc.data().merge(e().tag('colorings_item_frame').limit(1), frame_nbt)
+            data().merge(e().tag('colorings_item_frame').limit(1), frame_nbt)
 
         if is_plain:
             leather_color = {}
@@ -609,21 +609,21 @@ def color_functions(room):
                 'colorings_names')
             yield horse.summon(r(0.2, 2, 4.4))
 
-        yield mc.data().merge(e().tag('colorings_armor_stand').limit(1), {
+        yield data().merge(e().tag('colorings_armor_stand').limit(1), {
             'ArmorItems': [Item.nbt_for('leather_boots', nbt=leather_color),
                            Item.nbt_for('leather_leggings', nbt=leather_color),
                            Item.nbt_for('leather_chestplate', nbt=leather_color),
                            Item.nbt_for('leather_helmet', nbt=leather_color)]})
-        yield mc.data().merge(e().tag('colorings_horse').limit(1),
-                              {'ArmorItem': Item.nbt_for('leather_horse_armor', nbt=horse_leather_color)})
-        yield mc.data().merge(e().tag('colorings_llama').limit(1), {'DecorItem': llama_decor})
-        yield mc.data().merge(e().tag('colorings_sheep').limit(1), sheep_nbt)
+        yield data().merge(e().tag('colorings_horse').limit(1),
+                           {'ArmorItem': Item.nbt_for('leather_horse_armor', nbt=horse_leather_color)})
+        yield data().merge(e().tag('colorings_llama').limit(1), {'DecorItem': llama_decor})
+        yield data().merge(e().tag('colorings_sheep').limit(1), sheep_nbt)
 
-        yield mc.data().merge(r(-4, 2, 4), {'Text2': color.name})
-        yield mc.execute().as_(e().tag('colorings_names')).run().data().merge(s(), {'CustomName': color.name})
+        yield data().merge(r(-4, 2, 4), {'Text2': color.name})
+        yield execute().as_(e().tag('colorings_names')).run(data().merge(s(), {'CustomName': color.name}))
 
-        yield mc.data().merge(r(0, 0, -1), {'name': f'restworld:{"plain" if is_plain else color.id}_terra'})
-        yield mc.data().merge(r(1, 2, -0), {'Text1': color.name})
+        yield data().merge(r(0, 0, -1), {'name': f'restworld:{"plain" if is_plain else color.id}_terra'})
+        yield data().merge(r(1, 2, -0), {'Text1': color.name})
 
     def colored_signs(color, render):
         signables = woods + stems
@@ -637,20 +637,20 @@ def color_functions(room):
 
     def render_signs_glow(x, y, z, _, _2):
         lit_signs = room.score('lit_signs')
-        yield mc.execute().if_().score(lit_signs).matches(0).run().data().merge(r(x, y, z),
-                                                                                {'GlowingText': False, 'Text4': 'Text'})
-        yield mc.execute().if_().score(lit_signs).matches(1).run().data().merge(r(x, y, z),
-                                                                                {'GlowingText': True, 'Text4': 'Text'})
+        yield execute().if_().score(lit_signs).matches(0).run(
+            data().merge(r(x, y, z), {'GlowingText': False, 'Text4': 'Text'}))
+        yield execute().if_().score(lit_signs).matches(1).run(
+            data().merge(r(x, y, z), {'GlowingText': True, 'Text4': 'Text'}))
 
     def render_signs(x, y, z, color, _):
-        yield mc.data().merge(r(x, y, z), {'Color': color.id, 'Text3': color.name})
+        yield data().merge(r(x, y, z), {'Color': color.id, 'Text3': color.name})
 
     def colorings_loop(step):
         yield from colorings(False, step.elem)
         yield from colored_signs(step.elem, render_signs)
 
     room.function('colorings_init').add(
-        mc.kill(e().tag('colorings_item')),
+        kill(e().tag('colorings_item')),
 
         Entity('item_frame', {
             'Facing': 3, 'Tags': ['colorings_item_frame', 'colorings_item'], 'Item': Item.nbt_for('stone'),
@@ -668,7 +668,7 @@ def color_functions(room):
             'Tags': ['colorings_sheep', 'colorings_item'], 'Variant': 1, 'NoAI': True, 'Silent': True,
             'Rotation': [-35, 0], 'Leashed': True}).summon(r(-9.0, 2, 5.0)),
 
-        mc.execute().as_(e().tag('colorings_names')).run().data().merge(s(), {'CustomNameVisible': True}),
+        execute().as_(e().tag('colorings_names')).run(data().merge(s(), {'CustomNameVisible': True})),
 
         WallSign((None, 'Terracotta')).place(r(-1, 3, 1), SOUTH),
         WallSign((None, 'Shulker Box')).place(r(-3, 3, 1), SOUTH),
@@ -680,47 +680,47 @@ def color_functions(room):
                       lambda x, y, z, _, wood: Sign((wood.id, 'Sign With', 'Default', 'Text')).place(r(x, y, z), 14)),
         WallSign([]).place(r(-4, 2, 4, ), SOUTH),
 
-        mc.kill(e().type('item')),
+        kill(e().type('item')),
 
         label(r(-1, 2, 7), 'Lit Candles'),
         label(r(-7, 2, 7), 'Plain'),
         label(r(-11, 2, 3), 'Glowing'),
     ),
     room.loop('colorings', main_clock).add(
-        mc.fill(r(-9, 2, 2), r(-9, 2, 3), 'air')
+        fill(r(-9, 2, 2), r(-9, 2, 3), 'air')
     ).loop(colorings_loop, colors).add(
         colored_signs(None, render_signs_glow),
-        mc.setblock(r(-7, -1, 3), 'redstone_block'),
-        mc.setblock(r(-7, -1, 3), 'air'),
+        setblock(r(-7, -1, 3), 'redstone_block'),
+        setblock(r(-7, -1, 3), 'air'),
     )
     room.function('colorings_plain_off').add(
-        mc.clone((coloring_coords[0][0], coloring_coords[0][1].value - coloring_coords[1][1].value + 1,
-                  coloring_coords[0][2]),
-                 (coloring_coords[1][0], 0, coloring_coords[1][2]),
-                 (coloring_coords[1][0], coloring_coords[1][1] - 1, coloring_coords[1][2])),
+        clone((coloring_coords[0][0], coloring_coords[0][1].value - coloring_coords[1][1].value + 1,
+               coloring_coords[0][2]),
+              (coloring_coords[1][0], 0, coloring_coords[1][2]),
+              (coloring_coords[1][0], coloring_coords[1][1] - 1, coloring_coords[1][2])),
 
-        mc.tag(e().tag('colorings_base_home')).add('colorings_home'),
-        mc.execute().at(e().tag('colorings_home')).run().function('restworld:/blocks/colorings_cur'),
-        mc.kill(e().type('item').distance((None, 20))),
+        tag(e().tag('colorings_base_home')).add('colorings_home'),
+        execute().at(e().tag('colorings_home')).run(function('restworld:/blocks/colorings_cur')),
+        kill(e().type('item').distance((None, 20))),
     )
     room.function('colorings_plain_on').add(
-        mc.clone((coloring_coords[0][0], coloring_coords[0][1], coloring_coords[0][2]),
-                 (coloring_coords[1][0], coloring_coords[1][1] - 1, coloring_coords[1][2]),
-                 (coloring_coords[1][0], 0, coloring_coords[1][2])),
+        clone((coloring_coords[0][0], coloring_coords[0][1], coloring_coords[0][2]),
+              (coloring_coords[1][0], coloring_coords[1][1] - 1, coloring_coords[1][2]),
+              (coloring_coords[1][0], 0, coloring_coords[1][2])),
 
-        mc.tag(e().tag('colorings_base_home')).remove('colorings_home'),
+        tag(e().tag('colorings_base_home')).remove('colorings_home'),
         colorings(True, Color('Plain', 0x0)),
-        mc.setblock(r(-7, -1, 3), 'redstone_torch'),
-        mc.setblock(r(-7, -1, 3), 'air'),
-        mc.kill(e().type('item').distance((None, 20))),
+        setblock(r(-7, -1, 3), 'redstone_torch'),
+        setblock(r(-7, -1, 3), 'air'),
+        kill(e().type('item').distance((None, 20))),
     )
-    room.functions['colorings_home'].add(mc.tag(e().tag('colorings_home')).add('colorings_base_home'))
+    room.functions['colorings_home'].add(tag(e().tag('colorings_home')).add('colorings_base_home'))
     room.function('colorings_enter').add(
-        mc.execute().as_(e().tag('colorings_names')).run().data().merge(s(), {'CustomNameVisible': True}))
+        execute().as_(e().tag('colorings_names')).run(data().merge(s(), {'CustomNameVisible': True})))
     room.function('colorings_exit').add(
-        mc.execute().as_(e().tag('colorings_names')).run().data().merge(s(), {'CustomNameVisible': False}))
-    room.function('colored_beam_enter').add(mc.setblock(r(0, 1, 0), 'iron_block'))
-    room.function('colored_beam_exit').add(mc.setblock(r(0, 1, 0), 'white_concrete'))
+        execute().as_(e().tag('colorings_names')).run(data().merge(s(), {'CustomNameVisible': False})))
+    room.function('colored_beam_enter').add(setblock(r(0, 1, 0), 'iron_block'))
+    room.function('colored_beam_exit').add(setblock(r(0, 1, 0), 'white_concrete'))
 
 
 # Expansion is complex.
@@ -745,140 +745,137 @@ def color_functions(room):
 # block expanded as it changes.
 def expansion_functions(room):
     room.function('toggle_expand', home=False).add(
-        mc.execute().positioned(r(0, -2, -1)).run().function('restworld:blocks/toggle_expand_at'),
-        mc.execute().positioned(r(0, -2, 1)).run().function('restworld:blocks/toggle_expand_at'))
+        execute().positioned(r(0, -2, -1)).run(function('restworld:blocks/toggle_expand_at')),
+        execute().positioned(r(0, -2, 1)).run(function('restworld:blocks/toggle_expand_at')))
     room.function('toggle_expand_at', home=False).add(
         # There are two possible cases: Either this homer is already
         # expanding or it is not.  We need to swap that.
 
         # If it's an expander, add a temporary 'to be stopped' tag to it
-        mc.execute().as_(e().tag('expander').distance((None, 1))).run().tag(s()).add('stop_expanding'),
-        # If it's not an mc.expander, tag it as one
-        mc.execute().as_(e().tag('!expander', '!no_expansion').distance((None, 1))).run().tag(s()).add(
-            'expander'),
-        # If it has the 'to be stopped' tag, remove the mc.expander tag
-        mc.execute().as_(e().tag('stop_expanding').distance((None, 1))).run().tag(s()).remove('expander'),
+        execute().as_(e().tag('expander').distance((None, 1))).run(tag(s()).add('stop_expanding')),
+        # If it's not an expander, tag it as one
+        execute().as_(e().tag('!expander', '!no_expansion').distance((None, 1))).run(tag(s()).add('expander')),
+        # If it has the 'to be stopped' tag, remove the expander tag
+        execute().as_(e().tag('stop_expanding').distance((None, 1))).run(tag(s()).remove('expander')),
         # ... and then remove the 'to be stopped' tag
-        mc.execute().as_(e().tag('stop_expanding').distance((None, 1))).run().tag(s()).remove('stop_expanding'),
+        execute().as_(e().tag('stop_expanding').distance((None, 1))).run(tag(s()).remove('stop_expanding')),
 
         # Now it has the right tagging, do an immediate().action on it
-        mc.execute().at(e().tag('expander').distance((None, 1))).run().function('restworld:blocks/expander'),
-        mc.execute().at(e().tag('!expander', '!no_expansion').distance((None, 1))).run().function(
-            'restworld:blocks/contracter'),
+        execute().at(e().tag('expander').distance((None, 1))).run(function('restworld:blocks/expander')),
+        execute().at(e().tag('!expander', '!no_expansion').distance((None, 1))).run(
+            function('restworld:blocks/contracter')),
 
-        # And, as a cleanup, if it never will be an mc.expander, say 'sorry'
-        mc.execute().at(e().tag('no_expansion').distance((None, 1))).run().say('Sorry, cannot expand this.'),
-        mc.execute().at(e().tag('no_expansion', 'fire_home').distance((None, 1))).run().say(
-            'Sorry, cannot expand this.'),
+        # And, as a cleanup, if it never will be an expander, say 'sorry'
+        execute().at(e().tag('no_expansion').distance((None, 1))).run(say('Sorry, cannot expand this.')),
+        execute().at(e().tag('no_expansion', 'fire_home').distance((None, 1))).run(say('Sorry, cannot expand this.')),
     )
     room.function('expander').add(
-        mc.execute().if_().entity(e().tag('fire_home').distance((None, 1))).run().function(
-            'restworld:blocks/expand_fire'),
-        mc.execute().if_().entity(e().tag('dripstone_home').distance((None, 1))).run().function(
-            'restworld:blocks/expand_dripstone'),
-        mc.execute().unless().entity(e().tag('fire_home').distance((None, 1))).unless().entity(
-            e().tag('dripstone_home').distance((None, 1))).run().function('restworld:blocks/expand_generic')
+        execute().if_().entity(e().tag('fire_home').distance((None, 1))).run(function('restworld:blocks/expand_fire')),
+        execute().if_().entity(e().tag('dripstone_home').distance((None, 1))).run(
+            function('restworld:blocks/expand_dripstone')),
+        execute().unless().entity(e().tag('fire_home').distance((None, 1))).unless().entity(
+            e().tag('dripstone_home').distance((None, 1))).run(function('restworld:blocks/expand_generic'))
     )
     room.function('expand_all', home=False).add(
-        mc.execute().as_(e().tag('blocks_home', '!no_expansion', '!expander')).run().execute().at(
-            s()).run().function('restworld:blocks/toggle_expand_at'))
+        execute().as_(e().tag('blocks_home', '!no_expansion', '!expander')).run(
+            execute().at(s()).run(function('restworld:blocks/toggle_expand_at'))))
     room.function('expand', main_clock).add(
-        mc.execute().at(e().tag('expander')).run().function('restworld:blocks/expander'))
+        execute().at(e().tag('expander')).run(function('restworld:blocks/expander')))
     room.function('expand_dripstone', home=False).add(
         # Clone the original stack to either side to form a line, including anything on top of the block
-        mc.clone(r(0, 12, 0), r(0, 3, 0), r(-1, 3, 0)),
-        mc.clone(r(0, 12, 0), r(0, 3, 0), r(1, 3, 0)),
+        clone(r(0, 12, 0), r(0, 3, 0), r(-1, 3, 0)),
+        clone(r(0, 12, 0), r(0, 3, 0), r(1, 3, 0)),
 
         # Clone the line to either side to get a 3x3 level
-        mc.clone(r(1, 12, 0), r(-1, 3, 0), r(-1, 3, -1)),
-        mc.clone(r(1, 12, 0), r(-1, 3, 0), r(-1, 3, 1)),
+        clone(r(1, 12, 0), r(-1, 3, 0), r(-1, 3, -1)),
+        clone(r(1, 12, 0), r(-1, 3, 0), r(-1, 3, 1)),
     )
     fire_score = room.score('fire')
     room.function('expand_fire', home=False).add(
-        mc.execute().unless().score(fire_score).matches(1).run().fill(r(-2, 4, 1), r(-2, 4, -1), 'air'),
-        mc.execute().unless().score(fire_score).matches(1).run().fill(r(2, 4, 1), r(2, 4, -1), 'air'),
-        mc.execute().unless().score(fire_score).matches(1).run().fill(r(1, 4, -2), r(-1, 4, -2), 'air'),
-        mc.execute().unless().score(fire_score).matches(1).run().fill(r(1, 4, 2), r(-1, 4, 2), 'air'),
-        mc.clone(r(0, 5, 0), r(0, 3, 0), r(1, 3, 0)),
-        mc.clone(r(0, 5, 0), r(0, 3, 0), r(-1, 3, 0)),
-        mc.clone(r(1, 5, 0), r(-1, 3, 0), r(-1, 3, 1)),
-        mc.clone(r(1, 5, 0), r(-1, 3, 0), r(-1, 3, -1)),
-        mc.execute().if_().score(fire_score).matches(1).run().fill(r(-2, 4, 1), r(-2, 4, -1), 'fire[west=true]'),
-        mc.execute().if_().score(fire_score).matches(1).run().fill(r(2, 4, 1), r(2, 4, -1), 'fire[east=true]'),
-        mc.execute().if_().score(fire_score).matches(1).run().fill(r(1, 4, -2), r(-1, 4, -2), 'fire[north=true]'),
-        mc.execute().if_().score(fire_score).matches(1).run().fill(r(1, 4, 2), r(-1, 4, 2), 'fire[south=true]'),
+        execute().unless().score(fire_score).matches(1).run(fill(r(-2, 4, 1), r(-2, 4, -1), 'air')),
+        execute().unless().score(fire_score).matches(1).run(fill(r(2, 4, 1), r(2, 4, -1), 'air')),
+        execute().unless().score(fire_score).matches(1).run(fill(r(1, 4, -2), r(-1, 4, -2), 'air')),
+        execute().unless().score(fire_score).matches(1).run(fill(r(1, 4, 2), r(-1, 4, 2), 'air')),
+        clone(r(0, 5, 0), r(0, 3, 0), r(1, 3, 0)),
+        clone(r(0, 5, 0), r(0, 3, 0), r(-1, 3, 0)),
+        clone(r(1, 5, 0), r(-1, 3, 0), r(-1, 3, 1)),
+        clone(r(1, 5, 0), r(-1, 3, 0), r(-1, 3, -1)),
+        execute().if_().score(fire_score).matches(1).run(fill(r(-2, 4, 1), r(-2, 4, -1), 'fire[west=true]')),
+        execute().if_().score(fire_score).matches(1).run(fill(r(2, 4, 1), r(2, 4, -1), 'fire[east=true]')),
+        execute().if_().score(fire_score).matches(1).run(fill(r(1, 4, -2), r(-1, 4, -2), 'fire[north=true]')),
+        execute().if_().score(fire_score).matches(1).run(fill(r(1, 4, 2), r(-1, 4, 2), 'fire[south=true]')),
     )
     room.function('expand_generic', home=False).add(
         # Sand blocks will fall if they aren't supported, so we place barriers under them
-        mc.execute().if_().block(r(0, 3, 0), '#restworld:sand').run().fill(r(-1, 2, -1), r(1, 2, 1), 'barrier').replace(
-            'air'),
+        execute().if_().block(r(0, 3, 0), '#restworld:sand').run(
+            fill(r(-1, 2, -1), r(1, 2, 1), 'barrier').replace('air')),
 
         # We want to clone up the snow topper, if_().it exists. If it doesn't, we need that layer
-        # mc.to be cleared (it might have something from a previous expansion). And snow is the
-        # mc.only thing that is normally placed on that level.
-        mc.execute().unless().block(r(0, 4, 0), 'snow').run().fill(r(-1, 4, -1), r(1, 4, 1), 'air'),
+        # to be cleared (it might have something from a previous expansion). And snow is the
+        # only thing that is normally placed on that level.
+        execute().unless().block(r(0, 4, 0), 'snow').run(fill(r(-1, 4, -1), r(1, 4, 1), 'air')),
 
         # Clone the original block to either side to form a line, including anything on top of the block
-        mc.clone(r(0, 4, 0), r(0, 3, 0), r(-1, 3, 0)),
-        mc.clone(r(0, 4, 0), r(0, 3, 0), r(1, 3, 0)),
+        clone(r(0, 4, 0), r(0, 3, 0), r(-1, 3, 0)),
+        clone(r(0, 4, 0), r(0, 3, 0), r(1, 3, 0)),
 
         # Clone the line to either side to get a 3x3 level
-        mc.clone(r(1, 4, 0), r(-1, 3, 0), r(-1, 3, -1)),
-        mc.clone(r(1, 4, 0), r(-1, 3, 0), r(-1, 3, 1)),
+        clone(r(1, 4, 0), r(-1, 3, 0), r(-1, 3, -1)),
+        clone(r(1, 4, 0), r(-1, 3, 0), r(-1, 3, 1)),
 
         # Clone the fill bottom level to the top
-        mc.clone(r(1, 4, 1), r(-1, 3, -1), r(-1, 5, -1)),
+        clone(r(1, 4, 1), r(-1, 3, -1), r(-1, 5, -1)),
 
         # Soil needs the middle level filled with dirt
-        mc.execute().if_().block(r(0, 5, 0), '#restworld:soil').run().fill(r(-1, 3, -1), r(1, 4, 1), 'dirt'),
+        execute().if_().block(r(0, 5, 0), '#restworld:soil').run(fill(r(-1, 3, -1), r(1, 4, 1), 'dirt')),
 
         # Otherwise fill the middle level with the top level
-        mc.execute().unless().block(r(0, 5, 0), '#restworld:soil').run().clone(r(1, 5, 1), r(-1, 5, -1), r(-1, 4, -1)),
+        execute().unless().block(r(0, 5, 0), '#restworld:soil').run(clone(r(1, 5, 1), r(-1, 5, -1), r(-1, 4, -1))),
     )
 
     room.function('contracter').add(
-        mc.execute().if_().entity(e().tag('fire_home').distance((None, 1))).run().function(
-            'restworld:blocks/contract_fire'),
-        mc.execute().if_().entity(e().tag('dripstone_home').distance((None, 1))).run().function(
-            'restworld:blocks/contract_dripstone'),
-        mc.execute().unless().entity(e().tag('fire_home').distance((None, 1))).unless().entity(
-            e().tag('dripstone_home').distance((None, 1))).run().function('restworld:blocks/contract_generic'),
+        execute().if_().entity(e().tag('fire_home').distance((None, 1))).run(
+            function('restworld:blocks/contract_fire')),
+        execute().if_().entity(e().tag('dripstone_home').distance((None, 1))).run(
+            function('restworld:blocks/contract_dripstone')),
+        execute().unless().entity(e().tag('fire_home').distance((None, 1))).unless().entity(
+            e().tag('dripstone_home').distance((None, 1))).run(function('restworld:blocks/contract_generic')),
     )
     room.function('contract_all', home=False).add(
-        mc.execute().as_(e().tag('blocks_home', '!no_expansion', 'expander')).run().execute().at(
-            s()).run().function('restworld:blocks/toggle_expand_at'))
+        execute().as_(e().tag('blocks_home', '!no_expansion', 'expander')).run(
+            execute().at(s()).run(function('restworld:blocks/toggle_expand_at'))))
     room.function('contract_dripstone').add(
         # Erase the front and back lines
-        mc.fill(r(1, 12, 1), r(-1, 3, 1), 'air'),
-        mc.fill(r(1, 12, -1), r(-1, 3, -1), 'air'),
+        fill(r(1, 12, 1), r(-1, 3, 1), 'air'),
+        fill(r(1, 12, -1), r(-1, 3, -1), 'air'),
 
         # Erase either side
-        mc.fill(r(1, 12, 0), r(1, 3, 0), 'air'),
-        mc.fill(r(-1, 12, 0), r(-1, 3, 0), 'air'),
+        fill(r(1, 12, 0), r(1, 3, 0), 'air'),
+        fill(r(-1, 12, 0), r(-1, 3, 0), 'air'),
     )
     room.function('contract_fire').add(
-        mc.fill(r(1, 5, 1), r(-1, 3, -1), 'air'),
-        mc.function('restworld:blocks/fire_cur'))
+        fill(r(1, 5, 1), r(-1, 3, -1), 'air'),
+        function('restworld:blocks/fire_cur'))
     room.function('contract_generic').add(
-        mc.clone(r(0, 5, 0), r(0, 6, 0), r(0, -10, 0)),
-        mc.fill(r(-1, 3, -1), r(1, 6, 1), 'air'),
-        mc.clone(r(0, -9, 0), r(0, -10, 0), r(0, 3, 0)).replace(MOVE),
-        mc.setblock(r(0, 2, 0), 'stone'),
-        mc.fill(r(-1, 2, -1), r(1, 2, 1), 'air').replace('barrier'),
-        mc.setblock(r(0, 2, 0), 'barrier')
+        clone(r(0, 5, 0), r(0, 6, 0), r(0, -10, 0)),
+        fill(r(-1, 3, -1), r(1, 6, 1), 'air'),
+        clone(r(0, -9, 0), r(0, -10, 0), r(0, 3, 0)).replace(MOVE),
+        setblock(r(0, 2, 0), 'stone'),
+        fill(r(-1, 2, -1), r(1, 2, 1), 'air').replace('barrier'),
+        setblock(r(0, 2, 0), 'barrier')
     )
 
     room.home_func('generic').add(
-        mc.kill(e().tag('generic_home').distance((None, 2))),
-        mc.summon('armor_stand', r(0, 0.5, 0),
-                  {'Tags': ['generic_home', 'homer', 'blocks_home'], 'NoGravity': True, 'Small': True}),
+        kill(e().tag('generic_home').distance((None, 2))),
+        summon('armor_stand', r(0, 0.5, 0),
+               {'Tags': ['generic_home', 'homer', 'blocks_home'], 'NoGravity': True, 'Small': True}),
     )
     # generic_home is used for entirely static blocks. This is used for blocks that are changed, but
     # by a different command block than the one under it. These want to be expanded as they change,
     room.home_func('just_expand').add(
-        mc.kill(e().tag('just_expand_home').distance((None, 2))),
-        mc.summon('armor_stand', r(0, 0.5, 0),
-                  {'Tags': ['just_expand_home', 'homer', 'blocks_home'], 'NoGravity': True, 'Small': True}))
+        kill(e().tag('just_expand_home').distance((None, 2))),
+        summon('armor_stand', r(0, 0.5, 0),
+               {'Tags': ['just_expand_home', 'homer', 'blocks_home'], 'NoGravity': True, 'Small': True}))
 
 
 def stepable_functions(room):
@@ -889,7 +886,7 @@ def stepable_functions(room):
         yield volume.replace_slabs(slabs[i], '#restworld:stepable_slabs')
         yield volume.replace_stairs(stairs[i], '#restworld:stepable_stairs')
         sign_text = Sign.lines_nbt(Block(step.elem).full_text)
-        yield mc.data().merge(r(1, 2, -1), sign_text)
+        yield data().merge(r(1, 2, -1), sign_text)
 
     blocks = (
         'Stone', 'Cobblestone', 'Mossy|Cobblestone',

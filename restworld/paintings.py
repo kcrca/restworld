@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from pyker.base import NORTH, r
-from pyker.commands import Block, e, mc
+from pyker.commands import Block, e, fill, kill, summon
 from pyker.simpler import WallSign
 from restworld.rooms import Room
 from restworld.world import restworld
@@ -16,12 +16,12 @@ def room():
         px += sx
         pz += sz
         dir = ('south', 'west', 'north', 'east')[facing]
-        yield mc.summon('painting', r(x, 3, z), {'variant': thing.id, 'facing': facing, 'Tags': ['painting']})
+        yield summon('painting', r(x, 3, z), {'variant': thing.id, 'facing': facing, 'Tags': ['painting']})
         yield WallSign((None, thing.name, note)).place(r(x + px, 2 + sy, z + pz), dir)
 
     room.function('all_paintings_init').add(
-        mc.kill(e().tag('painting')),
-        mc.fill(r(-2, 2, 0), r(16, 6, 22), 'air').replace('oak_wall_sign'),
+        kill(e().tag('painting')),
+        fill(r(-2, 2, 0), r(16, 6, 22), 'air').replace('oak_wall_sign'),
 
         painting('Burning Skull', 0, 0, 0, sx=-1),
         painting('Pointer', 0, 11, 0, sx=4, sy=1),

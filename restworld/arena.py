@@ -3,9 +3,9 @@ from __future__ import annotations
 import sys
 
 from pyker.base import EAST, r
-from pyker.commands import GT, RANDOM, Score, a, e, mc
+from pyker.commands import GT, RANDOM, Score, a, data, e, execute, fill, function, kill, setblock, tag
 from pyker.function import Loop
-from pyker.simpler import WallSign
+from pyker.simpler import Volume, WallSign
 from restworld.rooms import Room, Thing, label
 from restworld.world import kill_em, main_clock, marker_tmpl, restworld
 
@@ -112,8 +112,8 @@ def room():
                 text, z = ('<--', max_z + 1) if which_dir == -1 else ('-->', min_z - 1)
                 yield WallSign((None, text), (
                     step.loop.score.set(to),
-                    mc.execute().at(e().tag('controls_home')).run().function(
-                        f'restworld:arena/{step.loop.score.target}_cur')
+                    execute().at(e().tag('controls_home')).run(
+                        function(f'restworld:arena/{step.loop.score.target}_cur'))
                 )).glowing(True).place(r(x, 2, z), EAST)
             for s in range(0, stride_length):
                 args = step.elem[s] + (None,) * (4 - len(step.elem[s]))
@@ -137,18 +137,18 @@ def room():
                     incr_cmd = f'execute if score {which}_count arena < arena_count arena at @e[tag={which}_home,sort=random,limit=1] run {incr}'
                     return incr_cmd
 
-                data_change = mc.execute().at(monitor_home).run().data()
+                data_change = execute().at(monitor_home)
                 sign_commands = (
                     start_battle_type.set(battle_type),
-                    data_change.merge(r(3, 0, 0), {'Command': incr_cmd('hunter', hunter)}),
-                    data_change.merge(r(2, 0, 0), {'Command': incr_cmd('victim', victim)}),
-                    mc.function('restworld:arena/start_battle')
+                    data_change.run(data().merge(r(3, 0, 0), {'Command': incr_cmd('hunter', hunter)})),
+                    data_change.run(data().merge(r(2, 0, 0), {'Command': incr_cmd('victim', victim)})),
+                    function('restworld:arena/start_battle')
                 )
                 sign = WallSign((None, hunter, 'vs.', victim), sign_commands)
                 yield sign.place(r(-2, y, z), EAST)
 
                 run_type = Score('arena_run_type', 'arena')
-                yield mc.execute().unless().score(run_type).matches((0, None)).run(run_type.set(0))
+                yield execute().unless().score(run_type).matches((0, None)).run(run_type.set(0))
 
         chunks = []
         for i in range(0, len(battles), stride_length):
@@ -160,13 +160,13 @@ def room():
         max_z = +end
         x = -2
 
-        loop.add(mc.fill(r(x, 2, min_z - 1), r(x, 2 + num_rows - 1, max_z + 1), 'air'))
+        loop.add(fill(r(x, 2, min_z - 1), r(x, 2 + num_rows - 1, max_z + 1), 'air'))
         loop.loop(arena_run_loop, chunks)
         return loop
 
     def random_stand(actor: str):
         var = actor + '_home'
-        yield mc.kill(e().tag(var))
+        yield kill(e().tag(var))
         stand = marker_tmpl.clone().merge_nbt({'Tags': [var, 'home', 'arena_home']})
         for x in range(-1, 2):
             for z in range(-1, 2):
@@ -180,24 +180,24 @@ def room():
         close = Score(actor + '_close', 'arena')
         athome = Score(actor + '_athome', 'arena')
         return (
-            mc.execute().unless().entity(e().tag(actor)).run(place_battlers.set(1)),
+            execute().unless().entity(e().tag(actor)).run(place_battlers.set(1)),
             count.set(0),
-            mc.execute().as_(e().tag(actor)).run(count.add(1)),
+            execute().as_(e().tag(actor)).run(count.add(1)),
             close.set(0),
-            mc.execute().at(
+            execute().at(
                 e().tag(other + '_home')).positioned(r(-2, 0, -2)).as_(
                 e().tag(actor).volume((4, 5, 4))).run(close.add(1)),
             athome.set(0),
-            mc.execute().at(
+            execute().at(
                 e().tag(actor + '_home')).positioned(r(-2, 0, -2)).as_(
                 e().tag(actor).volume((4, 5, 4))).run(athome.add(1)),
         )
 
     def toggle_peace(step):
         return (
-            mc.execute().at(e().tag('monitor_home')).run().fill(
-                r(2, -1, 0), r(3, -1, 0), 'redstone_torch' if step.elem else 'air'),
-            mc.setblock(r(0, 1, 0), f'{"red" if step.elem else "lime"}_concrete'),
+            execute().at(e().tag('monitor_home')).run(fill(
+                r(2, -1, 0), r(3, -1, 0), 'redstone_torch' if step.elem else 'air')),
+            setblock(r(0, 1, 0), f'{"red" if step.elem else "lime"}_concrete'),
         )
 
     room = Room('arena', restworld)
@@ -205,28 +205,28 @@ def room():
     arena_count = Score('arena_count', 'arena')
 
     arena_count_finish = room.function('arena_count_finish').add(
-        mc.execute().if_().score(arena_count).matches((None, COUNT_MIN)).run(arena_count.set(COUNT_MIN)),
-        mc.execute().if_().score(arena_count).matches((COUNT_MAX, None)).run(arena_count.set(COUNT_MAX)),
-        mc.function('restworld:arena/arena_count_cur'),
+        execute().if_().score(arena_count).matches((None, COUNT_MIN)).run(arena_count.set(COUNT_MIN)),
+        execute().if_().score(arena_count).matches((COUNT_MAX, None)).run(arena_count.set(COUNT_MAX)),
+        function('restworld:arena/arena_count_cur'),
     )
-    arena_count_cur = mc.function(arena_count_finish.full_name)
+    arena_count_cur = function(arena_count_finish.full_name)
     room.function('arena_count_decr', home=False).add(arena_count.remove(1), arena_count_cur)
     room.function('arena_count_incr', home=False).add(arena_count.add(1), arena_count_cur)
     room.function('arena_count_init').add(arena_count_cur)
     room.loop('arena_count', main_clock).loop(
-        lambda step: mc.execute().at(e().tag('controls_home')).run(
-        ).data().merge(r(2, 4, 0), {'Text2': f'{step.elem:d} vs. {step.elem:d}'}), range(0, COUNT_MAX + 1))
+        lambda step: execute().at(e().tag('controls_home')).run(
+            data().merge(r(2, 4, 0), {'Text2': f'{step.elem:d} vs. {step.elem:d}'})), range(0, COUNT_MAX + 1))
 
-    room.function('arena_run_init').add(mc.function('restworld:arena/arena_run_cur'))
+    room.function('arena_run_init').add(function('restworld:arena/arena_run_cur'))
     # This is NOT intended to be run on the clock. It is only called '_main' because that gives us a
     # '_cur' function, which is useful when paging through the signs. Do not create the _home armor stand.
     arena_run_loop = arena_run_main(room.loop('arena_run', main_clock, home=False))
 
     room.function('controls_init').add(
         arena_run_loop.score.set(0),
-        mc.function('restworld:arena/arena_run_cur'),
+        function('restworld:arena/arena_run_cur'),
         label(r(1, 3, 0), 'Go Home'),
-        mc.tag(e().tag('controls_home')).add('controls_action_home')
+        tag(e().tag('controls_home')).add('controls_action_home')
     )
 
     room.function('hunter_home').add(random_stand('hunter'))
@@ -234,26 +234,26 @@ def room():
 
     # monitor_init function looks out-of-date and unused
     room.function('monitor').add(monitor('hunter'), monitor('victim'),
-                                 mc.kill(e().type('item').distance((None, 50))),
-                                 mc.kill(e().type('experience_orb').distance((None, 50)))),
+                                 kill(e().type('item').distance((None, 50))),
+                                 kill(e().type('experience_orb').distance((None, 50)))),
     room.function('monitor_cleanup', home=False).add(
-        mc.execute().if_().score(room.score(f'{who}_count')).is_(GT, arena_count).run().kill(
-            e().tag(who).sort(RANDOM).limit(1).distance((None, 100)))
+        execute().if_().score(room.score(f'{who}_count')).is_(GT, arena_count).run(kill(
+            e().tag(who).sort(RANDOM).limit(1).distance((None, 100))))
         for who in ('hunter', 'victim'))
 
     # Types: 0-normal, 1-water, 2-undead
-    fill_arena_coords = r(-12, 4, -12), r(12, 2, 12)
-    roof_coords = (r(-20), 250, r(-20)), (r(20), 250, r(20))
+    fill_arena = Volume(r(-12, 4, -12), r(12, 2, 12))
+    fill_sky = Volume((r(-20), 250, r(-20)), (r(20), 250, r(20)))
     room.function('start_battle').add(
-        mc.execute().unless().score(start_battle_type).matches((0, None)).run(start_battle_type.set(0)),
-        mc.execute().if_().score(start_battle_type).matches(0).at(monitor_home).run().fill(*fill_arena_coords, 'air'),
-        mc.execute().if_().score(start_battle_type).matches(2).at(monitor_home).run().fill(*fill_arena_coords, 'air'),
-        mc.execute().if_().score(start_battle_type).matches(1).at(monitor_home).run().fill(*fill_arena_coords, 'water'),
-        mc.execute().if_().score(start_battle_type).matches((0, 1)).at(monitor_home).run().fill(*roof_coords, 'air'),
-        mc.execute().if_().score(start_battle_type).matches(2).at(monitor_home).run().fill(*roof_coords, 'glowstone'),
-        mc.tag(a()).add('arena_safe'),
-        mc.tag(e().type('armor_stand')).add('arena_safe'),
+        execute().unless().score(start_battle_type).matches((0, None)).run(start_battle_type.set(0)),
+        execute().if_().score(start_battle_type).matches(0).at(monitor_home).run(fill_arena.fill('air')),
+        execute().if_().score(start_battle_type).matches(2).at(monitor_home).run(fill_arena.fill('air')),
+        execute().if_().score(start_battle_type).matches(1).at(monitor_home).run(fill_arena.fill('water')),
+        execute().if_().score(start_battle_type).matches((0, 1)).at(monitor_home).run(fill_sky.fill('air')),
+        execute().if_().score(start_battle_type).matches(2).at(monitor_home).run(fill_sky.fill('glowstone')),
+        tag(a()).add('arena_safe'),
+        tag(e().type('armor_stand')).add('arena_safe'),
         kill_em(e().not_tag('arena_safe').distance((None, 100))),
     )
 
-    room.loop('toggle_peace').loop(toggle_peace, (True, False)).add(mc.function('restworld:arena/start_battle'))
+    room.loop('toggle_peace').loop(toggle_peace, (True, False)).add(function('restworld:arena/start_battle'))

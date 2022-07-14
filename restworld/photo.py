@@ -5,7 +5,7 @@ import os
 import re
 
 from pyker.base import EAST, NORTH, OVERWORLD, r, to_id
-from pyker.commands import Block, Entity, e, mc, p
+from pyker.commands import Block, Entity, e, execute, fill, kill, p, setblock, summon, tp
 from pyker.info import colors, corals, stems, woods
 from restworld.rooms import MobPlacer, Room, label
 from restworld.world import restworld
@@ -130,7 +130,7 @@ def room():
     def all_blocks():
         coral_stage = 0
         line_length = 23
-        mc.fill(r(0, -1, 0), r(line_length, -20, 2), 'air')
+        fill(r(0, -1, 0), r(line_length, -20, 2), 'air')
         for i, b in enumerate(get_normal_blocks()):
             block = Block(b)
             x = i % line_length
@@ -145,50 +145,49 @@ def room():
             elif b == 'observer':
                 block.merge_nbt({'facing': NORTH})
 
-            yield mc.setblock(r(x, y, 0), block)
+            yield setblock(r(x, y, 0), block)
             if 'coral' in b and 'dead' not in 'b':
                 if coral_stage == '0':
-                    yield mc.setblock(r(x - 1 if dir == 1 else x + 1, y, 1), 'stone')
+                    yield setblock(r(x - 1 if dir == 1 else x + 1, y, 1), 'stone')
                     coral_stage += 1
-                    yield mc.setblock(r(x, y, 1), 'water')
-                    yield mc.setblock(r(x, y, 2), 'stone')
-                    yield mc.setblock(r(x, y - 1, 1), 'stone')
-                    yield mc.setblock(r(x, y - 2, 1), Block('stone_slab', {'type': 'top'}))
+                    yield setblock(r(x, y, 1), 'water')
+                    yield setblock(r(x, y, 2), 'stone')
+                    yield setblock(r(x, y - 1, 1), 'stone')
+                    yield setblock(r(x, y - 2, 1), Block('stone_slab', {'type': 'top'}))
                 elif coral_stage == '1':
-                    yield mc.setblock(r(x, y, 1), 'stone')
+                    yield setblock(r(x, y, 1), 'stone')
                     coral_stage += 1
 
     room.function('all_blocks').add(all_blocks())
 
     room.function('photo_mobs_init').add(
-        mc.tp(e().tag('photo_mob'), r(0, 15, 0)),
-        mc.kill(e().tag('photo_mob')),
-        mc.kill(e().type('item')),
+        tp(e().tag('photo_mob'), r(0, 15, 0)),
+        kill(e().tag('photo_mob')),
+        kill(e().type('item')),
         (Entity(m.mob, m.nbt).tag('photo_mob').merge_nbt(MobPlacer.base_nbt).summon(r(m.x, m.y, m.z),
                                                                                     {'Rotation': [m.rotation, 0],
                                                                                      'OnGround': True}) for m in mobs))
 
     room.function('photo_example_view').add(
-        mc.execute().in_(OVERWORLD).run().tp(p(), (-1000, 100, 1000)).facing((-1011, 93, 989)),
-        mc.kill(e().type('item'))
+        execute().in_(OVERWORLD).run(tp(p(), (-1000, 100, 1000)).facing((-1011, 93, 989))),
+        kill(e().type('item'))
     )
     room.function('photo_mobs_view').add(
-        mc.tp(p(), (-996.5, 100, 1002.5)).facing((-950.5, 78, 1002.5)),
-        mc.kill(e().type('item')))
+        tp(p(), (-996.5, 100, 1002.5)).facing((-950.5, 78, 1002.5)),
+        kill(e().type('item')))
     room.function('photo_quilt_view').add(
-        mc.tp(p(), e().tag('photo_quilt_view').limit(1)),
-        mc.execute().at(e().tag('photo_quilt_view').limit(1)).run().tp(
-            p(), r(0, 0, -0.5)).facing((-1000, 100, 1016)),
-        mc.kill(e().type('item')))
+        tp(p(), e().tag('photo_quilt_view').limit(1)),
+        execute().at(e().tag('photo_quilt_view').limit(1)).run(tp(p(), r(0, 0, -0.5)).facing((-1000, 100, 1016))),
+        kill(e().type('item')))
 
     room.function('photo_shoot_init').add(
-        mc.kill(e().tag('photo_view')),
-        mc.summon('armor_stand', r(0, 10, -3),
-                  {'Tags': ['photo_view', 'photo_example_view'], 'NoGravity': True, 'Small': True,
-                   'PersistenceRequired': True, 'Invisible': True}),
-        mc.summon('armor_stand', r(0, 10, 2),
-                  {'Tags': ['photo_view', 'photo_quilt_view'], 'NoGravity': True, 'Small': True,
-                   'PersistenceRequired': True, 'Invisible': True}),
+        kill(e().tag('photo_view')),
+        summon('armor_stand', r(0, 10, -3),
+               {'Tags': ['photo_view', 'photo_example_view'], 'NoGravity': True, 'Small': True,
+                'PersistenceRequired': True, 'Invisible': True}),
+        summon('armor_stand', r(0, 10, 2),
+               {'Tags': ['photo_view', 'photo_quilt_view'], 'NoGravity': True, 'Small': True,
+                'PersistenceRequired': True, 'Invisible': True}),
         label(r(-1, 10, -1), 'Reset Example Photo'),
         label(r(1, 10, -1), 'Reset Mob Photo'),
         label(r(0, 10, 0), 'Go Home'),

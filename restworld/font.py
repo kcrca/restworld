@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from pyker.base import EAST, NORTH, SOUTH, WEST, r
-from pyker.commands import Block, JsonText, e, mc, s
+from pyker.base import EAST, SOUTH, WEST, r
+from pyker.commands import Block, JsonText, data, e, execute, function, kill, s, setblock, tag
 from pyker.info import colors, stems, woods
 from pyker.simpler import Book, WallSign
 from restworld.rooms import Room, ensure, label
@@ -41,7 +41,7 @@ def formatting_book():
 def room():
     room = Room('font', restworld, SOUTH, (None, 'Fonts'))
     room.function('check_sign').add(
-        mc.execute().if_().block(r(0, 3, -1), '#minecraft:wall_signs').run().function('restworld:font/copy_sign'))
+        execute().if_().block(r(0, 3, -1), '#minecraft:wall_signs').run(function('restworld:font/copy_sign')))
     room.function('colored_text').add(
         ensure(r(0, 2, 0), Block('lectern', {'facing': WEST, 'has_book': True}),
                nbt=formatting_book().as_item()))
@@ -54,31 +54,31 @@ def room():
 
         for path in tuple('Text%d' % i for i in range(1, 5)):
             copy_sign.add(
-                mc.execute().at(e().tag('font_action_home')).run().data().modify(r(x, y, -1), path).set().from_(
-                    r(0, 2, -1), path))
-        copy_sign.add(mc.data().modify(r(x, y, -1), 'Color').set().from_(r(0, -3, -1), 'Color'))
+                execute().at(e().tag('font_action_home')).run(
+                    data().modify(r(x, y, -1), path).set().from_(r(0, 2, -1), path)))
+        copy_sign.add(data().modify(r(x, y, -1), 'Color').set().from_(r(0, -3, -1), 'Color'))
 
     copy_sign.add(
-        mc.data().modify(r(0, 2, -1), 'Color').set().from_(r(0, -3, -1), 'Color'),
-        mc.data().modify(e().tag('font').tag('nameable').limit(1), 'CustomName').set().from_(r(0, 2, -1), 'Text1'),
-        mc.data().modify(e().tag('font').tag('nameable').limit(1), 'CustomNameVisible').set().value(True)
+        data().modify(r(0, 2, -1), 'Color').set().from_(r(0, -3, -1), 'Color'),
+        data().modify(e().tag('font').tag('nameable').limit(1), 'CustomName').set().from_(r(0, 2, -1), 'Text1'),
+        data().modify(e().tag('font').tag('nameable').limit(1), 'CustomNameVisible').set().value(True)
     )
 
     room.function('font_run_enter').add(
-        mc.setblock(r(0, -2, -2), 'redstone_torch'),
-        mc.setblock(r(-3, -2, 0), 'redstone_torch'),
-        mc.setblock(r(3, -2, 0), 'redstone_torch'),
+        setblock(r(0, -2, -2), 'redstone_torch'),
+        setblock(r(-3, -2, 0), 'redstone_torch'),
+        setblock(r(3, -2, 0), 'redstone_torch'),
     )
     room.function('font_run_exit').add(
-        mc.setblock(r(0, -2, -2), 'air'),
-        mc.setblock(r(-3, -2, 0), 'air'),
-        mc.setblock(r(3, -2, 0), 'air'),
+        setblock(r(0, -2, -2), 'air'),
+        setblock(r(-3, -2, 0), 'air'),
+        setblock(r(3, -2, 0), 'air'),
     )
     font_run_init = room.function('font_run_init').add(
-        mc.tag(e().tag('font_run_home')).add('font_action_home'),
+        tag(e().tag('font_run_home')).add('font_action_home'),
 
         WallSign(('Lorem ipsum', 'dolor sit amet,', 'consectetur', 'adipiscing elit.')).place(r(0, 2, -3), SOUTH),
-        mc.execute().positioned(r(0, 0, -2)).run().function('restworld:font/copy_sign'),
+        execute().positioned(r(0, 0, -2)).run(function('restworld:font/copy_sign')),
 
         WallSign((None, 'Color Holder')).place(r(0, -3, -3), SOUTH),
 
@@ -93,26 +93,26 @@ def room():
         y = 5 - i % 4
         font_run_init.add(
             WallSign((None, 'Use', c.name, 'Text'),
-                     (mc.execute().at(e().tag('font_action_home')).run(
-                     ).data().modify(r(0, -3, -3), 'Color').set().value(c.id),), nbt={'Color': c.id}).place(r(x, y, -3),
-                                                                                                            SOUTH))
+                     (execute().at(e().tag('font_action_home')).run(
+                         data().modify(r(0, -3, -3), 'Color').set().value(c.id)),),
+                     nbt={'Color': c.id}).place(r(x, y, -3), SOUTH))
 
     maybe_glow = room.function('maybe_glow')
     font_glow = room.score('font_glow')
     for x in range(0, 30):
         for y in range(0, 4):
             maybe_glow.add(
-                mc.execute().if_().score(font_glow).matches(0).at(e().tag('font_run_home')).run().data().merge(
-                    r(x - 3, y + 2, -3), {'GlowingText': False}),
-                mc.execute().if_().score(font_glow).matches(1).at(e().tag('font_run_home')).run().data().merge(
-                    r(x - 3, y + 2, -3), {'GlowingText': True})
+                execute().if_().score(font_glow).matches(0).at(e().tag('font_run_home')).run(
+                    data().merge(r(x - 3, y + 2, -3), {'GlowingText': False})),
+                execute().if_().score(font_glow).matches(1).at(e().tag('font_run_home')).run(
+                    data().merge(r(x - 3, y + 2, -3), {'GlowingText': True}))
             )
 
     room.function('nameable_init').add(
-        mc.kill(e().tag('font_mobs')),
+        kill(e().tag('font_mobs')),
         room.mob_placer(r(0, 2, 0), SOUTH, adults=True).summon('rabbit', tags=('nameable',)),
-        mc.execute().as_(e().tag('font').tag('nameable').limit(1)).run().data().modify(
-            s(), 'CustomNameVisible').set().value(True),
+        execute().as_(e().tag('font').tag('nameable').limit(1)).run(
+            data().modify(s(), 'CustomNameVisible').set().value(True)),
     )
 
     # This is easiest to do with basic string manipulation

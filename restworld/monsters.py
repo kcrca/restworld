@@ -3,7 +3,9 @@ from __future__ import annotations
 import copy
 
 from pyker.base import EAST, NORTH, WEST, r
-from pyker.commands import Entity, e, good_facing, mc, s
+from pyker.commands import Entity, e, s
+from pyker.commands import data, execute, function, tag
+from pyker.commands import good_facing
 from pyker.simpler import Item
 from restworld.rooms import MobPlacer, Room, label
 from restworld.world import kill_em, main_clock, restworld
@@ -20,14 +22,14 @@ def room():
 
     room.function('creeper_init').add(placer(*west_placer, adults=True).summon('creeper'))
     room.loop('creeper', main_clock).loop(
-        lambda step: mc.execute().as_(e().tag('creeper').limit(1)).run().data().merge(
-            s(), {'powered': step.elem}), (True, False))
+        lambda step: execute().as_(e().tag('creeper').limit(1)).run(data().merge(s(), {'powered': step.elem})),
+        (True, False))
 
     slime_placer = copy.deepcopy(west_placer)
     slime_placer[0][1] = r(3)
     room.function('slime_init').add(placer(*slime_placer, adults=True).summon('slime'))
     room.loop('slime', main_clock).loop(
-        lambda step: mc.data().modify(e().tag('slime').limit(1), 'Size').set().value(step.elem),
+        lambda step: data().modify(e().tag('slime').limit(1), 'Size').set().value(step.elem),
         range(0, 3), bounce=True)
 
     illagers = (Entity('Vindicator'), Entity('Evoker'), Entity('Pillager'),
@@ -58,9 +60,7 @@ def room():
     room.function('silverfish_init').add(placer(r(0.2, 2, 0), EAST, adults=True).summon('silverfish'))
 
     east = good_facing(EAST)
-    west = good_facing(WEST)
     east_rot = {'Rotation': east.rotation, 'Facing': east.name}
-    west_rot = {'Rotation': west.rotation, 'Facing': west.name}
 
     def skeleton_horse_loop(step):
         horse = Entity('Skeleton Horse')
@@ -105,7 +105,7 @@ def room():
         kill_em(e().tag('spiders'))
     ).loop(spider_loop, range(0, 2))
     room.function('spiders_init').add(
-        mc.function('restworld:monsters/spiders_cur'),
+        function('restworld:monsters/spiders_cur'),
         label(r(2, 2, -2), 'Jockey'),
         label(r(5, 2, -2), 'Change Height'))
     room.function('witch_init').add(placer(*west_placer, adults=True).summon('witch'))
@@ -114,24 +114,24 @@ def room():
     zombie_jockey = room.score('zombie_jockey')
     room.function('zombie_init').add(
         zombie_jockey.set(0),
-        mc.execute().as_(e().tag('zombie_home')).run().tag(s()).add('zombie_home_selector'),
-        mc.execute().as_(e().tag('zombie_jockey_home')).run().tag(s()).add('zombie_home_selector'),
+        execute().as_(e().tag('zombie_home')).run(tag(s()).add('zombie_home_selector')),
+        execute().as_(e().tag('zombie_jockey_home')).run(tag(s()).add('zombie_home_selector')),
         label(r(3, 2, 0), 'Jockey'))
 
     def zombie_loop(step):
         p = placer(r(0.2, 2, 0), EAST, 0, 1.8, tags=('zombieish',))
-        yield mc.execute().if_().score(zombie_jockey).matches(0).run(p.summon(Entity(step.elem)))
+        yield execute().if_().score(zombie_jockey).matches(0).run(p.summon(Entity(step.elem)))
 
         p = placer(r(0.2, 2, 0), EAST, 0, 2.2, tags=('zombieish',), adults=True)
-        yield mc.execute().if_().score(zombie_jockey).matches(1).run(p.summon(Entity(step.elem)))
+        yield execute().if_().score(zombie_jockey).matches(1).run(p.summon(Entity(step.elem)))
         chicken = Entity('Chicken').passenger(
             Entity(step.elem, {'Tags': ['kid', room.name], 'IsBaby': True, 'Age': -2147483648}).merge_nbt(
                 east_rot).merge_nbt(MobPlacer.base_nbt))
         p = placer(r(2.0, 2, 0), EAST, 0, 2.2, tags=('zombieish',), kids=True)
-        yield mc.execute().if_().score(zombie_jockey).matches(1).run(p.summon(chicken))
+        yield execute().if_().score(zombie_jockey).matches(1).run(p.summon(chicken))
         if step.elem == 'Drowned':
-            yield mc.execute().as_(e().tag('zombieish').tag('!kid')).run().data().merge(s(), {
-                'HandItems': [Item.nbt_for('trident')]})
+            yield execute().as_(e().tag('zombieish').tag('!kid')).run(
+                data().merge(s(), {'HandItems': [Item.nbt_for('trident')]}))
 
     room.loop('zombie', main_clock).add(kill_em(e().tag('zombieish'))).loop(
         zombie_loop, ('Zombie', 'Husk', 'Drowned'))

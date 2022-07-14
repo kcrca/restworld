@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 from pyker.base import SOUTH, d, r
-from pyker.commands import Block, COLORS, Entity, INT, RESULT, WHITE, e, mc, s
+from pyker.commands import Block, COLORS, Entity, INT, RESULT, WHITE, data, e, execute, fill, function, kill, s, \
+    setblock, tag
 from pyker.enums import Pattern
 from pyker.simpler import Shield, WallSign
 from restworld.rooms import Room, label
@@ -101,13 +102,13 @@ def room():
 
     def authored_banners(pattern, x, z, rot):
         return (
-            mc.setblock(r(x, 3, z), pattern[0].merge_state({'rotation': rot})),
-            mc.execute().positioned(r(x, 3, z)).as_(
-                e().tag('banner_pattern_custom').distance((None, 2))).run().data().merge(
-                s(), {'CustomName': pattern[1]}),
-            mc.execute().positioned(r(x, 3, z)).as_(
-                e().tag('banner_pattern_custom_author').distance((None, 2))).run().data().merge(
-                s(), {'CustomName': pattern[2]}),
+            setblock(r(x, 3, z), pattern[0].merge_state({'rotation': rot})),
+            execute().positioned(r(x, 3, z)).as_(
+                e().tag('banner_pattern_custom').distance((None, 2))).run(
+                data().merge(s(), {'CustomName': pattern[1]})),
+            execute().positioned(r(x, 3, z)).as_(
+                e().tag('banner_pattern_custom_author').distance((None, 2))).run(data().merge(
+                s(), {'CustomName': pattern[2]})),
         )
 
     half = int(len(authored_patterns) / 2)
@@ -121,13 +122,13 @@ def room():
     # noinspection PyUnusedLocal
     def render_banner_color(x, xn, z, zn, angle, facing, bx, bz, y_banner, y_shield, pattern, handback=None):
         color = handback
-        return mc.setblock(r(x + bx, y_banner, z + bz), Block(color + '_wall_banner', {'facing': facing},
-                                                              {'Patterns': [{'Color': 9, 'Pattern': pattern}]}))
+        return setblock(r(x + bx, y_banner, z + bz), Block(color + '_wall_banner', {'facing': facing},
+                                                           {'Patterns': [{'Color': 9, 'Pattern': pattern}]}))
 
     # noinspection PyUnusedLocal
     def render_banner_ink(x, xn, z, zn, angle, facing, bx, bz, y_banner, y_shield, pattern, handback=None):
         return (
-            mc.execute().store(RESULT).block(r(x + bx, y_banner, z + bz), 'Patterns[0].Color', INT, 1).run(
+            execute().store(RESULT).block(r(x + bx, y_banner, z + bz), 'Patterns[0].Color', INT, 1).run(
                 banner_ink.get()),
         )
 
@@ -135,68 +136,68 @@ def room():
         return render_banners(render_banner_color, handback=step.elem)
 
     def banner_ink_change():
-        yield mc.execute().as_(stands).at(stands).run(
-        ).execute().store(RESULT).block((d(0, 0, 1)), 'Patterns[0].Color', INT, 1).run(banner_ink.get())
-        yield mc.execute().as_(stands).run(
-        ).execute().store(RESULT).entity(s(), 'HandItems[1].tag.BlockEntityTag.Patterns[0].Color', INT, 1).run(
-            banner_ink.get())
+        yield execute().as_(stands).at(stands).run(
+            execute().store(RESULT).block((d(0, 0, 1)), 'Patterns[0].Color', INT, 1).run(banner_ink.get()))
+        yield execute().as_(stands).run(
+            execute().store(RESULT).entity(s(), 'HandItems[1].tag.BlockEntityTag.Patterns[0].Color', INT, 1).run(
+                banner_ink.get()))
 
     def switch_banners(which):
         return (
-            mc.tag(e().tag('all_banners_home')).remove('banner_color_action_home'),
-            mc.tag(e().tag('all_banners_home')).remove('banner_color_home'),
-            mc.tag(e().tag('all_banners_home')).remove('banner_ink_action_home'),
-            mc.tag(e().tag('all_banners_home')).remove('banner_ink_home'),
-            mc.tag(e().tag('all_banners_home')).add('banner_' + which + '_action_home'),
-            mc.tag(e().tag('all_banners_home')).add('banner_' + which + '_home'),
-            mc.tag(e().tag('all_banners_home')).add('banners_action_home'),
+            tag(e().tag('all_banners_home')).remove('banner_color_action_home'),
+            tag(e().tag('all_banners_home')).remove('banner_color_home'),
+            tag(e().tag('all_banners_home')).remove('banner_ink_action_home'),
+            tag(e().tag('all_banners_home')).remove('banner_ink_home'),
+            tag(e().tag('all_banners_home')).add('banner_' + which + '_action_home'),
+            tag(e().tag('all_banners_home')).add('banner_' + which + '_home'),
+            tag(e().tag('all_banners_home')).add('banners_action_home'),
         )
 
-    banner_color_init = mc.function('restworld:banners/switch_to_color')
+    banner_color_init = function('restworld:banners/switch_to_color')
     room.function('all_banners_init').add(
         banner_color.set(0),
         banner_ink.set(9),
-        mc.kill(stands),
-        mc.fill(r(-2, -2, -2), r(16, 16, 16), 'air').replace('#banners'),
+        kill(stands),
+        fill(r(-2, -2, -2), r(16, 16, 16), 'air').replace('#banners'),
         render_banners(armor_stands),
-        mc.setblock(r(-0.2, 3, 11.8), Block('white_banner', {'rotation': 10}, {
+        setblock(r(-0.2, 3, 11.8), Block('white_banner', {'rotation': 10}, {
             'Patterns': [{'Pattern': 'mr', 'Color': 9}, {'Pattern': 'bs', 'Color': 8}, {'Pattern': 'cs', 'Color': 7},
                          {'Pattern': 'bo', 'Color': 8}, {'Pattern': 'ms', 'Color': 15}, {'Pattern': 'hh', 'Color': 8},
                          {'Pattern': 'mc', 'Color': 8}, {'Pattern': 'bo', 'Color': 15}]})),
-        mc.setblock(r(11.8, 3, 0.2), Block('magenta_banner', {'rotation': 2}, {
+        setblock(r(11.8, 3, 0.2), Block('magenta_banner', {'rotation': 2}, {
             'Patterns': [{'Pattern': 'bt', 'Color': 15}, {'Pattern': 'tt', 'Color': 15}]})),
         custom_banner(0.2, 0.2, 0.1),
         custom_banner(11.8, 11.8, -0.1),
         banner_color_init,
-        mc.function('restworld:banners/banner_color_cur'),
+        function('restworld:banners/banner_color_cur'),
     )
 
     if len(authored_patterns) % 2 != 0:
         die('Must have an even number of custom patterns')
     room.loop('all_banners', main_clock).add(
-        mc.setblock(r(0, 3, 0), 'air'),
-        mc.setblock(r(11, 3, 11), 'air'),
+        setblock(r(0, 3, 0), 'air'),
+        setblock(r(11, 3, 11), 'air'),
     ).loop(render_authored_banners, range(0, half))
 
     room.function('banner_color_init').add(banner_color_init)
     room.loop('banner_color', main_clock).add(
-        mc.fill(r(1, 3, 0), r(11, 5, 0), 'air').replace('#banners'),
-        mc.fill(r(12, 3, 1), r(12, 5, 11), 'air').replace('#banners'),
-        mc.fill(r(1, 3, 12), r(11, 5, 12), 'air').replace('#banners'),
-        mc.fill(r(0, 3, 11), r(0, 5, 1), 'air').replace('#banners'),
+        fill(r(1, 3, 0), r(11, 5, 0), 'air').replace('#banners'),
+        fill(r(12, 3, 1), r(12, 5, 11), 'air').replace('#banners'),
+        fill(r(1, 3, 12), r(11, 5, 12), 'air').replace('#banners'),
+        fill(r(0, 3, 11), r(0, 5, 1), 'air').replace('#banners'),
     ).loop(banner_color_loop, COLORS).add(
-        mc.execute().as_(stands).run(
-        ).execute().store(RESULT).entity(s(), 'HandItems[1].tag.BlockEntityTag.Base', INT, 1).run(
-            banner_color.get()),
-        mc.function('restworld:banners/banner_ink_cur'),
+        execute().as_(stands).run(
+            execute().store(RESULT).entity(s(), 'HandItems[1].tag.BlockEntityTag.Base', INT, 1).run(
+                banner_color.get())),
+        function('restworld:banners/banner_ink_cur'),
     )
 
     banner_controls = room.function('banner_controls').add(
-        mc.function('restworld:banners/banner_controls_remove'),
-        mc.function('restworld:global/clock_off'),
-        WallSign((None, 'Set Banner', 'Color'), (mc.function('restworld:banners/switch_to_color', )),
+        function('restworld:banners/banner_controls_remove'),
+        function('restworld:global/clock_off'),
+        WallSign((None, 'Set Banner', 'Color'), (function('restworld:banners/switch_to_color', )),
                  wood='dark_oak').color(WHITE).place(r(4, 3, 1), SOUTH),
-        WallSign((None, 'Set Banner', 'Ink'), (mc.function('restworld:banners/switch_to_ink', )),
+        WallSign((None, 'Set Banner', 'Ink'), (function('restworld:banners/switch_to_ink', )),
                  wood='dark_oak').color(WHITE).place(r(4, 2, 2), SOUTH),
     )
     for i, c in enumerate(COLORS):
@@ -207,24 +208,24 @@ def room():
         row = int(i / 8)
         y = 3 if row == 0 else 2
         z = 1 if row == 0 else 2
-        if_colors = mc.execute().at(e().tag('banner_color_home'))
-        if_ink = mc.execute().at(e().tag('banner_ink_home'))
+        if_colors = execute().at(e().tag('banner_color_home'))
+        if_ink = execute().at(e().tag('banner_ink_home'))
         banner_controls.add(
             WallSign((None, c), (
                 if_colors.run(banner_color.set(i)),
-                if_colors.run().function('restworld:banners/banner_color_cur'),
+                if_colors.run(function('restworld:banners/banner_color_cur')),
                 if_ink.run(banner_ink.set(i)),
-                if_ink.run().function('restworld:banners/banner_ink_cur'),
+                if_ink.run(function('restworld:banners/banner_ink_cur')),
             )).place(r(x, y, z), SOUTH)
         )
     room.function('banner_controls_init').add(
         label(r(5, 2, 4), 'Banner / Ink'),
         label(r(3, 2, 4), 'Labels'),
         label(r(4, 2, 3), 'Controls'),
-        mc.function('restworld:banners/switch_to_color'),
+        function('restworld:banners/switch_to_color'),
     )
     room.function('banner_controls_remove', home=False).add(
-        mc.fill(r(0, 2, 0), r(8, 4, 4), 'air').replace('#wall_signs'))
+        fill(r(0, 2, 0), r(8, 4, 4), 'air').replace('#wall_signs'))
 
     room.loop('banner_ink', main_clock).loop(None, COLORS).add(*banner_ink_change())
 
@@ -237,7 +238,7 @@ def room():
     # ^Light Gray Roundel
     # ^Black Bordure
     room.function('ominous_banner').add(
-        mc.setblock(r(0, 0, 0), Block('white_banner', nbt={
+        setblock(r(0, 0, 0), Block('white_banner', nbt={
             'Patterns': [{'Pattern': 'mr', 'Color': 9}, {'Pattern': 'bs', 'Color': 8}, {'Pattern': 'cs', 'Color': 7},
                          {'Pattern': 'bo', 'Color': 8}, {'Pattern': 'ms', 'Color': 15}, {'Pattern': 'hh', 'Color': 8},
                          {'Pattern': 'mc', 'Color': 8}, {'Pattern': 'bo', 'Color': 15}]})))
