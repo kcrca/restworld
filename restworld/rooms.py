@@ -13,7 +13,8 @@ from pathlib import Path
 from typing import Callable, Iterable, Tuple
 
 from pynecraft.base import Nbt, ROTATION_180, ROTATION_270, ROTATION_90, r, rotated_facing, to_id, to_name
-from pynecraft.commands import Block, BlockDef, CLEAR, Command, Commands, Entity, EntityDef, JsonText, NEAREST, Position, \
+from pynecraft.commands import Block, BlockDef, CLEAR, Command, Commands, Entity, EntityDef, JsonText, NEAREST, \
+    Position, \
     Score, SignText, a, comment, data, e, execute, fill, function, good_block, good_entity, good_facing, good_score, \
     kill, \
     lines, p, \
@@ -688,7 +689,9 @@ class Room(FunctionSet):
 
     def loop(self, name: str, clock: Clock = None, /, home=True, score=None) -> Loop:
         base_name, name = self._base_name(name, clock)
-        loop = self._add_func(Loop(name, self.name, base_name=base_name, score=score), name, clock, home)
+        if not score:
+            score = Score(base_name, self.name)
+        loop = self._add_func(Loop(score, name = name, base_name=base_name), name, clock, home)
         if not base_name + '_cur' in self.functions:
             self.function(base_name + '_cur').add(loop.cur())
         self._scores.add(loop.score)
