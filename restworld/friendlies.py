@@ -27,10 +27,10 @@ def room():
         label(r(-1, 2, -2), 'Pollen'))
 
     def bee_loop(step):
-        bee_home = 'beehive' if step.i == 0 else 'bee_nest'
+        bee_house = 'beehive' if step.i == 0 else 'bee_nest'
         # The 'air' check is for if we're levitated
         yield execute().unless().block(r(0, 1, 0), 'air').at(
-            e().tag('bee_home')).run(setblock(r(0, 2, 2), (bee_home, {'facing': NORTH})))
+            e().tag('bee_home')).run(setblock(r(0, 2, 2), (bee_house, {'facing': NORTH})))
         on_ground = step.i < 2
         base = 'iron_bars' if on_ground else 'air'
         yield execute().as_(e().tag('bee')).run(data().merge(s(),
@@ -101,8 +101,11 @@ def room():
     def frogspawn_loop(step):
         if step.i == 0:
             yield kill_em(e().tag('tadpole', room.name))
-            yield setblock(r(0, 2, -1), 'frogspawn')
-            yield WallSign((None, 'Frogspawn')).place(r(1, 2, -1), NORTH)
+            # The 'air' check is for if we're levitated
+            yield execute().unless().block(r(0, 1, 0), 'air').at(
+                e().tag('frogspawn_home')).run(setblock(r(0, 2, -1), 'frogspawn'))
+            yield execute().unless().block(r(0, 1, 0), 'air').at(
+                e().tag('frogspawn_home')).run(WallSign((None, 'Frogspawn')).place(r(1, 2, -1), NORTH))
         else:
             yield placer(r(0, 2, -1), NORTH, kids=True).summon(Entity('tadpole', {'Invulnerable': True}),
                                                                tags=('keeper',))
