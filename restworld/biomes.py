@@ -1,8 +1,7 @@
 import collections
 
 from pynecraft.base import NORTH, OVERWORLD, r, to_id
-from pynecraft.commands import CLEAR, p, say, weather
-from pynecraft.commands import Entity, data, e, execute, fill, function, kill, setblock
+from pynecraft.commands import CLEAR, Entity, data, e, execute, fill, function, kill, p, say, setblock, weather
 from pynecraft.simpler import WallSign
 from restworld.rooms import Room, label
 from restworld.set_biomes import BiomeSampler

@@ -212,7 +212,7 @@ def basic_functions(room):
             # value, act, arg = 1, \
             #                   lambda prefix, path: prefix.modify(s(), path), \
             #                   lambda prefix: prefix.merge().value({'Enchantments': [{'id': 'mending'}]})
-            value, cmd = 1, lambda  path: data().modify(s(), path).merge().value({'Enchantments': [{'id': 'mending'}]})
+            value, cmd = 1, lambda path: data().modify(s(), path).merge().value({'Enchantments': [{'id': 'mending'}]})
         else:
             # value, act, arg = 0, \
             #                   lambda prefix, path: prefix.remove(s(), path), \

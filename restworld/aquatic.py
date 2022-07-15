@@ -1,11 +1,8 @@
 from __future__ import annotations
 
 from pynecraft.base import EAST, NORTH, WEST, r
-from pynecraft.commands import COLORS, LONG, MULT, PLUS, Score
-from pynecraft.commands import EQ, MOD, scoreboard
-from pynecraft.commands import Entity, RESULT, e, s
-from pynecraft.commands import data, execute, function, kill
-from pynecraft.commands import tp
+from pynecraft.commands import COLORS, EQ, Entity, LONG, MOD, MULT, PLUS, RESULT, Score, data, e, execute, function, \
+    kill, s, scoreboard, tp
 from pynecraft.enums import ScoreCriteria
 from pynecraft.simpler import WallSign
 from restworld.rooms import Room, fishes

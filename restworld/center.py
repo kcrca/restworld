@@ -1,8 +1,7 @@
 from __future__ import annotations
 
 from pynecraft.base import EAST, NORTH, SOUTH, WEST, r
-from pynecraft.commands import Entity, clone, e, execute, fill, kill, summon, tag
-from pynecraft.commands import Score, scoreboard
+from pynecraft.commands import Entity, Score, clone, e, execute, fill, kill, scoreboard, summon, tag
 from pynecraft.simpler import WallSign
 from restworld.rooms import Room
 from restworld.world import fast_clock, main_clock, restworld, slow_clock

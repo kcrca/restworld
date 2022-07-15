@@ -3,9 +3,7 @@ from __future__ import annotations
 import copy
 
 from pynecraft.base import EAST, NORTH, WEST, r
-from pynecraft.commands import Entity, e, s
-from pynecraft.commands import data, execute, function, tag
-from pynecraft.commands import good_facing
+from pynecraft.commands import Entity, data, e, execute, function, good_facing, s, tag
 from pynecraft.simpler import Item
 from restworld.rooms import MobPlacer, Room, label
 from restworld.world import kill_em, main_clock, restworld

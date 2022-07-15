@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 from pynecraft.base import EAST, NORTH, SOUTH, WEST, r, to_id
-from pynecraft.commands import EQ, Entity, MOD, Score, data, e, execute, function, item, kill, s, setblock, summon, tag, tp
+from pynecraft.commands import EQ, Entity, MOD, Score, data, e, execute, function, item, kill, s, setblock, summon, tag, \
+    tp
 from pynecraft.info import colors, horses, music_discs, villager_professions, villager_types
 from pynecraft.simpler import WallSign
 from restworld.rooms import Room, label

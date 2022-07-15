@@ -4,9 +4,8 @@ import re
 from typing import Iterable, Union
 
 from pynecraft.base import DOWN, EAST, NORTH, SOUTH, WEST, good_facing, r, to_name
-from pynecraft.commands import Block, Entity, JsonText, MOVE, e, good_block, s
-from pynecraft.commands import clone, data, execute, fill, function, item, \
-    kill, say, setblock, summon, tag
+from pynecraft.commands import Block, Entity, JsonText, MOVE, clone, data, e, execute, fill, function, good_block, item, \
+    kill, s, say, setblock, summon, tag
 from pynecraft.info import Color, colors
 from pynecraft.simpler import Item, Sign, Volume, WallSign
 from restworld.rooms import Room, label, stems, woods

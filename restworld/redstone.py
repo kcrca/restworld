@@ -1,9 +1,17 @@
 from __future__ import annotations
 
+import time
+
+import data
+import execute
+import fill
+import function
+import kill
+import setblock
+import summon
+
 from pynecraft.base import DOWN, EAST, NOON, SOUTH, UP, WEST, r
 from pynecraft.commands import Block, e
-from pynecraft.commands import data, execute, fill, function, kill, setblock, summon
-from pynecraft.commands import time
 from pynecraft.info import instruments, stems, woods
 from pynecraft.simpler import Item, Volume, WallSign
 from restworld.rooms import Room, label
