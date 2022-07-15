@@ -1,17 +1,7 @@
 from __future__ import annotations
 
-import time
-
-import data
-import execute
-import fill
-import function
-import kill
-import setblock
-import summon
-
 from pynecraft.base import DOWN, EAST, NOON, SOUTH, UP, WEST, r
-from pynecraft.commands import Block, e
+from pynecraft.commands import Block, data, e, execute, fill, function, kill, setblock, summon, time
 from pynecraft.info import instruments, stems, woods
 from pynecraft.simpler import Item, Volume, WallSign
 from restworld.rooms import Room, label
@@ -209,7 +199,7 @@ def note_block_funcs(room):
         execute().if_().score(note_powered).matches(1).run(setblock(r(0, 1, 0), 'redstone_torch')),
         execute().if_().score(note_powered).matches(1).run(setblock(r(0, 1, 0), 'air')))
 
-    def note_block_finish_loop(step):
+    def note_block_finish_loop(_):
         yield execute().if_().score(note_powered).matches(1).run(setblock(r(0, 3, -1), 'air'))
         yield setblock(r(0, 3, -1), 'redstone_block')
         yield execute().if_().score(note_powered).matches(0).run(setblock(r(0, 3, -1), 'air'))
@@ -246,7 +236,7 @@ def pressure_plate_funcs(room):
     pressure_plate = room.score('pressure_plate')
     room.function('pressure_plate_add', home=False).add(
         one_item(),
-        (execute().if_().score(plate_heavy).matches((1, None)).run(one_item()) for i in range(0, 9)))
+        (execute().if_().score(plate_heavy).matches((1, None)).run(one_item()) for _ in range(0, 9)))
     room.function('pressure_plate_init').add(label(r(2, 2, 0), 'Pressure Plate Type'))
 
     room.function('pressure_plate_cur').add(
