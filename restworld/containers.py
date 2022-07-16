@@ -2,9 +2,8 @@ from __future__ import annotations
 
 from pynecraft import commands
 from pynecraft.base import EAST, NORTH, WEST, r
-from pynecraft.commands import Block, COLOR, CREATIVE, Entity, LEVELS, PLAYERS, RESULT, STYLE, SURVIVAL, VALUE, VISIBLE, \
-    a, \
-    bossbar, clone, data, e, execute, fill, function, gamemode, give, item, kill, p, s, setblock, summon
+from pynecraft.commands import Block, CREATIVE, Entity, LEVELS, RESULT, SURVIVAL, a, bossbar, clone, data, e, execute, \
+    fill, function, gamemode, give, item, kill, p, s, setblock, summon
 from pynecraft.simpler import Item, ItemFrame, WallSign
 from restworld.rooms import Room, label
 from restworld.world import fast_clock, main_clock, restworld, slow_clock
@@ -40,8 +39,8 @@ def room():
     room.function('bossbar_init').add(
         kill(e().tag('bossbar_current')),
         bossbar().add('restworld:bossbar', 'Ornamental Stud'),
-        bossbar().set('restworld:bossbar', PLAYERS, a()),
-        bossbar().set('restworld:bossbar', VALUE, 50),
+        bossbar().set('restworld:bossbar').players(a()),
+        bossbar().set('restworld:bossbar').value(50),
         bossbar_value.set(3),
         function('restworld:containers/bossbar_exit'),
         WallSign('Boss Bar').place(r(0, 3, 0, ), WEST),
@@ -52,12 +51,12 @@ def room():
         label(r(-3, 2, 1), 'Value'),
         WallSign('Value:').place(r(-2, 2, 1), WEST),
     )
-    room.function('bossbar_exit').add(bossbar().set('restworld:bossbar', VISIBLE, False))
+    room.function('bossbar_exit').add(bossbar().set('restworld:bossbar').visible(False))
     toggle_bossbar = room.score('toggle_bossbar')
     room.function('toggle_bossbar', home=False).add(
-        execute().store(RESULT).score(toggle_bossbar).run(bossbar().get('restworld:bossbar', VISIBLE)),
-        execute().if_().score(toggle_bossbar).matches(0).run(bossbar().set('restworld:bossbar', VISIBLE, True)),
-        execute().if_().score(toggle_bossbar).matches(1).run(bossbar().set('restworld:bossbar', VISIBLE, False)),
+        execute().store(RESULT).score(toggle_bossbar).run(bossbar().get('restworld:bossbar').visible()),
+        execute().if_().score(toggle_bossbar).matches(0).run(bossbar().set('restworld:bossbar').visible(True)),
+        execute().if_().score(toggle_bossbar).matches(1).run(bossbar().set('restworld:bossbar').visible(False)),
     )
 
     def bossbar_param(which):
@@ -66,19 +65,19 @@ def room():
             execute().at(e().tag('bossbar_home')).run(summon(
                 'armor_stand', r(-2, 0, -1), {'Tags': ['bossbar_current', f'bossbar_{which}_home'], 'Small': True})),
             execute().at(e().tag(f'bossbar_{which}_home')).run(function(f'restworld:containers/bossbar_{which}_cur')),
-            bossbar().set('restworld:bossbar', VISIBLE, True),
+            bossbar().set('restworld:bossbar').visible(True),
         )
 
     def bossbar_color_loop(step):
-        yield bossbar().set('restworld:bossbar', COLOR, step.elem.lower())
+        yield bossbar().set('restworld:bossbar').color(step.elem.lower())
         yield data().merge(r(0, 2, 0), {'Text3': step.elem})
 
     def bossbar_style_loop(step):
-        yield bossbar().set('restworld:bossbar', STYLE, step.elem)
+        yield bossbar().set('restworld:bossbar').style(step.elem)
         yield data().merge(r(0, 2, 1), {'Text3': step.elem})
 
     def bossbar_value_loop(step):
-        yield bossbar().set('restworld:bossbar', VALUE, step.elem)
+        yield bossbar().set('restworld:bossbar').value(step.elem)
         yield data().merge(r(0, 2, 2), {'Text3': f'{step.elem}'})
 
     room.function('bossbar_color_init').add(bossbar_param('color'))
