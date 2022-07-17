@@ -6,7 +6,6 @@ Mob states (have a looping button, a "put all mobs permanently in this state" sw
 	Can't seeem to get it to work:
 	    {memories: {"minecraft:admiring_items": {value: True, ttl:100}, "minecraft:job_site": {value: {pos: [I; -681, 63, -239], dimension: "minecraft:overworld"}}}}
 
-Signs to turn on/off clocks in water areas (incl. particles when underwater). Could use green vs. red text to aid?
 
 ----- Probably not
 
