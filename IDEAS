@@ -7,6 +7,16 @@ Mob states (have a looping button, a "put all mobs permanently in this state" sw
 	    {memories: {"minecraft:admiring_items": {value: True, ttl:100}, "minecraft:job_site": {value: {pos: [I; -681, 63, -239], dimension: "minecraft:overworld"}}}}
 
 
+PHoto needs rework, hacked in a few things from 1.18, but...
+
+Fishing, watching the hook bob and the line ... be a line
+
+Arrows leave traces when shot from bows. Probably already part of particles, but it looks quite different
+
+Flashing TNT about to explode -- tried that, when it's wrong, it's a pain to fix, but maybe?
+
+Sounds. That could be an entire area, but there are _so_ many of them
+
 ----- Probably not
 
 All the standard structures? Seems like a lot of work, and the only

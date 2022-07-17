@@ -583,10 +583,10 @@ def color_functions(room):
             volume.replace('air', '#standing_signs')
             data().merge(e().tag('colorings_item_frame').limit(1), {'Item': {'Count': 0}})
         else:
-            setblock(r(-9, 2, 2), Block(f'{color.id}_bed', {'facing': NORTH, 'part': 'head'}))
-            setblock(r(-9, 2, 3), Block(f'{color.id}_bed', {'facing': NORTH, 'part': 'foot'}))
+            yield setblock(r(-9, 2, 2), Block(f'{color.id}_bed', {'facing': NORTH, 'part': 'head'}))
+            yield setblock(r(-9, 2, 3), Block(f'{color.id}_bed', {'facing': NORTH, 'part': 'foot'}))
             frame_nbt = {'Item': Item.nbt_for(f'{color.id}_dye'), 'ItemRotation': 0}
-            data().merge(e().tag('colorings_item_frame').limit(1), frame_nbt)
+            yield data().merge(e().tag('colorings_item_frame').limit(1), frame_nbt)
 
         if is_plain:
             leather_color = {}
@@ -676,7 +676,8 @@ def color_functions(room):
         WallSign((None, 'Glass')).place(r(-7, 3, 1), SOUTH),
 
         colored_signs(None,
-                      lambda x, y, z, _, wood: Sign((wood.id, 'Sign With', 'Default', 'Text')).place(r(x, y, z), 14)),
+                      lambda x, y, z, _, wood:
+                      Sign((wood.name, 'Sign With', 'Default', 'Text'), wood=wood.id).place(r(x, y, z), 14)),
         WallSign([]).place(r(-4, 2, 4, ), SOUTH),
 
         kill(e().type('item')),
