@@ -109,9 +109,9 @@ def room():
         yield setblock(r(0, 2, 0), 'redstone_block' if step.i == 0 else 'air')
         for i in range(0, 16):
             if step.i == 0:
-                yield data().merge(r(1, 2, -16 - i), {'Text2': step.i})
+                yield data().merge(r(1, 2, -(16 - i)), {'Text2': f'{i}'})
             else:
-                yield data().merge(r(1, 2, -16 - i), {'Text2': 0})
+                yield data().merge(r(1, 2, -(16 - i)), {'Text2': 'Not'})
 
     room.loop('wire_strength', main_clock).loop(wire_strength_loop, (0, 1))
 

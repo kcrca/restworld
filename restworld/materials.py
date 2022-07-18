@@ -454,7 +454,7 @@ def wood_functions(room):
         yield setblock(r(4, 3, 2), (f'{id}_door', {'facing': WEST, 'half': 'upper'}))
 
         yield execute().as_(e().tag('wood_sign_frame')).run(
-            data().merge(s(), ItemFrame(NORTH).item(f'{id}_sign').named(f'{name} Sign').nbt))
+            data().merge(s(), ItemFrame(SOUTH).item(f'{id}_sign').named(f'{name} Sign').nbt))
 
         if log == 'log':
             wood_boat_chest = room.score('wood_boat_chest')

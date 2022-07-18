@@ -40,7 +40,7 @@ def room():
         if step.elem.id == 'evoker':
             yield placer(r(0, 3.5, -1), WEST, adults=True, tags=tags).summon(
                 Entity('vex', nbt={'HandItems': [Item.nbt_for('iron_sword')], 'LifeTicks': 2147483647}))
-            yield placer(r(-1, 2.5, 1), WEST, adults=True, tags=tags).summon(Entity('Evoker Fangs', nbt={'Warmup': 0}))
+            yield placer(r(-1, 2, 1), WEST, adults=True, tags=tags).summon(Entity('Evoker Fangs', nbt={'Warmup': 0}))
 
     room.loop('illager', main_clock).add(kill_em(e().tag(*tags))).loop(illager_loop, illagers)
 

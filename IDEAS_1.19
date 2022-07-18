@@ -10,7 +10,7 @@ center:
 
 friendlies:
     * goats have separate left/right horns, rotate through the states
-    x parrots: (from 1.18 or earlier)
+    * parrots: (from 1.18 or earlier)
 	dance to music (flying or sitting, so on/off switch?) [can't: playing music requires the act of putting it in, can't do it via commands.]
     * frogs can shoot tongue long distance [fixed by adding frog vs. slime to arena]
     * Dealing with the new mobs
@@ -47,15 +47,15 @@ blocks:
     * Mud
 
 death:
-    _ lower to new bottom?
+    n lower to new bottom?
 
 plants:
     * soils for dripleaf, bamboo, sugar cane, dead bush, and cactus
     * mangrove propagule in pot
 
 biomes:
-    _ new biome for mangrove has different colors of water, etc.? or same as swamp? [need to wait until 3p editors support 1.19, can't find a way to set the biome]
-    _ mangrove swamp
+    * new biome for mangrove has different colors of water, etc.? or same as swamp? [need to wait until 3p editors support 1.19, can't find a way to set the biome]
+    * mangrove swamp
     _ ancient city
 
 paintings:
@@ -67,4 +67,4 @@ arena:
     * add more battlers
 
 photo:
-    Total rework: Nothing from 1.7 (moss, etc.) onward!
+    _ Total rework: Nothing from 1.7 (moss, etc.) onward!
