@@ -43,13 +43,13 @@ def room():
         bossbar().set('restworld:bossbar').value(50),
         bossbar_value.set(3),
         function('restworld:containers/bossbar_exit'),
-        WallSign('Boss Bar').place(r(0, 3, 0, ), WEST),
+        WallSign((None, 'Boss Bar')).place(r(0, 3, 0, ), WEST),
         label(r(-3, 2, -1), 'Color'),
-        WallSign('Color:').place(r(-2, 2, -1), WEST),
+        WallSign((None, 'Color:')).place(r(-2, 2, -1), WEST),
         label(r(-3, 2, 0), 'Style'),
-        WallSign('Style:').place(r(-2, 2, 0, ), WEST),
+        WallSign((None, 'Style:')).place(r(-2, 2, 0, ), WEST),
         label(r(-3, 2, 1), 'Value'),
-        WallSign('Value:').place(r(-2, 2, 1), WEST),
+        WallSign((None, 'Value:')).place(r(-2, 2, 1), WEST),
     )
     room.function('bossbar_exit').add(bossbar().set('restworld:bossbar').visible(False))
     toggle_bossbar = room.score('toggle_bossbar')

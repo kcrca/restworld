@@ -7,7 +7,7 @@ from restworld.world import Restworld
 
 
 def test_unclocked_room():
-    room = Room('foo', RoomPack('dp', 'none'), NORTH, ('foo'), )
+    room = Room('foo', RoomPack('dp'), NORTH, ('foo'), )
     room.loop('bar').loop(lambda step: say(f'var {step.loop.score}, i {step.i}, item {item}'), range(0, 5))
     room.add_room_funcs()
     func_names = sorted(list(x.name for x in room.functions))
@@ -23,7 +23,7 @@ def test_unclocked_room():
 
 
 def test_clocked_room():
-    room = Room('foo', RoomPack('dp', 'none'), NORTH, ('foo'), )
+    room = Room('foo', RoomPack('dp'), NORTH, ('foo'), )
     clock = Clock('main')
     room.loop('bar', clock).loop(lambda step: say(f'var {step.loop.score}, i {step.i}, item {item}'),
                                  range(0, 5))
@@ -42,7 +42,7 @@ def test_clocked_room():
 
 
 def test_room_sign():
-    room = Room('foo', RoomPack('dp', 'none'), NORTH, ('foo'), )
+    room = Room('foo', RoomPack('dp'), NORTH, ('foo'), )
     room.add_room_funcs()
     func_names = sorted(list(x.name for x in room.functions))
     assert func_names == ['_enter', '_exit', '_finish', '_init', 'foo_room_home', 'foo_room_init']

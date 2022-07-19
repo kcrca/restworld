@@ -200,7 +200,7 @@ def room():
 
     room.loop('mob_levitation').loop(mob_levitation_loop, range(0, 2))
 
-    room.function('ready').add(
+    room.function('ready', home=False).add(
         clear(p()),
         kill(e().type('item')),
         gamemode(CREATIVE, p()),

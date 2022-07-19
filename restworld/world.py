@@ -18,24 +18,24 @@ marker_tmpl = Entity('armor_stand', {'NoGravity': True, 'Small': True, })
 
 
 class Restworld(RoomPack):
-    def __init__(self, path: str):
+    def __init__(self):
         suffixes = list(RoomPack.base_suffixes)
         suffixes.extend(list(x.name for x in self.clocks()))
-        super().__init__('restworld', path, suffixes, 4)
+        super().__init__('restworld', suffixes, 4)
 
     def finalize(self):
         for kid in self.function_set.children:
             if isinstance(kid, Room):
                 kid.finalize()
 
-    def save(self):
+    def save(self, *args, **kwargs):
         self.finalize()
         gs = self.function_set.child('global')
         if gs is None:
             gs = FunctionSet('global', self.function_set)
         gs.add(self.control_book_func())
         self.function_set.add(*self.world_funcs())
-        super().save()
+        super().save(*args, **kwargs)
 
     def clocks(self):
         return slow_clock, main_clock, fast_clock
@@ -126,7 +126,7 @@ slow_clock = Clock('slow', 90)
 main_clock = Clock('main', 60)
 fast_clock = Clock('fast', 15)
 tick_clock = Clock('clock')
-restworld = Restworld('/Users/kcrca/clarity/home/saves/RestWorld_1.19.1')
+restworld = Restworld()
 
 
 def die(*msg: str):

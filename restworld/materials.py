@@ -467,10 +467,10 @@ def wood_functions(room):
             yield execute().if_().score(wood_boat_chest).matches(1).run(summon(chest_boat, location))
             yield execute().if_().score(wood_boat_chest).matches(0).as_(
                 e().tag('wood_boat_frame')).run(
-                data().merge(s(), ItemFrame(NORTH).item(f'{id}_boat').named(f'{name} Boat').nbt))
+                data().merge(s(), ItemFrame(SOUTH).item(f'{id}_boat').named(f'{name} Boat').nbt))
             yield execute().if_().score(wood_boat_chest).matches(1).as_(
                 e().tag('wood_boat_frame')).run(
-                data().merge(s(), ItemFrame(NORTH).item(f'{id}_chest_boat').named(f'{name} Chest Boat').nbt))
+                data().merge(s(), ItemFrame(SOUTH).item(f'{id}_chest_boat').named(f'{name} Chest Boat').nbt))
         else:
             yield data().remove(e().tag('wood_boat_frame').limit(1), 'Item.id')
 
