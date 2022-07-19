@@ -9,7 +9,6 @@ from copy import deepcopy
 from enum import Enum
 from functools import total_ordering
 from html.parser import HTMLParser
-from pathlib import Path
 from typing import Callable, Iterable, Tuple
 
 from pynecraft.base import Nbt, ROTATION_180, ROTATION_270, ROTATION_90, r, rotated_facing, to_id, to_name
@@ -586,9 +585,9 @@ class RoomPack(DataPack):
     base_suffixes = ('tick', 'init', 'enter', 'incr', 'decr', 'cur', 'exit', 'finish')
     base_suffixes_re = re.compile(r'(\w+)_(' + '|'.join(base_suffixes) + ')')
 
-    def __init__(self, name: str, path: Path | str, suffixes: Iterable[str, ...] = None,
+    def __init__(self, name: str, suffixes: Iterable[str, ...] = None,
                  format_version: int = LATEST_PACK_VERSION, /):
-        super().__init__(name, path, format_version)
+        super().__init__(name, format_version)
         if suffixes is None:
             suffixes = RoomPack.base_suffixes
         self._suffixes = suffixes
