@@ -73,7 +73,7 @@ def room():
 
     # noinspection PyUnusedLocal
     def armor_stands(x, xn, z, zn, angle, facing, bx, bz, y_banner, y_shield, pattern, handback=None):
-        shield = Shield(0).add_pattern(pattern, 9)
+        shield = Shield().add_pattern(pattern, 9)
         stand = stand_tmpl.clone()
         stand.merge_nbt({'CustomName': ' '.join(Pattern.sign_text(pattern)), 'Rotation': [angle, 0]})
         stand.nbt['HandItems'].append(shield.nbt)
