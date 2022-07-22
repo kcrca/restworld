@@ -212,12 +212,14 @@ def room():
     arena_count_cur = function(arena_count_finish.full_name)
     room.function('arena_count_decr', home=False).add(arena_count.remove(1), arena_count_cur)
     room.function('arena_count_incr', home=False).add(arena_count.add(1), arena_count_cur)
-    room.function('arena_count_init').add(arena_count_cur)
+    room.function('arena_count_init').add(arena_count.set(1), arena_count_cur)
     room.loop('arena_count', main_clock).loop(
         lambda step: execute().at(e().tag('controls_home')).run(
             data().merge(r(2, 4, 0), {'Text2': f'{step.elem:d} vs. {step.elem:d}'})), range(0, COUNT_MAX + 1))
 
-    room.function('arena_run_init').add(function('restworld:arena/arena_run_cur'))
+    room.function('arena_run_init').add(
+            function('restworld:arena/arena_run_cur')
+        )
     # This is NOT intended to be run on the clock. It is only called '_main' because that gives us a
     # '_cur' function, which is useful when paging through the signs. Do not create the _home armor stand.
     arena_run_loop = arena_run_main(room.loop('arena_run', main_clock, home=False))
