@@ -352,11 +352,11 @@ function openTab(evt, tabName) {
 function downloadAll(evt) {
     dlinks = document.getElementsByClassName("download_pack");
     function downloadNext(i) {
-	if (i >= dlinks.length) {
-	    return;
-	}
+        if (i >= dlinks.length) {
+            return;
+        }
         dlinks[i].click();
-	setTimeout(function() { downloadNext(i + 1); }, 500);
+        setTimeout(function() { downloadNext(i + 1); }, 500);
     }
     setTimeout(function() { downloadNext(0); }, 500);
 }
