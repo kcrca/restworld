@@ -95,7 +95,7 @@ def room():
 
     room.loop('repeater', main_clock).loop(repeater_loop, range(0, 2))
     room.function('sculk_init').add(WallSign((None, 'Sculk Sensor')).place(r(-1, 3, 0), EAST))
-    room.function('target_init').add(WallSign((None, 'Target')).place(r(1, 3, 0), WEST))
+    room.function('target_init').add(WallSign((None, 'Target', None, '(vanilla shows 1)')).place(r(1, 3, 0), WEST))
 
     def target_loop(step):
         yield setblock(r(0, 2, 0), ('target', {'power': step.i}))
