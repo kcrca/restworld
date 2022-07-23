@@ -272,7 +272,9 @@ def room():
                       Pose={'LeftArm': [step.elem[0], 0, step.elem[1]], 'RightArm': [step.elem[2], 0, step.elem[3]]})
         yield data().merge(e().tag('armor_stand').limit(1), nbt)
 
-    room.function('armor_stand_init').add(room.mob_placer(r(0, 3, 0), NORTH, adults=True).summon('armor_stand'))
+    room.function('armor_stand_init').add(
+        room.mob_placer(r(0, 3, 0), NORTH, adults=True).summon('armor_stand'),
+        label(r(-1, 2, 0), "Get Small"))
     room.loop('armor_stand', main_clock).loop(
         armor_stand_loop,
         (None, (-10, -10, 0, 10), (-60, -10, 0, 60), (-120, 10, 0, 120), (-170, 10, 0, 170)),
@@ -526,7 +528,7 @@ def room():
     for b in (
             'amethyst', 'anvil', 'bell', 'brewing_stand', 'cake', 'campfire', 'cauldron', 'chest', 'colored_beam',
             'colorings', 'composter', 'frosted_ice', 'grindstone', 'item_frame', 'job_sites_1', 'job_sites_2',
-            'lantern'):
+            'lantern', 'armor_stand'):
         room.function(b + '_init', exists_ok=True).add(tag(e().tag(b + '_home')).add('no_expansion'))
 
 
