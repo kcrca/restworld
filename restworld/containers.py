@@ -219,7 +219,8 @@ def room():
         function('restworld:containers/item_update'))
     room.function('item_exit').add(setblock(r(-1, -2, 0), 'air'))
 
-    placer = room.mob_placer(r(0, 2, -1), EAST, tags=('item_holder', 'item_hands'), adults=True, nbt={'ShowArms': True})
+    placer = room.mob_placer(r(0, 2, -1), EAST, tags=('item_holder', 'item_hands'), auto_tag=False, adults=True,
+                             nbt={'ShowArms': True})
     room.function('item_init').add(
         placer.summon('armor_stand', tags=('holder_stand')),
         setblock(r(0, 2, 1), 'barrier'),

@@ -3,11 +3,11 @@ from __future__ import annotations
 import re
 from typing import Iterable, Union
 
-from pynecraft.base import DOWN, EAST, NORTH, SOUTH, WEST, good_facing, r, to_name
+from pynecraft.base import DOWN, EAST, NORTH, Nbt, SOUTH, WEST, good_facing, r, to_name
 from pynecraft.commands import Block, Entity, JsonText, MOVE, clone, data, e, execute, fill, function, good_block, item, \
     kill, s, say, setblock, summon, tag
 from pynecraft.info import Color, colors
-from pynecraft.simpler import Item, Sign, Volume, WallSign
+from pynecraft.simpler import Item, ItemFrame, Sign, Volume, WallSign
 from restworld.rooms import Room, label, stems, woods
 from restworld.world import fast_clock, kill_em, main_clock, restworld, slow_clock
 
@@ -136,7 +136,7 @@ def room():
            list(Block('frosted_ice', {'age': i}, name=f'Frosted Ice|Age: {i}') for i in range(0, 4)))
     blocks('glass', NORTH, ('Glass', 'Tinted Glass'))
     blocks('ice', SOUTH, ('Ice', 'Packed Ice', 'Blue Ice'))
-    blocks('lighting', SOUTH, (
+    blocks('lighting', NORTH, (
         'Glowstone', 'Sea Lantern', 'Shroomlight', 'Ochre|Froglight', 'Pearlescent|Froglight', 'Verdant|Froglight',
         'End Rod'))
     blocks('light', SOUTH, (Block('light', {'level': x}) for x in range(0, 15)),
@@ -205,7 +205,8 @@ def room():
     job_sites('composter', NORTH, ('Composter',), {'Composter': tuple({'level': t} for t in range(0, 9))})
     job_sites('grindstone', NORTH, ('Grindstone',),
               {'Grindstone': list({'face': f} for f in ('floor', 'wall', 'ceiling'))})
-    job_sites('job_sites_1', NORTH, ('Fletching Table', 'Cartography Table', 'Smithing Table', 'Loom', 'Stonecutter'))
+    job_sites('job_sites_1', NORTH,
+              ('Crafting Table', 'Cartography Table', 'Fletching Table', 'Smithing Table', 'Loom', 'Stonecutter'))
     job_sites('job_sites_2', NORTH, ('Blast Furnace', 'Smoker', 'Barrel', 'Lectern'),
               {'Blast Furnace': ({'lit': False}, {'lit': True}),
                'Smoker': ({'lit': False}, {'lit': True}),
@@ -262,6 +263,20 @@ def room():
     attachments = ('ceiling', 'single_wall', 'floor', 'double_wall')
     facing = (NORTH, WEST, NORTH, WEST)
     room.loop('bell', main_clock).add(setblock(r(0, 3, 0), 'air')).loop(bell_loop, attachments)
+
+    def armor_stand_loop(step):
+        if step.elem == None:
+            nbt = Nbt(ShowArms=False)
+        else:
+            nbt = Nbt(ShowArms=True,
+                      Pose={'LeftArm': [step.elem[0], 0, step.elem[1]], 'RightArm': [step.elem[2], 0, step.elem[3]]})
+        yield data().merge(e().tag('armor_stand').limit(1), nbt)
+
+    room.function('armor_stand_init').add(room.mob_placer(r(0, 3, 0), NORTH, adults=True).summon('armor_stand'))
+    room.loop('armor_stand', main_clock).loop(
+        armor_stand_loop,
+        (None, (-10, -10, 0, 10), (-60, -10, 0, 60), (-120, 10, 0, 120), (-170, 10, 0, 170)),
+        bounce=True)
 
     def brewing_stand_loop(step):
         for j in range(0, 3):
@@ -358,15 +373,16 @@ def room():
         'oak_log', 'oak_log', 'oak_log', 'soul_soil'))
 
     def item_frame_loop(step):
-        yield Entity(step.elem.id, {
-            'Facing': 2, 'Tags': ['item_frame_as_block'], 'Item': Item.nbt_for('lapis_lazuli'), 'Fixed': True}).summon(
-            r(0, 3, -1)),
+        yield step.elem.merge_nbt({'Tags': ['item_frame_as_block']}).summon(r(0, 3, -1)),
         yield data().merge(r(0, 2, -1), Sign.lines_nbt((None, *step.elem.sign_text)))
 
     item_frame_init = kill(e().tag('item_frame_as_block'))
     room.function('item_frame_init').add(item_frame_init)
-    room.loop('item_frame', main_clock).add(item_frame_init).loop(item_frame_loop,
-                                                                  (Block('Item Frame'), Block('Glow Item Frame')))
+    frames = (ItemFrame(NORTH).item('Lapis Lazuli'),
+              ItemFrame(NORTH),
+              ItemFrame(NORTH, glowing=True),
+              ItemFrame(NORTH, glowing=True).item('Lapis Lazuli'))
+    room.loop('item_frame', main_clock).add(item_frame_init).loop(item_frame_loop, frames)
 
     def lantern_loop(step):
         lantern = Block('Lantern' if step.i < 2 else 'Soul Lantern', {'hanging': False})
@@ -601,12 +617,8 @@ def color_functions(room):
 
         if is_plain:
             yield kill_em(e().tag('colorings_horse'))
-            horse = Entity('horse', nbt={'Variant': 5, 'ArmorItem': {'id': 'leather_horse_armor', 'Count': 1},
-                                         'Rotation': [0, 0], 'Tame': True, 'NoAI': True, 'Silent': True}).tag(
-                'colorings_horse',
-                'colorings_item',
-                'colorings_names')
-            yield horse.summon(r(0.2, 2, 4.4))
+            horse = Entity('horse', nbt=horse_nbt.merge({'ArmorItem': {'id': 'leather_horse_armor', 'Count': 1}}))
+            yield horse.summon(r(0.7, 2, 4.4))
 
         yield data().merge(e().tag('colorings_armor_stand').limit(1), {
             'ArmorItems': [Item.nbt_for('leather_boots', nbt=leather_color),
@@ -648,21 +660,22 @@ def color_functions(room):
         yield from colorings(False, step.elem)
         yield from colored_signs(step.elem, render_signs)
 
+    horse_nbt = Nbt({
+        'Variant': 5, 'Tags': ['colorings_horse', 'colorings_item', 'colorings_names'],
+        'ArmorItem': Item.nbt_for('leather_horse_armor'), 'Rotation': [-25, 0], 'Tame': True, 'NoAI': True,
+        'Silent': True})
     room.function('colorings_init').add(
         kill(e().tag('colorings_item')),
 
         Entity('item_frame', {
             'Facing': 3, 'Tags': ['colorings_item_frame', 'colorings_item'], 'Item': Item.nbt_for('stone'),
             'Fixed': True}).summon(r(-4.5, 4, 0.5)),
-        Entity('horse', {
-            'Variant': 5, 'Tags': ['colorings_horse', 'colorings_item', 'colorings_names'],
-            'ArmorItem': Item.nbt_for('leather_horse_armor'), 'Rotation': [0, 0], 'Tame': True, 'NoAI': True,
-            'Silent': True}).summon(r(0.2, 2, 4.4)),
+        Entity('horse', horse_nbt).summon(r(0.7, 2, 4.4)),
         Entity('armor_stand', {
             'Tags': ['colorings_armor_stand', 'colorings_item'], 'Rotation': [30, 0]}).summon(r(-1.1, 2, 3)),
         Entity('llama', {
             'Tags': ['colorings_llama', 'colorings_item', 'colorings_names'], 'Variant': 1, 'Tame': True, 'NoAI': True,
-            'Silent': True, 'Rotation': [0, 0], 'Leashed': True}).summon(r(-11, 2, 5.8)),
+            'Silent': True, 'Rotation': [20, 0], 'Leashed': True}).summon(r(-11, 2, 5.8)),
         Entity('sheep', {
             'Tags': ['colorings_sheep', 'colorings_item'], 'Variant': 1, 'NoAI': True, 'Silent': True,
             'Rotation': [-35, 0], 'Leashed': True}).summon(r(-9.0, 2, 5.0)),
@@ -693,7 +706,7 @@ def color_functions(room):
         setblock(r(-7, -1, 3), 'redstone_block'),
         setblock(r(-7, -1, 3), 'air'),
     )
-    room.function('colorings_plain_off').add(
+    room.function('colorings_plain_off', home=False).add(
         clone((coloring_coords[0][0], coloring_coords[0][1].value - coloring_coords[1][1].value + 1,
                coloring_coords[0][2]),
               (coloring_coords[1][0], 0, coloring_coords[1][2]),
@@ -703,7 +716,7 @@ def color_functions(room):
         execute().at(e().tag('colorings_home')).run(function('restworld:/blocks/colorings_cur')),
         kill(e().type('item').distance((None, 20))),
     )
-    room.function('colorings_plain_on').add(
+    room.function('colorings_plain_on', home=False).add(
         clone((coloring_coords[0][0], coloring_coords[0][1], coloring_coords[0][2]),
               (coloring_coords[1][0], coloring_coords[1][1] - 1, coloring_coords[1][2]),
               (coloring_coords[1][0], 0, coloring_coords[1][2])),
