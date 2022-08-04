@@ -662,7 +662,7 @@ class Room(FunctionSet):
         return self.function(marker_tag, home=False, exists_ok=True).add(
             comment(home_marker_comment),
             kill(e().tag(marker_tag)),
-            execute().positioned(r(-0.5, 0, 0.5)).run(kill(e().type('armor_stand').volume((1, 2, 1)))),
+            execute().positioned(r(-0.5, 0, -0.5)).run(kill(e().type('armor_stand').volume((1, 2, 1)))),
             marker.summon(r(0, 0.5, 0)),
         )
 
