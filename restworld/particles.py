@@ -44,7 +44,6 @@ particles = [
     ActionDesc(Particle.EXPLOSION),
     ActionDesc(Particle.EXPLOSION_EMITTER),
     ActionDesc(Particle.FALLING_DUST),
-    ActionDesc(Particle.FALLING_NECTAR),
     ActionDesc(Particle.FIREWORK, note='and Flash', also=Particle.FLASH),
     ActionDesc(Particle.FISHING),
     ActionDesc(Particle.FLAME, also=Particle.SOUL_FIRE_FLAME),
@@ -66,6 +65,7 @@ particles = [
     ActionDesc(Particle.SMOKE),
     ActionDesc(Particle.SNEEZE),
     ActionDesc(Particle.RAIN, 'Snow and Rain', also=Particle.SNOWFLAKE),
+    ActionDesc(Particle.SONIC_BOOM),
     ActionDesc(Particle.SOUL),
     ActionDesc(Particle.SPORE_BLOSSOM_AIR, 'Spore Blossom', also=Particle.FALLING_SPORE_BLOSSOM),
     ActionDesc(Particle.SPLASH),
@@ -86,7 +86,8 @@ unused_particles = {
     Particle.ELDER_GUARDIAN,  # Just the elder guardian face in your face, anbd makes it hard to turn off.
     Particle.ITEM,  # Same as BLOCK
     Particle.NOTE,  # Always shown in the redstone room (as is DUST, FWIW)
-    Particle.SPIT,  # Broke at 1.19, can't get the summond spit to move.
+    Particle.SPIT,  # Broke at 1.19, can't get the summoned spit to move.
+    Particle.FALLING_NECTAR,  # Shown with the bees in the Friendlies room
 }
 particles.sort()
 # Notes:
@@ -272,7 +273,6 @@ def room():
     room.function('falling_dust_init', home=False).add(
         fill(r(-2, 4, -2), r(2, 4, 2), 'barrier'),
         function('restworld:particles/falling_dust_change'))
-    room.function('falling_nectar_init', home=False).add(exemplar('bee', 2, {'HasNectar': 1, 'NoAI': True}))
     room.function('firework', home=False).add(main().run(function('restworld:particles/fireworks_change')))
     room.loop('firework_change').loop(
         lambda step: item().replace().block(r(0, 1, 0), 'container.0').with_('firework_rocket' + str(Nbt({
@@ -412,6 +412,8 @@ def room():
     room.function('sneeze_init', home=False).add(exemplar('panda', 0, {'NoAI': True, 'Age': -2147483648}))
     room.function('rain_init', home=False).add(weather(RAIN))
     room.function('rain_exit', home=False).add(weather(CLEAR))
+    room.function('sonic_boom_init', home=False).add(exemplar('warden', 0, {'NoAI': True}))
+    room.function('sonic_boom', home=False).add(main().run(particle(Particle.SONIC_BOOM, r(0, 2, 0.5), 0, 0, 0, 1, 1)))
     room.function('soul', home=False).add(main().run(particle(Particle.SOUL, r(0, 0.75, 0), 0.05, 0, 0.05, 0.05, 4)))
     room.function('soul_init', home=False).add(floor('soul_soil'))
     room.function('spit', home=False).add(fast().run(summon('llama_spit', r(0, 1.6, 0.7),
@@ -468,6 +470,9 @@ def room():
     room.function('white_ash_init', home=False).add(floor('basalt'))
     room.function('witch', home=False).add(fast().run(particle(Particle.WITCH, r(0, 2.3, 0), 0.3, 0.3, 0.3, 0, 6)))
     room.function('witch_init', home=False).add(exemplar('witch', 0, {'NoAI': True}))
+
+    # Keeping these in case of future need:
+    # room.function('falling_nectar_init', home=False).add(exemplar('bee', 2, {'HasNectar': 1, 'NoAI': True}))
 
 
 def check_for_unused():
