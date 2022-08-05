@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pynecraft import commands
 from pynecraft.base import EAST, NORTH, WEST, r
-from pynecraft.commands import Block, CREATIVE, Entity, LEVELS, RESULT, SURVIVAL, a, bossbar, clone, data, e, execute, \
+from pynecraft.commands import Block, CREATIVE, Entity, LEVELS, SURVIVAL, a, bossbar, clone, data, e, execute, \
     fill, function, gamemode, give, item, kill, p, s, setblock, summon
 from pynecraft.simpler import Item, ItemFrame, WallSign
 from restworld.rooms import Room, label
@@ -214,48 +214,38 @@ def room():
 
     room.function('ingredients_enter', home=False).add(
         clone(r(20, -5, 27), r(-15, -5, 1), r(-15, 1, 1)).filtered('chest'))
-    room.function('item_enter').add(
-        setblock(r(-1, -2, 0), 'redstone_torch'),
-        function('restworld:containers/item_update'))
-    room.function('item_exit').add(setblock(r(-1, -2, 0), 'air'))
 
-    placer = room.mob_placer(r(0, 2, -1), EAST, tags=('item_holder', 'item_hands'), auto_tag=False, adults=True,
-                             nbt={'ShowArms': True})
+    placer = room.mob_placer(r(0, 2, -1), EAST, auto_tag=False, adults=True, nbt={'ShowArms': True})
+    all_src = e().tag('item_src')
+    item_src = all_src.limit(1)
+    all_ground = e().tag('item_ground')
+    item_ground = all_ground.limit(1)
+    item_holder = e().tag('item_holder').limit(1)
     room.function('item_init').add(
-        placer.summon('armor_stand', tags=('holder_stand')),
+        kill(all_src),
+        kill(all_ground),
+        placer.summon('armor_stand', tags=('item_holder', 'item_hands')),
         setblock(r(0, 2, 1), 'barrier'),
-        summon('item_frame', r(1, 2, 1),
-               {'Facing': 5, 'Tags': ['containers', 'item_holder', 'item_src'],
-                'Item': Item.nbt_for('iron_pickaxe')}),
-        summon('item_frame', r(1, -1, 1), {'Facing': 5, 'Tags': ['containers', 'item_holder', 'item_dst']}),
-
-        setblock(r(-1, 2, 0), 'air'),
-        WallSign(('Item put in frame', 'shown in "fixed",', '"ground", and 3rd', 'party hands')).place(r(-1, 2, 0),
-                                                                                                       EAST),
+        ItemFrame(EAST).item('iron_pickaxe').tag('item_src').fixed(False).summon(r(1, 2, 1)),
+        WallSign(
+            ('Put item in frame', 'to show in "fixed",', '"ground", and 3rd', 'party hands')).place(r(-1, 2, 0), EAST),
         label(r(1, 2, -1), 'On Head'),
     )
-    item_new = room.score('item_new')
     room.function('item_run').add(
-        execute().store(RESULT).score(item_new).run(data().modify(
-            e().tag('item_dst').limit(1), 'Item').set().from_(e().tag('item_src').limit(1), 'Item')),
-        execute().if_().score(item_new).matches(1).at(e().tag('item_home')).run(
-            function('restworld:containers/item_update')),
-        execute().as_(e().tag('item_holder')).run(data().modify(s(), 'ItemRotation').set().value(0)),
-    )
-    room.function('item_update').add(
-        execute().unless().entity(e().tag('item_ground')).at(e().tag('item_home')).run(
+        execute().unless().entity(item_ground).at(e().tag('item_home')).run(
             summon('item', r(0, 3, 1), {'Item': Item.nbt_for('iron_pickaxe'), 'Age': -32768, 'PickupDelay': 2147483647,
                                         'Tags': ['item_ground']})),
-        data().modify(e().tag('item_ground').limit(1), 'Item').set().from_(e().tag('item_src').limit(1), 'Item'),
-        data().merge(e().tag('item_ground').limit(1), {'Age': -32768, 'PickupDelay': 2147483647}),
-        data().modify(e().tag('item_hands').limit(1), 'HandItems[0]').set().from_(
-            e().tag('item_src').limit(1), 'Item'),
-        data().modify(e().tag('item_hands').limit(1), 'HandItems[1]').set().from_(
-            e().tag('item_src').limit(1), 'Item'),
-        data().remove(e().tag('item_hands').limit(1), 'ArmorItems[3]'),
+        execute().unless().data().entity(item_src, 'Item.id').run(kill(all_ground)),
+        data().modify(item_ground, 'Item').set().from_(item_src, 'Item'),
+        data().merge(item_ground, {'Age': -32768, 'PickupDelay': 2147483647}),
+        item().replace().entity(item_holder, 'weapon.mainhand').from_().entity(item_src, 'container.0'),
+        item().replace().entity(item_holder, 'weapon.offhand').from_().entity(item_src, 'container.0'),
+        data().remove(item_holder, 'ArmorItems[3]'),
         execute().if_().score(room.score('item_head')).matches(1).run(data().modify(
-            e().tag('item_hands').limit(1), 'ArmorItems[3]').set().from_(e().tag('item_src').limit(1), 'Item'))
+            item_holder, 'ArmorItems[3]').set().from_(item_src, 'Item'))
     )
+    room.function('item_enter').add(setblock(r(-1, -2, 0), 'redstone_block'))
+    room.function('item_exit').add(setblock(r(-1, -2, 0), 'air'))
 
     non_inventory = list(Entity(i) for i in (
         'Knowledge Book',
