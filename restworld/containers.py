@@ -2,7 +2,9 @@ from __future__ import annotations
 
 from pynecraft import commands
 from pynecraft.base import EAST, NORTH, WEST, r
-from pynecraft.commands import Block, CREATIVE, Entity, LEVELS, SURVIVAL, a, bossbar, clone, data, e, execute, \
+from pynecraft.commands import BOSSBAR_COLORS, BOSSBAR_STYLES, Block, CREATIVE, Entity, LEVELS, SURVIVAL, a, bossbar, \
+    clone, data, e, \
+    execute, \
     fill, function, gamemode, give, item, kill, p, s, setblock, summon
 from pynecraft.simpler import Item, ItemFrame, WallSign
 from restworld.rooms import Room, label
@@ -37,13 +39,14 @@ def room():
 
     bossbar_which = room.score('bossbar_which')
     room.function('bossbar_exit').add(bossbar().set('restworld:bossbar').visible(False))
-    room.function('bossbar_enter').add(bossbar().set('restworld:bossbar').visible(True))
+    room.function('bossbar_enter').add(
+        execute().at(e().tag('bossbar_run_home')).run(bossbar().set('restworld:bossbar').visible(True)))
     bb_off = room.function('bossbar_off', home=False).add(
         kill(e().tag('bossbar_run_home')),
         bossbar().set('restworld:bossbar').visible(False),
     )
     bb_on = room.function('bossbar_on', home=False).add(
-        execute().at(e().tag('bossbar_home')).positioned(r(-1, -0.5, 0)).run(
+        execute().at(e().tag('bossbar_home')).positioned(r(-2, -0.5, 0)).run(
             function('restworld:containers/bossbar_run_home')),
         bossbar().set('restworld:bossbar').visible(True),
     )
@@ -57,42 +60,38 @@ def room():
     )
 
     bb_color_init = room.function('bossbar_color_init', home=False).add(
-        label(r(-3, 2, -1), 'Color'),
-        WallSign((None, 'Color:')).place(r(-2, 2, -1), WEST))
+        label(r(-1, 2, -1), 'Color'), WallSign((None, 'Color:', BOSSBAR_COLORS[0].title())).place(r(0, 2, -1), WEST))
     bb_style_init = room.function('bossbar_style_init', home=False).add(
-        label(r(-3, 2, 0), 'Style'),
-        WallSign((None, 'Style:')).place(r(-2, 2, 0, ), WEST))
+        label(r(-1, 2, 0), 'Style'), WallSign((None, 'Style:', BOSSBAR_STYLES[0])).place(r(0, 2, 0, ), WEST))
     bb_value_init = room.function('bossbar_value_init', home=False).add(
-        label(r(-3, 2, 1), 'Value'),
-        WallSign((None, 'Value:')).place(r(-2, 2, 1), WEST))
+        label(r(-1, 2, 1), 'Value'), WallSign((None, 'Value:', str(50))).place(r(0, 2, 1), WEST))
 
     def bossbar_color_loop(step):
         yield bossbar().set('restworld:bossbar').color(step.elem.lower())
-        yield data().merge(r(-1, 2, -1), {'Text3': step.elem})
+        yield data().merge(r(0, 2, -1), {'Text3': step.elem.title()})
 
     def bossbar_style_loop(step):
         yield bossbar().set('restworld:bossbar').style(step.elem)
-        yield data().merge(r(-1, 2, 0), {'Text3': step.elem})
+        yield data().merge(r(0, 2, 0), {'Text3': step.elem})
 
     def bossbar_value_loop(step):
         yield bossbar().set('restworld:bossbar').value(step.elem)
-        yield data().merge(r(-1, 2, 1), {'Text3': f'{step.elem}'})
+        yield data().merge(r(0, 2, 1), {'Text3': f'{step.elem}'})
 
-    bb_color = room.loop('bossbar_color', home=False).loop(
-        bossbar_color_loop, ('Blue', 'Green', 'Pink', 'Purple', 'Red', 'White', 'Yellow'))
-    bb_style = room.loop('bossbar_style', home=False).loop(
-        bossbar_style_loop, ('progress', 'notched_6', 'notched_10', 'notched_12', 'notched_20'))
+    bb_color = room.loop('bossbar_color', home=False).loop(bossbar_color_loop, BOSSBAR_COLORS)
+    bb_style = room.loop('bossbar_style', home=False).loop(bossbar_style_loop, BOSSBAR_STYLES)
     bb_value = room.loop('bossbar_value', home=False).loop(bossbar_value_loop, (50, 75, 100, 0, 25))
 
     room.function('bossbar_init').add(
         bossbar().add('restworld:bossbar', 'Ornamental Stud'),
         bossbar().set('restworld:bossbar').players(a()),
-        function(bb_color_init.full_name),
-        function(bb_style_init.full_name),
-        function(bb_value_init.full_name),
+        function(bb_on.full_name),
+        execute().at(e().tag('bossbar_run_home')).run(function(bb_color_init.full_name)),
+        execute().at(e().tag('bossbar_run_home')).run(function(bb_style_init.full_name)),
+        execute().at(e().tag('bossbar_run_home')).run(function(bb_value_init.full_name)),
         function(bb_off.full_name),
         WallSign((None, 'Boss Bar')).place(r(0, 3, 0, ), WEST),
-        label(r(-1, 3, 0), 'Toggle Bossbar'),
+        label(r(-1, 3, 0), 'Bossbar'),
     )
 
     room.loop('bossbar_run', main_clock).loop(None, range(0, 1)).add(

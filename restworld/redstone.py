@@ -95,6 +95,7 @@ def room():
 
     room.loop('repeater', main_clock).loop(repeater_loop, range(0, 2))
     room.function('sculk_init').add(WallSign((None, 'Sculk Sensor')).place(r(-1, 3, 0), EAST))
+    room.loop('sculk', main_clock).loop(lambda step: setblock(r(-4, 2, 0), 'air' if step.i else 'redstone_block'), range(3))
     room.function('target_init').add(WallSign((None, 'Target', None, '(vanilla shows 1)')).place(r(1, 3, 0), WEST))
 
     def target_loop(step):

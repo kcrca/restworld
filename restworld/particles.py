@@ -130,7 +130,7 @@ def slow(delay=0):
 
 
 def exemplar(id, y, nbt=None):
-    nbt = Nbt({'Tags': ['particler']}).merge(nbt)
+    nbt = Nbt({'Tags': ['particler'], 'Silent': True, 'PersistenceRequired': True}).merge(nbt)
     return summon(id, r(0, y, 0), nbt)
 
 

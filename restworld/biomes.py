@@ -15,7 +15,7 @@ biome_groups['Warm'] = ('Desert', 'Savanna', 'Badlands')
 biome_groups['Cold'] = ('Taiga', 'Stone Shore')
 biome_groups['Snowy'] = ('Snowy Tundra', 'Ice Spikes', 'Snowy Taiga')
 biome_groups['Ocean'] = ('Warm Ocean', 'Ocean', 'Frozen Ocean')
-biome_groups['Caves'] = ('Lush Caves', 'Dripstone Caves', 'Deep Dark')
+biome_groups['Cave'] = ('Lush Caves', 'Dripstone Caves', 'Deep Dark')
 biome_groups['Nether'] = ('Nether Wastes', 'Soul Sand Valley', 'Crimson Forest', 'Warped Forest', 'Basalt Deltas')
 biome_groups['End'] = ('The End', 'End Island', 'End City')
 biome_groups['Structures'] = ('Mineshaft', 'Monument', 'Stronghold', 'Bastion Remnant', 'Fortress')
@@ -29,12 +29,16 @@ def categories():
 
 
 def category_sign(category, x):
-    text3 = '' if category == 'Structures' else 'Biomes'
+    text3 = type_text(category)
     yield WallSign((None, category, text3), (
         None,
         None,
         execute().at(e().tag('category_home')).run(function(f'restworld:biomes/{to_id(category)}_signs'))),
                    ).place(r(x, 1, 6), NORTH)
+
+
+def type_text(category):
+    return '' if category == 'Structures' else 'Biomes'
 
 
 # noinspection PyUnusedLocal
@@ -67,10 +71,9 @@ def group_signs(group, score):
             at_biome_loading.run(function('restworld:biomes/load_biome_cur')),
             at_biome_loading.run(function('restworld:biomes/cleanup_biome')),
         )).place(r(6 - i - x, 0, 6), NORTH)
-    yield WallSign((None, group),
-                   (execute().at(e().tag('category_home')).run(function('restworld:biomes/category'))),
-                   'birch'
-                   ).place(r(6 - x, 1, 6), NORTH)
+    yield WallSign((None, group, type_text(group)),
+                   (execute().at(e().tag('category_home')).run(
+                       function('restworld:biomes/category'))), 'birch').place(r(6 - x, 1, 6), NORTH)
 
 
 # noinspection PyUnusedLocal
