@@ -196,19 +196,10 @@ def note_block_funcs(room):
                 setblock(r(0, 3, 0), ('note_block', {'note': step.elem, 'instrument': inst.id})))
 
     room.loop('note_block', fast_clock).loop(note_block_loop, range(0, 25)).add(
-        execute().if_().score(note_powered).matches(1).run(setblock(r(0, 1, 0), 'redstone_torch')),
-        execute().if_().score(note_powered).matches(1).run(setblock(r(0, 1, 0), 'air')))
+        execute().if_().score(note_powered).matches(1).run(setblock(r(0, 3, -1), 'redstone_torch')),
+        execute().if_().score(note_powered).matches(1).run(setblock(r(0, 3, -1), 'air')))
 
-    def note_block_finish_loop(_):
-        yield execute().if_().score(note_powered).matches(1).run(setblock(r(0, 3, -1), 'air'))
-        yield setblock(r(0, 3, -1), 'redstone_block')
-        yield execute().if_().score(note_powered).matches(0).run(setblock(r(0, 3, -1), 'air'))
-
-    room.loop('note_block_finish', fast_clock).loop(note_block_finish_loop, range(0, 1))
-    note_block_init = room.function('note_block_init').add(
-        instrument.set(0),
-        setblock(r(0, 2, 0), 'grass_block'))
-
+    note_block_init = room.function('note_block_init').add(instrument.set(0), setblock(r(0, 2, 0), 'grass_block'))
     for i, instr in enumerate(instruments):
         row_len = len(instruments) / 2
         x = i % row_len

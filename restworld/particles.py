@@ -4,8 +4,9 @@ import math
 import random
 
 from pynecraft.base import EAST, NORTH, Nbt, OVERWORLD, SOUTH, WEST, d, r, rotated_facing
-from pynecraft.commands import Block, CLEAR, RAIN, a, data, e, execute, fill, function, item, kill, p, particle, \
-    playsound, setblock, summon, tp, weather
+from pynecraft.commands import Block, CLEAR, RAIN, REPLACE, a, data, e, execute, fill, function, item, kill, p, \
+    particle, \
+    playsound, schedule, setblock, summon, tp, weather
 from pynecraft.enums import Particle
 from pynecraft.info import villager_professions
 from pynecraft.simpler import WallSign
@@ -200,13 +201,15 @@ def room():
         exemplar('dolphin', 1.5),
     )
     room.function('dragon_breath', home=False).add(slow().run(function('restworld:particles/dragon_breath_run')))
-    room.function('dragon_breath_init', home=False).add(room.score('dragon_breath_run').set(-1))
+    room.function('dragon_breath_init', home=False).add(floor('end_stone'))
     room.function('dragon_breath_run', home=False).add(
         kill(e().tag('particle_dragonball')),
         summon('dragon_fireball', r(0, 4, 4),
-               {'direction': {0.0, 0.0, 0.0}, 'power': {0.0, -0.05, -0.05}, 'ExplosionPower': 0,
-                'Tags': ['particle_dragonball', 'particler']}),
+               {'power': {0.0, -0.05, -0.05}, 'ExplosionPower': 0, 'Tags': ['particle_dragonball', 'particler']}),
+        schedule().function('restworld:particles/dragon_breath_finish', 1, REPLACE),
     )
+    room.function('dragon_breath_finish', home=False).add(
+        data().merge(e().tag('particle_dragonball').limit(1), {'Motion': [0, -0.5, -0.5]}))
     room.function('dripping_honey_init', home=False).add(
         fill(r(2, 3, 2), r(-2, 3, -2), ('beehive', {'honey_level': 5, 'facing': SOUTH})),
         fill(r(2, 3, -2), r(-2, 3, -2), ('beehive', {'honey_level': 5, 'facing': NORTH})),
