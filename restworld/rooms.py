@@ -14,7 +14,7 @@ from typing import Callable, Iterable, Tuple
 from pynecraft.base import Nbt, ROTATION_180, ROTATION_270, ROTATION_90, r, rotated_facing, to_id, to_name
 from pynecraft.commands import Block, BlockDef, CLEAR, Command, Commands, Entity, EntityDef, JsonText, NEAREST, \
     Position, Score, SignText, a, comment, data, e, execute, fill, function, good_block, good_entity, good_facing, \
-    good_score, kill, lines, p, schedule, scoreboard, setblock, summon, tellraw, tp, weather
+    good_score, kill, lines, p, schedule, scoreboard, setblock, summon, tag, tellraw, tp, weather
 from pynecraft.enums import Particle, ScoreCriteria
 from pynecraft.function import DataPack, Function, FunctionSet, LATEST_PACK_VERSION, Loop
 from pynecraft.simpler import Sign, WallSign
@@ -613,6 +613,7 @@ class Room(FunctionSet):
 
     def _player_in_room_setup(self):
         player_home = self.home_func(f'{self.name}_player')
+        player_home.add(tag(e().tag(f'{self.name}_player_home')).add('no_expansion'))
         self.function('_enter', exists_ok=True).add(
             execute().positioned(r(1, -1, 1)).run(function(player_home.full_name)))
         self.function('_exit', exists_ok=True).add(kill(e().tag(f'{self.name}_player_home')))
@@ -657,8 +658,8 @@ class Room(FunctionSet):
                 if home_marker_comment in c:
                     return
         marker = deepcopy(self._home_stand)
-        tags = marker.nbt.get_list('Tags')
-        tags.extend((marker_tag, self.name + '_home', 'homer'))
+        marker.name = self.name
+        marker.nbt.get_list('Tags').extend((marker_tag, self.name + '_home', 'homer'))
         return self.function(marker_tag, home=False, exists_ok=True).add(
             comment(home_marker_comment),
             kill(e().tag(marker_tag)),

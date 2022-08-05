@@ -4,7 +4,8 @@ import re
 from typing import Iterable, Union
 
 from pynecraft.base import DOWN, EAST, NORTH, Nbt, SOUTH, WEST, good_facing, r, to_name
-from pynecraft.commands import Block, Entity, JsonText, MOVE, clone, data, e, execute, fill, function, good_block, item, \
+from pynecraft.commands import Block, Entity, JsonText, MOVE, clone, data, e, execute, fill, function, \
+    good_block, item, \
     kill, s, say, setblock, summon, tag
 from pynecraft.info import Color, colors
 from pynecraft.simpler import Item, ItemFrame, Sign, Volume, WallSign
@@ -111,7 +112,7 @@ def room():
     for i in range(0, 6):
         state = {'facing': SOUTH, 'honey_level': i}
         bee_nests[0].append(Block('beehive', state=state, name=f'Beehive|Honey Level: {i}'))
-        bee_nests[1].append(Block('bee_nest', state=state, name=f'Bee Net|Honey Level: {i}'))
+        bee_nests[1].append(Block('bee_nest', state=state, name=f'Bee Nest|Honey Level: {i}'))
     blocks('bee_nest', SOUTH, bee_nests, dx=-3)
     blocks('bricks', NORTH, (
         'Bricks', 'Quartz Bricks', 'Mud Bricks', 'Deepslate|Bricks', 'Cracked|Deepslate|Bricks', 'Deepslate|Tiles',
@@ -880,14 +881,14 @@ def expansion_functions(room):
         setblock(r(0, 2, 0), 'barrier')
     )
 
-    room.home_func('generic').add(
+    room.function('generic_home', home=False).add(
         kill(e().tag('generic_home').distance((None, 2))),
         summon('armor_stand', r(0, 0.5, 0),
                {'Tags': ['generic_home', 'homer', 'blocks_home'], 'NoGravity': True, 'Small': True}),
     )
     # generic_home is used for entirely static blocks. This is used for blocks that are changed, but
     # by a different command block than the one under it. These want to be expanded as they change,
-    room.home_func('just_expand').add(
+    room.function('just_expand_home', home=False).add(
         kill(e().tag('just_expand_home').distance((None, 2))),
         summon('armor_stand', r(0, 0.5, 0),
                {'Tags': ['just_expand_home', 'homer', 'blocks_home'], 'NoGravity': True, 'Small': True}))

@@ -275,6 +275,8 @@ def room():
     ))
     non_inventory.append(Entity('elytra', nbt={'Damage': 450}, name='Damaged Elytra'))
 
+    only_item_chest_pos = r(1, -5, -1)
+
     def only_items_init_func():
         rows = [(0, 5), (0, 5), (0, 5)]
         dx = 2
@@ -282,6 +284,7 @@ def room():
         x = 0
         items = list(non_inventory)
         yield kill(e().tag('only_item_frame'))
+        index = 0
         while len(items) > 0:
             z, end = rows.pop(0)
             for i in range(0, end):
@@ -291,12 +294,12 @@ def room():
                 if t.id == 'elytra':
                     frame.merge_nbt({'Item': {'tag': {'Damage': 450}}})
                 yield frame.summon(r(x, 2, 5 - z), facing=NORTH)
-                yield item().replace().block(r(1, -5, -1), f'container.{i:d}').with_(t)
+                yield item().replace().block(only_item_chest_pos, f'container.{index}').with_(t)
                 z += dz
+                index += 1
             x += dx
 
-        yield clone(r(1, -5, -1), r(1, -5, -1), r(1, 1, -1))
-
+        yield clone(only_item_chest_pos, only_item_chest_pos, r(1, 1, -1))
         yield WallSign((None, 'Items Not', 'in Creative', 'Iventory')).place(r(2, 2, -1, ), NORTH)
 
     giveable = non_inventory[:-1]
@@ -309,7 +312,7 @@ def room():
     )
     room.function('only_items_init').add(
         label(r(3, 2, -1), 'Give'),
-        setblock(r(1, -5, -1), Block('chest', {'facing': EAST}))
+        setblock(only_item_chest_pos, Block('chest', {'facing': EAST}))
     ).add(list(only_items_init_func()))
 
     enchant_chest = {'Items': [{'Slot': 0, 'id': 'lapis_lazuli', 'Count': 64}, {'Slot': 1, 'id': 'book', 'Count': 64}]}
