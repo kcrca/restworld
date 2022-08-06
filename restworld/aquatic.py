@@ -78,6 +78,8 @@ def all_fish_funcs(room, clock_wall_sign):
     pattern_variant = Score('pattern_variant', 'fish')
     variant = Score('variant', 'fish')
 
+    types = tuple(tropical_fish.keys())
+
     def all_fish_init():
         yield WallSign((None, 'All Possible', 'Tropical Fish', '-------->')).place(r(0, 2, 0), WEST, water=True)
         yield clock_wall_sign.place(r(3, 4, 2), WEST, water=True)
@@ -85,7 +87,9 @@ def all_fish_funcs(room, clock_wall_sign):
         for i in range(0, 12):
             if i == 6:
                 placer = room.mob_placer(r(1.5, 3.2, 0), WEST, -1, adults=True)
-            yield placer.summon('tropical_fish', tags=(f'fish{i:d}',))
+            fish = Entity('tropical_fish', name=types[11-i])
+            summon = placer.summon(fish, tags=(f'fish{i}',))
+            yield summon
         yield (
             scoreboard().objectives().remove('fish'),
             scoreboard().objectives().add('fish', ScoreCriteria.DUMMY),
