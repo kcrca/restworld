@@ -19,7 +19,7 @@ def main():
             maps.room):
         f()
     tags.tags()
-    restworld.save('/Users/kcrca/clarity/home/saves/RestWorld_1.19.1')
+    restworld.save('/Users/kcrca/clarity/home/saves/RestWorld_1.19.2')
 
 
 if __name__ == '__main__':

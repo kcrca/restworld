@@ -138,9 +138,10 @@ def room():
            list(Block('frosted_ice', {'age': i}, name=f'Frosted Ice|Age: {i}') for i in range(0, 4)))
     blocks('glass', NORTH, ('Glass', 'Tinted Glass'))
     blocks('ice', SOUTH, ('Ice', 'Packed Ice', 'Blue Ice'))
-    blocks('lighting', NORTH, (
+    blocks('lighting', SOUTH, (
         'Glowstone', 'Sea Lantern', 'Shroomlight', 'Ochre|Froglight', 'Pearlescent|Froglight', 'Verdant|Froglight',
         'End Rod'))
+    room.function('light_init').add(label(r(1, 2, 0), 'Light Block'))
     blocks('light', SOUTH, (Block('light', {'level': x}) for x in range(0, 15)),
            labels=tuple(('light', f'Level: {i:d}') for i in range(0, 15)), clock=slow_clock)
     blocks('music', SOUTH, (
@@ -155,7 +156,7 @@ def room():
         'Quartz Block', 'Smooth Quartz', 'Quartz Pillar', 'Chiseled Quartz Block', 'Quartz Bricks'))
     blocks('raw_metal', NORTH, ('Raw Iron|Block', 'Raw Copper|Block', 'Raw Gold|Block'))
     blocks('respawn_anchor', NORTH, (Block('Respawn Anchor', {'charges': x}) for x in range(0, 5)),
-           labels=tuple((None, f'Charges: {x:d}') for x in range(0, 5)))
+           labels=tuple(('Respawn Anchor', f'Charges: {x:d}') for x in range(0, 5)))
     red_sandstone = ('Red Sandstone', 'Smooth|Red Sandstone', 'Cut|Red Sandstone', 'Chiseled|Red Sandstone')
     blocks('sandstone', SOUTH, (red_sandstone, tuple(re.sub(' *Red *', '', f) for f in red_sandstone)), dx=3)
     blocks('slabs', NORTH, ('Smooth Stone|Slab', 'Petrified Oak|Slab'))
@@ -170,14 +171,17 @@ def room():
     blocks('stone_bricks', NORTH, (
         'Stone Bricks', 'Mossy|Stone Bricks', 'Cracked|Stone Bricks', 'Chiseled|Stone Bricks',
         'Polished|Blackstone Bricks', 'Cracked Polished|Blackstone Bricks', 'End Stone|Bricks'))
-    stone_types = ('Basalt', 'Stone', 'Deepslate', 'Andesite', 'Diorite', 'Granite', 'Blackstone', 'Basalt')
-    blocks('stone', NORTH, ('Smooth Basalt', 'Smooth Stone') + tuple(f'Polished|{t}' for t in stone_types[2:]))
 
-    types = ('Copper Block', 'Exposed Copper', 'Weathered|Copper', 'Oxidized Copper')
-    block = list(x.replace('Copper', 'Cut Copper').replace(' Block', '').replace(' Cut', '|Cut') for x in types)
-    waxed_types = tuple(f'Waxed|{x}' for x in types)
-    waxed_block = tuple(f'Waxed|{x}' for x in block)
-    blocks('copper', NORTH, (types, block), dx=-3)
+    stone_types = ('Basalt', 'Stone', 'Deepslate', 'Andesite', 'Diorite', 'Granite', 'Blackstone', 'Basalt')
+    polished_types = ('Smooth Basalt', 'Smooth Stone') + tuple(f'Polished|{t}' for t in stone_types[2:])
+    blocks('stone', NORTH, (stone_types, polished_types), dz=3)
+
+    copoper_types = ('Copper Block', 'Exposed Copper', 'Weathered|Copper', 'Oxidized Copper')
+    copper_blocks = list(
+        x.replace('Copper', 'Cut Copper').replace(' Block', '').replace(' Cut', '|Cut') for x in copoper_types)
+    waxed_types = tuple(f'Waxed|{x}' for x in copoper_types)
+    waxed_block = tuple(f'Waxed|{x}' for x in copper_blocks)
+    blocks('copper', NORTH, (copoper_types, copper_blocks), dx=-3)
     blocks('waxed_copper', NORTH, (waxed_types, waxed_block), dx=-3, score=room.score('copper'))
     room.function('copper_init', exists_ok=True).add(
         tag(e().tag('copper_home')).add('copper_base'),
@@ -202,7 +206,7 @@ def room():
 
     sites = ('Cauldron', 'Water Cauldron', 'Lava Cauldron', 'Powder Snow|Cauldron')
     stages = {'Water Cauldron': list({'level': t} for t in range(1, 4)),
-              'Powder Snow Cauldron': list({'level': t} for t in range(3, 0, -1)), }
+              'Powder Snow|Cauldron': list({'level': t} for t in range(3, 0, -1)), }
     job_sites('cauldron', NORTH, sites, stages)
     job_sites('composter', NORTH, ('Composter',), {'Composter': tuple({'level': t} for t in range(0, 9))})
     job_sites('grindstone', NORTH, ('Grindstone',),
@@ -244,25 +248,27 @@ def room():
     )
 
     def bell_loop(step):
-        if step.i == 0:
+        facing = EAST
+        if step.elem == 'ceiling':
             yield setblock(r(-1, 3, 0), 'air')
             yield setblock(r(1, 3, 0), 'air')
             yield setblock(r(0, 4, 0), 'stone_slab')
-        elif step.i == 1:
+        elif step.elem == 'single_wall':
             yield setblock(r(-1, 3, 0), Block('stone_stairs', state={'facing': EAST}))
             yield setblock(r(1, 3, 0), 'air')
             yield setblock(r(0, 4, 0), 'air')
-        elif step.i == 2:
-            yield setblock(r(-1, 3, 0), 'air')
-            yield setblock(r(1, 3, 0), 'air')
-            yield setblock(r(0, 4, 0), 'air')
-        else:
+        elif step.elem == 'double_wall':
             yield setblock(r(-1, 3, 0), Block('stone_stairs', {'facing': EAST}))
             yield setblock(r(1, 3, 0), Block('stone_stairs', {'facing': WEST}))
             yield setblock(r(0, 4, 0), 'air')
-        yield setblock(r(0, 3, 0), Block('bell', state={'attachment': step.elem, 'facing': facing[step.i]}))
+        else:
+            yield setblock(r(-1, 3, 0), 'air')
+            yield setblock(r(1, 3, 0), 'air')
+            yield setblock(r(0, 4, 0), 'air')
+            facing = NORTH
+        yield setblock(r(0, 3, 0), Block('bell', state={'attachment': step.elem, 'facing': facing}))
 
-    attachments = ('ceiling', 'single_wall', 'floor', 'double_wall')
+    attachments = ('ceiling', 'single_wall', 'double_wall', 'floor')
     facing = (NORTH, WEST, NORTH, WEST)
     room.loop('bell', main_clock).add(setblock(r(0, 3, 0), 'air')).loop(bell_loop, attachments)
 
