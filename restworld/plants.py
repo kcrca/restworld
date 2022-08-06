@@ -134,7 +134,7 @@ def room():
     room.loop('dripleaf_soil', main_clock).loop(lambda step: setblock(r(0, 1, 1), step.elem),
                                                 ('Clay', 'Moss Block'))
 
-    def farmland_loop(step):
+    def farmland_loop(_):
         for i in range(0, 8):
             yield setblock(r(0, 1, i), ('farmland', {'moisture': 7 - i}))
             yield setblock(r(0, 1, -i), ('farmland', {'moisture': 7 - i}))

@@ -107,8 +107,8 @@ def room():
                 e().tag('banner_pattern_custom').distance((None, 2))).run(
                 data().merge(s(), {'CustomName': pattern[1]})),
             execute().positioned(r(x, 3, z)).as_(
-                e().tag('banner_pattern_custom_author').distance((None, 2))).run(data().merge(
-                s(), {'CustomName': pattern[2]})),
+                e().tag('banner_pattern_custom_author').distance((None, 2))).run(
+                data().merge(s(), {'CustomName': pattern[2]})),
         )
 
     half = int(len(authored_patterns) / 2)

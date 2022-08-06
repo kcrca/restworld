@@ -77,4 +77,4 @@ cannot show those things. Sorry."""))
 
 
 def map(num: int):
-    return ('filled_map', {}, {'tag': {'map': num}})
+    return 'filled_map', {}, {'tag': {'map': num}}

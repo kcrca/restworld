@@ -1,63 +1,13 @@
 from __future__ import annotations
 
-import re
-
 from pynecraft.base import EAST, NORTH, WEST, r
 from pynecraft.commands import COLORS, EQ, Entity, LONG, MOD, MULT, PLUS, RESULT, Score, data, e, execute, function, \
     kill, s, scoreboard, tp
 from pynecraft.enums import ScoreCriteria
+from pynecraft.info import axolotls, tropical_fish
 from pynecraft.simpler import WallSign
 from restworld.rooms import Room
 from restworld.world import fast_clock, kill_em, main_clock, restworld
-
-fish_data = (
-    ('kob',
-     (917504, 'Red-White Kob'),
-     (65536, 'Orange-White Kob'),
-     ),
-    ('sunstreak',
-     (134217984, 'White-Silver Sunstreak'),
-     (50790656, 'Gray-Sky SunStreak'),
-     (118161664, 'Blue-Gray SunStreak'),
-     ),
-    ((235340288, 'Gray-Red Snooper'),),
-    ('dasher',
-     (117441280, 'White-Gray Dasher'),
-     (101253888, 'Teal-Rose Dasher'),
-     ),
-    ('brinely',
-     (117441536, 'White-Gray Brinely'),
-     (50660352, 'Line-Sky Dasher'),
-     ),
-    ('spotty',
-     (67110144, 'White-Yellow Spotter'),
-     (50726144, 'Rose-Sky Spotty'),
-     ),
-    ('flopper',
-     (117899265, 'Gray Flopper'),
-     (67108865, 'White-Yellow Flopper'),
-     ),
-    ('stripey',
-     (117506305, 'Orange-Gray Stripey'),
-     (67371265, 'Yellow Stripey'),
-     ),
-    ((117441025, 'White-Gray Glitter'),),
-    ('blockfish',
-     (67764993, 'Plum-Yellow Blockfish'),
-     (918273, 'Red-White Blockfish'),
-     ),
-    ((918529, 'Red-White Betty'),),
-    ('clayfish',
-     (234882305, 'White-Red Clayfish'),
-     (16778497, 'White-Orange Clayfish'),
-     ),
-)
-fishes = []
-for f in fish_data:
-    if len(f) == 1:
-        fishes.append((re.sub(r'[- ]', '_', f[0][1].lower()), f))
-    else:
-        fishes.append((f[0], list(v for v in f[1:])))
 
 
 def room():
@@ -66,27 +16,28 @@ def room():
 
     def n_fish_loop(count: int):
         def fish_loop(step):
-            for f in [f for f in fishes if len(f[1]) == count]:
-                tag, variants = f
-                v = variants[step.i]
-                yield data().merge(e().tag(tag).limit(1), {'Variant': v[0], 'CustomName': v[1]})
+            for type, breeds in tropical_fish.items():
+                if len(breeds) == count:
+                    fish = breeds[step.i]
+                    fish.custom_name(True)
+                    yield data().merge(e().tag(type.lower()).limit(1), fish.nbt)
 
         return fish_loop
 
-    room.loop('2_fish', main_clock).loop(n_fish_loop(2), range(0, 2))
-    room.loop('3_fish', main_clock).loop(n_fish_loop(3), range(0, 3))
+    room.loop('2_fish', main_clock).loop(n_fish_loop(2), range(2))
+    room.loop('3_fish', main_clock).loop(n_fish_loop(3), range(3))
+    room.loop('4_fish', main_clock).loop(n_fish_loop(4), range(4))
     all_fish_funcs(room, clock_wall_sign)
     t_fish = room.function('tropical_fish_init')
-    for i in range(0, 12):
-        tag, variants = fishes[i]
-        fish = Entity('tropical_fish', nbt={'Variant': variants[0][0]}).tag(tag)
-        fish.name = variants[0][1]
-        t_fish.add(room.mob_placer(r(int(i / 6) + 0.5, 3.2, int(i % 6)), WEST, adults=True).summon(fish))
+    for i, (type, breeds) in enumerate(tropical_fish.items()):
+        fish = breeds[0]
+        fish.custom_name(True)
+        fish.tag(type.lower())
+        t_fish.add(room.mob_placer(r(1.5 - int(i / 6), 3.2, int(i % 6)), WEST, adults=True).summon(fish))
     t_fish.add(WallSign(('Naturally', 'Occurring', 'Tropical Fish', '<--------')).place(
-        r(int((len(fishes) - 1) / 6) - 1, 2, (len(fishes) - 1) % 6), WEST, water=True))
-    room.function('axolotl_init').add(room.mob_placer(r(1.3, 3.1, 0.6), 135, (0, 0), (-1.4, -1.4)).summon('axolotl'))
+        r(int((len(tropical_fish) - 1) / 6) - 1, 2, (len(tropical_fish) - 1) % 6), WEST, water=True))
 
-    axolotls = ('Lucy', 'Wild', 'Gold', 'Cyan', 'Blue')
+    room.function('axolotl_init').add(room.mob_placer(r(1.3, 3.1, 0.6), 135, (0, 0), (-1.4, -1.4)).summon('axolotl'))
     room.loop('axolotl', main_clock).loop(
         lambda step: execute().as_(e().tag('axolotl')).run(data().merge(
             s(), {'Variant': step.i, 'CustomName': step.elem + ' Axolotl'})), axolotls)

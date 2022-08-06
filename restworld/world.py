@@ -37,6 +37,7 @@ class Restworld(RoomPack):
         self.function_set.add(*self.world_funcs())
         super().save(*args, **kwargs)
 
+    # noinspection PyMethodMayBeStatic
     def clocks(self):
         return slow_clock, main_clock, fast_clock
 

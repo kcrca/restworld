@@ -7,6 +7,7 @@ from pynecraft.base import DOWN, EAST, NORTH, Nbt, SOUTH, WEST, good_facing, r, 
 from pynecraft.commands import Block, Entity, JsonText, MOVE, clone, data, e, execute, fill, function, \
     good_block, item, \
     kill, s, say, setblock, summon, tag
+from pynecraft.function import Loop
 from pynecraft.info import Color, colors, stems, woods
 from pynecraft.simpler import Item, ItemFrame, Sign, Volume, WallSign
 from restworld.rooms import Room, label
@@ -266,7 +267,7 @@ def room():
     room.loop('bell', main_clock).add(setblock(r(0, 3, 0), 'air')).loop(bell_loop, attachments)
 
     def armor_stand_loop(step):
-        if step.elem == None:
+        if step.elem is None:
             nbt = Nbt(ShowArms=False)
         else:
             nbt = Nbt(ShowArms=True,
@@ -460,6 +461,7 @@ def room():
               name='Sculk Shrieker|Can\'t Summon|Shrieking'),
     ))
     skulk_loop = room.functions['sculk_blocks_main']
+    assert isinstance(skulk_loop, Loop)
     skulk_loop.add(
         execute().if_().score(skulk_loop.score).matches(6).positioned(r(0, 3, 0)).run(
             function('restworld:particles/shriek_particles')),

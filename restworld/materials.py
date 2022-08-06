@@ -33,7 +33,6 @@ def room():
     assert len(blocks) == 2  # allows us to use 'replace previous type' because there are only two types
 
     volume = Volume(r(0, 1, 0), r(10, 6, 7))
-    fill = (r(0, 1, 0), r(10, 6, 7))
 
     def all_sand_loop(step):
         i = step.i
@@ -65,21 +64,17 @@ def room():
 
     points = (2, 6, 16, 36, 72, 148, 306, 616, 1236, 2476, 32767)
     each = 2 * math.pi / len(points)
-    radius = 4
 
     def experience_orbs_loop(step):
         i = step.i
         p = points[i]
-        angle = i * each
-        x = radius * math.cos(angle)
-        z = radius * math.sin(angle)
         f = -32768 if i == 0 else points[i - 1]
         yield summon('experience_orb', r(0, 3, 0), {'Value': p, 'Age': 6000 - 40})
         yield data().merge(r(1, 2, 0), {'Text3': 'Size %d' % (i + 1), 'Text4': '%d - %d' % (f, p)})
 
     room.loop('experience_orbs', fast_clock).loop(experience_orbs_loop, points)
     room.function('experience_orbs_init').add(WallSign((None, 'Experience Orb')).place(r(1, 2, 0), EAST))
-    frame = ItemFrame(SOUTH, {'Tags': [room.name, 'ore_ingot_frame']})
+    frame = ItemFrame(SOUTH, nbt={'Tags': [room.name, 'ore_ingot_frame']})
     room.function('ores_init').add(
         summon(frame, r(3, 3, 3)),
         summon(frame.merge_nbt({'Invisible': True}), r(4, 3, 3)),
@@ -119,7 +114,7 @@ def room():
         if raw:
             if 'Raw' in raw.name:
                 yield setblock(r(3, 4, 2), '%s_block' % raw.id)
-            yield summon(ItemFrame(SOUTH, {'Tags': [raw_frame, room.name]}).named(raw.name),
+            yield summon(ItemFrame(SOUTH, nbt={'Tags': [raw_frame, room.name]}).named(raw.name),
                          r(3, 4, 3))
         else:
             yield kill(e().tag(raw_frame))
@@ -201,22 +196,13 @@ def basic_functions(room):
 
     enchanted = room.score('enchanted')
 
-    def do_enchant(to_match, tag):
-        return execute().if_().score(enchanted).matches(to_match).as_(e().tag(tag)).run(data())
-
     def enchanter(value, tag, command):
         return execute().if_().score(enchanted).matches(value).as_(e().tag(tag)).run(command)
 
     def enchant(on):
         if on:
-            # value, act, arg = 1, \
-            #                   lambda prefix, path: prefix.modify(s(), path), \
-            #                   lambda prefix: prefix.merge().value({'Enchantments': [{'id': 'mending'}]})
             value, cmd = 1, lambda path: data().modify(s(), path).merge().value({'Enchantments': [{'id': 'mending'}]})
         else:
-            # value, act, arg = 0, \
-            #                   lambda prefix, path: prefix.remove(s(), path), \
-            #                   lambda prefix: prefix
             value, cmd = 0, lambda path: data().remove(s(), path)
 
         yield enchanter(value, 'enchantable', cmd('Item.tag'))

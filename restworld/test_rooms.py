@@ -7,7 +7,7 @@ from restworld.world import Restworld
 
 
 def test_unclocked_room():
-    room = Room('foo', RoomPack('dp'), NORTH, ('foo'), )
+    room = Room('foo', RoomPack('dp'), NORTH, 'foo', )
     room.loop('bar').loop(lambda step: say(f'var {step.loop.score}, i {step.i}, item {item}'), range(0, 5))
     room.add_room_funcs()
     func_names = sorted(list(x.name for x in room.functions))
@@ -23,7 +23,7 @@ def test_unclocked_room():
 
 
 def test_clocked_room():
-    room = Room('foo', RoomPack('dp'), NORTH, ('foo'), )
+    room = Room('foo', RoomPack('dp'), NORTH, 'foo', )
     clock = Clock('main')
     room.loop('bar', clock).loop(lambda step: say(f'var {step.loop.score}, i {step.i}, item {item}'),
                                  range(0, 5))
@@ -42,7 +42,7 @@ def test_clocked_room():
 
 
 def test_room_sign():
-    room = Room('foo', RoomPack('dp'), NORTH, ('foo'), )
+    room = Room('foo', RoomPack('dp'), NORTH, 'foo', )
     room.add_room_funcs()
     func_names = sorted(list(x.name for x in room.functions))
     assert func_names == ['_enter', '_exit', '_finish', '_init', 'foo_room_home', 'foo_room_init']
@@ -96,8 +96,6 @@ def test_mob_placer():
     assert cmds[3].count('kid') == 2
 
 
-
-
 def test_say_score():
     say = say_score(Score('a', 'b'), ('c', 'd'))
     assert say == ('tellraw @a [{"text": "\\"scores:\\""}, {"text": "\\"a=\\""}, {"score": '
@@ -106,7 +104,7 @@ def test_say_score():
 
 
 def test_control_book():
-    restworld = Restworld('none')
-    restworld.function_set.add(Room('r1', restworld, NORTH, ('Howdy')))
-    restworld.function_set.add(Room('r2', restworld, NORTH, ('Doody')))
+    restworld = Restworld()
+    restworld.function_set.add(Room('r1', restworld, NORTH, 'Howdy'))
+    restworld.function_set.add(Room('r2', restworld, NORTH, 'Doody'))
     assert re.search(r'Doody.*Howdy', str(restworld.control_book_func()))

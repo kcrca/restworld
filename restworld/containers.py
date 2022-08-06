@@ -116,11 +116,11 @@ def room():
     room.function('brewing_init').add(
         function('restworld:containers/switch_brewing_off'),
         label(r(-1, 2, -1), 'Brew'))
+    bottle_possibilities = ((), (0,), (1,), (2,), (2, 0), (1, 2), (0, 1), (0, 1, 2))
     room.loop('brewing_rotate', main_clock).add(
         item().replace().block(r(0, 2, 0), 'container.3').with_('air'),
         item().replace().block(r(0, 2, 0), 'container.4').with_('air'),
-        data().merge(r(0, 2, 0), {'BrewTime': 0, 'Fuel': 0})).loop(brewing_loop, (
-        (), (0,), (1,), (2,), (2, 0), (1, 2), (0, 1), (0, 1, 2)))
+        data().merge(r(0, 2, 0), {'BrewTime': 0, 'Fuel': 0})).loop(brewing_loop, bottle_possibilities)
     room.function('brewing_run', fast_clock).add(
         item().replace().block(r(0, 2, 0), 'container.0').with_(water_potion),
         item().replace().block(r(0, 2, 0), 'container.1').with_('air'),
@@ -163,9 +163,12 @@ def room():
         item().replace().block(r(0, 2, 3), 'container.2').with_('air', 1),
     )
 
-    trade_nbt = lambda *args: {
-        'maxUses': 1000, 'buy': {'id': args[0], 'Count': args[1]}, 'buyB': {'id': args[2], 'Count': args[3]},
-        'sell': {'id': args[4], 'Count': args[5]}, 'xp': 1, 'uses': args[6]}
+    def trade_nbt(*args):
+        return {'maxUses': 1000, 'xp': 1, 'uses': args[6],
+                'buy': {'id': args[0], 'Count': args[1]},
+                'buyB': {'id': args[2], 'Count': args[3]},
+                'sell': {'id': args[4], 'Count': args[5]},
+                }
 
     placer = room.mob_placer(r(0, 2, 0), NORTH, adults=True, tags=('trades',), auto_tag=False,
                              nbt={'VillagerData': {'profession': 'farmer', 'level': 3}, 'CanPickUpLoot': False})
@@ -175,7 +178,6 @@ def room():
 
     thresholds = (10, 60, 80, 100)
     xp = []
-    x = 0
     level_x = 0
     for i in range(0, len(thresholds)):
         for j in range(0, 3):

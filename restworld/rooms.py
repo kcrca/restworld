@@ -199,7 +199,7 @@ class Room(FunctionSet):
         if not base_name + '_cur' in self.functions:
             self.function(base_name + '_cur').add(loop.cur())
         self._scores.add(loop.score)
-        self._scores.add(loop._to_incr)
+        self._scores.add(loop.to_incr)
         return loop
 
     def _add_func(self, func, name, clock, home):
@@ -273,12 +273,12 @@ class Room(FunctionSet):
     def _add_loop_funcs(self):
         incr_f = self.function('_incr')
         decr_f = self.function('_decr')
-        loops = filter(lambda x: isinstance(x, Loop), self.functions.values())
-        for loop in loops:
-            home_f = loop.base_name + '_home'
-            at_home = execute().at(e().tag(home_f))
-            incr_f.add(at_home.run(loop.score.add(1)))
-            decr_f.add(at_home.run(loop.score.remove(1)))
+        for loop in self.functions.values():
+            if isinstance(loop, Loop):
+                home_f = loop.base_name + '_home'
+                at_home = execute().at(e().tag(home_f))
+                incr_f.add(at_home.run(loop.score.add(1)))
+                decr_f.add(at_home.run(loop.score.remove(1)))
         cur_f = self.full_name + '/_cur'
         incr_f.add(function(cur_f))
         decr_f.add(function(cur_f))
@@ -469,6 +469,7 @@ class ActionDesc:
     def __init__(self, enum: Enum, name=None, note=None, also=()):
         self.enum = enum
         if name is None:
+            # noinspection PyUnresolvedReferences
             name = enum.__class__.display_name(enum)
         self.name = name
         self.note = '(%s)' % note if note else None
