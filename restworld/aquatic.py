@@ -1,12 +1,63 @@
 from __future__ import annotations
 
+import re
+
 from pynecraft.base import EAST, NORTH, WEST, r
 from pynecraft.commands import COLORS, EQ, Entity, LONG, MOD, MULT, PLUS, RESULT, Score, data, e, execute, function, \
     kill, s, scoreboard, tp
 from pynecraft.enums import ScoreCriteria
 from pynecraft.simpler import WallSign
-from restworld.rooms import Room, fishes
+from restworld.rooms import Room
 from restworld.world import fast_clock, kill_em, main_clock, restworld
+
+fish_data = (
+    ('kob',
+     (917504, 'Red-White Kob'),
+     (65536, 'Orange-White Kob'),
+     ),
+    ('sunstreak',
+     (134217984, 'White-Silver Sunstreak'),
+     (50790656, 'Gray-Sky SunStreak'),
+     (118161664, 'Blue-Gray SunStreak'),
+     ),
+    ((235340288, 'Gray-Red Snooper'),),
+    ('dasher',
+     (117441280, 'White-Gray Dasher'),
+     (101253888, 'Teal-Rose Dasher'),
+     ),
+    ('brinely',
+     (117441536, 'White-Gray Brinely'),
+     (50660352, 'Line-Sky Dasher'),
+     ),
+    ('spotty',
+     (67110144, 'White-Yellow Spotter'),
+     (50726144, 'Rose-Sky Spotty'),
+     ),
+    ('flopper',
+     (117899265, 'Gray Flopper'),
+     (67108865, 'White-Yellow Flopper'),
+     ),
+    ('stripey',
+     (117506305, 'Orange-Gray Stripey'),
+     (67371265, 'Yellow Stripey'),
+     ),
+    ((117441025, 'White-Gray Glitter'),),
+    ('blockfish',
+     (67764993, 'Plum-Yellow Blockfish'),
+     (918273, 'Red-White Blockfish'),
+     ),
+    ((918529, 'Red-White Betty'),),
+    ('clayfish',
+     (234882305, 'White-Red Clayfish'),
+     (16778497, 'White-Orange Clayfish'),
+     ),
+)
+fishes = []
+for f in fish_data:
+    if len(f) == 1:
+        fishes.append((re.sub(r'[- ]', '_', f[0][1].lower()), f))
+    else:
+        fishes.append((f[0], list(v for v in f[1:])))
 
 
 def room():

@@ -7,9 +7,9 @@ from pynecraft.base import DOWN, EAST, NORTH, Nbt, SOUTH, WEST, good_facing, r, 
 from pynecraft.commands import Block, Entity, JsonText, MOVE, clone, data, e, execute, fill, function, \
     good_block, item, \
     kill, s, say, setblock, summon, tag
-from pynecraft.info import Color, colors
+from pynecraft.info import Color, colors, stems, woods
 from pynecraft.simpler import Item, ItemFrame, Sign, Volume, WallSign
-from restworld.rooms import Room, label, stems, woods
+from restworld.rooms import Room, label
 from restworld.world import fast_clock, kill_em, main_clock, restworld, slow_clock
 
 

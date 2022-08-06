@@ -2,11 +2,11 @@ from __future__ import annotations
 
 import sys
 
-from pynecraft.base import EAST, r
+from pynecraft.base import EAST, r, to_id
 from pynecraft.commands import GT, RANDOM, Score, a, data, e, execute, fill, function, kill, setblock, tag
 from pynecraft.function import Loop
 from pynecraft.simpler import Volume, WallSign
-from restworld.rooms import Room, Thing, label
+from restworld.rooms import Room, label
 from restworld.world import kill_em, main_clock, marker_tmpl, restworld
 
 COUNT_MIN = 1
@@ -133,7 +133,7 @@ def room():
                         my_nbts.append(added_nbt)
                     if which == 'hunter':
                         my_nbts.append('Rotation:[180f,0f]')
-                    incr = f'summon {Thing(mob).id} ~0 ~2 ~0 {{{",".join(my_nbts)}}}'
+                    incr = f'summon {to_id(mob)} ~0 ~2 ~0 {{{",".join(my_nbts)}}}'
                     incr_cmd = f'execute if score {which}_count arena < arena_count arena at @e[tag={which}_home,sort=random,limit=1] run {incr}'
                     return incr_cmd
 
