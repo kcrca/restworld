@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import random
+
 from restworld import ancient, aquatic, arena, banners, biomes, blocks, center, connect, containers, diy, effects, \
     enders, font, friendlies, global_, maps, materials, monsters, nether, paintings, particles, photo, plants, redstone, \
     tags, the_end, time, wither
@@ -7,6 +9,8 @@ from restworld.world import restworld
 
 
 def main():
+    # Use a constant seed so things appear random, but don't usually change from run to run (helps with diffs)
+    random.seed(0xb00f)
     for f in (
             ancient.room, global_.room, aquatic.room, arena.room, banners.room, biomes.room, blocks.room, center.room,
             connect.room, containers.room, diy.room, effects.room, particles.room, enders.room, font.room,
