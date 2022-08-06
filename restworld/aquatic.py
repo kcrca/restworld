@@ -16,11 +16,11 @@ def room():
 
     def n_fish_loop(count: int):
         def fish_loop(step):
-            for type, breeds in tropical_fish.items():
+            for kind, breeds in tropical_fish.items():
                 if len(breeds) == count:
                     fish = breeds[step.i]
                     fish.custom_name(True)
-                    yield data().merge(e().tag(type.lower()).limit(1), fish.nbt)
+                    yield data().merge(e().tag(kind.lower()).limit(1), fish.nbt)
 
         return fish_loop
 
@@ -29,11 +29,11 @@ def room():
     room.loop('4_fish', main_clock).loop(n_fish_loop(4), range(4))
     all_fish_funcs(room, clock_wall_sign)
     t_fish = room.function('tropical_fish_init')
-    for i, (type, breeds) in enumerate(tropical_fish.items()):
+    for i, (kind, breeds) in enumerate(tropical_fish.items()):
         fish = breeds[0]
         fish.custom_name(True)
-        fish.tag(type.lower())
-        t_fish.add(room.mob_placer(r(1.5 - int(i / 6), 3.2, int(i % 6)), WEST, adults=True).summon(fish))
+        fish.tag(kind.lower())
+        t_fish.add(room.mob_placer(r(int(i / 6)+0.5, 3.2, int(i % 6)), WEST, adults=True).summon(fish))
     t_fish.add(WallSign(('Naturally', 'Occurring', 'Tropical Fish', '<--------')).place(
         r(int((len(tropical_fish) - 1) / 6) - 1, 2, (len(tropical_fish) - 1) % 6), WEST, water=True))
 
@@ -78,7 +78,7 @@ def all_fish_funcs(room, clock_wall_sign):
     pattern_variant = Score('pattern_variant', 'fish')
     variant = Score('variant', 'fish')
 
-    types = tuple(tropical_fish.keys())
+    kinds = tuple(tropical_fish.keys())
 
     def all_fish_init():
         yield WallSign((None, 'All Possible', 'Tropical Fish', '-------->')).place(r(0, 2, 0), WEST, water=True)
@@ -87,7 +87,7 @@ def all_fish_funcs(room, clock_wall_sign):
         for i in range(0, 12):
             if i == 6:
                 placer = room.mob_placer(r(1.5, 3.2, 0), WEST, -1, adults=True)
-            fish = Entity('tropical_fish', name=types[11-i])
+            fish = Entity('tropical_fish', name=kinds[i])
             summon = placer.summon(fish, tags=(f'fish{i}',))
             yield summon
         yield (
