@@ -20,7 +20,7 @@ def room():
         'Goat': 'IsScreamingGoat:True',
         'Hoglin': 'IsImmuneToZombification:True',
         'Llama': 'Strength:5',
-        'Magma Cube': 'Size:3',
+        'Magma Cube': 'Size:0',
         'Panda': 'MainGene:aggressive',
         'Phantom': 'AX:1000,AY:110,AZ:-1000',
         'Piglin Brute': 'HandItems:[{id:golden_axe,Count:1}],IsImmuneToZombification:True',

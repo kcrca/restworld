@@ -88,8 +88,8 @@ def room():
 
     room.loop('skeleton', main_clock).add(
         kill_em(e().tag('skeletal'))
-    ).loop(lambda step: placer(*west_placer, adults=True).summon(Entity(step.elem, nbt=bow).tag('skeletal')),
-           ('Skeleton', 'Stray'))
+    ).loop(lambda step: placer(*west_placer, adults=True).summon(
+        Entity(step.elem, nbt={'HandItems': [bow]}).tag('skeletal')), ('Skeleton', 'Stray'))
 
     def spider_loop(step):
         p = placer(r(-0.2, 2.5, -0.2), EAST, -2.5, nbt={'Tags': ['spiders']}, adults=True)

@@ -340,7 +340,7 @@ class MobPlacer:
 
     def __init__(self, start: Position, facing: str | float,
                  delta: float | tuple[float, float] = None, kid_delta: float | tuple[float, float] = None, *,
-                 tags: Tuple[str, ...] = None,
+                 tags: str|Tuple[str, ...] = None,
                  nbt=None, kids=None, adults=None, auto_tag=True):
         self.start = start
         self.nbt = nbt if nbt else Nbt()

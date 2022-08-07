@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-from pynecraft.base import EAST, NORTH, SOUTH, WEST, r, to_id
-from pynecraft.commands import Block, EQ, data, execute, fill, setblock
+from pynecraft.base import EAST, NORTH, SOUTH, WEST, r, to_id, to_name
+from pynecraft.commands import Block, data, e, execute, fill, function, kill, setblock, tag
 from pynecraft.info import small_flowers, stems, tulips, woods
-from pynecraft.simpler import Volume, WallSign
+from pynecraft.simpler import Sign, Volume, WallSign
 from restworld.rooms import Room, label
 from restworld.world import fast_clock, main_clock, restworld
 
@@ -44,34 +44,8 @@ def room():
     room.loop('azalea', main_clock).loop(azalea_loop, (Block('Azalea'), Block('Flowering Azalea')))
 
     bamboo_funcs(room)
+    three_funcs(room)
 
-    def up_down(step, which):
-        if step.elem == 0:
-            yield fill(r(0, 4, 0), r(0, 5, 0), 'air')
-        elif step.elem == 1:
-            yield setblock(r(0, 4, 0), which)
-            yield setblock(r(0, 5, 0), 'air')
-        else:
-            yield fill(r(0, 4, 0), r(0, 5, 0), which)
-
-    def cactus_loop(step):
-        yield from up_down(step, 'cactus')
-
-    room.loop('cactus', main_clock).loop(cactus_loop, range(0, 3), bounce=True)
-    room.loop('cactus_soil', main_clock).loop(lambda step: setblock(r(0, 2, 1), step.elem), ('Sand', 'Red Sand'))
-
-    def cane_loop(step):
-        yield from up_down(step, 'Sugar Cane')
-
-    room.function('cane_enter').add(room.score('cane').operation(EQ, room.score('cactus')))
-    room.function('cane_init').add(
-        WallSign((None, 'Sugar Cane')).place(r(-2, 2, 0), EAST),
-        setblock(r(-1, 2, -1), 'structure_void'),
-        setblock(r(-1, 2, 1), 'structure_void'),
-        setblock(r(-1, 2, 0), 'water'))
-    room.loop('cane', main_clock).loop(cane_loop, range(0, 3), bounce=True)
-    room.loop('cane_soil', main_clock).loop(lambda step: setblock(r(0, 2, 1), step.elem), (
-        'Grass Block', 'Dirt', 'Coarse Dirt', 'Podzol', 'Sand', 'Red Sand', 'Moss Block', 'Mycelium', 'Mud'))
     room.function('cave_vines_init').add(label(r(0, 2, -1), 'Cave Vine Age 25'))
     cave_vines_tops = room.score('cave_vines_tops')
 
@@ -94,7 +68,7 @@ def room():
         yield data().merge(r(1, 2, 0), {'Text2': 'Stage: %d' % step.i})
 
     room.loop('cocoa', main_clock).loop(cocoa_loop, range(0, 3), bounce=True)
-    room.function('coral_init').add(WallSign(()).place(r(0, 2, -2), WEST, water=True))
+    room.function('coral_init').add(WallSign((None, None, 'Coral')).place(r(0, 2, -2), WEST, water=True))
 
     volume = Volume(r(-1, 2, -5), r(1, 4, 1))
     watered = {'waterlogged': True}
@@ -113,7 +87,6 @@ def room():
     room.loop('coral', main_clock).loop(coral_loop, ('Brain', 'Bubble', 'Fire', 'Horn', 'Tube'))
     room.loop('dead_bush_soil', main_clock).loop(lambda step: setblock(r(0, 2, 1), step.elem),
                                                  ('Sand', 'Red Sand', 'Terracotta', 'Dirt', 'Podzol', 'Mud'))
-    room.function('dripleaf_init').add(WallSign(()).place(r(1, 2, 0), EAST))
 
     tilts = ('none', 'unstable', 'partial', 'full')
     upper = tuple(Block('Big Dripleaf', {'tilt': x, 'facing': EAST}) for x in tilts) + (
@@ -123,14 +96,17 @@ def room():
 
     def dripleaf_loop(step):
         i = step.i
-        yield setblock(r(1, 2, 0), 'air')
-        yield setblock(r(0, 3, 0), 'air')
-        yield setblock(r(0, 2, 0), 'air')
         yield setblock(r(0, 2, 0), lower[i])
         yield setblock(r(0, 3, 0), upper[i])
-        yield data().merge(r(1, 2, 0), {'Text3': 'Tilt: %s' % tilts[i].title() if i < len(tilts) else ''})
+        text = (None, upper[i].name)
+        if i < len(tilts):
+            text = text + (f'Tilt: {tilts[i].title()}',)
+        yield WallSign(text).place(r(1, 2, 0), EAST)
 
-    room.loop('dripleaf', main_clock).loop(dripleaf_loop, upper)
+    room.loop('dripleaf', main_clock).add(
+        setblock(r(1, 2, 0), 'air'),
+        setblock(r(0, 3, 0), 'air'),
+        setblock(r(0, 2, 0), 'air')).loop(dripleaf_loop, upper)
     room.loop('dripleaf_soil', main_clock).loop(lambda step: setblock(r(0, 1, 1), step.elem),
                                                 ('Clay', 'Moss Block'))
 
@@ -248,6 +224,56 @@ def room():
         yield data().merge(r(-1, 2, 0), {'Text3': step.elem})
 
     room.loop('tulips', main_clock).loop(tulips_loop, tulips)
+
+
+def three_funcs(room):
+    def three_height_loop(step):
+        def height(z, which):
+            count = step.elem
+            yield fill(r(0, 5, z), r(0, 5 - (1 - count), z), 'air')
+            yield fill(r(0, 3, z), r(0, 3 + count, z), which)
+            yield data().merge(r(1, 2, z), Sign.lines_nbt(('', to_name(which), '', '')))
+
+        yield from height(0, 'cactus')
+        yield from height(-3, 'sugar_cane')
+
+    def three_age_loop(step):
+        def age(z, which):
+            age = step.elem
+            yield setblock(r(0, 4, z), f'{which}[age={age}]')
+            yield data().merge(r(1, 2, z),
+                               Sign.lines_nbt(
+                                   (to_name(which), f'Top Block Age: {age}', '16 ages', '(vanilla shows 1)')))
+
+        yield from age(0, 'cactus')
+        yield from age(-3, 'sugar_cane')
+
+    def switch_to_func(which):
+        room.function(f'three_change_{which}', home=False).add(
+            kill(e().tag('three_runner')),
+            execute().at(e().tag('three_home')).positioned(r(-1, -0.5, 2)).run(
+                function(f'restworld:plants/three_{which}_home')),
+            tag(e().tag(f'three_{which}_home')).add('three_runner'),
+            execute().at(e().tag(f'three_{which}_home')).run(function(f'restworld:plants/three_{which}_cur')))
+
+    room.loop('three_height', main_clock).loop(three_height_loop, range(3), bounce=True)
+    room.loop('three_age', fast_clock).add(
+        fill(r(0, 5, 0), (0, 5, -3), 'air'),
+        setblock(r(0, 3, 0), 'cactus'),
+        setblock(r(0, 3, -3), 'sugar_cane')
+    ).loop(three_age_loop, range(16))
+    room.function('three_init').add(label(r(-1, 2, 0), 'Change Age'))
+    switch_to_func('height')
+    switch_to_func('age')
+    room.loop('cactus_soil', main_clock).loop(lambda step: setblock(r(0, 2, 1), step.elem), ('Sand', 'Red Sand'))
+    room.loop('cane_soil', main_clock).loop(lambda step: setblock(r(0, 2, 1), step.elem), (
+        'Grass Block', 'Dirt', 'Coarse Dirt', 'Podzol', 'Sand', 'Red Sand', 'Moss Block', 'Mycelium', 'Mud'))
+    room.function('cane_init').add(
+        function('restworld:plants/three_change_height'),
+        WallSign((None, 'Sugar Cane')).place(r(-2, 2, 0), EAST),
+        setblock(r(-1, 2, -1), 'structure_void'),
+        setblock(r(-1, 2, 1), 'structure_void'),
+        setblock(r(-1, 2, 0), 'water'))
 
 
 def bamboo_funcs(room):

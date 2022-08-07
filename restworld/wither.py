@@ -32,5 +32,5 @@ def room():
     room.loop('wither_mob', main_clock).loop(wither_loop, range(0, 3))
     room.function('wither_skull_init').add(
         kill(e().type('wither_skull')),
-        room.mob_placer(r(0, 3, 0), NORTH, adults=True).summon('Wither Skull'),
+        room.mob_placer(r(0, 3, 0), NORTH, adults=True).summon('Wither Skull', nbt={'Rotation': [180, 0]}),
         WallSign((None, 'Wither Skull')).place(r(0, 2, -1), NORTH))

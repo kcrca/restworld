@@ -14,7 +14,8 @@ def room():
         return room.mob_placer(*args, **kwargs)
 
     room.function('blaze_init').add(placer(r(-0.2, 2, 0), WEST, adults=True).summon('blaze'))
-    room.function('wither_skeleton_init').add(placer(r(-0.2, 2, 0), WEST, adults=True).summon('wither_skeleton'))
+    room.function('wither_skeleton_init').add(placer(r(-0.2, 2, 0), WEST, adults=True).summon(
+        'wither_skeleton', nbt={'HandItems': [Item.nbt_for('stone_sword')]}))
     room.function('ghast_init').add(
         placer(r(-0.5, 5, 0), SOUTH, adults=True).summon('Ghast'),
         placer(r(-4, 3, 0), SOUTH, adults=True).summon(
@@ -27,7 +28,7 @@ def room():
     room.function('piglin_brute_init').add(
         placer(r(0, 2, 0), EAST, adults=True).summon(
             Entity('Piglin Brute', {'HandItems': [Item.nbt_for('golden_axe')]})))
-    piglins = ('Piglin', 'Zombified Piglin')
+    piglins = (Entity('Piglin', nbt={'HandItems':[Item.nbt_for('golden_sword')]}), 'Zombified Piglin')
     hoglins = ('Hoglin', 'Zoglin')
 
     def piglin_loop(step):

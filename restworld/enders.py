@@ -40,11 +40,10 @@ def room():
         kill(e().type('ender_dragon')),
         kill(e().type('dragon_fireball')),
         WallSign((None, 'Ender Dragon')).place(r(0, 2, -5), NORTH),
-        WallSign((None, 'Dragon Fireball')).place(r(0, 2, -1), NORTH),
+        WallSign((None, 'Dragon Fireball')).place(r(0, 2, -15), NORTH),
         room.mob_placer(r(0, 3, -5), NORTH, adults=True).summon('ender_dragon', tags=('dragon', 'dragon_thing')),
-        room.mob_placer(r(0, 3, -14), NORTH, adults=True).summon('dragon_fireball', tags=('dragon_thing',),
-                                                                 nbt={'direction': {0.0, 0.0, 0.0},
-                                                                      'ExplosionPower': 0}),
+        room.mob_placer(r(0, 3, -14), NORTH, adults=True).summon(
+            'dragon_fireball', tags=('dragon_thing',), nbt={'direction': {0.0, 0.0, 0.0}, 'ExplosionPower': 0}),
     )
     room.function('end_portal_init').add(
         execute().as_(e().tag('var_home')).run(tag(s()).add('blockers_home')))
