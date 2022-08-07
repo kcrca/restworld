@@ -62,16 +62,16 @@ def apologia():
 
     book.add(r'       ', JsonText.text('On Maps').bold(), r'\n\n')
     book.add(simplify("""All you can see here are the general map textures, how they look for partially completed 
-maps (both on the wall and in your hand (just take one from the chest), and indicators for you, map placement, 
-and banners."""))
+    maps, both on the wall and in your hand (just take one from the chest), and indicators for you, map placement, 
+    and banners."""))
     book.next_page()
-    book.add(simplify("""Minecraft maps consult the real world when deciding what to show. Most other things have 
-internal state that can be set to show what you want, but not maps. So to see your marker, pick up a map and look 
-at it as you move around. To see what a separate player looks like, you'll have to get"""))
+    book.add(simplify("""Minecraft maps consult the real world when deciding what to show, so one cannot set 
+    parameters that show arbitrary things on a map. So to see your marker, pick up a map and look at it as you move 
+    around. To see what a separate player looks like, you'll have to get someone else to log in."""))
     book.next_page()
-    book.add(simplify("""someone else to log in to the world. And the treasure, woodland explorer, and ocean explorer 
-maps would require some place that has those features, which this world doesn't and (AFAICT) cannot have. So we 
-cannot show those things. Sorry."""))
+    book.add(simplify("""to the world. And the treasure, woodland explorer, and ocean explorer maps would require 
+    some place that has those features, which this world doesn't and (AFAICT) cannot have. So we cannot show those 
+    things. Sorry."""))
 
     return book
 
