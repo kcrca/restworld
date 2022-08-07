@@ -4,7 +4,7 @@ from pynecraft.base import DOWN, EAST, NOON, SOUTH, UP, WEST, r
 from pynecraft.commands import Block, data, e, execute, fill, function, kill, setblock, summon, time
 from pynecraft.info import instruments, stems, woods
 from pynecraft.simpler import Item, Volume, WallSign
-from restworld.rooms import Room, label
+from restworld.rooms import Room, ensure, label
 from restworld.world import fast_clock, kill_em, main_clock, restworld
 
 
@@ -26,7 +26,7 @@ def room():
 
     def lightning_rod_loop(step):
         yield setblock(r(0, 3, 0), step.elem)
-        yield data().merge(r(-1, 2, 0), {'Text3': '(Powered)' if 'powered' in str(step.elem) else ''})
+        yield data().merge(r(1, 2, 0), {'Text3': '(Powered)' if 'powered' in str(step.elem) else ''})
 
     room.loop('lightning_rod', main_clock).loop(
         lightning_rod_loop, (Block('Lightning Rod'), Block('Lightning Rod', {'powered': True})))
@@ -42,16 +42,22 @@ def room():
     room.loop('minecarts', main_clock).loop(minecart_loop, minecart_types)
     room.loop('observer', main_clock).loop(
         lambda step: setblock(r(0, 2, 0), ('observer', {'powered': step.elem, 'facing': EAST})), (True, False))
-    room.function('piston_init').add(WallSign(()).place(r(0, 3, 0), WEST))
+    room.function('piston_init').add(WallSign(()).place(r(-1, 2, 0), WEST))
 
     def piston_loop(step):
-        yield setblock(r(0, 2, 0), (step.elem, {'facing': WEST}))
-        yield setblock(r(0, 2, 1), (step.elem, {'facing': WEST, 'extended': True}))
-        yield setblock(r(-1, 2, 1),
-                       ('piston_head', {'facing': WEST, 'type': 'sticky' if 'Sticky' in step.elem else 'normal'}))
-        yield data().merge(r(0, 3, 0), {'Text2': step.elem})
+        extended = step.i in (1, 4)
+        block = 'redstone_block' if extended else 'air'
+        piston = 'Piston' if step.i < 3 else 'Sticky Piston'
+        if block == 'air':
+            yield setblock(r(-1, 2, 0), 'air')
+        yield ensure(r(0, 2, 0), block)
+        if step.i in (0, 3):
+            yield ensure(r(0, 2, -1), f'{piston}[facing=north]')
+            yield ensure(r(0, 2, 1), f'{piston}[facing=west]')
+            yield ensure(r(0, 3, 0), f'{piston}[facing=up,]')
+        yield WallSign((None, piston)).place(r(-1, 2, 0), WEST)
 
-    room.loop('piston', main_clock).loop(piston_loop, ('Piston', 'Sticky Piston'))
+    room.loop('piston', main_clock).loop(piston_loop, range(6))
     room.function('rail_init').add(WallSign(()).place(r(1, 2, -2), WEST))
     # Can't seeem to make detector rail 'powered'
     powered = (False, False, True, False, False, True)
@@ -95,7 +101,8 @@ def room():
 
     room.loop('repeater', main_clock).loop(repeater_loop, range(0, 2))
     room.function('sculk_init').add(WallSign((None, 'Sculk Sensor')).place(r(-1, 3, 0), EAST))
-    room.loop('sculk', main_clock).loop(lambda step: setblock(r(-4, 2, 0), 'air' if step.i else 'redstone_block'), range(3))
+    room.loop('sculk', main_clock).loop(lambda step: setblock(r(-4, 2, 0), 'air' if step.i else 'redstone_block'),
+                                        range(3))
     room.function('target_init').add(WallSign((None, 'Target', None, '(vanilla shows 1)')).place(r(1, 3, 0), WEST))
 
     def target_loop(step):
