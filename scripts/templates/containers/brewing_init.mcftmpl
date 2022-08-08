@@ -1,4 +1,0 @@
-<%namespace name="base" file="../base.mcftmpl"/>
-
-function restworld:containers/switch_brewing_off
-${base.label(1, 1, -1, "Brew")}

@@ -1,9 +1,0 @@
-<%namespace import="*" file="blocks_base.mcftmpl"/>
-<%
-    types = ("Copper Block", "Exposed Copper", "Weathered|Copper", "Oxidized Copper")
-    block = list(x.replace('Copper', 'Cut Copper').replace(' Block', '').replace(' Cut', '|Cut') for x in types)
-    waxed_types = tuple("Waxed|%s" % x for x in types)
-    waxed_block = tuple("Waxed|%s" % x for x in block)
-    prefs=('execute if score waxed_copper funcs matches 0 run', 'execute if score waxed_copper funcs matches 1 run')
-%>
-${blocks(types, waxed_types, block, waxed_block, dx=-3, prefixes=(prefs, prefs))}

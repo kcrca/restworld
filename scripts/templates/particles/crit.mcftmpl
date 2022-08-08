@@ -1,2 +1,0 @@
-<%namespace file="particle_base.mcftmpl" import="*"/>\
-${fast_clock()} particle crit ~0 ~1.5 ~0 0.5 0.5 0.5 0 10

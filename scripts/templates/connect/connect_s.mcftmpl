@@ -1,2 +1,0 @@
-<%namespace import="*" file="connect_base.mcftmpl"/>
-${connect('diamond_block', 0, 1)}

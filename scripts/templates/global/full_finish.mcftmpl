@@ -1,5 +1,0 @@
-function restworld:_init
-function restworld:_cur
-
-## Some of these functions leave dropped items behind, this cleans that up
-kill @e[type=item]

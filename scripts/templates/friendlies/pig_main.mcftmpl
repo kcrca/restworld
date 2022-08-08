@@ -1,5 +1,0 @@
-<%namespace name="base"  file="../base.mcftmpl"/>
-
-${base.increment(2)}
-${base.when(0)} execute as @e[tag=pig,tag=!kid] run data merge entity @s {Saddle:0}
-${base.when(1)} execute as @e[tag=pig,tag=!kid] run data merge entity @s {Saddle:1}

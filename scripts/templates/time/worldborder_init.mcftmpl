@@ -1,3 +1,0 @@
-<%namespace name="base" file="../base.mcftmpl"/>
-
-${base.label(0, 7, 0, "World Boundary")}

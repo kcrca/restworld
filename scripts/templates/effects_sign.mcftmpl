@@ -1,6 +1,0 @@
-<%namespace file="sign_base.mcftmpl" import="*"/>\
-
-execute at @e[tag=effects_signer] run setblock ^${x} ^${y} ^${z} oak_wall_sign[facing=${wall.facing}]{\
-${sign_local_nbt(1, "setblock ^%d ^0 ^%d emerald_block" % (wall.block_at[0], wall.block_at[1]), lines[1])},\
-${sign_local_nbt(2, 'effect give @p %s 100000' % subj.id, lines[2])}\
-} replace

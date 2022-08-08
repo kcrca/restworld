@@ -1,6 +1,0 @@
-<%namespace name="base" file="../base.mcftmpl"/>
-<% types = ('prismarine', 'dark_prismarine', 'prismarine_bricks', 'sea_lantern', 'clay') %>
-
-<%base:loop collection="${types}" args="when,i,thing">
-${when(i)} fill ~3 ~14 ~3 ~-3 ~12 ~-3 ${thing} replace #restworld:conduit
-</%base:loop>

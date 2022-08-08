@@ -1,4 +1,0 @@
-<%namespace name="base" file="../base.mcftmpl"/>
-<%namespace file="biome_base.mcftmpl" import="*"/>
-
-${load_biome(illuminate, 'illuminate')}

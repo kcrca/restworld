@@ -1,1 +1,0 @@
-function restworld:photo/photo_example_view

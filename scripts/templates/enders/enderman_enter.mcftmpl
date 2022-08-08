@@ -1,5 +1,0 @@
-<%namespace name="base" file="../base.mcftmpl"/>\
-
-# Enderman requires special handling because the rain may make it run away (even with NoAI)
-${base.mobs_init(adult_z_init=0, rotation_init=0)}\
-execute unless entity @e[type=enderman,distance=..5] run ${base.mobs("Enderman", do_adult=True)}

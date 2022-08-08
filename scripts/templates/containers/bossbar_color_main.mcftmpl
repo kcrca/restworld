@@ -1,7 +1,0 @@
-<%namespace name="base" file="../base.mcftmpl"/>
-<% colors = ('Blue', 'Green', 'Pink', 'Purple', 'Red', 'White', 'Yellow') %>
-
-<%base:loop collection="${colors}" args="when,i,thing">
-${when(i)} bossbar set restworld:bossbar color ${thing.lower()}
-${when(i)} data merge block ~0 ~2 ~0 {Text3:${text(thing)}}
-</%base:loop>

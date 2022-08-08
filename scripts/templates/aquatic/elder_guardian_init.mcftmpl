@@ -1,3 +1,0 @@
-<%namespace name="base" file="../base.mcftmpl"/>\
-
-${base.adult(Thing("Elder Guardian"), 2, 1, 0, 225)}\

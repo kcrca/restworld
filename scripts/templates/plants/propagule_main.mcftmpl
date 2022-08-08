@@ -1,6 +1,0 @@
-<%namespace name="base" file="../base.mcftmpl"/>
-
-<%base:loop collection="${range(0, 4)}" args="when,i,thing">
-${when(i)} setblock ~0 ~4 ~0 mangrove_propagule[hanging=true,age=${thing}]
-${when(i)} data merge block ~1 ~2 ~0 {Text3:${text('Stage %d' % thing)}}
-</%base:loop>

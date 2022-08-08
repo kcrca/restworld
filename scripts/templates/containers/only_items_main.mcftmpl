@@ -1,8 +1,0 @@
-<%namespace file="only_items_init.mcftmpl" import="*"/>
-<%namespace name="base" file="../base.mcftmpl"/>\
-
-<% command_blocks = ('', 'Chain ', 'Repeating ') * 2 %>
-
-<%base:loop collection="${('', 'Chain ', 'Repeating ')}" args="when,i,thing">\
-${when(i)} ${only_item_contents(Thing('%sCommand Block' % thing), i, tag='command_block')}
-</%base:loop>

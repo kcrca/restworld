@@ -1,3 +1,0 @@
-%for v in vars:
-execute at @e[tag=${v}_home] run function restworld:${room}/${v}_finish
-%endfor

@@ -1,8 +1,0 @@
-<%namespace name="base" file="../base.mcftmpl"/>
-
-<% azaleas = (Thing('Azalea'), Thing('Flowering Azalea')) %>
-
-<%base:loop collection="${azaleas}" args="when,i,thing">\
-${when(i)} setblock ~0 ~3 ~0 ${thing.id}
-${when(i)} data merge block ~1 ~2 ~0 {${thing.sign_text()}}
-</%base:loop>

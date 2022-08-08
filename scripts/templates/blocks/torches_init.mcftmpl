@@ -1,6 +1,0 @@
-<%namespace name="base" file="../base.mcftmpl"/>\
-
-${base.sign('~0 ~2 ~-1', 'north', 3, "Torch")}
-tag @e[tag=${var}_home] add no_expansion
-
-${base.label(-1, 2, 0, "Wall-ness")}

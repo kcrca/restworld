@@ -1,3 +1,0 @@
-<%namespace import="*" file="blocks_base.mcftmpl"/>
-<% types = ("Dirt", "Coarse Dirt", "Rooted Dirt", "Farmland") %>
-${blocks(types, sign=1)}

@@ -1,8 +1,0 @@
-<%namespace name="base" file="../base.mcftmpl"/>
-
-<%base:bounce collection="${range(0, 3)}" args="when,i,thing">\
-% for count in range(4, 0, -1):
-${when(i)} setblock ~0 ~2 ~${count - 3} turtle_egg[eggs=${count},hatch=${thing}]
-% endfor
-${when(i)} data merge block ~0 ~2 ~2 {Text3:${text('Hatch Age: %d' % thing)}}
-</%base:bounce>\

@@ -1,7 +1,0 @@
-<%namespace name="base"  file="../base.mcftmpl"/>\
-<% dusty = (Thing("Dragon Egg"), Thing("Sand"), Thing("Red Sand"), Thing("Gravel"), Thing("Green Concrete Powder")) %>
-
-<%base:loop collection="${dusty}" args="when,i,thing">
-${when(i)} fill ~-2 ~5 ~-2 ~2 ~5 ~2 ${thing.full_id()}
-${when(i)} particle falling_dust ${thing.full_id()} ~0 ~4.9 ~0 1.5 0 1.5 0 50
-</%base:loop>

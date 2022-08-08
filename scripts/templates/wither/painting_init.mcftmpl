@@ -1,6 +1,0 @@
-<%namespace name="base" file="../base.mcftmpl"/>
-
-kill @e[type=painting,distance=..10]
-## The case here futureproofs this commmand; see https://bugs.mojang.com/browse/MC-251815
-summon painting ~0 ~3 ~0 {variant:wither,Variant:wither,facing:5,Facing:5}
-${base.sign('~0 ~3 ~-1', 'west', 2, ('"Wither"',))}

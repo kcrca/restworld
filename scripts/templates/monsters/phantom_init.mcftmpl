@@ -1,4 +1,0 @@
-<%namespace name="base" file="../base.mcftmpl"/>
-
-${base.mobs_init(y_init=2, rotation_init=90)}\
-${base.adult(Thing("Phantom"), -1.5, 2.0, 0, 90, on_stand=True)}

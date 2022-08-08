@@ -1,7 +1,0 @@
-<%namespace name="base" file="../base.mcftmpl"/>
-
-${base.increment(2)}
-${base.when(0)} fill ~0 ~0 ~0 ~7 ~0 ~7 redstone_torch replace glass
-${base.when(0)} data merge block ~0 ~2 ~0 {Text3:${text("(Powered)")}}
-${base.when(1)} fill ~0 ~0 ~0 ~7 ~0 ~7 glass replace redstone_torch
-${base.when(1)} data merge block ~0 ~2 ~0 {Text3:${text("")}}

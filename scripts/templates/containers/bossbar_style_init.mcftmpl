@@ -1,7 +1,0 @@
-<%namespace name="base" file="../base.mcftmpl"/>
-
-kill @e[tag=bossbar_current]
-execute at @e[tag=bossbar_home] run summon armor_stand ~-2 ~0 ~0 {Tags:[bossbar_current,${var}_home],Small:true}
-execute at @e[tag=${var}_home] run function restworld:containers/${var}_cur
-
-bossbar set restworld:bossbar visible true

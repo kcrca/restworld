@@ -1,9 +1,0 @@
-<%namespace name="base" file="../base.mcftmpl"/>
-
-% for i in range(0, 12):
-<% tag, variants = fishes[i] %>\
-summon tropical_fish ~${int(i / 6)} ~3.2 ~${int(i % 6)} {Tags:[aquatic,${tag}],Variant:${variants[0][0]},CustomName:${text(variants[0][1])},NoAI:True,Silent:True,Rotation:[90f,0f]}
-% if i == len(fishes) - 1:
-${base.sign('~%d ~2 ~%d' % (int(i / 6) - 1, int(i % 6)), 'west', 1, ("Naturally", "Occurring", "Tropical Fish", "<--------"), water=True)}
-% endif
-% endfor

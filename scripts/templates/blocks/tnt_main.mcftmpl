@@ -1,8 +1,0 @@
-<%namespace name="base" file="../base.mcftmpl"/>
-
-<%base:loop collection="${range(0, 2)}" args="when,i,thing">\
-${when(i)} kill @e[type=tnt,distance=..10]
-${when(i)} setblock ~0 ~3 ~0 tnt[unstable=${'true' if i == 1 else 'false'}]
-${when(i)} data merge block ~0 ~2 ~-1 {Text3:${text('Unstable' if i == 1 else 'Stable')}}
-${when(i)} scoreboard players set tnt_fuse funcs -1
-</%base:loop>

@@ -1,3 +1,0 @@
-<%namespace import="*" file="blocks_base.mcftmpl"/>
-<% types = ("Pumpkin", Thing("Carved Pumpkin", block_state="facing=south"), Thing("Jack O Lantern", block_state="facing=south")) %>
-${blocks(types, sign=1)}

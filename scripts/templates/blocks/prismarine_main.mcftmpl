@@ -1,3 +1,0 @@
-<%namespace import="*" file="blocks_base.mcftmpl"/>
-<% types = ("Prismarine", "Prismarine Bricks", "Dark Prismarine") %>
-${blocks(types)}

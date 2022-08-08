@@ -1,8 +1,0 @@
-This is designed to be expandable and entirely using relative coordinates.
-
-It works by using structure blocks to save and restore parts. This allows transfer between places
-without knowing the specific distances involved.
-
-The only problem with this is that Save structure blocks always show their outline, which would be
-ugly. So we can leave Load structure blocks around, but not Save ones. So we create them when we
-need them, fire them, and then replace them. Stone blocks are used as placeholders.

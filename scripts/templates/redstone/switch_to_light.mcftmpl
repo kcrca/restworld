@@ -1,2 +1,0 @@
-<%namespace file="pressure_plate_base.mcftmpl" import="*"/>
-${plate(False)}

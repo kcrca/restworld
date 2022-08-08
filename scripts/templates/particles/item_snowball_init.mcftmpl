@@ -1,3 +1,0 @@
-setblock ~0 ~2 ~-1 dispenser[facing=south]
-fill ~-1 ~2 ~4 ~1 ~2 ~4 glass
-setblock ~0 ~3 ~4 glass

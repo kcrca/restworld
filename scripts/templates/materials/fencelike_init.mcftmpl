@@ -1,8 +1,0 @@
-<%namespace name="base" file="../base.mcftmpl"/>\
-
-${base.sign('~6 ~2 ~0', 'north', 3, "Stained Glass")}
-function restworld:materials/panes_cur
-${base.label(6, 2, -1, "Change Height")}
-${base.label(4, 2, -1, "Glass Panes")}
-${base.label(3, 2, -1, "Walls")}
-${base.label(2, 2, -1, "Fences")}

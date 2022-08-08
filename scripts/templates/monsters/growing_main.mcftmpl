@@ -1,7 +1,0 @@
-<%namespace name="base" file="../base.mcftmpl"/>\
-
-<% sizes = [0, 1, 3] %>
-
-<%base:bounce collection="${sizes}" args="when,i,thing">
-${when(i)} execute as @e[tag=growing] run data merge entity @s {Size:${thing}}
-</%base:bounce>

@@ -1,9 +1,0 @@
-<%namespace name="base" file="../base.mcftmpl"/>
-
-<% combos = (('true', 'true'), ('true', 'false'), ('false', 'false'), ('false', 'true')) %>
-
-<%base:loop collection="${combos}" args="when,i,thing">\
-${when(i)} setblock ~0 ~3 ~0 cave_vines_plant[berries=${thing[1]}]
-${when(i)} execute unless score cave_vines_tops funcs matches 1 run setblock ~0 ~2 ~0 cave_vines[berries=${thing[0]}]
-${when(i)} execute if score cave_vines_tops funcs matches 1 run setblock ~0 ~2 ~0 cave_vines[berries=${thing[0]},age=25]
-</%base:loop>

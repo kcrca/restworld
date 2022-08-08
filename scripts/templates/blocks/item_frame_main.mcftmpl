@@ -1,9 +1,0 @@
-<%namespace name="base" file="../base.mcftmpl"/>
-
-<% frames = (Thing('Item Frame'), Thing('Glow Item Frame')) %>
-
-kill @e[tag=item_frame_as_block]
-<%base:loop collection="${frames}" args="when, i, thing">\
-${when(i)} summon ${thing.id} ~0 ~3 ~-1 {Facing:2,Tags:[item_frame_as_block],Item:{id:lapis_lazuli,Count:1},Fixed:True}
-${when(i)} data merge block ~0 ~2 ~-1 {${thing.sign_text()}}
-</%base:loop>

@@ -1,8 +1,0 @@
-<%namespace name="base" file="../base.mcftmpl"/>
-<% structure_blocks = [Thing("Data", "DATA"), Thing("Save", "SAVE"), Thing("Load", "LOAD"), Thing("Corner", "CORNER")] %>
-
-
-<%base:loop collection="${structure_blocks}" args="when,i,thing">
-${when(i)} data merge block ~0 ~3 ~0 {mode:${thing.id.upper()}}
-${when(i)} data merge block ~0 ~2 ~1 {Text2:${text(thing.name)}}
-</%base:loop>

@@ -1,3 +1,0 @@
-<%namespace name="base" file="../base.mcftmpl"/>
-
-${base.room_sign('south', 2, ('Mob Effects',))}

@@ -1,3 +1,0 @@
-<%namespace import="*" file="blocks_base.mcftmpl"/>
-<% types = ("Ice", "Packed Ice", "Blue Ice") %>
-${blocks(types, sign=1)}

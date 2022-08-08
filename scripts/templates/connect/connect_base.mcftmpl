@@ -1,9 +1,0 @@
-<%def name="connect(src, sx, sz)">
-%for x in range(-12, 13):
-%  for y in range(0, 5):
-%    for z in range(-12, 13):
-execute at @e[tag=connect_mid_home] if block ~${x} ~${-9 + y} ~${z} ${src} run clone ~${sx} ~1 ~${sz} ~${sx} ~1 ~${sz} ~${x} ~${2 + y} ~${z}
-%    endfor
-%  endfor
-%endfor
-</%def>

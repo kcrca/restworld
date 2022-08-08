@@ -1,3 +1,0 @@
-execute positioned 0 1.5 0 run function restworld:global/death_home
-tag @e[tag=death_home] add death
-tag @e[tag=death_home] add immortal

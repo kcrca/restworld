@@ -1,3 +1,0 @@
-<%namespace name="base" file="../base.mcftmpl"/>\
-
-${base.adult(Thing("Evoker Fangs"), 0, 1, 0, 180, nbt="Warmup:0")}

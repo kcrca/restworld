@@ -1,2 +1,0 @@
-<%namespace file="particle_base.mcftmpl" import="*"/>\
-${main_clock()} particle soul ~0 ~0.75 ~0 0.05 0 0.05 0.05 4

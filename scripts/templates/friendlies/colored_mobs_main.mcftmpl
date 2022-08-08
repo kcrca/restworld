@@ -1,6 +1,0 @@
-<%namespace name="base" file="../base.mcftmpl"/>\
-
-<%base:loop collection="${colors}" args="when,i,thing">\
-${when(i)} execute as @e[tag=colorable] run data merge entity @s {Color:${i},CustomName:${text(thing.name)}}
-${when(i)} execute as @e[tag=collared] run data merge entity @s {CollarColor:${i}}
-</%base:loop>\

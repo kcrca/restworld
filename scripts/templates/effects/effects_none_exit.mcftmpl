@@ -1,1 +1,0 @@
-function restworld:effects/effects_none

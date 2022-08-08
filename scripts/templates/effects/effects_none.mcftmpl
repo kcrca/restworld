@@ -1,2 +1,0 @@
-effect clear @p
-execute at @e[tag=effects_signs_home] run fill ~0 ~2 ~0 ~9 ~7 ~-9 smooth_quartz replace emerald_block

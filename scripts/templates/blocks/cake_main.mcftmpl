@@ -1,7 +1,0 @@
-<%namespace name="base" file="../base.mcftmpl"/>\
-<% bites = range(0, 7) %>\
-
-<%base:bounce collection="${bites}" args="when,i,thing">
-${when(i)} setblock ~0 ~3 ~0 cake[bites=${thing}]
-${when(i)} data merge block ~0 ~2 ~-1 {Text3:${text("Bites: %d" % thing)}}
-</%base:bounce>

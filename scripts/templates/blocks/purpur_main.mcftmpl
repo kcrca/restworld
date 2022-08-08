@@ -1,3 +1,0 @@
-<%namespace import="*" file="blocks_base.mcftmpl"/>
-<% types = ("Purpur Block", "Purpur Pillar") %>
-${blocks(types)}

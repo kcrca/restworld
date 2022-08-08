@@ -1,7 +1,0 @@
-clear @p
-gamemode creative @p
-function restworld:global/control_book
-tp @p 0 101 0 facing 0 100 5
-scoreboard objectives setdisplay sidebar
-function restworld:center/reset_clocks
-function restworld:global/clock_on

@@ -1,1 +1,0 @@
-data merge block ~0 ~4 ~0 {Items:[${','.join('{Slot:%d,id:book,Count:64},{Slot:%d,id:lapis_lazuli,Count:64}' % (i, i + 9) for i in range(0, 9))}]}

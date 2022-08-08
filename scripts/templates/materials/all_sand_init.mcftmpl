@@ -1,3 +1,0 @@
-<%namespace name="base" file="../base.mcftmpl"/>
-
-${base.sign('~0 ~2 ~3', 'west', 3, "and Sandstone")}

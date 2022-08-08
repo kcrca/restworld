@@ -1,3 +1,0 @@
-<%namespace import="*" file="blocks_base.mcftmpl"/>
-<% types = ("Smooth Stone|Slab", "Petrified Oak|Slab") %>
-${blocks(types)}

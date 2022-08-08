@@ -1,2 +1,0 @@
-setblock ~0 ~3 ~0 spawner
-tag @e[tag=${var}_home] add no_expansion

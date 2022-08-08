@@ -1,4 +1,0 @@
-<%namespace file="particle_base.mcftmpl" import="*"/>\
-
-${slow_clock()} function restworld:particles/shriek_out
-${slow_clock(delay=7*8)} setblock ~0 ~0 ~0 sculk_shrieker[can_summon=true,shrieking=false]

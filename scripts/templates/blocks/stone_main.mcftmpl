@@ -1,3 +1,0 @@
-<%namespace import="*" file="blocks_base.mcftmpl"/>
-<% types = ("Basalt", "Stone", "Deepslate", "Andesite", "Diorite", "Granite", "Blackstone", "Basalt") %>
-${blocks(types, ("Smooth Basalt", "Smooth Stone") + tuple("Polished|%s" % t for t in types[2:]), sign=-1, dz=3)}

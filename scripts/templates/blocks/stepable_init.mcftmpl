@@ -1,5 +1,0 @@
-<%namespace name="base" file="../base.mcftmpl"/>
-
-${base.sign('~3 ~4 ~5', 'north', 2, "Block")}
-${base.sign('~3 ~5 ~5', 'north', 2, "Double Slab")}
-${base.sign('~1 ~2 ~-1', 'north', 2, "Slabs & Stairs")}

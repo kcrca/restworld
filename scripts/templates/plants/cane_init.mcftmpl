@@ -1,6 +1,0 @@
-<%namespace name="base" file="../base.mcftmpl"/>
-
-setblock ~-1 ~2 ~0 water
-${base.sign('~-2 ~2 ~0', 'east', 2, 'Bamboo')}
-setblock ~-1 ~2 ~-1 structure_void
-setblock ~-1 ~2 ~1 structure_void

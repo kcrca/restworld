@@ -1,2 +1,0 @@
-kill @e[tag=item_frame_as_block]
-tag @e[tag=${var}_home] add no_expansion

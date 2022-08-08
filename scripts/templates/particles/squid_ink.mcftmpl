@@ -1,2 +1,0 @@
-<%namespace file="particle_base.mcftmpl" import="*"/>\
-${main_clock()} function restworld:particles/squid_ink_run

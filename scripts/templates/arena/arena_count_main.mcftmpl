@@ -1,5 +1,0 @@
-<%namespace name="base" file="../base.mcftmpl"/>\
-
-<%base:loop collection="${range(0, 6)}" args="when,i,thing">\
-${when(i)} execute at @e[tag=controls_home] run data merge block ~2 ~4 ~0 {Text2:${text("%d vs %d" % (thing, thing))}}
-</%base:loop>\

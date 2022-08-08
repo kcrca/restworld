@@ -1,8 +1,0 @@
-<%namespace name="base" file="../base.mcftmpl"/>
-<% stages = range(1, 9) %>
-
-<%base:bounce collection="${stages}" args="when,i,thing">
-${when(i)} setblock ~0 ~3 ~0 grass_block[snowy=true]
-${when(i)} setblock ~0 ~4 ~0 snow[layers=${thing}]
-${when(i)} data merge block ~0 ~2 ~1 {Text3:${text("Layers: %d" % thing)}}
-</%base:bounce>

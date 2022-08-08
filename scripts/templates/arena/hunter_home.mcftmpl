@@ -1,6 +1,0 @@
-kill @e[tag=${var}]
-%for x in range(-1, 2):
-%   for z in range(-1, 2):
-summon armor_stand ~${x} ~0.5 ~${z} {Tags:[${var},homer,arena_home],NoGravity:true,Small:True,PersistenceRequired:True}
-%   endfor
-%endfor

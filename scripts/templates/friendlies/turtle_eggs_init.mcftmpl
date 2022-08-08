@@ -1,6 +1,0 @@
-<%namespace name="base" file="../base.mcftmpl"/>
-
-execute as @e[tag=${var}_home] run tag @s add blockers_home
-
-${base.sign('~0 ~2 ~2', 'north', 2, 'Turtle Eggs')}
-${base.label(1, 2, -2, 'On Sand')}

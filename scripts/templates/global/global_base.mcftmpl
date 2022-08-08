@@ -1,3 +1,0 @@
-<%def name="use_min_fill(y, filler)">\
-execute at @e[tag=min_home] run fill ~0 ${y} ~0 ~166 ${y} ~180 ${filler}
-</%def>

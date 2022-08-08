@@ -1,1 +1,0 @@
-function restworld:banners/switch_to_color

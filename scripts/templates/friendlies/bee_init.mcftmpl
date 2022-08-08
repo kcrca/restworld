@@ -1,7 +1,0 @@
-<%namespace name="base" file="../base.mcftmpl"/>\
-
-${base.mobs_init(y_init=1, kid_z_init=-2, z_delta_init=-2, rotation_init=180)}\
-${base.mobs("Bee", tags=("bee",))}
-
-${base.label(-1, 2, -2, "Stinger")}
-${base.label(1, 2, -2, "Pollen")}

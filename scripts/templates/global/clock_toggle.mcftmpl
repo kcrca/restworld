@@ -1,4 +1,0 @@
-scoreboard players set ${var} funcs 0
-execute at @e[tag=clock_home] if block ~0 ~-2 ~1 redstone_block run scoreboard players set ${var} funcs 1
-execute if score ${var} funcs matches 0 run function restworld:global/clock_on
-execute if score ${var} funcs matches 1 run function restworld:global/clock_off

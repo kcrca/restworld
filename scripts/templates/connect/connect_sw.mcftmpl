@@ -1,2 +1,0 @@
-<%namespace import="*" file="connect_base.mcftmpl"/>
-${connect('magenta_wool', -1, 1)}

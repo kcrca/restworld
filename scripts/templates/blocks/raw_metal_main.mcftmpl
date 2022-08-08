@@ -1,3 +1,0 @@
-<%namespace import="*" file="blocks_base.mcftmpl"/>
-<% types = ("Raw Iron|Block", "Raw Copper|Block", "Raw Gold|Block") %>
-${blocks(types)}

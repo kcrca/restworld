@@ -1,7 +1,0 @@
-<%namespace name="base" file="../base.mcftmpl"/>
-
-<%base:bounce collection="${range(0, 3)}" args="when,i,thing">
-${when(i)} data merge entity @e[tag=pufferfish,limit=1] {PuffState:${thing}}
-</%base:bounce>
-
-tp @e[tag=pufferfish] ~1.8 ~4 ~-6

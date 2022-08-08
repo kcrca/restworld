@@ -1,6 +1,0 @@
-<%namespace name="base" file="../base.mcftmpl"/>
-
-<%base:bounce collection="${range(0, 4)}" args="when,i,thing">\
-${when(i)} setblock ~0 ~3 ~0 ${Thing("Sweet Berry Bush").full_id()}[age=${thing}]
-${when(i)} data merge block ~1 ~2 ~0 {Text2:${text("Stage: %d" % i)}}
-</%base:bounce>

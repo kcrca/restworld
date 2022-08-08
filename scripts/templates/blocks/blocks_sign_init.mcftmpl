@@ -1,8 +1,0 @@
-<%namespace file="../sign_base.mcftmpl" import="*"/>\
-
-execute at @e[tag=blocks_home,tag=!no_expansion] run data merge block ~0 ~2 ~-1 {${sign_local_nbt(0, "function restworld:blocks/toggle_expand", "")}}
-execute at @e[tag=blocks_home,tag=!no_expansion] run data merge block ~0 ~2 ~1 {${sign_local_nbt(0, "function restworld:blocks/toggle_expand", "")}}
-
-execute at @e[tag=blocks_home,tag=no_expansion] run data merge block ~0 ~2 ~-1 {${sign_local_nbt(0, "say Sorry, cannot expand this block", "")}}
-execute at @e[tag=blocks_home,tag=no_expansion] run data merge block ~0 ~2 ~1 {${sign_local_nbt(0, "say Sorry, cannot expand this block", "")}}
-tag @e[tag=${var}_home] add no_expansion

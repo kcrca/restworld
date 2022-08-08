@@ -1,4 +1,0 @@
-<%namespace name="base" file="../base.mcftmpl"/>
-
-${base.mobs_init(x_delta_init=2, z_init=-1, rotation_init=180, tags_init=("illager",))}\
-${base.adult(Thing("Vex"), 1, 1.5, -1, 90, nbt="LifeTicks:2147483647")}

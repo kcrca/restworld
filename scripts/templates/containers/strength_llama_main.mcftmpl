@@ -1,5 +1,0 @@
-<%namespace name='base' file='../base.mcftmpl'/>
-
-<%base:bounce collection="${range(1, 6)}" args="when,i,thing">
-${when(i)} execute as @e[tag=strength_llama] run data merge entity @s {Strength:${thing}}
-</%base:bounce>

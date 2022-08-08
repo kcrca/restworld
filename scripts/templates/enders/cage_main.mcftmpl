@@ -1,8 +1,0 @@
-<%namespace name="base" file="../base.mcftmpl"/>
-
-${base.increment(2)}
-${base.when(0)} execute at @e[tag=crystal_home] run fill ~2 ~7 ~2 ~-2 ~4 ~-2 air replace iron_bars
-
-${base.when(1)} execute at @e[tag=crystal_home] run fill ~2 ~9 ~2 ~-2 ~6 ~-2 iron_bars hollow
-${base.when(1)} execute at @e[tag=crystal_home] run fill ~1 ~8 ~1 ~-1 ~6 ~-1 air
-${base.when(1)} execute at @e[tag=crystal_home] run clone ~2 ~9 ~2 ~-2 ~6 ~-2 ~-2 ~4 ~-2 masked move

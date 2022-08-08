@@ -1,2 +1,0 @@
-execute in overworld run tp @p -1000 100 1000 facing -1011 93 989
-kill @e[type=item]

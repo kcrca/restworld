@@ -1,2 +1,0 @@
-<%namespace file="particle_base.mcftmpl" import="*"/>\
-${main_clock()} particle composter ~0 ~0.9 ~0 0.2 0.1 0.2 1 12

@@ -1,6 +1,0 @@
-<%namespace name="base" file="../base.mcftmpl"/>
-
-<%base:bounce collection="${(0, 25, 50, 75, 100)}" args="when,i,thing">
-${when(i)} bossbar set restworld:bossbar value ${thing}
-${when(i)} data merge block ~0 ~2 ~0 {Text3:${text("%d%%" % thing)}}
-</%base:bounce>

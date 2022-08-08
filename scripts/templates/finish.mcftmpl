@@ -1,3 +1,0 @@
-%for f in after_tick:
-function restworld:${room}/_finish_${f}
-%endfor

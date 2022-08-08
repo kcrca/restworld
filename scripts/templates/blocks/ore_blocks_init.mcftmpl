@@ -1,4 +1,0 @@
-<%namespace name="base" file="../base.mcftmpl"/>
-
-scoreboard players set deepslate_ores funcs 0
-${base.label(-1, 2, 0, "Deepslate")}

@@ -1,3 +1,0 @@
-<%namespace name="base" file="../base.mcftmpl"/>
-
-${base.label(2, 2, 0, "Pressure Plate Type")}

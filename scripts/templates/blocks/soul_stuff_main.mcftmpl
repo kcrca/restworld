@@ -1,3 +1,0 @@
-<%namespace import="*" file="blocks_base.mcftmpl"/>
-<% types = ("Soul Sand", "Soul Soil") %>
-${blocks(types, sign=-1)}

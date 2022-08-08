@@ -1,7 +1,0 @@
-<%namespace name="base" file="../base.mcftmpl"/>
-
-setblock ~0 ~2 ~0 minecraft:furnace[facing=west]{CookTime:0} replace
-setblock ~3 ~2 ~0 minecraft:blast_furnace[facing=west]{CookTime:0} replace
-setblock ~0 ~2 ~3 minecraft:smoker[facing=west]{CookTime:0} replace
-
-${base.label(-1, 2, 1, "Cook")}

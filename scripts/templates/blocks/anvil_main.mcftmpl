@@ -1,3 +1,0 @@
-<%namespace import="*" file="blocks_base.mcftmpl"/>
-<% types = list(Thing(b, block_state='facing=west') for b in ('Anvil', 'Chipped Anvil', 'Damaged Anvil')) %>
-${blocks(types)}

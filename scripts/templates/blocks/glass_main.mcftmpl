@@ -1,3 +1,0 @@
-<%namespace import="*" file="blocks_base.mcftmpl"/>
-<% types = ("Glass", "Tinted Glass") %>
-${blocks(types, sign=-1)}

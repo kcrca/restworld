@@ -1,6 +1,0 @@
-<%namespace name="base" file="../base.mcftmpl"/>
-
-<%base:loop collection="${villager_types}" args="when,i,thing">
-${when(i)} execute as @e[tag=villager] run data modify entity @s VillagerData.type set value ${thing.lower()}
-${when(i)} data modify block ~-5 ~2 ~0 Text2 set value ${text(thing)}
-</%base:loop>

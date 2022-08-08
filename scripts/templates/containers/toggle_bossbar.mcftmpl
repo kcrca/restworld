@@ -1,6 +1,0 @@
-<%namespace name="base" file="../base.mcftmpl"/>
-
-
-execute store result score ${var} funcs run bossbar get restworld:bossbar visible
-execute if score ${var} funcs matches 0 run bossbar set restworld:bossbar visible true
-execute if score ${var} funcs matches 1 run bossbar set restworld:bossbar visible false

@@ -1,3 +1,0 @@
-<%namespace name="base" file="../base.mcftmpl"/>
-
-${base.room_sign('east', 2, ('DIY:', 'Build Your', 'Own Sequence'))}

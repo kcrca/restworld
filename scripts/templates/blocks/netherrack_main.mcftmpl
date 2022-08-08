@@ -1,3 +1,0 @@
-<%namespace import="*" file="blocks_base.mcftmpl"/>
-<% types = ("Netherrack", "Warped Nylium", "Crimson Nylium") %>
-${blocks(types, sign=-1)}

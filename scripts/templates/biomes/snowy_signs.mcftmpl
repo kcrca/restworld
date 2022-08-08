@@ -1,3 +1,0 @@
-<%namespace file="biome_base.mcftmpl" import="*"/>
-
-${group_signs('Snowy')}

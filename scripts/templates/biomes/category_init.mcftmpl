@@ -1,5 +1,0 @@
-<%namespace name="base" file="../base.mcftmpl"/>
-<%namespace file="biome_base.mcftmpl" import="*"/>
-
-${categories()}
-${base.label(5, -1, 6, 'Illuminate')}

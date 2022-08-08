@@ -1,6 +1,0 @@
-<%namespace name="base" file="../base.mcftmpl"/>\
-
-${base.mobs_init(adult_z_init=0, adult_x_init=-0.5, y_init=4, rotation_init=0)}\
-${base.mobs("Ghast", do_adult=True, on_stand=True)}
-summon fireball ~-4 ~3 ~0 {CustomName:${text("Fireball")},NoAI:True,direction:[0,0,0],NoGravity:True,PersistanceRequired:True,Tags:[nether],ExplosionPower:0}
-${base.sign('~-4 ~2 ~1', 'south', 2, "Fireball")}

@@ -1,5 +1,0 @@
-<%namespace name="base" file="../base.mcftmpl"/>\
-
-${base.mobs_init(x_delta_init=2, kid_z_init=-1.2, adult_z_init=0.80, rotation_init=180)}\
-${base.mobs("Bat", y_add=0.5, do_kid=True)}
-${base.adult(Thing("Bat"), 0, 1.5, 1, 180, nbt="BatFlags:1", tags=("bat", "sleeping_bat"))}

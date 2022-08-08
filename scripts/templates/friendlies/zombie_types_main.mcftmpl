@@ -1,1 +1,0 @@
-function restworld:friendlies/villager_types_main

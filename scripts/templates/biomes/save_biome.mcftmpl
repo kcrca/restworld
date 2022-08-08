@@ -1,8 +1,0 @@
-<%namespace file="biome_base.mcftmpl" import="*"/>
-
-<%def name="save(biome, prefix, i, x, z, handback, raised=False)">
-${prefix} data merge block ~${x} ~1 ~${z} {mode:SAVE}
-${prefix} setblock ~${x} ~0 ~${z} redstone_torch
-${prefix} setblock ~${x} ~0 ~${z} air
-</%def>
-${load_biome(save, 'save')}

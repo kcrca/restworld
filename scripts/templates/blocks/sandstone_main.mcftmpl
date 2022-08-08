@@ -1,4 +1,0 @@
-<%namespace import="*" file="blocks_base.mcftmpl"/>
-<% types = ("Red Sandstone", "Smooth|Red Sandstone", "Cut|Red Sandstone", "Chiseled|Red Sandstone") %>
-<% import re %>
-${blocks(types, tuple(re.sub(" *Red *", "", f) for f in types), sign=1, dx=3)}

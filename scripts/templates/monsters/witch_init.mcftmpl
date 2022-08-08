@@ -1,4 +1,0 @@
-<%namespace name="base" file="../base.mcftmpl"/>
-
-${base.mobs_init(adult_x_init=-0.2, rotation_init=90)}\
-${base.mobs("Witch", do_adult=True)}\
