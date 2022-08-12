@@ -26,7 +26,14 @@ display_names = {
     Effect.BAD_LUCK: 'Bad Luck',
     Effect.HERO_OF_THE_VILLAGE: 'Hero|of the Village',
 }
-effects = [ActionDesc(e, display_names.get(e, None), 'Negative' if Effect.negative(e) else None) for e in Effect]
+
+
+def _desc_for(effect):
+    pos = Effect.positive(effect)
+    return 'Positive' if pos else 'Negative' if pos is not None else None
+
+
+effects = [ActionDesc(e, display_names.get(e, None), _desc_for(e)) for e in Effect]
 effects.sort()
 
 

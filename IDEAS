@@ -45,3 +45,28 @@ Status bar stuff
 The other stuff in icon.png (what's used from there?)
 
 pressure plate may not work both forward and back?
+
+HUD should be in GUI area.
+    Only really shown in surival mode, so we need an area where that happens. But some
+    effects are dangerous, so we have to monitor player health. Maybe not let it get below
+    50%? I dunno...
+
+    Can't set play info using standard commands (e.g., "data merge..."). Can only use effects and
+    sepcialized commands. Here are the things in the HUD with how to work with them:
+
+    Armor: Put various armor on the player.
+	Maybe store what the player is wearing in a chest when they enter, and put it back when they leave?
+    Health: Can change using effects instant_health and instant_damage
+	Basic: Hearts and half hearts. Just set the player health (which seemingly _can_ be set directly?)
+	Poisoned: Poison effect
+	Absorption: Absorption effect
+	Flashing when drained: For poison, handled naturally. Maybe damage effects will flash for normal.
+	    Maybe any damage while withered also flashes, even if not from wither?
+    Food level: Hunger effect can decrease, saturation effect increases it (and saturation, of course)
+    Saturation: Saturation effect increases, can't see how to decrease it.
+	Shown by jiggling the hunger bar periodically when depleted. That's it.
+    Experience: /xp command allows manipulation
+    Mob (horse) health and armor: Put the player on a horse, then adjust the horse's data, put armor on it, etc.
+    Weapon charging: Put a dummy entity they can hit?
+    Underwater: Probably need to be put underwater for a while. Don't think we can adjust this manually,
+	so I'll have to remove the water and let them recover. Slow clock, probably

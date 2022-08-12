@@ -3,8 +3,8 @@ from __future__ import annotations
 import random
 
 from restworld import ancient, aquatic, arena, banners, biomes, blocks, center, connect, containers, diy, effects, \
-    enders, font, friendlies, global_, maps, materials, monsters, nether, paintings, particles, photo, plants, redstone, \
-    tags, the_end, time, wither
+    enders, font, friendlies, global_, hud, maps, materials, monsters, nether, paintings, particles, photo, plants, \
+    redstone, tags, the_end, time, wither
 from restworld.world import restworld
 
 
@@ -14,9 +14,8 @@ def main():
     for f in (
             ancient.room, global_.room, aquatic.room, arena.room, banners.room, biomes.room, blocks.room, center.room,
             connect.room, containers.room, diy.room, effects.room, particles.room, enders.room, font.room,
-            friendlies.room, materials.room, monsters.room, nether.room, paintings.room, photo.room, plants.room,
-            redstone.room, the_end.room, time.room, wither.room,
-            maps.room):
+            friendlies.room, hud.room, materials.room, monsters.room, nether.room, paintings.room, photo.room,
+            plants.room, redstone.room, the_end.room, time.room, wither.room, maps.room):
         f()
     tags.tags()
     restworld.save('/Users/kcrca/clarity/home/saves/RestWorld_1.19.2')

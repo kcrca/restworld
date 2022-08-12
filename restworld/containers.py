@@ -16,26 +16,31 @@ def room():
 
     room.function('anvil_container_enter').add(setblock(r(0, 2, 0), 'anvil'))
 
+    # These offsets are used inside beacon functions so we can center the calculations under the middle of the pyramid,
+    # which is easier to reason about.
+    at = execute().positioned(r(0, -4, -5)).run
+
     def beacon_loop(step):
         depth = step.elem
         start_gold = depth - 1
         end_dirt = 4 - depth - 1
         if end_dirt >= 0:
-            yield fill(r(4, 2, 4), r(-4, 2 + end_dirt, -4), 'chiseled_quartz_block').replace('gold_block')
+            yield at(fill(r(4, 2, 4), r(-4, 2 + end_dirt, -4), 'chiseled_quartz_block').replace('gold_block'))
         if start_gold >= 0:
-            yield fill(r(4, 5, 4), r(-4, 5 - start_gold, -4), 'gold_block').replace('chiseled_quartz_block')
+            yield at(fill(r(4, 5, 4), r(-4, 5 - start_gold, -4), 'gold_block').replace('chiseled_quartz_block'))
 
         if step.i == 4:
-            yield data().merge(r(0, 6, 0), {'Secondary': -1})
+            yield at(data().merge(r(0, 6, 0), {'Secondary': -1}))
         elif step.i == 5:
-            yield data().merge(r(0, 6, 0), {'Secondary': 10})
+            yield at(data().merge(r(0, 6, 0), {'Secondary': 10}))
 
+    # Can't use bounce because we need to show two things at full strength.
     room.loop('beacon', slow_clock).loop(beacon_loop, (0, 1, 2, 3, 4, 4, 3, 2, 1))
     room.function('beacon_enter').add(
-        fill(r(0, 1, 0), r(0, 5, 0), 'gold_block'),
-        clone(r(0, -5, 1), r(0, -5, 1), r(0, 6, 1)))
+        at(fill(r(0, 1, 0), r(0, 5, 0), 'gold_block')),
+        at(clone(r(0, -5, 1), r(0, -5, 1), r(0, 6, 1))))
     room.function('beacon_exit').add(
-        fill(r(0, 1, 0), r(0, 5, 0), 'chiseled_quartz_block'))
+        at(fill(r(0, 1, 0), r(0, 5, 0), 'chiseled_quartz_block')))
 
     bossbar_which = room.score('bossbar_which')
     room.function('bossbar_exit').add(bossbar().set('restworld:bossbar').visible(False))
