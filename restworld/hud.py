@@ -1,8 +1,8 @@
 from pynecraft.base import NORTH, Nbt, r
-from pynecraft.commands import Entity, LEVELS, POINTS, SUCCESS, data, e, effect, execute, item, p, xp
+from pynecraft.commands import Entity, LEVELS, POINTS, SUCCESS, data, e, effect, execute, function, item, p, xp
 from pynecraft.enums import Effect
 from restworld.rooms import Room
-from restworld.world import main_clock, restworld
+from restworld.world import kill_em, main_clock, restworld
 
 
 def room():
@@ -40,43 +40,53 @@ def room():
     room.function('armor_exit', exists_ok=True).add(
         (item().replace().entity(p(), x).from_().entity(saver, x) for x in armor_places))
 
-    cur_health = room.score('cur_health')
-    health_up = room.score('health_up')
-    absorption = room.score('absorption')
-    healthing = room.score('healthing')
-    withering = room.score('withering')
-    max_health = 20
-    min_health = 15
-    room.function('health_init').add()
-    effect_time = 100000
-    room.loop('health', main_clock).add(
-        absorption.set(data().get(p(), 'AbsorptionAmount')),
-        cur_health.set(data().get(p(), 'Health')),
+    # Use for both the player and the horse. The horse will never have absorption or wither, but it isn't very expensive
+    # to check for them, and keeps this code simpler.
+    def health_funcs(prefix, entity, min_health, max_health):
+        cur_health = room.score(f'{prefix}cur_health')
+        health_up = room.score(f'{prefix}health_up')
+        absorption = room.score(f'{prefix}absorption')
+        healthing = room.score(f'{prefix}healthing')
+        withering = room.score(f'{prefix}withering')
+        effect_time = 100000
+        absorption_value = data().get(entity, 'AbsorptionAmount')
+        if 'horse' in prefix:
+            # Horses don't get absorption, this makes nothing happen with absorption in the loop
+            absorption_value = 1
+        loop = room.loop(f'{prefix}health', main_clock).add(
+            absorption.set(absorption_value),
+            cur_health.set(data().get(entity, 'Health')),
 
-        # If there is no effect currently going, act as if the health is too low.
-        execute().store(SUCCESS).score(healthing).run(data().get(p(), 'ActiveEffects')),
-        execute().if_().score(healthing).matches(0).run(cur_health.set(0)),
+            # If there is no effect currently going, act as if the health is too low.
+            execute().store(SUCCESS).score(healthing).run(data().get(entity, 'ActiveEffects')),
+            execute().if_().score(healthing).matches(0).run(cur_health.set(0)),
 
-        execute().if_().score(cur_health).matches((None, min_health)).run(
-            execute().if_().score(health_up).matches(0).run(
-                effect().clear(p(), Effect.POISON),
-                effect().clear(p(), Effect.WITHER),
-                effect().give(p(), Effect.REGENERATION, effect_time, 1, True)),
-            health_up.set(1)),
-        execute().if_().score(cur_health).matches(max_health).if_().score(health_up).matches(1).run(
-            execute().if_().score(absorption).matches(0).run(
-                effect().give(p(), Effect.ABSORPTION, effect_time, 0, True)),
-            execute().unless().score(absorption).matches(0).run(
-                effect().clear(p(), Effect.REGENERATION),
-                execute().if_().score(withering).matches(1).run(
-                    effect().give(p(), Effect.WITHER, effect_time, 0, True)),
-                execute().unless().score(withering).matches(1).run(
-                    effect().give(p(), Effect.POISON, effect_time, 0, True)),
-                health_up.set(0)
-            ),
-        ),
-    )
+            execute().if_().score(cur_health).matches((None, min_health)).run(
+                execute().if_().score(health_up).matches(0).run(
+                    effect().clear(entity, Effect.POISON),
+                    effect().clear(entity, Effect.WITHER),
+                    effect().give(entity, Effect.REGENERATION, effect_time, 1, True)),
+                health_up.set(1)),
+            execute().if_().score(cur_health).matches(max_health).if_().score(health_up).matches(1).run(
+                execute().if_().score(absorption).matches(0).run(
+                    effect().give(entity, Effect.ABSORPTION, effect_time, 0, True)),
+                execute().unless().score(absorption).matches(0).run(
+                    effect().clear(entity, Effect.REGENERATION),
+                    execute().if_().score(withering).matches(1).run(
+                        effect().give(entity, Effect.WITHER, effect_time, 0, True)),
+                    execute().unless().score(withering).matches(1).run(
+                        effect().give(entity, Effect.POISON, effect_time, 0, True)),
+                    health_up.set(0))))
+
+    health_funcs('', p(), 15, 20)
     room.function('health_exit').add(effect().clear(p()))
+
+    hud_horse = e().tag('hud_horse').limit(1)
+    horse_init = room.function('horse_health_init').add(
+        kill_em(e()),
+        room.mob_placer(r(0, 2, 0), NORTH).summon('horse', auto_tag=False, tags=('hud_horse',)))
+    room.function('horse_health_enter').add(function(horse_init.full_name))
+    health_funcs('horse_', hud_horse, 45, 53)
 
     def xp_loop(step):
         yield xp().set(p(), step.elem[0], LEVELS)
