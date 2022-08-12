@@ -44,6 +44,7 @@ def room():
     health_up = room.score('health_up')
     absorption = room.score('absorption')
     healthing = room.score('healthing')
+    withering = room.score('withering')
     max_health = 20
     min_health = 15
     room.function('health_init').add()
@@ -59,6 +60,7 @@ def room():
         execute().if_().score(cur_health).matches((None, min_health)).run(
             execute().if_().score(health_up).matches(0).run(
                 effect().clear(p(), Effect.POISON),
+                effect().clear(p(), Effect.WITHER),
                 effect().give(p(), Effect.REGENERATION, effect_time, 1, True)),
             health_up.set(1)),
         execute().if_().score(cur_health).matches(max_health).if_().score(health_up).matches(1).run(
@@ -66,7 +68,10 @@ def room():
                 effect().give(p(), Effect.ABSORPTION, effect_time, 0, True)),
             execute().unless().score(absorption).matches(0).run(
                 effect().clear(p(), Effect.REGENERATION),
-                effect().give(p(), Effect.POISON, effect_time, 0, True),
+                execute().if_().score(withering).matches(1).run(
+                    effect().give(p(), Effect.WITHER, effect_time, 0, True)),
+                execute().unless().score(withering).matches(1).run(
+                    effect().give(p(), Effect.POISON, effect_time, 0, True)),
                 health_up.set(0)
             ),
         ),
@@ -78,5 +83,3 @@ def room():
         yield xp().set(p(), step.elem[1], POINTS)
 
     room.loop('xp', main_clock).loop(xp_loop, ((1, 0), (1, 3), (1, 6), (1, 8), (10, 0), (1, 10), (1, 20), (1, 26)))
-
-    
