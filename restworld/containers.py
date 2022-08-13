@@ -55,7 +55,6 @@ def room():
             function('restworld:containers/bossbar_run_home')),
         bossbar().set('restworld:bossbar').visible(True),
     )
-
     toggle_bossbar = room.score('toggle_bossbar')
     room.function('toggle_bossbar', home=False).add(
         toggle_bossbar.set(1),

@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 from pynecraft.base import DOWN, EAST, NOON, SOUTH, UP, WEST, r
-from pynecraft.commands import Block, data, e, execute, fill, function, kill, setblock, summon, time
+from pynecraft.commands import Block, Entity, REPLACE, data, e, execute, fill, function, kill, say, schedule, setblock, \
+    summon, time
 from pynecraft.info import instruments, stems, woods
 from pynecraft.simpler import Item, Volume, WallSign
 from restworld.rooms import Room, ensure, label
@@ -59,23 +60,31 @@ def room():
 
     room.loop('piston', main_clock).loop(piston_loop, range(6))
     room.function('rail_init').add(WallSign(()).place(r(1, 2, -2), WEST))
-    # Can't seeem to make detector rail 'powered'
-    powered = (False, False, True, False, False, True)
     rails = (
-        'Rail', 'Powered Rail', 'Powered Rail', 'Detector Rail', 'Activator Rail', 'Activator Rail',)
+        ('Rail', False),
+        ('Powered Rail', False), ('Powered Rail', True),
+        ('Detector Rail', False), ('Detector Rail', True),
+        ('Activator Rail', False), ('Activator Rail', True),
+    )
+    rail_clean = room.function('rail_clean', home=False).add(say('clean'), kill_em(e().tag('tmp_minecart')))
 
     def rail_loop(step):
         volume = Volume(r(3, 3, -3), r(0, 0, 0))
         i = step.i
-        on = powered[i]
-        yield volume.replace_straight_rails(step.elem, '#rails')
+        rail, on = step.elem
+        yield volume.replace_straight_rails(rail, '#rails')
         if on:
             yield volume.replace('redstone_torch', 'glass')
+            if 'Detector' in rail:
+                for x, z in ((0, -2), (1, -3), (2, -3), (3, -2), (1, -1), (2, -1)):
+                    yield summon(Entity('minecart').tag('tmp_minecart'), r(x, 2, z))
+                yield schedule().function(rail_clean, 1, REPLACE)
         else:
             yield volume.replace('glass', 'redstone_torch')
-        yield data().merge(r(1, 2, -2), {'Text2': step.elem, 'Text3': '(Powered)' if on else ''})
+        yield data().merge(r(1, 2, -2), {'Text2': rail, 'Text3': '(Powered)' if on else ''})
 
     room.loop('rail', main_clock).loop(rail_loop, rails)
+
     room.function('redstone_lamp_init').add(WallSign((None, 'Redstone Lamp')).place(r(-1, 3, 0), EAST))
     room.loop('redstone_lamp', main_clock).loop(lambda step: setblock(r(0, 0, 0), step.elem),
                                                 ('Redstone Torch', 'Air'))
