@@ -29,7 +29,7 @@ display_names = {
 
 
 def _desc_for(effect):
-    pos = Effect.positive(effect)
+    pos = effect.positive()
     return 'Positive' if pos else 'Negative' if pos is not None else None
 
 

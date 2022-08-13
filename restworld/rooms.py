@@ -170,7 +170,7 @@ class Room(FunctionSet):
         return self.function(marker_tag, home=False, exists_ok=True).add(
             comment(home_marker_comment),
             kill(e().tag(marker_tag)),
-            execute().positioned(r(-0.5, 0, -0.5)).run(kill(e().type('armor_stand').volume((1, 2, 1)))),
+            execute().positioned(r(-0.45, 0, -0.45)).run(kill(e().type('armor_stand').volume((0.3, 2, 0.3)))),
             marker.summon(r(0, 0.5, 0)),
         )
 
@@ -470,7 +470,7 @@ class ActionDesc:
         self.enum = enum
         if name is None:
             # noinspection PyUnresolvedReferences
-            name = enum.__class__.display_name(enum)
+            name = enum.display_name()
         self.name = name
         self.note = '(%s)' % note if note else None
         if isinstance(also, Iterable):

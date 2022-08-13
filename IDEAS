@@ -37,11 +37,6 @@ could be done on a clock or _finish?
 random mob textures in optifine  https://www.planetminecraft.com/member/ryancr/
     ¿Expand connected texture area to have a region where you can choose a monster and get multiple of it at the same time? Alphabetical menus like for biomes to pick? How to handle variants, like seeing them with different weapons? Do I care about that?
 
-Status bar stuff
-	horse armor level
-	poison
-	all that stuff in icon.png
-
 The other stuff in icon.png (what's used from there?)
 
 pressure plate may not work both forward and back?
@@ -66,7 +61,7 @@ HUD should be in GUI area.
     Saturation: Saturation effect increases, can't see how to decrease it.
 	Shown by jiggling the hunger bar periodically when depleted. That's it.
     Experience: /xp command allows manipulation
-    Mob (horse) health and armor: Put the player on a horse, then adjust the horse's data, put armor on it, etc.
+    Mob (horse) health: Put the player on a horse, then adjust the horse's health
     Weapon charging: Put a dummy entity they can hit?
     Underwater: Probably need to be put underwater for a while. Don't think we can adjust this manually,
 	so I'll have to remove the water and let them recover. Slow clock, probably

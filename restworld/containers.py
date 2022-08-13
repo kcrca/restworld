@@ -12,7 +12,7 @@ from restworld.world import fast_clock, main_clock, restworld, slow_clock
 
 
 def room():
-    room = Room('containers', restworld, NORTH, ('GUI,', 'Containers,', 'Items'))
+    room = Room('containers', restworld, NORTH, ('GUI,', 'Containers,', 'Items', 'HUD'))
 
     room.function('anvil_container_enter').add(setblock(r(0, 2, 0), 'anvil'))
 
@@ -143,13 +143,19 @@ def room():
         execute().at(e().tag('brewing_home')).run(
             summon('armor_stand', r(0, 0, 0), {'Tags': ['homer', 'brewing_run_home'], 'NoGravity': True})))
 
-    placer = room.mob_placer(r(0, 2, 0), WEST, -3, 0, tags=('carrier',), adults=True,
+    placer = room.mob_placer(r(0, 2, 0), EAST, 3, 0, tags=('carrier',), adults=True,
                              nbt={'ChestedHorse': True, 'Tame': True, 'Variant': 2}, auto_tag=False)
     room.function('carrier_init').add(
         placer.summon('llama', tags=('strength_llama',)),
-        placer.summon('donkey'))
+        placer.summon('donkey'),
+    )
     room.loop('strength_llama', main_clock).loop(
         lambda x: execute().as_(e().tag('strength_llama')).run(data().merge(s(), {'Strength': x.elem})), range(1, 6))
+    placer = room.mob_placer(r(0, 2, 0), EAST, adults=True, tags=('trades',), auto_tag=False,
+                             nbt={'VillagerData': {'profession': 'farmer', 'level': 3}, 'CanPickUpLoot': False})
+    room.function('trader_init').add(
+        placer.summon('villager'),
+        function('restworld:containers/trader_cur'))
 
     room.function('cookers_init').add(
         setblock(r(0, 2, 0), Block('furnace', {'facing': WEST}, {'CookTime': 0})),
@@ -174,12 +180,6 @@ def room():
                 'buyB': {'id': args[2], 'Count': args[3]},
                 'sell': {'id': args[4], 'Count': args[5]},
                 }
-
-    placer = room.mob_placer(r(0, 2, 0), NORTH, adults=True, tags=('trades',), auto_tag=False,
-                             nbt={'VillagerData': {'profession': 'farmer', 'level': 3}, 'CanPickUpLoot': False})
-    room.function('experience_init').add(
-        placer.summon('villager'),
-        function('restworld:containers/experience_cur'))
 
     thresholds = (10, 60, 80, 100)
     xp = []
@@ -207,19 +207,22 @@ def room():
         ('emerald', 1, 'melon', 1, 'glistering_melon_slice', 3, 0),
     )
 
-    def experience_loop(step):
+    def trader_loop(step):
         yield data().merge(e().tag('trades').limit(1),
                            {'VillagerData': {'level': step.elem[0]}, 'Xp': step.elem[1]}),
         recipes = list(trade_nbt(*t) for t in trades[:(step.elem[0] * 2)])
         yield data().merge(e().tag('trades').limit(1), {'Offers': {'Recipes': recipes}})
 
-    room.loop('experience', main_clock).loop(experience_loop, xp)
-    room.function('enchanting_enter').add(
-        data().merge(r(0, 4, 0), {'Items': [','.join(
-            f'{{Slot:{i:d},id:book,Count:64}},{{Slot:{i + 9:d},id:lapis_lazuli,Count:64}}' for i in range(0, 9))]}))
+    room.loop('trader', main_clock).loop(trader_loop, xp)
 
-    room.function('ingredients_enter', home=False).add(
-        clone(r(20, -5, 27), r(-15, -5, 1), r(-15, 1, 1)).filtered('chest'))
+    enchanting = room.function('enchanting_enter')
+    for i in range(9):
+        enchanting.add(
+            item().replace().block(r(0, 4, 0), f'container.{i}').with_('book', 64),
+            item().replace().block(r(0, 4, 0), f'container.{i + 9}').with_('lapis_lazuli', 64))
+
+    room.function('ingredients_enter').add(
+        clone(r(20, -5, 30), r(-15, -5, 1), r(-15, 1, 1)).filtered('chest'))
 
     placer = room.mob_placer(r(0, 2, -1), EAST, auto_tag=False, adults=True, nbt={'ShowArms': True})
     all_src = e().tag('item_src')
@@ -271,13 +274,13 @@ def room():
     ))
     non_inventory.append(Entity('elytra', nbt={'Damage': 450}, name='Damaged Elytra'))
 
-    only_item_chest_pos = r(1, -5, -1)
+    only_item_chest_pos = r(-1, -5, -2)
 
     def only_items_init_func():
         rows = [(0, 5), (0, 5), (0, 5)]
         dx = 2
         dz = 1
-        x = 0
+        x = -1
         items = list(non_inventory)
         yield kill(e().tag('only_item_frame'))
         index = 0
@@ -289,26 +292,28 @@ def room():
                 frame.tag('containers', 'only_item_frame', f'only_item_frame_{t.id}')
                 if t.id == 'elytra':
                     frame.merge_nbt({'Item': {'tag': {'Damage': 450}}})
-                yield frame.summon(r(x, 2, 5 - z), facing=NORTH)
+                yield frame.summon(r(x, 2, z - 4), facing=WEST)
                 yield item().replace().block(only_item_chest_pos, f'container.{index}').with_(t)
                 z += dz
                 index += 1
             x += dx
 
-        yield clone(only_item_chest_pos, only_item_chest_pos, r(1, 1, -1))
-        yield WallSign((None, 'Items Not', 'in Creative', 'Iventory')).place(r(2, 2, -1, ), NORTH)
+        clone_pos = list(only_item_chest_pos)
+        clone_pos[1] = r(1)
+        yield clone(only_item_chest_pos, only_item_chest_pos, tuple(clone_pos))
+        yield WallSign((None, 'Items Not', 'in Creative', 'Iventory')).place(r(5, 3, -2), WEST)
 
     giveable = non_inventory[:-1]
     giveable.append(Entity('Elytra', {'Damage': 450}))
-    room.function('only_items_give').add(
+    room.function('only_items_give', home=False).add(
         give(p(), 'chain_command_block'),
         give(p(), 'repeating_command_block'),
         (give(p(), x) for x in giveable),
         give(p(), 'firework_rocket'),
     )
     room.function('only_items_init').add(
-        label(r(3, 2, -1), 'Give'),
-        setblock(only_item_chest_pos, Block('chest', {'facing': EAST}))
+        label(r(-2, 2, -2), 'Give'),
+        setblock(only_item_chest_pos, Block('chest', {'facing': WEST}))
     ).add(list(only_items_init_func()))
 
     enchant_chest = {'Items': [{'Slot': 0, 'id': 'lapis_lazuli', 'Count': 64}, {'Slot': 1, 'id': 'book', 'Count': 64}]}
