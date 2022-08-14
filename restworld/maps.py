@@ -84,11 +84,11 @@ def apologia():
     book.sign_book('On Maps', 'RestWorld', 'A Map Apologia')
 
     book.add(r'       ', JsonText.text('On Maps').bold(), r'\n\n')
-    book.add(simplify("""Here you can see general map textures, and some map icons. Yet there are several icons, 
-    such as for players, that can't be shown without real players. If you hold a map you can see the icon for you, 
+    book.add(simplify("""Here you can see general map textures, and some map icons. Yet there are several icons,
+    such as for players, that can't be shown without real players. If you hold a map you can see the icon for you,
     but to see other players' icons, you will need to"""))
     book.next_page()
-    book.add(simplify("""recruit friends to join the world. Also, treasure maps show sketched versions of areas you 
+    book.add(simplify("""recruit friends to join the world. Also, treasure maps show sketched versions of areas you
     haven't visited, but there no normal looking areas in this world for that to work with."""))
 
     return book
