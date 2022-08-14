@@ -3,14 +3,27 @@ from __future__ import annotations
 import re
 
 from pynecraft.base import NORTH, SOUTH, WEST, r
-from pynecraft.commands import Block, JsonText, clone, fill, setblock
-from pynecraft.simpler import Book, ItemFrame, WallSign
+from pynecraft.commands import Block, JsonText, clone, data, e, fill, setblock
+from pynecraft.simpler import Book, ItemFrame, Sign, WallSign
 from restworld.rooms import Room, ensure, label
-from restworld.world import restworld
+from restworld.world import main_clock, restworld
 
 
 def room():
     room = Room('maps', restworld, WEST, (None, 'Maps'))
+
+    # To set an icon on a map, go to -128, ~, 0 and create a map. Then put that map into an item frame, and set the
+    # desired icon via something like:
+    #   /data modify entity <frame-entity> Item.tag.Decorations set value [{Id:"_",type:1,x:-128,z:0,rot:180}]
+    # Note the map number, and then you can use it in the table below.
+    map_icons = {
+        75: "Red Cross",
+        76: "Ocean Monument",
+        77: "Woodland Mansion",
+        78: 'Target Point',
+        80: 'Target X',
+        81: 'Frame'
+    }
 
     room.function('maps_room_enter', exists_ok=True).add(
         clone(r(8, -5, 0), r(8, -5, 0), r(8, 1, 0)),
@@ -31,9 +44,9 @@ def room():
         WallSign((None, 'Battle', 'Arena'), SOUTH).place(r(7, 3, -3), SOUTH),
 
         room.mob_placer(r(8, 5, 0), WEST, adults=True).summon(ItemFrame(WEST).item(map(18))),
-        p_mid.summon(ItemFrame(WEST).item(map(19))),
+        p_mid.summon(ItemFrame(WEST).item(map(19)).tag('map_icon_frame')),
         p_mid.summon(ItemFrame(WEST).item(map(14))),
-        p_mid.summon(ItemFrame(WEST).item(map(21)).named('Banner Icons')),
+        p_mid.summon(ItemFrame(WEST).item(map(21))),
         room.mob_placer(r(8, 3, 0), WEST, adults=True).summon(ItemFrame(WEST).item(map(20))),
         WallSign((None, 'Center', 'Area')).place(r(8, 3, 1), WEST),
 
@@ -47,6 +60,16 @@ def room():
 
         label(r(6, 2, 0), "Reset"),
     )
+
+    icon_frame = e().tag('map_icon_frame').limit(1)
+
+    def icon_loop(step):
+        yield data().modify(icon_frame, 'Item.tag.map').set().value(step.elem[0])
+        yield data().merge(r(0, 4, -1), Sign.lines_nbt((None, step.elem[1])))
+
+    room.loop('map_icons', main_clock).loop(icon_loop, map_icons.items())
+    room.loop('map_icons_init').add(WallSign(()).place(r(0, 4, -1), WEST))
+
     room.function('apologia', home=False).add(
         ensure(r(0, 2, 0), Block('lectern', {'facing': WEST, 'has_book': True}),
                nbt=apologia().as_item()))
@@ -61,17 +84,12 @@ def apologia():
     book.sign_book('On Maps', 'RestWorld', 'A Map Apologia')
 
     book.add(r'       ', JsonText.text('On Maps').bold(), r'\n\n')
-    book.add(simplify("""All you can see here are the general map textures, how they look for partially completed 
-    maps, both on the wall and in your hand (just take one from the chest), and indicators for you, map placement, 
-    and banners."""))
+    book.add(simplify("""Here you can see general map textures, and some map icons. Yet there are several icons, 
+    such as for players, that can't be shown without real players. If you hold a map you can see the icon for you, 
+    but to see other players' icons, you will need to"""))
     book.next_page()
-    book.add(simplify("""Minecraft maps consult the real world when deciding what to show, so one cannot set 
-    parameters that show arbitrary things on a map. So to see your marker, pick up a map and look at it as you move 
-    around. To see what a separate player looks like, you'll have to get someone else to log in."""))
-    book.next_page()
-    book.add(simplify("""to the world. And the treasure, woodland explorer, and ocean explorer maps would require 
-    some place that has those features, which this world doesn't and (AFAICT) cannot have. So we cannot show those 
-    things. Sorry."""))
+    book.add(simplify("""recruit friends to join the world. Also, treasure maps show sketched versions of areas you 
+    haven't visited, but there no normal looking areas in this world for that to work with."""))
 
     return book
 
