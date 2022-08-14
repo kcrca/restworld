@@ -18,7 +18,7 @@ def room():
     def placer(*args, **kwargs):
         return room.mob_placer(*args, **kwargs)
 
-    room.function('allay_init').add(placer(r(0, 3.5, 0), NORTH, adults=True).summon('Allay'))
+    room.function('allay_init').add(placer(r(0, 3.5, -1), NORTH, adults=True).summon('Allay'))
     room.function('bat_init').add(
         placer(r(0, 3, -2), NORTH, 2, adults=True).summon('bat'),
         placer(r(0, 3.5, 1), NORTH, 2, adults=True).summon('bat', nbt={'BatFlags': 1}, tags=('sleeping_bat',)))
@@ -54,14 +54,26 @@ def room():
         placer(*south_placer, tags=('collared',)).summon('cat'),
         label(r(1, 2, 2), 'Cat Collar'))
     room.loop('cat', main_clock).loop(
-        lambda step: execute().as_(e().tag('cat')).run(data().merge(s(), {'CatType': step.i, 'CustomName': step.elem})),
-        ('Tabby', 'Tuxedo', 'Red', 'Siamese', 'British Shorthair', 'Calico', 'Persian', 'Ragdoll', 'White', 'Jellie',
-         'Black'))
+        lambda step: execute().as_(e().tag('cat')).run(
+            data().merge(s(), {'variant': step.elem.id, 'CustomName': step.elem.name})),
+        (
+            Entity('tabby',name= 'Tabby'),
+            Entity('black',name= 'Tuxedo'),
+            Entity('red',name= 'Red'),
+            Entity('siamese',name= 'Siamese'),
+            Entity('british_shorthair',name= 'British Shorthair'),
+            Entity('calico',name= 'Calico'),
+            Entity('persian',name= 'Persian'),
+            Entity('ragdoll',name= 'Ragdoll'),
+            Entity('white',name= 'White'),
+            Entity('jellie',name= 'Jellie'),
+            Entity('all_black',name= 'Black'),
+        ))
     room.function('chicken_exit').add(
         execute().as_(e().type('chicken')).run(data().merge(s(), {'EggLayTime': 1000000000})))
     room.function('chicken_init').add(
         placer(*mid_east_placer).summon('chicken'),
-        execute().as_(e().tag('chicken')).run(data().merge(s(), {'EggLayTime': 1000000}))
+        execute().as_(e().tag('chicken')).run(data().merge(s(), {'EggLayTime': 1000000000}))
     )
     room.loop('chicken', main_clock).loop(
         lambda step: execute().as_(e().tag('chicken')).run(
