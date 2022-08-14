@@ -296,7 +296,7 @@ def room():
             else:
                 yield item().replace().block(r(0, 3, 0), f'container.{j:d}').with_('air')
 
-    room.function('brewing_stand_init').add(function('restworld:containers/brewing_init'))
+    room.function('brewing_stand_init').add(function('restworld:gui/brewing_init'))
     room.loop('brewing_stand', main_clock).add(
         item().replace().block(r(0, 3, 0), 'container.3').with_('air'),
         item().replace().block(r(0, 3, 0), 'container.4').with_('air'),

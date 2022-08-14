@@ -12,7 +12,7 @@ from restworld.world import fast_clock, main_clock, restworld, slow_clock
 
 
 def room():
-    room = Room('containers', restworld, NORTH, ('GUI,', 'Containers,', 'Items', 'HUD'))
+    room = Room('gui', restworld, NORTH, ('GUI,', 'gui,', 'Items', 'HUD'))
 
     room.function('anvil_container_enter').add(setblock(r(0, 2, 0), 'anvil'))
 
@@ -52,7 +52,7 @@ def room():
     )
     bb_on = room.function('bossbar_on', home=False).add(
         execute().at(e().tag('bossbar_home')).positioned(r(-2, -0.5, 0)).run(
-            function('restworld:containers/bossbar_run_home')),
+            function('restworld:gui/bossbar_run_home')),
         bossbar().set('restworld:bossbar').visible(True),
     )
     toggle_bossbar = room.score('toggle_bossbar')
@@ -118,7 +118,7 @@ def room():
             yield item().replace().block(r(0, 2, 0), 'container.%d' % j).with_(block, 1)
 
     room.function('brewing_init').add(
-        function('restworld:containers/switch_brewing_off'),
+        function('restworld:gui/switch_brewing_off'),
         label(r(-1, 2, -1), 'Brew'))
     bottle_possibilities = ((), (0,), (1,), (2,), (2, 0), (1, 2), (0, 1), (0, 1, 2))
     room.loop('brewing_rotate', main_clock).add(
@@ -154,7 +154,7 @@ def room():
                              nbt={'VillagerData': {'profession': 'farmer', 'level': 3}, 'CanPickUpLoot': False})
     room.function('trader_init').add(
         placer.summon('villager'),
-        function('restworld:containers/trader_cur'))
+        function('restworld:gui/trader_cur'))
 
     room.function('cookers_init').add(
         setblock(r(0, 2, 0), Block('furnace', {'facing': WEST}, {'CookTime': 0})),
@@ -239,7 +239,7 @@ def room():
             ('Put item in frame', 'to show in "fixed",', '"ground", and 3rd', 'party hands')).place(r(-1, 2, 0), EAST),
         label(r(1, 2, -1), 'On Head'),
     )
-    room.function('item_run').add(
+    room.function('item_run', home=False).add(
         execute().unless().entity(item_ground).at(e().tag('item_home')).run(
             summon('item', r(0, 3, 1), {'Item': Item.nbt_for('iron_pickaxe'), 'Age': -32768, 'PickupDelay': 2147483647,
                                         'Tags': ['item_ground']})),
@@ -288,7 +288,7 @@ def room():
             for i in range(0, end):
                 t = items.pop(0)
                 frame = ItemFrame(NORTH).item(t).named(t.name)
-                frame.tag('containers', 'only_item_frame', f'only_item_frame_{t.id}')
+                frame.tag('gui', 'only_item_frame', f'only_item_frame_{t.id}')
                 if t.id == 'elytra':
                     frame.merge_nbt({'Item': {'tag': {'Damage': 450}}})
                 yield frame.summon(r(x, 2, z - 4), facing=WEST)
@@ -320,7 +320,7 @@ def room():
         lambda step: commands.xp().set(p(), step.elem, LEVELS), (0, 9, 20, 30))
     room.function('survival_init').add(
         gamemode(SURVIVAL, p()),
-        function('restworld:containers/survival_cur'))
+        function('restworld:gui/survival_cur'))
     room.function('survival_stop', home=False).add(
         gamemode(CREATIVE, p()),
         kill(e().tag('survival_home'))
