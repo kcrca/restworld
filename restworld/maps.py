@@ -1,9 +1,10 @@
 from __future__ import annotations
 
 import re
+from dataclasses import dataclass
 
 from pynecraft.base import NORTH, SOUTH, WEST, r
-from pynecraft.commands import Block, JsonText, clone, data, e, fill, setblock
+from pynecraft.commands import Block, Entity, JsonText, clone, data, e, fill, item, setblock
 from pynecraft.simpler import Book, ItemFrame, Sign, WallSign
 from restworld.rooms import Room, ensure, label
 from restworld.world import main_clock, restworld
@@ -12,17 +13,22 @@ from restworld.world import main_clock, restworld
 def room():
     room = Room('maps', restworld, WEST, (None, 'Maps'))
 
+    @dataclass
+    class MapIcon:
+        name: str
+        type_id: int
+
     # To set an icon on a map, go to -128, ~, 0 and create a map. Then put that map into an item frame, and set the
     # desired icon via something like:
     #   /data modify entity <frame-entity> Item.tag.Decorations set value [{Id:"_",type:1,x:-128,z:0,rot:180}]
     # Note the map number, and then you can use it in the table below.
     map_icons = {
-        75: "Red Cross",
-        76: "Ocean Monument",
-        77: "Woodland Mansion",
-        78: 'Target Point',
-        80: 'Target X',
-        81: 'Frame'
+        75: MapIcon("Red X", 26),
+        76: MapIcon("Ocean Monument", 9),
+        96: MapIcon("Woodland Mansion", 8),
+        78: MapIcon('Target Point', 5),
+        97: MapIcon('Target X', 4),
+        81: MapIcon('Frame', 1),
     }
 
     room.function('maps_room_enter', exists_ok=True).add(
@@ -58,17 +64,28 @@ def room():
 
         setblock(r(8, 2, 2), 'cartography_table'),
 
-        label(r(6, 2, 0), "Reset"),
+        label(r(5, 2, 0), 'Reset'),
     )
 
     icon_frame = e().tag('map_icon_frame').limit(1)
+    chest_pos = r(0, -2, 1)
+    map_slot = 'container.15'
 
+    # Maps are weird. They aren't stored in the same way as other entities/items, so a direct approach (put up a map
+    # and keep changing its decorations) doesn't work. So we (1) conjure up the map we want by number,
+    # with the decoration specified even though we specify it _every time_; (2) update the sign, and finally (3) move
+    # the conjured map into the frame. The chest is just a workspace where the item conjuring is done, it could be
+    # any container.
     def icon_loop(step):
-        yield data().modify(icon_frame, 'Item.tag.map').set().value(step.elem[0])
-        yield data().merge(r(0, 4, -1), Sign.lines_nbt((None, step.elem[1])))
+        map_num, map_icon = step.elem
+        yield item().replace().block(chest_pos, map_slot).with_(
+            Entity('filled_map',
+                   dict(map=map_num, Decorations=[dict(Id='_', type=map_icon.type_id, x=-128, z=0, rot=180)])))
+        yield data().merge(r(0, 4, -1), Sign.lines_nbt((None, map_icon.name)))
 
-    room.loop('map_icons', main_clock).loop(icon_loop, map_icons.items())
-    room.loop('map_icons_init').add(WallSign(()).place(r(0, 4, -1), WEST))
+    room.loop('map_icons', main_clock).loop(icon_loop, map_icons.items()).add(
+        item().replace().entity(icon_frame, 'container.0').from_().block(chest_pos, map_slot))
+    room.function('map_icons_init').add(WallSign(()).place(r(0, 4, -1), WEST))
 
     room.function('apologia', home=False).add(
         ensure(r(0, 2, 0), Block('lectern', {'facing': WEST, 'has_book': True}),
