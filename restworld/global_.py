@@ -52,7 +52,7 @@ from restworld.world import clock, kill_em, restworld, tick_clock
 
 def room():
     def use_min_fill(y, filler, filter):
-        return execute().at(e().tag('min_home')).run(fill((r(0), y, r(0)), (r(166), y, r(180)), filler).replace(filter))
+        return execute().at(e().tag('full_reset_home')).run(fill((r(0), y, r(0)), (r(166), y, r(180)), filler).replace(filter))
 
     def clock_blocks(turn_on):
         lights = ('red_concrete', 'lime_concrete')
@@ -60,7 +60,7 @@ def room():
         after = lights[1 - int(turn_on)]
         return (
             use_min_fill(100, after, before),
-            execute().at(e().tag('min_home')).run(setblock((0, 105, -78), after)),
+            execute().at(e().tag('full_reset_home')).run(setblock((0, 105, -78), after)),
             execute().at(e().tag('aquatic_anchor')).run(fill(r(-7, -1, 0), r(7, 5, 20), after).replace(before)),
         )
 
@@ -156,8 +156,8 @@ def room():
     )
     room.function('full_reset').add(
         function('restworld:global/clock_off'),
-        execute().positioned(r(0, -3, 0)).run(function('restworld:global/min_home')),
-        kill(e().tag('home', '!min_home')),
+        execute().positioned(r(0, -3, 0)).run(function('restworld:global/full_reset_home')),
+        kill(e().tag('home', '!full_reset_home')),
         # Death must be ready before any other initialization
         function('restworld:global/death_init'),
         use_min_fill(97, 'redstone_block', 'dried_kelp_block'),
