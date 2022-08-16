@@ -16,7 +16,7 @@ COUNT_MAX = 5
 def room():
     start_battle_type = Score('battle_type', 'arena')
     fighter_nbts = {
-        'Drowned': 'HandItems:[{id:trident,Count:1}]',
+        'Drowned': 'HandItems:[{id:trident,Count:1}],ArmorItems:[{},{},{},{id:iron_helmet,Count:1}]',
         'Goat': 'IsScreamingGoat:True',
         'Hoglin': 'IsImmuneToZombification:True',
         'Llama': 'Strength:5',
@@ -26,23 +26,24 @@ def room():
         'Piglin Brute': 'HandItems:[{id:golden_axe,Count:1}],IsImmuneToZombification:True',
         'Piglin': 'IsImmuneToZombification:True,HandItems:[{id:golden_sword,Count:1},{}]',
         'Pillager': 'HandItems:[{id:crossbow,Count:1},{}]',
-        'Skeleton': 'HandItems:[{id:bow,Count:1}],ArmorItems:[{id:iron_boots,Count:1,tag:{RepairCost:1,Enchantments:[{lvl:9,id:protection}]}},{},{},{}]',
+        'Skeleton': 'HandItems:[{id:bow,Count:1}],ArmorItems:[{id:iron_boots,Count:1,tag:{RepairCost:1,Enchantments:[{lvl:9,id:protection}]}},{},{},{id:iron_helmet,Count:1,tag:{RepairCost:1,Enchantments:[{lvl:9,id:protection}]}}]',
         'Slime': 'Size:0',
-        'Stray': 'HandItems:[{id:bow,Count:1}],ArmorItems:[{id:iron_boots,Count:1,tag:{RepairCost:1,Enchantments:[{lvl:9,id:protection}]}},{},{},{}]',
+        'Stray': 'HandItems:[{id:bow,Count:1}],ArmorItems:[{id:iron_boots,Count:1,tag:{RepairCost:1,Enchantments:[{lvl:9,id:protection}]}},{},{},{id:iron_helmet,Count:1,tag:{RepairCost:1,Enchantments:[{lvl:9,id:protection}]}}]',
         'Vindicator': 'Johnny:True,HandItems:[{id:iron_axe,Count:1},{}]',
         'Vindicator:2': 'Johnny:True',
         'Wither Skeleton': 'HandItems:[{id:stone_sword,Count:1},{}]',
+        'Zombie': 'ArmorItems:[{},{},{},{id:iron_helmet,Count:1}]',
         'Zombified Piglin': 'HandItems:[{id:golden_sword,Count:1}]',
     }
 
     battles = [
         ('Axolotl:w', 'Drowned'),  # low priority
         ('Axolotl:w', 'Elder Guardian'),
-        ('Axolotl:w', 'Guardian'),
+        ('Skeleton', 'Iron Golem'),
         ('Blaze', 'Snow Golem'),
         ('Cat', 'Rabbit'),
         ('Cave Spider', 'Snow Golem'),
-        ('Drowned:c', 'Snow Golem'),
+        ('Drowned', 'Snow Golem'),
         ('Evoker', 'Iron Golem'),
         ('Fox', 'Chicken'),
         ('Frog', 'Slime'),
@@ -62,7 +63,7 @@ def room():
         ('Shulker', 'Vindicator'),
         ('Slime', 'Iron Golem'),  # low priority, slime vs. frog
         ('Spider', 'Snow Golem'),
-        ('Stray:c', 'Iron Golem'),
+        ('Stray', 'Iron Golem'),
         ('Vex', 'Snow Golem'),  # low priority
         ('Vindicator', 'Iron Golem'),
         ('Witch', 'Snow Golem'),
@@ -70,7 +71,7 @@ def room():
         ('Wither', 'Pillager'),
         ('Wolf', 'Sheep'),
         ('Zoglin', 'Vindicator'),
-        ('Zombie:c', 'Iron Golem'),
+        ('Zombie', 'Iron Golem'),
         ('Zombified Piglin', 'Vindicator'),
     ]
     # Lower priority ones that can be used as filler
@@ -218,8 +219,8 @@ def room():
             data().merge(r(2, 4, 0), {'Text2': f'{step.elem:d} vs. {step.elem:d}'})), range(0, COUNT_MAX + 1))
 
     room.function('arena_run_init').add(
-            function('restworld:arena/arena_run_cur')
-        )
+        function('restworld:arena/arena_run_cur')
+    )
     # This is NOT intended to be run on the clock. It is only called '_main' because that gives us a
     # '_cur' function, which is useful when paging through the signs. Do not create the _home armor stand.
     arena_run_loop = arena_run_main(room.loop('arena_run', main_clock, home=False))
