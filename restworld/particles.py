@@ -4,7 +4,7 @@ import math
 import random
 
 from pynecraft.base import EAST, NORTH, Nbt, OVERWORLD, SOUTH, WEST, d, r, rotated_facing
-from pynecraft.commands import Block, CLEAR, RAIN, REPLACE, a, data, e, execute, fill, function, item, kill, p, \
+from pynecraft.commands import Block, CLEAR, Entity, RAIN, REPLACE, a, data, e, execute, fill, function, item, kill, p, \
     particle, playsound, schedule, setblock, summon, tp, weather
 from pynecraft.enums import Particle
 from pynecraft.info import villager_professions
@@ -277,9 +277,9 @@ def room():
         function('restworld:particles/falling_dust_change'))
     room.function('firework', home=False).add(main().run(function('restworld:particles/fireworks_change')))
     room.loop('firework_change').loop(
-        lambda step: item().replace().block(r(0, 1, 0), 'container.0').with_('firework_rocket' + str(Nbt({
+        lambda step: item().replace().block(r(0, 1, 0), 'container.0').with_(Entity('firework_rocket', nbt={
             'Fireworks': {'Explosions': [{'Colors': f'[I;{step.elem:d}]', 'Trail': 1, 'Type': step.i}],
-                          'Flight': 0}})).replace('"', '')), (11743532, 6719955, 14602026, 3887386, 15790320)).add(
+                          'Flight': 0}})), (11743532, 6719955, 14602026, 3887386, 15790320)).add(
         setblock(r(0, 0, 0), 'redstone_torch'),
         setblock(r(0, 0, 0), 'air'))
     room.function('firework_init', home=False).add(setblock(r(0, 1, 0), ('dispenser', {'facing': 'up'})))

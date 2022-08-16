@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from pynecraft.base import DOWN, EAST, NOON, SOUTH, UP, WEST, r
-from pynecraft.commands import Block, Entity, REPLACE, data, e, execute, fill, function, kill, say, schedule, setblock, \
+from pynecraft.commands import Block, data, e, execute, fill, function, kill, say, setblock, \
     summon, time
 from pynecraft.info import instruments, stems, woods
 from pynecraft.simpler import Item, Volume, WallSign
@@ -72,13 +72,12 @@ def room():
         volume = Volume(r(3, 3, -3), r(0, 0, 0))
         i = step.i
         rail, on = step.elem
-        yield volume.replace_straight_rails(rail, '#rails')
+        # 'powered=true' only seems to work for detector rail, but it's harmless for the others and maybe someday it
+        # will work for all and we can get ride of the torches.
+        added = dict(powered=True) if on else None
+        yield volume.replace_straight_rails(rail, '#rails', added)
         if on:
             yield volume.replace('redstone_torch', 'glass')
-            if 'Detector' in rail:
-                for x, z in ((0, -2), (1, -3), (2, -3), (3, -2), (1, -1), (2, -1)):
-                    yield summon(Entity('minecart').tag('tmp_minecart'), r(x, 2, z))
-                yield schedule().function(rail_clean, 1, REPLACE)
         else:
             yield volume.replace('glass', 'redstone_torch')
         yield data().merge(r(1, 2, -2), {'Text2': rail, 'Text3': '(Powered)' if on else ''})

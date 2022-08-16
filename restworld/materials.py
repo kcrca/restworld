@@ -412,7 +412,7 @@ def wood_functions(room):
         yield from volume.replace_facing(Block(f'{id}_wall_sign', nbt={'Text2': f'{name} Wall Sign'}),
                                          '#wall_signs')
         yield from volume.replace(Block(f'{id}_sign', nbt={'Text2': f'{name} Sign'}), '#signs',
-                                  added_states=({'rotation': x} for x in range(0, 16, 4)))
+                                  states=({'rotation': x} for x in range(0, 16, 4)))
 
         # Add special cases
         if name == ('Jungle', 'Mangrove'):
