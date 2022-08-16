@@ -2,10 +2,11 @@ from __future__ import annotations
 
 from pynecraft import commands
 from pynecraft.base import EAST, NORTH, WEST, r
-from pynecraft.commands import BOSSBAR_COLORS, BOSSBAR_STYLES, Block, CREATIVE, Entity, LEVELS, SURVIVAL, a, bossbar, \
+from pynecraft.commands import BOSSBAR_COLORS, BOSSBAR_STYLES, Block, CREATIVE, Entity, LEVELS, REPLACE, SURVIVAL, a, \
+    bossbar, \
     clone, data, e, \
     execute, \
-    fill, function, gamemode, give, item, kill, p, s, setblock, summon
+    fill, function, gamemode, give, item, kill, p, s, schedule, setblock, summon
 from pynecraft.simpler import Item, ItemFrame, WallSign
 from restworld.rooms import Room, label
 from restworld.world import fast_clock, main_clock, restworld, slow_clock
@@ -51,6 +52,7 @@ def room():
         bossbar().set('restworld:bossbar').visible(False),
     )
     bb_on = room.function('bossbar_on', home=False).add(
+        bossbar().set('restworld:bossbar').players(a()),
         execute().at(e().tag('bossbar_home')).positioned(r(-2, -0.5, 0)).run(
             function('restworld:gui/bossbar_run_home')),
         bossbar().set('restworld:bossbar').visible(True),
@@ -224,20 +226,29 @@ def room():
         clone(r(20, -5, 30), r(-15, -5, 1), r(-15, 1, 1)).filtered('chest'))
 
     placer = room.mob_placer(r(0, 2, -1), EAST, auto_tag=False, adults=True, nbt={'ShowArms': True})
+    placer_head = room.mob_placer(r(0, 2.77, -1), EAST, auto_tag=False, adults=True)
     all_src = e().tag('item_src')
     item_src = all_src.limit(1)
     all_ground = e().tag('item_ground')
     item_ground = all_ground.limit(1)
     item_holder = e().tag('item_holder').limit(1)
+    item_head = room.function('item_head', home=False).add(
+        item().replace().entity(e().tag('item_holder_head').limit(1), 'armor.head').with_(
+            ('player_head', dict(SkullOwner='BlueMeanial'))),
+    )
     room.function('item_init').add(
         kill(all_src),
         kill(all_ground),
         placer.summon('armor_stand', tags=('item_holder', 'item_hands')),
+        placer_head.summon('armor_stand', tags=('item_holder_head',),
+                           nbt=dict(Small=True, NoGravity=True, Invisible=True)),
+        # I don't know why I can't do this right away, 1 tick isn't enough, and 1 second is.
+        schedule().function(item_head, '1s', REPLACE),
         setblock(r(0, 2, 1), 'barrier'),
         ItemFrame(EAST).item('iron_pickaxe').tag('item_src').fixed(False).summon(r(1, 2, 1)),
         WallSign(
             ('Put item in frame', 'to show in "fixed",', '"ground", and 3rd', 'party hands')).place(r(-1, 2, 0), EAST),
-        label(r(1, 2, -1), 'On Head'),
+        label(r(1, 2, -2), 'On Head'),
     )
     room.function('item_run', home=False).add(
         execute().unless().entity(item_ground).at(e().tag('item_home')).run(
