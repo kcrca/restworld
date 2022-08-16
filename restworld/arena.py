@@ -2,10 +2,12 @@ from __future__ import annotations
 
 import sys
 
-from pynecraft.base import EAST, r, to_id
-from pynecraft.commands import GT, RANDOM, Score, a, data, e, execute, fill, function, kill, setblock, tag
+from pynecraft.base import EAST, Nbt, r
+from pynecraft.commands import Entity, GT, LT, RANDOM, Score, a, data, e, execute, fill, function, kill, setblock, \
+    summon, \
+    tag
 from pynecraft.function import Loop
-from pynecraft.simpler import Volume, WallSign
+from pynecraft.simpler import Item, Volume, WallSign
 from restworld.rooms import Room, label
 from restworld.world import kill_em, main_clock, marker_tmpl, restworld
 
@@ -14,26 +16,31 @@ COUNT_MAX = 5
 
 
 def room():
+    def protected(armor):
+        return {'id': armor, 'Count': 1,
+                'tag': {'RepairCost': 1, 'Enchantments': [{'lvl': 9, 'id': 'protection'}]}}
+
     start_battle_type = Score('battle_type', 'arena')
     fighter_nbts = {
-        'Drowned': 'HandItems:[{id:trident,Count:1}],ArmorItems:[{},{},{},{id:iron_helmet,Count:1}]',
-        'Goat': 'IsScreamingGoat:True',
-        'Hoglin': 'IsImmuneToZombification:True',
-        'Llama': 'Strength:5',
-        'Magma Cube': 'Size:0',
-        'Panda': 'MainGene:aggressive',
-        'Phantom': 'AX:1000,AY:110,AZ:-1000',
-        'Piglin Brute': 'HandItems:[{id:golden_axe,Count:1}],IsImmuneToZombification:True',
-        'Piglin': 'IsImmuneToZombification:True,HandItems:[{id:golden_sword,Count:1},{}]',
-        'Pillager': 'HandItems:[{id:crossbow,Count:1},{}]',
-        'Skeleton': 'HandItems:[{id:bow,Count:1}],ArmorItems:[{id:iron_boots,Count:1,tag:{RepairCost:1,Enchantments:[{lvl:9,id:protection}]}},{},{},{id:iron_helmet,Count:1,tag:{RepairCost:1,Enchantments:[{lvl:9,id:protection}]}}]',
-        'Slime': 'Size:0',
-        'Stray': 'HandItems:[{id:bow,Count:1}],ArmorItems:[{id:iron_boots,Count:1,tag:{RepairCost:1,Enchantments:[{lvl:9,id:protection}]}},{},{},{id:iron_helmet,Count:1,tag:{RepairCost:1,Enchantments:[{lvl:9,id:protection}]}}]',
-        'Vindicator': 'Johnny:True,HandItems:[{id:iron_axe,Count:1},{}]',
-        'Vindicator:2': 'Johnny:True',
-        'Wither Skeleton': 'HandItems:[{id:stone_sword,Count:1},{}]',
-        'Zombie': 'ArmorItems:[{},{},{},{id:iron_helmet,Count:1}]',
-        'Zombified Piglin': 'HandItems:[{id:golden_sword,Count:1}]',
+        'Drowned': {'HandItems': [Item.nbt_for('trident')], 'ArmorItems': [{}, {}, {}, Item.nbt_for('iron_helmet')]},
+        'Goat': {'IsScreamingGoat': 'True'},
+        'Hoglin': {'IsImmuneToZombification': 'True'},
+        'Llama': {'Strength': 5},
+        'Magma Cube': {'Size': 0},
+        'Panda': {'MainGene': 'aggressive'},
+        'Phantom': {'AX': 1000, 'AY': 110, 'AZ': -1000},
+        'Piglin Brute': {'HandItems': [Item.nbt_for('golden_axe')], 'IsImmuneToZombification': 'True'},
+        'Piglin': {'IsImmuneToZombification': 'True', 'HandItems': [Item.nbt_for('golden_sword'), {}]},
+        'Pillager': {'HandItems': [Item.nbt_for('crossbow'), {}]},
+        'Skeleton': {'HandItems': [Item.nbt_for('bow')],
+                     'ArmorItems': [protected('iron_boots'), {}, {}, protected('iron_helmet')]},
+        'Slime': {'Size': 0},
+        'Stray': {'HandItems': [Item.nbt_for('bow')],
+                  'ArmorItems': [protected('iron_boots'), {}, {}, protected('iron_helmet')]},
+        'Vindicator': {'Johnny': 'True', 'HandItems': [Item.nbt_for('iron_axe'), {}]},
+        'Wither Skeleton': {'HandItems': [Item.nbt_for('stone_sword'), {}]},
+        'Zombie': {'ArmorItems': [{}, {}, {}, Item.nbt_for('iron_helmet')]},
+        'Zombified Piglin': {'HandItems': [Item.nbt_for('golden_sword'), {}]},
     }
 
     battles = [
@@ -128,14 +135,15 @@ def room():
                     hunter = hunter[0:-2]
 
                 def incr_cmd(which, mob):
-                    my_nbts = [f'Tags:[battler,{which}]']
+                    my_nbts = Nbt({'Tags': ['battler', which]})
                     added_nbt = fighter_nbts.get(mob, None)
                     if added_nbt:
-                        my_nbts.append(added_nbt)
+                        my_nbts = my_nbts.merge(added_nbt)
                     if which == 'hunter':
-                        my_nbts.append('Rotation:[180f,0f]')
-                    incr = f'summon {to_id(mob)} ~0 ~2 ~0 {{{",".join(my_nbts)}}}'
-                    incr_cmd = f'execute if score {which}_count arena < arena_count arena at @e[tag={which}_home,sort=random,limit=1] run {incr}'
+                        my_nbts = my_nbts.merge({'Rotation': [180, 0]})
+                    incr = summon(Entity(mob, my_nbts), r(0, 2, 0))
+                    incr_cmd = execute().if_().score((f'{which}_count', 'arena')).is_(LT, ('arena_count', 'arena')).at(
+                        e().tag(f'{which}_home').sort('random').limit(1)).run(incr)
                     return incr_cmd
 
                 data_change = execute().at(monitor_home)
