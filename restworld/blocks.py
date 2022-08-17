@@ -629,6 +629,8 @@ def color_functions(room):
 
         if is_plain:
             yield kill_em(e().tag('colorings_horse'))
+            yield kill_em(e().tag('colorings_dog'))
+            yield kill_em(e().tag('colorings_cat'))
             horse = Entity('horse', nbt=horse_nbt.merge({'ArmorItem': {'id': 'leather_horse_armor', 'Count': 1}}))
             yield horse.summon(r(0.7, 2, 4.4))
 
@@ -641,6 +643,8 @@ def color_functions(room):
                            {'ArmorItem': Item.nbt_for('leather_horse_armor', nbt=horse_leather_color)})
         yield data().merge(e().tag('colorings_llama').limit(1), {'DecorItem': llama_decor})
         yield data().merge(e().tag('colorings_sheep').limit(1), sheep_nbt)
+        yield data().merge(e().tag('colorings_cat').limit(1), {'CollarColor': color.num})
+        yield data().merge(e().tag('colorings_dog').limit(1), {'CollarColor': color.num})
 
         yield data().merge(r(-4, 2, 4), {'Text2': color.name})
         yield execute().as_(e().tag('colorings_names')).run(data().merge(s(), {'CustomName': color.name}))
@@ -676,12 +680,19 @@ def color_functions(room):
         'Variant': 5, 'Tags': ['colorings_horse', 'colorings_item', 'colorings_names'],
         'ArmorItem': Item.nbt_for('leather_horse_armor'), 'Rotation': [-25, 0], 'Tame': True, 'NoAI': True,
         'Silent': True})
+    dog_nbt = Nbt(
+        {'Owner': 'dummy', 'Tags': ['colorings_dog', 'colorings_item'], 'Sitting': True, 'Tame': True, 'NoAI': True})
+    cat_nbt = Nbt(
+        {'variant': 'persian', 'Owner': 'dummy', 'Tags': ['colorings_cat', 'colorings_item'], 'ColorColor': 3,
+         'Rotation': [90, 0], 'Tame': True, 'NoAI': True})
     room.function('colorings_init').add(
         kill_em(e().tag('colorings_item')),
 
         Entity('item_frame', {
             'Facing': 3, 'Tags': ['colorings_item_frame', 'colorings_item'], 'Fixed': True}).summon(r(-4.5, 4, 0.5)),
         Entity('horse', horse_nbt).summon(r(0.7, 2, 4.4)),
+        Entity('wolf', dog_nbt).summon(r(-8, 2, 2)),
+        Entity('cat', cat_nbt).summon(r(-2, 2, 2)),
         Entity('armor_stand', {
             'Tags': ['colorings_armor_stand', 'colorings_item'], 'Rotation': [30, 0]}).summon(r(-1.1, 2, 3)),
         Entity('llama', {
