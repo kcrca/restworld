@@ -72,9 +72,6 @@ def room():
         setblock(r(0, 7, 1), ('lever', {'face': 'floor', 'facing': WEST})),
         setblock(r(0, 7, -1), ('lever', {'face': 'floor', 'facing': WEST})),
         data().merge(r(0, 5, 1), {'powered': 0}),
-        fill(r(0, 5, 1), r(2, 5, 1), 'air'),
-        setblock(r(0, 5, 1), ('sticky_piston', {'facing': 'west'})),
-        setblock(r(1, 5, 1), 'redstone_block'),
 
         label(r(0, 7, 1), 'Time Running'),
         label(r(0, 7, -1), 'Time Direction'),

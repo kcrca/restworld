@@ -607,9 +607,9 @@ def color_functions(room):
         yield data().merge(r(-7, 0, 3), {'name': f'restworld:{color.id}_terra', 'showboundingbox': False})
 
         if is_plain:
-            fill(r(-9, 2, 2), r(-9, 2, 3), 'air')
-            volume.replace('air', '#standing_signs')
-            data().merge(e().tag('colorings_item_frame').limit(1), {'Item': {'Count': 0}})
+            yield fill(r(-9, 2, 2), r(-9, 2, 3), 'air')
+            yield volume.replace('air', '#standing_signs')
+            yield data().merge(e().tag('colorings_item_frame').limit(1), {'Item': {'Count': 0}})
         else:
             yield setblock(r(-9, 2, 2), Block(f'{color.id}_bed', {'facing': NORTH, 'part': 'head'}))
             yield setblock(r(-9, 2, 3), Block(f'{color.id}_bed', {'facing': NORTH, 'part': 'foot'}))
@@ -677,11 +677,10 @@ def color_functions(room):
         'ArmorItem': Item.nbt_for('leather_horse_armor'), 'Rotation': [-25, 0], 'Tame': True, 'NoAI': True,
         'Silent': True})
     room.function('colorings_init').add(
-        kill(e().tag('colorings_item')),
+        kill_em(e().tag('colorings_item')),
 
         Entity('item_frame', {
-            'Facing': 3, 'Tags': ['colorings_item_frame', 'colorings_item'], 'Item': Item.nbt_for('stone'),
-            'Fixed': True}).summon(r(-4.5, 4, 0.5)),
+            'Facing': 3, 'Tags': ['colorings_item_frame', 'colorings_item'], 'Fixed': True}).summon(r(-4.5, 4, 0.5)),
         Entity('horse', horse_nbt).summon(r(0.7, 2, 4.4)),
         Entity('armor_stand', {
             'Tags': ['colorings_armor_stand', 'colorings_item'], 'Rotation': [30, 0]}).summon(r(-1.1, 2, 3)),
@@ -725,7 +724,8 @@ def color_functions(room):
               (coloring_coords[1][0], coloring_coords[1][1] - 1, coloring_coords[1][2])),
 
         tag(e().tag('colorings_base_home')).add('colorings_home'),
-        execute().at(e().tag('colorings_home')).run(function('restworld:/blocks/colorings_cur')),
+        execute().at(e().tag('colorings_home')).run(function('restworld:blocks/colorings_init')),
+        execute().at(e().tag('colorings_home')).run(function('restworld:blocks/colorings_cur')),
         kill(e().type('item').distance((None, 20))),
     )
     room.function('colorings_plain_on', home=False).add(
@@ -734,6 +734,7 @@ def color_functions(room):
               (coloring_coords[1][0], 0, coloring_coords[1][2])),
 
         tag(e().tag('colorings_base_home')).remove('colorings_home'),
+        item().replace().entity(e().tag('colorings_item_frame'), 'container.0').with_('air'),
         colorings(True, Color('Plain', 0x0)),
         setblock(r(-7, -1, 3), 'redstone_torch'),
         setblock(r(-7, -1, 3), 'air'),
