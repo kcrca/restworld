@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 from pynecraft.base import EAST, NORTH, SOUTH, WEST, r, to_id
-from pynecraft.commands import EQ, Entity, MOD, Score, data, e, execute, function, item, kill, s, setblock, summon, tag, \
+from pynecraft.commands import Block, EQ, Entity, MOD, Score, data, e, execute, function, item, kill, s, setblock, \
+    summon, tag, \
     tp
 from pynecraft.info import colors, horses, music_discs, villager_professions, villager_types
 from pynecraft.simpler import WallSign
@@ -57,17 +58,17 @@ def room():
         lambda step: execute().as_(e().tag('cat')).run(
             data().merge(s(), {'variant': step.elem.id, 'CustomName': step.elem.name})),
         (
-            Entity('tabby',name= 'Tabby'),
-            Entity('black',name= 'Tuxedo'),
-            Entity('red',name= 'Red'),
-            Entity('siamese',name= 'Siamese'),
-            Entity('british_shorthair',name= 'British Shorthair'),
-            Entity('calico',name= 'Calico'),
-            Entity('persian',name= 'Persian'),
-            Entity('ragdoll',name= 'Ragdoll'),
-            Entity('white',name= 'White'),
-            Entity('jellie',name= 'Jellie'),
-            Entity('all_black',name= 'Black'),
+            Entity('tabby', name='Tabby'),
+            Entity('black', name='Tuxedo'),
+            Entity('red', name='Red'),
+            Entity('siamese', name='Siamese'),
+            Entity('british_shorthair', name='British Shorthair'),
+            Entity('calico', name='Calico'),
+            Entity('persian', name='Persian'),
+            Entity('ragdoll', name='Ragdoll'),
+            Entity('white', name='White'),
+            Entity('jellie', name='Jellie'),
+            Entity('all_black', name='Black'),
         ))
     room.function('chicken_exit').add(
         execute().as_(e().type('chicken')).run(data().merge(s(), {'EggLayTime': 1000000000})))
@@ -179,7 +180,7 @@ def room():
         placer(r(1, 3.5, -1), WEST, adults=True,
                nbt={'Tags': ['friendlies', 'llama', 'llama_spit'], 'TXD': 0, 'TYD': 0, 'TZD': 0, 'Steps': 0,
                     'Motion': [0, 0, 0], 'NoGravity': True}).summon('llama_spit'),
-        WallSign((None, 'Lllama Spit')).place(r(1, 2, -1), WEST),
+        WallSign((None, 'Llama Spit')).place(r(1, 2, -1), WEST),
         label(r(-2, 2, 1), 'Carpets'),
         label(r(-2, 2, -1), 'Chests'),
     )
@@ -306,6 +307,8 @@ def villager_funcs(room):
         if kind[0] == 'z':
             kind += ' Villagers'
             id += '_villager'
+        else:
+            kind = 'villagers'
         kind = kind.title()
         return id, kind
 
@@ -321,16 +324,16 @@ def villager_funcs(room):
             professions_init.add(p.summon(Entity(
                 id, name=pro, nbt={'VillagerData': {'profession': pro.lower()}}), tags=('villager',)))
         professions_init.add(
-            function(f'restworld:friendlies/{which}_professions_cur'),
             function(f'restworld:friendlies/{which}_levels_cur'),
-            WallSign((None, None, kind)).place(r(-5, 2, 0), WEST))
+            function(f'restworld:friendlies/{which}_professions_cur'),
+            data().merge(r(-5, 2, 0), {'Text3': kind}))
 
     professions_init_funcs('villager')
 
     def villager_professions_loop(step):
         yield execute().as_(e().tag('villager')).run(
             data().modify(s(), 'VillagerData.type').set().value(step.elem.lower()))
-        yield data().modify(r(-5, 2, 0), 'Text2').set().value(step.elem)
+        yield data().merge(r(-5, 2, 0), {'Text2': step.elem})
 
     room.loop('villager_professions', main_clock).loop(villager_professions_loop, villager_types)
 
@@ -343,9 +346,9 @@ def villager_funcs(room):
                 p = placer(r(0, 2, -3), WEST, -2, tags=('villager', 'types',), adults=True)
             types_init.add(p.summon(Entity(id, name=ty, nbt={'VillagerData': {'type': ty.lower()}})))
         types_init.add(
-            function(f'restworld:friendlies/{which}_types_cur'),
             function(f'restworld:friendlies/{which}_levels_cur'),
-            WallSign((None, None, 'Villagers')).place(r(-5, 2, 0), WEST),
+            function(f'restworld:friendlies/{which}_types_cur'),
+            data().merge(r(-5, 2, 0), {'Text3': kind})
         )
 
     types_init_funcs('villager')
@@ -357,8 +360,8 @@ def villager_funcs(room):
         yield execute().as_(e().tag('villager')).run(
             data().modify(s(), 'VillagerData.profession').set().value(step.elem.lower()))
         yield execute().as_(e().tag('villager')).run(
-            data().modify(s(), 'Age').set().value(-2147483648 if step.elem == 'Child' else 21474836487))
-        yield data().modify(r(-5, 2, 0), 'Text2').set().value(step.elem)
+            data().modify(s(), 'Age').set().value(-2147483648 if step.elem == 'Child' else 0))
+        yield data().merge(r(-5, 2, 0), {'Text2': step.elem})
 
     roles = villager_professions + ('Child',)
     room.loop('villager_types', main_clock).loop(villager_types_loop, roles).add(
@@ -377,7 +380,8 @@ def villager_funcs(room):
         cur_villagers_group.set(0),
         cur_villagers_zombies.set(0),
         function('restworld:friendlies/switch_villagers'),
-        label(r(-3, 2, 0), 'Biome / Profession'),
+        WallSign((None, None, 'Villagers')).place(r(-5, 2, 1), WEST),
+        label(r(-3, 2, 0), 'Profession'),
         label(r(-3, 2, 2), 'Level'),
         label(r(-3, 2, 4), 'Zombies'),
     )
@@ -396,6 +400,13 @@ def villager_funcs(room):
             init_villagers(1, 'villager_types'),
             init_villagers(2, 'zombie_professions'),
             init_villagers(3, 'zombie_types'),
+            # If zombies are on, turn off level. Setting the lever off does not cause the piston to move, hence the
+            # redstone block work.
+            execute().if_().score(cur_villagers_zombies).matches(1).at(e().tag('which_villagers_home')).run(
+                setblock(r(-3, 2, 2), Block('lever', state=dict(face='floor', facing='east'))),
+                setblock(r(-3, -1, 2), 'redstone_block'),
+                setblock(r(-3, -1, 2), 'air'),
+            ),
         )),
         which_villagers_needed_prev.operation(EQ, which_villagers_needed),
         execute().if_().score(cur_villagers_levels).matches(1).run(which_villagers.add(4)),
@@ -427,6 +438,6 @@ def villager_funcs(room):
 
     def villager_level_loop(step):
         yield execute().as_(e().tag('villager')).run(data().modify(s(), 'VillagerData.level').set().value(step.i + 1))
-        yield data().modify(r(-5, 2, 0), 'Text2').set().value(f'{step.elem} Level')
+        yield data().merge(r(-5, 2, 0), {'Text2': f' {step.elem} Level'})
 
     room.loop('villager_levels', main_clock).loop(villager_level_loop, ('Stone', 'Iron', 'Gold', 'Emerald', 'Diamond'))
