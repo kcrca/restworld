@@ -105,6 +105,7 @@ def apologia():
     such as for players, that can't be shown without real players. If you hold a map you can see the icon for you,
     but to see other players' icons, you will need to"""))
     book.next_page()
+    # noinspection GrazieInspection
     book.add(simplify("""recruit friends to join the world. Also, treasure maps show sketched versions of areas you
     haven't visited, but there no normal looking areas in this world for that to work with."""))
 

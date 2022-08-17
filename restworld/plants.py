@@ -157,7 +157,7 @@ def room():
     room.loop('pottable', fast_clock).loop(pottable_loop, pottables)
     room.function('propagule_init').add(
         setblock(r(0, 5, 0), 'mangrove_leaves'),
-        WallSign(('Mangrove', 'Propagule', 'Stage:  N', '(vanila shows 4)')).place(r(1, 2, 0), EAST))
+        WallSign(('Mangrove', 'Propagule', 'Stage:  N', '(vanilla shows 4)')).place(r(1, 2, 0), EAST))
 
     def propagule_loop(step):
         yield setblock(r(0, 4, 0), ('mangrove_propagule', {'hanging': True, 'age': step.elem}))

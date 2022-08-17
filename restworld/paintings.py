@@ -7,6 +7,7 @@ from restworld.rooms import Room
 from restworld.world import restworld
 
 
+# noinspection SpellCheckingInspection
 def room():
     room = Room('paintings', restworld, NORTH, (None, 'Paintings'))
 

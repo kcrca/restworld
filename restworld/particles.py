@@ -83,7 +83,7 @@ unused_particles = {
     Particle.CAMPFIRE_COSY_SMOKE,  # In block room
     Particle.CAMPFIRE_SIGNAL_SMOKE,  # Same as regular campfire smoke, just goes higher
     Particle.DUST_COLOR_TRANSITION,  # Can the player control its look? AFAICT, it's just when the power level changes?
-    Particle.ELDER_GUARDIAN,  # Just the elder guardian face in your face, anbd makes it hard to turn off.
+    Particle.ELDER_GUARDIAN,  # Just the elder guardian face in your face, and makes it hard to turn off.
     Particle.ITEM,  # Same as BLOCK
     Particle.NOTE,  # Always shown in the redstone room (as is DUST, FWIW)
     Particle.SPIT,  # Broke at 1.19, can't get the summoned spit to move.
@@ -96,7 +96,7 @@ particles.sort()
 #    the room), PORTAL (which can be seen in Materials).
 #
 #    Could loop the BLOCK_MARKER types in one thing.
-#    Could loop WHITE_ASH, CRIMSON_SPRE, etc.?
+#    Could loop WHITE_ASH, CRIMSON_SPORE, etc.?
 #    Could loop various explosions?
 
 villager_types = ('Desert', 'Jungle', 'Plains', 'Savanna', 'Snow', 'Swamp', 'Taiga')

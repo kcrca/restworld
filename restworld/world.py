@@ -103,10 +103,10 @@ class Restworld(RoomPack):
 
     def world_funcs(self):
         for f in self._suffixes:
-            fname = '_' + f
-            func = Function(fname)
+            func_name = '_' + f
+            func = Function(func_name)
             for room in self.function_set.children:
-                call = function(room.full_name + '/' + fname)
+                call = function(room.full_name + '/' + func_name)
                 if f in ('incr', 'decr'):
                     call = execute().at(e().tag(f'{room.name}_player_home')).run(call)
                 func.add(call)

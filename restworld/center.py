@@ -27,6 +27,7 @@ def room():
     room.function('reset_clocks', home=False).add(
         list(c.speed.set(c.init_speed) for c in restworld.clocks()))
 
+    # noinspection GrazieInspection
     room.function('lights_init').add(
         WallSign(('This world lets', 'you test how', 'your resource', 'pack looks.')).place((r(1), 101, r(4)), NORTH),
         WallSign(('Almost everything', 'is here: blocks', 'mobs, particles,', 'UI, moon phases ...')).place(

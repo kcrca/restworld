@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-import math
-
 from pynecraft.base import EAST, NORTH, SOUTH, WEST, r, to_id
 from pynecraft.commands import Block, BlockDef, Entity, data, e, execute, fill, function, good_block, item, kill, s, \
     setblock, summon, tag
@@ -43,6 +41,7 @@ def room():
             if slabs[i][j]:
                 yield from volume.replace_slabs(slabs[i][j], slabs[o][j])
             if stairs[i][j]:
+                # noinspection PyTypeChecker
                 yield from volume.replace_stairs(stairs[i][j], stairs[o][j])
         yield data().merge(r(0, 2, 3), {'Text2': blocks[i][0]})
 
@@ -63,7 +62,6 @@ def room():
         Block('arrow', name='Tipped Arrow')))
 
     points = (2, 6, 16, 36, 72, 148, 306, 616, 1236, 2476, 32767)
-    each = 2 * math.pi / len(points)
 
     def experience_orbs_loop(step):
         i = step.i

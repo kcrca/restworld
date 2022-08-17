@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from pynecraft.base import NORTH, Nbt, r
 from pynecraft.commands import CREATIVE, Entity, LEVELS, POINTS, SUCCESS, SURVIVAL, data, e, effect, execute, function, \
     gamemode, \
@@ -12,6 +14,7 @@ from restworld.world import kill_em, main_clock, restworld
 def room():
     room = Room('hud', restworld)
 
+    # noinspection GrazieInspection
     room.function('hud_room_init').add(
         WallSign(('The HUD', '(your armor will', 'be restored when', 'you leave)')).place(r(0, 2, -1), NORTH),
         label(r(-1, 2, 4), 'Wither')
@@ -57,7 +60,7 @@ def room():
         def give_effect(ef: Effect):
             return effect().give(entity, ef, effect_time, 0, True)
 
-        def clear_effect(ef: Effect):
+        def clear_effect(ef: Effect | None):
             return effect().clear(entity, ef)
 
         cur_health = room.score(f'{prefix}cur_health')
@@ -70,7 +73,7 @@ def room():
         if 'horse' in prefix:
             # Horses don't get absorption, this makes nothing happen with absorption in the loop
             absorption_value = 1
-        loop = room.loop(f'{prefix}health', main_clock).add(
+        room.loop(f'{prefix}health', main_clock).add(
             absorption.set(absorption_value),
             cur_health.set(data().get(entity, 'Health')),
 

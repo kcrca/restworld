@@ -28,7 +28,7 @@ def room():
     room.function('piglin_brute_init').add(
         placer(r(0, 2, 0), EAST, adults=True).summon(
             Entity('Piglin Brute', {'HandItems': [Item.nbt_for('golden_axe')]})))
-    piglins = (Entity('Piglin', nbt={'HandItems':[Item.nbt_for('golden_sword')]}), 'Zombified Piglin')
+    piglins = (Entity('Piglin', nbt={'HandItems': [Item.nbt_for('golden_sword')]}), 'Zombified Piglin')
     hoglins = ('Hoglin', 'Zoglin')
 
     def piglin_loop(step):

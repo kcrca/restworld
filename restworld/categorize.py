@@ -4,6 +4,7 @@ import re
 with open("blocks.txt") as fp:
     blocks = tuple(x.replace('_', ' ').rstrip() for x in fp.readlines())
 
+# noinspection SpellCheckingInspection
 categories = (
     r'\bblock( of)?\b', r'\bstairs\b', r'\bwall\b|\bfence$', r'\b(fence )?gate\b', r'\bslab\b', r'\bpillar\b')
 category_names = tuple(re.sub(r'\\.|[$?]|\(.*\)|\|.*', '', c) for c in categories)

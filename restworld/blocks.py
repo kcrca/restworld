@@ -33,8 +33,10 @@ def room():
         for i, sublist in enumerate(block_lists):
             nsublist = []
             for block in sublist:
+                # noinspection PyTypeChecker
                 nsublist.append(good_block(block))
             block_lists[i] = nsublist
+        # noinspection PyUnresolvedReferences
         show_list = len(set(x.id for x in block_lists[0])) > 1
 
         block_loop = room.loop(name, clock, score=score)
@@ -176,12 +178,12 @@ def room():
     polished_types = ('Smooth Basalt', 'Smooth Stone') + tuple(f'Polished|{t}' for t in stone_types[2:])
     blocks('stone', NORTH, (stone_types, polished_types), dz=3)
 
-    copoper_types = ('Copper Block', 'Exposed Copper', 'Weathered|Copper', 'Oxidized Copper')
+    copper_types = ('Copper Block', 'Exposed Copper', 'Weathered|Copper', 'Oxidized Copper')
     copper_blocks = list(
-        x.replace('Copper', 'Cut Copper').replace(' Block', '').replace(' Cut', '|Cut') for x in copoper_types)
-    waxed_types = tuple(f'Waxed|{x}' for x in copoper_types)
+        x.replace('Copper', 'Cut Copper').replace(' Block', '').replace(' Cut', '|Cut') for x in copper_types)
+    waxed_types = tuple(f'Waxed|{x}' for x in copper_types)
     waxed_block = tuple(f'Waxed|{x}' for x in copper_blocks)
-    blocks('copper', NORTH, (copoper_types, copper_blocks), dx=-3)
+    blocks('copper', NORTH, (copper_types, copper_blocks), dx=-3)
     blocks('waxed_copper', NORTH, (waxed_types, waxed_block), dx=-3, score=room.score('copper'))
     room.function('copper_init', exists_ok=True).add(
         tag(e().tag('copper_home')).add('copper_base'),
@@ -269,7 +271,6 @@ def room():
         yield setblock(r(0, 3, 0), Block('bell', state={'attachment': step.elem, 'facing': facing}))
 
     attachments = ('ceiling', 'single_wall', 'double_wall', 'floor')
-    facing = (NORTH, WEST, NORTH, WEST)
     room.loop('bell', main_clock).add(setblock(r(0, 3, 0), 'air')).loop(bell_loop, attachments)
 
     def armor_stand_loop(step):
@@ -853,7 +854,7 @@ def expansion_functions(room):
         # Soil needs the middle level filled with dirt
         execute().if_().block(r(0, 5, 0), '#restworld:soil').run(fill(r(-1, 3, -1), r(1, 4, 1), 'dirt')),
 
-        # Otherwise fill the middle level with the top level
+        # Otherwise, fill the middle level with the top level
         execute().unless().block(r(0, 5, 0), '#restworld:soil').run(clone(r(1, 5, 1), r(-1, 5, -1), r(-1, 4, -1))),
     )
 

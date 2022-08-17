@@ -72,9 +72,11 @@ def room():
         setblock(r(-3, -2, 0), 'air'),
         setblock(r(3, -2, 0), 'air'),
     )
+    # noinspection SpellCheckingInspection
+    init_text = ('Lorem ipsum', 'dolor sit amet,', 'consectetur', 'adipiscing elit.')
     font_run_init = room.function('font_run_init').add(
         tag(e().tag('font_run_home')).add('font_action_home'),
-        WallSign(('Lorem ipsum', 'dolor sit amet,', 'consectetur', 'adipiscing elit.')).place(r(0, 2, -3), SOUTH),
+        WallSign(init_text).place(r(0, 2, -3), SOUTH),
         execute().at(e().tag('font_action_home')).run(setblock(save_pos, 'air')),
         function('restworld:font/check_sign'),
         WallSign((None, 'Color Holder')).place(r(0, -3, -3), SOUTH),

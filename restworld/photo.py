@@ -139,7 +139,7 @@ def room():
             if dir == 0:
                 x = line_length - x - 1
             if '_log' in b or ('basalt' in b and 'smooth' not in b) or ('stem' in b and 'mush' not in b):
-                block.merge_nbt({'axies': 'z'})
+                block.merge_nbt({'axes': 'z'})
             elif 'command_block' in 'b':
                 block.merge_nbt({'facing': EAST})
             elif b == 'observer':

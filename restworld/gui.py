@@ -307,8 +307,9 @@ def room():
 
         clone_pos = list(only_item_chest_pos)
         clone_pos[1] = r(1)
+        # noinspection PyTypeChecker
         yield clone(only_item_chest_pos, only_item_chest_pos, tuple(clone_pos))
-        yield WallSign((None, 'Items Not', 'in Creative', 'Iventory')).place(r(5, 3, -2), WEST)
+        yield WallSign((None, 'Items Not', 'in Creative', 'Inventory')).place(r(5, 3, -2), WEST)
 
     giveable = non_inventory[:-1]
     giveable.append(Entity('Elytra', {'Damage': 450}))

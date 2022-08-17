@@ -20,6 +20,7 @@ adjustments = {0: (1, 0.07, 1, -1, 0.30, 0, 0, 'south', 0, +1),
                21: (11, -0.07, -1, 13, -0.30, 0, 180, 'north', 0, -1),
                31: (-1, 0.30, 0, 11, -0.07, -1, 270, 'east', +1, 0)}
 
+# noinspection SpellCheckingInspection
 authored_patterns = (
     (Block('blue_banner', nbt={'Patterns': [
         {'Color': 0, 'Pattern': 'bri'}, {'Color': 11, 'Pattern': 'hhb'}, {'Color': 15, 'Pattern': 'sc'},

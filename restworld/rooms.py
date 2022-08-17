@@ -324,6 +324,7 @@ class Room(FunctionSet):
         return score
 
     def _home_func_name(self, base):
+        # noinspection PyProtectedMember
         return self.pack._home_func_name(base)
 
 
@@ -508,8 +509,8 @@ class SignedRoom(Room):
         self.walls = walls
         self.function('signs').add(self.init(signs))
 
-    def init(self, descs):
-        i = iter(descs)
+    def init(self, descriptions):
+        i = iter(descriptions)
         try:
             for w in self.walls:
                 yield from w.signs(i, self.get_sign)
@@ -517,7 +518,7 @@ class SignedRoom(Room):
             return None
         try:
             desc = next(i)
-            raise ValueError('%s...: Remaining descs after all signs are placed' % desc.name)
+            raise ValueError('%s...: Remaining descriptions after all signs are placed' % desc.name)
         except StopIteration:
             return
 

@@ -66,14 +66,13 @@ def room():
         ('Detector Rail', False), ('Detector Rail', True),
         ('Activator Rail', False), ('Activator Rail', True),
     )
-    rail_clean = room.function('rail_clean', home=False).add(say('clean'), kill_em(e().tag('tmp_minecart')))
+    room.function('rail_clean', home=False).add(say('clean'), kill_em(e().tag('tmp_minecart')))
 
     def rail_loop(step):
         volume = Volume(r(3, 3, -3), r(0, 0, 0))
-        i = step.i
         rail, on = step.elem
         # 'powered=true' only seems to work for detector rail, but it's harmless for the others and maybe someday it
-        # will work for all and we can get ride of the torches.
+        # will work for all and we can get rid of the torches.
         added = dict(powered=True) if on else None
         yield volume.replace_straight_rails(rail, '#rails', added)
         if on:
