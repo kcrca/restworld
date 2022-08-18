@@ -116,7 +116,7 @@ def room():
         yield setblock(r(0, 2, 0), ('target', {'power': step.i}))
         yield data().merge(r(1, 3, 0), {'Text3': f'Power {step.i:d}'})
 
-    room.loop('target', main_clock).loop(target_loop, range(0, 16))
+    room.loop('target', fast_clock).loop(target_loop, range(0, 16))
     room.function('wire_strength_init').add(
         fill(r(1, 2, -1), r(1, 2, -16), ('oak_wall_sign', {'facing': WEST}, {'Text3': 'Powered'})))
 

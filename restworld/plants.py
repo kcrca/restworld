@@ -240,6 +240,7 @@ def three_funcs(room):
     def three_age_loop(step):
         def age(z, which):
             age = step.elem
+            yield setblock(r(0, 5, z), 'air')
             yield setblock(r(0, 4, z), f'{which}[age={age}]')
             yield data().merge(r(1, 2, z),
                                Sign.lines_nbt(

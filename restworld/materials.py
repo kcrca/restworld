@@ -211,14 +211,6 @@ def basic_functions(room):
             yield enchanter(value, 'material_static', cmd('ArmorItems[%d].tag' % a))
             if a < 2:
                 yield enchanter(value, 'material_static', cmd('HandItems[%d].tag' % a))
-        # yield arg(act(do_enchant(value, 'enchantable'), 'Item.tag')),
-        # yield arg(act(do_enchant(value, 'armor_horse'), 'ArmorItem.tag')),
-        # yield arg(act(do_enchant(value, 'material_static'), 'ArmorItem.tag'))
-        #
-        # for a in range(0, 4):
-        #     yield arg(act(do_enchant(value, 'material_static'), 'ArmorItems[%d].tag' % a))
-        #     if a < 2:
-        #         yield arg(act(do_enchant(value, 'material_static'), 'HandItems[%d].tag' % a))
 
     horse_saddle = room.score('horse_saddle')
     turtle_helmet = room.score('turtle_helmet')
@@ -274,8 +266,8 @@ def basic_functions(room):
         if material == 'wooden':
             hands_row[0] = 'stick'
             hands_row[1] = 'bow'
-            hands_row[6] = 'crossbow'
-            hands_row[7] = 'fishing_rod'
+            hands_row[6] = 'fishing_rod'
+            hands_row[7] = 'crossbow'
         elif material == 'iron':
             hands_row[1] = 'flint_and_steel'
             hands_row[6] = 'shears'

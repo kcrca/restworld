@@ -277,8 +277,8 @@ def room():
         if step.elem is None:
             nbt = Nbt(ShowArms=False)
         else:
-            nbt = Nbt(ShowArms=True,
-                      Pose={'LeftArm': [step.elem[0], 0, step.elem[1]], 'RightArm': [step.elem[2], 0, step.elem[3]]})
+            h, b, la, ra, ll, rl = step.elem
+            nbt = Nbt(ShowArms=True, Pose={'Head': h, 'Body': b, 'LeftArm': la, 'RightArm': ra, 'LeftLeg': ll, 'RightLeg': rl})
         yield data().merge(e().tag('armor_stand').limit(1), nbt)
 
     room.function('armor_stand_init').add(
@@ -286,7 +286,11 @@ def room():
         label(r(-1, 2, 0), "Get Small"))
     room.loop('armor_stand', main_clock).loop(
         armor_stand_loop,
-        (None, (-10, -10, 0, 10), (-60, -10, 0, 60), (-120, 10, 0, 120), (-170, 10, 0, 170)),
+        (None,
+         ((0, 0, 0), (0, 0, 0), (-10, 0, -10), (0, 0, 10), (0, 0, 0), (0, 0, 0)),
+         ((0, 0, -15), (0, -8, 4), (-60, 0, -10), (0, 0, 60), (-10, 0, -10), (0, 0, 0)),
+         ((0, 0, 0), (0, -16, 8), (-120, 0, 10), (0, 0, 120), (-20, 0, -20), (0, 0, 0)),
+         ((0, 0, 15), (0, -24, 12), (-170, 0, 10), (0, 0, 170), (-30, 0, -30), (0, 0, 0))),
         bounce=True)
 
     def brewing_stand_loop(step):
@@ -538,7 +542,7 @@ def room():
     for b in (
             'amethyst', 'anvil', 'bell', 'brewing_stand', 'cake', 'campfire', 'cauldron', 'chest', 'colored_beam',
             'colorings', 'composter', 'frosted_ice', 'grindstone', 'item_frame', 'job_sites_1', 'job_sites_2',
-            'lantern', 'armor_stand'):
+            'lantern', 'armor_stand', 'torches', 'spawner', 'blocks_room'):
         room.function(b + '_init', exists_ok=True).add(tag(e().tag(b + '_home')).add('no_expansion'))
 
 
