@@ -59,7 +59,7 @@ particles = [
     ActionDesc(Particle.NAUTILUS, note='with Conduit'),
     ActionDesc(Particle.POOF, note='Small Explosion'),
     ActionDesc(Particle.PORTAL),
-    ActionDesc(Particle.VIBRATION, 'Sculk Sensor'),
+    ActionDesc(Particle.VIBRATION, 'Sculk Sensor', note='Vibration'),
     ActionDesc(Particle.SCULK_SOUL, also=(Particle.SCULK_CHARGE, Particle.SCULK_CHARGE_POP)),
     ActionDesc(Particle.SHRIEK, 'Shriek'),
     ActionDesc(Particle.SMOKE),
@@ -349,7 +349,7 @@ def room():
     room.function('portal_init', home=False).add(
         fill(r(-2, 0, -1), r(2, 4, -1), 'obsidian'),
         fill(r(-1, 1, -1), r(1, 3, -1), 'nether_portal'))
-    room.function('vibration', home=False).add(slow().run(function('restworld:particles/vibration_run')))
+    room.function('vibration', home=False).add(main().run(function('restworld:particles/vibration_run')))
     room.function('vibration_init', home=False).add(
         setblock(r(2, 0, 2), ('piston', {'facing': 'up'})),
         setblock(r(2, 1, -2), ('piston', {'facing': 'up'})),
