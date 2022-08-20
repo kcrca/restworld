@@ -2,10 +2,11 @@ from __future__ import annotations
 
 from pynecraft import commands
 from pynecraft.base import EAST, NORTH, WEST, r
-from pynecraft.commands import BOSSBAR_COLORS, BOSSBAR_STYLES, Block, CREATIVE, Entity, LEVELS, REPLACE, SURVIVAL, a, \
+from pynecraft.commands import BOSSBAR_COLORS, BOSSBAR_STYLES, Block, CREATIVE, Entity, LEVELS, REPLACE, \
+    SURVIVAL, a, \
     bossbar, clone, data, e, execute, fill, function, gamemode, give, item, kill, p, s, schedule, setblock, summon
 from pynecraft.simpler import Item, ItemFrame, WallSign
-from restworld.rooms import Room, label
+from restworld.rooms import Room, label, named_frame_item
 from restworld.world import fast_clock, main_clock, restworld, slow_clock
 
 
@@ -242,11 +243,14 @@ def room():
         # I don't know why I can't do this right away, 1 tick isn't enough, and 1 second is.
         schedule().function(item_head, '1s', REPLACE),
         setblock(r(0, 2, 1), 'barrier'),
-        ItemFrame(EAST).item('iron_pickaxe').tag('item_src').fixed(False).summon(r(1, 2, 1)),
+        ItemFrame(EAST).item('iron_pickaxe').tag('item_src', 'gui').fixed(False).summon(r(1, 2, 1)),
+        ItemFrame(EAST, nbt={'Invisible': True}, name='Invisible Frame').item('iron_pickaxe').tag(
+            'item_invis_frame', 'gui').fixed(False).summon(r(1, 2, -3)),
         WallSign(
             ('Put item in frame', 'to show in "fixed",', '"ground", and 3rd', 'party hands')).place(r(-1, 2, 0), EAST),
         label(r(1, 2, -2), 'On Head'),
     )
+    invis_frame = e().tag('item_invis_frame').limit(1)
     room.function('item_run', home=False).add(
         execute().unless().entity(item_ground).at(e().tag('item_home')).run(
             summon('item', r(0, 3, 1), {'Item': Item.nbt_for('iron_pickaxe'), 'Age': -32768, 'PickupDelay': 2147483647,
@@ -256,6 +260,8 @@ def room():
         data().merge(item_ground, {'Age': -32768, 'PickupDelay': 2147483647}),
         item().replace().entity(item_holder, 'weapon.mainhand').from_().entity(item_src, 'container.0'),
         item().replace().entity(item_holder, 'weapon.offhand').from_().entity(item_src, 'container.0'),
+        data().modify(invis_frame, 'Item').set().from_(item_src, 'Item'),
+        data().merge(invis_frame, named_frame_item(name='Invisible Frame')),
         data().remove(item_holder, 'ArmorItems[3]'),
         execute().if_().score(room.score('item_head')).matches(1).run(data().modify(
             item_holder, 'ArmorItems[3]').set().from_(item_src, 'Item'))

@@ -72,7 +72,7 @@ def room():
 
     room.loop('experience_orbs', fast_clock).loop(experience_orbs_loop, points)
     room.function('experience_orbs_init').add(WallSign((None, 'Experience Orb')).place(r(1, 2, 0), EAST))
-    frame = ItemFrame(SOUTH, nbt={'Tags': [room.name, 'ore_ingot_frame']})
+    frame = ItemFrame(SOUTH, nbt={'Tags': [room.name, 'ores_ingot_frame']})
     room.function('ores_init').add(
         summon(frame, r(3, 3, 3)),
         summon(frame.merge_nbt({'Invisible': True}), r(4, 3, 3)),

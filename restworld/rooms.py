@@ -15,12 +15,17 @@ from pynecraft.function import DataPack, Function, FunctionSet, LATEST_PACK_VERS
 from pynecraft.simpler import WallSign
 
 
-def named_frame_item(block: BlockDef, name=None, damage=None):
+def named_frame_item(block: BlockDef = None, name=None, damage=None) -> Nbt:
+    if not block and not name:
+        return Nbt({'display': {}})
     block = good_block(block)
     tag_nbt = Nbt({'display': {'Name': str(JsonText.text(str(name if name else block.name))), }})
     if damage:
         tag_nbt.update(damage)
-    return Nbt({'Item': {'id': block.id, 'Count': 1, 'tag': tag_nbt}})
+    nbt = Nbt({'Item': {'tag': tag_nbt}})
+    if block:
+        nbt = nbt.merge({'Item': {'id': block.id, 'Count': 1, }})
+    return nbt
 
 
 def ensure(pos: Position, block: BlockDef, nbt=None):
