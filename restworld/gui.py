@@ -1,10 +1,12 @@
 from __future__ import annotations
 
+import re
+
 from pynecraft import commands
-from pynecraft.base import EAST, NORTH, WEST, r
-from pynecraft.commands import BOSSBAR_COLORS, BOSSBAR_STYLES, Block, CREATIVE, Entity, LEVELS, REPLACE, \
+from pynecraft.base import EAST, NORTH, WEST, r, to_id
+from pynecraft.commands import BOSSBAR_COLORS, BOSSBAR_STYLES, Block, CREATIVE, EQ, Entity, LEVELS, REPLACE, \
     SURVIVAL, a, \
-    bossbar, clone, data, e, execute, fill, function, gamemode, give, item, kill, p, s, schedule, setblock, summon
+    bossbar, clone, data, e, execute, fill, function, gamemode, give, item, kill, p, s, schedule, setblock, summon, tag
 from pynecraft.simpler import Item, ItemFrame, WallSign
 from restworld.rooms import Room, label, named_frame_item
 from restworld.world import fast_clock, main_clock, restworld, slow_clock
@@ -234,6 +236,13 @@ def room():
         item().replace().entity(e().tag('item_holder_head').limit(1), 'armor.head').with_(
             ('player_head', dict(SkullOwner='BlueMeanial'))),
     )
+
+    is_empty = room.score('item_is_empty')
+    was_empty = room.score('item_was_empty')
+    was_in = room.score('item_was_in')
+    is_in = room.score('item_is_in')
+
+    recent_item_sign_pos = r(0, 3, -2)
     room.function('item_init').add(
         kill(all_src),
         kill(all_ground),
@@ -242,32 +251,96 @@ def room():
                            nbt=dict(Small=True, NoGravity=True, Invisible=True)),
         # I don't know why I can't do this right away, 1 tick isn't enough, and 1 second is.
         schedule().function(item_head, '1s', REPLACE),
-        setblock(r(0, 2, 1), 'barrier'),
-        ItemFrame(EAST).item('iron_pickaxe').tag('item_src', 'gui').fixed(False).summon(r(1, 2, 1)),
+        setblock(r(0, 3, 1), 'barrier'),
+        ItemFrame(EAST).item('iron_pickaxe').tag('item_src', 'gui').fixed(False).summon(r(1, 3, 1)),
+        is_empty.set(1),
         ItemFrame(EAST, nbt={'Invisible': True}, name='Invisible Frame').item('iron_pickaxe').tag(
             'item_invis_frame', 'gui').fixed(False).summon(r(1, 2, -3)),
         WallSign(
-            ('Put item in frame', 'to show in "fixed",', '"ground", and 3rd', 'party hands')).place(r(-1, 2, 0), EAST),
+            ('Put item in frame', 'to show in "fixed",', '"ground", and 3rd', 'party hands')).place(r(0, 3, 0), EAST),
         label(r(1, 2, -2), 'On Head'),
+        label(r(1, 2, -1), 'All Items'),
+        label(r(1, 2, 0), 'All Blocks'),
     )
     invis_frame = e().tag('item_invis_frame').limit(1)
-    room.function('item_run', home=False).add(
-        execute().unless().entity(item_ground).at(e().tag('item_home')).run(
-            summon('item', r(0, 3, 1), {'Item': Item.nbt_for('iron_pickaxe'), 'Age': -32768, 'PickupDelay': 2147483647,
-                                        'Tags': ['item_ground']})),
+    ground_default_nbt = {'Item': Item.nbt_for('iron_pickaxe'), 'Age': -32768, 'PickupDelay': 2147483647,
+                          'Tags': ['item_ground']}
+    named_frame_data = named_frame_item(name='Invisible Frame').merge({'ItemRotation': 0})
+    item_copy = room.function('item_copy', home=False).add(
         execute().unless().data().entity(item_src, 'Item.id').run(kill(all_ground)),
-        data().modify(item_ground, 'Item').set().from_(item_src, 'Item'),
-        data().merge(item_ground, {'Age': -32768, 'PickupDelay': 2147483647}),
+        execute().if_().data().entity(item_src, 'Item.id').run(
+            data().merge(item_src, {'ItemRotation': 0}),
+            execute().unless().entity(item_ground).at(e().tag('item_home')).run(
+                summon('item', r(0, 3, -3), ground_default_nbt)),
+            data().modify(item_ground, 'Item').set().from_(item_src, 'Item'),
+            # item().replace().entity(item_ground, 'container.0').from_().entity(item_src, 'container.0'),
+            data().merge(item_ground, {'Age': -32768, 'PickupDelay': 2147483647})),
         item().replace().entity(item_holder, 'weapon.mainhand').from_().entity(item_src, 'container.0'),
         item().replace().entity(item_holder, 'weapon.offhand').from_().entity(item_src, 'container.0'),
-        data().modify(invis_frame, 'Item').set().from_(item_src, 'Item'),
-        data().merge(invis_frame, named_frame_item(name='Invisible Frame')),
         data().remove(item_holder, 'ArmorItems[3]'),
-        execute().if_().score(room.score('item_head')).matches(1).run(data().modify(
-            item_holder, 'ArmorItems[3]').set().from_(item_src, 'Item'))
+        execute().if_().score(room.score('item_head')).matches(1).run(
+            item().replace().entity(item_holder, 'armor.head').from_().entity(item_src, 'container.0')),
+        item().replace().entity(invis_frame, 'container.0').from_().entity(item_src, 'container.0'),
+        data().merge(invis_frame, named_frame_data),
+        execute().at(e().tag('all_things_home')).run(
+            item().replace().entity(p(), 'weapon.mainhand').from_().entity(item_src, 'container.0'),
+            item().replace().entity(p(), 'weapon.offhand').from_().entity(item_src, 'container.0')),
     )
-    room.function('item_enter').add(setblock(r(-1, -2, 0), 'redstone_block'))
+    room.function('item_run', home=False).add(
+        was_empty.operation(EQ, is_empty),
+        is_empty.set(1),
+        execute().if_().data().entity(item_src, 'Item.id').run(is_empty.set(0)),
+        execute().unless().score(was_empty).is_(EQ, is_empty).run(function(item_copy.full_name)),
+        was_in.operation(EQ, is_in),
+        is_in.set(0),
+        execute().if_().entity(p().volume((6, 5, 4))).run(is_in.set(1)),
+        execute().if_().score(is_in).matches(1).if_().score(was_in).matches(0).run(
+            (item().replace().block(r(0, 0, 1), f'container.{i}').from_().entity(p(), f'hotbar.{i}') for i
+             in range(0, 9)),
+            item().replace().block(r(0, 0, 1), 'container.10').from_().entity(p(), 'weapon.offhand')),
+        execute().if_().score(is_in).matches(0).if_().score(was_in).matches(1).run(
+            kill(e().tag('all_things_home')),
+            (item().replace().entity(p(), f'hotbar.{i}').from_().block(r(0, 0, 1), f'container.{i}') for i in
+             range(0, 9)),
+            item().replace().entity(p(), 'weapon.offhand').from_().block(r(0, 0, 1), 'container.1'),
+        ),
+    )
+    room.function('item_enter').add(setblock(r(-3, -2, -3), 'redstone_block'))
     room.function('item_exit').add(setblock(r(-1, -2, 0), 'air'))
+
+    def all_funcs(which):
+        at_home = execute().at(e().tag('item_home')).run
+
+        def all_loop(step):
+            yield item().replace().entity(item_src, 'container.0').with_(step.elem)
+            yield at_home(data().merge(recent_item_sign_pos, {'Text1': step.elem.name}))
+
+        all_things = read_all(which, Item)
+        room.loop(f'all_{which}', fast_clock).add(is_empty.set(1)).add(
+            at_home(data().modify(recent_item_sign_pos, 'Text4').set().from_(recent_item_sign_pos, 'Text3')),
+            at_home(data().modify(recent_item_sign_pos, 'Text3').set().from_(recent_item_sign_pos, 'Text2')),
+            at_home(data().modify(recent_item_sign_pos, 'Text2').set().from_(recent_item_sign_pos, 'Text1')),
+        ).loop(all_loop, sorted(all_things, key=lambda i: i.name))
+        room.function(f'all_{which}_home', exists_ok=True).add(tag(e().tag(f'all_{which}_home')).add('all_things_home'))
+
+        other = 'items' if which == 'blocks' else 'blocks'
+        start_all = room.score('start_all')
+        room.function(f'toggle_all_{which}', home=False).add(
+            kill(e().tag(f'all_{other}_home')),
+            start_all.set(1),
+            execute().at(e().tag(f'all_{which}_home')).run(start_all.set(0)),
+            execute().if_().score(start_all).matches(1).at(e().tag('item_home')).positioned(r(2, 0, 0)).run(
+                function(f'restworld:gui/all_{which}_home')),
+            execute().if_().score(start_all).matches(1).run(
+                at_home(WallSign(()).place(recent_item_sign_pos, EAST))),
+            execute().if_().score(start_all).matches(0).run(
+                kill(e().tag(f'all_{which}_home')),
+                item().replace().entity(item_src, 'container.0').with_('air'),
+                at_home(setblock(recent_item_sign_pos, 'air'))),
+        )
+
+    all_funcs('blocks')
+    all_funcs('items')
 
     non_inventory = list(Entity(i) for i in (
         'Knowledge Book',
@@ -340,3 +413,19 @@ def room():
         gamemode(CREATIVE, p()),
         kill(e().tag('survival_home'))
     )
+
+
+def read_all(which: str, ctor):
+    all_items = []
+    with open(f'all_{which}.txt') as fp:
+        for item_name in fp.readlines():
+            item_name = item_name.strip()
+            if not item_name or item_name[0] == '#':
+                continue
+            desc = re.split(r'\s*/\s*', item_name)
+            if len(desc) == 1:
+                it = ctor(to_id(desc[0]))
+            else:
+                it = ctor(to_id(desc[0]), name=desc[1])
+            all_items.append(it)
+    return all_items

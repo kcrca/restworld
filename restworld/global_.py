@@ -224,6 +224,8 @@ def room():
         execute().as_(e().tag('kid')).run(data().merge(s(), {'Age': -2147483648, 'IsBaby': True})),
         # Keep chickens from leaving eggs around
         execute().as_(e().type('chicken')).run(data().merge(s(), {'EggLayTime': 1000000000})),
+        # Make sure the item in the display doesn't vanish
+        execute().as_(e().tag('item_ground')).run(data().merge(s(), {'Age': -32768, 'PickupDelay': 2147483647})),
         # Frog spawning seems to just happen without the random ticks, so stop it
         execute().at(e().tag('frog_home')).run(fill(r(-2, 2, -2), r(2, 2, 2), 'frogspawn').replace('frogspawn')),
         kill_em(e().type('tadpole').tag('!keeper')),
