@@ -7,6 +7,7 @@ from pynecraft.commands import BOSSBAR_COLORS, BOSSBAR_STYLES, Block, CREATIVE, 
     bossbar, clone, data, e, execute, fill, function, gamemode, give, item, kill, p, s, schedule, setblock, summon, tag
 from pynecraft.info import block_items, blocks, items
 from pynecraft.simpler import Item, ItemFrame, WallSign
+from restworld import global_
 from restworld.rooms import Room, label, named_frame_item
 from restworld.world import fast_clock, main_clock, restworld, slow_clock
 
@@ -275,12 +276,13 @@ def room():
             data().merge(item_ground, {'Age': -32768, 'PickupDelay': 2147483647})),
         item().replace().entity(item_holder, 'weapon.mainhand').from_().entity(item_src, 'container.0'),
         item().replace().entity(item_holder, 'weapon.offhand').from_().entity(item_src, 'container.0'),
-        data().remove(item_holder, 'ArmorItems[3]'),
+        execute().if_().score(room.score('item_head')).matches(0).run(
+            item().replace().entity(item_holder, 'armor.head').with_('air')),
         execute().if_().score(room.score('item_head')).matches(1).run(
             item().replace().entity(item_holder, 'armor.head').from_().entity(item_src, 'container.0')),
         item().replace().entity(invis_frame, 'container.0').from_().entity(item_src, 'container.0'),
         data().merge(invis_frame, named_frame_data),
-        execute().at(e().tag('all_things_home')).run(
+        global_.if_clock_running.at(e().tag('all_things_home')).run(
             item().replace().entity(p(), 'weapon.mainhand').from_().entity(item_src, 'container.0'),
             item().replace().entity(p(), 'weapon.offhand').from_().entity(item_src, 'container.0')),
     )
@@ -338,8 +340,8 @@ def room():
         )
 
     all_funcs('blocks',
-              set(filter(lambda block: block.name not in block_items and 'Air' not in block.name, blocks.values())))
-    all_funcs('items', set(filter(lambda row: 'Spawn' not in row.name, items.values())))
+              filter(lambda block: block.name not in block_items and 'Air' not in block.name, blocks.values()))
+    all_funcs('items', filter(lambda row: 'Spawn' not in row.name, items.values()))
 
     non_inventory = list(Entity(i) for i in (
         'Knowledge Book',

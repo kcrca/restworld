@@ -8,7 +8,6 @@ from pynecraft.function import Function
 from restworld.rooms import Room
 from restworld.world import clock, kill_em, restworld, tick_clock
 
-
 # -- Death: How it works:
 #
 # At the bottom of the world is an armor stand named "death". When we want to kill a mob, we teleport it to death,
@@ -50,9 +49,13 @@ from restworld.world import clock, kill_em, restworld, tick_clock
 # means that on every tick, there is only one check about whether to run many functions (rather tha one
 # check per function).
 
+if_clock_running = execute().at(e().tag('clock_home')).if_().block(r(0, -2, 1), 'redstone_block')
+
+
 def room():
     def use_min_fill(y, filler, filter):
-        return execute().at(e().tag('full_reset_home')).run(fill((r(0), y, r(0)), (r(166), y, r(180)), filler).replace(filter))
+        return execute().at(e().tag('full_reset_home')).run(
+            fill((r(0), y, r(0)), (r(166), y, r(180)), filler).replace(filter))
 
     def clock_blocks(turn_on):
         lights = ('red_concrete', 'lime_concrete')
@@ -128,8 +131,7 @@ def room():
         ),
         Function('clock_toggle').add(
             clock_toggle.set(0),
-            execute().at(e().tag('clock_home')).if_().block(r(0, -2, 1), 'redstone_block').run(
-                clock_toggle.set(1)),
+            if_clock_running.run(clock_toggle.set(1)),
             execute().if_().score(clock_toggle).matches(0).run(function('restworld:global/clock_on')),
             execute().if_().score(clock_toggle).matches(1).run(function('restworld:global/clock_off')),
         ),
