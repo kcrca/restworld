@@ -1,12 +1,11 @@
 from __future__ import annotations
 
-import re
-
 from pynecraft import commands
-from pynecraft.base import EAST, NORTH, WEST, r, to_id
+from pynecraft.base import EAST, NORTH, WEST, r
 from pynecraft.commands import BOSSBAR_COLORS, BOSSBAR_STYLES, Block, CREATIVE, EQ, Entity, LEVELS, REPLACE, \
     SURVIVAL, a, \
     bossbar, clone, data, e, execute, fill, function, gamemode, give, item, kill, p, s, schedule, setblock, summon, tag
+from pynecraft.info import block_items, blocks, items
 from pynecraft.simpler import Item, ItemFrame, WallSign
 from restworld.rooms import Room, label, named_frame_item
 from restworld.world import fast_clock, main_clock, restworld, slow_clock
@@ -273,7 +272,6 @@ def room():
             execute().unless().entity(item_ground).at(e().tag('item_home')).run(
                 summon('item', r(0, 3, -3), ground_default_nbt)),
             data().modify(item_ground, 'Item').set().from_(item_src, 'Item'),
-            # item().replace().entity(item_ground, 'container.0').from_().entity(item_src, 'container.0'),
             data().merge(item_ground, {'Age': -32768, 'PickupDelay': 2147483647})),
         item().replace().entity(item_holder, 'weapon.mainhand').from_().entity(item_src, 'container.0'),
         item().replace().entity(item_holder, 'weapon.offhand').from_().entity(item_src, 'container.0'),
@@ -308,19 +306,19 @@ def room():
     room.function('item_enter').add(setblock(r(-3, -2, -3), 'redstone_block'))
     room.function('item_exit').add(setblock(r(-1, -2, 0), 'air'))
 
-    def all_funcs(which):
+    def all_funcs(which, things):
         at_home = execute().at(e().tag('item_home')).run
 
         def all_loop(step):
             yield item().replace().entity(item_src, 'container.0').with_(step.elem)
             yield at_home(data().merge(recent_item_sign_pos, {'Text1': step.elem.name}))
 
-        all_things = read_all(which, Item)
+        all_things = things
         room.loop(f'all_{which}', fast_clock).add(is_empty.set(1)).add(
             at_home(data().modify(recent_item_sign_pos, 'Text4').set().from_(recent_item_sign_pos, 'Text3')),
             at_home(data().modify(recent_item_sign_pos, 'Text3').set().from_(recent_item_sign_pos, 'Text2')),
             at_home(data().modify(recent_item_sign_pos, 'Text2').set().from_(recent_item_sign_pos, 'Text1')),
-        ).loop(all_loop, sorted(all_things, key=lambda i: i.name))
+        ).loop(all_loop, all_things)
         room.function(f'all_{which}_home', exists_ok=True).add(tag(e().tag(f'all_{which}_home')).add('all_things_home'))
 
         other = 'items' if which == 'blocks' else 'blocks'
@@ -339,8 +337,9 @@ def room():
                 at_home(setblock(recent_item_sign_pos, 'air'))),
         )
 
-    all_funcs('blocks')
-    all_funcs('items')
+    all_funcs('blocks',
+              set(filter(lambda block: block.name not in block_items and 'Air' not in block.name, blocks.values())))
+    all_funcs('items', set(filter(lambda row: 'Spawn' not in row.name, items.values())))
 
     non_inventory = list(Entity(i) for i in (
         'Knowledge Book',
@@ -413,19 +412,3 @@ def room():
         gamemode(CREATIVE, p()),
         kill(e().tag('survival_home'))
     )
-
-
-def read_all(which: str, ctor):
-    all_items = []
-    with open(f'all_{which}.txt') as fp:
-        for item_name in fp.readlines():
-            item_name = item_name.strip()
-            if not item_name or item_name[0] == '#':
-                continue
-            desc = re.split(r'\s*/\s*', item_name)
-            if len(desc) == 1:
-                it = ctor(to_id(desc[0]))
-            else:
-                it = ctor(to_id(desc[0]), name=desc[1])
-            all_items.append(it)
-    return all_items
