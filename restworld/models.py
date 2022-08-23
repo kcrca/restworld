@@ -1,11 +1,14 @@
-from pynecraft.base import EAST, NORTH, SOUTH, d, r, rotated_facing
+import re
+from collections import defaultdict
+
+from pynecraft.base import EAST, NORTH, SOUTH, d, r, rotated_facing, to_name
 from pynecraft.commands import EQ, REPLACE, \
     comment, data, e, execute, fill, function, item, kill, p, say, schedule, setblock, summon, tag
 from pynecraft.enums import ValueEnum
 from pynecraft.info import block_items, blocks, items
 from pynecraft.simpler import Item, ItemFrame, WallSign
 from restworld import global_
-from restworld.rooms import ActionDesc, SignedRoom, Wall, label, named_frame_item
+from restworld.rooms import ActionDesc, SignedRoom, Wall, label, named_frame_item, span
 from restworld.world import fast_clock, restworld
 
 
@@ -41,17 +44,67 @@ from restworld.world import fast_clock, restworld
 # (*) Some blocks have no item version (e.g., water and lava). We leave
 # them out of the block list.
 
-class Modes(ValueEnum):
-    MANUAL = 'manual'
+class Mode(ValueEnum):
+    SAMPLER_BLOCKS = 'sampler_blocks'
     BLOCKS = 'blocks'
+    MANUAL = 'manual'
     ITEMS = 'items'
+    SAMPLER_ITEMS = 'sampler_items'
 
 
-modes = (
-    ActionDesc(Modes.MANUAL, 'You Choose'),
-    ActionDesc(Modes.BLOCKS, 'All Blocks'),
-    ActionDesc(Modes.ITEMS, 'All Items')
-)
+modes = [ActionDesc(e, to_name(e.value)) for e in Mode]
+
+sample_pats = (
+    'Stairs', r'Slab', r'Planks', r'Fence$', r'Fence Gate', r'Stripped.* (?:Logs|Stem)', r'(?<!Stripped).* Wood$',
+    r'Cut Copper', r'(?<!Cut|Raw) Copper$', r'Tulip', r'Dye', r' Wool$', r'Carpet', r'Wall$', r'Anvil',
+    r'Stained Glass$',
+    r'Glass Pane', r'Shulker Box', r'Concrete$', r'Concrete Powder', r'Pressure Plate', r'Button', r'Boat$',
+    r'Boat with Chest', r'Sword', r'Shovel', r'Pickaxe', r'Axe', r'Hoe', r'Ingot', r'Helmet', r'Leggings',
+    r'Chestplate',
+    r'Boots', r'(?<!Wall) Sign', r' Bed$', r'Spawn Egg', r'Horse Armor', r'Banner', r'Music Disc', r' Candle$',
+    r'Froglight', r'Coral Block', r'Coral Fan', r'Coral$')
+samples_re = re.compile('(' + ')|('.join(sample_pats) + ')')
+samples_skip_re = re.compile(r'Stripped.* (Wood|Hyphae)')
+
+# this is for debugging, so we can examine the groupings for the sampled sets.
+VERBOSE = False
+
+
+def sample(which, things):
+    seen = defaultdict(list)
+    unclassified = '[unclassified]'
+
+    def sample_filter(t):
+        name = t.name
+        if samples_skip_re.search(name):
+            seen[samples_skip_re.pattern].append(name)
+        else:
+            m = samples_re.search(name)
+            if not m:
+                seen[unclassified].append(name)
+                return True
+            else:
+                pos = None
+                for i, group in enumerate(m.groups()):
+                    if group:
+                        if pos:
+                            print(f'Warning: {name}: Groups {pos} and {i}')
+                        pos = i
+                if pos is None:
+                    raise ValueError(f'{name}: pos is None')
+                pattern = sample_pats[pos]
+                show = pattern not in seen
+                seen[pattern].append(name)
+                return show
+
+    try:
+        return tuple(filter(sample_filter, things))
+    finally:
+        if VERBOSE:
+            print(f'... {which}')
+            for key in sample_pats:
+                print(f'{key}: {seen[key]}')
+            print(f'{unclassified}: {seen[unclassified]}')
 
 
 def room():
@@ -64,7 +117,7 @@ def room():
             setblock(d(-dx, 0, -dz), 'emerald_block'),
             execute().at(model_home).run(function(f'restworld:models/start_{action_desc.enum}'))))
 
-    wall_used = {4: (3,), 3: (2, 4)}
+    wall_used = {3: span(1, 5)}
     room = SignedRoom('models', restworld, EAST, ('Models',), mode_sign, modes,
                       (Wall(7, EAST, 1, -1, wall_used),))
 
@@ -166,8 +219,8 @@ def room():
 
     at_home = execute().at(model_home).run
 
-    def all_funcs(which, things):
-        signs = recent_signs[which][1]
+    def thing_funcs(which, things):
+        signs = recent_signs[which.replace('sampled_', '')][1]
 
         def all_loop(step):
             yield item().replace().entity(model_src, 'container.0').with_(step.elem)
@@ -194,7 +247,10 @@ def room():
             kill(e().tag(other_home)),
             execute().positioned(r(-1, -1, 0)).run(function(f'restworld:models/all_{which}_home')))
 
-    all_funcs('blocks',
-              filter(lambda block: block.name not in block_items and 'Air' not in block.name, blocks.values()))
-    all_funcs('items', filter(lambda row: 'Spawn' not in row.name, items.values()))
+    block_list = tuple(filter(lambda block: block.name not in block_items and 'Air' not in block.name, blocks.values()))
+    thing_funcs('blocks', block_list)
+    thing_funcs('sampled_blocks', sample('blocks', block_list))
+    item_list = tuple(filter(lambda row: 'Spawn' not in row.name, items.values()))
+    thing_funcs('items', item_list)
+    thing_funcs('sampled_items', sample('items', item_list))
     room.function('start_manual').add(kill(e().tag('all_things_home')))
