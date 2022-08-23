@@ -1,7 +1,7 @@
 import re
 from collections import defaultdict
 
-from pynecraft.base import EAST, NORTH, SOUTH, d, r, rotated_facing, to_name
+from pynecraft.base import EAST, NORTH, d, r, rotated_facing, to_name
 from pynecraft.commands import EQ, REPLACE, \
     comment, data, e, execute, fill, function, item, kill, p, say, schedule, setblock, summon, tag
 from pynecraft.enums import ValueEnum
@@ -57,12 +57,10 @@ modes = [ActionDesc(e, to_name(e.value)) for e in Mode]
 sample_pats = (
     'Stairs', r'Slab', r'Planks', r'Fence$', r'Fence Gate', r'Stripped.* (?:Logs|Stem)', r'(?<!Stripped).* Wood$',
     r'Cut Copper', r'(?<!Cut|Raw) Copper$', r'Tulip', r'Dye', r' Wool$', r'Carpet', r'Wall$', r'Anvil',
-    r'Stained Glass$',
-    r'Glass Pane', r'Shulker Box', r'Concrete$', r'Concrete Powder', r'Pressure Plate', r'Button', r'Boat$',
-    r'Boat with Chest', r'Sword', r'Shovel', r'Pickaxe', r'Axe', r'Hoe', r'Ingot', r'Helmet', r'Leggings',
-    r'Chestplate',
-    r'Boots', r'(?<!Wall) Sign', r' Bed$', r'Spawn Egg', r'Horse Armor', r'Banner', r'Music Disc', r' Candle$',
-    r'Froglight', r'Coral Block', r'Coral Fan', r'Coral$')
+    r'Stained Glass$', r'Glass Pane', r'Shulker Box', r'Concrete$', r'Concrete Powder', r'Pressure Plate', r'Button',
+    r'Boat$', r'Boat with Chest', r'Sword', r'Shovel', r'Pickaxe', r'Axe', r'Hoe', r'Ingot', r'Helmet', r'Leggings',
+    r'Chestplate', r'Boots', r'(?<!Wall) Sign', r' Bed$', r'Spawn Egg', r'Horse Armor', r'Banner', r'Music Disc',
+    r' Candle$', r'Froglight', r'Coral Block', r'Coral Fan', r'Coral$')
 samples_re = re.compile('(' + ')|('.join(sample_pats) + ')')
 samples_skip_re = re.compile(r'Stripped.* (Wood|Hyphae)')
 
@@ -134,9 +132,7 @@ def room():
     is_empty = room.score('model_is_empty')
     was_empty = room.score('model_was_empty')
     needs_restore = room.score('needs_restore')
-    recent_block_signs = (r(2, 4, 3), r(2, 3, 3), r(1, 4, 3), r(1, 3, 3))[::-1]
-    recent_item_signs = (r(1, 4, -3), r(1, 3, -3), r(2, 4, -3), r(2, 3, -3))[::-1]
-    recent_signs = {'blocks': (NORTH, recent_block_signs), 'items': (SOUTH, recent_item_signs)}
+    recent_things_signs = (r(-2, 4, 1), r(-2, 4, 0), r(-2, 4, -1))[::-1]
     model_head = room.function('model_head', home=False).add(
         item().replace().entity(e().tag('model_holder_head').limit(1), 'armor.head').with_(
             ('player_head', dict(SkullOwner='BlueMeanial'))),
@@ -154,26 +150,25 @@ def room():
         ItemFrame(EAST, nbt={'Invisible': True}, name='Invisible Frame').tag('model_invis_frame', 'models').fixed(
             False).summon(r(2, 2, -2)),
         WallSign(
-            (None, 'Put model in', ' the frame to see', 'it in many views')).place(r(0, 3, 2), EAST),
+            (None, 'Put something in', ' the frame to see', 'it in many views')).place(r(1, 3, 3), NORTH),
 
-        ((WallSign((), wood='birch').place(pos, dir) for pos in signs) for dir, signs in recent_signs.values()),
+        (WallSign((), wood='birch').place(pos, EAST) for pos in recent_things_signs),
         setblock(chest_pos, 'chest'),
         needs_restore.set(0),
 
         label(r(0, 2, -1), 'On Head'),
         label(r(-2, 3, 0), 'Compact', facing=EAST),
 
-        is_empty.set(0),
-        was_empty.set(1),
-        function('restworld:model/model_copy')
+        is_empty.set(1),
+        schedule().function('restworld:models/model_copy', '1s', REPLACE)
     )
     ground_default_nbt = {'Item': Item.nbt_for('iron_pickaxe'), 'Age': -32768, 'PickupDelay': 2147483647,
                           'Tags': ['model_ground']}
     named_frame_data = named_frame_item(name='Invisible Frame').merge({'ItemRotation': 0})
     model_copy = room.function('model_copy', home=False).add(
+        data().merge(model_src, {'ItemRotation': 0}),
         execute().unless().data().entity(model_src, 'Item.id').run(kill(all_ground)),
         execute().if_().data().entity(model_src, 'Item.id').run(
-            data().merge(model_src, {'ItemRotation': 0}),
             execute().unless().entity(model_ground).at(model_home).run(
                 summon('item', r(1, 3, -2), ground_default_nbt)),
             data().modify(model_ground, 'Item').set().from_(model_src, 'Item'),
@@ -220,7 +215,7 @@ def room():
     at_home = execute().at(model_home).run
 
     def thing_funcs(which, things):
-        signs = recent_signs[which.replace('sampled_', '')][1]
+        signs = recent_things_signs
 
         def all_loop(step):
             yield item().replace().entity(model_src, 'container.0').with_(step.elem)
