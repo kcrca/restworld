@@ -1,0 +1,200 @@
+from pynecraft.base import EAST, NORTH, SOUTH, d, r, rotated_facing
+from pynecraft.commands import EQ, REPLACE, \
+    comment, data, e, execute, fill, function, item, kill, p, say, schedule, setblock, summon, tag
+from pynecraft.enums import ValueEnum
+from pynecraft.info import block_items, blocks, items
+from pynecraft.simpler import Item, ItemFrame, WallSign
+from restworld import global_
+from restworld.rooms import ActionDesc, SignedRoom, Wall, label, named_frame_item
+from restworld.world import fast_clock, restworld
+
+
+# The item area...
+#
+# See how models work, especially WRT displays. There are two major modes:
+# The user chooses a thing to view, or we loop through some set of things. The
+# first mode is relatively simple: The user puts something in the frame,
+# and it's copied into many places, but not the user's hands. They have full
+# control of when things change, can see first person views themselves.
+#
+# The second has us putting things into the user's hands, and therefore
+# changing their inventory. This requires planning. So...
+#
+# (*) When the user enters the area, we copy their hotbar and left hand
+# into a chest, and when they leave we replace them. The replacement should
+# probably only happen if we have ever put something in their hands in the
+# first place. Because placing things into their hands when they leave is
+# probably rather unexpected, it's just the least destructive thing we can do.
+#
+# (*) The user chooses which list of things to loop. Right now there are two:
+# items and blocks. Which gives three states: Not looping, or looping one of
+# these. Currently, I have a lever for each list, and turning one on forces
+# the other off if needed. This puts the levers next to each other to save
+# room, and it's tricky to get the power issues working right.
+#
+# (*) ...But I can imagine others. For example, a compressed version of
+# these could be built by assuming that we can show only one version of
+# things that share a lot of models (stairs, slabs, ...). That might very
+# much reduce the length of the list. But that further complicates choosing
+# which list to use. Maybe signs for each one?
+#
+# (*) Some blocks have no item version (e.g., water and lava). We leave
+# them out of the block list.
+
+class Modes(ValueEnum):
+    MANUAL = 'manual'
+    BLOCKS = 'blocks'
+    ITEMS = 'items'
+
+
+modes = (
+    ActionDesc(Modes.MANUAL, 'You Choose'),
+    ActionDesc(Modes.BLOCKS, 'All Blocks'),
+    ActionDesc(Modes.ITEMS, 'All Items')
+)
+
+
+def room():
+    model_home = e().tag('model_home')
+
+    def mode_sign(action_desc, wall):
+        dx, _, dz = rotated_facing(wall.facing).scale(1)
+        return WallSign(action_desc.sign_text(), (
+            fill(r(-dx, -2, -5), r(-dx, 2, 5), 'smooth_quartz').replace('emerald_block'),
+            setblock(d(-dx, 0, -dz), 'emerald_block'),
+            execute().at(model_home).run(function(f'restworld:models/start_{action_desc.enum}'))))
+
+    wall_used = {4: (3,), 3: (2, 4)}
+    room = SignedRoom('models', restworld, EAST, ('Models',), mode_sign, modes,
+                      (Wall(7, EAST, 1, -1, wall_used),))
+
+    room.function('model_signs_init').add(function('restworld:models/signs'))
+
+    placer = room.mob_placer(r(0, 3, 0), EAST, auto_tag=False, adults=True, nbt={'ShowArms': True})
+    placer_head = room.mob_placer(r(0, 3.77, 0), EAST, auto_tag=False, adults=True)
+    all_src = e().tag('model_src')
+    model_src = all_src.limit(1)
+    all_ground = e().tag('model_ground')
+    model_ground = all_ground.limit(1)
+    model_holder = e().tag('model_holder').limit(1)
+    invis_frame = e().tag('model_invis_frame').limit(1)
+    is_empty = room.score('model_is_empty')
+    was_empty = room.score('model_was_empty')
+    needs_restore = room.score('needs_restore')
+    recent_block_signs = (r(2, 4, 3), r(2, 3, 3), r(1, 4, 3), r(1, 3, 3))[::-1]
+    recent_item_signs = (r(1, 4, -3), r(1, 3, -3), r(2, 4, -3), r(2, 3, -3))[::-1]
+    recent_signs = {'blocks': (NORTH, recent_block_signs), 'items': (SOUTH, recent_item_signs)}
+    model_head = room.function('model_head', home=False).add(
+        item().replace().entity(e().tag('model_holder_head').limit(1), 'armor.head').with_(
+            ('player_head', dict(SkullOwner='BlueMeanial'))),
+    )
+    chest_pos = r(-1, -2, 0)
+    room.function('model_init').add(
+        kill(all_src),
+        kill(all_ground),
+        placer.summon('armor_stand', tags=('model_holder', 'model_hands')),
+        placer_head.summon('armor_stand', tags=('model_holder_head',),
+                           nbt=dict(Small=True, NoGravity=True, Invisible=True)),
+        # I don't know why I can't do this right away, 1 tick isn't enough, and 1 second is.
+        schedule().function(model_head, '1s', REPLACE),
+        ItemFrame(EAST).item('iron_pickaxe').tag('model_src', 'models').fixed(False).summon(r(2, 2, 2)),
+        ItemFrame(EAST, nbt={'Invisible': True}, name='Invisible Frame').tag('model_invis_frame', 'models').fixed(
+            False).summon(r(2, 2, -2)),
+        WallSign(
+            (None, 'Put model in', ' the frame to see', 'it in many views')).place(r(0, 3, 2), EAST),
+
+        ((WallSign((), wood='birch').place(pos, dir) for pos in signs) for dir, signs in recent_signs.values()),
+        setblock(chest_pos, 'chest'),
+        needs_restore.set(0),
+
+        label(r(0, 2, -1), 'On Head'),
+        label(r(-2, 3, 0), 'Compact', facing=EAST),
+
+        is_empty.set(0),
+        was_empty.set(1),
+        function('restworld:model/model_copy')
+    )
+    ground_default_nbt = {'Item': Item.nbt_for('iron_pickaxe'), 'Age': -32768, 'PickupDelay': 2147483647,
+                          'Tags': ['model_ground']}
+    named_frame_data = named_frame_item(name='Invisible Frame').merge({'ItemRotation': 0})
+    model_copy = room.function('model_copy', home=False).add(
+        execute().unless().data().entity(model_src, 'Item.id').run(kill(all_ground)),
+        execute().if_().data().entity(model_src, 'Item.id').run(
+            data().merge(model_src, {'ItemRotation': 0}),
+            execute().unless().entity(model_ground).at(model_home).run(
+                summon('item', r(1, 3, -2), ground_default_nbt)),
+            data().modify(model_ground, 'Item').set().from_(model_src, 'Item'),
+            data().merge(model_ground, {'Age': -32768, 'PickupDelay': 2147483647})),
+        item().replace().entity(model_holder, 'weapon.mainhand').from_().entity(model_src, 'container.0'),
+        item().replace().entity(model_holder, 'weapon.offhand').from_().entity(model_src, 'container.0'),
+        execute().if_().score(room.score('model_head')).matches(0).run(
+            item().replace().entity(model_holder, 'armor.head').with_('air')),
+        execute().if_().score(room.score('model_head')).matches(1).run(
+            item().replace().entity(model_holder, 'armor.head').from_().entity(model_src, 'container.0')),
+        item().replace().entity(invis_frame, 'container.0').from_().entity(model_src, 'container.0'),
+        data().merge(invis_frame, named_frame_data),
+        global_.if_clock_running.at(e().tag('all_things_home')).run(
+            item().replace().entity(p(), 'weapon.mainhand').from_().entity(model_src, 'container.0'),
+            item().replace().entity(p(), 'weapon.offhand').from_().entity(model_src, 'container.0'),
+            needs_restore.set(1)),
+    )
+    model_save = room.function('model_save', home=False).add(
+        say('save'),
+        (item().replace().block(chest_pos, f'container.{i}').from_().entity(p(), f'hotbar.{i}') for i in range(0, 9)),
+        item().replace().block(chest_pos, 'container.1').from_().entity(p(), 'weapon.offhand'),
+    )
+    model_restore = room.function('model_restore', home=False).add(
+        say('restore'),
+        (item().replace().entity(p(), f'hotbar.{i}').from_().block(chest_pos, f'container.{i}') for i in range(0, 9)),
+        item().replace().entity(p(), 'weapon.offhand').from_().block(chest_pos, 'container.1'),
+    )
+    room.function('model_run', home=False).add(
+        was_empty.operation(EQ, is_empty),
+        is_empty.set(1),
+        execute().if_().data().entity(model_src, 'Item.id').run(is_empty.set(0)),
+        execute().unless().score(was_empty).is_(EQ, is_empty).run(function(model_copy)),
+    )
+    redstone_block_pos = r(1, -2, 0)
+    room.function('model_enter').add(
+        execute().at(model_home).run(function(model_save)),
+        needs_restore.set(0),
+        setblock(redstone_block_pos, 'redstone_block'))
+    room.function('model_exit').add(
+        setblock(redstone_block_pos, 'air'),
+        execute().if_().score(needs_restore).matches(1).at(model_home).run(function(model_restore))
+    )
+
+    at_home = execute().at(model_home).run
+
+    def all_funcs(which, things):
+        signs = recent_signs[which][1]
+
+        def all_loop(step):
+            yield item().replace().entity(model_src, 'container.0').with_(step.elem)
+            name = step.elem.name
+            yield at_home(data().merge(signs[-1], {'Text1': name}))
+
+        all_things = things
+        all_things_loop = room.loop(f'all_{which}', fast_clock, home=False).add(is_empty.set(1))
+        for i, pos in enumerate(signs):
+            all_things_loop.add(
+                at_home(data().modify(pos, 'Text4').set().from_(pos, 'Text3')),
+                at_home(data().modify(pos, 'Text3').set().from_(pos, 'Text2')),
+                at_home(data().modify(pos, 'Text2').set().from_(pos, 'Text1')),
+                at_home(data().modify(pos, 'Text1').set().from_(signs[i + 1], 'Text4')) if i < len(
+                    signs) - 1 else comment(
+                    'start')
+            )
+        all_things_loop.loop(all_loop, all_things)
+        room.function(f'all_{which}_home', exists_ok=True).add(tag(e().tag(f'all_{which}_home')).add('all_things_home'))
+
+        other = 'models' if which == 'blocks' else 'blocks'
+        other_home = f'all_{other}_home'
+        room.function(f'start_{which}', home=False).add(
+            kill(e().tag(other_home)),
+            execute().positioned(r(-1, -1, 0)).run(function(f'restworld:models/all_{which}_home')))
+
+    all_funcs('blocks',
+              filter(lambda block: block.name not in block_items and 'Air' not in block.name, blocks.values()))
+    all_funcs('items', filter(lambda row: 'Spawn' not in row.name, items.values()))
+    room.function('start_manual').add(kill(e().tag('all_things_home')))

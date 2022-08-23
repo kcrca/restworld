@@ -2,14 +2,11 @@ from __future__ import annotations
 
 from pynecraft import commands
 from pynecraft.base import EAST, NORTH, WEST, r
-from pynecraft.commands import BOSSBAR_COLORS, BOSSBAR_STYLES, Block, CREATIVE, EQ, Entity, LEVELS, REPLACE, \
-    SURVIVAL, a, \
-    bossbar, clone, data, e, execute, fill, function, gamemode, give, item, kill, p, s, say, schedule, setblock, summon, \
-    tag
-from pynecraft.info import block_items, blocks, items, must_give_items
-from pynecraft.simpler import Item, ItemFrame, WallSign
-from restworld import global_
-from restworld.rooms import Room, label, named_frame_item
+from pynecraft.commands import BOSSBAR_COLORS, BOSSBAR_STYLES, Block, CREATIVE, Entity, LEVELS, SURVIVAL, a, \
+    bossbar, clone, data, e, execute, fill, function, gamemode, give, item, kill, p, s, setblock, summon
+from pynecraft.info import must_give_items
+from pynecraft.simpler import ItemFrame, WallSign
+from restworld.rooms import Room, label
 from restworld.world import fast_clock, main_clock, restworld, slow_clock
 
 
@@ -226,8 +223,6 @@ def room():
     room.function('ingredients_enter').add(
         clone(r(20, -5, 30), r(-15, -5, 1), r(-15, 1, 1)).filtered('chest'))
 
-    item_methods(room)
-
     non_inventory = list(must_give_items.values())
     non_inventory.append(Entity('elytra', nbt={'Damage': 450}, name='Damaged Elytra'))
 
@@ -285,184 +280,3 @@ def room():
         gamemode(CREATIVE, p()),
         kill(e().tag('survival_home'))
     )
-
-
-# The item area...
-#
-# See how models work, especially WRT displays. There are two major modes:
-# The user chooses a thing to view, or we loop through some set of things. The
-# first mode is relatively simple: The user puts something in the frame,
-# and its copied into many places, but not the user's hands. They have full
-# control of when things change, can see first person views themselves.
-#
-# The second has us putting things into the user's hands, and therefore
-# changing their inventory. This requires planning. So...
-#
-# (*) When the user enters the area, we copy their hotbar and left hand
-# into a chest, and when they leave we replace them. The replacement should
-# probably only happen if we have ever put something in their hands in the
-# first place. Because placing things into their hands when they leave is
-# probably rather unexpected, it's just the least destructive thing we can do.
-#
-# (*) The user chooses which list of things to loop. Right now there are two:
-# items and blocks. Which gives three states: Not looping, or looping one of
-# these. Currently, I have a lever for each list, and turning one on forces
-# the other off if needed. This puts the levers next to each other to save
-# room, and it's tricky to get the power issues working right.
-#
-# (*) ...But I can imagine others. For example, a compressed version of
-# these could be built by assuming that we can show only one version of
-# things that share a lot of models (stairs, slabs, ...). That might very
-# much reduce the lenght of the list. But that further complicates choosing
-# which list to use. Maybe signs for each one? At some point this feel more
-# like a separate room than a part of the GUI universe, which it already
-# soft of isn't --- there isn't a panel for this, for example.
-#
-# (*) Some blocks have no item version (e.g., water and lava). We leave
-# them out.
-
-def item_methods(room):
-    placer = room.mob_placer(r(0, 2, -1), EAST, auto_tag=False, adults=True, nbt={'ShowArms': True})
-    placer_head = room.mob_placer(r(0, 2.77, -1), EAST, auto_tag=False, adults=True)
-    all_src = e().tag('item_src')
-    item_src = all_src.limit(1)
-    all_ground = e().tag('item_ground')
-    item_ground = all_ground.limit(1)
-    item_holder = e().tag('item_holder').limit(1)
-    item_head = room.function('item_head', home=False).add(
-        item().replace().entity(e().tag('item_holder_head').limit(1), 'armor.head').with_(
-            ('player_head', dict(SkullOwner='BlueMeanial'))),
-    )
-    is_empty = room.score('item_is_empty')
-    was_empty = room.score('item_was_empty')
-    was_in = room.score('item_was_in')
-    is_in = room.score('item_is_in')
-    recent_item_sign_pos = r(0, 3, -2)
-    room.function('item_init').add(
-        kill(all_src),
-        kill(all_ground),
-        placer.summon('armor_stand', tags=('item_holder', 'item_hands')),
-        placer_head.summon('armor_stand', tags=('item_holder_head',),
-                           nbt=dict(Small=True, NoGravity=True, Invisible=True)),
-        # I don't know why I can't do this right away, 1 tick isn't enough, and 1 second is.
-        schedule().function(item_head, '1s', REPLACE),
-        setblock(r(0, 3, 1), 'barrier'),
-        ItemFrame(EAST).item('iron_pickaxe').tag('item_src', 'gui').fixed(False).summon(r(1, 3, 1)),
-        is_empty.set(1),
-        ItemFrame(EAST, nbt={'Invisible': True}, name='Invisible Frame').item('iron_pickaxe').tag(
-            'item_invis_frame', 'gui').fixed(False).summon(r(1, 2, -3)),
-        WallSign(
-            ('Put item in frame', 'to show in "fixed",', '"ground", and 3rd', 'party hands')).place(r(0, 3, 0), EAST),
-        label(r(1, 2, -2), 'On Head'),
-        label(r(1, 2, -1), 'All Items'),
-        label(r(1, 2, 0), 'All Blocks'),
-    )
-    invis_frame = e().tag('item_invis_frame').limit(1)
-    ground_default_nbt = {'Item': Item.nbt_for('iron_pickaxe'), 'Age': -32768, 'PickupDelay': 2147483647,
-                          'Tags': ['item_ground']}
-    named_frame_data = named_frame_item(name='Invisible Frame').merge({'ItemRotation': 0})
-    item_copy = room.function('item_copy', home=False).add(
-        execute().unless().data().entity(item_src, 'Item.id').run(kill(all_ground)),
-        execute().if_().data().entity(item_src, 'Item.id').run(
-            data().merge(item_src, {'ItemRotation': 0}),
-            execute().unless().entity(item_ground).at(e().tag('item_home')).run(
-                summon('item', r(0, 3, -3), ground_default_nbt)),
-            data().modify(item_ground, 'Item').set().from_(item_src, 'Item'),
-            data().merge(item_ground, {'Age': -32768, 'PickupDelay': 2147483647})),
-        item().replace().entity(item_holder, 'weapon.mainhand').from_().entity(item_src, 'container.0'),
-        item().replace().entity(item_holder, 'weapon.offhand').from_().entity(item_src, 'container.0'),
-        execute().if_().score(room.score('item_head')).matches(0).run(
-            item().replace().entity(item_holder, 'armor.head').with_('air')),
-        execute().if_().score(room.score('item_head')).matches(1).run(
-            item().replace().entity(item_holder, 'armor.head').from_().entity(item_src, 'container.0')),
-        item().replace().entity(invis_frame, 'container.0').from_().entity(item_src, 'container.0'),
-        data().merge(invis_frame, named_frame_data),
-        global_.if_clock_running.at(e().tag('all_things_home')).run(
-            item().replace().entity(p(), 'weapon.mainhand').from_().entity(item_src, 'container.0'),
-            item().replace().entity(p(), 'weapon.offhand').from_().entity(item_src, 'container.0')),
-    )
-    item_save = room.function('item_save', home=False).add(
-        (item().replace().entity(p(), f'hotbar.{i}').from_().block(r(0, 0, 1), f'container.{i}') for i in
-         range(0, 9)),
-        item().replace().entity(p(), 'weapon.offhand').from_().block(r(0, 0, 1), 'container.1'),
-    )
-    item_restore = room.function('item_return', home=False).add(
-        (item().replace().entity(p(), f'hotbar.{i}').from_().block(r(0, 0, 1), f'container.{i}') for i in
-         range(0, 9)),
-        item().replace().entity(p(), 'weapon.offhand').from_().block(r(0, 0, 1), 'container.1'),
-    )
-    room.function('item_run', home=False).add(
-        was_empty.operation(EQ, is_empty),
-        is_empty.set(1),
-        execute().if_().data().entity(item_src, 'Item.id').run(is_empty.set(0)),
-        execute().unless().score(was_empty).is_(EQ, is_empty).run(function(item_copy)),
-        was_in.operation(EQ, is_in),
-        is_in.set(0),
-        execute().if_().entity(p().volume((6, 5, 4))).run(is_in.set(1)),
-        execute().if_().score(is_in).matches(1).if_().score(was_in).matches(0).run(function(item_restore)),
-        execute().if_().score(is_in).matches(0).if_().score(was_in).matches(1).run(
-            kill(e().tag('all_things_home')),
-            function(item_save)),
-    )
-    room.function('item_enter').add(setblock(r(-3, -2, -3), 'redstone_block'))
-    room.function('item_exit').add(setblock(r(-1, -2, 0), 'air'))
-
-    def all_funcs(which, things):
-        at_home = execute().at(e().tag('item_home')).run
-
-        def all_loop(step):
-            yield item().replace().entity(item_src, 'container.0').with_(step.elem)
-            yield at_home(data().merge(recent_item_sign_pos, {'Text1': step.elem.name}))
-
-        all_things = things
-        room.loop(f'all_{which}', fast_clock).add(is_empty.set(1)).add(
-            at_home(data().modify(recent_item_sign_pos, 'Text4').set().from_(recent_item_sign_pos, 'Text3')),
-            at_home(data().modify(recent_item_sign_pos, 'Text3').set().from_(recent_item_sign_pos, 'Text2')),
-            at_home(data().modify(recent_item_sign_pos, 'Text2').set().from_(recent_item_sign_pos, 'Text1')),
-        ).loop(all_loop, all_things)
-        room.function(f'all_{which}_home', exists_ok=True).add(tag(e().tag(f'all_{which}_home')).add('all_things_home'))
-
-        other = 'items' if which == 'blocks' else 'blocks'
-        start_all = room.score('start_all')
-        my_home = f'all_{which}_home'
-        other_home = f'all_{other}_home'
-        z = 0 if which == 'items' else -1
-        forcing_me = room.score(f'item_forcing_{which}')
-        forcing_other = room.score(f'item_forcing_{other}')
-        room.function(f'toggle_all_{which}', home=False).add(
-            say(f'toggle {which}'),
-
-            # Turn off the other "all" if it is running, and put its lever in the 'off' position.
-            forcing_other.set(0),
-            execute().at(e().tag(other_home)).unless().score(forcing_me).matches(1).run(
-                say(f'forcing {other} off'),
-                forcing_other.set(1),
-                setblock(r(-1, 0, z), ('mangrove_trapdoor', {'half': 'top'})),
-                setblock(r(-1, 2, z), ('lever', {'face': 'floor', 'facing': 'west'})),
-            ),
-
-            # Determine if we need to start (that is, we are currently not running).
-            execute().if_().score(forcing_me).matches(0).run(
-                start_all.set(1),
-                execute().at(e().tag(f'all_{which}_home')).run(start_all.set(0)),
-
-                execute().if_().score(start_all).matches(1).at(e().tag('item_home')).positioned(r(2, 0, 0)).run(
-                    function(f'restworld:gui/all_{which}_home')),
-                execute().if_().score(start_all).matches(1).run(
-                    at_home(WallSign(()).place(recent_item_sign_pos, EAST)),
-                    say(f'... on'),
-                ),
-                execute().if_().score(start_all).matches(0).run(
-                    say(f'... off'),
-                    kill(e().tag(my_home)),
-                    item().replace().entity(item_src, 'container.0').with_('air'),
-                    at_home(setblock(recent_item_sign_pos, 'air')))
-            ),
-
-            forcing_me.set(0),
-            say(f'toggle {which} done')
-        )
-
-    all_funcs('blocks',
-              filter(lambda block: block.name not in block_items and 'Air' not in block.name, blocks.values()))
-    all_funcs('items', filter(lambda row: 'Spawn' not in row.name, items.values()))

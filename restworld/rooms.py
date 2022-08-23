@@ -6,7 +6,7 @@ from copy import deepcopy
 from enum import Enum
 from typing import Callable, Iterable, Tuple
 
-from pynecraft.base import Nbt, ROTATION_180, ROTATION_270, ROTATION_90, r, rotated_facing, to_name
+from pynecraft.base import Nbt, ROTATION_180, ROTATION_270, ROTATION_90, UP, r, rotated_facing, to_name
 from pynecraft.commands import Block, BlockDef, CLEAR, Command, Commands, Entity, EntityDef, JsonText, NEAREST, \
     Position, Score, SignText, a, comment, e, execute, function, good_block, good_entity, good_facing, \
     good_score, kill, p, schedule, scoreboard, setblock, summon, tag, tellraw, tp, weather
@@ -43,7 +43,7 @@ def _to_iterable(tags):
     return tuple(tags)
 
 
-def label(pos: Position, txt: str, facing=1, invis=True, tags=(), block=Block('stone_button')) -> Commands:
+def label(pos: Position, txt: str, facing=UP, invis=True, tags=(), block=Block('stone_button')) -> Commands:
     tags = list(tags)
     tags.append('label')
     return (
@@ -51,7 +51,7 @@ def label(pos: Position, txt: str, facing=1, invis=True, tags=(), block=Block('s
             kill(e().type('item_frame').tag('label').sort(NEAREST).distance((None, 1)).limit(1))),
         summon('item_frame', pos,
                named_frame_item(block, txt).merge(
-                   {'Invisible': invis, 'Facing': facing, 'Tags': tags, 'Fixed': True})),
+                   {'Invisible': invis, 'Facing': good_facing(facing).number, 'Tags': tags, 'Fixed': True})),
     )
 
 
