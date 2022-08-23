@@ -3,7 +3,7 @@ from collections import defaultdict
 
 from pynecraft.base import EAST, NORTH, d, r, rotated_facing, to_name
 from pynecraft.commands import EQ, REPLACE, \
-    comment, data, e, execute, fill, function, item, kill, p, say, schedule, setblock, summon, tag
+    comment, data, e, execute, fill, function, item, kill, p, schedule, setblock, summon, tag
 from pynecraft.enums import ValueEnum
 from pynecraft.info import block_items, blocks, items
 from pynecraft.simpler import Item, ItemFrame, WallSign
@@ -116,7 +116,7 @@ def room():
             execute().at(model_home).run(function(f'restworld:models/start_{action_desc.enum}'))))
 
     wall_used = {3: span(1, 5)}
-    room = SignedRoom('models', restworld, EAST, ('Models',), mode_sign, modes,
+    room = SignedRoom('models', restworld, EAST, (None, 'Models',), mode_sign, modes,
                       (Wall(7, EAST, 1, -1, wall_used),))
 
     room.function('model_signs_init').add(function('restworld:models/signs'))
@@ -138,6 +138,7 @@ def room():
             ('player_head', dict(SkullOwner='BlueMeanial'))),
     )
     chest_pos = r(-1, -2, 0)
+    room.function('models_room_init', exists_ok=True).add(label(r(-2, 2, 0), 'Keep Inventory'))
     room.function('model_init').add(
         kill(all_src),
         kill(all_ground),
@@ -187,12 +188,10 @@ def room():
             needs_restore.set(1)),
     )
     model_save = room.function('model_save', home=False).add(
-        say('save'),
         (item().replace().block(chest_pos, f'container.{i}').from_().entity(p(), f'hotbar.{i}') for i in range(0, 9)),
         item().replace().block(chest_pos, 'container.1').from_().entity(p(), 'weapon.offhand'),
     )
     model_restore = room.function('model_restore', home=False).add(
-        say('restore'),
         (item().replace().entity(p(), f'hotbar.{i}').from_().block(chest_pos, f'container.{i}') for i in range(0, 9)),
         item().replace().entity(p(), 'weapon.offhand').from_().block(chest_pos, 'container.1'),
     )
@@ -207,9 +206,11 @@ def room():
         execute().at(model_home).run(function(model_save)),
         needs_restore.set(0),
         setblock(redstone_block_pos, 'redstone_block'))
+    restore_on_exit = room.score('restore_on_exit')
     room.function('model_exit').add(
         setblock(redstone_block_pos, 'air'),
-        execute().if_().score(needs_restore).matches(1).at(model_home).run(function(model_restore))
+        execute().unless().score(restore_on_exit).matches(0).if_().score(needs_restore).matches(1).at(model_home).run(
+            function(model_restore))
     )
 
     at_home = execute().at(model_home).run
