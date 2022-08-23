@@ -51,7 +51,7 @@ def room():
     )
     bb_on = room.function('bossbar_on', home=False).add(
         bossbar().set('restworld:bossbar').players(a()),
-        execute().at(e().tag('bossbar_home')).positioned(r(-2, -0.5, 0)).run(
+        execute().at(e().tag('bossbar_home')).positioned(r(2, -0.5, 0)).run(
             function('restworld:gui/bossbar_run_home')),
         bossbar().set('restworld:bossbar').visible(True),
     )
@@ -64,15 +64,15 @@ def room():
     )
 
     bb_color_init = room.function('bossbar_color_init', home=False).add(
-        label(r(-1, 2, -1), 'Color'), WallSign((None, 'Color:', BOSSBAR_COLORS[0].title())).place(r(0, 2, -1), WEST))
+        label(r(1, 2, 1), 'Color'), WallSign((None, 'Color:', BOSSBAR_COLORS[0].title())).place(r(0, 2, 1), EAST))
     bb_style_init = room.function('bossbar_style_init', home=False).add(
-        label(r(-1, 2, 0), 'Style'), WallSign((None, 'Style:', BOSSBAR_STYLES[0])).place(r(0, 2, 0, ), WEST))
+        label(r(1, 2, 0), 'Style'), WallSign((None, 'Style:', BOSSBAR_STYLES[0])).place(r(0, 2, 0, ), EAST))
     bb_value_init = room.function('bossbar_value_init', home=False).add(
-        label(r(-1, 2, 1), 'Value'), WallSign((None, 'Value:', str(50))).place(r(0, 2, 1), WEST))
+        label(r(1, 2, -1), 'Value'), WallSign((None, 'Value:', str(50))).place(r(0, 2, -1), EAST))
 
     def bossbar_color_loop(step):
         yield bossbar().set('restworld:bossbar').color(step.elem.lower())
-        yield data().merge(r(0, 2, -1), {'Text3': step.elem.title()})
+        yield data().merge(r(0, 2, 1), {'Text3': step.elem.title()})
 
     def bossbar_style_loop(step):
         yield bossbar().set('restworld:bossbar').style(step.elem)
@@ -80,7 +80,7 @@ def room():
 
     def bossbar_value_loop(step):
         yield bossbar().set('restworld:bossbar').value(step.elem)
-        yield data().merge(r(0, 2, 1), {'Text3': f'{step.elem}'})
+        yield data().merge(r(0, 2, -1), {'Text3': f'{step.elem}'})
 
     bb_color = room.loop('bossbar_color', home=False).loop(bossbar_color_loop, BOSSBAR_COLORS)
     bb_style = room.loop('bossbar_style', home=False).loop(bossbar_style_loop, BOSSBAR_STYLES)
@@ -94,8 +94,8 @@ def room():
         execute().at(e().tag('bossbar_run_home')).run(function(bb_style_init)),
         execute().at(e().tag('bossbar_run_home')).run(function(bb_value_init)),
         function(bb_off),
-        WallSign((None, 'Boss Bar')).place(r(0, 3, 0, ), WEST),
-        label(r(-1, 3, 0), 'Bossbar'),
+        WallSign((None, 'Boss Bar')).place(r(0, 3, 0, ), EAST),
+        label(r(1, 3, 0), 'Bossbar'),
     )
 
     room.loop('bossbar_run', main_clock).loop(None, range(0, 1)).add(
@@ -142,7 +142,7 @@ def room():
         execute().at(e().tag('brewing_home')).run(
             summon('armor_stand', r(0, 0, 0), {'Tags': ['homer', 'brewing_run_home'], 'NoGravity': True})))
 
-    placer = room.mob_placer(r(0, 2, 0), EAST, 3, 0, tags=('carrier',), adults=True,
+    placer = room.mob_placer(r(0, 2, 0), NORTH, 2, 0, tags=('carrier',), adults=True,
                              nbt={'ChestedHorse': True, 'Tame': True, 'Variant': 2}, auto_tag=False)
     room.function('carrier_init').add(
         placer.summon('llama', tags=('strength_llama',)),
@@ -150,7 +150,7 @@ def room():
     )
     room.loop('strength_llama', main_clock).loop(
         lambda x: execute().as_(e().tag('strength_llama')).run(data().merge(s(), {'Strength': x.elem})), range(1, 6))
-    placer = room.mob_placer(r(0, 2, 0), EAST, adults=True, tags=('trades',), auto_tag=False,
+    placer = room.mob_placer(r(0, 2, 0), NORTH, adults=True, tags=('trades',), auto_tag=False,
                              nbt={'VillagerData': {'profession': 'farmer', 'level': 3}, 'CanPickUpLoot': False})
     room.function('trader_init').add(
         placer.summon('villager'),
