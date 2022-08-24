@@ -8,7 +8,7 @@ from restworld.world import main_clock, restworld
 
 
 def room():
-    room = Room('diy', restworld, EAST, ('DIY:', 'Build Your', 'Own Sequence'))
+    room = Room('diy', restworld, EAST, (None, 'DIY:', 'Build Your', 'Own Sequence'))
     room.function('diy_init').add(fill(r(-9, 2, -3), r(-9, 2, 3), 'sand').replace('magenta_glazed_terracotta'))
 
     def grow_loop(step):
