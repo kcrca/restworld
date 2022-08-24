@@ -129,6 +129,8 @@ def room():
     model_ground = all_ground.limit(1)
     model_holder = e().tag('model_holder').limit(1)
     invis_frame = e().tag('model_invis_frame').limit(1)
+    all_things_home = e().tag('all_things_home')
+
     is_empty = room.score('model_is_empty')
     was_empty = room.score('model_was_empty')
     needs_restore = room.score('needs_restore')
@@ -237,16 +239,15 @@ def room():
         all_things_loop.loop(all_loop, all_things)
         room.function(f'all_{which}_home', exists_ok=True).add(tag(e().tag(f'all_{which}_home')).add('all_things_home'))
 
-        other = 'models' if which == 'blocks' else 'blocks'
-        other_home = f'all_{other}_home'
         room.function(f'start_{which}', home=False).add(
-            kill(e().tag(other_home)),
-            execute().positioned(r(-1, -1, 0)).run(function(f'restworld:models/all_{which}_home')))
+            kill(all_things_home),
+            execute().positioned(r(-1, -0.5, 0)).run(function(f'restworld:models/all_{which}_home')),
+            tag(e().tag(f'all_{which}_home')).add('all_things_home'))
 
     block_list = tuple(filter(lambda block: block.name not in block_items and 'Air' not in block.name, blocks.values()))
     thing_funcs('blocks', block_list)
-    thing_funcs('sampled_blocks', sample('blocks', block_list))
+    thing_funcs('sampler_blocks', sample('blocks', block_list))
     item_list = tuple(filter(lambda row: 'Spawn' not in row.name, items.values()))
     thing_funcs('items', item_list)
-    thing_funcs('sampled_items', sample('items', item_list))
-    room.function('start_manual').add(kill(e().tag('all_things_home')))
+    thing_funcs('sampler_items', sample('items', item_list))
+    room.function('start_manual').add(kill(all_things_home))
