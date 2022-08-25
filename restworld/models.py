@@ -192,11 +192,11 @@ def room():
     model_save = room.function('model_save', home=False).add(
         (item().replace().block(chest_pos, f'container.{i}').from_().entity(p(), f'hotbar.{i}') for i in range(0, 9)),
         item().replace().block(chest_pos, 'container.1').from_().entity(p(), 'weapon.offhand'),
-    )
+        needs_restore.set(0))
     model_restore = room.function('model_restore', home=False).add(
         (item().replace().entity(p(), f'hotbar.{i}').from_().block(chest_pos, f'container.{i}') for i in range(0, 9)),
         item().replace().entity(p(), 'weapon.offhand').from_().block(chest_pos, 'container.1'),
-    )
+        needs_restore.set(0))
     room.function('model_run', home=False).add(
         was_empty.operation(EQ, is_empty),
         is_empty.set(1),
@@ -206,7 +206,6 @@ def room():
     redstone_block_pos = r(1, -2, 0)
     room.function('model_enter').add(
         execute().at(model_home).run(function(model_save)),
-        needs_restore.set(0),
         setblock(redstone_block_pos, 'redstone_block'))
     restore_on_exit = room.score('restore_on_exit')
     room.function('model_exit').add(

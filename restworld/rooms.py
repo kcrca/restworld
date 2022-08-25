@@ -6,7 +6,7 @@ from copy import deepcopy
 from enum import Enum
 from typing import Callable, Iterable, Tuple
 
-from pynecraft.base import Nbt, ROTATION_180, ROTATION_270, ROTATION_90, UP, r, rotated_facing, to_name
+from pynecraft.base import FacingDef, Nbt, ROTATION_180, ROTATION_270, ROTATION_90, UP, r, rotated_facing, to_name
 from pynecraft.commands import Block, BlockDef, CLEAR, Command, Commands, Entity, EntityDef, JsonText, NEAREST, \
     Position, Score, SignText, a, comment, e, execute, function, good_block, good_entity, good_facing, \
     good_score, kill, p, schedule, scoreboard, setblock, summon, tag, tellraw, tp, weather
@@ -344,7 +344,7 @@ class MobPlacer:
 
     base_nbt = {'NoAI': True, 'PersistenceRequired': True, 'Silent': True}
 
-    def __init__(self, start: Position, facing: str | float,
+    def __init__(self, start: Position, facing: FacingDef | float,
                  delta: float | tuple[float, float] = None, kid_delta: float | tuple[float, float] = None, *,
                  tags: str | Tuple[str, ...] = None,
                  nbt=None, kids=None, adults=None, auto_tag=True):
@@ -360,7 +360,8 @@ class MobPlacer:
         self.kids = kids
         self.adults = adults
         self.auto_tag = auto_tag
-        if isinstance(facing, str):
+        if not isinstance(facing, (float, int)):
+            facing = good_facing(facing)
             delta = delta if delta else 2
             kid_delta = kid_delta if kid_delta else 1.2
             try:
@@ -371,7 +372,7 @@ class MobPlacer:
                 self.kid_x, _, self.kid_z = kid_rot.scale(kid_delta)
                 self.rotation = kid_rot.yaw
             except KeyError:
-                raise ValueError('%s: Unknown "facing" with no "rotation"' % facing)
+                raise ValueError('%s: Unknown "facing" with no "rotation"' % facing.name)
         else:
             delta = delta if delta else (0, 0)
             kid_delta = kid_delta if kid_delta else (0, 0)
