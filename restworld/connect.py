@@ -8,7 +8,7 @@ from restworld.world import restworld
 
 
 def room():
-    room = Room('connect', restworld)
+    room = Room('connect', restworld, EAST, (None, 'Connected', 'Textures', '(Optifine)'))
 
     def connect(src, sx, sz):
         for x in range(-12, 13):
@@ -20,6 +20,8 @@ def room():
     above = ('Change the block', 'in the floor', 'to change the', 'block used')
     below1 = ('These blocks are', 'templates for the', 'blocks above')
     below2 = ('Change them, then', 'change a "type"', 'block in the', 'floor above.')
+
+    room.function('connect_room_init', exists_ok=True).add(label(r(8, 2, 0), 'Go Home'))
 
     room.function('connect_mid_init').add(
         WallSign(above).place(r(0, 2, 2), NORTH),

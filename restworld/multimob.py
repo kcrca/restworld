@@ -66,7 +66,7 @@ HIGHER = {
 
 
 def room():
-    room = Room('multimob', restworld, WEST, (None, 'Optifine,', 'Random', 'Entities'))
+    room = Room('multimob', restworld, WEST, (None, 'Random', 'Entities', '(Optifine)'))
 
     menu_home = e().tag('mob_menu_home').limit(1)
     at_home = execute().at(menu_home)
@@ -101,15 +101,19 @@ def room():
         dx, _, dz = move_facing.scale(1)
 
         popup = room.function(f'mob_menu_{i:02}', home=False)
+        up = room.score('mob_menu_up')
         for j, m in enumerate(range(start, start + stride)):
             mob = mobs[all_mobs[m]]
             summon_mob = summon_mob_commands(room, mob)
+            row_count = math.ceil(stride / 3)
+            top_y = 2 + row_count
             sign_x = x + (-1 + j % 3) * dx
             sign_z = z + (-1 + j % 3) * dz
-            sign_y = 5 - j // 3
+            sign_y = top_y - j // 3
             popup.add(
-                WallSign((None, mob.name), (clear, function(summon_mob)), wood='birch').place(
-                    r(sign_x, sign_y, sign_z), sign_facing))
+                WallSign((None, mob.name),
+                         (clear, execute().if_().block(r(0, 1, 0), 'air').run(function(summon_mob))),
+                         wood='birch').place(r(sign_x, sign_y, sign_z), sign_facing))
 
         x += (-1 + within) * dx
         z += (-1 + within) * dz

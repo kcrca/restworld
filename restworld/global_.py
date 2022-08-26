@@ -187,7 +187,7 @@ def room():
     )
     for place in (
             ('biomes', OVERWORLD, (-1000, 101, -1000), (-1000, 80, -970)),
-            ('connected', OVERWORLD, (1000, 101, 1000), (990, 101, 1000)),
+            ('optifine', OVERWORLD, (1000, 101, 1000), (1000, 101, 990)),
             ('end_home', THE_END, (100, 49, 0), (90, 50, 0)),
             ('home', OVERWORLD, (0, 101, 0), (0, 101, 10)),
             ('nether', THE_NETHER, (22, 99, -13), (28, 100, -13)),
