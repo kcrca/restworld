@@ -279,10 +279,10 @@ def room():
         else:
             h, b, la, ra, ll, rl = step.elem
             nbt = Nbt(ShowArms=True, Pose={'Head': h, 'Body': b, 'LeftArm': la, 'RightArm': ra, 'LeftLeg': ll, 'RightLeg': rl})
-        yield data().merge(e().tag('armor_stand').limit(1), nbt)
+        yield data().merge(e().tag('pose_stand').limit(1), nbt)
 
     room.function('armor_stand_init').add(
-        room.mob_placer(r(0, 3, 0), NORTH, adults=True).summon('armor_stand'),
+        room.mob_placer(r(0, 3, 0), NORTH, adults=True).summon('armor_stand', tags=('pose_stand',)),
         label(r(-1, 2, 0), "Get Small"))
     room.loop('armor_stand', main_clock).loop(
         armor_stand_loop,

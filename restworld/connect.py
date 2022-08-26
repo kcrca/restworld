@@ -1,21 +1,22 @@
 from __future__ import annotations
 
 from pynecraft.base import EAST, NORTH, SOUTH, WEST, r
-from pynecraft.commands import clone, e, execute, fill
+from pynecraft.commands import clone, execute, fill
 from pynecraft.simpler import WallSign
 from restworld.rooms import Room, label
 from restworld.world import restworld
 
 
 def room():
-    room = Room('connect', restworld, EAST, (None, 'Connected', 'Textures', '(Optifine)'))
+    room = Room('connect', restworld, EAST, (None, 'Connected', 'Textures', '(Optifine)'),
+                room_name='Connected Textures')
 
     def connect(src, sx, sz):
         for x in range(-12, 13):
             for y in range(0, 5):
                 for z in range(-12, 13):
-                    yield execute().at(e().tag('connect_mid_home')).if_(
-                    ).block(r(x, -9 + y, z), src).run(clone(r(sx, 1, sz), r(sx, 1, sz), r(x, 2 + y, z)))
+                    yield execute().if_().block(r(x, -9 + y, z), src).run(
+                        clone(r(sx, 1, sz), r(sx, 1, sz), r(x, 2 + y, z)))
 
     above = ('Change the block', 'in the floor', 'to change the', 'block used')
     below1 = ('These blocks are', 'templates for the', 'blocks above')

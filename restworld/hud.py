@@ -42,8 +42,9 @@ def room():
 
     armor_places = tuple(f'armor.{x}' for x in ('feet', 'legs', 'chest', 'head'))
     saver_name = 'armor'
-    room.function('armor_init', exists_ok=True).add(room.mob_placer(r(0, -2, 1), NORTH, adults=True).summon(
-        Entity('armor_stand', Nbt(NoGravity=True), saver_name).tag(saver_name)))
+    room.function('armor_init', exists_ok=True).add(
+        room.mob_placer(r(0, -2, 1), NORTH, adults=True, auto_tag=False).summon(
+            Entity('armor_stand', Nbt(NoGravity=True), saver_name).tag(saver_name)))
     room.loop('armor', main_clock).add(
         tuple(item().replace().entity(p(), x).with_('air') for x in armor_places)
     ).loop(

@@ -63,7 +63,7 @@ class Restworld(RoomPack):
                )
 
         cb.next_page()
-        cb.add(r'Click on room name to go there: \n\n')
+        cb.add(r'Room travel links: \n\n')
         rooms = filter(lambda x: isinstance(x, Room) and x.title is not None, self.function_set.children)
         rooms = sorted(rooms, key=lambda x: x.title)
         first = True
@@ -81,7 +81,7 @@ class Restworld(RoomPack):
             r'  Command Blocks\n  Software Design\n  Programming\n',
             JsonText.text(r'JUMBOshrimp277:\n').bold(),
             r'  World Design\n  Testing\n  Rubber Duck\n\n',
-            r'Minecraft Version:\n   1.19.1, ' + date.today().strftime('%-d %b %Y'),
+            r'Minecraft Version:\n   1.19.2, ' + date.today().strftime('%-d %b %Y'),
             JsonText.text(r'\n\nTry the ').italic(),
             JsonText.text(r'Clarity Pack!').underlined().italic().color(DARK_PURPLE).click_event().open_url(
                 'https://claritypack.com')
