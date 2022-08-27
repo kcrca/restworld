@@ -4,7 +4,7 @@ from pynecraft.base import DOWN, EAST, NOON, SOUTH, UP, WEST, r
 from pynecraft.commands import Block, data, e, execute, fill, function, kill, say, setblock, \
     summon, time
 from pynecraft.info import instruments, stems, woods
-from pynecraft.simpler import Item, Volume, WallSign
+from pynecraft.simpler import Item, Sign, Volume, WallSign
 from restworld.rooms import Room, ensure, label
 from restworld.world import fast_clock, kill_em, main_clock, restworld
 
@@ -98,15 +98,21 @@ def room():
             yield data().merge(r(0, 2, 0), {'Text3': ''})
 
     room.loop('redstone_wire', main_clock).loop(redstone_wire_loop, range(0, 2))
-    room.function('repeater_init').add(WallSign((None, 'Comparator', 'and Repeater')).place(r(0, 3, 0), WEST))
+    room.function('repeater_init').add(
+        WallSign((None, 'Comparator', 'and Repeater')).place(r(0, 3, 0), WEST),
+        WallSign(()).place(r(-1, 2, -2), WEST))
 
     def repeater_loop(step):
-        if step.i == 0:
+        mode = 'compare' if step.i < 2 else 'subtract'
+        yield setblock(r(-1, 2, -1),
+                       ('comparator', {'facing': 'east', 'mode': mode}))
+        yield data().merge(r(-1, 2, -2), Sign.lines_nbt((None, 'Comparator Mode:', mode.title())))
+        if step.i % 2 == 0:
             yield fill(r(0, 2, -1), r(0, 2, 1), 'redstone_block').replace('air')
         else:
             yield fill(r(0, 2, -1), r(0, 2, 1), 'air').replace('redstone_block')
 
-    room.loop('repeater', main_clock).loop(repeater_loop, range(0, 2))
+    room.loop('repeater', main_clock).loop(repeater_loop, range(0, 4))
     room.function('sculk_init').add(WallSign((None, 'Sculk Sensor')).place(r(-1, 3, 0), EAST))
     room.loop('sculk', main_clock).loop(lambda step: setblock(r(-4, 2, 0), 'air' if step.i else 'redstone_block'),
                                         range(3))
