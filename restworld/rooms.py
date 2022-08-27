@@ -112,7 +112,7 @@ class RoomPack(DataPack):
 class Room(FunctionSet):
     def __init__(self, name: str, dp: RoomPack, facing: str = None, text: SignText = None, room_name: str = None):
         super().__init__(name, dp.function_set)
-        self._pack = dp
+        self.pack = dp
         self._clocks = {}
         self._scores = set()
         self._homes = set()
@@ -236,7 +236,7 @@ class Room(FunctionSet):
                 base_name = name[:-len(clock.name) - 1]
             return base_name, name
         if name[0] != '_':
-            for s in self._pack.suffixes:
+            for s in self.pack.suffixes:
                 tail = '_' + s
                 if name.endswith(tail):
                     base_name = name[:-len(tail)]
@@ -301,7 +301,7 @@ class Room(FunctionSet):
         }
         clock_suffixes = set(x.name for x in self._clocks)
         clock_suffixes.add('tick')
-        for f in self._pack.suffixes:
+        for f in self.pack.suffixes:
             if f in clock_suffixes:
                 continue
             f_name = '_' + f
