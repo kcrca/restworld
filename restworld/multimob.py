@@ -1,9 +1,10 @@
 from __future__ import annotations
 
+import copy
 import math
 
 from pynecraft.base import EAST, NE, NORTH, NW, SE, SOUTH, SW, WEST, good_facing, r, rotated_facing
-from pynecraft.commands import JsonText, comment, e, execute, fill, function, kill, setblock, tag
+from pynecraft.commands import Entity, JsonText, comment, e, execute, fill, function, kill, setblock, tag
 from pynecraft.info import mobs
 from pynecraft.simpler import Item, WallSign
 from restworld.rooms import Room, label
@@ -78,13 +79,15 @@ def room():
         function(menu_clear),
         fill(r(-9, 2, -9), r(9, 4, 9), 'air').replace('water'),
         fill(r(-9, 2, -9), r(9, 4, 9), 'air').replace('structure_void'))
-    max_per_group = math.ceil(len(mobs) / NUM_GROUPS)
-    full_groups = NUM_GROUPS - (max_per_group * NUM_GROUPS - len(mobs))
+    my_mobs = copy.deepcopy(mobs)
+    my_mobs['<None>'] = Entity('none', name='<None>')
+    all_mobs = tuple(my_mobs.keys())
+    max_per_group = math.ceil(len(all_mobs) / NUM_GROUPS)
+    full_groups = NUM_GROUPS - (max_per_group * NUM_GROUPS - len(all_mobs))
     start = 0
     stride = max_per_group
     dir_order = (NORTH, EAST, SOUTH, WEST)
     within = 0
-    all_mobs = tuple(mobs.keys())
     for dir in (NW, SW, NE, SE):
         room.function(f'multimob_{dir}').add(comment('Just for the home func'))
         dir_home = f'multimob_{dir}_home'
@@ -101,9 +104,8 @@ def room():
         dx, _, dz = move_facing.scale(1)
 
         popup = room.function(f'mob_menu_{i:02}', home=False)
-        up = room.score('mob_menu_up')
         for j, m in enumerate(range(start, start + stride)):
-            mob = mobs[all_mobs[m]]
+            mob = my_mobs[all_mobs[m]]
             summon_mob = summon_mob_commands(room, mob)
             row_count = math.ceil(stride / 3)
             top_y = 2 + row_count
@@ -144,6 +146,9 @@ def summon_mob_commands(room, mob):
             summon_mob.add(
                 run_at(fill(r(0, 2, 0), r(4, 4, 4), 'air').replace('water')),
                 run_at(fill(r(-1, 2, -1), r(5, 4, 5), 'air').replace('structure_void')))
+
+        if mob.name == '<None>':
+            continue
 
         mob_facing = rotated_facing(sector, 90)
         mob.merge_nbt({'IsImmuneToZombification': True, 'Invulnerable': True})
