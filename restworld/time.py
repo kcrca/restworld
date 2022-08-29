@@ -32,8 +32,8 @@ def room():
                 {'Facing': good_facing(EAST).number, 'Item': Item.nbt_for('clock'),
                  'Tags': ['time_frame', room.name], 'Fixed': True}),
                r(-10, 8, 4)),
-        label(r(-1, 7, 4), 'Reset', facing=4),
-        label(r(-9, 7, 4), 'Reset', facing=5),
+        label(r(-1, 7, 4), 'Reset Room', facing=4),
+        label(r(-9, 7, 4), 'Reset Room', facing=5),
         room.score('moon').set(0),
     )
 
@@ -75,7 +75,7 @@ def room():
 
         label(r(0, 7, 1), 'Time Running'),
         label(r(0, 7, -1), 'Time Direction'),
-        label(r(0, 7, -4), 'Reset'),
+        label(r(0, 7, -4), 'Reset Room'),
     )
     room.function('worldborder_hide').add(
         worldborder().center((0, 0)),

@@ -12,7 +12,9 @@ from restworld.world import fast_clock, kill_em, main_clock, restworld
 
 def room():
     room = Room('aquatic', restworld, NORTH, (None, 'Aquatic'))
-    clock_wall_sign = WallSign((None, 'Clock', 'On / Off'), (function('restworld:global/clock_toggle')))
+    clock_sign = WallSign((None, 'Clock', 'On / Off'), (function('restworld:global/clock_toggle')))
+    height_sign = WallSign((None, 'Change Height'), (function('restworld:global/mob_levitation')))
+    reset_sign = WallSign((None, 'Reset Room'), (function('restworld:aquatic/_init')))
 
     def n_fish_loop(count: int):
         def fish_loop(step):
@@ -27,13 +29,13 @@ def room():
     room.loop('2_fish', main_clock).loop(n_fish_loop(2), range(2))
     room.loop('3_fish', main_clock).loop(n_fish_loop(3), range(3))
     room.loop('4_fish', main_clock).loop(n_fish_loop(4), range(4))
-    all_fish_funcs(room, clock_wall_sign)
+    all_fish_funcs(room, clock_sign, reset_sign)
     t_fish = room.function('tropical_fish_init')
     for i, (kind, breeds) in enumerate(tropical_fish.items()):
         fish = breeds[0]
         fish.custom_name(True)
         fish.tag(kind.lower())
-        t_fish.add(room.mob_placer(r(int(i / 6)+0.5, 3.2, int(i % 6)), WEST, adults=True).summon(fish))
+        t_fish.add(room.mob_placer(r(int(i / 6) + 0.5, 3.2, int(i % 6)), WEST, adults=True).summon(fish))
     t_fish.add(WallSign(('Naturally', 'Occurring', 'Tropical Fish', '<--------')).place(
         r(int((len(tropical_fish) - 1) / 6) - 1, 2, (len(tropical_fish) - 1) % 6), WEST, water=True))
 
@@ -48,7 +50,9 @@ def room():
         placer = room.mob_placer(r(1.8, 4, 0.2), WEST, adults=True, tags=('squidy',), nbt={'NoGravity': True})
         return placer.summon('squid' if step.i == 0 else 'glow_squid')
 
-    room.function('squid_init').add(clock_wall_sign.place(r(-1, 4, 3), EAST, water=True))
+    room.function('squid_init').add(
+        clock_sign.place(r(-1, 4, 3), EAST, water=True),
+        height_sign.place(r(-1, 6, 3), EAST, water=True))
     room.loop('squid', main_clock).add(kill_em(e().tag('squidy'))).loop(squids_loop, range(0, 2))
 
     room.function('fishies_init').add(
@@ -68,7 +72,7 @@ def room():
     room.loop('fishies', main_clock).loop(fishies_loop, range(0, 3), bounce=True)
 
 
-def all_fish_funcs(room, clock_wall_sign):
+def all_fish_funcs(room, clock_sign, reset_sign):
     body = Score('body', 'fish')
     pattern = Score('pattern', 'fish')
     num_colors = Score('NUM_COLORS', 'fish')
@@ -82,7 +86,8 @@ def all_fish_funcs(room, clock_wall_sign):
 
     def all_fish_init():
         yield WallSign((None, 'All Possible', 'Tropical Fish', '-------->')).place(r(0, 2, 0), WEST, water=True)
-        yield clock_wall_sign.place(r(3, 4, 2), WEST, water=True)
+        yield clock_sign.place(r(3, 4, 2), WEST, water=True)
+        yield reset_sign.place(r(3, 6, 2), WEST, water=True)
         placer = room.mob_placer(r(0.5, 3.2, 0), WEST, -1, adults=True)
         for i in range(0, 12):
             if i == 6:

@@ -3,13 +3,17 @@ from __future__ import annotations
 from pynecraft.base import NORTH, r
 from pynecraft.commands import Block, e, fill, kill, summon
 from pynecraft.simpler import WallSign
-from restworld.rooms import Room
+from restworld.rooms import Room, label
 from restworld.world import restworld
 
 
 # noinspection SpellCheckingInspection
 def room():
     room = Room('paintings', restworld, NORTH, (None, 'Paintings'))
+
+    room.function('painting_room_init', exists_ok=True).add(
+        label(r(0, 2, 1), 'Reset Room')
+    )
 
     def painting(id, facing, x, z, sx=0, sy=0, sz=0, note=''):
         thing = Block(id)

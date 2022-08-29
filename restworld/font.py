@@ -80,7 +80,7 @@ def room():
         execute().at(e().tag('font_action_home')).run(setblock(save_pos, 'air')),
         function('restworld:font/check_sign'),
         WallSign((None, 'Color Holder')).place(r(0, -3, -3), SOUTH),
-        label(r(0, 2, -1), 'Reset'),
+        label(r(0, 2, -1), 'Reset Room'),
         label(r(0, 6, -3), 'Glowing', facing=3),
     )
 

@@ -188,8 +188,8 @@ def room():
         summon('armor_stand', r(0, 10, 2),
                {'Tags': ['photo_view', 'photo_quilt_view'], 'NoGravity': True, 'Small': True,
                 'PersistenceRequired': True, 'Invisible': True}),
-        label(r(-1, 10, -1), 'Reset Example Photo'),
-        label(r(1, 10, -1), 'Reset Mob Photo'),
+        label(r(-1, 10, -1), 'Frame Example Photo'),
+        label(r(1, 10, -1), 'Frame Mob Photo'),
         label(r(0, 10, 0), 'Go Home'),
-        label(r(0, 10, 1), 'Reset Quilt Photo'),
+        label(r(0, 10, 1), 'Frame Quilt Photo'),
     )

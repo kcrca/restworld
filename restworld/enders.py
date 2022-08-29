@@ -79,7 +79,8 @@ def room():
         room.mob_placer(r(1, 3, 1), SOUTH, adults=True).summon(
             'shulker_bullet', nbt={'NoGravity': True, 'TXD': 0, 'TYD': 0, 'TZD': 0, 'Steps': 0, 'Motion': [0, 0, 0]}),
         WallSign((None, 'Shulker Bullet')).place(r(1, 2, 2), SOUTH),
-        label(r(1, 2, 6), 'Change Height'),
+        label(r(1, 2, 6), 'Reset Room'),
+        label(r(-1, 2, 6), 'Change Height'),
     )
 
     def shulker_loop(step):

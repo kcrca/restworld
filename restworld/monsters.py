@@ -105,7 +105,8 @@ def room():
     room.function('spiders_init').add(
         function('restworld:monsters/spiders_cur'),
         label(r(2, 2, -2), 'Jockey'),
-        label(r(5, 2, -2), 'Change Height'))
+        label(r(5, 2, -3), 'Change Height'),
+        label(r(5, 2, -1), 'Reset Room'))
     room.function('witch_init').add(placer(*west_placer, adults=True).summon('witch'))
     room.function('zombie_horse_init').add(
         placer(*east_placer).summon(Entity('zombie_horse', name='Zombie Horse (Unused)')))

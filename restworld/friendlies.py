@@ -81,8 +81,8 @@ def room():
             data().merge(s(), {'OnGround': step.elem, 'EggLayTime': 1000000000})), (True, False))
     room.function('colored_mobs_init').add(
         label(r(0, 2, -1), 'Glow'),
-        label(r(0, 2, 3), 'Change Height')
-    )
+        label(r(0, 2, 2), 'Change Height'),
+        label(r(0, 2, 4), 'Reset Room'))
 
     def colored_mobs_loop(step):
         yield execute().as_(e().tag('colorable')).run(

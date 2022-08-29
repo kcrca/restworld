@@ -140,7 +140,9 @@ def room():
             ('player_head', dict(SkullOwner='BlueMeanial'))),
     )
     chest_pos = r(-1, -2, 0)
-    room.function('models_room_init', exists_ok=True).add(label(r(-2, 2, 0), 'Keep Inventory'))
+    room.function('models_room_init', exists_ok=True).add(
+        label(r(-2, 2, 0), 'Keep Inventory'),
+        label(r(-5, 2, 0), 'Reset Room'))
     room.function('model_init').add(
         kill(all_src),
         kill(all_ground),
@@ -207,10 +209,10 @@ def room():
     room.function('model_enter').add(
         execute().at(model_home).run(function(model_save)),
         setblock(redstone_block_pos, 'redstone_block'))
-    restore_on_exit = room.score('restore_on_exit')
+    keep_inventory = room.score('keep_inventory')
     room.function('model_exit').add(
         setblock(redstone_block_pos, 'air'),
-        execute().unless().score(restore_on_exit).matches(0).if_().score(needs_restore).matches(1).at(model_home).run(
+        execute().unless().score(keep_inventory).matches(1).if_().score(needs_restore).matches(1).at(model_home).run(
             function(model_restore))
     )
 

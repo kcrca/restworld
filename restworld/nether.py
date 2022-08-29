@@ -40,7 +40,8 @@ def room():
     room.function('strider_init').add(
         placer(r(0, 2, 0), EAST, 0, 3).summon('strider'),
         label(r(3, 2, 1), 'Saddle'),
-        label(r(6, 2, -4), 'Change Height'))
+        label(r(6, 2, -5), 'Change Height'),
+        label(r(6, 2, -3), 'Reset Room'))
 
     def strider_loop(step):
         yield execute().if_().score(('mob_levitation', 'global')).matches(0).run(setblock(r(0, 1, 0), step.elem))

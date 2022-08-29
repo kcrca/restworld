@@ -223,6 +223,7 @@ def room():
         label(r(5, 2, 4), 'Banner / Ink'),
         label(r(3, 2, 4), 'Labels'),
         label(r(4, 2, 3), 'Controls'),
+        label(r(4, 2, 5), 'Reset Room'),
         function('restworld:banners/switch_to_color'),
     )
     room.function('banner_controls_remove', home=False).add(

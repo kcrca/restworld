@@ -75,7 +75,7 @@ def room():
         fill(r(-2, 3, -2), r(2, 5, 2), 'air').replace('#wall_signs'))
     clear = at_home.run(function(menu_clear))
     menu_init = room.function('mob_menu_init').add(
-        label(r(0, 2, 0), 'Reset'),
+        label(r(0, 2, 0), 'Reset Room'),
         function(menu_clear),
         fill(r(-9, 2, -9), r(9, 4, 9), 'air').replace('water'),
         fill(r(-9, 2, -9), r(9, 4, 9), 'air').replace('structure_void'))

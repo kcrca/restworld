@@ -64,7 +64,7 @@ def room():
 
         setblock(r(8, 2, 2), 'cartography_table'),
 
-        label(r(5, 2, 0), 'Reset'),
+        label(r(5, 2, 0), 'Reset Room'),
     )
 
     icon_frame = e().tag('map_icon_frame').limit(1)
