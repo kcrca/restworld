@@ -247,7 +247,7 @@ def room():
     room.function('monitor').add(monitor('hunter'), monitor('victim'),
                                  kill(e().type('item').distance((None, 50))),
                                  kill(e().type('experience_orb').distance((None, 50)))),
-    # For some reason, arean_count_init doesn't always get run on _init, so we make sure that value is always in range.
+    # For some reason, arena_count_init doesn't always get run on _init, so we make sure that value is always in range.
     room.function('monitor_cleanup', home=False).add(
         execute().unless().score(arena_count).matches((COUNT_MIN, COUNT_MAX)).run(arena_count.set(1)),
         (execute().if_().score(room.score(f'{who}_count')).is_(GT, arena_count).run(kill(
