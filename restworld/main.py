@@ -4,8 +4,7 @@ import random
 
 from restworld import ancient, aquatic, arena, banners, biomes, blocks, center, connect, diy, effects, \
     enders, font, friendlies, global_, gui, hud, maps, materials, models, monsters, multimob, nether, paintings, \
-    particles, photo, \
-    plants, redstone, tags, the_end, time, wither
+    particles, photo, plants, redstone, save, tags, the_end, time, wither
 from restworld.world import restworld
 
 
@@ -13,9 +12,9 @@ def main():
     # Use a constant seed so things appear random, but don't usually change from run to run (helps with diffs)
     random.seed(0xb00f)
     for m in (
-            multimob, models, ancient, global_, aquatic, arena, banners, biomes, blocks, center, connect, gui, diy,
-            effects, particles, enders, font, friendlies, hud, materials, monsters, nether, paintings, photo, plants,
-            redstone, the_end, time, wither, maps):
+            save, multimob, models, ancient, global_, aquatic, arena, banners, biomes, blocks, center, connect, gui,
+            diy, effects, particles, enders, font, friendlies, hud, materials, monsters, nether, paintings, photo,
+            plants, redstone, the_end, time, wither, maps):
         m.room()
     tags.tags()
     restworld.save('/Users/kcrca/clarity/home/saves/RestWorld_1.19.2')
