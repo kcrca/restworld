@@ -87,21 +87,20 @@ def room():
     detector_stand = Entity('armor_stand',
                             dict(Rotation=good_facing(EAST).rotation, Small=True, NoGravity=True,
                                  ArmorItems=[{}, {}, {}, helmet])).tag('save_detector')
-    block_nbt = Nbt(sizeY=SAVE_HEIGHT, posX=1, posY=1, posZ=1, ignoreEntities=False)
+    block_nbt = Nbt(sizeY=SAVE_HEIGHT, posX=0, posY=1, posZ=-1, ignoreEntities=False)
 
     all_detectors = e().tag('save_detector')
     detector = all_detectors.limit(1)
     savers = e().tag('save_home')
     active = e().tag('save_active').limit(1)
 
-    block_pos = r(-1, -1, -1)
+    block_pos = r(0, -1, 1)
     prep = room.function('prep', home=False).add(
         execute().store(RESULT).storage('save_start', f'sizeX', INT, 1).run(x.get()),
         execute().store(RESULT).storage('save_start', f'sizeZ', INT, 1).run(z.get()),
         data().modify(block_pos, 'sizeX').set().from_('save_start', 'sizeX'),
         data().modify(block_pos, 'sizeZ').set().from_('save_start', 'sizeZ'),
         data().merge(block_pos, block_nbt.merge({'mode': 'SAVE', 'showboundingbox': True})),
-        tag(s()).remove('save_active')
     )
 
     as_detector = execute().as_(detector).at(detector)
@@ -115,23 +114,25 @@ def room():
             data().merge(s(), {'Rotation': good_facing(SOUTH).rotation}),
             found.add(1),
         ),
+        execute().if_().score(step_num).matches((MAX_STEPS, None)).run(say("NO END FOUND")),
         execute().unless().score(step_num).matches((MAX_STEPS, None)).if_().score(found).matches(2).as_(
             active).at(active).run(function(prep)),
         execute().unless().score(step_num).matches((MAX_STEPS, None)).unless().score(found).matches(2).run(
             function(step)),
     )
     save = room.function('save').add(
-        say('saving'),
+        execute().unless().block(block_pos, 'structure_block').run(say("NO STRUCTURE BLOCK")),
         saved.add(1),
         kill(all_detectors),
-        # tag(e().tag('save_active')).remove('save_active'),
+        tag(e().tag('save_active')).remove('save_active'),
         tag(s()).add('save_active'),
-        summon(detector_stand, r(0, 8, 0)),
+        summon(detector_stand, r(0, 7, 0)),
         step_num.set(0),
         x.set(1),
         z.set(1),
         found.set(0),
         function(step),
+        tag(s()).remove('save_active'),
     )
 
     room.function('start', home=False).add(
