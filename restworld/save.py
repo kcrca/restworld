@@ -1,8 +1,9 @@
 from pynecraft.base import EAST, Nbt, SOUTH, d, good_facing, r
-from pynecraft.commands import Entity, FURTHEST, INT, RESULT, data, e, execute, function, kill, s, say, summon, \
+from pynecraft.commands import Entity, FURTHEST, INT, RESULT, data, e, execute, function, kill, s, say, setblock, \
+    summon, \
     tag, \
     tp
-from pynecraft.simpler import Item
+from pynecraft.simpler import Item, Offset
 from restworld.rooms import Room
 from restworld.world import restworld
 
@@ -95,6 +96,7 @@ def room():
     active = e().tag('save_active').limit(1)
 
     block_pos = r(0, -1, 1)
+    redstone_pos = Offset(0, -1, 0).r(*block_pos)
     prep = room.function('prep', home=False).add(
         execute().store(RESULT).storage('save_start', f'sizeX', INT, 1).run(x.get()),
         execute().store(RESULT).storage('save_start', f'sizeZ', INT, 1).run(z.get()),
@@ -120,7 +122,7 @@ def room():
         execute().unless().score(step_num).matches((MAX_STEPS, None)).unless().score(found).matches(2).run(
             function(step)),
     )
-    save = room.function('save').add(
+    setup = room.function('setup', home=False).add(
         execute().unless().block(block_pos, 'structure_block').run(say("NO STRUCTURE BLOCK")),
         saved.add(1),
         kill(all_detectors),
@@ -135,10 +137,21 @@ def room():
         tag(s()).remove('save_active'),
     )
 
-    room.function('start', home=False).add(
+    setup_all = room.function('setup_all', home=False).add(
         kill(all_detectors),
         tag(e().tag('save_active')).remove('save_active'),
         saved.set(0),
+        execute().as_(savers.sort(FURTHEST)).run(execute().as_(s()).at(s()).run(function(setup))),
+    )
+
+    save = room.function('save').add(
+        setblock(redstone_pos, 'redstone_block'),
+        setblock(redstone_pos, 'shroomlight'),
+    )
+
+    room.function('save_all', home=False).add(
+        function(setup_all),
+        execute().as_(savers.sort(FURTHEST)).run(execute().as_(s()).at(s()).run(function(setup))),
         execute().as_(savers.sort(FURTHEST)).run(execute().as_(s()).at(s()).run(function(save))),
     )
 
