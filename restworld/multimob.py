@@ -4,8 +4,8 @@ import copy
 import math
 
 from pynecraft.base import EAST, NE, NORTH, NW, SE, SOUTH, SW, WEST, good_facing, r, rotated_facing
-from pynecraft.commands import Entity, JsonText, comment, e, execute, fill, function, kill, setblock, tag
-from pynecraft.info import mobs
+from pynecraft.commands import Entity, JsonText, comment, data, e, execute, fill, function, kill, s, setblock, tag
+from pynecraft.info import mobs, villager_biomes, villager_professions
 from pynecraft.simpler import Item, WallSign
 from restworld.rooms import Room, label
 from restworld.world import kill_em, restworld
@@ -71,8 +71,9 @@ def room():
 
     menu_home = e().tag('mob_menu_home').limit(1)
     at_home = execute().at(menu_home)
+    row_len = 3
     menu_clear = room.function('mob_menu_clear', home=False).add(
-        fill(r(-2, 3, -2), r(2, 5, 2), 'air').replace('#wall_signs'))
+        fill(r(-2, 3, -2), r(2, 6, 2), 'air').replace('#wall_signs'))
     clear = at_home.run(function(menu_clear))
     menu_init = room.function('mob_menu_init').add(
         label(r(0, 2, 0), 'Reset Room'),
@@ -96,26 +97,59 @@ def room():
     for i in range(NUM_GROUPS):
         if i == full_groups and full_groups != NUM_GROUPS:
             stride -= 1
-        dir = dir_order[i // 3]
+        dir = dir_order[i // row_len]
         facing = good_facing(dir)
         x, _, z = facing.scale(2)
         move_facing = rotated_facing(facing, 90)
         sign_facing = rotated_facing(facing, 180)
         dx, _, dz = move_facing.scale(1)
 
-        popup = room.function(f'mob_menu_{i:02}', home=False)
-        for j, m in enumerate(range(start, start + stride)):
-            mob = my_mobs[all_mobs[m]]
-            summon_mob = summon_mob_commands(room, mob)
-            row_count = math.ceil(stride / 3)
+        def menu_matrix(name, values, matrix_row_len, func_gen):
+            popup = room.function(name, home=False)
+            row_count = math.ceil(len(values) / matrix_row_len)
             top_y = 2 + row_count
-            sign_x = x + (-1 + j % 3) * dx
-            sign_z = z + (-1 + j % 3) * dz
-            sign_y = top_y - j // 3
-            popup.add(
-                WallSign((None, mob.name),
-                         (clear, execute().if_().block(r(0, 1, 0), 'air').run(function(summon_mob))),
-                         wood='birch').place(r(sign_x, sign_y, sign_z), sign_facing))
+            for i, value in enumerate(values):
+                sx, sy, sz = sign_pos(i, x, top_y, z, matrix_row_len)
+                popup.add(
+                    WallSign((None, value), (clear, *func_gen(value)), wood='birch').place(r(sx, sy, sz), sign_facing))
+            return popup
+
+        def set_villager(key, which):
+            func = room.function(f'{key.lower()}_{which.lower()}', home=False)
+            for sector in (NW, SW, NE, SE):
+                facing_tag = f'multimob_{sector}_mob'
+                func.add(
+                    execute().at(e().tag(f'multimob_{sector}_home')).as_(e().tag(facing_tag)).run(
+                        data().merge(s(), {'VillagerData': {key: which.lower()}})))
+            func.add(clear)
+            return func
+
+        def set_profession(pro):
+            return function(set_villager('profession', pro).add(at_home.run(function('restworld:multimob/type')))),
+
+        def set_type(type):
+            return function(set_villager('type', type)),
+
+        def summoner(mob_key):
+            mob = my_mobs[mob_key]
+            summon_mob = summon_mob_commands(room, mob)
+            return execute().if_().block(r(0, 1, 0), 'air').run(function(summon_mob)), follow_on(mob)
+
+        def sign_pos(sign_num, x_base, y_base, z_base, matrix_row_len):
+            sign_y = y_base - sign_num // matrix_row_len
+            sign_x = x_base + (-1 + sign_num % matrix_row_len) * dx
+            sign_z = z_base + (-1 + sign_num % matrix_row_len) * dz
+            return sign_x, sign_y, sign_z
+
+        def follow_on(mob):
+            if mob.name != 'Villager':
+                return None
+
+            menu_matrix('type', villager_biomes, row_len, set_type)
+            pro_popup = menu_matrix('profession', villager_professions + ('Child',), 4, set_profession)
+            return at_home.run(function(pro_popup))
+
+        popup = menu_matrix(f'mob_menu_{i:02}', all_mobs[start:start + stride], row_len, summoner)
 
         x += (-1 + within) * dx
         z += (-1 + within) * dz
@@ -124,7 +158,7 @@ def room():
                      (clear, at_home.run(function(popup)))).place(r(x, 2, z), sign_facing))
 
         start += stride
-        within = (within + 1) % 3
+        within = (within + 1) % row_len
 
     room.function('sector_setup', home=False).add(
         kill(e().tag('multimob_summoner')),

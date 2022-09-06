@@ -4,7 +4,7 @@ from pynecraft.base import EAST, NORTH, SOUTH, WEST, r, to_id
 from pynecraft.commands import Block, EQ, Entity, MOD, Score, data, e, execute, function, item, kill, s, setblock, \
     summon, tag, \
     tp
-from pynecraft.info import colors, horses, music_discs, villager_professions, villager_types
+from pynecraft.info import colors, horses, music_discs, villager_biomes, villager_professions
 from pynecraft.simpler import WallSign
 from restworld.rooms import Room, label
 from restworld.world import kill_em, main_clock, restworld
@@ -335,13 +335,13 @@ def villager_funcs(room):
             data().modify(s(), 'VillagerData.type').set().value(step.elem.lower()))
         yield data().merge(r(-5, 2, 0), {'Text2': step.elem})
 
-    room.loop('villager_professions', main_clock).loop(villager_professions_loop, villager_types)
+    room.loop('villager_professions', main_clock).loop(villager_professions_loop, villager_biomes)
 
     def types_init_funcs(which):
         id, kind = kind_names(which)
         p = placer(r(-2, 2, -2), WEST, -2, tags=('villager', 'types',), adults=True)
         types_init = room.function(f'{which}_types_init').add(kill(e().tag('villager')))
-        for i, ty in enumerate(villager_types):
+        for i, ty in enumerate(villager_biomes):
             if i == 3:
                 p = placer(r(0, 2, -3), WEST, -2, tags=('villager', 'types',), adults=True)
             types_init.add(p.summon(Entity(id, name=ty, nbt={'VillagerData': {'type': ty.lower()}})))
