@@ -105,7 +105,10 @@ def room():
         dx, _, dz = move_facing.scale(1)
 
         def menu_matrix(name, values, matrix_row_len, func_gen):
-            popup = room.function(name, home=False)
+            popup = room.function(name, exists_ok=True, home=False)
+            if popup.commands():
+                return popup
+
             row_count = math.ceil(len(values) / matrix_row_len)
             top_y = 2 + row_count
             for i, value in enumerate(values):
@@ -142,11 +145,14 @@ def room():
             return sign_x, sign_y, sign_z
 
         def follow_on(mob):
-            if mob.name != 'Villager':
+            if not mob.name.endswith('Villager'):
                 return None
 
             menu_matrix('type', villager_biomes, row_len, set_type)
-            pro_popup = menu_matrix('profession', villager_professions + ('Child',), 4, set_profession)
+            professions = list(villager_professions)
+            if mob.name == 'Villager':
+                professions.append('Child')
+            pro_popup = menu_matrix('profession', professions, 4, set_profession)
             return at_home.run(function(pro_popup))
 
         popup = menu_matrix(f'mob_menu_{i:02}', all_mobs[start:start + stride], row_len, summoner)
