@@ -117,18 +117,23 @@ def room():
                     WallSign((None, value), (clear, *func_gen(value)), wood='birch').place(r(sx, sy, sz), sign_facing))
             return popup
 
-        def set_villager(key, which):
+        def set_villager(key, which, nbt=None):
             func = room.function(f'{key.lower()}_{which.lower()}', home=False)
+            if nbt is None:
+                nbt = {'VillagerData': {key: which.lower()}}
             for sector in (NW, SW, NE, SE):
                 facing_tag = f'multimob_{sector}_mob'
                 func.add(
                     execute().at(e().tag(f'multimob_{sector}_home')).as_(e().tag(facing_tag)).run(
-                        data().merge(s(), {'VillagerData': {key: which.lower()}})))
+                        data().merge(s(), nbt)))
             func.add(clear)
             return func
 
         def set_profession(pro):
-            return function(set_villager('profession', pro).add(at_home.run(function('restworld:multimob/type')))),
+            set_type = at_home.run(function('restworld:multimob/type'))
+            if pro == 'Child':
+                return function(set_villager('profession', pro, {'Age': -2147483648}).add(set_type)),
+            return function(set_villager('profession', pro).add(set_type)),
 
         def set_type(type):
             return function(set_villager('type', type)),
