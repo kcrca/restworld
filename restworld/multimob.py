@@ -205,5 +205,5 @@ def summon_mob_commands(room, mob):
                 y = 3 if mob.name in HIGHER else 2
                 if mob.name not in BIG or (mx, mz) in big_places:
                     summon_mob.add(run_at(room.mob_placer(
-                        r(mx, y, mz), mob_facing, adults=True, tags=(facing_tag,)).summon(mob)))
+                        r(mx, y, mz), mob_facing, adults=True, auto_tag=False, tags=(facing_tag,)).summon(mob)))
     return summon_mob
