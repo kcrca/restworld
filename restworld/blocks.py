@@ -15,7 +15,7 @@ from restworld.world import fast_clock, kill_em, main_clock, restworld, slow_clo
 
 
 def room():
-    room = Room('blocks', restworld, EAST, ('Blocks,', 'Paintings,', 'Banners,', 'DIY'))
+    room = Room('blocks', restworld, EAST, ('Blocks,', 'Paintings,', 'Banners,', 'DIY, Models'))
 
     block_list_score = room.score('block_list')
 
