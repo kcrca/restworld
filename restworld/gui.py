@@ -239,6 +239,10 @@ def room():
         while len(items) > 0:
             z, end = rows.pop(0)
             for i in range(0, end):
+                if len(rows) == 2 and i == 2:
+                    # There are 14 items, 2x7 is too large; skip the middle of the front row to get about 3 rows of 5
+                    z += dz
+                    continue
                 t = items.pop(0)
                 frame = ItemFrame(NORTH).item(t).named(t.name)
                 frame.tag('gui', 'only_item_frame', f'only_item_frame_{t.id}')
@@ -261,8 +265,7 @@ def room():
     room.function('only_items_give', home=False).add(
         give(p(), 'chain_command_block'),
         give(p(), 'repeating_command_block'),
-        (give(p(), x) for x in giveable),
-        give(p(), 'firework_rocket'),
+        (give(p(), x) for x in giveable)
     )
     room.function('only_items_init').add(
         label(r(-2, 2, -2), 'Give'),
