@@ -139,10 +139,10 @@ def room():
     blocks('frosted_ice', SOUTH,
            list(Block('frosted_ice', {'age': i}, name=f'Frosted Ice|Age: {i}') for i in range(0, 4)))
     blocks('glass', NORTH, ('Glass', 'Tinted Glass'))
-    blocks('ice', SOUTH, ('Ice', 'Packed Ice', 'Blue Ice'))
     blocks('lighting', SOUTH, (
         'Glowstone', 'Sea Lantern', 'Shroomlight', 'Ochre|Froglight', 'Pearlescent|Froglight', 'Verdant|Froglight',
         'End Rod'))
+    room.function('ladder_init').add(setblock(r(0, 3, 0), 'ladder'))
     room.function('light_init').add(label(r(1, 2, 0), 'Light Block'))
     blocks('light', SOUTH, (Block('light', {'level': x}) for x in range(0, 15)),
            labels=tuple(('light', f'Level: {i:d}') for i in range(0, 15)), clock=slow_clock)
@@ -438,6 +438,12 @@ def room():
         tag(e().tag('ore_blocks_base')).add('deepslate_ore_blocks_home'),
         execute().at(e().tag('ore_blocks_base')).run(function('restworld:blocks/deepslate_ore_blocks_cur')))
 
+    def ladder_loop(step):
+        yield fill(r(0, 3, 0), r(0, 5, 0), 'air')
+        yield fill(r(0, 3, 0), r(0, 3 + step.elem, 0), 'ladder')
+
+    room.loop('ladder', main_clock).loop(ladder_loop, range(0, 3), bounce=True)
+
     def scaffolding_loop(step):
         i = step.i
         if i == 0:
@@ -542,7 +548,7 @@ def room():
     for b in (
             'amethyst', 'anvil', 'bell', 'brewing_stand', 'cake', 'campfire', 'cauldron', 'chest', 'colored_beam',
             'colorings', 'composter', 'frosted_ice', 'grindstone', 'item_frame', 'job_sites_1', 'job_sites_2',
-            'lantern', 'armor_stand', 'torches', 'spawner', 'blocks_room'):
+            'lantern', 'armor_stand', 'torches', 'spawner', 'blocks_room', 'ladder'):
         room.function(b + '_init', exists_ok=True).add(tag(e().tag(b + '_home')).add('no_expansion'))
 
 
