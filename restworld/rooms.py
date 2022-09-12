@@ -196,8 +196,13 @@ class Room(FunctionSet):
                 home = False
         return self._add_func(Function(name, base_name), name, clock, home)
 
-    def loop(self, name: str, clock: Clock = None, /, home=True, score=None) -> Loop:
+    def loop(self, name: str, clock: Clock = None, /, home=True, score=None, exists_ok=False) -> Loop:
         base_name, name = self._base_name(name, clock)
+        if exists_ok and name in self.functions:
+            func = self.functions[name]
+            if not isinstance(func, Loop):
+                raise ValueError(f'{name}: Exists but is not a loop')
+            return func
         if not score:
             score = Score(base_name, self.name)
         loop = self._add_func(Loop(score, name=name, base_name=base_name), name, clock, home)

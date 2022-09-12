@@ -4,7 +4,7 @@ import re
 from typing import Iterable, Union
 
 from pynecraft.base import DOWN, EAST, NORTH, Nbt, SOUTH, WEST, good_facing, r, to_name
-from pynecraft.commands import Block, Entity, JsonText, MOVE, clone, data, e, execute, fill, function, \
+from pynecraft.commands import Block, EQ, Entity, JsonText, MOD, MOVE, clone, data, e, execute, fill, function, \
     good_block, item, \
     kill, s, say, setblock, summon, tag
 from pynecraft.function import Loop
@@ -149,7 +149,7 @@ def room():
     blocks('music', SOUTH, (
         Block('Note Block'), Block('Jukebox'), Block('jukebox', {'has_record': True}, name='Jukebox|Playing')))
     blocks('netherrack', NORTH, ('Netherrack', 'Warped Nylium', 'Crimson Nylium'))
-    blocks('obsidian', NORTH, ('Obsidian', 'Crying Obsidian'))
+    blocks('obsidian', SOUTH, ('Obsidian', 'Crying Obsidian'))
     blocks('prismarine', NORTH, ('Prismarine', 'Prismarine Bricks', 'Dark Prismarine'))
     blocks('pumpkin', SOUTH, (
         'Pumpkin', Block('Carved Pumpkin', {'facing': SOUTH}), Block('Jack O Lantern', {'facing': SOUTH})))
@@ -221,8 +221,7 @@ def room():
                'Barrel': ({'facing': NORTH, 'open': True}, {'facing': NORTH, 'open': False}),
                'Lectern': ({'has_book': False}, {'has_book': True})})
 
-    for f in ('amethyst',):
-        room.function(f + '_init').add(tag(e().tag(f + '_home')))
+    room.function('amethyst_init').add(tag(e().tag('amethyst_home')))
     amethyst_phases = (
         'Amethyst Block', 'Budding Amethyst', 'Small Amethyst|Bud', 'Medium Amethyst|Bud', 'Large Amethyst|Bud',
         'Amethyst Cluster')
@@ -278,7 +277,8 @@ def room():
             nbt = Nbt(ShowArms=False)
         else:
             h, b, la, ra, ll, rl = step.elem
-            nbt = Nbt(ShowArms=True, Pose={'Head': h, 'Body': b, 'LeftArm': la, 'RightArm': ra, 'LeftLeg': ll, 'RightLeg': rl})
+            nbt = Nbt(ShowArms=True,
+                      Pose={'Head': h, 'Body': b, 'LeftArm': la, 'RightArm': ra, 'LeftLeg': ll, 'RightLeg': rl})
         yield data().merge(e().tag('pose_stand').limit(1), nbt)
 
     room.function('armor_stand_init').add(
@@ -387,6 +387,23 @@ def room():
     room.loop('fire', main_clock).add(fill(r(0, 3, 0), r(0, 5, 0), 'air')).loop(fire_loop, (
         'oak_log', 'oak_log', 'oak_log', 'soul_soil'))
 
+    infestables = []
+    for b in ('Cobblestone', 'Deepslate', 'Stone', 'Stone Bricks', 'Chiseled|Stone Bricks', 'Cracked|Stone Bricks',
+              'Mossy|Stone Bricks'):
+        infestables.extend((b, f'Infested|{b}'))
+    blocks('infested', NORTH, infestables)
+    two = room.score('two')
+    room.function('infested_init', exists_ok=True).add(
+        label(r(-1, 2, 0), 'Infested Only'),
+        two.set(2))
+    i_even = room.score('infested_even')
+    infested = room.score('infested')
+    room.loop('infested_main', main_clock, exists_ok=True).before.extend((
+        i_even.operation(EQ, infested),
+        i_even.operation(MOD, two),
+        execute().if_().score(i_even).matches(0).if_().score(room.score('infested_only')).matches(1).run(
+            infested.add(1))))
+
     def item_frame_loop(step):
         yield step.elem.merge_nbt({'Tags': ['item_frame_as_block']}).summon(r(0, 3, -1)),
         yield data().merge(r(0, 2, -1), Sign.lines_nbt((None, *step.elem.sign_text)))
@@ -417,6 +434,7 @@ def room():
         data().merge(r(0, 2, -1), {'Text3': 'Lantern'}))
     room.loop('lantern', main_clock).loop(lantern_loop, range(0, 4))
 
+    blocks('minor', NORTH, ('Calcite', 'Tuff'))
     room.function('ore_blocks_init').add(label(r(-1, 2, 0), 'Deepslate'))
     basic = ['Coal', 'Iron', 'Copper', 'Gold', 'Lapis', 'Redstone', 'Diamond', 'Emerald']
     odder = ['Nether Quartz', 'Nether Gold']
