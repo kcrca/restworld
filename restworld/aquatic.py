@@ -76,7 +76,7 @@ def all_fish_funcs(room, clock_sign, reset_sign):
     pattern = Score('pattern', 'fish')
     num_colors = Score('NUM_COLORS', 'fish')
     body_scale = Score('BODY_SCALE', 'fish')
-    overaly_scale = Score('OVERLAY_SCALE', 'fish')
+    overlay_scale = Score('OVERLAY_SCALE', 'fish')
     pattern_size = Score('PATTERN_SIZE', 'fish')
     variant = Score('variant', 'fish')
 
@@ -102,13 +102,13 @@ def all_fish_funcs(room, clock_sign, reset_sign):
             pattern.set(0),
             pattern_size.set(len(COLORS) ** 2),
             body_scale.set(0x10000),
-            overaly_scale.set(0x1000000),
+            overlay_scale.set(0x1000000),
         )
 
     def all_fish():
         yield (
             pattern.set((pattern + 1) % pattern_size),
-            variant.set((pattern % num_colors) * body_scale + (pattern // num_colors) * overaly_scale))
+            variant.set((pattern % num_colors) * body_scale + (pattern // num_colors) * overlay_scale))
         for i in range(0, 6):
             yield from fish_variant(i)
             if i < 5:
