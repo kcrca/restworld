@@ -73,17 +73,19 @@ def room():
 
 
 def all_fish_funcs(room, clock_sign, reset_sign):
-    body = Score('body', 'fish')
     pattern = Score('pattern', 'fish')
     num_colors = Score('NUM_COLORS', 'fish')
     body_scale = Score('BODY_SCALE', 'fish')
-    pattern_scale = Score('PATTERN_SCALE', 'fish')
+    overaly_scale = Score('OVERLAY_SCALE', 'fish')
+    pattern_size = Score('PATTERN_SIZE', 'fish')
     variant = Score('variant', 'fish')
 
     kinds = tuple(tropical_fish.keys())
 
+    sign_pos = r(0, 2, ~ 0)
+
     def all_fish_init():
-        yield WallSign((None, 'All Possible', 'Tropical Fish', '-------->')).place(r(0, 2, 0), WEST, water=True)
+        yield WallSign((None, 'All Possible', 'Tropical Fish', '-------->')).place(sign_pos, WEST, water=True)
         yield clock_sign.place(r(3, 4, 2), WEST, water=True)
         yield reset_sign.place(r(3, 6, 2), WEST, water=True)
         placer = room.mob_placer(r(0.5, 3.2, 0), WEST, -1, adults=True)
@@ -97,28 +99,28 @@ def all_fish_funcs(room, clock_sign, reset_sign):
             scoreboard().objectives().remove('fish'),
             scoreboard().objectives().add('fish', ScoreCriteria.DUMMY),
             num_colors.set(len(COLORS)),
-            body.set(0),
             pattern.set(0),
+            pattern_size.set(len(COLORS) ** 2),
             body_scale.set(0x10000),
-            pattern_scale.set(0x1000000),
+            overaly_scale.set(0x1000000),
         )
 
     def all_fish():
         yield (
-            pattern.set((pattern + 1) % num_colors),
-            execute().if_().score(pattern).matches(0).run(body.set((body + 1) % num_colors)),
-            variant.set(body * body_scale + pattern * pattern_scale))
+            pattern.set((pattern + 1) % pattern_size),
+            variant.set((pattern % num_colors) * body_scale + (pattern // num_colors) * overaly_scale))
         for i in range(0, 6):
-            yield execute().store(RESULT).entity(e().tag(f'fish{i:d}').limit(1), 'Variant', LONG, 1).run(
-                variant.get())
+            yield from fish_variant(i)
             if i < 5:
                 yield variant.add(256)
         yield variant.add(1)
         for i in range(6, 12):
-            yield execute().store(RESULT).entity(e().tag(f'fish{i:d}').limit(1), 'Variant', LONG, 1).run(
-                variant.get())
+            yield from fish_variant(i)
             if i < 11:
                 yield variant.remove(256)
+
+    def fish_variant(i):
+        yield execute().store(RESULT).entity(e().tag(f'fish{i:d}').limit(1), 'Variant', LONG, 1).run(variant.get())
 
     room.function('all_fish_init').add(all_fish_init())
     room.loop('all_fish', fast_clock).add(all_fish())
