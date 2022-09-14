@@ -108,7 +108,7 @@ def all_fish_funcs(room, clock_sign, reset_sign):
     def all_fish():
         yield (
             pattern.set((pattern + 1) % pattern_size),
-            variant.set((pattern % num_colors) * body_scale + (pattern // num_colors) * overlay_scale))
+            variant.set((pattern // num_colors) * body_scale + (pattern % num_colors) * overlay_scale))
         for i in range(0, 6):
             yield from fish_variant(i)
             if i < 5:
