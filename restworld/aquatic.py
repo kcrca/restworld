@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from pynecraft.base import EAST, NORTH, WEST, r
-from pynecraft.commands import COLORS, EQ, Entity, LONG, MOD, MULT, PLUS, RESULT, Score, data, e, execute, function, \
+from pynecraft.commands import COLORS, Entity, LONG, RESULT, Score, data, e, execute, function, \
     kill, s, scoreboard, tp
 from pynecraft.enums import ScoreCriteria
 from pynecraft.info import axolotls, tropical_fish
@@ -77,9 +77,7 @@ def all_fish_funcs(room, clock_sign, reset_sign):
     pattern = Score('pattern', 'fish')
     num_colors = Score('NUM_COLORS', 'fish')
     body_scale = Score('BODY_SCALE', 'fish')
-    base_variant = Score('base_variant', 'fish')
     pattern_scale = Score('PATTERN_SCALE', 'fish')
-    pattern_variant = Score('pattern_variant', 'fish')
     variant = Score('variant', 'fish')
 
     kinds = tuple(tropical_fish.keys())
@@ -107,17 +105,9 @@ def all_fish_funcs(room, clock_sign, reset_sign):
 
     def all_fish():
         yield (
-            pattern.add(1),
-            pattern.operation(MOD, num_colors),
-            execute().if_().score(pattern).matches(0).run(body.add(1)),
-            body.operation(MOD, num_colors),
-            base_variant.operation(EQ, body),
-            base_variant.operation(MULT, body_scale),
-            pattern_variant.operation(EQ, pattern),
-            pattern_variant.operation(MULT, pattern_scale),
-            base_variant.operation(PLUS, pattern_variant),
-            variant.operation(EQ, base_variant),
-        )
+            pattern.set((pattern + 1) % num_colors),
+            execute().if_().score(pattern).matches(0).run(body.set((body + 1) % num_colors)),
+            variant.set(body * body_scale + pattern * pattern_scale))
         for i in range(0, 6):
             yield execute().store(RESULT).entity(e().tag(f'fish{i:d}').limit(1), 'Variant', LONG, 1).run(
                 variant.get())
