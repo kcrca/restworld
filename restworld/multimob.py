@@ -5,8 +5,8 @@ import math
 
 from pynecraft.base import EAST, NE, NORTH, NW, SE, SOUTH, SW, WEST, good_facing, r, rotated_facing
 from pynecraft.commands import Entity, JsonText, comment, data, e, execute, fill, function, kill, s, setblock, tag
-from pynecraft.info import mobs, villager_biomes, villager_professions
-from pynecraft.simpler import Item, WallSign
+from pynecraft.info import mobs
+from pynecraft.simpler import Item, VILLAGER_BIOMES, VILLAGER_PROFESSIONS, WallSign
 from restworld.rooms import Room, label
 from restworld.world import kill_em, restworld
 
@@ -153,8 +153,8 @@ def room():
             if not mob.name.endswith('Villager'):
                 return None
 
-            menu_matrix('type', villager_biomes, row_len, set_type)
-            professions = list(villager_professions)
+            menu_matrix('type', VILLAGER_BIOMES, row_len, set_type)
+            professions = list(VILLAGER_PROFESSIONS)
             if mob.name == 'Villager':
                 professions.append('Child')
             pro_popup = menu_matrix('profession', professions, 4, set_profession)

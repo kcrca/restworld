@@ -7,8 +7,7 @@ from pynecraft.base import EAST, NORTH, Nbt, OVERWORLD, SOUTH, WEST, d, r, rotat
 from pynecraft.commands import Block, CLEAR, Entity, RAIN, REPLACE, a, data, e, execute, fill, function, item, kill, p, \
     particle, playsound, schedule, setblock, summon, tp, weather
 from pynecraft.enums import Particle
-from pynecraft.info import villager_professions
-from pynecraft.simpler import WallSign
+from pynecraft.simpler import VILLAGER_BIOMES, VILLAGER_PROFESSIONS, WallSign
 from restworld.rooms import ActionDesc, SignedRoom, Wall, span
 from restworld.world import fast_clock, kill_em, main_clock, restworld, slow_clock
 
@@ -99,10 +98,9 @@ particles.sort()
 #    Could loop WHITE_ASH, CRIMSON_SPORE, etc.?
 #    Could loop various explosions?
 
-villager_types = ('Desert', 'Jungle', 'Plains', 'Savanna', 'Snow', 'Swamp', 'Taiga')
 villager_data = []
-for t in villager_types:
-    for pro in villager_professions:
+for t in VILLAGER_BIOMES:
+    for pro in VILLAGER_PROFESSIONS:
         villager_data.append({'profession': pro.lower(), 'type': t.lower()})
     random.shuffle(villager_data)
 
@@ -403,7 +401,7 @@ def room():
     room.function('shriek_particles', home=False).add(
         (particle(Particle.SHRIEK, i * 7, r(0, 1, 0)) for i in range(0, 8)))
     room.loop('small_animal', home=False).loop(lambda step: exemplar(step.elem, 0, {'CatType': 1, 'NoAI': True}),
-                                   ('ocelot', 'horse', 'llama'))
+                                               ('ocelot', 'horse', 'llama'))
     room.function('smoke_init', home=False).add(
         setblock(r(-1, 0, 0), 'torch'),
         setblock(r(0, 0, 0), 'brewing_stand'),
@@ -444,8 +442,9 @@ def room():
     room.function('totem_of_undying', home=False).add(
         main().run(particle(Particle.TOTEM_OF_UNDYING, r(0, 2, 0), 0.5, 1, 0.5, 0.5, 50)))
     room.function('underwater_init', home=False).add(function('restworld:particles/ocean'))
-    room.loop('villager', home=False).loop(lambda step: exemplar('villager', 0, {'NoAI': True, 'VillagerData': step.elem}),
-                               villager_data)
+    room.loop('villager', home=False).loop(
+        lambda step: exemplar('villager', 0, {'NoAI': True, 'VillagerData': step.elem}),
+        villager_data)
     room.function('warped_spore', home=False).add(
         fast().run(particle(Particle.WARPED_SPORE, r(0, 2, 0), 1, 0, 1, 0.0, 25)))
     room.function('warped_spore_init', home=False).add(floor('warped_nylium'))
