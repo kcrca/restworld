@@ -7,6 +7,7 @@ import re
 from pynecraft.base import EAST, NORTH, OVERWORLD, r, to_id
 from pynecraft.commands import Block, Entity, e, execute, fill, kill, p, setblock, summon, tp
 from pynecraft.info import colors, corals, stems, woods
+from pynecraft.simpler import Offset
 from restworld.rooms import MobPlacer, Room, label
 from restworld.world import restworld
 
@@ -160,20 +161,20 @@ def room():
 
     room.function('all_blocks').add(all_blocks())
 
+    mob_offset = Offset(-1, 5, 7)
     room.function('photo_mobs_init').add(
-        tp(e().tag('photo_mob'), r(0, 15, 0)),
         kill(e().tag('photo_mob')),
         kill(e().type('item')),
-        (Entity(m.mob, m.nbt).tag('photo_mob').merge_nbt(MobPlacer.base_nbt).summon(r(m.x, m.y, m.z),
+        (Entity(m.mob, m.nbt).tag('photo_mob').merge_nbt(MobPlacer.base_nbt).summon(mob_offset.r(m.x, m.y, m.z),
                                                                                     {'Rotation': [m.rotation, 0],
                                                                                      'OnGround': True}) for m in mobs))
 
-    room.function('photo_example_view').add(
-        execute().in_(OVERWORLD).run(tp(p(), (-1000, 100, 1000)).facing((-1011, 93, 989))),
+    room.function('photo_example_view', home=False).add(
+        execute().in_(OVERWORLD).run(tp(p(), (-1004, 105, 1008)).facing((-1020, 94, 992))),
         kill(e().type('item'))
     )
-    room.function('photo_mobs_view').add(
-        tp(p(), (-996.5, 100, 1002.5)).facing((-950.5, 78, 1002.5)),
+    room.function('photo_mobs_view', home=False).add(
+        tp(p(), (-997.5, 105, 1009.5)).facing((-947.5, 80, 1009.5)),
         kill(e().type('item')))
     room.function('photo_quilt_view').add(
         tp(p(), e().tag('photo_quilt_view').limit(1)),
@@ -188,8 +189,7 @@ def room():
         summon('armor_stand', r(0, 10, 2),
                {'Tags': ['photo_view', 'photo_quilt_view'], 'NoGravity': True, 'Small': True,
                 'PersistenceRequired': True, 'Invisible': True}),
-        label(r(-1, 10, -1), 'Frame Example Photo'),
-        label(r(1, 10, -1), 'Frame Mob Photo'),
-        label(r(0, 10, 0), 'Go Home'),
-        label(r(0, 10, 1), 'Frame Quilt Photo'),
+        label(r(-2, 15, 6), 'Frame Example Photo'),
+        label(r(0, 15, 6), 'Frame Mob Photo'),
+        label(r(-1, 15, 7), 'Go Home'),
     )
