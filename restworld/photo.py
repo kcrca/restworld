@@ -161,7 +161,7 @@ def room():
 
     room.function('all_blocks').add(all_blocks())
 
-    mob_offset = Offset(-1, 5, 7)
+    mob_offset = Offset(-1, 9, 7)
     room.function('photo_mobs_init').add(
         kill(e().tag('photo_mob')),
         kill(e().type('item')),
@@ -170,26 +170,27 @@ def room():
                                                                                      'OnGround': True}) for m in mobs))
 
     room.function('photo_example_view', home=False).add(
-        execute().in_(OVERWORLD).run(tp(p(), (-1004, 105, 1008)).facing((-1020, 94, 992))),
+        execute().in_(OVERWORLD).run(tp(p(), (-1004, 109, 1008)).facing((-1019.00, 93.4, 993.00))),
         kill(e().type('item'))
     )
     room.function('photo_mobs_view', home=False).add(
-        tp(p(), (-997.5, 105, 1009.5)).facing((-947.5, 80, 1009.5)),
+        tp(p(), (-997.5, 109, 1009.5)).facing((-947.5, 84, 1009.5)),
         kill(e().type('item')))
     room.function('photo_quilt_view').add(
         tp(p(), e().tag('photo_quilt_view').limit(1)),
         execute().at(e().tag('photo_quilt_view').limit(1)).run(tp(p(), r(0, 0, -0.5)).facing((-1000, 100, 1016))),
         kill(e().type('item')))
 
+    shoot_offset = Offset(0, 4, 0)
     room.function('photo_shoot_init').add(
         kill(e().tag('photo_view')),
-        summon('armor_stand', r(0, 10, -3),
+        summon('armor_stand', shoot_offset.r(0, 10, -3),
                {'Tags': ['photo_view', 'photo_example_view'], 'NoGravity': True, 'Small': True,
                 'PersistenceRequired': True, 'Invisible': True}),
-        summon('armor_stand', r(0, 10, 2),
+        summon('armor_stand', shoot_offset.r(0, 10, 2),
                {'Tags': ['photo_view', 'photo_quilt_view'], 'NoGravity': True, 'Small': True,
                 'PersistenceRequired': True, 'Invisible': True}),
-        label(r(-2, 15, 6), 'Frame Example Photo'),
-        label(r(0, 15, 6), 'Frame Mob Photo'),
-        label(r(-1, 15, 7), 'Go Home'),
+        label(shoot_offset.r(-2, 15, 6), 'Frame Example Photo'),
+        label(shoot_offset.r(0, 15, 6), 'Frame Mob Photo'),
+        label(shoot_offset.r(-1, 15, 7), 'Go Home'),
     )
