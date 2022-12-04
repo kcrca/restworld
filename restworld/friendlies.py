@@ -133,7 +133,7 @@ def room():
         lambda step: execute().as_(e().tag('goat').tag('adult')).run(
             data().merge(s(), {'HasLeftHorn': step.i & 1, 'HasRightHorn': step.i & 2})), range(0, 4))
 
-    p = placer(r(-1.2, 2, 0), EAST, -2, 1.6, tags=('saddle',), nbt={'Tame': True})
+    p = placer(r(-1.2, 2, 0), EAST, -2, kid_delta=2.2, tags=('saddle',), nbt={'Tame': True})
     room.function('horse_init').add(
         (p.summon(Entity('horse', name=horse.name, nbt={'Variant': h}), tags=(horse.tag,)) for h, horse in
          enumerate(horses)),
@@ -152,7 +152,7 @@ def room():
 
     room.loop('horse', main_clock).loop(horse_loop, horse_variants)
 
-    p = placer(r(-1.2, 2, 0), EAST, -2, 1.6, tags=('saddle', 'chests'))
+    p = placer(r(-1.2, 2, 0), EAST, -2, kid_delta=2.2, tags=('saddle', 'chests'))
     room.function('horselike_init').add(
         p.summon('mule'),
         p.summon('donkey'),
