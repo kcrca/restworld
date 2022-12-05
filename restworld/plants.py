@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 from pynecraft.base import EAST, NORTH, SOUTH, WEST, r, to_id, to_name
-from pynecraft.commands import Block, data, e, execute, fill, function, kill, setblock, tag
+from pynecraft.commands import Block, data, e, execute, fill, fillbiome, function, kill, setblock, tag
+from pynecraft.enums import BiomeId
 from pynecraft.info import small_flowers, stems, tulips, woods
 from pynecraft.simpler import Sign, Volume, WallSign
 from restworld.rooms import Room, label
@@ -209,14 +210,23 @@ def room():
     room.loop('sweet_berry_soil', main_clock).loop(lambda step: setblock(r(0, 2, 1), step.elem),
                                                    ('Grass Block', 'Dirt', 'Podzol', 'Coarse Dirt'))
 
+    tree_types = {'Acacia': BiomeId.SAVANNA, 'Birch': BiomeId.BIRCH_FOREST, 'Jungle': BiomeId.JUNGLE,
+                  'Mangrove': BiomeId.MANGROVE_SWAMP, 'Oak': BiomeId.PLAINS, 'Dark Oak': BiomeId.DARK_FOREST,
+                  'Spruce': BiomeId.SNOWY_TAIGA}
+
     def trees_loop(step):
-        yield data().merge(r(-1, 0, -1), {'mode': 'LOAD', 'name': f'restworld:{to_id(step.elem)}_trees'})
+        tree, biome = step.elem
+        yield data().merge(r(-1, 0, -1), {'mode': 'LOAD', 'name': f'restworld:{to_id(tree)}_trees'})
         yield setblock(r(-1, -1, -1), 'redstone_block')
         yield setblock(r(-1, -1, -1), 'air')
-        yield WallSign((None, f'{step.elem} Trees')).place(r(1, 2, 7), WEST)
-        yield WallSign((None, 'Lilly')).place(r(4, 2, 15), WEST)
+        yield WallSign((None, f'{tree} Trees', 'Biome:', to_name(str(biome)))).place(r(1, 2, 7), WEST)
+        yield execute().at(e().tag('biome_home')).run(fillbiome(r(0, 1, 0), r(33, 5, 52), biome))
+        yield fillbiome(r(0, 1, 0), r(18, 30, 17), biome)
 
-    room.loop('trees', main_clock).loop(trees_loop, woods)
+    room.loop('trees', main_clock).loop(trees_loop, tree_types.items()).add(
+        execute().at(e().tag('biome_home')).run(fill(r(0, 1, 0), r(33, 6, 52), 'water').replace('ice')),
+        WallSign((None, 'Lilly')).place(r(4, 2, 15), WEST))
+    room.function('biome')
 
     def tulips_loop(step):
         yield setblock(r(0, 3, 0), f'{to_id(step.elem)}_tulip')
