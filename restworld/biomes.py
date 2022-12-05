@@ -1,7 +1,8 @@
 import collections
 
 from pynecraft.base import NORTH, OVERWORLD, r, to_id
-from pynecraft.commands import CLEAR, Entity, data, e, execute, fill, function, kill, p, say, setblock, weather
+from pynecraft.commands import CLEAR, data, e, execute, fill, fillbiome, function, kill, p, say, setblock, weather
+from pynecraft.enums import BiomeId
 from pynecraft.simpler import WallSign
 from restworld.rooms import Room, label
 from restworld.set_biomes import BiomeSampler
@@ -10,16 +11,19 @@ from restworld.world import restworld
 biome_groups = collections.OrderedDict()
 biome_groups['Temperate'] = (
     'Plains', 'Forest', 'Flower Forest', 'Birch Forest', 'Dark Forest', 'Swamp', 'Mangrove Swamp', 'Jungle',
-    'Mushroom Field')
+    'Mushroom Fields')
 biome_groups['Warm'] = ('Desert', 'Savanna', 'Badlands')
-biome_groups['Cold'] = ('Taiga', 'Stone Shore')
-biome_groups['Snowy'] = ('Snowy Tundra', 'Ice Spikes', 'Snowy Taiga')
+biome_groups['Cold'] = ('Taiga', 'Stony Shore')
+biome_groups['Snowy'] = ('Snowy Taiga', 'Ice Spikes', 'Snowy Taiga')
 biome_groups['Ocean'] = ('Warm Ocean', 'Ocean', 'Frozen Ocean')
 biome_groups['Cave'] = ('Lush Caves', 'Dripstone Caves', 'Deep Dark')
 biome_groups['Nether'] = ('Nether Wastes', 'Soul Sand Valley', 'Crimson Forest', 'Warped Forest', 'Basalt Deltas')
-biome_groups['End'] = ('The End', 'End Island', 'End City')
+biome_groups['End'] = ('The End', 'End City')
 biome_groups['Structures'] = ('Mineshaft', 'Monument', 'Stronghold', 'Bastion Remnant', 'Fortress')
 biomes = [item for sublist in list(biome_groups.values()) for item in sublist]
+
+biome_ids = {'End City': BiomeId.SMALL_END_ISLANDS, 'Monument': BiomeId.WARM_OCEAN,
+             'Bastion Remnant': BiomeId.BASALT_DELTAS, 'Fortress': BiomeId.NETHER_WASTES}
 
 
 def categories():
@@ -88,11 +92,19 @@ def trigger(biome, prefix, i, x, y, z, handback):
 
 
 def load_biome_loop(step):
+    try:
+        biome_id = BiomeId(to_id(step.elem))
+    except ValueError:
+        biome_id = biome_ids.get(step.elem, BiomeId.PLAINS)
+        if biome_id == BiomeId.PLAINS:
+            print(f'MISSING: {step.elem}')
+
     # noinspection PyUnusedLocal
     def setup(biome, prefix, i, x, y, z, handback):
         if i > 4:
             yield setblock(r(x, y, z), 'structure_block')
         yield data().merge(r(x, y, z), {'name': f'restworld:{to_id(biome)}_{i + 1:d}', 'mode': 'LOAD'})
+        yield fillbiome(r(x, y, z), r(x + 31, y + 31, z + 31), biome_id)
 
     yield say('Switching to biome', step.elem)
     yield from load_biome(setup, step.elem)
@@ -166,25 +178,3 @@ def room():
         execute().positioned(
             r(-16, -16, 0)).if_().entity(p().volume((32, 32, end_z))).at(
             e().tag('maintain_oceans_home')).run(fill(r(-1, 1, -17), r(15, 1, end_z), 'water').replace('ice')))
-
-    marker_tag = 'biome_marker'
-    markings = room.function('maintain_oceans_init').add(kill(e().tag(marker_tag)))
-    x, z, xw, zw = BiomeSampler.land_samples.params()
-    marker = Entity('armor_stand', {'Invisible': True, 'NoGravity': True})
-    for biome, others in BiomeSampler.land_biomes.items():
-        if len(others) > 0:
-            name = biome
-            if others[0] != biome:
-                name += f', {others[0]}'
-            elif len(others) > 1 and others[1] != biome:
-                name += f', {others[1]}'
-            markings.add(marker.summon(
-                (x + xw / 2, 99.5, z + zw / 2),
-                {'Tags': [marker_tag, 'biomes'], 'CustomName': name, 'CustomNameVisible': True}))
-        x += xw
-    x, z, xw, zw = BiomeSampler.water_samples.params()
-    for biome in BiomeSampler.water_biomes:
-        markings.add(marker.summon(
-            (x + xw / 2, 99.5, z + zw / 2),
-            {'Tags': [marker_tag, 'biomes'], 'CustomName': biome, 'CustomNameVisible': True}))
-        z -= zw
