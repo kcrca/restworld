@@ -4,9 +4,10 @@ import math
 import random
 
 from pynecraft.base import EAST, NORTH, Nbt, OVERWORLD, SOUTH, WEST, d, r, rotated_facing
-from pynecraft.commands import Block, CLEAR, Entity, RAIN, REPLACE, a, data, e, execute, fill, function, item, kill, p, \
+from pynecraft.commands import Block, CLEAR, Entity, RAIN, REPLACE, a, data, e, execute, fill, fillbiome, function, \
+    item, kill, p, \
     particle, playsound, schedule, setblock, summon, tp, weather
-from pynecraft.enums import Particle
+from pynecraft.enums import BiomeId, Particle
 from pynecraft.simpler import VILLAGER_BIOMES, VILLAGER_PROFESSIONS, WallSign
 from restworld.rooms import ActionDesc, SignedRoom, Wall, span
 from restworld.world import fast_clock, kill_em, main_clock, restworld, slow_clock
@@ -63,10 +64,10 @@ particles = [
     ActionDesc(Particle.SHRIEK, 'Shriek'),
     ActionDesc(Particle.SMOKE),
     ActionDesc(Particle.SNEEZE),
-    ActionDesc(Particle.RAIN, 'Snow and Rain', also=Particle.SNOWFLAKE),
+    ActionDesc(Particle.RAIN),
+    ActionDesc(Particle.SNOWFLAKE, 'Snow'),
     ActionDesc(Particle.SONIC_BOOM),
     ActionDesc(Particle.SOUL),
-    ActionDesc(Particle.SPORE_BLOSSOM_AIR, 'Spore Blossom', also=Particle.FALLING_SPORE_BLOSSOM),
     ActionDesc(Particle.SPLASH),
     ActionDesc(Particle.SQUID_INK, note='and Glow Squid', also=(Particle.GLOW, Particle.GLOW_SQUID_INK)),
     ActionDesc(Particle.SWEEP_ATTACK),
@@ -87,12 +88,14 @@ unused_particles = {
     Particle.NOTE,  # Always shown in the redstone room (as is DUST, FWIW)
     Particle.SPIT,  # Broke at 1.19, can't get the summoned spit to move.
     Particle.FALLING_NECTAR,  # Shown with the bees in the Friendlies room
+    Particle.SPORE_BLOSSOM_AIR, Particle.FALLING_SPORE_BLOSSOM,  # Just outside the room
 }
 particles.sort()
 # Notes:
 #    Maybe spit can be made to work with a live llama hitting a wolf, but the llama must be penned in, etc.
+#
 #    Lower priority, easily seen around: DUST, NOTE, UNDERWATER (also not much to see), SPORE_BLOSSOM (right outside
-#    the room), PORTAL (which can be seen in Materials).
+#    the room), MYCELIUM (same), PORTAL (which can be seen in Materials), SCULK_SENSOR (Redstone)
 #
 #    Could loop the BLOCK_MARKER types in one thing.
 #    Could loop WHITE_ASH, CRIMSON_SPORE, etc.?
@@ -135,6 +138,10 @@ def floor(block):
     return fill(r(-3, -1, -3), r(3, -1, 3), block)
 
 
+def setbiome(biome):
+    return fillbiome(r(-3, 1, -3), r(3, 5, 3), biome)
+
+
 def room():
     check_for_unused()
 
@@ -168,8 +175,9 @@ def room():
     room.function('angry_villager_init', home=False).add(function('restworld:particles/villager'))
     room.loop('animal', home=False).loop(lambda step: exemplar(step.elem, 0, {'NoAI': True}), (
         Block('cow'), Block('Pig'), Block('Horse'), Block('Llama'), Block('Sheep'), Block('Polar Bear'), Block('Goat')))
-    room.function('ash', home=False).add(fast().run(particle(Particle.ASH, r(0, 5, 0), 1, 0, 1, 1, 30)))
-    room.function('ash_init', home=False).add(floor('soul_soil'))
+    room.function('ash_init', home=False).add(
+        floor('soul_soil'),
+        setbiome(BiomeId.SOUL_SAND_VALLEY))
     room.function('barrier', home=False).add(
         main().run(particle(Particle.BLOCK_MARKER, 'barrier', r(0, 2, 0), 0, 0, 0, 0, 1)))
     room.function('bubble_init', home=False).add(
@@ -180,9 +188,9 @@ def room():
     room.function('composter', home=False).add(
         main().run(particle(Particle.COMPOSTER, r(0, 0.9, 0), 0.2, 0.1, 0.2, 1, 12)))
     room.function('composter_init', home=False).add(setblock(r(0, 0, 0), ('composter', {'level': 3})))
-    room.function('crimson_spore', home=False).add(
-        fast().run(particle(Particle.CRIMSON_SPORE, r(0, 2, 0), 1, 0, 1, 0.0, 25)))
-    room.function('crimson_spore_init', home=False).add(floor('crimson_nylium'))
+    room.function('crimson_spore_init', home=False).add(
+        floor('crimson_nylium'),
+        setbiome(BiomeId.CRIMSON_FOREST))
     room.function('crit', home=False).add(fast().run(particle(Particle.CRIT, r(0, 1.5, 0), 0.5, 0.5, 0.5, 0, 10)))
     room.function('crit_init', home=False).add(function('restworld:particles/animal'))
     room.function('damage_indicator', home=False).add(
@@ -288,7 +296,7 @@ def room():
     room.function('flame_init', home=False).add(
         fill(r(-2, 0, -2), r(-2, 0, 2), 'torch'),
         fill(r(2, 0, -2), r(2, 0, 2), 'soul_torch'),
-        setblock(r(0, 0, 0), 'spawner')
+        setblock(r(0, 0, 0), Block('spawner', nbt={'SpawnData': {'entity': {'id': 'zombie'}}}))
     )
     room.function('happy_villager', home=False).add(
         fast().run(particle(Particle.HAPPY_VILLAGER, r(0, 1, 0), 0.5, 0.5, 0.5, 0, 5)))
@@ -342,6 +350,7 @@ def room():
     room.function('particles_clear', home=False).add(
         kill_em(e().tag('particler')),
         fill(r(20, 0, 20), r(-20, 10, -20), 'air').replace('snow'),
+        setbiome(BiomeId.PLAINS),
         execute().in_(OVERWORLD).run(weather(CLEAR)))
     room.function('poof', home=False).add(main().run(particle(Particle.POOF, r(0, 1, 0), 0.25, 0.25, 0.25, 0, 30)))
     room.function('portal_init', home=False).add(
@@ -412,6 +421,8 @@ def room():
     room.function('sneeze_init', home=False).add(exemplar('panda', 0, {'NoAI': True, 'Age': -2147483648}))
     room.function('rain_init', home=False).add(weather(RAIN))
     room.function('rain_exit', home=False).add(weather(CLEAR))
+    room.function('snowflake_init', home=False).add(setbiome(BiomeId.SNOWY_TAIGA), weather(RAIN))
+    room.function('snowflake_exit', home=False).add(weather(CLEAR))
     room.function('sonic_boom_init', home=False).add(exemplar('warden', 0, {'NoAI': True}))
     room.function('sonic_boom', home=False).add(main().run(particle(Particle.SONIC_BOOM, r(0, 2, 0.5), 0, 0, 0, 1, 1)))
     room.function('soul', home=False).add(main().run(particle(Particle.SOUL, r(0, 0.75, 0), 0.05, 0, 0.05, 0.05, 4)))
@@ -424,9 +435,10 @@ def room():
     room.function('splash_init', home=False).add(
         fill(r(-2, 0, -2), r(2, 0, 2), 'stone'),
         fill(r(-1, 0, -1), r(1, 0, 1), 'water'))
-    room.function('spore_blossom_air_init', home=False).add(
-        setblock(r(0, 4, 0), 'stone'),
-        setblock(r(0, 3, 0), 'spore_blossom'))
+    # Currently not done: Low priority (just outside) Making room for separate RAIN and SNOW
+    # room.function('spore_blossom_air_init', home=False).add(
+    #     setblock(r(0, 4, 0), 'stone'),
+    #     setblock(r(0, 3, 0), 'spore_blossom'))
     room.function('squid_ink', home=False).add(main().run(function('restworld:particles/squid_ink_run')))
     room.function('squid_ink_init', home=False).add(function('restworld:particles/ocean'))
 
@@ -445,9 +457,9 @@ def room():
     room.loop('villager', home=False).loop(
         lambda step: exemplar('villager', 0, {'NoAI': True, 'VillagerData': step.elem}),
         villager_data)
-    room.function('warped_spore', home=False).add(
-        fast().run(particle(Particle.WARPED_SPORE, r(0, 2, 0), 1, 0, 1, 0.0, 25)))
-    room.function('warped_spore_init', home=False).add(floor('warped_nylium'))
+    room.function('warped_spore_init', home=False).add(
+        floor('warped_nylium'),
+        setbiome(BiomeId.WARPED_FOREST))
     room.function('wax_on', home=False).add(main().run(function('restworld:particles/wax_on_run')))
     room.function('wax_on_init', home=False).add(
         setblock(r(0, 0, 0), 'cut_copper'),
@@ -467,8 +479,9 @@ def room():
             yield particle(Particle.SCRAPE, r(0, 0.5, 0), 0.5, 0.5, 0.5, 0, 10)
 
     room.loop('wax_on_run', home=False).loop(wax_on_run_loop, ('', 'Wax On', 'Wax Off', 'Scrape'))
-    room.function('white_ash', home=False).add(fast().run(particle(Particle.WHITE_ASH, r(0, 5, 0), 1, 0, 1, 1, 30)))
-    room.function('white_ash_init', home=False).add(floor('basalt'))
+    room.function('white_ash_init', home=False).add(
+        floor('basalt'),
+        setbiome(BiomeId.BASALT_DELTAS))
     room.function('witch', home=False).add(fast().run(particle(Particle.WITCH, r(0, 2.3, 0), 0.3, 0.3, 0.3, 0, 6)))
     room.function('witch_init', home=False).add(exemplar('witch', 0, {'NoAI': True}))
 

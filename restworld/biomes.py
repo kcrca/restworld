@@ -96,8 +96,6 @@ def load_biome_loop(step):
         biome_id = BiomeId(to_id(step.elem))
     except ValueError:
         biome_id = biome_ids.get(step.elem, BiomeId.PLAINS)
-        if biome_id == BiomeId.PLAINS:
-            print(f'MISSING: {step.elem}')
 
     # noinspection PyUnusedLocal
     def setup(biome, prefix, i, x, y, z, handback):
