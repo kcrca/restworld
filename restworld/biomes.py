@@ -1,11 +1,10 @@
 import collections
 
 from pynecraft.base import NORTH, OVERWORLD, r, to_id
-from pynecraft.commands import CLEAR, data, e, execute, fill, fillbiome, function, kill, p, say, setblock, weather
+from pynecraft.commands import CLEAR, data, e, execute, fill, fillbiome, function, kill, say, setblock, weather
 from pynecraft.enums import BiomeId
 from pynecraft.simpler import WallSign
 from restworld.rooms import Room, label
-from restworld.set_biomes import BiomeSampler
 from restworld.world import restworld
 
 biome_groups = collections.OrderedDict()
@@ -168,11 +167,3 @@ def room():
         load_biome(illuminate, 'illuminate', handback=room.score('illuminate'))
     )
     room.home_func('reaper')
-
-    room.function('save_biome').add(load_biome(save_biome, 'save'))
-
-    end_z = -17 - len(BiomeSampler.water_biomes) * 16
-    room.function('maintain_oceans').add(
-        execute().positioned(
-            r(-16, -16, 0)).if_().entity(p().volume((32, 32, end_z))).at(
-            e().tag('maintain_oceans_home')).run(fill(r(-1, 1, -17), r(15, 1, end_z), 'water').replace('ice')))
