@@ -1,8 +1,10 @@
 from __future__ import annotations
 
 from pynecraft.base import EAST, NORTH, SOUTH, WEST, r, to_id
-from pynecraft.commands import Block, BlockDef, Entity, data, e, execute, fill, function, good_block, item, kill, s, \
+from pynecraft.commands import Block, BlockDef, Entity, data, e, execute, fill, fillbiome, function, good_block, item, \
+    kill, s, \
     setblock, summon, tag
+from pynecraft.enums import BiomeId
 from pynecraft.info import colors, stems, woods
 from pynecraft.simpler import Item, ItemFrame, Volume, WallSign
 from restworld.rooms import Room, label
@@ -137,10 +139,25 @@ def room():
         ('Ancient Debris', 'Netherite Block', 'Netherite Ingot', 'Netherite Scrap'),
     ))
 
-    room.function('water_init').add(
-        WallSign((None, 'Flowing', 'Water')).place(r(0, 2, 0), WEST),
-        WallSign((None, 'Flowing', 'Lava')).place(r(0, 2, 6), WEST),
+    def water_loop(step):
+        yield fillbiome(r(-1, 0, -5), r(9, 6, 1), step.elem)
+        yield data().merge(r(0, 2, 0), {'Text4': step.elem.display_name()})
+
+    water_biomes = (
+        BiomeId.MEADOW,
+        BiomeId.FROZEN_OCEAN,
+        BiomeId.COLD_OCEAN,
+        BiomeId.OCEAN,
+        BiomeId.LUKEWARM_OCEAN,
+        BiomeId.WARM_OCEAN,
+        BiomeId.SWAMP,
+        BiomeId.MANGROVE_SWAMP,
     )
+    room.function('water_init').add(
+        WallSign((None, 'Flowing Water', 'Biome:')).place(r(0, 2, 0), WEST),
+        WallSign((None, 'Flowing Lava')).place(r(0, 2, 6), WEST),
+    )
+    room.loop('water', main_clock).loop(water_loop, water_biomes)
 
     basic_functions(room)
     fencelike_functions(room)
