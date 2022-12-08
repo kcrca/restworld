@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from pynecraft import info
 from pynecraft.base import EAST, NORTH, SOUTH, WEST, r, to_id
 from pynecraft.commands import Block, BlockDef, Entity, data, e, execute, fill, fillbiome, function, good_block, item, \
     kill, s, \
@@ -382,18 +383,26 @@ def wood_functions(room):
         name = step.elem
         id = to_id(name)
         if name in stems:
-            log = 'stem'
-            wood = 'hyphae'
+            log = f'{id}_stem'
+            wood = f'{id}_hyphae'
             leaves = 'nether_wart_block' if name == 'Crimson' else f'{id}_wart_block'
             saplings = (f'{id}_roots', f'{id}_fungus', f'{id}_nylium')
         else:
-            log = 'log'
-            wood = 'wood'
+            log = f'{id}_log'
+            wood = f'{id}_wood'
             leaves = f'{id}_leaves'
+            if name == 'Bamboo':
+                log = 'bamboo_block'
+                wood = 'jungle_wood'
+                leaves = 'jungle_leaves'
             saplings = (Block(f'{id}_sapling'), Block(f'{id}_sapling', {'stage': 0}), 'grass_block')
-            if step.elem == 'Mangrove':
+            if name == 'Mangrove':
                 saplings = (
-                    Block('mangrove_propagule', {'age': 1}), Block('mangrove_propagule', {'age': 4}), 'grass_block')
+                    Block('mangrove_propagule', {'age': 1}),
+                    Block('mangrove_propagule', {'age': 4}),
+                    'grass_block')
+            elif name == 'Bamboo':
+                saplings = ('bamboo_sapling', Block('bamboo', {'age': 0, 'leaves': 'small'}), 'grass_block')
 
         # Remove special cases
         yield from volume.fill('air', 'vine')
@@ -402,7 +411,7 @@ def wood_functions(room):
         yield fill(r(4, 2, 1), r(4, 3, 2), 'air')
 
         # General replacement
-        yield from volume.replace(f'{id}_{wood}', '#restworld:woodlike')
+        yield from volume.replace(wood, '#restworld:woodlike')
         yield from volume.replace(leaves, '#restworld:leaflike')
         yield from volume.replace(f'{id}_planks', '#planks')
         yield from volume.replace_slabs(f'{id}_slab', '#slabs')
@@ -411,9 +420,9 @@ def wood_functions(room):
         yield from volume.replace_facing(f'{id}_fence_gate', '#restworld:gatelike')
         yield from volume.replace_buttons(f'{id}_button')
         yield from volume.replace(f'{id}_pressure_plate', '#pressure_plates')
-        yield from volume.replace_axes(f'{id}_{log}', '#restworld:loglike')
-        yield from volume.replace_axes(f'stripped_{id}_{log}', '#restworld:stripped_loglike')
-        yield from volume.replace_axes(f'stripped_{id}_{wood}', '#restworld:stripped_woodlike')
+        yield from volume.replace_axes(log, '#restworld:loglike')
+        yield from volume.replace_axes(f'stripped_{log}', '#restworld:stripped_loglike')
+        yield from volume.replace_axes(f'stripped_{wood}', '#restworld:stripped_woodlike')
         yield from volume.replace_doors(f'{id}_door', '#doors')
         yield from volume.replace_trapdoors(f'{id}_trapdoor', '#trapdoors')
         yield from volume.replace_facing(Block(f'{id}_wall_sign', nbt={'Text2': f'{name} Wall Sign'}),
@@ -467,4 +476,4 @@ def wood_functions(room):
         else:
             yield data().remove(e().tag('wood_boat_frame').limit(1), 'Item.id')
 
-    room.loop('wood', main_clock).add(kill_em(e().tag('wood_boat'))).loop(wood_loop, woods + stems)
+    room.loop('wood', main_clock).add(kill_em(e().tag('wood_boat'))).loop(wood_loop, info.woods + stems)

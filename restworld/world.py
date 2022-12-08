@@ -18,7 +18,8 @@ marker_tmpl = Entity('armor_stand', {'NoGravity': True, 'Small': True, })
 
 
 class Restworld(RoomPack):
-    def __init__(self):
+    def __init__(self, experimental=False):
+        self.experimental = experimental
         suffixes = list(RoomPack.base_suffixes)
         suffixes.extend(list(x.name for x in self.clocks()))
         super().__init__('restworld', suffixes, 4)

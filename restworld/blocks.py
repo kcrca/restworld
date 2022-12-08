@@ -3,12 +3,13 @@ from __future__ import annotations
 import re
 from typing import Iterable, Union
 
+from pynecraft import info
 from pynecraft.base import DOWN, EAST, NORTH, Nbt, SOUTH, WEST, good_facing, r, to_name
 from pynecraft.commands import Block, EQ, Entity, JsonText, MOD, MOVE, clone, data, e, execute, fill, function, \
     good_block, item, \
     kill, s, say, setblock, summon, tag
 from pynecraft.function import Loop
-from pynecraft.info import Color, colors, stems, woods
+from pynecraft.info import Color, colors, stems
 from pynecraft.simpler import Item, ItemFrame, Sign, Volume, WallSign
 from restworld.rooms import Room, label
 from restworld.world import fast_clock, kill_em, main_clock, restworld, slow_clock
@@ -34,6 +35,8 @@ def room():
             nsublist = []
             for block in sublist:
                 # noinspection PyTypeChecker
+                if block == '':
+                    block = Block(id='structure_void', name='')
                 nsublist.append(good_block(block))
             block_lists[i] = nsublist
         # noinspection PyUnresolvedReferences
@@ -57,6 +60,8 @@ def room():
             for block_list in block_lists:
                 block = block_list[i]
                 signage = labels[i] if labels else block.sign_text
+                if signage == ('Structure Void',):
+                    signage = ()
                 if len(signage) < 4:
                     signage = ('', *signage)
                     signage = signage + ('',) * (4 - len(signage))
@@ -197,12 +202,17 @@ def room():
         tag(e().tag('copper_base')).add('copper_waxed_home'),
         execute().at(e().tag('copper_base')).run(function('restworld:blocks/waxed_copper_cur')))
 
+    woods = info.woods  # Read the current state of info.woods, which the version can change
     woodlike = woods + stems
     leaves = [f'{x} Leaves' for x in woods] + ['Warped Wart Block', 'Nether Wart Block']
     logs = [f'{x} Log' for x in woods] + [f'{x} Stem' for x in stems]
     wood = [f'{x} Wood' for x in woods] + [f'{x} Hyphae' for x in stems]
-    stripped_logs = [f'Stripped|{x} Log' for x in woods] + [f'Stripped|{x} Stem' for x in stems]
-    stripped_woods = [f'Stripped|{x} Wood' for x in woods] + [f'Stripped|{x} Hyphae' for x in stems]
+    if restworld.experimental:
+        logs[logs.index('Bamboo Log')] = 'Bamboo Block'
+        wood[wood.index('Bamboo Wood')] = ''
+        leaves[leaves.index('Bamboo Leaves')] = ''
+    stripped_logs = ['Stripped|' + x for x in logs]
+    stripped_woods = map(lambda x: '' if x == 'Stripped|' else x, ['Stripped|' + x for x in wood])
     blocks('wood_blocks', SOUTH, (tuple(f'{f} Planks' for f in woodlike),
                                   stripped_logs, logs, wood, leaves, stripped_woods), dx=-3, dz=-3, size=2)
 
@@ -681,13 +691,16 @@ def color_functions(room):
         yield data().merge(r(1, 2, -0), {'Text1': color.name})
 
     def colored_signs(color, render):
-        signables = woods + stems
+        signables = info.woods + stems
         for w in range(0, len(signables)):
             wood = signables[w]
-            row_len = 4 if w < 4 else 3 if w < 7 else 2
+            row_len = 4 if w < 8 else 2
             x = w % row_len - 12
-            y = (4 - row_len) + 2
+            y = w / 4 + 2
             z = -(w % row_len) + 3
+            if row_len == 2:
+                x += 1
+                z -= 1
             yield from render(x, y, z, color, Block(wood))
 
     def render_signs_glow(x, y, z, _, _2):
@@ -953,7 +966,7 @@ def stepable_functions(room):
         sign_text = Sign.lines_nbt(Block(step.elem).full_text)
         yield data().merge(r(1, 2, -1), sign_text)
 
-    blocks = (
+    blocks = [
         'Stone', 'Cobblestone', 'Mossy|Cobblestone',
         'Bricks', 'Stone Bricks', 'Mossy|Stone Bricks', 'Mud Bricks',
         'Sandstone', 'Smooth|Sandstone', 'Red|Sandstone', 'Smooth Red|Sandstone',
@@ -969,25 +982,26 @@ def stepable_functions(room):
         'Weathered Cut Copper',
         'Oxidized Cut Copper',
         'Prismarine', 'Prismarine|Bricks', 'Dark|Prismarine',
-        'Acacia Planks', 'Birch Planks', 'Jungle Planks',
-        'Mangrove Planks',
-        'Oak Planks', 'Dark Oak Planks', 'Spruce Planks',
+        'Acacia Planks', 'Birch Planks', 'Jungle Planks', 'Mangrove Planks',
+        'Oak Planks', 'Dark Oak Planks', 'Spruce Planks', 'Bamboo Planks', 'Bamboo Mosaic Block',
         'Warped Planks', 'Crimson Planks',
         'Nether Bricks', 'Red|Nether Bricks',
         'Blackstone', 'Polished|Blackstone',
         'Polished|Blackstone Bricks', 'Quartz Block', 'Smooth|Quartz',
         'End Stone Bricks', 'Purpur Block',
-    )
+    ]
     stairs = tuple(re.sub('(marine|ite)$', r'\1 Stairs', re.sub('[Ss]tone$', 'Stone Stairs',
-                                                                f.replace('Planks', 'Stairs').replace('Tiles',
-                                                                                                      'Tile Stairs').replace(
-                                                                    'Copper', 'Copper Stairs').replace('Bricks',
-                                                                                                       'Brick Stairs').replace(
-                                                                    'Block', 'Stairs').replace('|Quartz',
-                                                                                               ' Quartz Stairs').replace(
-                                                                    '|Deepslate', '|Deepslate Stairs'))) for f in
-                   blocks)
+                                                                f.replace('Planks', 'Stairs')
+                                                                .replace('Tiles', 'Tile Stairs')
+                                                                .replace('Copper', 'Copper Stairs')
+                                                                .replace('Bricks', 'Brick Stairs')
+                                                                .replace('Block', 'Stairs')
+                                                                .replace('|Quartz', ' Quartz Stairs')
+                                                                .replace('|Deepslate', '|Deepslate Stairs')))
+                   for f in blocks)
     slabs = tuple(f.replace('Stairs', 'Slab') for f in stairs)
+    # The mosaic's "Block" is here so it fits in the patterns, but it actually doesn't exist, so we remove it.
+    blocks[blocks.index('Bamboo Mosaic Block')] = 'Bamboo Mosaic'
 
     room.function('stepable_init').add(
         WallSign((None, 'Block')).place(r(3, 4, 5, ), NORTH),
