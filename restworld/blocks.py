@@ -990,6 +990,8 @@ def stepable_functions(room):
         'Polished|Blackstone Bricks', 'Quartz Block', 'Smooth|Quartz',
         'End Stone Bricks', 'Purpur Block',
     ]
+    if not restworld.experimental:
+        blocks = filter(lambda x: 'Bamboo' not in x, blocks)
     stairs = tuple(re.sub('(marine|ite)$', r'\1 Stairs', re.sub('[Ss]tone$', 'Stone Stairs',
                                                                 f.replace('Planks', 'Stairs')
                                                                 .replace('Tiles', 'Tile Stairs')
@@ -1001,7 +1003,8 @@ def stepable_functions(room):
                    for f in blocks)
     slabs = tuple(f.replace('Stairs', 'Slab') for f in stairs)
     # The mosaic's "Block" is here so it fits in the patterns, but it actually doesn't exist, so we remove it.
-    blocks[blocks.index('Bamboo Mosaic Block')] = 'Bamboo Mosaic'
+    if  restworld.experimental:
+        blocks[blocks.index('Bamboo Mosaic Block')] = 'Bamboo Mosaic'
 
     room.function('stepable_init').add(
         WallSign((None, 'Block')).place(r(3, 4, 5, ), NORTH),
