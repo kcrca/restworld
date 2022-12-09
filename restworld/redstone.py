@@ -1,9 +1,10 @@
 from __future__ import annotations
 
+from pynecraft import info
 from pynecraft.base import DOWN, EAST, NOON, SOUTH, UP, WEST, r
 from pynecraft.commands import Block, data, e, execute, fill, function, kill, say, setblock, \
     summon, time
-from pynecraft.info import instruments, stems, woods
+from pynecraft.info import instruments, stems
 from pynecraft.simpler import Item, Sign, Volume, WallSign
 from restworld.rooms import Room, ensure, label
 from restworld.world import fast_clock, kill_em, main_clock, restworld
@@ -148,7 +149,7 @@ def room():
             yield data().merge(r(1, 2, 0), {'Text4': '(Powered)'})
 
     powerings = []
-    for t in ('Stone', 'Polished|Blackstone') + woods + stems:
+    for t in ('Stone', 'Polished|Blackstone') + info.woods + stems:
         powerings.append((Block(t), False))
         powerings.append((Block(t), True))
     room.loop('wood_power', main_clock).loop(wood_power_loop, powerings)

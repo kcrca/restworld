@@ -1,8 +1,9 @@
 from __future__ import annotations
 
+from pynecraft import info
 from pynecraft.base import EAST, JSON_COLORS, SOUTH, WEST, r
 from pynecraft.commands import Block, JsonText, clone, data, e, execute, function, kill, s, setblock, tag
-from pynecraft.info import colors, stems, woods
+from pynecraft.info import colors, stems
 from pynecraft.simpler import Book, WallSign
 from restworld.rooms import Room, ensure, label
 from restworld.world import restworld
@@ -37,26 +38,37 @@ def formatting_book():
 
 def room():
     room = Room('font', restworld, SOUTH, (None, 'Fonts'))
-    src_pos = r(0, 2, -3)
+    src_pos = r(0, 3, -3)
     save_pos = r(0, -2, -3)
     color_pos = r(0, -3, -3)
     at = execute().at(e().tag('font_action_home'))
     room.function('check_sign', home=False).add(
         at.run(function('restworld:font/copy_sign')))
 
-    materials = tuple(Block(m) for m in woods + stems)
-    copy_sign = room.function('copy_sign', home=False).add(clone(src_pos, src_pos, save_pos))
+    materials = tuple(Block(m) for m in info.woods + stems)
+    copy_sign = room.function('copy_sign', home=False).add(
+        execute().if_().block(src_pos, '#wall_signs').run(clone(src_pos, src_pos, save_pos))
+    )
+    rows = (3, 3, 2, 2) if restworld.experimental else (3, 3, 3)
+    row, x, y = 0, 0, 5
     for i, thing in enumerate(materials):
-        x, y = i % 3 - 1, 5 - int(i / 3)
-        pos = r(x, y, -3)
+        pos = r(x - 1, y, -3)
         copy_sign.add(ensure(pos, WallSign((), state={'facing': SOUTH}, wood=thing.id)))
 
         for path in tuple('Text%d' % i for i in range(1, 5)):
             copy_sign.add(data().modify(pos, path).set().from_(src_pos, path))
         copy_sign.add(data().modify(pos, 'Color').set().from_(color_pos, 'Color'))
 
+        x += 1
+        if x >= rows[row]:
+            x = 0
+            y -= 1
+            row += 1
+        elif x == 1 and rows[row] == 2:
+            x += 1
+
     copy_sign.add(
-        data().modify(e().tag('font').tag('nameable').limit(1), 'CustomName').set().from_(src_pos, 'Text1'))
+        data().modify(e().tag('font').tag('nameable').limit(1), 'CustomName').set().from_(save_pos, 'Text1'))
 
     room.function('colored_text').add(
         ensure(r(0, 2, 0), Block('lectern', {'facing': WEST, 'has_book': True}),
@@ -76,7 +88,7 @@ def room():
     init_text = ('Lorem ipsum', 'dolor sit amet,', 'consectetur', 'adipiscing elit.')
     font_run_init = room.function('font_run_init').add(
         tag(e().tag('font_run_home')).add('font_action_home'),
-        WallSign(init_text).place(r(0, 2, -3), SOUTH),
+        WallSign(init_text).place(src_pos, SOUTH),
         execute().at(e().tag('font_action_home')).run(setblock(save_pos, 'air')),
         function('restworld:font/check_sign'),
         WallSign((None, 'Color Holder')).place(r(0, -3, -3), SOUTH),

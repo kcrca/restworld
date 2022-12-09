@@ -351,7 +351,7 @@ def fencelike_functions(room):
     def fence_loop(step):
         yield from fencelike(step.elem)
         if step.elem[:-len(' Fence')] in woods + stems:
-            yield volume.replace_facing(step.elem + ' Gate', '#restworld:gatelike')
+            yield volume.replace_facing(step.elem + ' Gate', '#fence_gates')
 
     room.loop('panes', main_clock).loop(lambda step: fencelike(step.elem),
                                         tuple(f'{x.name} Stained Glass Pane' for x in colors) + ('Glass Pane',))
@@ -417,7 +417,7 @@ def wood_functions(room):
         yield from volume.replace_slabs(f'{id}_slab', '#slabs')
         yield from volume.replace_stairs(f'{id}_stairs', '#stairs')
         yield from volume.replace(f'{id}_fence', '#wooden_fences')
-        yield from volume.replace_facing(f'{id}_fence_gate', '#restworld:gatelike')
+        yield from volume.replace_facing(f'{id}_fence_gate', '#fence_gates')
         yield from volume.replace_buttons(f'{id}_button')
         yield from volume.replace(f'{id}_pressure_plate', '#pressure_plates')
         yield from volume.replace_axes(log, '#restworld:loglike')
