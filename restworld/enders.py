@@ -20,9 +20,9 @@ def room():
 
     room.loop('cage', main_clock).loop(cage_loop, range(0, 2))
 
-    room.function('crystal_init').add(
+    room.function('crystal_init', exists_ok=True).add(
         label(r(4, 2, 0), 'Cage'),
-        execute().as_(e().tag('var_home')).run(tag(s()).add('blockers_home')))
+        execute().as_(e().tag('crystal_home')).run(tag(s()).add('blockers_home')))
 
     def crystal_loop(step):
         if step.i == 0:
@@ -45,8 +45,8 @@ def room():
         room.mob_placer(r(0, 3, -14), NORTH, adults=True).summon(
             'dragon_fireball', tags=('dragon_thing',), nbt={'direction': {0.0, 0.0, 0.0}, 'ExplosionPower': 0}),
     )
-    room.function('end_portal_init').add(
-        execute().as_(e().tag('var_home')).run(tag(s()).add('blockers_home')))
+    room.function('end_portal_init', exists_ok=True).add(
+        execute().as_(e().tag('end_portal_home')).run(tag(s()).add('blockers_home')))
 
     def end_portal_loop(step):
         before = 'end_portal' if step.elem else 'air'

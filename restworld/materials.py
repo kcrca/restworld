@@ -143,6 +143,7 @@ def room():
     def water_loop(step):
         yield fillbiome(r(-1, 0, -5), r(9, 6, 1), step.elem)
         yield fill(r(-1, 0, -5), r(9, 6, 1), 'water').replace('ice')
+        yield fill(r(-1, 0, -5), r(9, 6, 1), 'air').replace('snow')
         yield data().merge(r(0, 2, 0), {'Text4': step.elem.display_name()})
 
     water_biomes = (

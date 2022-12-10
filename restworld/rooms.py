@@ -192,7 +192,7 @@ class Room(FunctionSet):
         if exists_ok and name in self.functions:
             return self.functions[name]
         if home:
-            if base_name[0] == '_' or base_name in self._homes:
+            if base_name[0] == '_' or base_name in self._homes or name.endswith('_home'):
                 home = False
         return self._add_func(Function(name, base_name), name, clock, home)
 

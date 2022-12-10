@@ -183,8 +183,8 @@ def room():
                nbt={'Tags': ['friendlies', 'llama', 'llama_spit'], 'TXD': 0, 'TYD': 0, 'TZD': 0, 'Steps': 0,
                     'Motion': [0, 0, 0], 'NoGravity': True}).summon('llama_spit'),
         WallSign((None, 'Llama Spit')).place(r(1, 2, -1), WEST),
-        label(r(-2, 2, 1), 'Carpets'),
-        label(r(-2, 2, -1), 'Chests'),
+        label(r(-2, 2, 1), 'Carpet'),
+        label(r(-2, 2, -1), 'Chest'),
     )
 
     room.loop('llamas', main_clock).loop(
@@ -301,10 +301,10 @@ def villager_funcs(room):
             e().tag('cur_villagers_home')).run(function(f'restworld:friendlies/{which}_init'))
 
     def home_villagers(num, which):
-        return execute().if_().score(which_villagers).matches(num).at(
-            e().tag('which_villagers_home').limit(1)).run(summon('armor_stand', r(0, 0, 1),
-                                                                 {'Tags': [f'{which}_home', 'cur_villagers_home'],
-                                                                  'Small': True, 'NoGravity': True}))
+        return execute().if_().score(which_villagers).matches(num).at(e().tag('which_villagers_home').limit(1)).run(
+            summon('armor_stand', r(0, 0, 1),
+                   {'Tags': [f'{which}_home', 'cur_villagers_home'],
+                    'Small': True, 'NoGravity': True}))
 
     # Init & Loop functions
     def kind_names(which):
@@ -327,7 +327,7 @@ def villager_funcs(room):
                 if which == 'villager':
                     professions_init.add(p.summon(Entity('villager', name='Child', nbt={'Age': -2147483648})))
                 p = placer(r(0, 2, -7), WEST, -2, tags=('villager', 'professions',), adults=True)
-            professions_init.add(p.summon(Villager(pro, PLAINS, name=pro), tags=('villager',)))
+            professions_init.add(p.summon(Villager(pro, PLAINS, name=pro, zombie=id[0] == 'z'), tags=('villager',)))
         professions_init.add(
             function(f'restworld:friendlies/{which}_levels_cur'),
             function(f'restworld:friendlies/{which}_professions_cur'),
