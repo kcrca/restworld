@@ -428,11 +428,15 @@ def wood_functions(room):
         yield from volume.replace_facing(Block(f'{id}_wall_sign', nbt={'Text2': f'{name} Wall Sign'}),
                                          '#wall_signs')
         yield from volume.replace_rotation(Block(f'{id}_sign', nbt={'Text2': f'{name} Sign'}), '#signs')
-        for attached in True,False:
+
+        hanging_sign_text = Sign.lines_nbt((name, 'Hanging', 'Sign'))
+        yield from volume.replace_facing(Block(f'{id}_wall_hanging_sign', nbt=hanging_sign_text), '#wall_hanging_signs')
+        for attached in True, False:
             yield from volume.replace_rotation(
-                Block(f'{id}_hanging_sign', nbt=Sign.lines_nbt((name, 'Hanging', 'Sign'))),
+                Block(f'{id}_hanging_sign', nbt=hanging_sign_text),
                 '#all_hanging_signs',
                 shared_states={'attached': attached})
+
         # Add special cases
         if name == ('Jungle', 'Mangrove'):
             yield fill(r(-4, 2, -2), r(-4, 4, -2), ('vine', {'north': True}))
