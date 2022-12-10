@@ -105,6 +105,9 @@ def tags():
         sp[sp.index('bamboo_log')] = 'bamboo_block'
     blocks['stripped_loglike'] = {'values': ['stripped_%s' % to_id(x) for x in blocks['loglike']['values']]}
     blocks['stripped_woodlike'] = {'values': ['stripped_%s' % to_id(x) for x in blocks['woodlike']['values']]}
+    if restworld.experimental:
+        blocks['woodlike']['values'].append('bamboo_mosaic')
+
     blocks['saplinglike'] = {
         'values': [
             'acacia_sapling',

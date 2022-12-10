@@ -209,12 +209,13 @@ def room():
     wood = [f'{x} Wood' for x in woods] + [f'{x} Hyphae' for x in stems]
     if restworld.experimental:
         logs[logs.index('Bamboo Log')] = 'Bamboo Block'
-        wood[wood.index('Bamboo Wood')] = ''
+        wood[wood.index('Bamboo Wood')] = 'Bamboo Mosaic'
         leaves[leaves.index('Bamboo Leaves')] = ''
     stripped_logs = ['Stripped|' + x for x in logs]
-    stripped_woods = map(lambda x: '' if x == 'Stripped|' else x, ['Stripped|' + x for x in wood])
+    stripped_woods = map(lambda x: '' if x == 'Stripped|Bamboo Mosaic' else x, ['Stripped|' + x for x in wood])
     blocks('wood_blocks', SOUTH, (tuple(f'{f} Planks' for f in woodlike),
                                   stripped_logs, logs, wood, leaves, stripped_woods), dx=-3, dz=-3, size=2)
+
 
     sites = ('Cauldron', 'Water Cauldron', 'Lava Cauldron', 'Powder Snow|Cauldron')
     stages = {'Water Cauldron': list({'level': t} for t in range(1, 4)),
