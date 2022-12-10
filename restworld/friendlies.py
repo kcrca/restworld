@@ -43,6 +43,8 @@ def room():
 
     room.loop('bee', main_clock).loop(bee_loop, range(0, 4))
 
+    room.function('camel_init').add(placer(*mid_east_placer).summon('camel'))
+
     p = placer(*south_placer)
     room.function('canine_init').add(
         p.summon('wolf'),
@@ -235,10 +237,14 @@ def room():
         execute().at(e().tag('cat_home')).run(function('restworld:friendlies/cat_init')),
         execute().at(e().tag('cat_home')).run(function('restworld:friendlies/cat_cur')))
     p = placer(*mid_west_placer)
-    room.function('sheep_init').add(
+    sheep = room.function('sheep_init').add(
         p.summon('Sheep', tags=('colorable',)),
-        p.summon(Entity('sheep', name='Sheared Sheep', nbt={'Sheared': True})),
-        p.summon(Entity('sheep', name='jeb_'), auto_tag=False))
+        p.summon(Entity('sheep', name='Sheared Sheep', nbt={'Sheared': True})))
+    # This is a temporary hack until a major rework of the friendlies room layout
+    if not restworld.experimental:
+        sheep.add(p.summon(Entity('sheep', name='jeb_'), auto_tag=False))
+    else:
+        sheep.add(p.summon(Entity('camel'), auto_tag=False))
     room.function('snow_golem_init').add(
         placer(r(-1.2, 2, 0), EAST, adults=True).summon('snow_golem'))
     room.loop('snow_golem', main_clock).loop(
