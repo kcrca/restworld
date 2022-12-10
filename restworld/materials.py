@@ -375,6 +375,9 @@ def wood_functions(room):
             'Tags': ['wood_boat_frame', room.name], 'Facing': 3, 'Fixed': True, 'Item': {'id': 'stone', 'Count': 1}}),
         summon('item_frame', r(3, 3, -3), {
             'Tags': ['wood_sign_frame', room.name], 'Facing': 3, 'Fixed': True, 'Item': {'id': 'stone', 'Count': 1}}),
+        summon('item_frame', r(3, 4, -3), {
+            'Tags': ['wood_hanging_sign_frame', room.name], 'Facing': 3, 'Fixed': True,
+            'Item': {'id': 'stone', 'Count': 1}}),
         label(r(-1, 2, 4), 'Chest Boat'))
 
     volume = Volume(r(-5, 1, -5), r(6, 5, 3))
@@ -464,6 +467,8 @@ def wood_functions(room):
 
         yield execute().as_(e().tag('wood_sign_frame')).run(
             data().merge(s(), ItemFrame(SOUTH).item(f'{id}_sign').named(f'{name} Sign').nbt))
+        yield execute().as_(e().tag('wood_hanging_sign_frame')).run(
+            data().merge(s(), ItemFrame(SOUTH).item(f'{id}_hanging_sign').named(f'{name} Hanging Sign').nbt))
 
         if 'stem' not in log:
             wood_boat_chest = room.score('wood_boat_chest')
