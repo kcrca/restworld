@@ -7,7 +7,7 @@ from pynecraft.commands import Block, BlockDef, Entity, data, e, execute, fill, 
     setblock, summon, tag
 from pynecraft.enums import BiomeId
 from pynecraft.info import colors, stems, woods
-from pynecraft.simpler import Item, ItemFrame, Volume, WallSign
+from pynecraft.simpler import Item, ItemFrame, Sign, Volume, WallSign
 from restworld.rooms import Room, label
 from restworld.world import fast_clock, kill_em, main_clock, restworld
 
@@ -427,9 +427,12 @@ def wood_functions(room):
         yield from volume.replace_trapdoors(f'{id}_trapdoor', '#trapdoors')
         yield from volume.replace_facing(Block(f'{id}_wall_sign', nbt={'Text2': f'{name} Wall Sign'}),
                                          '#wall_signs')
-        yield from volume.replace(Block(f'{id}_sign', nbt={'Text2': f'{name} Sign'}), '#signs',
-                                  states=({'rotation': x} for x in range(0, 16, 4)))
-
+        yield from volume.replace_rotation(Block(f'{id}_sign', nbt={'Text2': f'{name} Sign'}), '#signs')
+        for attached in True,False:
+            yield from volume.replace_rotation(
+                Block(f'{id}_hanging_sign', nbt=Sign.lines_nbt((name, 'Hanging', 'Sign'))),
+                '#all_hanging_signs',
+                shared_states={'attached': attached})
         # Add special cases
         if name == ('Jungle', 'Mangrove'):
             yield fill(r(-4, 2, -2), r(-4, 4, -2), ('vine', {'north': True}))
@@ -458,7 +461,7 @@ def wood_functions(room):
         yield execute().as_(e().tag('wood_sign_frame')).run(
             data().merge(s(), ItemFrame(SOUTH).item(f'{id}_sign').named(f'{name} Sign').nbt))
 
-        if log == 'log':
+        if 'stem' not in log:
             wood_boat_chest = room.score('wood_boat_chest')
             location = r(-0.5, 1.525, 2)
             boat_state = {'Type': id, 'Tags': ['wood_boat', room.name], 'Rotation': [90, 0], 'CustomName': name,
@@ -467,12 +470,17 @@ def wood_functions(room):
             chest_boat = Entity('chest_boat', boat_state)
             yield execute().if_().score(wood_boat_chest).matches(0).run(summon(boat, location))
             yield execute().if_().score(wood_boat_chest).matches(1).run(summon(chest_boat, location))
+            boat_item = f'{id}_boat'
+            chest_boat_item = f'{id}_chest_boat'
+            if 'bamboo' in log:
+                boat_item = 'bamboo_raft'
+                chest_boat_item = 'bamboo_chest_raft'
             yield execute().if_().score(wood_boat_chest).matches(0).as_(
                 e().tag('wood_boat_frame')).run(
-                data().merge(s(), ItemFrame(SOUTH).item(f'{id}_boat').named(f'{name} Boat').nbt))
+                data().merge(s(), ItemFrame(SOUTH).item(boat_item).named(f'{name} Boat').nbt))
             yield execute().if_().score(wood_boat_chest).matches(1).as_(
                 e().tag('wood_boat_frame')).run(
-                data().merge(s(), ItemFrame(SOUTH).item(f'{id}_chest_boat').named(f'{name} Chest Boat').nbt))
+                data().merge(s(), ItemFrame(SOUTH).item(chest_boat_item).named(f'{name} Chest Boat').nbt))
         else:
             yield data().remove(e().tag('wood_boat_frame').limit(1), 'Item.id')
 
