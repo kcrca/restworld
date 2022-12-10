@@ -122,6 +122,16 @@ def room():
         bee_nests[0].append(Block('beehive', state=state, name=f'Beehive|Honey Level: {i}'))
         bee_nests[1].append(Block('bee_nest', state=state, name=f'Bee Nest|Honey Level: {i}'))
     blocks('bee_nest', SOUTH, bee_nests, dx=-3)
+    blocks('bookshelves', SOUTH, (
+        'Bookshelf',
+        Block('Chiseled|Bookshelf', {'facing': SOUTH, }),
+        Block('Chiseled|Bookshelf',
+              {'facing': SOUTH, 'slot_0_occupied': True, 'slot_4_occupied': True, 'slot_5_occupied': True, }),
+        Block('Chiseled|Bookshelf',
+              {'facing': SOUTH,
+               'slot_0_occupied': True, 'slot_1_occupied': True, 'slot_2_occupied': True,
+               'slot_3_occupied': True, 'slot_4_occupied': True, 'slot_5_occupied': True,
+               })))
     blocks('bricks', NORTH, (
         'Bricks', 'Quartz Bricks', 'Mud Bricks', 'Deepslate|Bricks', 'Cracked|Deepslate|Bricks', 'Deepslate|Tiles',
         'Cracked|Deepslate|Tiles', 'Prismarine Bricks', 'Nether Bricks', 'Cracked|Nether Bricks',
@@ -209,13 +219,12 @@ def room():
     wood = [f'{x} Wood' for x in woods] + [f'{x} Hyphae' for x in stems]
     if restworld.experimental:
         logs[logs.index('Bamboo Log')] = 'Bamboo Block'
-        wood[wood.index('Bamboo Wood')] = 'Bamboo Mosaic'
-        leaves[leaves.index('Bamboo Leaves')] = ''
+    wood[wood.index('Bamboo Wood')] = 'Bamboo Mosaic'
+    leaves[leaves.index('Bamboo Leaves')] = ''
     stripped_logs = ['Stripped|' + x for x in logs]
     stripped_woods = map(lambda x: '' if x == 'Stripped|Bamboo Mosaic' else x, ['Stripped|' + x for x in wood])
     blocks('wood_blocks', SOUTH, (tuple(f'{f} Planks' for f in woodlike),
                                   stripped_logs, logs, wood, leaves, stripped_woods), dx=-3, dz=-3, size=2)
-
 
     sites = ('Cauldron', 'Water Cauldron', 'Lava Cauldron', 'Powder Snow|Cauldron')
     stages = {'Water Cauldron': list({'level': t} for t in range(1, 4)),
@@ -1004,7 +1013,7 @@ def stepable_functions(room):
                    for f in blocks)
     slabs = tuple(f.replace('Stairs', 'Slab') for f in stairs)
     # The mosaic's "Block" is here so it fits in the patterns, but it actually doesn't exist, so we remove it.
-    if  restworld.experimental:
+    if restworld.experimental:
         blocks[blocks.index('Bamboo Mosaic Block')] = 'Bamboo Mosaic'
 
     room.function('stepable_init').add(
