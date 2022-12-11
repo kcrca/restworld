@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import sys
 
-from pynecraft.base import EAST, Nbt, r
-from pynecraft.commands import Entity, GT, LT, RANDOM, Score, a, data, e, execute, fill, function, kill, setblock, \
+from pynecraft.base import EAST, GT, LT, Nbt, r
+from pynecraft.commands import Entity, RANDOM, Score, a, data, e, execute, fill, function, kill, setblock, \
     summon, \
     tag
 from pynecraft.function import Loop

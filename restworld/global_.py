@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from pynecraft.base import GAMETIME, OVERWORLD, THE_END, THE_NETHER, r
-from pynecraft.commands import CREATIVE, Commands, EQ, MOD, MOVE, RAIN, RESULT, SIDEBAR, clear, clone, data, e, execute, \
+from pynecraft.base import EQ, GAMETIME, OVERWORLD, THE_END, THE_NETHER, r
+from pynecraft.commands import CREATIVE, Commands, MOD, MOVE, RAIN, RESULT, SIDEBAR, clear, clone, data, e, execute, \
     fill, function, gamemode, gamerule, kill, p, s, scoreboard, setblock, tag, teleport, time, tp, weather
 from pynecraft.enums import ScoreCriteria
 from pynecraft.function import Function

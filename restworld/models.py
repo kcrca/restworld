@@ -1,8 +1,8 @@
 import re
 from collections import defaultdict
 
-from pynecraft.base import EAST, NORTH, d, r, rotated_facing, to_name
-from pynecraft.commands import EQ, REPLACE, \
+from pynecraft.base import EAST, EQ, NORTH, d, r, rotated_facing, to_name
+from pynecraft.commands import REPLACE, \
     comment, data, e, execute, fill, function, item, kill, p, schedule, setblock, summon, tag
 from pynecraft.enums import ValueEnum
 from pynecraft.info import block_items, blocks, items
