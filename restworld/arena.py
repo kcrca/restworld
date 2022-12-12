@@ -7,7 +7,7 @@ from pynecraft.commands import Entity, RANDOM, Score, a, data, e, execute, fill,
     summon, \
     tag
 from pynecraft.function import Loop
-from pynecraft.simpler import Item, Volume, WallSign
+from pynecraft.simpler import Item, Region, WallSign
 from restworld.rooms import Room, label
 from restworld.world import kill_em, main_clock, marker_tmpl, restworld
 
@@ -255,8 +255,8 @@ def room():
             for who in ('hunter', 'victim')))
 
     # Types: 0-normal, 1-water, 2-undead
-    fill_arena = Volume(r(-12, 4, -12), r(12, 2, 12))
-    fill_sky = Volume((r(-20), 250, r(-20)), (r(20), 250, r(20)))
+    fill_arena = Region(r(-12, 4, -12), r(12, 2, 12))
+    fill_sky = Region((r(-20), 250, r(-20)), (r(20), 250, r(20)))
     room.function('start_battle').add(
         execute().unless().score(start_battle_type).matches((0, None)).run(start_battle_type.set(0)),
         execute().if_().score(start_battle_type).matches(0).at(monitor_home).run(fill_arena.fill('air')),

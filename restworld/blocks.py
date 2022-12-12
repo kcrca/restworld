@@ -10,7 +10,7 @@ from pynecraft.commands import Block, Entity, JsonText, MOD, MOVE, clone, data, 
     kill, s, say, setblock, summon, tag
 from pynecraft.function import Loop
 from pynecraft.info import Color, colors, stems
-from pynecraft.simpler import Item, ItemFrame, Sign, Volume, WallSign
+from pynecraft.simpler import Item, ItemFrame, Region, Sign, WallSign
 from restworld.rooms import Room, label
 from restworld.world import fast_clock, kill_em, main_clock, restworld, slow_clock
 
@@ -618,7 +618,7 @@ def room_init_functions(room, block_list_score):
 
 def color_functions(room):
     coloring_coords = (r(1, 4, 6), r(-13, 2, -1))
-    volume = Volume(*coloring_coords)
+    volume = Region(*coloring_coords)
     lit_candles = room.score('lit_candles')
 
     def colorings(is_plain, color):
@@ -968,7 +968,7 @@ def expansion_functions(room):
 
 def stepable_functions(room):
     def stepable_loop(step):
-        volume = Volume(r(0, 2, 0), r(3, 6, 6))
+        volume = Region(r(0, 2, 0), r(3, 6, 6))
         i = step.i
         yield volume.replace(step.elem, '#restworld:stepable_planks')
         yield volume.replace_slabs(slabs[i], '#restworld:stepable_slabs')

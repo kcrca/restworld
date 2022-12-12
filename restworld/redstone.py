@@ -5,7 +5,7 @@ from pynecraft.base import DOWN, EAST, NOON, SOUTH, UP, WEST, r
 from pynecraft.commands import Block, data, e, execute, fill, function, kill, say, setblock, \
     summon, time
 from pynecraft.info import instruments, stems
-from pynecraft.simpler import Item, Sign, Volume, WallSign
+from pynecraft.simpler import Item, Region, Sign, WallSign
 from restworld.rooms import Room, ensure, label
 from restworld.world import fast_clock, kill_em, main_clock, restworld
 
@@ -70,7 +70,7 @@ def room():
     room.function('rail_clean', home=False).add(say('clean'), kill_em(e().tag('tmp_minecart')))
 
     def rail_loop(step):
-        volume = Volume(r(3, 3, -3), r(0, 0, 0))
+        volume = Region(r(3, 3, -3), r(0, 0, 0))
         rail, on = step.elem
         # 'powered=true' only seems to work for detector rail, but it's harmless for the others and maybe someday it
         # will work for all and we can get rid of the torches.
@@ -90,7 +90,7 @@ def room():
     room.function('redstone_wire_init').add(WallSign((None, 'Redstone Wire')).place(r(0, 2, 0), WEST))
 
     def redstone_wire_loop(step):
-        volume = Volume(r(0, 0, 0), r(7, 0, 7))
+        volume = Region(r(0, 0, 0), r(7, 0, 7))
         if step.i == 0:
             yield volume.replace('redstone_torch', 'glass')
             yield data().merge(r(0, 2, 0), {'Text3': '(Powered)'})

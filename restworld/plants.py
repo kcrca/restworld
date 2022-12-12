@@ -4,7 +4,7 @@ from pynecraft.base import EAST, NORTH, SOUTH, WEST, r, to_id, to_name
 from pynecraft.commands import Block, data, e, execute, fill, fillbiome, function, kill, setblock, tag
 from pynecraft.enums import BiomeId
 from pynecraft.info import small_flowers, stems, tulips, woods
-from pynecraft.simpler import Sign, Volume, WallSign
+from pynecraft.simpler import Region, Sign, WallSign
 from restworld.rooms import Room, label
 from restworld.world import fast_clock, main_clock, restworld
 
@@ -71,7 +71,7 @@ def room():
     room.loop('cocoa', main_clock).loop(cocoa_loop, range(0, 3), bounce=True)
     room.function('coral_init').add(WallSign((None, None, 'Coral')).place(r(0, 2, -2), WEST, water=True))
 
-    volume = Volume(r(-1, 2, -5), r(1, 4, 1))
+    volume = Region(r(-1, 2, -5), r(1, 4, 1))
     watered = {'waterlogged': True}
 
     def coral_loop(step):

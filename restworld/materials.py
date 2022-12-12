@@ -7,7 +7,7 @@ from pynecraft.commands import Block, BlockDef, Entity, data, e, execute, fill, 
     setblock, summon, tag
 from pynecraft.enums import BiomeId
 from pynecraft.info import colors, stems, woods
-from pynecraft.simpler import Item, ItemFrame, Sign, Volume, WallSign
+from pynecraft.simpler import Item, ItemFrame, Region, Sign, WallSign
 from restworld.rooms import Room, label
 from restworld.world import fast_clock, kill_em, main_clock, restworld
 
@@ -33,7 +33,7 @@ def room():
         walls.append('%sstone Wall' % ty)
     assert len(blocks) == 2  # allows us to use 'replace previous type' because there are only two types
 
-    volume = Volume(r(0, 1, 0), r(10, 6, 7))
+    volume = Region(r(0, 1, 0), r(10, 6, 7))
 
     def all_sand_loop(step):
         i = step.i
@@ -82,7 +82,7 @@ def room():
         label(r(3, 2, 7), 'Deepslate'))
 
     raw_frame = 'ore_raw_frame'
-    volume = Volume(r(7, 5, 6), r(0, 2, 0))
+    volume = Region(r(7, 5, 6), r(0, 2, 0))
     deepslate_materials = room.score('deepslate_materials')
 
     def ore_loop(step):
@@ -327,7 +327,7 @@ def basic_functions(room):
 
 
 def fencelike_functions(room):
-    volume = Volume(r(8, 3, 6), r(0, 2, 0))
+    volume = Region(r(8, 3, 6), r(0, 2, 0))
 
     room.function('fencelike_init').add(
         WallSign(()).place(r(6, 2, 0), NORTH),
@@ -382,7 +382,7 @@ def wood_functions(room):
             'Item': {'id': 'stone', 'Count': 1}}),
         label(r(-1, 2, 4), 'Chest Boat'))
 
-    volume = Volume(r(-5, 1, -5), r(6, 5, 3))
+    volume = Region(r(-5, 1, -5), r(6, 5, 3))
 
     def wood_loop(step):
         name = step.elem
