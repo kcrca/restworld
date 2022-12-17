@@ -220,7 +220,10 @@ def room():
         yield setblock(r(-1, -1, -1), 'redstone_block')
         yield setblock(r(-1, -1, -1), 'air')
         yield WallSign((None, f'{tree} Trees', 'Biome:', to_name(str(biome)))).place(r(1, 2, 7), WEST)
-        yield execute().at(e().tag('biome_home')).run(fillbiome(r(0, 1, 0), r(33, 5, 52), biome))
+        plant_room = Region(r(0, 1, 0), r(33, 8, 52))
+        yield execute().at(e().tag('biome_home')).run(plant_room.fillbiome(biome),
+                                                      plant_room.fill('air', replace='snow'))
+        # Fill the tall tree area
         yield fillbiome(r(0, 1, 0), r(18, 30, 17), biome)
 
     room.loop('trees', main_clock).loop(trees_loop, tree_types.items()).add(
