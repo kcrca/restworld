@@ -86,8 +86,6 @@ def tags():
         sp[sp.index('bamboo_log')] = 'bamboo_block'
     blocks['stripped_loglike'] = {'values': [f'stripped_{x}' for x in blocks['loglike']['values']]}
     blocks['stripped_woodlike'] = {'values': [f'stripped_{x}' for x in blocks['woodlike']['values']]}
-    if restworld.experimental:
-        blocks['woodlike']['values'].append('bamboo_mosaic')
 
     blocks['saplinglike'] = {
         'values': [
@@ -239,6 +237,9 @@ def tags():
     }
     if restworld.experimental:
         blocks['stepable_planks']['values'].extend(('bamboo_planks', 'bamboo_mosaic_block'))
+        blocks['planks'] = {
+            'values': ['#planks', 'bamboo_mosaic']
+        }
     blocks['stepable_stairs'] = {
         'values': [
             re.sub(r'blocks*', 'stairs',

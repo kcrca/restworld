@@ -387,16 +387,22 @@ def wood_functions(room):
     def wood_loop(step):
         name = step.elem
         id = to_id(name)
+        planks = f'{id}_planks'
+        slab = f'{id}_slab'
+        stairs = f'{id}_stairs'
         if name in stems:
             log = f'{id}_stem'
             wood = f'{id}_hyphae'
             leaves = 'nether_wart_block' if name == 'Crimson' else f'{id}_wart_block'
             saplings = (f'{id}_roots', f'{id}_fungus', f'{id}_nylium')
         else:
+            if 'Mosaic' in name:
+                id = 'bamboo'
+                planks = 'bamboo_mosaic'
             log = f'{id}_log'
             wood = f'{id}_wood'
             leaves = f'{id}_leaves'
-            if name == 'Bamboo':
+            if 'Bamboo' in name:
                 log = 'bamboo_block'
                 wood = 'jungle_wood'
                 leaves = 'jungle_leaves'
@@ -406,7 +412,7 @@ def wood_functions(room):
                     Block('mangrove_propagule', {'age': 1}),
                     Block('mangrove_propagule', {'age': 4}),
                     'grass_block')
-            elif name == 'Bamboo':
+            elif 'Bamboo' in name:
                 saplings = ('bamboo_sapling', Block('bamboo', {'age': 0, 'leaves': 'small'}), 'grass_block')
 
         # Remove special cases
@@ -418,9 +424,9 @@ def wood_functions(room):
         # General replacement
         yield from volume.replace(wood, '#restworld:woodlike')
         yield from volume.replace(leaves, '#restworld:leaflike')
-        yield from volume.replace(f'{id}_planks', '#planks')
-        yield from volume.replace_slabs(f'{id}_slab', '#slabs')
-        yield from volume.replace_stairs(f'{id}_stairs', '#stairs')
+        yield from volume.replace(planks, '#restworld:planks')
+        yield from volume.replace_slabs(slab, '#restworld:stepable_slabs')
+        yield from volume.replace_stairs(stairs, '#restworld:stepable_stairs')
         yield from volume.replace(f'{id}_fence', '#wooden_fences')
         yield from volume.replace_facing(f'{id}_fence_gate', '#fence_gates')
         yield from volume.replace_buttons(f'{id}_button')
@@ -498,4 +504,4 @@ def wood_functions(room):
         else:
             yield data().remove(e().tag('wood_boat_frame').limit(1), 'Item.id')
 
-    room.loop('wood', main_clock).add(kill_em(e().tag('wood_boat'))).loop(wood_loop, info.woods + stems)
+    room.loop('wood', main_clock).add(kill_em(e().tag('wood_boat'))).loop(wood_loop, info.woods + ('Bamboo Mosaic',) + stems)
