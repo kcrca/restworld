@@ -42,7 +42,9 @@ def room():
 
     room.loop('bee', main_clock).loop(bee_loop, range(0, 4))
 
-    room.function('camel_init').add(placer(*mid_east_placer).summon('camel'))
+    room.function('camel_init').add(
+        placer(*mid_west_placer).summon('camel'),
+        label(r(-3, 2, 1), 'Camel Sits'))
 
     p = placer(*south_placer)
     room.function('canine_init').add(
@@ -242,8 +244,6 @@ def room():
     # This is a temporary hack until a major rework of the friendlies room layout
     if not restworld.experimental:
         sheep.add(p.summon(Entity('sheep', name='jeb_'), auto_tag=False))
-    else:
-        sheep.add(p.summon(Entity('camel'), auto_tag=False))
     room.function('snow_golem_init').add(
         placer(r(-1.2, 2, 0), EAST, adults=True).summon('snow_golem'))
     room.loop('snow_golem', main_clock).loop(
