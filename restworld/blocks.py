@@ -124,14 +124,15 @@ def room():
     blocks('bee_nest', SOUTH, bee_nests, dx=-3)
     blocks('bookshelves', SOUTH, (
         'Bookshelf',
-        Block('Chiseled|Bookshelf', {'facing': SOUTH, }),
-        Block('Chiseled|Bookshelf',
-              {'facing': SOUTH, 'slot_0_occupied': True, 'slot_4_occupied': True, 'slot_5_occupied': True, }),
-        Block('Chiseled|Bookshelf',
+        Block('chiseled_bookshelf', {'facing': SOUTH, }, name='Empty|Chiseled|Bookshelf'),
+        Block('chiseled_bookshelf',
+              {'facing': SOUTH, 'slot_0_occupied': True, 'slot_4_occupied': True, 'slot_5_occupied': True, },
+              name='Partly Filled|Chiseled|Bookshelf'),
+        Block('chiseled_bookshelf',
               {'facing': SOUTH,
                'slot_0_occupied': True, 'slot_1_occupied': True, 'slot_2_occupied': True,
-               'slot_3_occupied': True, 'slot_4_occupied': True, 'slot_5_occupied': True,
-               })))
+               'slot_3_occupied': True, 'slot_4_occupied': True, 'slot_5_occupied': True, },
+              name='Full|Chiseled|Bookshelf')))
     blocks('bricks', NORTH, (
         'Bricks', 'Quartz Bricks', 'Mud Bricks', 'Deepslate|Bricks', 'Cracked|Deepslate|Bricks', 'Deepslate|Tiles',
         'Cracked|Deepslate|Tiles', 'Prismarine Bricks', 'Nether Bricks', 'Cracked|Nether Bricks',
