@@ -38,17 +38,11 @@ def tags():
             'cave_air'
         ]
     }
+    wood_ids = tuple(to_id(x) for x in info.woods)
+    stem_ids = tuple(to_id(x) for x in stems)
+    woodlike_ids = wood_ids + stem_ids
     blocks['fencelike'] = {
-        'values': ['%s_stained_glass_pane' % x for x in COLORS] + [
-            'acacia_fence',
-            'birch_fence',
-            'jungle_fence',
-            'mangrove_fence',
-            'oak_fence',
-            'dark_oak_fence',
-            'warped_fence',
-            'crimson_fence',
-            'spruce_fence',
+        'values': ['%s_stained_glass_pane' % x for x in COLORS] + [f'{x}_fence' for x in woodlike_ids] + [
             'nether_brick_fence',
             'glass_pane',
             'iron_bars',
@@ -76,35 +70,22 @@ def tags():
             'deepslate_tile_wall'
         ]
     }
-    blocks['gatelike'] = {
-        'values': [
-            'acacia_fence_gate',
-            'birch_fence_gate',
-            'jungle_fence_gate',
-            'mangrove_fence_gate',
-            'oak_fence_gate',
-            'dark_oak_fence_gate',
-            'warped_fence_gate',
-            'crimson_fence_gate',
-            'spruce_fence_gate'
-        ]
-    }
-    woods = info.woods
+    blocks['gatelike'] = {'values': [f'{x}_fence_gate' for x in woodlike_ids]}
     blocks['leaflike'] = {
-        'values': ['%s_leaves' % to_id(x) for x in woods] + [
+        'values': ['%s_leaves' % x for x in wood_ids] + [
             'nether_wart_block',
             'warped_wart_block',
         ]
     }
-    blocks['woodlike'] = {'values': ['%s_wood' % to_id(x) for x in woods] + ['%s_hyphae' % to_id(x) for x in stems]}
-    blocks['loglike'] = {'values': ['%s_log' % to_id(x) for x in woods] + ['%s_stem' % to_id(x) for x in stems]}
+    blocks['woodlike'] = {'values': [f'{x}_wood' for x in wood_ids] + [f'{x}_hyphae' for x in stem_ids]}
+    blocks['loglike'] = {'values': [f'{x}_log' for x in wood_ids] + [f'{x}_stem' for x in stem_ids]}
     if restworld.experimental:
         blocks['leaflike']['values'] = list(filter(lambda x: x != 'bamboo_leaves', blocks['leaflike']['values']))
         blocks['woodlike']['values'] = list(filter(lambda x: x != 'bamboo_wood', blocks['woodlike']['values']))
         sp = blocks['loglike']['values']
         sp[sp.index('bamboo_log')] = 'bamboo_block'
-    blocks['stripped_loglike'] = {'values': ['stripped_%s' % to_id(x) for x in blocks['loglike']['values']]}
-    blocks['stripped_woodlike'] = {'values': ['stripped_%s' % to_id(x) for x in blocks['woodlike']['values']]}
+    blocks['stripped_loglike'] = {'values': [f'stripped_{x}' for x in blocks['loglike']['values']]}
+    blocks['stripped_woodlike'] = {'values': [f'stripped_{x}' for x in blocks['woodlike']['values']]}
     if restworld.experimental:
         blocks['woodlike']['values'].append('bamboo_mosaic')
 

@@ -6,7 +6,7 @@ from pynecraft.commands import Block, BlockDef, Entity, data, e, execute, fill, 
     kill, s, \
     setblock, summon, tag
 from pynecraft.enums import BiomeId
-from pynecraft.info import colors, stems, woods
+from pynecraft.info import colors, stems
 from pynecraft.simpler import Item, ItemFrame, Region, Sign, WallSign
 from restworld.rooms import Room, label
 from restworld.world import fast_clock, kill_em, main_clock, restworld
@@ -352,18 +352,18 @@ def fencelike_functions(room):
 
     def fence_loop(step):
         yield from fencelike(step.elem)
-        if step.elem[:-len(' Fence')] in woods + stems:
+        if step.elem[:-len(' Fence')] in info.woods + stems:
             yield volume.replace_facing(step.elem + ' Gate', '#fence_gates')
 
     room.loop('panes', main_clock).loop(lambda step: fencelike(step.elem),
-                                        tuple(f'{x.name} Stained Glass Pane' for x in colors) + ('Glass Pane',))
+                                        tuple(f'{x.name}|Stained Glass|Pane' for x in colors) + (
+                                            'Glass Pane', 'Iron Bars'))
     switch_to_fencelike('panes')
     room.loop('fences', main_clock).loop(fence_loop,
-                                         tuple(f'{x} Fence' for x in woods + stems + ('Nether Brick',)) + (
-                                             'Iron Bars',))
+                                         tuple(f'{x} Fence' for x in info.woods + stems + ('Nether Brick',)))
     switch_to_fencelike('fences')
     room.loop('walls', main_clock).loop(lambda step: fencelike(step.elem), (x + ' Wall' for x in (
-        'Cobblestone', 'Mossy|Cobblestone', 'Sandstone', 'Red Sandstone', 'Brick', 'Mud|Brick', 'Stone|Brick',
+        'Cobblestone', 'Mossy|Cobblestone', 'Sandstone', 'Red|Sandstone', 'Brick', 'Mud|Brick', 'Stone|Brick',
         'Mossy Stone|Brick', 'Nether|Brick', 'Red Nether|Brick', 'End Stone|Brick', 'Polished|Blackstone|Brick',
         'Polished|Blackstone', 'Blackstone', 'Andesite', 'Granite', 'Diorite', 'Deepslate|Brick', 'Deepslate|Tile',
         'Cobbled|Deepslate', 'Polished|Deepslate', 'Prismarine',
@@ -434,11 +434,14 @@ def wood_functions(room):
                                          '#wall_signs')
         yield from volume.replace_rotation(Block(f'{id}_sign', nbt={'Text2': f'{name} Sign'}), '#signs')
 
-        hanging_sign_text = Sign.lines_nbt((name, 'Hanging', 'Sign'))
-        yield from volume.replace_facing(Block(f'{id}_wall_hanging_sign', nbt=hanging_sign_text), '#wall_hanging_signs')
+        yield from volume.replace_facing(
+            Block(f'{id}_wall_hanging_sign', nbt=Sign.lines_nbt((name, 'Wall', 'Hanging', 'Sign'))),
+            '#wall_hanging_signs')
         for attached in True, False:
+            sign_text = Sign.lines_nbt((name, 'Attached', 'Hanging', 'Sign')) if attached else Sign.lines_nbt(
+                (name, 'Hanging', 'Sign'))
             yield from volume.replace_rotation(
-                Block(f'{id}_hanging_sign', nbt=hanging_sign_text),
+                Block(f'{id}_hanging_sign', nbt=sign_text),
                 '#all_hanging_signs',
                 shared_states={'attached': attached})
 
