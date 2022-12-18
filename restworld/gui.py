@@ -1,11 +1,11 @@
 from __future__ import annotations
 
 from pynecraft import commands
-from pynecraft.base import EAST, NORTH, WEST, r
+from pynecraft.base import EAST, NORTH, Nbt, WEST, r
 from pynecraft.commands import BOSSBAR_COLORS, BOSSBAR_STYLES, Block, CREATIVE, Entity, LEVELS, SURVIVAL, a, \
     bossbar, clone, data, e, execute, fill, function, gamemode, give, item, kill, p, s, setblock, summon
 from pynecraft.info import must_give_items
-from pynecraft.simpler import ItemFrame, WallSign
+from pynecraft.simpler import Item, ItemFrame, WallSign
 from restworld.rooms import Room, label
 from restworld.world import fast_clock, main_clock, restworld, slow_clock
 
@@ -283,3 +283,18 @@ def room():
         gamemode(CREATIVE, p()),
         kill(e().tag('survival_home'))
     )
+
+    room.function('powder_snow_init').add(
+        setblock(r(0, 2, 0), 'powder_snow'),
+        WallSign((None, 'Step', 'Inside!')).place(r(1, 2, 0), EAST))
+    saver_name = 'blur_saver'
+    saver = e().tag(saver_name).limit(1)
+    room.function('pumpkin_blur_init').add(
+        room.mob_placer(r(0, -2, 1), NORTH, adults=True, auto_tag=False).summon(
+            Entity('armor_stand', Nbt(NoGravity=True), saver_name).tag(saver_name)),
+        WallSign((None, 'Pumpkin Blur')).place(r(0, 2, 0), EAST))
+    room.function('pumpkin_blur_on', home=False).add(
+        item().replace().entity(saver, 'armor.head').from_().entity(p(), 'armor.head'),
+        item().replace().entity(p(), 'armor.head').with_(Item('carved_pumpkin')))
+    room.function('pumpkin_blur_off', home=False).add(
+        item().replace().entity(p(), 'armor.head').from_().entity(saver, 'armor.head'))
