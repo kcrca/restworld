@@ -418,7 +418,7 @@ def wood_functions(room):
         # Remove special cases
         yield from volume.fill('air', 'vine')
         yield kill_em(e().tag('wood_boat'))
-        yield fill(r(4, 2, -1), r(3, 2, -1), 'air')
+        yield fill(r(4, 2, -1), r(4, 3, -1), 'air')
         yield fill(r(4, 2, 1), r(4, 3, 2), 'air')
 
         # General replacement
