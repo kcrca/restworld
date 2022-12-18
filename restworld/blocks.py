@@ -585,9 +585,9 @@ def room():
     stepable_functions(room)
 
     for b in (
-            'amethyst', 'anvil', 'bell', 'brewing_stand', 'cake', 'campfire', 'cauldron', 'chest', 'colored_beam',
-            'colorings', 'composter', 'frosted_ice', 'grindstone', 'item_frame', 'job_sites_1', 'job_sites_2',
-            'lantern', 'armor_stand', 'torches', 'spawner', 'blocks_room', 'ladder'):
+            'amethyst', 'anvil', 'bell', 'brewing_stand', 'cake', 'campfire', 'chest', 'colored_beam', 'colorings',
+            'frosted_ice', 'grindstone', 'item_frame', 'lantern', 'armor_stand', 'torches', 'blocks_room', 'ladder',
+            'stepable'):
         room.function(b + '_init', exists_ok=True).add(tag(e().tag(b + '_home')).add('no_expansion'))
 
 
@@ -599,7 +599,8 @@ def room_init_functions(room, block_list_score):
         label(r(-43, 2, -3), 'List Blocks'),
         kill(e().tag('block_list'))
     )
-    room.function('blocks_sign_init').add(
+    # The 'zzz' makes sure this is run last
+    room.function('zzz_blocks_sign_init').add(
         execute().at(e().tag('blocks_home', '!no_expansion')).run(data().merge(r(0, 2, -1), {
             'Text1': JsonText.text("").click_event().run_command('function restworld:blocks/toggle_expand')})),
         execute().at(e().tag('blocks_home', '!no_expansion')).run(data().merge(r(0, 2, 1), {
