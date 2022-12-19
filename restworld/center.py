@@ -73,7 +73,7 @@ def room():
         summon('panda', r(-6, 2.5, 0), all),
         summon('horse', r(-6, 2.5, 0), all),
 
-        summon('camel', r(6, 2.5, 0), all),
+        summon('camel' if restworld.experimental else 'turtle', r(6, 2.5, 0), all),
         summon('llama', r(6, 2.5, 0), all),
         summon('mooshroom', r(6, 2.5, 0), all),
         summon('pig', r(6, 2.5, 0), all),

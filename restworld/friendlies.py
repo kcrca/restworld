@@ -42,9 +42,10 @@ def room():
 
     room.loop('bee', main_clock).loop(bee_loop, range(0, 4))
 
-    room.function('camel_init').add(
-        placer(*mid_west_placer).summon('camel'),
-        label(r(-3, 2, 1), 'Camel Sits'))
+    if restworld.experimental:
+        room.function('camel_init').add(
+            placer(*mid_west_placer).summon('camel'),
+            label(r(-3, 2, 1), 'Camel Sits'))
 
     p = placer(*south_placer)
     room.function('canine_init').add(

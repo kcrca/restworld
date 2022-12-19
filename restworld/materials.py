@@ -372,15 +372,17 @@ def fencelike_functions(room):
 
 
 def wood_functions(room):
-    room.function('wood_init').add(
+    wood_init = room.function('wood_init').add(
         summon('item_frame', r(2, 3, -3), {
             'Tags': ['wood_boat_frame', room.name], 'Facing': 3, 'Fixed': True, 'Item': {'id': 'stone', 'Count': 1}}),
         summon('item_frame', r(3, 3, -3), {
             'Tags': ['wood_sign_frame', room.name], 'Facing': 3, 'Fixed': True, 'Item': {'id': 'stone', 'Count': 1}}),
-        summon('item_frame', r(3, 4, -3), {
-            'Tags': ['wood_hanging_sign_frame', room.name], 'Facing': 3, 'Fixed': True,
-            'Item': {'id': 'stone', 'Count': 1}}),
         label(r(-1, 2, 4), 'Chest Boat'))
+    if restworld.experimental:
+        wood_init.add(
+            summon('item_frame', r(3, 4, -3), {
+                'Tags': ['wood_hanging_sign_frame', room.name], 'Facing': 3, 'Fixed': True,
+                'Item': {'id': 'stone', 'Count': 1}}))
 
     volume = Region(r(-5, 1, -5), r(6, 5, 3))
 
@@ -440,16 +442,17 @@ def wood_functions(room):
                                          '#wall_signs')
         yield from volume.replace_rotation(Block(f'{id}_sign', nbt={'Text2': f'{name} Sign'}), '#signs')
 
-        yield from volume.replace_facing(
-            Block(f'{id}_wall_hanging_sign', nbt=Sign.lines_nbt((name, 'Wall', 'Hanging', 'Sign'))),
-            '#wall_hanging_signs')
-        for attached in True, False:
-            sign_text = Sign.lines_nbt((name, 'Attached', 'Hanging', 'Sign')) if attached else Sign.lines_nbt(
-                (name, 'Hanging', 'Sign'))
-            yield from volume.replace_rotation(
-                Block(f'{id}_hanging_sign', nbt=sign_text),
-                '#all_hanging_signs',
-                shared_states={'attached': attached})
+        if restworld.experimental:
+            yield from volume.replace_facing(
+                Block(f'{id}_wall_hanging_sign', nbt=Sign.lines_nbt((name, 'Wall', 'Hanging', 'Sign'))),
+                '#wall_hanging_signs')
+            for attached in True, False:
+                sign_text = Sign.lines_nbt((name, 'Attached', 'Hanging', 'Sign')) if attached else Sign.lines_nbt(
+                    (name, 'Hanging', 'Sign'))
+                yield from volume.replace_rotation(
+                    Block(f'{id}_hanging_sign', nbt=sign_text),
+                    '#all_hanging_signs',
+                    shared_states={'attached': attached})
 
         # Add special cases
         if name == ('Jungle', 'Mangrove'):
@@ -478,8 +481,9 @@ def wood_functions(room):
 
         yield execute().as_(e().tag('wood_sign_frame')).run(
             data().merge(s(), ItemFrame(SOUTH).item(f'{id}_sign').named(f'{name} Sign').nbt))
-        yield execute().as_(e().tag('wood_hanging_sign_frame')).run(
-            data().merge(s(), ItemFrame(SOUTH).item(f'{id}_hanging_sign').named(f'{name} Hanging Sign').nbt))
+        if restworld.experimental:
+            yield execute().as_(e().tag('wood_hanging_sign_frame')).run(
+                data().merge(s(), ItemFrame(SOUTH).item(f'{id}_hanging_sign').named(f'{name} Hanging Sign').nbt))
 
         if 'stem' not in log:
             wood_boat_chest = room.score('wood_boat_chest')
@@ -504,4 +508,7 @@ def wood_functions(room):
         else:
             yield data().remove(e().tag('wood_boat_frame').limit(1), 'Item.id')
 
-    room.loop('wood', main_clock).add(kill_em(e().tag('wood_boat'))).loop(wood_loop, info.woods + ('Bamboo Mosaic',) + stems)
+    woods = info.woods
+    if restworld.experimental:
+        woods.append('Bamboo Mosaic')
+    room.loop('wood', main_clock).add(kill_em(e().tag('wood_boat'))).loop(wood_loop, woods + stems)

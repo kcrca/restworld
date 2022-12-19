@@ -3,6 +3,8 @@ from __future__ import annotations
 import argparse
 import random
 
+from packaging.version import Version
+
 from pynecraft.base import parameters
 from restworld import ancient, aquatic, arena, banners, biomes, blocks, center, connect, diy, effects, \
     enders, font, friendlies, global_, gui, hud, maps, materials, models, monsters, multimob, nether, paintings, \
@@ -20,11 +22,11 @@ def main():
     cmdline.add_argument('version', type=str, default='1.19.3')
     cmdline.add_argument('--mcversion', type=str)
     args = cmdline.parse_args()
-    version = args.version
-    restworld.experimental = '+x' in version
+    restworld.experimental = '+x' in args.version
+    restworld.version = Version(args.version)
     mc_version = args.mcversion
     if not mc_version:
-        mc_version = version
+        mc_version = args.version
     parameters.version = mc_version
     for m in (
             blocks, save, multimob, models, ancient, global_, aquatic, arena, banners, biomes, center, connect, gui,
@@ -32,7 +34,7 @@ def main():
             plants, redstone, the_end, time, wither, maps):
         m.room()
     tags.tags()
-    dir = f'/Users/kcrca/clarity/home/saves/RestWorld_{version}'
+    dir = f'/Users/kcrca/clarity/home/saves/RestWorld_{args.version}'
     print(dir)
     restworld.save(dir)
 
