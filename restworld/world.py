@@ -3,6 +3,8 @@ from __future__ import annotations
 import sys
 from datetime import date
 
+from packaging.version import Version
+
 from pynecraft.base import DARK_GREEN, DARK_PURPLE, r
 from pynecraft.commands import Commands, Entity, JsonText, data, e, execute, fill, function, give, p, tp
 from pynecraft.function import Function, FunctionSet
@@ -187,3 +189,6 @@ class Wall:
             if y < self.y_last:
                 return None, None
         return x, y
+
+
+VERSION_1_20 = Version('1.20')

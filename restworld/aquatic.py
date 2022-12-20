@@ -6,9 +6,8 @@ from pynecraft.commands import COLORS, Entity, LONG, RESULT, Score, data, e, exe
 from pynecraft.enums import ScoreCriteria
 from pynecraft.info import axolotls, tropical_fish
 from pynecraft.simpler import WallSign
-from restworld.main import VERSION_1_20
 from restworld.rooms import Room
-from restworld.world import fast_clock, kill_em, main_clock, restworld
+from restworld.world import VERSION_1_20, fast_clock, kill_em, main_clock, restworld
 
 
 def room():
