@@ -11,6 +11,8 @@ from restworld import ancient, aquatic, arena, banners, biomes, blocks, center, 
     particles, photo, plants, redstone, save, tags, the_end, time, wither
 from restworld.world import restworld
 
+VERSION_1_20 = Version('1.20')
+
 
 def main():
     global experimental
