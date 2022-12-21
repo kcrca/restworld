@@ -8,7 +8,7 @@ from restworld.world import VERSION_1_20, kill_em, main_clock, restworld
 
 
 def room():
-    room = Room('nether', restworld, EAST, (None, 'Nether', 'Monsters,', 'Wither'))
+    room = Room('nether', restworld, WEST, (None, 'Nether', 'Mobs'))
 
     def placer(*args, **kwargs):
         return room.mob_placer(*args, **kwargs)
@@ -20,16 +20,19 @@ def room():
     room.function('wither_skeleton_init').add(placer(r(-0.2, 2, 0), rhs_dir, adults=True).summon(
         'wither_skeleton', nbt={'HandItems': [Item.nbt_for('stone_sword')]}))
     ghast_dir = SOUTH if restworld.version < VERSION_1_20 else EAST
+    fireball = Entity('Fireball', {'direction': [0, 0, 0], 'ExplosionPower': 0})
     if restworld.version < VERSION_1_20:
-        fb_sign_pos, fb_sign_dir = r(-4, 2, 1), SOUTH
-        fb_placer = placer(r(-4, 3, 0), fb_sign_dir, adults=True)
+        ghast_height, ghast_dir = 5, SOUTH
+        room.function('ghast_init').add(
+            placer(r(-4, 3, 0), SOUTH, adults=True).summon(fireball),
+            WallSign((None, 'Fireball')).place(r(-4, 2, 1), SOUTH))
     else:
-        fb_sign_pos, fb_sign_dir = r(5, 3, -4), rhs_dir
-        fb_placer = placer(r(4, 3, -4), EAST, adults=True)
-    room.function('ghast_init').add(
-        placer(r(-0.5, 5, 0), ghast_dir, adults=True).summon('Ghast'),
-        fb_placer.summon(Entity('Fireball', {'direction': [0, 0, 0], 'ExplosionPower': 0})),
-        WallSign((None, 'Fireball')).place(fb_sign_pos, fb_sign_dir))
+        ghast_height, ghast_dir = 6, WEST
+        room.function('fireball_init').add(
+            placer(r(-0.2, 2, 0), rhs_dir, adults=True).summon(fireball),
+            WallSign((None, 'Fireball')).place(r(1, 2, 0), rhs_dir)        )
+    room.function('ghast_init', exists_ok=True).add(
+        placer(r(-0.5, ghast_height, 0), ghast_dir, adults=True).summon('Ghast'))
     cube_dir = EAST if restworld.version < VERSION_1_20 else SOUTH
     room.function('magma_cube_init').add(placer(r(0, 3, 0), cube_dir, adults=True).summon('magma_cube'))
     room.loop('magma_cube', main_clock).loop(
@@ -41,8 +44,9 @@ def room():
     piglins = (Entity('Piglin', nbt={'HandItems': [Item.nbt_for('golden_sword')]}), 'Zombified Piglin')
     hoglins = ('Hoglin', 'Zoglin')
 
+    hoglin_offset = 2 if restworld.version < VERSION_1_20 else -2
     def piglin_loop(step):
-        p = placer(r(0, 2, 0), lhs_dir, 2, 3, tags=('piglin',))
+        p = placer(r(0, 2, 0), lhs_dir, hoglin_offset, 3, tags=('piglin',))
         yield p.summon(step.elem)
         yield p.summon(hoglins[step.i])
 
