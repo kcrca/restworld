@@ -76,15 +76,16 @@ def room():
 
     room.loop('end_portal', main_clock).loop(end_portal_loop, (True, False))
 
-    placer = room.mob_placer(r(0, 2, 0), SOUTH, adults=True)
-    # Enderman requires special handling because the rain may make it run away (even with NoAI)
-    room.function('enderman_enter').add(
-        execute().unless().entity(e().type('enderman').distance((None, 5))).run(
-            list(placer.summon('enderman'))[0]))
-    room.function('enderman_init').add(function('restworld:enders/enderman_enter'))
+    if restworld.version < VERSION_1_20:
+        placer = room.mob_placer(r(0, 2, 0), SOUTH, adults=True)
+        # Enderman requires special handling because the rain may make it run away (even with NoAI)
+        room.function('enderman_enter').add(
+            execute().unless().entity(e().type('enderman').distance((None, 5))).run(
+                list(placer.summon('enderman'))[0]))
+        room.function('enderman_init').add(function('restworld:enders/enderman_enter'))
 
-    placer = room.mob_placer(r(0, 2, -0.2), SOUTH, adults=True)
-    room.function('endermite_init').add(placer.summon('endermite'))
+        placer = room.mob_placer(r(0, 2, -0.2), SOUTH, adults=True)
+        room.function('endermite_init').add(placer.summon('endermite'))
 
     if restworld.version < VERSION_1_20:
         shulker_dir = SOUTH

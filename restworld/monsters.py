@@ -6,7 +6,7 @@ from pynecraft.base import EAST, NORTH, WEST, r
 from pynecraft.commands import Entity, data, e, execute, function, good_facing, s, tag
 from pynecraft.simpler import Item
 from restworld.rooms import MobPlacer, Room, label
-from restworld.world import kill_em, main_clock, restworld
+from restworld.world import VERSION_1_20, kill_em, main_clock, restworld
 
 
 def room():
@@ -36,15 +36,23 @@ def room():
     tags = ('illager',)
 
     def illager_loop(step):
-        yield placer(*west_placer, adults=True, tags=tags).summon(step.elem)
+        place = list(copy.deepcopy(west_placer))
+        dir = WEST if restworld.version < VERSION_1_20 else EAST
+        if restworld.version >= VERSION_1_20:
+            place[0][2] -= 0.5
+            place[1] = dir
+        yield placer(*place, adults=True, tags=tags).summon(step.elem)
         if step.elem.id == 'evoker':
-            yield placer(r(0, 3.5, -1), WEST, adults=True, tags=tags).summon(
+            z = -1 if restworld.version < VERSION_1_20 else -1.5
+            x = 0 if restworld.version < VERSION_1_20 else 1
+            yield placer(r(x, 3.5, z), dir, adults=True, tags=tags).summon(
                 Entity('vex', nbt={'HandItems': [Item.nbt_for('iron_sword')], 'LifeTicks': 2147483647}))
-            yield placer(r(-1, 2, 1), WEST, adults=True, tags=tags).summon(Entity('Evoker Fangs', nbt={'Warmup': 0}))
+            yield placer(r(-1, 2, 1), dir, adults=True, tags=tags).summon(Entity('Evoker Fangs', nbt={'Warmup': 0}))
 
     room.loop('illager', main_clock).add(kill_em(e().tag(*tags))).loop(illager_loop, illagers)
 
-    room.function('phantom_init').add(placer(r(-0.5, 4, 0), WEST, adults=True).summon('phantom'))
+    dir = WEST if restworld.version < VERSION_1_20 else NORTH
+    room.function('phantom_init').add(placer(r(-0.5, 4, 0), dir, adults=True).summon('phantom'))
 
     def ravager_loop(step):
         ravager = Entity('ravager')
@@ -55,7 +63,8 @@ def room():
     room.loop('ravager', main_clock).add(kill_em(e().tag('ravager'))).loop(
         ravager_loop, (None, 'Pillager', 'Vindicator', 'Evoker'))
 
-    room.function('silverfish_init').add(placer(r(0.2, 2, 0), EAST, adults=True).summon('silverfish'))
+    silverfish_dir = EAST if restworld.version < VERSION_1_20 else NORTH
+    room.function('silverfish_init').add(placer(r(0.2, 2, 0), silverfish_dir, adults=True).summon('silverfish'))
 
     east = good_facing(EAST)
     east_rot = {'Rotation': east.rotation, 'Facing': east.name}
@@ -92,7 +101,8 @@ def room():
         Entity(step.elem, nbt={'HandItems': [bow]}).tag('skeletal')), ('Skeleton', 'Stray'))
 
     def spider_loop(step):
-        p = placer(r(-0.2, 2.5, -0.2), EAST, -2.5, nbt={'Tags': ['spiders']}, adults=True)
+        dir = EAST if restworld.version < VERSION_1_20 else NORTH
+        p = placer(r(-0.2, 2.5, -0.2), dir, -2.5, nbt={'Tags': ['spiders']}, adults=True)
         for s in ('Spider', 'Cave Spider'):
             spider = Entity(s)
             if step.i == 1:
@@ -107,7 +117,10 @@ def room():
         label(r(2, 2, -2), 'Jockey'),
         label(r(5, 2, -3), 'Change Height'),
         label(r(5, 2, -1), 'Reset Room'))
-    room.function('witch_init').add(placer(*west_placer, adults=True).summon('witch'))
+    place = list(copy.deepcopy(west_placer))
+    if restworld.version >= VERSION_1_20:
+        place[0][2] -= 0.5
+    room.function('witch_init').add(placer(*place, adults=True).summon('witch'))
     room.function('zombie_horse_init').add(
         placer(*east_placer).summon(Entity('zombie_horse', name='Zombie Horse (Unused)')))
     zombie_jockey = room.score('zombie_jockey')
@@ -134,3 +147,14 @@ def room():
 
     room.loop('zombie', main_clock).add(kill_em(e().tag('zombieish'))).loop(
         zombie_loop, ('Zombie', 'Husk', 'Drowned'))
+
+    if restworld.version >= VERSION_1_20:
+        placer = room.mob_placer(r(0, 2, 0), NORTH, adults=True)
+        room.function('enderman_init').add(
+            execute().unless().entity(e().type('enderman').distance((None, 5))).run(list(placer.summon('enderman'))[0]))
+
+        # room.function('silverfish_init').add(placer(r(0.2, 2, 0), silverfish_dir, adults=True).summon('silverfish'))
+        placer = room.mob_placer(r(0, 2, 0.2), NORTH, adults=True)
+        room.function('endermite_init').add(placer.summon('endermite'))
+
+        room.function('warden_init').add((room.mob_placer(r(0, 2, -0.5), NORTH, adults=True).summon('warden'),))
