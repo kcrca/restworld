@@ -51,7 +51,14 @@ def room():
         axolotl_placer = room.mob_placer(r(1.3, 3.1, 0.6), 135, (0, 0), (-1.4, -1.4))
     else:
         axolotl_placer = room.mob_placer(r(-0.4, 3, 0), WEST, None, 1.8)
-    room.function('axolotl_init').add(axolotl_placer.summon('axolotl'))
+    if restworld.version < VERSION_1_20:
+        room.function('axolotl_init').add(axolotl_placer.summon('axolotl'))
+    else:
+        room.function('axolotl_init').add(
+            axolotl_placer.summon('axolotl'),
+            execute().at(e().tag('axolotl_dry_home')).run(
+                room.mob_placer(r(0, 3, 0), EAST,kid_delta=2).summon('axolotl')))
+        room.function('axolotl_dry')
     room.loop('axolotl', main_clock).loop(
         lambda step: execute().as_(e().tag('axolotl')).run(data().merge(
             s(), {'Variant': step.i, 'CustomName': step.elem + ' Axolotl'})), axolotls)
