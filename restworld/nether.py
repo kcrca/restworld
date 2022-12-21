@@ -29,8 +29,8 @@ def room():
     else:
         ghast_height, ghast_dir = 6, WEST
         room.function('fireball_init').add(
-            placer(r(-0.2, 2, 0), rhs_dir, adults=True).summon(fireball),
-            WallSign((None, 'Fireball')).place(r(1, 2, 0), rhs_dir)        )
+            placer(r(1, 3, 0), rhs_dir, adults=True).summon(fireball),
+            WallSign((None, 'Fireball')).place(r(0, 2, 0), rhs_dir)        )
     room.function('ghast_init', exists_ok=True).add(
         placer(r(-0.5, ghast_height, 0), ghast_dir, adults=True).summon('Ghast'))
     cube_dir = EAST if restworld.version < VERSION_1_20 else SOUTH

@@ -1,14 +1,15 @@
 from __future__ import annotations
 
 from pynecraft.base import EAST, NORTH, SOUTH, WEST, r
-from pynecraft.commands import MOVE, clone, data, e, execute, fill, function, kill, s, setblock, summon, tag
+from pynecraft.commands import Entity, MOVE, clone, data, e, execute, fill, function, kill, s, setblock, summon, tag
 from pynecraft.simpler import WallSign
 from restworld.rooms import Room, label
-from restworld.world import main_clock, restworld
+from restworld.world import VERSION_1_20, main_clock, restworld
 
 
 def room():
-    room = Room('enders', restworld, WEST, (None, 'The End'))
+    room_dir = WEST if restworld.version < VERSION_1_20 else NORTH
+    room = Room('enders', restworld, room_dir, (None, 'The End'))
 
     def cage_loop(step):
         if step.i == 0:
@@ -36,15 +37,28 @@ def room():
     room.loop('dragon_head', main_clock).loop(
         lambda step: setblock(r(0, 2, 0), 'redstone_torch' if step.i == 0 else 'air'), range(0, 2))
 
+    # Currently, "Rotation" does not affect the dragon, so it will always face north, so arrange things accordingly.
+    if restworld.version < VERSION_1_20:
+        dragon_pos = r(0, 3, -10)
+    else:
+        dragon_pos = r(0, 3, 0)
+    dragon_fireball = Entity('dragon_fireball', nbt={'direction': {0.0, 0.0, 0.0}, 'ExplosionPower': 0})
     room.function('dragon_init').add(
         kill(e().type('ender_dragon')),
         kill(e().type('dragon_fireball')),
         WallSign((None, 'Ender Dragon')).place(r(0, 2, -5), NORTH),
-        WallSign((None, 'Dragon Fireball')).place(r(0, 2, -15), NORTH),
-        room.mob_placer(r(0, 3, -5), NORTH, adults=True).summon('ender_dragon', tags=('dragon', 'dragon_thing')),
-        room.mob_placer(r(0, 3, -14), NORTH, adults=True).summon(
-            'dragon_fireball', tags=('dragon_thing',), nbt={'direction': {0.0, 0.0, 0.0}, 'ExplosionPower': 0}),
+        room.mob_placer(dragon_pos, NORTH, adults=True).summon('ender_dragon', tags=('dragon', 'dragon_thing'))
     )
+    if restworld.version < VERSION_1_20:
+        room.function('dragon_init').add(
+            WallSign((None, 'Dragon Fireball')).place(r(0, 2, -15), NORTH),
+            room.mob_placer(r(-3, 3, -12), NORTH, adults=True).summon(dragon_fireball, tags=('dragon_thing',)))
+    else:
+       fbf = room.function('dragon_fireball_init').add(
+            kill(e().type('dragon_fireball')),
+            WallSign((None, 'Dragon Fireball')).place(r(0, 2, -1), NORTH),
+            room.mob_placer(r(0, 3, 0), NORTH, adults=True).summon(dragon_fireball, tags=('dragon_thing',)))
+
     room.function('end_portal_init', exists_ok=True).add(
         execute().as_(e().tag('end_portal_home')).run(tag(s()).add('blockers_home')))
 
@@ -57,7 +71,8 @@ def room():
         yield fill(r(1, 2, -2), r(-1, 2, -2), ('end_portal_frame', {'facing': SOUTH, 'eye': step.elem}))
         yield fill(r(1, 2, 1), r(-1, 2, -1), after)
         yield fill(r(2, 2, -5), r(-2, 2, -9), after).replace(before)
-        yield setblock(r(0, 6, -7), 'air' if after == 'air' else 'dragon_egg')
+        if restworld.version < VERSION_1_20:
+            yield setblock(r(0, 6, -7), 'air' if after == 'air' else 'dragon_egg')
 
     room.loop('end_portal', main_clock).loop(end_portal_loop, (True, False))
 
@@ -71,14 +86,21 @@ def room():
     placer = room.mob_placer(r(0, 2, -0.2), SOUTH, adults=True)
     room.function('endermite_init').add(placer.summon('endermite'))
 
-    # I don't know why I need to do this explicitly after setting the rotation above, but it works
-    # data modify entity entity().tag('shulker').limit(1) Rotation set value  {0,0 }
-    placer = room.mob_placer(r(0, 3, 0), SOUTH, adults=True)
+    if restworld.version < VERSION_1_20:
+        shulker_dir = SOUTH
+        bullet_loc = r(1, 3, 1)
+        bullet_sign_loc = r(1, 2, 2)
+    else:
+        shulker_dir = WEST
+        bullet_loc = r(-1, 3, 1)
+        bullet_sign_loc = r(-1, 2, 2)
+    placer = room.mob_placer(r(0, 3, 0), shulker_dir, adults=True)
     room.function('shulker_init').add(
         placer.summon('shulker', nbt={'Color': 16, 'Peek': 0}),
-        room.mob_placer(r(1, 3, 1), SOUTH, adults=True).summon(
+        room.mob_placer(
+            bullet_loc, shulker_dir, adults=True).summon(
             'shulker_bullet', nbt={'NoGravity': True, 'TXD': 0, 'TYD': 0, 'TZD': 0, 'Steps': 0, 'Motion': [0, 0, 0]}),
-        WallSign((None, 'Shulker Bullet')).place(r(1, 2, 2), SOUTH),
+        WallSign((None, 'Shulker Bullet')).place(bullet_sign_loc, shulker_dir),
         label(r(1, 2, 6), 'Reset Room'),
         label(r(-1, 2, 6), 'Change Height'),
     )
