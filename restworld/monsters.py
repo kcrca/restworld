@@ -47,7 +47,8 @@ def room():
             x = 0 if restworld.version < VERSION_1_20 else 1
             yield placer(r(x, 3.5, z), dir, adults=True, tags=tags).summon(
                 Entity('vex', nbt={'HandItems': [Item.nbt_for('iron_sword')], 'LifeTicks': 2147483647}))
-            yield placer(r(-1, 2, 1), dir, adults=True, tags=tags).summon(Entity('Evoker Fangs', nbt={'Warmup': 0}))
+            yield placer(r(-1 + 2 * x, 2, 1), dir, adults=True, tags=tags).summon(
+                Entity('Evoker Fangs', nbt={'Warmup': 0}))
 
     room.loop('illager', main_clock).add(kill_em(e().tag(*tags))).loop(illager_loop, illagers)
 
