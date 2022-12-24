@@ -87,9 +87,10 @@ def room():
         kill_em(e().tag('skeleton_horse', '!kid'))
     ).loop(skeleton_horse_loop, range(0, 2))
 
+    rider_label_pos = r(3, 2, 0) if restworld.version < VERSION_1_20 else r(2, 2, -1)
     room.function('skeleton_horse_init').add(
         placer(*east_placer).summon('Skeleton Horse'),
-        label(r(3, 2, 0), 'Rider'))
+        label(rider_label_pos, 'Rider'))
 
     bow = Item.nbt_for('bow')
     helmet = Item.nbt_for('iron_helmet')
@@ -101,23 +102,25 @@ def room():
     ).loop(lambda step: placer(*west_placer, adults=True).summon(
         Entity(step.elem, nbt={'HandItems': [bow]}).tag('skeletal')), ('Skeleton', 'Stray'))
 
+    spider_dir = EAST if restworld.version < VERSION_1_20 else NORTH
+    spider_facing = good_facing(spider_dir)
+    spider_rot = {'Rotation': spider_facing.rotation, 'Facing': spider_facing.name}
+
     def spider_loop(step):
-        dir = EAST if restworld.version < VERSION_1_20 else NORTH
-        p = placer(r(-0.2, 2.5, -0.2), dir, -2.5, nbt={'Tags': ['spiders']}, adults=True)
+        p = placer(r(-0.2, 2.5, -0.2), spider_dir, -2.5, nbt={'Tags': ['spiders']}, adults=True)
         for s in ('Spider', 'Cave Spider'):
             spider = Entity(s)
             if step.i == 1:
-                spider.passenger(rider.merge_nbt(east_rot).merge_nbt(MobPlacer.base_nbt))
+                spider.passenger(rider.merge_nbt(spider_rot).merge_nbt(MobPlacer.base_nbt))
             yield p.summon(spider)
 
     room.loop('spiders').add(
         kill_em(e().tag('spiders'))
     ).loop(spider_loop, range(0, 2))
+    jockey_label_pos = r(2, 2, -2) if restworld.version < VERSION_1_20 else r(-2, 2, -1)
     room.function('spiders_init').add(
         function('restworld:monsters/spiders_cur'),
-        label(r(2, 2, -2), 'Jockey'),
-        label(r(5, 2, -3), 'Change Height'),
-        label(r(5, 2, -1), 'Reset Room'))
+        label(jockey_label_pos, 'Jockey'))
     place = list(copy.deepcopy(west_placer))
     if restworld.version >= VERSION_1_20:
         place[0][2] -= 0.5
@@ -128,11 +131,12 @@ def room():
     room.function('zombie_horse_init').add(
         placer(*place).summon(Entity('zombie_horse', name='Zombie Horse (Unused)')))
     zombie_jockey = room.score('zombie_jockey')
+    zombie_jockey_label_pos = r(3, 2, 0) if restworld.version < VERSION_1_20 else r(2, 2, -1)
     room.function('zombie_init').add(
         zombie_jockey.set(0),
         execute().as_(e().tag('zombie_home')).run(tag(s()).add('zombie_home_selector')),
         execute().as_(e().tag('zombie_jockey_home')).run(tag(s()).add('zombie_home_selector')),
-        label(r(3, 2, 0), 'Jockey'))
+        label(zombie_jockey_label_pos, 'Jockey'))
 
     def zombie_loop(step):
         p = placer(r(0.2, 2, 0), EAST, 0, 1.8, tags=('zombieish',))

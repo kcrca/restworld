@@ -40,10 +40,16 @@ def room():
         bee_dir = WEST
         bar_pos, nest_pos = r(-2, 2, 0), r(2, 2, 0)
 
+    if restworld.version < VERSION_1_20:
+        stinger_label_pos = r(1, 2, -2)
+        pollen_label_pos = r(-1, 2, -2)
+    else:
+        stinger_label_pos = r(-2, 2, 1)
+        pollen_label_pos = r(-2, 2, -1)
     room.function('bee_init').add(
         placer(r(0, 3, 0), bee_dir, 0, 2).summon('bee'),
-        label(r(1, 2, -2), 'Stinger'),
-        label(r(-1, 2, -2), 'Pollen'))
+        label(stinger_label_pos, 'Stinger'),
+        label(pollen_label_pos, 'Pollen'))
 
     def bee_loop(step):
         bee_house = 'beehive' if step.i == 0 else 'bee_nest'
@@ -226,15 +232,17 @@ def room():
         ('Aggressive', 'Lazy', 'Weak', 'Worried', 'Playful', 'Normal', 'Brown'))
     if restworld.version < VERSION_1_20:
         parrot_dir, parrot_pos = NORTH, r(0, 3, 1)
+        disc_chest_pos = r(-1, 1, 0)
     else:
         parrot_dir, parrot_pos = WEST, r(0, 3, 0)
+        disc_chest_pos = r(-1, 1, 1)
     parrot_fence_pos = list(parrot_pos)
     parrot_fence_pos[1] -= 1
     room.function('parrot_init').add(
         placer(parrot_pos, parrot_dir, adults=True).summon('parrot'),
         function('restworld:friendlies/parrot_enter'))
     room.function('parrot_enter').add(
-        (item().replace().block(r(-1, 1, 0), f'container.{i:d}').with_(d) for i, d in enumerate(music_discs)))
+        (item().replace().block(disc_chest_pos, f'container.{i:d}').with_(d) for i, d in enumerate(music_discs)))
 
     parrots = ('Red', 'Blue', 'Green', 'Cyan', 'Gray')
     parrot_settings = []
@@ -294,22 +302,28 @@ def room():
     room.loop('trader_llama', main_clock).loop(
         lambda step: execute().as_(e().type('trader_llama')).run(data().modify(s(), 'Variant').set().value(step.i)),
         ('Creamy', 'White', 'Brown', 'Gray'))
+    if restworld.version < VERSION_1_20:
+        switch_label_pos = r(1, 2, -2)
+        egg_sign_pos = r(0, 2, 2, )
+        egg_sign_dir = NORTH
+    else:
+        switch_label_pos = r(3, 2, 0)
+        egg_sign_pos = r(-2, 2, 0, )
+        egg_sign_dir = EAST
     room.function('turtle_eggs_init').add(
         execute().as_(e().tag('turtle_home')).run(tag(s()).add('blockers_home')),
-        WallSign((None, 'Turtle Eggs')).place(r(0, 2, 2, ), NORTH),
-        label(r(1, 2, -2), 'On Sand')
+        WallSign((None, 'Turtle Eggs')).place(egg_sign_pos, egg_sign_dir),
+        label(switch_label_pos, 'On Sand')
     )
 
     def turtle_egg_loop(step):
         for count in range(4, 0, -1):
             eggs = ('turtle_egg', {'eggs': count, 'hatch': step.elem})
             if restworld.version < VERSION_1_20:
-                sign_pos = r(0, 2, 2)
                 yield setblock(r(0, 2, count - 3), eggs)
             else:
-                sign_pos = r(2, 2, 0)
                 yield setblock(r(3 - count, 2, 0), eggs)
-        yield data().merge(sign_pos, {'Text3': f'Hatch Age: {step.elem:d}'})
+            yield data().merge(egg_sign_pos, {'Text3': f'Hatch Age: {step.elem:d}'})
 
     room.loop('turtle_eggs', main_clock).loop(turtle_egg_loop, range(0, 3), bounce=True)
     turtle_dir = NORTH if restworld.version < VERSION_1_20 else EAST
