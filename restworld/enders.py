@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from pynecraft.base import EAST, NORTH, SOUTH, WEST, r
+from pynecraft.base import EAST, NORTH, SOUTH, WEST, good_facing, r
 from pynecraft.commands import Entity, MOVE, clone, data, e, execute, fill, function, kill, s, setblock, summon, tag
 from pynecraft.simpler import WallSign
 from restworld.rooms import Room, label
@@ -106,8 +106,9 @@ def room():
         label(r(-1, 2, 6), 'Change Height'),
     )
 
+    shulker_facing = good_facing(shulker_dir)
     def shulker_loop(step):
         yield data().merge(e().tag('shulker').limit(1), {'Peek': step.elem})
-        yield data().modify(e().tag('shulker').limit(1), 'Rotation').set().value([0, 0])
+        yield data().modify(e().tag('shulker').limit(1), 'Rotation').set().value(shulker_facing.rotation)
 
     room.loop('shulker', main_clock).loop(shulker_loop, (0, 30, 100))
