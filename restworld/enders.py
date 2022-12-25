@@ -43,14 +43,14 @@ def room():
     else:
         dragon_pos = r(0, 3, 0)
     dragon_fireball = Entity('dragon_fireball', nbt={'direction': {0.0, 0.0, 0.0}, 'ExplosionPower': 0})
-    room.function('dragon_init').add(
+    dragon_func = room.function('dragon_init').add(
         kill(e().type('ender_dragon')),
         kill(e().type('dragon_fireball')),
         WallSign((None, 'Ender Dragon')).place(r(0, 2, -5), NORTH),
         room.mob_placer(dragon_pos, NORTH, adults=True).summon('ender_dragon', tags=('dragon', 'dragon_thing'))
     )
     if restworld.version < VERSION_1_20:
-        room.function('dragon_init').add(
+        dragon_func.add(
             WallSign((None, 'Dragon Fireball')).place(r(0, 2, -15), NORTH),
             room.mob_placer(r(-3, 3, -12), NORTH, adults=True).summon(dragon_fireball, tags=('dragon_thing',)))
     else:
