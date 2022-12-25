@@ -27,7 +27,8 @@ def room():
         kill(e().type('painting').distance((None, 10))),
         summon('painting', r(0, 3, 0), {'variant': 'wither', 'facing': good_facing(EAST).number}),
         WallSign((None, 'Wither')).place(r(0, 3, -1), WEST))
-    room.function('wither_mob_init').add(WallSign(()).place(wither_sign_pos, wither_dir))
+    if restworld.version >= VERSION_1_20:
+        room.function('wither_mob_init').add(WallSign(()).place(wither_sign_pos, wither_dir))
     # Rotating the wither skull shouldn't be needed, but it is (at least as of RestWorld 1.20
     room.function('wither_mob_enter').add(
         room.mob_placer(r(0, 3, 0), wither_dir, tags=('wither_mob',), adults=True).summon('wither'),

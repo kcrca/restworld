@@ -35,7 +35,7 @@ def room():
 
     if restworld.version < VERSION_1_20:
         bee_dir = NORTH
-        bar_pos, nest_pos = r(0, 2, -2), r(0, 1, 0)
+        bar_pos, nest_pos = r(0, 2, -2), r(0, 2, 2)
     else:
         bee_dir = WEST
         bar_pos, nest_pos = r(-2, 2, 0), r(2, 2, 0)
@@ -323,7 +323,7 @@ def room():
                 yield setblock(r(0, 2, count - 3), eggs)
             else:
                 yield setblock(r(3 - count, 2, 0), eggs)
-            yield data().merge(egg_sign_pos, {'Text3': f'Hatch Age: {step.elem:d}'})
+        yield data().merge(egg_sign_pos, {'Text3': f'Hatch Age: {step.elem:d}'})
 
     room.loop('turtle_eggs', main_clock).loop(turtle_egg_loop, range(0, 3), bounce=True)
     turtle_dir = NORTH if restworld.version < VERSION_1_20 else EAST

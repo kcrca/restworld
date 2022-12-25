@@ -124,7 +124,7 @@ def all_fish_funcs(room, clock_sign, reset_sign):
 
     def all_fish_init():
         if restworld.version < VERSION_1_20:
-            yield WallSign((None, 'All Possible', 'Tropical Fish', '-------->')).place(r(0, 2, 0), WEST, water=True)
+            yield WallSign((None, 'All Possible', 'Tropical Fish', '-------->')).place(r(0, 2, -1), WEST, water=True)
             yield clock_sign.place(r(3, 4, 2), WEST, water=True)
             yield reset_sign.place(r(3, 6, 2), WEST, water=True)
             start, facing, delta = r(0.5, 3.2, 0), WEST, -1

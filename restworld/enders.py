@@ -39,7 +39,7 @@ def room():
 
     # Currently, "Rotation" does not affect the dragon, so it will always face north, so arrange things accordingly.
     if restworld.version < VERSION_1_20:
-        dragon_pos = r(0, 3, -10)
+        dragon_pos = r(0, 3, -5)
     else:
         dragon_pos = r(0, 3, 0)
     dragon_fireball = Entity('dragon_fireball', nbt={'direction': {0.0, 0.0, 0.0}, 'ExplosionPower': 0})
@@ -52,9 +52,9 @@ def room():
     if restworld.version < VERSION_1_20:
         dragon_func.add(
             WallSign((None, 'Dragon Fireball')).place(r(0, 2, -15), NORTH),
-            room.mob_placer(r(-3, 3, -12), NORTH, adults=True).summon(dragon_fireball, tags=('dragon_thing',)))
+            room.mob_placer(r(0, 3, -14), NORTH, adults=True).summon(dragon_fireball, tags=('dragon_thing',)))
     else:
-       fbf = room.function('dragon_fireball_init').add(
+       room.function('dragon_fireball_init').add(
             kill(e().type('dragon_fireball')),
             WallSign((None, 'Dragon Fireball')).place(r(0, 2, -1), NORTH),
             room.mob_placer(r(0, 3, 0), NORTH, adults=True).summon(dragon_fireball, tags=('dragon_thing',)))

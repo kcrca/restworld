@@ -118,9 +118,13 @@ def room():
         kill_em(e().tag('spiders'))
     ).loop(spider_loop, range(0, 2))
     jockey_label_pos = r(2, 2, -2) if restworld.version < VERSION_1_20 else r(-2, 2, -1)
-    room.function('spiders_init').add(
+    spiders_init = room.function('spiders_init').add(
         function('restworld:monsters/spiders_cur'),
         label(jockey_label_pos, 'Jockey'))
+    if restworld.version < VERSION_1_20:
+        spiders_init.add(
+            label(r(5, 2, -3), 'Change Height'),
+            label(r(5, 2, -1), 'Reset Room'))
     place = list(copy.deepcopy(west_placer))
     if restworld.version >= VERSION_1_20:
         place[0][2] -= 0.5

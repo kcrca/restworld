@@ -1,11 +1,12 @@
 import re
 from collections import defaultdict
 
+from pynecraft import info
 from pynecraft.base import EAST, EQ, NORTH, d, r, rotated_facing, to_name
 from pynecraft.commands import REPLACE, \
     comment, data, e, execute, fill, function, item, kill, p, schedule, setblock, summon, tag
 from pynecraft.enums import ValueEnum
-from pynecraft.info import block_items, blocks, items
+from pynecraft.info import block_items
 from pynecraft.simpler import Item, ItemFrame, WallSign
 from restworld import global_
 from restworld.rooms import ActionDesc, SignedRoom, Wall, label, named_frame_item, span
@@ -245,10 +246,11 @@ def room():
             execute().positioned(r(-1, -0.5, 0)).run(function(f'restworld:models/all_{which}_home')),
             tag(e().tag(f'all_{which}_home')).add('all_things_home'))
 
-    block_list = tuple(filter(lambda block: block.name not in block_items and 'Air' not in block.name, blocks.values()))
+    block_list = tuple(
+        filter(lambda block: block.name not in block_items and 'Air' not in block.name, info.blocks.values()))
     thing_funcs('blocks', block_list)
     thing_funcs('sampler_blocks', sample('blocks', block_list))
-    item_list = tuple(filter(lambda row: 'Spawn' not in row.name, items.values()))
+    item_list = tuple(filter(lambda row: 'Spawn' not in row.name, info.items.values()))
     thing_funcs('items', item_list)
     thing_funcs('sampler_items', sample('items', item_list))
     room.function('start_manual').add(kill(all_things_home))

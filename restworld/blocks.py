@@ -122,8 +122,8 @@ def room():
         bee_nests[0].append(Block('beehive', state=state, name=f'Beehive|Honey Level: {i}'))
         bee_nests[1].append(Block('bee_nest', state=state, name=f'Bee Nest|Honey Level: {i}'))
     blocks('bee_nest', SOUTH, bee_nests, dx=-3)
-    bookshelves = ['Bookshelf']
     if restworld.experimental:
+        bookshelves = ['Bookshelf']
         bookshelves.extend((
             Block('chiseled_bookshelf', {'facing': SOUTH, }, name='Empty|Chiseled|Bookshelf'),
             Block('chiseled_bookshelf',
@@ -134,7 +134,7 @@ def room():
                    'slot_0_occupied': True, 'slot_1_occupied': True, 'slot_2_occupied': True,
                    'slot_3_occupied': True, 'slot_4_occupied': True, 'slot_5_occupied': True, },
                   name='Full|Chiseled|Bookshelf')))
-    blocks('bookshelves', SOUTH, bookshelves)
+        blocks('bookshelves', SOUTH, bookshelves)
     blocks('bricks', NORTH, (
         'Bricks', 'Quartz Bricks', 'Mud Bricks', 'Deepslate|Bricks', 'Cracked|Deepslate|Bricks', 'Deepslate|Tiles',
         'Cracked|Deepslate|Tiles', 'Prismarine Bricks', 'Nether Bricks', 'Cracked|Nether Bricks',

@@ -8,7 +8,10 @@ from restworld.world import VERSION_1_20, kill_em, main_clock, restworld
 
 
 def room():
-    room = Room('nether', restworld, WEST, (None, 'Nether', 'Mobs'))
+    if restworld.version < VERSION_1_20:
+        room = Room('nether', restworld, EAST, (None, 'Nether', 'Monsters,', 'Wither'))
+    else:
+       room = Room('nether', restworld, WEST, (None, 'Nether', 'Mobs'))
 
     def placer(*args, **kwargs):
         return room.mob_placer(*args, **kwargs)
@@ -19,7 +22,6 @@ def room():
     room.function('blaze_init').add(placer(r(-0.2, 2, 0), rhs_dir, adults=True).summon('blaze'))
     room.function('wither_skeleton_init').add(placer(r(-0.2, 2, 0), rhs_dir, adults=True).summon(
         'wither_skeleton', nbt={'HandItems': [Item.nbt_for('stone_sword')]}))
-    ghast_dir = SOUTH if restworld.version < VERSION_1_20 else EAST
     fireball = Entity('Fireball', {'direction': [0, 0, 0], 'ExplosionPower': 0})
     if restworld.version < VERSION_1_20:
         ghast_height, ghast_dir = 5, SOUTH
@@ -44,9 +46,8 @@ def room():
     piglins = (Entity('Piglin', nbt={'HandItems': [Item.nbt_for('golden_sword')]}), 'Zombified Piglin')
     hoglins = ('Hoglin', 'Zoglin')
 
-    hoglin_offset = 2 if restworld.version < VERSION_1_20 else -2
     def piglin_loop(step):
-        p = placer(r(0, 2, 0), lhs_dir, hoglin_offset, 3, tags=('piglin',))
+        p = placer(r(0, 2, 0), lhs_dir, 3, 3, tags=('piglin',))
         yield p.summon(step.elem)
         yield p.summon(hoglins[step.i])
 

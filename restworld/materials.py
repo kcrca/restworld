@@ -510,5 +510,5 @@ def wood_functions(room):
 
     woods = info.woods
     if restworld.experimental:
-        woods.append('Bamboo Mosaic')
+        woods = woods + ('Bamboo Mosaic',)
     room.loop('wood', main_clock).add(kill_em(e().tag('wood_boat'))).loop(wood_loop, woods + stems)

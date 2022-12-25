@@ -5,7 +5,7 @@ import random
 
 from packaging.version import Version
 
-from pynecraft.base import parameters
+from pynecraft.base import Parameters, parameters
 from restworld import ancient, aquatic, arena, banners, biomes, blocks, center, connect, diy, effects, \
     enders, font, friendlies, global_, gui, hud, maps, materials, models, monsters, multimob, nether, paintings, \
     particles, photo, plants, redstone, save, tags, the_end, time, wither
@@ -22,7 +22,7 @@ def main():
     cmdline.add_argument('version', type=str, default='1.19.3')
     cmdline.add_argument('--mcversion', type=str)
     args = cmdline.parse_args()
-    restworld.experimental = '+x' in args.version
+    restworld.experimental = '+x' in args.version or Version(args.version) > Parameters.VERSION_1_19_3_X
     restworld.version = Version(args.version)
     mc_version = args.mcversion
     if not mc_version:

@@ -3,9 +3,9 @@ from __future__ import annotations
 import copy
 import math
 
+from pynecraft import info
 from pynecraft.base import EAST, NE, NORTH, NW, SE, SOUTH, SW, WEST, good_facing, r, rotated_facing
 from pynecraft.commands import Entity, JsonText, comment, data, e, execute, fill, function, kill, s, setblock, tag
-from pynecraft.info import mobs
 from pynecraft.simpler import Item, VILLAGER_BIOMES, VILLAGER_PROFESSIONS, WallSign
 from restworld.rooms import Room, label
 from restworld.world import kill_em, restworld
@@ -80,7 +80,7 @@ def room():
         function(menu_clear),
         fill(r(-9, 2, -9), r(9, 4, 9), 'air').replace('water'),
         fill(r(-9, 2, -9), r(9, 4, 9), 'air').replace('structure_void'))
-    my_mobs = copy.deepcopy(mobs)
+    my_mobs = copy.deepcopy(info.mobs)
     my_mobs['<None>'] = Entity('none', name='<None>')
     all_mobs = tuple(my_mobs.keys())
     max_per_group = math.ceil(len(all_mobs) / NUM_GROUPS)
