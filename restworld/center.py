@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from pynecraft.base import EAST, NORTH, SOUTH, WEST, r
 from pynecraft.commands import Entity, Score, clone, e, execute, fill, kill, scoreboard, summon, tag
+from pynecraft.info import Horse
 from pynecraft.simpler import WallSign
 from restworld.rooms import Room
 from restworld.world import fast_clock, main_clock, restworld, slow_clock
@@ -71,7 +72,7 @@ def room():
         summon('cow', r(-6, 2.5, 0), all),
         summon('polar_bear', r(-6, 2.5, 0), all),
         summon('panda', r(-6, 2.5, 0), all),
-        summon('horse', r(-6, 2.5, 0), all),
+        summon(Horse('horse', Horse.Color.CHESTNUT, Horse.Markings.WHITE), r(-6, 2.5, 0), all),
 
         summon('camel' if restworld.experimental else 'turtle', r(6, 2.5, 0), all),
         summon('llama', r(6, 2.5, 0), all),
