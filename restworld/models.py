@@ -224,7 +224,7 @@ def room():
 
         def all_loop(step):
             yield item().replace().entity(model_src, 'container.0').with_(step.elem)
-            name = step.elem.name
+            name = step.elem.name.replace(' [x]', '')
             yield at_home(data().merge(signs[-1], {'Text1': name}))
 
         all_things = things
