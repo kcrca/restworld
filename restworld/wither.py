@@ -8,7 +8,6 @@ from restworld.world import VERSION_1_20, kill_em, main_clock, restworld
 
 
 def room():
-
     if restworld.version < VERSION_1_20:
         wither_dir = NORTH
         wither_sign_pos = r(0, 2, -2)
@@ -56,3 +55,6 @@ def room():
         kill(e().type('wither_skull')),
         room.mob_placer(r(0, 3, 0), wither_dir, adults=True).summon('Wither Skull', nbt=skull_rot_nbt),
         WallSign((None, 'Wither Skull')).place(skull_sign_pos, wither_dir))
+
+    room.function('wither_painting_init').add(
+        summon('painting', r(0, 3, 0), {'variant': 'wither', 'facing': good_facing(NORTH).number}))
