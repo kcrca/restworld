@@ -22,9 +22,9 @@ def main():
     cmdline.add_argument('version', type=str, default='1.19.3')
     cmdline.add_argument('--mcversion', type=str)
     args = cmdline.parse_args()
-    restworld.experimental = '+x' in args.version or Version(args.version) > Parameters.VERSION_1_19_3_X
     restworld.version = Version(args.version)
     mc_version = args.mcversion
+    restworld.experimental = '+x' in mc_version or Version(mc_version) > Parameters.VERSION_1_19_3_X
     if not mc_version:
         mc_version = args.version
     parameters.version = mc_version
