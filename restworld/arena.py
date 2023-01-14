@@ -23,8 +23,8 @@ def room():
     start_battle_type = Score('battle_type', 'arena')
     fighter_nbts = {
         'Drowned': {'HandItems': [Item.nbt_for('trident')], 'ArmorItems': [{}, {}, {}, Item.nbt_for('iron_helmet')]},
-        'Goat': {'IsScreamingGoat': 'True'},
-        'Hoglin': {'IsImmuneToZombification': 'True'},
+        'Goat': {'IsScreamingGoat': True,'HasLeftHorn': True, 'HasRightHorn': True},
+        'Hoglin': {'IsImmuneToZombification': True},
         'Llama': {'Strength': 5},
         'Magma Cube': {'Size': 0},
         'Panda': {'MainGene': 'aggressive'},
