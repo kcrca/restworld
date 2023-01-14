@@ -108,12 +108,17 @@ def room():
         yield setblock(r(-1, 2, -1),
                        ('comparator', {'facing': 'east', 'mode': mode}))
         yield data().merge(r(-1, 2, -2), Sign.lines_nbt((None, 'Comparator Mode:', mode.title())))
-        if step.i % 2 == 0:
+        if step.i > 0   :
             yield fill(r(0, 2, -1), r(0, 2, 1), 'redstone_block').replace('air')
         else:
             yield fill(r(0, 2, -1), r(0, 2, 1), 'air').replace('redstone_block')
+        if step.i == 2:
+            yield fill(r(0, 2, 2), r(-1, 2, 3), 'redstone_wire')
+            yield setblock(r(-1, 2, 2), ('repeater', {'facing': 'south'}))
+        else:
+            yield fill(r(0, 2, 2), r(-1, 2, 3), 'air')
 
-    room.loop('repeater', main_clock).loop(repeater_loop, range(0, 4))
+    room.loop('repeater', main_clock).loop(repeater_loop, range(0, 3))
     room.function('sculk_init').add(WallSign((None, 'Sculk Sensor')).place(r(-1, 3, 0), EAST))
     room.loop('sculk', main_clock).loop(lambda step: setblock(r(-4, 2, 0), 'air' if step.i else 'redstone_block'),
                                         range(3))
