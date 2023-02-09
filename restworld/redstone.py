@@ -108,7 +108,7 @@ def room():
         yield setblock(r(-1, 2, -1),
                        ('comparator', {'facing': 'east', 'mode': mode}))
         yield data().merge(r(-1, 2, -2), Sign.lines_nbt((None, 'Comparator Mode:', mode.title())))
-        if step.i > 0   :
+        if step.i > 0:
             yield fill(r(0, 2, -1), r(0, 2, 1), 'redstone_block').replace('air')
         else:
             yield fill(r(0, 2, -1), r(0, 2, 1), 'air').replace('redstone_block')
