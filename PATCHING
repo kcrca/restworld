@@ -1,0 +1,16 @@
+LWJGL:
+
+https://gist.github.com/nikhiljha/7313ac5553aafb1c8596b1fca0f4cdff
+
+
+
+
+Experimental features:
+
+Shut down the minecraft instance (may not be needed)
+Use an NBT editor (such as http://irath96.github.io/webNBT/) to upload a version of the world's level.dat file.
+Add "bundle" and "update_1_20" to the Data>DataPacks>Enabled values, and remove them from Data>DataPacks>Disabled.
+Add a new ListTag named "enabled_features" whose element type is StringTag
+Add three strings to it: "minecraft:update_1_20", "minecraft:bundle", and "minecraft:vanilla"
+Replace the level.dat file
+Use it.
