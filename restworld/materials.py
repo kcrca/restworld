@@ -549,6 +549,19 @@ def trim_functions(room):
             yield stand.summon(r(i, 2 + 1 - i % 2, i % 2))
         yield function('restworld:materials/trim_materials_cur')
 
+    def patterns_init_func():
+        yield kill_em(e().tag(patterns_tag))
+        for i, pattern in enumerate(trim_patterns):
+            stand = Entity('armor_stand').tag(room.name, overall_tag, patterns_tag)
+            armor(stand, 'iron', {'tag': {'Trim': {'pattern': pattern}}})
+            if i == 5:
+                stand.tag(f'{patterns_tag}_label')
+                stand.custom_name()
+                stand.custom_name_visible(True)
+                stand.name = 'Label'
+            yield stand.tag(f'{patterns_tag}_{i:02d}').summon(r(i, 2 + 1 - i % 2, 1 - i % 2 - 1),
+                                                              {'Rotation': [180, 0]})
+
     def armor_init_func():
         yield kill_em(e().tag(armors_tag))
         for i, armor_material in enumerate(armors):
@@ -564,19 +577,6 @@ def trim_functions(room):
                 stand.name = 'Label'
             armor(stand, armors[i])
             yield stand.summon(r(x, y, z), {'Rotation': [90, 0]})
-
-    def patterns_init_func():
-        yield kill_em(e().tag(patterns_tag))
-        for i, pattern in enumerate(trim_patterns):
-            stand = Entity('armor_stand').tag(room.name, overall_tag, patterns_tag)
-            armor(stand, 'iron', {'tag': {'Trim': {'pattern': pattern}}})
-            if i == 5:
-                stand.tag(f'{patterns_tag}_label')
-                stand.custom_name()
-                stand.custom_name_visible(True)
-                stand.name = 'Label'
-            yield stand.tag(f'{patterns_tag}_{i:02d}').summon(r(i, 2 + 1 - i % 2, 1 - i % 2 - 1),
-                                                              {'Rotation': [180, 0]})
 
     room.function('trim_materials_init').add(materials_init_func())
     room.function('trim_armors_init').add(armor_init_func())
