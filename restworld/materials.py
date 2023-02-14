@@ -584,29 +584,35 @@ def trim_functions(room):
 
     def materials_patterns_func(step):
         yield execute().as_(e().tag(materials_tag)).run(data().modify(s(), 'ArmorItems[]').merge().value(
-            {'tag': {'Trim': {'pattern': step.elem}}, 'CustomName': step.elem.title()}))
+            {'tag': {'Trim': {'pattern': step.elem}}}))
+        yield data().merge(e().tag(f'{materials_tag}_label').limit(1), {'CustomName': step.elem.title()})
 
     def materials_armors_func(step):
         for i, which in enumerate(armor_pieces):
             yield execute().as_(e().tag(materials_tag)).run(
                 data().modify(s(), f'ArmorItems[{i}]').merge().value({'id': f'{step.elem}_{which}'}))
+        yield data().merge(e().tag(f'{materials_tag}_label').limit(1), {'CustomName': step.elem.title()})
 
     def armors_patterns_func(step):
         yield execute().as_(e().tag(armors_tag)).run(data().modify(s(), 'ArmorItems[]').merge().value(
             {'tag': {'Trim': {'pattern': step.elem}}}))
+        yield data().merge(e().tag(f'{armors_tag}_label').limit(1), {'CustomName': step.elem.title()})
 
     def armors_materials_func(step):
         yield execute().as_(e().tag(armors_tag)).run(data().modify(s(), 'ArmorItems[]').merge().value(
             {'tag': {'Trim': {'material': step.elem}}}))
+        yield data().merge(e().tag(f'{armors_tag}_label').limit(1), {'CustomName': step.elem.title()})
 
     def patterns_materials_func(step):
         yield execute().as_(e().tag(patterns_tag)).run(data().modify(s(), 'ArmorItems[]').merge().value(
             {'tag': {'Trim': {'material': step.elem}}}))
+        yield data().merge(e().tag(f'{patterns_tag}_label').limit(1), {'CustomName': step.elem.title()})
 
     def patterns_armors_func(step):
         for i, which in enumerate(armor_pieces):
             yield execute().as_(e().tag(patterns_tag)).run(
                 data().modify(s(), f'ArmorItems[{i}]').merge().value({'id': f'{step.elem}_{which}'}))
+        yield data().merge(e().tag(f'{patterns_tag}_label').limit(1), {'CustomName': step.elem.title()})
 
     room.loop('trim_materials_patterns', main_clock).loop(materials_patterns_func, trim_patterns)
     room.loop('trim_materials_armors', main_clock).loop(materials_armors_func, armors)
