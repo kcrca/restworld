@@ -530,6 +530,16 @@ def armor(stand: Entity, kind: str, nbt: NbtDef = None):
     stand.merge_nbt({'ArmorItems': items})
 
 
+#
+# New trim plan:
+#   Sign saying "Show all:", with a second sign wit the current value. Touching the current value sign bfings up all
+#   three possibilities to select.
+#
+#   Third sign saying "Change:" with a fourth sign with the current value. Touching the current value behaves similarly.
+#
+#   If the new value of "show all" is the same as the current value of "Change", then "Change" is changed to some
+#   default
+#
 def trim_functions(room):
     overall_tag = 'trim_stand'
     materials_tag = 'trim_materials_stand'
