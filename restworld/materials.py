@@ -1,15 +1,15 @@
 from __future__ import annotations
 
 from pynecraft import info
-from pynecraft.base import EAST, NORTH, SOUTH, WEST, r, to_id
+from pynecraft.base import EAST, NORTH, Nbt, NbtDef, SOUTH, WEST, r, to_id
 from pynecraft.commands import Block, BlockDef, Entity, data, e, execute, fill, fillbiome, function, good_block, item, \
     kill, s, \
     setblock, summon, tag
 from pynecraft.enums import BiomeId
-from pynecraft.info import colors, stems
+from pynecraft.info import armors, colors, stems, trim_materials, trim_patterns
 from pynecraft.simpler import Item, ItemFrame, Region, Sign, WallSign
 from restworld.rooms import Room, label
-from restworld.world import fast_clock, kill_em, main_clock, restworld
+from restworld.world import VERSION_1_20, fast_clock, kill_em, main_clock, restworld
 
 
 def room():
@@ -166,6 +166,8 @@ def room():
     basic_functions(room)
     fencelike_functions(room)
     wood_functions(room)
+    if restworld.version >= VERSION_1_20:
+        trim_functions(room)
 
 
 def basic_functions(room):
@@ -513,3 +515,117 @@ def wood_functions(room):
     if restworld.experimental:
         woods = woods + ('Bamboo Mosaic',)
     room.loop('wood', main_clock).add(kill_em(e().tag('wood_boat'))).loop(wood_loop, woods + stems)
+
+
+armor_pieces = ('boots', 'leggings', 'chestplate', 'helmet')
+
+
+def armor(stand: Entity, kind: str, nbt: NbtDef = None):
+    if nbt is None:
+        nbt = {}
+    base_nbt = Nbt({'tag': {'Trim': {'material': 'redstone', 'pattern': 'coast'}}})
+    base_nbt = base_nbt.merge(nbt)
+    items = [Item.nbt_for(f'{kind}_{x}', base_nbt)
+             for x in armor_pieces]
+    stand.merge_nbt({'ArmorItems': items})
+
+
+def trim_functions(room):
+    overall_tag = 'trim_stand'
+    materials_tag = 'trim_materials_stand'
+    armors_tag = 'trim_armors_stand'
+    patterns_tag = 'trim_patterns_stand'
+
+    def materials_init_func():
+        yield kill_em(e().tag(materials_tag))
+        for i, material in enumerate(trim_materials):
+            stand = Entity('armor_stand').tag(room.name, overall_tag, materials_tag)
+            armor(stand, 'iron', {'tag': {'Trim': {'material': material}}})
+            if i == 5:
+                stand.tag(f'{materials_tag}_label')
+                stand.custom_name()
+                stand.custom_name_visible(True)
+                stand.name = 'Label'
+            yield stand.summon(r(i, 2 + 1 - i % 2, i % 2))
+        yield function('restworld:materials/trim_materials_cur')
+
+    def armor_init_func():
+        yield kill_em(e().tag(armors_tag))
+        for i, armor_material in enumerate(armors):
+            stand = Entity('armor_stand').tag(room.name, overall_tag, armors_tag)
+            x = 1 - i % 2 - 1
+            y = 2 + 1 - i % 2
+            z = 1 + i
+            if i == len(armors) - 1:
+                x, y, z = (-2, 2, 3)
+                stand.tag(f'{armors_tag}_label')
+                stand.custom_name()
+                stand.custom_name_visible(True)
+                stand.name = 'Label'
+            armor(stand, armors[i])
+            yield stand.summon(r(x, y, z), {'Rotation': [90, 0]})
+
+    def patterns_init_func():
+        yield kill_em(e().tag(patterns_tag))
+        for i, pattern in enumerate(trim_patterns):
+            stand = Entity('armor_stand').tag(room.name, overall_tag, patterns_tag)
+            armor(stand, 'iron', {'tag': {'Trim': {'pattern': pattern}}})
+            if i == 5:
+                stand.tag(f'{patterns_tag}_label')
+                stand.custom_name()
+                stand.custom_name_visible(True)
+                stand.name = 'Label'
+            yield stand.tag(f'{patterns_tag}_{i:02d}').summon(r(i, 2 + 1 - i % 2, 1 - i % 2 - 1),
+                                                              {'Rotation': [180, 0]})
+
+    room.function('trim_materials_init').add(materials_init_func())
+    room.function('trim_armors_init').add(armor_init_func())
+    room.function('trim_patterns_init').add(patterns_init_func())
+
+    def materials_patterns_func(step):
+        yield execute().as_(e().tag(materials_tag)).run(data().modify(s(), 'ArmorItems[]').merge().value(
+            {'tag': {'Trim': {'pattern': step.elem}}, 'CustomName': step.elem.title()}))
+
+    def materials_armors_func(step):
+        for i, which in enumerate(armor_pieces):
+            yield execute().as_(e().tag(materials_tag)).run(
+                data().modify(s(), f'ArmorItems[{i}]').merge().value({'id': f'{step.elem}_{which}'}))
+
+    def armors_patterns_func(step):
+        yield execute().as_(e().tag(armors_tag)).run(data().modify(s(), 'ArmorItems[]').merge().value(
+            {'tag': {'Trim': {'pattern': step.elem}}}))
+
+    def armors_materials_func(step):
+        yield execute().as_(e().tag(armors_tag)).run(data().modify(s(), 'ArmorItems[]').merge().value(
+            {'tag': {'Trim': {'material': step.elem}}}))
+
+    def patterns_materials_func(step):
+        yield execute().as_(e().tag(patterns_tag)).run(data().modify(s(), 'ArmorItems[]').merge().value(
+            {'tag': {'Trim': {'material': step.elem}}}))
+
+    def patterns_armors_func(step):
+        for i, which in enumerate(armor_pieces):
+            yield execute().as_(e().tag(patterns_tag)).run(
+                data().modify(s(), f'ArmorItems[{i}]').merge().value({'id': f'{step.elem}_{which}'}))
+
+    room.loop('trim_materials_patterns', main_clock).loop(materials_patterns_func, trim_patterns)
+    room.loop('trim_materials_armors', main_clock).loop(materials_armors_func, armors)
+    room.loop('trim_armors_patterns', main_clock).loop(armors_patterns_func, trim_patterns)
+    room.loop('trim_armors_materials', main_clock).loop(armors_materials_func, trim_materials)
+    room.loop('trim_patterns_materials', main_clock).loop(patterns_materials_func, trim_materials)
+    room.loop('trim_patterns_armors', main_clock).loop(patterns_armors_func, armors)
+
+    def switch(base, to1, to2):
+        room.function(f'trim_{base}_init', exists_ok=True).add(f'function restworld:materials/switch_{base}_to_{to1}')
+        switch_one(base, to2, to1)
+        switch_one(base, to1, to2)
+
+    def switch_one(base, last, to):
+        room.function(f'switch_{base}_to_{to}', home=False).add(
+            tag(e().tag(f'trim_{base}_home')).remove(f'trim_{base}_{last}_home'),
+            tag(e().tag(f'trim_{base}_home')).add(f'trim_{base}_{to}_home'),
+            function(f'restworld:materials/trim_{base}_{to}_cur'))
+
+    switch('materials', 'patterns', 'armors')
+    switch('armors', 'materials', 'patterns')
+    switch('patterns', 'materials', 'armors')
