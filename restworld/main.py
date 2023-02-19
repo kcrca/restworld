@@ -3,9 +3,7 @@ from __future__ import annotations
 import argparse
 import random
 
-from packaging.version import Version
-
-from pynecraft.base import Parameters, parameters
+from pynecraft.base import parameters
 from restworld import ancient, aquatic, arena, banners, biomes, blocks, center, connect, diy, effects, \
     enders, font, friendlies, global_, gui, hud, maps, materials, models, monsters, multimob, nether, paintings, \
     particles, photo, plants, redstone, save, tags, the_end, time, wither
@@ -13,8 +11,6 @@ from restworld.world import restworld
 
 
 def main():
-    global experimental
-
     # Use a constant seed so things appear random, but don't usually change from run to run (helps with diffs)
     random.seed(0xb00f)
 
@@ -22,9 +18,7 @@ def main():
     cmdline.add_argument('version', type=str, default='1.19.3')
     cmdline.add_argument('--mcversion', type=str)
     args = cmdline.parse_args()
-    restworld.version = Version(args.version)
     mc_version = args.mcversion
-    restworld.experimental = '+x' in mc_version or Version(mc_version) > Parameters.VERSION_1_19_3_X
     if not mc_version:
         mc_version = args.version
     parameters.version = mc_version

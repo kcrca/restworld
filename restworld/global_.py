@@ -153,7 +153,7 @@ def room():
     room.function('full_finish').add(
         function('restworld:_init'),
         function('restworld:_cur'),
-        # Some of these functions leave dropped items behind, this cleans that up'
+        # Some of these functions leave dropped items behind, this cleans that up
         kill(e().type('item')),
     )
     room.function('full_reset').add(

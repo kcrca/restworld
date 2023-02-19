@@ -79,11 +79,10 @@ def tags():
     }
     blocks['woodlike'] = {'values': [f'{x}_wood' for x in wood_ids] + [f'{x}_hyphae' for x in stem_ids]}
     blocks['loglike'] = {'values': [f'{x}_log' for x in wood_ids] + [f'{x}_stem' for x in stem_ids]}
-    if restworld.experimental:
-        blocks['leaflike']['values'] = list(filter(lambda x: x != 'bamboo_leaves', blocks['leaflike']['values']))
-        blocks['woodlike']['values'] = list(filter(lambda x: x != 'bamboo_wood', blocks['woodlike']['values']))
-        sp = blocks['loglike']['values']
-        sp[sp.index('bamboo_log')] = 'bamboo_block'
+    blocks['leaflike']['values'] = list(filter(lambda x: x != 'bamboo_leaves', blocks['leaflike']['values']))
+    blocks['woodlike']['values'] = list(filter(lambda x: x != 'bamboo_wood', blocks['woodlike']['values']))
+    sp = blocks['loglike']['values']
+    sp[sp.index('bamboo_log')] = 'bamboo_block'
     blocks['stripped_loglike'] = {'values': [f'stripped_{x}' for x in blocks['loglike']['values']]}
     blocks['stripped_woodlike'] = {'values': [f'stripped_{x}' for x in blocks['woodlike']['values']]}
 
@@ -102,8 +101,7 @@ def tags():
             'crimson_fungus'
         ]
     }
-    if restworld.experimental:
-        blocks['saplinglike']['values'].extend(('bamboo_sapling', 'bamboo'))
+    blocks['saplinglike']['values'].extend(('bamboo_sapling', 'bamboo'))
     coral_ids = tuple(x.lower() for x in corals)
     blocks['coral_fans'] = {'values': [f'{x}_coral_fan' for x in coral_ids]}
     blocks['dead_coral_plants'] = {'values': [f'dead_{x}_coral' for x in coral_ids]}
@@ -235,11 +233,10 @@ def tags():
             'oxidized_cut_copper'
         ]
     }
-    if restworld.experimental:
-        blocks['stepable_planks']['values'].extend(('bamboo_planks', 'bamboo_mosaic_block'))
-        blocks['planks'] = {
-            'values': ['#planks', 'bamboo_mosaic']
-        }
+    blocks['stepable_planks']['values'].extend(('bamboo_planks', 'bamboo_mosaic_block'))
+    blocks['planks'] = {
+        'values': ['#planks', 'bamboo_mosaic']
+    }
     blocks['stepable_stairs'] = {
         'values': [
             re.sub(r'blocks*', 'stairs',
@@ -251,6 +248,5 @@ def tags():
     blocks['stepable_slabs'] = {
         'values': [x.replace('stairs', 'slab') for x in blocks['stepable_stairs']['values']]
     }
-    if restworld.experimental:
-        sp = blocks['stepable_planks']['values']
-        sp[sp.index('bamboo_mosaic_block')] = 'bamboo_mosaic'
+    sp = blocks['stepable_planks']['values']
+    sp[sp.index('bamboo_mosaic_block')] = 'bamboo_mosaic'

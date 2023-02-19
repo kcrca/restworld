@@ -3,8 +3,6 @@ from __future__ import annotations
 import sys
 from datetime import date
 
-from packaging.version import Version
-
 from pynecraft.base import DARK_GREEN, DARK_PURPLE, r
 from pynecraft.commands import Commands, Entity, JsonText, data, e, execute, fill, function, give, p, tp
 from pynecraft.function import Function, FunctionSet
@@ -20,8 +18,7 @@ marker_tmpl = Entity('armor_stand', {'NoGravity': True, 'Small': True, })
 
 
 class Restworld(RoomPack):
-    def __init__(self, experimental=False):
-        self.experimental = experimental
+    def __init__(self):
         suffixes = list(RoomPack.base_suffixes)
         suffixes.extend(list(x.name for x in self.clocks()))
         super().__init__('restworld', suffixes, 4)
@@ -84,7 +81,7 @@ class Restworld(RoomPack):
             r'  Command Blocks\n  Software Design\n  Programming\n',
             JsonText.text(r'JUMBOshrimp277:\n').bold(),
             r'  World Design\n  Testing\n  Rubber Duck\n\n',
-            r'Minecraft Version:\n   1.19.2, ' + date.today().strftime('%-d %b %Y'),
+            r'Minecraft Version:\n   1.20, ' + date.today().strftime('%-d %b %Y'),
             JsonText.text(r'\n\nTry the ').italic(),
             JsonText.text(r'Clarity Pack!').underlined().italic().color(DARK_PURPLE).click_event().open_url(
                 'https://claritypack.com')
@@ -189,6 +186,3 @@ class Wall:
             if y < self.y_last:
                 return None, None
         return x, y
-
-
-VERSION_1_20 = Version('1.20')

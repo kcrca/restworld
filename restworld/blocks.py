@@ -122,19 +122,18 @@ def room():
         bee_nests[0].append(Block('beehive', state=state, name=f'Beehive|Honey Level: {i}'))
         bee_nests[1].append(Block('bee_nest', state=state, name=f'Bee Nest|Honey Level: {i}'))
     blocks('bee_nest', SOUTH, bee_nests, dx=-3)
-    if restworld.experimental:
-        bookshelves = ['Bookshelf']
-        bookshelves.extend((
-            Block('chiseled_bookshelf', {'facing': SOUTH, }, name='Empty|Chiseled|Bookshelf'),
-            Block('chiseled_bookshelf',
-                  {'facing': SOUTH, 'slot_0_occupied': True, 'slot_4_occupied': True, 'slot_5_occupied': True, },
-                  name='Partly Filled|Chiseled|Bookshelf'),
-            Block('chiseled_bookshelf',
-                  {'facing': SOUTH,
-                   'slot_0_occupied': True, 'slot_1_occupied': True, 'slot_2_occupied': True,
-                   'slot_3_occupied': True, 'slot_4_occupied': True, 'slot_5_occupied': True, },
-                  name='Full|Chiseled|Bookshelf')))
-        blocks('bookshelves', SOUTH, bookshelves)
+    bookshelves = ['Bookshelf']
+    bookshelves.extend((
+        Block('chiseled_bookshelf', {'facing': SOUTH, }, name='Empty|Chiseled|Bookshelf'),
+        Block('chiseled_bookshelf',
+              {'facing': SOUTH, 'slot_0_occupied': True, 'slot_4_occupied': True, 'slot_5_occupied': True, },
+              name='Partly Filled|Chiseled|Bookshelf'),
+        Block('chiseled_bookshelf',
+              {'facing': SOUTH,
+               'slot_0_occupied': True, 'slot_1_occupied': True, 'slot_2_occupied': True,
+               'slot_3_occupied': True, 'slot_4_occupied': True, 'slot_5_occupied': True, },
+              name='Full|Chiseled|Bookshelf')))
+    blocks('bookshelves', SOUTH, bookshelves)
     blocks('bricks', NORTH, (
         'Bricks', 'Quartz Bricks', 'Mud Bricks', 'Deepslate|Bricks', 'Cracked|Deepslate|Bricks', 'Deepslate|Tiles',
         'Cracked|Deepslate|Tiles', 'Prismarine Bricks', 'Nether Bricks', 'Cracked|Nether Bricks',
@@ -220,10 +219,9 @@ def room():
     leaves = [f'{x} Leaves' for x in woods] + ['Warped Wart Block', 'Nether Wart Block']
     logs = [f'{x} Log' for x in woods] + [f'{x} Stem' for x in stems]
     wood = [f'{x} Wood' for x in woods] + [f'{x} Hyphae' for x in stems]
-    if restworld.experimental:
-        logs[logs.index('Bamboo Log')] = 'Bamboo Block'
-        wood[wood.index('Bamboo Wood')] = 'Bamboo Mosaic'
-        leaves[leaves.index('Bamboo Leaves')] = ''
+    logs[logs.index('Bamboo Log')] = 'Bamboo Block'
+    wood[wood.index('Bamboo Wood')] = 'Bamboo Mosaic'
+    leaves[leaves.index('Bamboo Leaves')] = ''
     stripped_logs = ['Stripped|' + x for x in logs]
     stripped_woods = map(lambda x: '' if x == 'Stripped|Bamboo Mosaic' else x, ['Stripped|' + x for x in wood])
     blocks('wood_blocks', SOUTH, (tuple(f'{f} Planks' for f in woodlike),
@@ -1004,8 +1002,6 @@ def stepable_functions(room):
         'Polished|Blackstone Bricks', 'Quartz Block', 'Smooth|Quartz',
         'End Stone Bricks', 'Purpur Block',
     ]
-    if not restworld.experimental:
-        blocks = filter(lambda x: 'Bamboo' not in x, blocks)
     stairs = tuple(re.sub('(marine|ite)$', r'\1 Stairs', re.sub('[Ss]tone$', 'Stone Stairs',
                                                                 f.replace('Planks', 'Stairs')
                                                                 .replace('Tiles', 'Tile Stairs')
@@ -1017,8 +1013,7 @@ def stepable_functions(room):
                    for f in blocks)
     slabs = tuple(f.replace('Stairs', 'Slab') for f in stairs)
     # The mosaic's "Block" is here so it fits in the patterns, but it actually doesn't exist, so we remove it.
-    if restworld.experimental:
-        blocks[blocks.index('Bamboo Mosaic Block')] = 'Bamboo Mosaic'
+    blocks[blocks.index('Bamboo Mosaic Block')] = 'Bamboo Mosaic'
 
     room.function('stepable_init').add(
         WallSign((None, 'Block')).place(r(3, 4, 5, ), NORTH),

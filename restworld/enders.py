@@ -1,14 +1,14 @@
 from __future__ import annotations
 
 from pynecraft.base import EAST, NORTH, SOUTH, WEST, good_facing, r
-from pynecraft.commands import Entity, MOVE, clone, data, e, execute, fill, function, kill, s, setblock, summon, tag
+from pynecraft.commands import Entity, MOVE, clone, data, e, execute, fill, kill, s, setblock, summon, tag
 from pynecraft.simpler import WallSign
 from restworld.rooms import Room, label
-from restworld.world import VERSION_1_20, main_clock, restworld
+from restworld.world import main_clock, restworld
 
 
 def room():
-    room_dir = WEST if restworld.version < VERSION_1_20 else NORTH
+    room_dir = NORTH
     room = Room('enders', restworld, room_dir, (None, 'The End'))
 
     def cage_loop(step):
@@ -38,26 +38,18 @@ def room():
         lambda step: setblock(r(0, 2, 0), 'redstone_torch' if step.i == 0 else 'air'), range(0, 2))
 
     # Currently, "Rotation" does not affect the dragon, so it will always face north, so arrange things accordingly.
-    if restworld.version < VERSION_1_20:
-        dragon_pos = r(0, 3, -5)
-    else:
-        dragon_pos = r(0, 3, 0)
+    dragon_pos = r(0, 3, 0)
     dragon_fireball = Entity('dragon_fireball', nbt={'direction': {0.0, 0.0, 0.0}, 'ExplosionPower': 0})
-    dragon_func = room.function('dragon_init').add(
+    room.function('dragon_init').add(
         kill(e().type('ender_dragon')),
         kill(e().type('dragon_fireball')),
         WallSign((None, 'Ender Dragon')).place(r(0, 2, -5), NORTH),
         room.mob_placer(dragon_pos, NORTH, adults=True).summon('ender_dragon', tags=('dragon', 'dragon_thing'))
     )
-    if restworld.version < VERSION_1_20:
-        dragon_func.add(
-            WallSign((None, 'Dragon Fireball')).place(r(0, 2, -15), NORTH),
-            room.mob_placer(r(0, 3, -14), NORTH, adults=True).summon(dragon_fireball, tags=('dragon_thing',)))
-    else:
-       room.function('dragon_fireball_init').add(
-            kill(e().type('dragon_fireball')),
-            WallSign((None, 'Dragon Fireball')).place(r(0, 2, -1), NORTH),
-            room.mob_placer(r(0, 3, 0), NORTH, adults=True).summon(dragon_fireball, tags=('dragon_thing',)))
+    room.function('dragon_fireball_init').add(
+        kill(e().type('dragon_fireball')),
+        WallSign((None, 'Dragon Fireball')).place(r(0, 2, -1), NORTH),
+        room.mob_placer(r(0, 3, 0), NORTH, adults=True).summon(dragon_fireball, tags=('dragon_thing',)))
 
     room.function('end_portal_init', exists_ok=True).add(
         execute().as_(e().tag('end_portal_home')).run(tag(s()).add('blockers_home')))
@@ -71,30 +63,12 @@ def room():
         yield fill(r(1, 2, -2), r(-1, 2, -2), ('end_portal_frame', {'facing': SOUTH, 'eye': step.elem}))
         yield fill(r(1, 2, 1), r(-1, 2, -1), after)
         yield fill(r(2, 2, -5), r(-2, 2, -9), after).replace(before)
-        if restworld.version < VERSION_1_20:
-            yield setblock(r(0, 6, -7), 'air' if after == 'air' else 'dragon_egg')
 
     room.loop('end_portal', main_clock).loop(end_portal_loop, (True, False))
 
-    if restworld.version < VERSION_1_20:
-        placer = room.mob_placer(r(0, 2, 0), SOUTH, adults=True)
-        # Enderman requires special handling because the rain may make it run away (even with NoAI)
-        room.function('enderman_enter').add(
-            execute().unless().entity(e().type('enderman').distance((None, 5))).run(
-                list(placer.summon('enderman'))[0]))
-        room.function('enderman_init').add(function('restworld:enders/enderman_enter'))
-
-        placer = room.mob_placer(r(0, 2, -0.2), SOUTH, adults=True)
-        room.function('endermite_init').add(placer.summon('endermite'))
-
-    if restworld.version < VERSION_1_20:
-        shulker_dir = SOUTH
-        bullet_loc = r(1, 3, 1)
-        bullet_sign_loc = r(1, 2, 2)
-    else:
-        shulker_dir = WEST
-        bullet_loc = r(-1, 3, 1)
-        bullet_sign_loc = r(-1, 2, 2)
+    shulker_dir = WEST
+    bullet_loc = r(-1, 3, 1)
+    bullet_sign_loc = r(-1, 2, 2)
     placer = room.mob_placer(r(0, 3, 0), shulker_dir, adults=True)
     room.function('shulker_init').add(
         placer.summon('shulker', nbt={'Color': 16, 'Peek': 0}),
@@ -107,6 +81,7 @@ def room():
     )
 
     shulker_facing = good_facing(shulker_dir)
+
     def shulker_loop(step):
         yield data().merge(e().tag('shulker').limit(1), {'Peek': step.elem})
         yield data().modify(e().tag('shulker').limit(1), 'Rotation').set().value(shulker_facing.rotation)

@@ -32,5 +32,5 @@ def nbt(dir, dir_x):
 
 if __name__ == '__main__':
     # Only run this if any argument is given
-    if len(sys.argv) !=1:
-       main()
+    if len(sys.argv) != 1:
+        main()

@@ -49,7 +49,7 @@ def room():
     copy_sign = room.function('copy_sign', home=False).add(
         execute().if_().block(src_pos, '#wall_signs').run(clone(src_pos, src_pos, save_pos))
     )
-    rows = (3, 3, 2, 2) if restworld.experimental else (3, 3, 3)
+    rows = (3, 3, 2, 2)
     row, x, y = 0, 0, 5
     for i, thing in enumerate(materials):
         pos = r(x - 1, y, -3)

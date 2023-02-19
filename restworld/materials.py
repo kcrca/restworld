@@ -9,7 +9,7 @@ from pynecraft.enums import BiomeId
 from pynecraft.info import armors, colors, stems, trim_materials, trim_patterns
 from pynecraft.simpler import Item, ItemFrame, Region, Sign, WallSign
 from restworld.rooms import Room, label
-from restworld.world import VERSION_1_20, fast_clock, kill_em, main_clock, restworld
+from restworld.world import fast_clock, kill_em, main_clock, restworld
 
 
 def room():
@@ -166,8 +166,7 @@ def room():
     basic_functions(room)
     fencelike_functions(room)
     wood_functions(room)
-    if restworld.version >= VERSION_1_20:
-        trim_functions(room)
+    trim_functions(room)
 
 
 def basic_functions(room):
@@ -381,11 +380,10 @@ def wood_functions(room):
         summon('item_frame', r(3, 3, -3), {
             'Tags': ['wood_sign_frame', room.name], 'Facing': 3, 'Fixed': True, 'Item': {'id': 'stone', 'Count': 1}}),
         label(r(-1, 2, 4), 'Chest Boat'))
-    if restworld.experimental:
-        wood_init.add(
-            summon('item_frame', r(3, 4, -3), {
-                'Tags': ['wood_hanging_sign_frame', room.name], 'Facing': 3, 'Fixed': True,
-                'Item': {'id': 'stone', 'Count': 1}}))
+    wood_init.add(
+        summon('item_frame', r(3, 4, -3), {
+            'Tags': ['wood_hanging_sign_frame', room.name], 'Facing': 3, 'Fixed': True,
+            'Item': {'id': 'stone', 'Count': 1}}))
 
     volume = Region(r(-5, 1, -5), r(6, 5, 3))
 
@@ -445,17 +443,16 @@ def wood_functions(room):
                                          '#wall_signs')
         yield from volume.replace_rotation(Block(f'{id}_sign', nbt={'Text2': f'{name} Sign'}), '#signs')
 
-        if restworld.experimental:
-            yield from volume.replace_facing(
-                Block(f'{id}_wall_hanging_sign', nbt=Sign.lines_nbt((name, 'Wall', 'Hanging', 'Sign'))),
-                '#wall_hanging_signs')
-            for attached in True, False:
-                sign_text = Sign.lines_nbt((name, 'Attached', 'Hanging', 'Sign')) if attached else Sign.lines_nbt(
-                    (name, 'Hanging', 'Sign'))
-                yield from volume.replace_rotation(
-                    Block(f'{id}_hanging_sign', nbt=sign_text),
-                    '#all_hanging_signs',
-                    shared_states={'attached': attached})
+        yield from volume.replace_facing(
+            Block(f'{id}_wall_hanging_sign', nbt=Sign.lines_nbt((name, 'Wall', 'Hanging', 'Sign'))),
+            '#wall_hanging_signs')
+        for attached in True, False:
+            sign_text = Sign.lines_nbt((name, 'Attached', 'Hanging', 'Sign')) if attached else Sign.lines_nbt(
+                (name, 'Hanging', 'Sign'))
+            yield from volume.replace_rotation(
+                Block(f'{id}_hanging_sign', nbt=sign_text),
+                '#all_hanging_signs',
+                shared_states={'attached': attached})
 
         # Add special cases
         if name == ('Jungle', 'Mangrove'):
@@ -484,9 +481,8 @@ def wood_functions(room):
 
         yield execute().as_(e().tag('wood_sign_frame')).run(
             data().merge(s(), ItemFrame(SOUTH).item(f'{id}_sign').named(f'{name} Sign').nbt))
-        if restworld.experimental:
-            yield execute().as_(e().tag('wood_hanging_sign_frame')).run(
-                data().merge(s(), ItemFrame(SOUTH).item(f'{id}_hanging_sign').named(f'{name} Hanging Sign').nbt))
+        yield execute().as_(e().tag('wood_hanging_sign_frame')).run(
+            data().merge(s(), ItemFrame(SOUTH).item(f'{id}_hanging_sign').named(f'{name} Hanging Sign').nbt))
 
         if 'stem' not in log:
             wood_boat_chest = room.score('wood_boat_chest')
@@ -512,8 +508,7 @@ def wood_functions(room):
             yield data().remove(e().tag('wood_boat_frame').limit(1), 'Item.id')
 
     woods = info.woods
-    if restworld.experimental:
-        woods = woods + ('Bamboo Mosaic',)
+    woods = woods + ('Bamboo Mosaic',)
     room.loop('wood', main_clock).add(kill_em(e().tag('wood_boat'))).loop(wood_loop, woods + stems)
 
 
@@ -532,7 +527,7 @@ def armor_for(stand: Entity, kind: str, nbt: NbtDef = None):
 
 #
 # New trim plan:
-#   Sign saying "Show all:", with a second sign wit the current value. Touching the current value sign bfings up all
+#   Sign saying "Show all:", with a second sign wit the current value. Touching the current value sign brings up all
 #   three possibilities to select.
 #
 #   Third sign saying "Change:" with a fourth sign with the current value. Touching the current value behaves similarly.

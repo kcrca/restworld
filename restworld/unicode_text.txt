@@ -4,7 +4,7 @@ JimStoneCraft Unicode Font List Command Block.
 
 http://www.johnsmithlegacy.co.uk/
 
-for Minecraft Java Edition 1.17.1 or greater.
+For Minecraft Java Edition 1.17.1 or greater.
 
 This is a command block script to create an thirteen page book with the unicode characters used in
 the game, this is of great help while you are texturing the fonts used.

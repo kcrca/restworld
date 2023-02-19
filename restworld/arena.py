@@ -23,7 +23,7 @@ def room():
     start_battle_type = Score('battle_type', 'arena')
     fighter_nbts = {
         'Drowned': {'HandItems': [Item.nbt_for('trident')], 'ArmorItems': [{}, {}, {}, Item.nbt_for('iron_helmet')]},
-        'Goat': {'IsScreamingGoat': True,'HasLeftHorn': True, 'HasRightHorn': True},
+        'Goat': {'IsScreamingGoat': True, 'HasLeftHorn': True, 'HasRightHorn': True},
         'Hoglin': {'IsImmuneToZombification': True},
         'Llama': {'Strength': 5},
         'Magma Cube': {'Size': 0},
@@ -261,8 +261,8 @@ def room():
     # Summoning warden with NBT means that it immediately burrows away, so must special case it
     # https://bugs.mojang.com/browse/MC-249393 (also see above)
     cleanup.add(
-        execute().as_(e().type('warden').distance((None,100)).not_tag('hunter')).run(tag(s()).add('hunter')),
-        execute().as_(e().type('warden').distance((None,100)).not_tag('battler')).run(tag(s()).add('battler'))),
+        execute().as_(e().type('warden').distance((None, 100)).not_tag('hunter')).run(tag(s()).add('hunter')),
+        execute().as_(e().type('warden').distance((None, 100)).not_tag('battler')).run(tag(s()).add('battler'))),
 
     # Types: 0-normal, 1-water, 2-undead
     fill_arena = Region(r(-12, 4, -12), r(12, 2, 12))

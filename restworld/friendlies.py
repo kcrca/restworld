@@ -6,7 +6,7 @@ from pynecraft.commands import Block, Entity, MOD, Score, data, e, execute, func
 from pynecraft.info import colors, horses, music_discs
 from pynecraft.simpler import PLAINS, VILLAGER_BIOMES, VILLAGER_PROFESSIONS, Villager, WallSign
 from restworld.rooms import Room, label
-from restworld.world import VERSION_1_20, kill_em, main_clock, restworld
+from restworld.world import kill_em, main_clock, restworld
 
 
 def room():
@@ -18,36 +18,18 @@ def room():
     def placer(*args, **kwargs):
         return room.mob_placer(*args, **kwargs)
 
-    if restworld.version < VERSION_1_20:
-        allay_dir = NORTH
-        allay_pos = r(0, 3.5, -1)
-    else:
-        allay_dir = WEST
-        allay_pos = r(0, 3, 0)
+    allay_dir = WEST
+    allay_pos = r(0, 3, 0)
     room.function('allay_init').add(placer(allay_pos, allay_dir, adults=True).summon('Allay'))
-    if restworld.version < VERSION_1_20:
-        bat_dir, bat_pos, hang_bat_pos = NORTH, r(0, 3, -2), r(0, 3.5, 1)
-    else:
-        bat_dir, bat_pos, hang_bat_pos = WEST, r(-2, 3, 0), r(0, 3.5, 0)
+    bat_dir, bat_pos, hang_bat_pos = WEST, r(-2, 3, 0), r(0, 3.5, 0)
     room.function('bat_init').add(
         placer(bat_pos, bat_dir, 2, adults=True).summon('bat'),
         placer(hang_bat_pos, bat_dir, 2, adults=True).summon('bat', nbt={'BatFlags': 1}, tags=('sleeping_bat',)))
 
-    if restworld.version < VERSION_1_20:
-        bee_dir = NORTH
-        bar_pos, nest_pos = r(0, 2, -2), r(0, 2, 2)
-    else:
-        bee_dir = WEST
-        bar_pos, nest_pos = r(-2, 2, 0), r(2, 2, 0)
-
-    if restworld.version < VERSION_1_20:
-        stinger_label_pos = r(1, 2, -2)
-        pollen_label_pos = r(-1, 2, -2)
-    else:
-        stinger_label_pos = r(-2, 2, 1)
-        pollen_label_pos = r(-2, 2, -1)
+    stinger_label_pos = r(-2, 2, 1)
+    pollen_label_pos = r(-2, 2, -1)
     room.function('bee_init').add(
-        placer(r(0, 3, 0), bee_dir, 0, 2).summon('bee'),
+        placer(r(0, 3, 0), WEST, 0, 2).summon('bee'),
         label(stinger_label_pos, 'Stinger'),
         label(pollen_label_pos, 'Pollen'))
 
@@ -55,21 +37,20 @@ def room():
         bee_house = 'beehive' if step.i == 0 else 'bee_nest'
         # The 'air' check is for if we're levitated
         yield execute().unless().block(r(0, 1, 0), 'air').at(
-            e().tag('bee_home')).run(setblock(nest_pos, (bee_house, {'facing': bee_dir})))
+            e().tag('bee_home')).run(setblock(r(2, 2, 0), (bee_house, {'facing': WEST})))
         on_ground = step.i < 2
         base = 'iron_bars' if on_ground else 'air'
         yield execute().as_(e().tag('bee')).run(data().merge(
             s(), {'OnGround': on_ground, 'AngerTime': (step.i % 2) * 100000,
                   'CustomName': 'Bee' if step.i % 2 == 0 else 'Angry Bee'}))
         yield execute().unless().block(r(0, 1, 0), 'air').run(setblock(r(0, 2, 0), base))
-        yield execute().unless().block(r(0, 1, 0), 'air').run(setblock(bar_pos, base))
+        yield execute().unless().block(r(0, 1, 0), 'air').run(setblock(r(-2, 2, 0), base))
 
     room.loop('bee', main_clock).loop(bee_loop, range(0, 4))
 
-    if restworld.experimental:
-        room.function('camel_init').add(
-            placer(*mid_west_placer).summon('camel'),
-            label(r(-3, 2, 1), 'Camel Sits'))
+    room.function('camel_init').add(
+        placer(*mid_east_placer).summon('camel'),
+        label(r(-3, 2, 1), 'Camel Sits'))
 
     p = placer(*south_placer)
     room.function('canine_init').add(
@@ -133,10 +114,7 @@ def room():
         yield execute().as_(e().tag('fox')).run(data().merge(s(), nbt))
 
     room.loop('fox', main_clock).loop(fox_loop, (('',) + fox_postures) * 2)
-    if restworld.version < VERSION_1_20:
-        frog_pos, spawn_pos, sign_pos, frog_dir = r(0, 2, 0.2), r(0, 2, -1), r(1, 2, -1), NORTH
-    else:
-        frog_pos, spawn_pos, sign_pos, frog_dir = r(0, 2, 0), r(1, 2, 0), r(1, 2, 1), EAST
+    frog_pos, spawn_pos, sign_pos, frog_dir = r(0, 2, 0), r(1, 2, 0), r(1, 2, 1), EAST
     room.function('frog_init').add(placer(
         frog_pos, frog_dir, adults=True).summon('frog'))
 
@@ -230,12 +208,8 @@ def room():
                                                                              'MainGene': step.elem.lower(),
                                                                              'HiddenGene': step.elem.lower()})),
         ('Aggressive', 'Lazy', 'Weak', 'Worried', 'Playful', 'Normal', 'Brown'))
-    if restworld.version < VERSION_1_20:
-        parrot_dir, parrot_pos = NORTH, r(0, 3, 1)
-        disc_chest_pos = r(-1, 1, 0)
-    else:
-        parrot_dir, parrot_pos = WEST, r(0, 3, 0)
-        disc_chest_pos = r(-1, 1, 1)
+    parrot_dir, parrot_pos = WEST, r(0, 3, 0)
+    disc_chest_pos = r(-1, 1, 1)
     parrot_fence_pos = list(parrot_pos)
     parrot_fence_pos[1] -= 1
     room.function('parrot_init').add(
@@ -279,9 +253,9 @@ def room():
     sheep = room.function('sheep_init').add(
         p.summon('Sheep', tags=('colorable',)),
         p.summon(Entity('sheep', name='Sheared Sheep', nbt={'Sheared': True})))
-    # This is a temporary hack until a major rework of the friendlies room layout
-    if not restworld.experimental:
-        sheep.add(p.summon(Entity('sheep', name='jeb_'), auto_tag=False))
+    sheep.add(p.summon(Entity('sheep', name='jeb_'), auto_tag=False))
+    room.function('sniffer_init').add(placer(r(0, 2, 0.5), WEST, 0, adults=True).summon('sniffer'))
+    room.function('sniffer_kid_init').add(placer(r(0, 2, 0), WEST, 0, kids=True).summon('sniffer'))
     room.function('snow_golem_init').add(
         placer(r(-1.2, 2, 0), EAST, adults=True).summon('snow_golem'))
     room.loop('snow_golem', main_clock).loop(
@@ -302,14 +276,9 @@ def room():
     room.loop('trader_llama', main_clock).loop(
         lambda step: execute().as_(e().type('trader_llama')).run(data().modify(s(), 'Variant').set().value(step.i)),
         ('Creamy', 'White', 'Brown', 'Gray'))
-    if restworld.version < VERSION_1_20:
-        switch_label_pos = r(1, 2, -2)
-        egg_sign_pos = r(0, 2, 2, )
-        egg_sign_dir = NORTH
-    else:
-        switch_label_pos = r(3, 2, 0)
-        egg_sign_pos = r(-2, 2, 0, )
-        egg_sign_dir = EAST
+    switch_label_pos = r(3, 2, 0)
+    egg_sign_pos = r(-2, 2, 0, )
+    egg_sign_dir = EAST
     room.function('turtle_eggs_init').add(
         execute().as_(e().tag('turtle_home')).run(tag(s()).add('blockers_home')),
         WallSign((None, 'Turtle Eggs')).place(egg_sign_pos, egg_sign_dir),
@@ -319,14 +288,11 @@ def room():
     def turtle_egg_loop(step):
         for count in range(4, 0, -1):
             eggs = ('turtle_egg', {'eggs': count, 'hatch': step.elem})
-            if restworld.version < VERSION_1_20:
-                yield setblock(r(0, 2, count - 3), eggs)
-            else:
-                yield setblock(r(3 - count, 2, 0), eggs)
+            yield setblock(r(3 - count, 2, 0), eggs)
         yield data().merge(egg_sign_pos, {'Text3': f'Hatch Age: {step.elem:d}'})
 
     room.loop('turtle_eggs', main_clock).loop(turtle_egg_loop, range(0, 3), bounce=True)
-    turtle_dir = NORTH if restworld.version < VERSION_1_20 else EAST
+    turtle_dir = EAST
     room.function('turtle_init').add(placer(r(0, 2, 0.2), turtle_dir, 2, 2).summon('turtle'))
 
     villager_funcs(room)
