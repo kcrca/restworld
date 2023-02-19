@@ -520,7 +520,7 @@ def wood_functions(room):
 armor_pieces = ('boots', 'leggings', 'chestplate', 'helmet')
 
 
-def armor(stand: Entity, kind: str, nbt: NbtDef = None):
+def armor_for(stand: Entity, kind: str, nbt: NbtDef = None):
     if nbt is None:
         nbt = {}
     base_nbt = Nbt({'tag': {'Trim': {'material': 'redstone', 'pattern': 'coast'}}})
@@ -546,11 +546,17 @@ def trim_functions(room):
     armors_tag = 'trim_armors_stand'
     patterns_tag = 'trim_patterns_stand'
 
+    base_stand = Entity('armor_stand',
+                        {'ShowArms': True,
+                         'Pose': {'LeftArm': [-20, 0, -120], 'RightArm': [-20, 0, 20],
+                                  'LeftLeg': [-20, 0, 0], 'RightLeg': [20, 0, 0]}}).tag(room.name,
+                                                                                        overall_tag)
+
     def materials_init_func():
         yield kill_em(e().tag(materials_tag))
         for i, material in enumerate(trim_materials):
-            stand = Entity('armor_stand').tag(room.name, overall_tag, materials_tag)
-            armor(stand, 'iron', {'tag': {'Trim': {'material': material}}})
+            stand = base_stand.clone().tag(materials_tag)
+            armor_for(stand, 'iron', {'tag': {'Trim': {'material': material}}})
             if i == 5:
                 stand.tag(f'{materials_tag}_label')
                 stand.custom_name()
@@ -562,8 +568,8 @@ def trim_functions(room):
     def patterns_init_func():
         yield kill_em(e().tag(patterns_tag))
         for i, pattern in enumerate(trim_patterns):
-            stand = Entity('armor_stand').tag(room.name, overall_tag, patterns_tag)
-            armor(stand, 'iron', {'tag': {'Trim': {'pattern': pattern}}})
+            stand = base_stand.clone().tag(patterns_tag)
+            armor_for(stand, 'iron', {'tag': {'Trim': {'pattern': pattern}}})
             if i == 5:
                 stand.tag(f'{patterns_tag}_label')
                 stand.custom_name()
@@ -575,7 +581,7 @@ def trim_functions(room):
     def armor_init_func():
         yield kill_em(e().tag(armors_tag))
         for i, armor_material in enumerate(armors):
-            stand = Entity('armor_stand').tag(room.name, overall_tag, armors_tag)
+            stand = base_stand.clone().tag(armors_tag)
             x = 1 - i % 2 - 1
             y = 2 + 1 - i % 2
             z = 1 + i
@@ -585,7 +591,7 @@ def trim_functions(room):
                 stand.custom_name()
                 stand.custom_name_visible(True)
                 stand.name = 'Label'
-            armor(stand, armors[i])
+            armor_for(stand, armors[i])
             yield stand.summon(r(x, y, z), {'Rotation': [90, 0]})
 
     room.function('trim_materials_init').add(materials_init_func())
@@ -645,3 +651,15 @@ def trim_functions(room):
     switch('materials', 'patterns', 'armors')
     switch('armors', 'materials', 'patterns')
     switch('patterns', 'materials', 'armors')
+
+    room.function('trim_chestplate_off', home=False).add(execute().as_(e().tag(overall_tag)).run(
+        item().replace().entity(s(), 'armor.feet').with_('air'),
+        item().replace().entity(s(), 'armor.chest').with_('air')))
+    restore = room.function('trim_restore_chestplate', home=False)
+    for armor in armors:
+        restore.add(execute().if_().entity(s().nbt({'ArmorItems': [{'id': f'minecraft:{armor}_leggings'}]})).run(
+            item().replace().entity(s(), 'armor.feet').with_(f'{armor}_boots'),
+            item().replace().entity(s(), 'armor.chest').with_(f'{armor}_chestplate')))
+    restore.add(data().modify(s(), 'ArmorItems[0].tag.Trim').merge().from_(s(), 'ArmorItems[1].tag.Trim'),
+                data().modify(s(), 'ArmorItems[2].tag.Trim').merge().from_(s(), 'ArmorItems[1].tag.Trim'))
+    room.function('trim_chestplate_on', home=False).add(execute().as_(e().tag(overall_tag)).run(function(restore)))
