@@ -210,9 +210,9 @@ def room():
     room.loop('sweet_berry_soil', main_clock).loop(lambda step: setblock(r(0, 2, 1), step.elem),
                                                    ('Grass Block', 'Dirt', 'Podzol', 'Coarse Dirt'))
 
-    tree_types = {'Acacia': BiomeId.SAVANNA, 'Birch': BiomeId.BIRCH_FOREST, 'Jungle': BiomeId.JUNGLE,
-                  'Mangrove': BiomeId.MANGROVE_SWAMP, 'Oak': BiomeId.PLAINS, 'Dark Oak': BiomeId.DARK_FOREST,
-                  'Spruce': BiomeId.SNOWY_TAIGA}
+    tree_types = {'Acacia': BiomeId.SAVANNA, 'Birch': BiomeId.BIRCH_FOREST, 'Cherry': BiomeId.PLAINS,
+                  'Jungle': BiomeId.JUNGLE, 'Mangrove': BiomeId.MANGROVE_SWAMP, 'Oak': BiomeId.PLAINS,
+                  'Dark Oak': BiomeId.DARK_FOREST, 'Spruce': BiomeId.SNOWY_TAIGA}
 
     def trees_loop(step):
         tree, biome = step.elem
