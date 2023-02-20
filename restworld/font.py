@@ -38,18 +38,21 @@ def formatting_book():
 
 def room():
     room = Room('font', restworld, SOUTH, (None, 'Fonts'))
-    src_pos = r(0, 3, -3)
+    src_pos = r(0, 2, -3)
     save_pos = r(0, -2, -3)
     color_pos = r(0, -3, -3)
     at = execute().at(e().tag('font_action_home'))
     room.function('check_sign', home=False).add(
         at.run(function('restworld:font/copy_sign')))
 
-    materials = tuple(Block(m) for m in info.woods + stems)
+    woods = info.woods
+    materials = tuple(Block(m) for m in woods + stems)
     copy_sign = room.function('copy_sign', home=False).add(
         execute().if_().block(src_pos, '#wall_signs').run(clone(src_pos, src_pos, save_pos))
     )
-    rows = (3, 3, 2, 2)
+    row_lengths = [3, 3, 2, 2]
+    if ('Cherry') in woods:
+        row_lengths[2] = 3
     row, x, y = 0, 0, 5
     for i, thing in enumerate(materials):
         pos = r(x - 1, y, -3)
@@ -60,11 +63,11 @@ def room():
         copy_sign.add(data().modify(pos, 'Color').set().from_(color_pos, 'Color'))
 
         x += 1
-        if x >= rows[row]:
+        if x >= row_lengths[row]:
             x = 0
             y -= 1
             row += 1
-        elif x == 1 and rows[row] == 2:
+        elif x == 1 and row_lengths[row] == 2:
             x += 1
 
     copy_sign.add(
