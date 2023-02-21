@@ -33,10 +33,15 @@ def room():
         yield from crop(stages_8, 'wheat', 0, 3, 0, step)
         yield from crop(stages_8, 'carrots', 0, 3, -5, step)
         yield from crop(stages_8, 'potatoes', 0, 3, -10, step)
-        yield from crop(stages_8, 'farmland', 5, 2, -10, step, 'moisture')
 
     stages_8 = list(range(0, 8)) + [7, 7]
     room.loop('8_crops', main_clock).loop(crops_8_loop, stages_8)
+
+    room.function('torchflower_crop_init').add(
+        fill(r(0, 3, 0), r(2, 3, 0), ('torchflower_crop', {'age': 0})),
+        fill(r(0, 3, -1), r(2, 3, -1), ('torchflower_crop', {'age': 1})),
+        fill(r(0, 3, -2), r(2, 3, -2), ('torchflower_crop', {'age': 2}))
+    )
 
     def azalea_loop(step):
         yield setblock(r(0, 3, 0), step.elem.id)
