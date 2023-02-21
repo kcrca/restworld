@@ -409,7 +409,7 @@ def wood_functions(room):
                 log = 'bamboo_block'
                 wood = 'jungle_wood'
                 leaves = 'jungle_leaves'
-            saplings = (Block(f'{id}_sapling'), Block(f'{id}_sapling', {'stage': 0}), 'grass_block')
+            saplings = (Block(f'{id}_sapling'), Block(f'{id}_sapling', {'stage': 1}), 'grass_block')
             if name == 'Mangrove':
                 saplings = (
                     Block('mangrove_propagule', {'age': 1}),
