@@ -1,9 +1,10 @@
 from __future__ import annotations
 
+from pynecraft import info
 from pynecraft.base import EAST, NORTH, SOUTH, WEST, r, to_id, to_name
 from pynecraft.commands import Block, data, e, execute, fill, fillbiome, function, kill, setblock, tag
 from pynecraft.enums import BiomeId
-from pynecraft.info import small_flowers, stems, tulips, woods
+from pynecraft.info import small_flowers, stems, tulips
 from pynecraft.simpler import Region, Sign, WallSign
 from restworld.rooms import Room, label
 from restworld.world import fast_clock, main_clock, restworld
@@ -147,7 +148,7 @@ def room():
         yield setblock(r(0, 3, 0), 'potted_%s' % step.elem.id)
         yield data().merge(r(1, 2, 0), sign_nbt)
 
-    saplings = list(woods)
+    saplings = list(info.woods)
     misc = [
         Block('Brown Mushroom'),
         Block('Red Mushroom'),
@@ -160,6 +161,10 @@ def room():
     pottables = [Block('Mangrove|Propagule' if w == 'Mangrove' else '%s Sapling' % w) for w in saplings] + [
         Block('%s Tulip' % t) for t in tulips] + list(small_flowers) + misc + [Block('%s Roots' % x) for x in stems] + [
                     Block('%s Fungus' % x) for x in stems] + [Block('Wither Rose'), ]
+    try:
+        pottables[pottables.index(Block('Bamboo Sapling'))] = Block('Bamboo')
+    except ValueError:
+        pass    # if it's not there, that's OK
     room.loop('pottable', fast_clock).loop(pottable_loop, pottables)
     room.function('propagule_init').add(
         setblock(r(0, 5, 0), 'mangrove_leaves'),

@@ -4,9 +4,10 @@ import math
 import os
 import re
 
+from pynecraft import info
 from pynecraft.base import EAST, NORTH, OVERWORLD, r, to_id
 from pynecraft.commands import Block, Entity, e, execute, fill, kill, p, setblock, summon, tp
-from pynecraft.info import colors, corals, stems, woods
+from pynecraft.info import colors, corals, stems
 from pynecraft.simpler import Offset
 from restworld.rooms import MobPlacer, Room, label
 from restworld.world import restworld
@@ -70,7 +71,7 @@ mobs = (
 
 
 def get_normal_blocks():
-    modifiers = tuple(c.name for c in colors) + woods + stems + materials + stepables + corals + (
+    modifiers = tuple(c.name for c in colors) + info.woods + stems + materials + stepables + corals + (
         'Weathered', 'Oxidized', 'Exposed')
     modifiers = tuple(sorted(set(modifiers), key=lambda x: len(x), reverse=True))
     mod_re = re.compile(fr'^(.*? ?)(\b(?:Mossy )?{"|".join(modifiers)}\b)($| (.*))')
