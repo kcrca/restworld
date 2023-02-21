@@ -9,7 +9,7 @@ from pynecraft.commands import Block, Entity, JsonText, MOD, MOVE, clone, data, 
     good_block, item, \
     kill, s, say, setblock, summon, tag
 from pynecraft.function import Loop
-from pynecraft.info import Color, colors, stems
+from pynecraft.info import Color, colors, shards, stems
 from pynecraft.simpler import Item, ItemFrame, Region, Sign, WallSign
 from restworld.rooms import Room, label
 from restworld.world import fast_clock, kill_em, main_clock, restworld, slow_clock
@@ -24,7 +24,7 @@ def room():
     name_stand.tag('block_list')
 
     def blocks(name, facing, block_lists: Iterable[Union[Block, str]] | Iterable[Iterable[Union[Block, str]]], dx=0,
-               dz=0, size=0, labels=None, clock=main_clock, score=None):
+               dz=0, size=0, labels=None, clock=main_clock, score=None, air=False):
         facing = good_facing(facing)
 
         if not isinstance(block_lists, list):
@@ -66,6 +66,8 @@ def room():
                     signage = ('', *signage)
                     signage = signage + ('',) * (4 - len(signage))
 
+                if air:
+                    yield setblock(r(x, 3, z), 'air')
                 yield setblock(r(x, 3, z), block)
                 sign_nbt = Sign.lines_nbt(signage)
                 # Preserve the 'expand' response
@@ -151,6 +153,17 @@ def room():
     blocks('deepslate', NORTH, (
         'Deepslate', 'Chiseled|Deepslate', 'Polished|Deepslate', 'Cracked|Deepslate|Bricks', 'Cracked|Deepslate|Tiles',
         'Deepslate|Bricks', 'Deepslate|Tiles', 'Cobbled|Deepslate', 'Reinforced|Deepslate'))
+    # Have to replace it with air first, so air=True ... https://bugs.mojang.com/browse/MC-260399
+    # Also, the order for sides is weird, https://bugs.mojang.com/browse/MC-260399
+    shard_names = tuple(shard.replace('pottery_shard_', '').title() for shard in shards)
+    _, pot_loop = blocks(
+        'decorated_pot', NORTH, ('decorated_pot',) + tuple(
+            Block('decorated_pot', nbt={'shards': [shards[i], shards[(i + 1) % 4], shards[(i + 2) % 4]]},
+                  name=f'Decorated Pot|{shard_names[i]}') for i in range(4)), air=True)
+    # Can't stop pot item from being generated, so ... https://bugs.mojang.com/browse/MC-260301
+    pot_loop.add(
+        kill(e().type('item').nbt({'Item': {'id': 'minecraft:decorated_pot'}}))
+    )
     blocks('dirt', SOUTH, ('Dirt', 'Coarse Dirt', 'Rooted Dirt', 'Farmland'))
     blocks('end', NORTH, ('End Stone', 'End Stone|Bricks'))
     blocks('frosted_ice', SOUTH,
