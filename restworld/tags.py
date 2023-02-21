@@ -90,6 +90,7 @@ def tags():
         'values': [
             'acacia_sapling',
             'birch_sapling',
+            'cherry_sapling',
             'jungle_sapling',
             'mangrove_propagule',
             'oak_sapling',
@@ -187,6 +188,7 @@ def tags():
         'values': [
             'acacia_planks',
             'birch_planks',
+            'cherry_planks',
             'jungle_planks',
             'mangrove_planks',
             'oak_planks',

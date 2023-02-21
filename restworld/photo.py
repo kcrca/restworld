@@ -17,8 +17,7 @@ materials = (
     'Bone', 'Honey', 'Honeycomb', 'Grass', 'Sticky', 'Nether')
 stepables = (
     'Sandstone', 'Red Sandstone', 'Quartz', 'Cobblestone', 'Stone Brick', 'Nether Brick', 'Brick', 'Purpur',
-    'Prismarine',
-    'Prismarine Brick', 'Dark Prismarine',)
+    'Prismarine', 'Prismarine Brick', 'Dark Prismarine',)
 
 
 class Mob:

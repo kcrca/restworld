@@ -994,7 +994,7 @@ def stepable_functions(room):
         'Weathered Cut Copper',
         'Oxidized Cut Copper',
         'Prismarine', 'Prismarine|Bricks', 'Dark|Prismarine',
-        'Acacia Planks', 'Birch Planks', 'Jungle Planks', 'Mangrove Planks',
+        'Acacia Planks', 'Birch Planks', 'Cherry Planks', 'Jungle Planks', 'Mangrove Planks',
         'Oak Planks', 'Dark Oak Planks', 'Spruce Planks', 'Bamboo Planks', 'Bamboo Mosaic Block',
         'Warped Planks', 'Crimson Planks',
         'Nether Bricks', 'Red|Nether Bricks',
