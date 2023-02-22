@@ -16,7 +16,6 @@ particles = [
     ActionDesc(Particle.AMBIENT_ENTITY_EFFECT, 'Ambient|Entity|Effect'),
     ActionDesc(Particle.ANGRY_VILLAGER),
     ActionDesc(Particle.ASH),
-    ActionDesc(Particle.BARRIER),
     ActionDesc(Particle.BUBBLE, 'Bubbles|Currents|Whirlpools',
                also=(Particle.BUBBLE_POP, Particle.BUBBLE_COLUMN_UP, Particle.CURRENT_DOWN)),
     ActionDesc(Particle.CLOUD, note='Evaporation'),
@@ -26,6 +25,8 @@ particles = [
     ActionDesc(Particle.DAMAGE_INDICATOR),
     ActionDesc(Particle.DOLPHIN),
     ActionDesc(Particle.DRAGON_BREATH),
+    ActionDesc(Particle.DRIPPING_CHERRY_LEAVES, 'Dripping|Cherry Leaves', note='Falling, Landing',
+               also=(Particle.FALLING_CHERRY_LEAVES, Particle.LANDING_CHERRY_LEAVES)),
     ActionDesc(Particle.DRIPPING_LAVA, note='Falling, Landing', also=(
         Particle.FALLING_LAVA, Particle.LANDING_LAVA, Particle.DRIPPING_DRIPSTONE_LAVA,
         Particle.FALLING_DRIPSTONE_LAVA)),
@@ -54,7 +55,7 @@ particles = [
     ActionDesc(Particle.ITEM_SNOWBALL),
     ActionDesc(Particle.LARGE_SMOKE),
     ActionDesc(Particle.LAVA),
-    ActionDesc(Particle.LIGHT, also=Particle.BLOCK_MARKER),
+    ActionDesc(Particle.BLOCK_MARKER),
     ActionDesc(Particle.MYCELIUM),
     ActionDesc(Particle.NAUTILUS, note='with Conduit'),
     ActionDesc(Particle.POOF, note='Small Explosion'),
@@ -90,7 +91,7 @@ unused_particles = {
     Particle.FALLING_NECTAR,  # Shown with the bees in the Friendlies room
     Particle.SPORE_BLOSSOM_AIR, Particle.FALLING_SPORE_BLOSSOM,  # Just outside the room
 }
-particles.sort()
+particles.sort(key=lambda x: str(x.enum).replace('|', ' '))
 # Notes:
 #    Maybe spit can be made to work with a live llama hitting a wolf, but the llama must be penned in, etc.
 #
@@ -180,6 +181,15 @@ def room():
         setbiome(BiomeId.SOUL_SAND_VALLEY))
     room.function('barrier', home=False).add(
         main().run(particle(Particle.BLOCK_MARKER, 'barrier', r(0, 2, 0), 0, 0, 0, 0, 1)))
+    room.function('light', home=False).add(
+        main().run(particle(Particle.BLOCK_MARKER, 'light', r(0, 2, 0), 0, 0, 0, 0, 1)))
+
+    def block_marker_loop(step):
+        yield particle(Particle.BLOCK_MARKER, step.elem, r(0, 2, 0))
+
+    room.loop('block_marker_run').loop(block_marker_loop, ('barrier', 'light'))
+    room.function('block_marker', home=False).add(
+        slow().run(function('restworld:particles/block_marker_run')))
     room.function('bubble_init', home=False).add(
         fill(r(1, -1, 1), r(1, -1, -1), 'magma_block'),
         fill(r(-1, -1, 1), r(-1, -1, -1), 'soul_sand'),
@@ -215,11 +225,21 @@ def room():
     )
     room.function('dragon_breath_finish', home=False).add(
         data().merge(e().tag('particle_dragonball').limit(1), {'Motion': [0, -0.5, -0.5]}))
+    cherry = room.function('dripping_cherry_leaves_init', home=False).add(
+        fill(r(2, 4, 2), r(-2, 4, -2), 'cherry_leaves'), floor('grass_block'))
+    for x in range(-3, 4):
+        for z in range(-3, 4):
+            level = random.randint(0, 4)
+            if level > 0:
+                cherry.add(
+                    setblock(r(x, 0, z), ('pink_petals',
+                                          {'flower_amount': level,
+                                           'facing': ('north', 'east', 'south', 'west')[random.randint(0, 3)]})))
     room.function('dripping_honey_init', home=False).add(
-        fill(r(2, 3, 2), r(-2, 3, -2), ('beehive', {'honey_level': 5, 'facing': SOUTH})),
-        fill(r(2, 3, -2), r(-2, 3, -2), ('beehive', {'honey_level': 5, 'facing': NORTH})),
-        fill(r(2, 3, -1), r(2, 3, 1), ('beehive', {'honey_level': 5, 'facing': EAST})),
-        fill(r(-2, 3, -1), r(-2, 3, 1), ('beehive', {'honey_level': 5, 'facing': WEST})),
+        fill(r(2, 4, 2), r(-2, 4, -2), ('beehive', {'honey_level': 5, 'facing': SOUTH})),
+        fill(r(2, 4, -2), r(-2, 4, -2), ('beehive', {'honey_level': 5, 'facing': NORTH})),
+        fill(r(2, 4, -1), r(2, 4, 1), ('beehive', {'honey_level': 5, 'facing': EAST})),
+        fill(r(-2, 4, -1), r(-2, 4, 1), ('beehive', {'honey_level': 5, 'facing': WEST})),
     )
 
     def drip_base(dripper):
@@ -324,8 +344,6 @@ def room():
     room.function('lava_init', home=False).add(
         fill(r(-2, 0, -2), r(2, 0, 2), 'stone'),
         fill(r(-1, 0, -1), r(1, 0, 1), 'lava'))
-    room.function('light', home=False).add(
-        main().run(particle(Particle.BLOCK_MARKER, 'light', r(0, 2, 0), 0, 0, 0, 0, 1)))
     room.function('mycelium_init', home=False).add(floor('mycelium'))
     room.function('nautilus', home=False).add(slow().run(function('restworld:particles/nautilus_change')))
     room.loop('nautilus_change', home=False).loop(
