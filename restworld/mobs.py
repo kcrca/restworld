@@ -1,16 +1,25 @@
 from __future__ import annotations
 
+import copy
+
 from pynecraft.base import EAST, EQ, NORTH, SOUTH, WEST, r, to_id
-from pynecraft.commands import Block, Entity, MOD, Score, data, e, execute, function, item, kill, s, setblock, \
-    summon, tag, tp
-from pynecraft.info import colors, horses, music_discs
-from pynecraft.simpler import PLAINS, VILLAGER_BIOMES, VILLAGER_PROFESSIONS, Villager, WallSign
-from restworld.rooms import Room, label
-from restworld.world import kill_em, main_clock, restworld
+from pynecraft.commands import Block, COLORS, Entity, LONG, MOD, RESULT, Score, data, e, execute, function, good_facing, \
+    item, kill, s, scoreboard, setblock, summon, tag, tp
+from pynecraft.enums import ScoreCriteria
+from pynecraft.info import axolotls, colors, horses, music_discs, tropical_fish
+from pynecraft.simpler import Item, PLAINS, VILLAGER_BIOMES, VILLAGER_PROFESSIONS, Villager, WallSign
+from restworld.rooms import MobPlacer, Room, label
+from restworld.world import fast_clock, kill_em, main_clock, restworld
 
 
 def room():
-    room = Room('friendlies', restworld, NORTH, ('Villagers,', 'Animals,', 'Mobs,', 'Bosses'), 'Friendly Mobs')
+    room = Room('mobs', restworld, NORTH, ('Villagers,', 'Animals,', 'Mobs,', 'Bosses'), 'Friendly Mobs')
+    friendlies(room)
+    monsters(room)
+    aquatic(room)
+
+
+def friendlies(room):
     south_placer = r(0, 2, -0.2), SOUTH, -2, 2.2
     mid_east_placer = r(-1.2, 2, 0), EAST, 2, 2.2
     mid_west_placer = r(0.2, 2, 0), WEST, -2, 2.2
@@ -177,8 +186,8 @@ def room():
         yield data().merge(r(2, 2, 0), {'Text3': f'Damage: {i if i < 4 else 3 - (i - 3):d}'})
 
     room.loop('iron_golem', main_clock).loop(iron_golem_loop, range(4, 0, -1), bounce=True)
-    room.function('lead_off').add(kill(e().type('leash_knot')))
-    room.function('lead_on').add(
+    room.function('lead_off', home=False).add(kill(e().type('leash_knot')))
+    room.function('lead_on', home=False).add(
         execute().as_(e().tag('white_horses').tag('!kid')).run(
             data().merge(s(), {'Leash': {'X': -12, 'Y': 101, 'Z': 35}})))
     room.loop('llamas_carpets', main_clock).loop(
@@ -188,7 +197,7 @@ def room():
     room.function('llamas_init').add(
         placer(r(0, 2, 0), WEST, 0, 2).summon('llama'),
         placer(r(1, 3.5, -1), WEST, adults=True,
-               nbt={'Tags': ['friendlies', 'llama', 'llama_spit'], 'TXD': 0, 'TYD': 0, 'TZD': 0, 'Steps': 0,
+               nbt={'Tags': ['mobs', 'llama', 'llama_spit'], 'TXD': 0, 'TYD': 0, 'TZD': 0, 'Steps': 0,
                     'Motion': [0, 0, 0], 'NoGravity': True}).summon('llama_spit'),
         WallSign((None, 'Llama Spit')).place(r(1, 2, -1), WEST),
         label(r(-2, 2, 1), 'Carpet'),
@@ -201,7 +210,7 @@ def room():
     room.function('ocelot_init').add(placer(*south_placer).summon('ocelot'))
     room.function('outlines_on').add((execute().as_(
         e().tag(rm).tag('!homer').type('!item_frame')).run(data().merge(s(), {'Glowing': True})) for rm in
-                                      ('friendlies', 'monsters', 'wither', 'nether', 'enders', 'aquatic', 'ancient')))
+                                      ('mobs', 'monsters', 'wither', 'nether', 'enders', 'aquatic', 'ancient')))
     room.function('panda_init').add(placer(*south_placer).summon('panda'))
     room.loop('panda', main_clock).loop(
         lambda step: execute().as_(e().type('panda')).run(data().merge(s(), {'CustomName': f'{step.elem} Panda',
@@ -214,7 +223,7 @@ def room():
     parrot_fence_pos[1] -= 1
     room.function('parrot_init').add(
         placer(parrot_pos, parrot_dir, adults=True).summon('parrot'),
-        function('restworld:friendlies/parrot_enter'))
+        function('restworld:mobs/parrot_enter'))
     room.function('parrot_enter').add(
         (item().replace().block(disc_chest_pos, f'container.{i:d}').with_(d) for i, d in enumerate(music_discs)))
 
@@ -247,8 +256,8 @@ def room():
         'Brown', 'White', 'Black', 'Black & White', 'Gold', 'Salt & Pepper', 'Killer Rabbit (unused)'))
     room.function('reset_collars').add(
         kill_em(e().tag('cat')),
-        execute().at(e().tag('cat_home')).run(function('restworld:friendlies/cat_init')),
-        execute().at(e().tag('cat_home')).run(function('restworld:friendlies/cat_cur')))
+        execute().at(e().tag('cat_home')).run(function('restworld:mobs/cat_init')),
+        execute().at(e().tag('cat_home')).run(function('restworld:mobs/cat_cur')))
     p = placer(*mid_west_placer)
     sheep = room.function('sheep_init').add(
         p.summon('Sheep', tags=('colorable',)),
@@ -262,8 +271,8 @@ def room():
         lambda step: execute().as_(e().tag('snow_golem')).run(data().merge(s(), {'Pumpkin': step.elem})), (True, False))
     room.function('switch_carpets_on').add(
         execute().at(e().tag('llamas_home')).positioned(r(-2, -0.5, 0)).run(
-            function('restworld:friendlies/llamas_carpets_home')),
-        execute().at(e().tag('llamas_carpets_home')).run(function('restworld:friendlies/llamas_carpets_cur')))
+            function('restworld:mobs/llamas_carpets_home')),
+        execute().at(e().tag('llamas_carpets_home')).run(function('restworld:mobs/llamas_carpets_cur')))
     room.function('switch_carpets_off').add(
         execute().as_(e().tag('llama')).run(data().merge(s(), {'DecorItem': {'id': 'white_carpet', 'Count': 0}})),
         kill(e().tag('llamas_carpets_home')))
@@ -314,7 +323,7 @@ def villager_funcs(room):
 
     def init_villagers(num, which):
         return execute().if_().score(which_villagers).matches(num).at(
-            e().tag('cur_villagers_home')).run(function(f'restworld:friendlies/{which}_init'))
+            e().tag('cur_villagers_home')).run(function(f'restworld:mobs/{which}_init'))
 
     def home_villagers(num, which):
         return execute().if_().score(which_villagers).matches(num).at(e().tag('which_villagers_home').limit(1)).run(
@@ -345,8 +354,8 @@ def villager_funcs(room):
                 p = placer(r(0, 2, -7), WEST, -2, tags=('villager', 'professions',), adults=True)
             professions_init.add(p.summon(Villager(pro, PLAINS, name=pro, zombie=id[0] == 'z'), tags=('villager',)))
         professions_init.add(
-            function(f'restworld:friendlies/{which}_levels_cur'),
-            function(f'restworld:friendlies/{which}_professions_cur'),
+            function(f'restworld:mobs/{which}_levels_cur'),
+            function(f'restworld:mobs/{which}_professions_cur'),
             data().merge(r(-5, 2, 0), {'Text3': kind}))
 
     professions_init_funcs('villager')
@@ -367,8 +376,8 @@ def villager_funcs(room):
                 p = placer(r(0, 2, -3), WEST, -2, tags=('villager', 'types',), adults=True)
             types_init.add(p.summon(Entity(id, name=ty, nbt={'VillagerData': {'type': ty.lower()}})))
         types_init.add(
-            function(f'restworld:friendlies/{which}_levels_cur'),
-            function(f'restworld:friendlies/{which}_types_cur'),
+            function(f'restworld:mobs/{which}_levels_cur'),
+            function(f'restworld:mobs/{which}_types_cur'),
             data().merge(r(-5, 2, 0), {'Text3': kind})
         )
 
@@ -391,16 +400,16 @@ def villager_funcs(room):
 
     professions_init_funcs('zombie')
     room.loop('zombie_professions', main_clock).loop(None, list()).add(
-        function('restworld:friendlies/villager_professions_main'))
+        function('restworld:mobs/villager_professions_main'))
     types_init_funcs('zombie')
     room.loop('zombie_types', main_clock).loop(None, list()).add(
-        function('restworld:friendlies/villager_types_main'))
+        function('restworld:mobs/villager_types_main'))
 
     room.function('which_villagers_init').add(
         bool_max.set(2),
         cur_villagers_group.set(0),
         cur_villagers_zombies.set(0),
-        function('restworld:friendlies/switch_villagers'),
+        function('restworld:mobs/switch_villagers'),
         WallSign((None, None, 'Villagers')).place(r(-5, 2, 1), WEST),
         label(r(-3, 2, 0), 'Profession'),
         label(r(-3, 2, 2), 'Level'),
@@ -441,24 +450,296 @@ def villager_funcs(room):
     )
     room.function('switch_villagers_init').add(
         which_villagers_prev.set(1),
-        function('restworld:friendlies/switch_villagers'))
+        function('restworld:mobs/switch_villagers'))
     room.function('toggle_villager_group').add(
         cur_villagers_group.add(1),
         cur_villagers_group.operation(MOD, bool_max),
-        function('restworld:friendlies/switch_villagers'))
+        function('restworld:mobs/switch_villagers'))
     room.function('toggle_villager_levels').add(
         cur_villagers_levels.add(1),
         cur_villagers_levels.operation(MOD, bool_max),
         execute().if_().score(cur_villagers_levels).matches(1).run(cur_villagers_zombies.set(0)),
-        function('restworld:friendlies/switch_villagers'))
+        function('restworld:mobs/switch_villagers'))
     room.function('toggle_villager_zombies').add(
         cur_villagers_zombies.add(1),
         cur_villagers_zombies.operation(MOD, bool_max),
         execute().if_().score(cur_villagers_zombies).matches(1).run(cur_villagers_levels.set(0)),
-        function('restworld:friendlies/switch_villagers'))
+        function('restworld:mobs/switch_villagers'))
 
     def villager_level_loop(step):
         yield execute().as_(e().tag('villager')).run(data().modify(s(), 'VillagerData.level').set().value(step.i + 1))
         yield data().merge(r(-5, 2, 0), {'Text2': f' {step.elem} Level'})
 
     room.loop('villager_levels', main_clock).loop(villager_level_loop, ('Stone', 'Iron', 'Gold', 'Emerald', 'Diamond'))
+
+
+def monsters(room):
+    def placer(*args, **kwargs):
+        return room.mob_placer(*args, **kwargs)
+
+    east_placer = list(r(-0.2, 2, 0)), EAST, 2, 2.2
+    west_placer = list(r(0.2, 2, 0)), WEST, -2, 2.2
+
+    room.function('creeper_init').add(placer(*west_placer, adults=True).summon('creeper'))
+    room.loop('creeper', main_clock).loop(
+        lambda step: execute().as_(e().tag('creeper').limit(1)).run(data().merge(s(), {'powered': step.elem})),
+        (True, False))
+
+    slime_placer = copy.deepcopy(west_placer)
+    slime_placer[0][1] = r(3)
+    room.function('slime_init').add(placer(*slime_placer, adults=True).summon('slime'))
+    room.loop('slime', main_clock).loop(
+        lambda step: data().modify(e().tag('slime').limit(1), 'Size').set().value(step.elem),
+        range(0, 3), bounce=True)
+
+    illagers = (Entity('Vindicator'), Entity('Evoker'), Entity('Pillager'),
+                Entity('Pillager', nbt={'HandItems': [Item.nbt_for('crossbow')]}),
+                Entity('illusioner', name='Illusioner (unused)'))
+    tags = ('illager',)
+
+    def illager_loop(step):
+        place = list(copy.deepcopy(west_placer))
+        dir = EAST
+        place[0][2] -= 0.5
+        place[1] = dir
+        yield placer(*place, adults=True, tags=tags).summon(step.elem)
+        if step.elem.id == 'evoker':
+            yield placer(r(1, 3.5, -1.5), dir, adults=True, tags=tags).summon(
+                Entity('vex', nbt={'HandItems': [Item.nbt_for('iron_sword')], 'LifeTicks': 2147483647}))
+            yield placer(r(-1 + 2 * 1, 2, 1), dir, adults=True, tags=tags).summon(
+                Entity('Evoker Fangs', nbt={'Warmup': 0}))
+
+    room.loop('illager', main_clock).add(kill_em(e().tag(*tags))).loop(illager_loop, illagers)
+
+    room.function('phantom_init').add(placer(r(-0.5, 4, 0), NORTH, adults=True).summon('phantom'))
+
+    def ravager_loop(step):
+        ravager = Entity('ravager')
+        if step.elem is not None:
+            ravager.passenger(Entity(step.elem, {'Rotation': good_facing(EAST).rotation}).merge_nbt(MobPlacer.base_nbt))
+        yield placer(r(1, 2, 0), EAST, adults=True).summon(ravager)
+
+    room.loop('ravager', main_clock).add(kill_em(e().tag('ravager'))).loop(
+        ravager_loop, (None, 'Pillager', 'Vindicator', 'Evoker'))
+
+    silverfish_dir = method_name()
+    room.function('silverfish_init').add(placer(r(0.2, 2, 0), silverfish_dir, adults=True).summon('silverfish'))
+
+    east = good_facing(EAST)
+    east_rot = {'Rotation': east.rotation, 'Facing': east.name}
+
+    def skeleton_horse_loop(step):
+        horse = Entity('Skeleton Horse')
+        if step.i == 1:
+            helmet = {'id': 'iron_helmet', 'Count': 1, 'tag': {'RepairCost': 1, 'Enchantments': [
+                {'lvl': 3, 'id': 'unbreaking'}]}}
+            bow = {'id': 'bow', 'Count': 1,
+                   'tag': {'RepairCost': 1, 'Enchantments': [{'lvl': 3, 'id': 'unbreaking'}]}}
+            skel = Entity('Skeleton', nbt={'ArmorItems': [{}, {}, {}, helmet], 'HandItems': [bow, {}]})
+            skel.merge_nbt(MobPlacer.base_nbt).merge_nbt(east_rot)
+            skel.tag('mobs', 'passenger')
+            horse.passenger(skel)
+        yield placer(*east_placer, adults=True).summon(horse)
+
+    room.loop('skeleton_horse').add(
+        kill_em(e().tag('skeleton_horse', '!kid'))
+    ).loop(skeleton_horse_loop, range(0, 2))
+
+    room.function('skeleton_horse_init').add(
+        placer(*east_placer).summon('Skeleton Horse'),
+        label(r(2, 2, -1), 'Rider'))
+
+    bow = Item.nbt_for('bow')
+    helmet = Item.nbt_for('iron_helmet')
+    rider = Entity('Skeleton', nbt={'ArmorItems': [{}, {}, {}, helmet], 'HandItems': [bow, {}]}).merge_nbt(
+        MobPlacer.base_nbt)
+
+    room.loop('skeleton', main_clock).add(
+        kill_em(e().tag('skeletal'))
+    ).loop(lambda step: placer(*west_placer, adults=True).summon(
+        Entity(step.elem, nbt={'HandItems': [bow]}).tag('skeletal')), ('Skeleton', 'Stray'))
+
+    spider_dir = NORTH
+    spider_facing = good_facing(spider_dir)
+    spider_rot = {'Rotation': spider_facing.rotation, 'Facing': spider_facing.name}
+
+    def spider_loop(step):
+        p = placer(r(-0.2, 2.5, -0.2), spider_dir, -2.5, nbt={'Tags': ['spiders']}, adults=True)
+        for s in ('Spider', 'Cave Spider'):
+            spider = Entity(s)
+            if step.i == 1:
+                spider.passenger(rider.merge_nbt(spider_rot).merge_nbt(MobPlacer.base_nbt))
+            yield p.summon(spider)
+
+    room.loop('spiders').add(
+        kill_em(e().tag('spiders'))
+    ).loop(spider_loop, range(0, 2))
+    room.function('spiders_init').add(
+        function('restworld:mobs/spiders_cur'),
+        label(r(-2, 2, -1), 'Jockey'))
+    place = list(copy.deepcopy(west_placer))
+    place[0][2] -= 0.5
+    room.function('witch_init').add(placer(*place, adults=True).summon('witch'))
+    place = list(copy.deepcopy(east_placer))
+    place[0][2] -= 0.5
+    room.function('zombie_horse_init').add(
+        placer(*place).summon(Entity('zombie_horse', name='Zombie Horse (Unused)')))
+    zombie_jockey = room.score('zombie_jockey')
+    room.function('zombie_init').add(
+        zombie_jockey.set(0),
+        execute().as_(e().tag('zombie_home')).run(tag(s()).add('zombie_home_selector')),
+        execute().as_(e().tag('zombie_jockey_home')).run(tag(s()).add('zombie_home_selector')),
+        label(r(2, 2, -1), 'Jockey'))
+
+    def zombie_loop(step):
+        p = placer(r(0.2, 2, 0), EAST, 0, 1.8, tags=('zombieish',))
+        yield execute().if_().score(zombie_jockey).matches(0).run(p.summon(Entity(step.elem)))
+
+        p = placer(r(0.2, 2, 0), EAST, 0, 2.2, tags=('zombieish',), adults=True)
+        yield execute().if_().score(zombie_jockey).matches(1).run(p.summon(Entity(step.elem)))
+        chicken = Entity('Chicken').passenger(
+            Entity(step.elem, {'Tags': ['kid', room.name], 'IsBaby': True, 'Age': -2147483648}).merge_nbt(
+                east_rot).merge_nbt(MobPlacer.base_nbt))
+        p = placer(r(2.0, 2, 0), EAST, 0, 2.2, tags=('zombieish',), kids=True)
+        yield execute().if_().score(zombie_jockey).matches(1).run(p.summon(chicken))
+        if step.elem == 'Drowned':
+            yield execute().as_(e().tag('zombieish').tag('!kid')).run(
+                data().merge(s(), {'HandItems': [Item.nbt_for('trident')]}))
+
+    room.loop('zombie', main_clock).add(kill_em(e().tag('zombieish'))).loop(
+        zombie_loop, ('Zombie', 'Husk', 'Drowned'))
+
+    placer = room.mob_placer(r(0, 2, 0), NORTH, adults=True)
+    room.function('enderman_init').add(
+        execute().unless().entity(e().type('enderman').distance((None, 5))).run(list(placer.summon('enderman'))[0]))
+
+    # room.function('silverfish_init').add(placer(r(0.2, 2, 0), silverfish_dir, adults=True).summon('silverfish'))
+    placer = room.mob_placer(r(0, 2, 0.2), NORTH, adults=True)
+    room.function('endermite_init').add(placer.summon('endermite'))
+
+    room.function('warden_init').add((room.mob_placer(r(0, 2, -0.5), NORTH, adults=True).summon('warden'),))
+
+
+def method_name():
+    silverfish_dir = NORTH
+    return silverfish_dir
+
+
+def aquatic(room):
+    def n_fish_loop(count: int):
+        def fish_loop(step):
+            for kind, breeds in tropical_fish.items():
+                if len(breeds) == count:
+                    fish = breeds[step.i]
+                    fish.custom_name(True)
+                    yield data().merge(e().tag(kind.lower()).limit(1), fish.nbt)
+
+        return fish_loop
+
+    room.loop('2_fish', main_clock).loop(n_fish_loop(2), range(2))
+    room.loop('3_fish', main_clock).loop(n_fish_loop(3), range(3))
+    room.loop('4_fish', main_clock).loop(n_fish_loop(4), range(4))
+    all_fish_funcs(room)
+    t_fish = room.function('tropical_fish_init')
+    for i, (kind, breeds) in enumerate(tropical_fish.items()):
+        fish = breeds[0]
+        fish.custom_name(True)
+        fish.tag(kind.lower())
+        placer = room.mob_placer(r(-int(i / 4), 3.2, int(i % 4)), EAST, adults=True)
+        t_fish.add(placer.summon(fish))
+    t_fish.add(WallSign(('Naturally', 'Occurring', u'Tropical Fish', u'→ → →')).place(
+        r(1, 2, (len(tropical_fish) - 1) % 4), EAST, water=True))
+
+    axolotl_placer = room.mob_placer(r(-0.4, 3, 0), WEST, None, 1.8)
+    room.function('axolotl_init').add(
+        axolotl_placer.summon('axolotl'),
+        execute().at(e().tag('axolotl_dry_home')).run(
+            room.mob_placer(r(0, 3, 0), EAST, kid_delta=2).summon('axolotl')))
+    room.function('axolotl_dry')
+    room.loop('axolotl', main_clock).loop(
+        lambda step: execute().as_(e().tag('axolotl')).run(data().merge(
+            s(), {'Variant': step.i, 'CustomName': step.elem + ' Axolotl'})), axolotls)
+    guardian_pos = elder_guardian_pos = r(0, 3, 0)
+    guardian_rot = elder_guardian_rot = SOUTH
+    room.function('guardian_init').add(room.mob_placer(guardian_pos, guardian_rot, adults=True).summon('guardian'))
+    room.function('elder_guardian_init').add(
+        room.mob_placer(elder_guardian_pos, elder_guardian_rot, adults=True).summon('elder_guardian'))
+
+    def squids_loop(step):
+        placer = room.mob_placer(r(1.8, 4, 0.2), WEST, adults=True, tags=('squidy',), nbt={'NoGravity': True})
+        return placer.summon('squid' if step.i == 0 else 'glow_squid')
+
+    room.loop('squid', main_clock).add(kill_em(e().tag('squidy'))).loop(squids_loop, range(0, 2))
+
+    dolphin_placer = room.mob_placer(r(1.35, 3, 1.1), NORTH, adults=True)
+    fish_placer = room.mob_placer(r(0, 3, 1), NORTH, -1, adults=True)
+    room.function('fishies_init').add(
+        # For some reason, at 1.19 the kill-off in the _init function misses the pufferfish
+        kill(e().tag('pufferfish')),
+        dolphin_placer.summon(Entity('dolphin', nbt={'Invulnerable': True})),
+        fish_placer.summon(
+            ('salmon', 'cod', 'pufferfish',
+             Entity('tadpole', nbt={'Invulnerable': True, 'Age': -2147483648}).tag('kid', 'keeper'))),
+    )
+
+    def fishies_loop(step):
+        yield data().merge(e().tag('pufferfish').limit(1), {'PuffState': step.elem})
+        # Over time, the pufferfish creeps downward, so we have to put it back
+        puffer_pos = r(-2, 3, 1)
+        puffer_facing = r(-2, 3, -5)
+        yield tp(e().tag('pufferfish'), puffer_pos).facing(puffer_facing)
+
+    room.loop('fishies', main_clock).loop(fishies_loop, range(0, 3), bounce=True)
+
+
+def all_fish_funcs(room):
+    pattern = Score('pattern', 'fish')
+    num_colors = Score('NUM_COLORS', 'fish')
+    body_scale = Score('BODY_SCALE', 'fish')
+    overlay_scale = Score('OVERLAY_SCALE', 'fish')
+    pattern_size = Score('PATTERN_SIZE', 'fish')
+    variant = Score('variant', 'fish')
+
+    kinds = tuple(tropical_fish.keys())
+
+    def all_fish_init():
+        yield WallSign((None, 'All Possible', 'Tropical Fish', '← ← ←')).place(r(0, 2, 0), EAST, water=True)
+        start, facing, delta = r(0, 3.2, 0), EAST, 1
+        placer = room.mob_placer(start, facing, delta, adults=True)
+        for i in range(0, 12):
+            if i % 4 == 0:
+                x, y, z = start
+                start = (x - delta, y, z)
+                placer = room.mob_placer(start, facing, delta, adults=True)
+            fish = Entity('tropical_fish', name=kinds[i])
+            summon = placer.summon(fish, tags=(f'fish{i}',))
+            yield summon
+        yield (
+            scoreboard().objectives().remove('fish'),
+            scoreboard().objectives().add('fish', ScoreCriteria.DUMMY),
+            num_colors.set(len(COLORS)),
+            pattern.set(0),
+            pattern_size.set(len(COLORS) ** 2),
+            body_scale.set(0x10000),
+            overlay_scale.set(0x1000000),
+        )
+
+    def all_fish():
+        yield (
+            pattern.set((pattern + 1) % pattern_size),
+            variant.set((pattern // num_colors) * body_scale + (pattern % num_colors) * overlay_scale))
+        for i in range(0, 6):
+            yield from fish_variant(i)
+            if i < 5:
+                yield variant.add(256)
+        yield variant.add(1)
+        for i in range(6, 12):
+            yield from fish_variant(i)
+            if i < 11:
+                yield variant.remove(256)
+
+    def fish_variant(i):
+        yield execute().store(RESULT).entity(e().tag(f'fish{i:d}').limit(1), 'Variant', LONG, 1).run(variant.get())
+
+    room.function('all_fish_init').add(all_fish_init())
+    room.loop('all_fish', fast_clock).add(all_fish())

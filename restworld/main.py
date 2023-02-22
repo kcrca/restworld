@@ -4,9 +4,9 @@ import argparse
 import random
 
 from pynecraft.base import parameters
-from restworld import ancient, aquatic, arena, banners, biomes, blocks, center, connect, diy, effects, \
-    enders, font, friendlies, global_, gui, hud, maps, materials, models, monsters, multimob, nether, paintings, \
-    particles, photo, plants, redstone, save, tags, the_end, time, wither
+from restworld import ancient, arena, banners, biomes, blocks, center, connect, diy, effects, enders, font, global_, \
+    gui, hud, maps, materials, mobs, models, multimob, nether, paintings, particles, photo, plants, redstone, save, \
+    tags, the_end, time, wither
 from restworld.world import restworld
 
 
@@ -23,9 +23,9 @@ def main():
         mc_version = args.version
     parameters.version = mc_version
     for m in (
-            blocks, save, multimob, models, ancient, global_, aquatic, arena, banners, biomes, center, connect, gui,
-            diy, effects, particles, enders, font, friendlies, hud, materials, monsters, nether, paintings, photo,
-            plants, redstone, the_end, time, wither, maps):
+            blocks, save, multimob, models, ancient, global_, arena, banners, biomes, center, connect, gui, diy,
+            effects, particles, enders, font, mobs, hud, materials, nether, paintings, photo, plants, redstone, the_end,
+            time, wither, maps):
         m.room()
     tags.tags()
     dir = f'/Users/kcrca/clarity/home/saves/RestWorld_{args.version}'
