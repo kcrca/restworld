@@ -1,12 +1,13 @@
 from __future__ import annotations
 
 from pynecraft import info
-from pynecraft.base import EAST, NORTH, Nbt, NbtDef, SOUTH, WEST, r, to_id
-from pynecraft.commands import Block, BlockDef, Entity, data, e, execute, fill, fillbiome, function, good_block, item, \
+from pynecraft.base import EAST, EQ, NE, NORTH, NW, Nbt, NbtDef, SOUTH, WEST, good_facing, r, to_id
+from pynecraft.commands import Block, BlockDef, Entity, MOD, data, e, execute, fill, fillbiome, function, good_block, \
+    item, \
     kill, s, \
     setblock, summon, tag
 from pynecraft.enums import BiomeId
-from pynecraft.info import armors, colors, stems, trim_materials, trim_patterns
+from pynecraft.info import colors, stems, trim_materials, trim_patterns
 from pynecraft.simpler import Item, ItemFrame, Region, Sign, WallSign
 from restworld.rooms import Room, label
 from restworld.world import fast_clock, kill_em, main_clock, restworld
@@ -537,124 +538,182 @@ def armor_for(stand: Entity, kind: str, nbt: NbtDef = None):
 #
 def trim_functions(room):
     overall_tag = 'trim_stand'
-    materials_tag = 'trim_materials_stand'
-    armors_tag = 'trim_armors_stand'
-    patterns_tag = 'trim_patterns_stand'
-
     base_stand = Entity('armor_stand',
                         {'ShowArms': True,
                          'Pose': {'LeftArm': [-20, 0, -120], 'RightArm': [-20, 0, 20],
                                   'LeftLeg': [-20, 0, 0], 'RightLeg': [20, 0, 0]}}).tag(room.name,
                                                                                         overall_tag)
 
-    def materials_init_func():
-        yield kill_em(e().tag(materials_tag))
-        for i, material in enumerate(trim_materials):
-            stand = base_stand.clone().tag(materials_tag)
-            armor_for(stand, 'iron', {'tag': {'Trim': {'material': material}}})
-            if i == 5:
-                stand.tag(f'{materials_tag}_label')
-                stand.custom_name()
-                stand.custom_name_visible(True)
-                stand.name = 'Label'
-            yield stand.summon(r(i, 2 + 1 - i % 2, i % 2))
-        yield function('restworld:materials/trim_materials_cur')
+    patterns_pos = range(11)
+    material_pos = list(range(11))
+    material_pos.remove(7)
+    armors_pos = (0, 1, 4, 5, 9, 10)
 
-    def patterns_init_func():
-        yield kill_em(e().tag(patterns_tag))
-        for i, pattern in enumerate(trim_patterns):
-            stand = base_stand.clone().tag(patterns_tag)
-            armor_for(stand, 'iron', {'tag': {'Trim': {'pattern': pattern}}})
-            if i == 5:
-                stand.tag(f'{patterns_tag}_label')
-                stand.custom_name()
-                stand.custom_name_visible(True)
-                stand.name = 'Label'
-            yield stand.tag(f'{patterns_tag}_{i:02d}').summon(r(i, 2 + 1 - i % 2, 1 - i % 2 - 1),
-                                                              {'Rotation': [180, 0]})
+    locs = (
+        (r(-3, 3, -4), EAST), (r(3, 3, -4), WEST),
+        (r(-2, 2, -3), EAST), (r(2, 2, -3), WEST),
+        (r(-3, 3, -2), EAST), (r(3, 3, -2), WEST),
+        (r(-2, 2, -1), NE), (r(0, 2, -1), NORTH), (r(2, 2, -1), NW),
+        (r(-1, 3, 0), NORTH), (r(1, 3, 0), NORTH)
+    )
 
-    def armor_init_func():
-        yield kill_em(e().tag(armors_tag))
-        for i, armor_material in enumerate(armors):
-            stand = base_stand.clone().tag(armors_tag)
-            x = 1 - i % 2 - 1
-            y = 2 + 1 - i % 2
-            z = 1 + i
-            if i == len(armors) - 1:
-                x, y, z = (-2, 2, 3)
-                stand.tag(f'{armors_tag}_label')
-                stand.custom_name()
-                stand.custom_name_visible(True)
-                stand.name = 'Label'
-            armor_for(stand, armors[i])
-            yield stand.summon(r(x, y, z), {'Rotation': [90, 0]})
+    keep = room.score('trim_keep')
+    change = room.score('trim_change')
+    num_categories = room.score_max('TRIMS')
 
-    room.function('trim_materials_init').add(materials_init_func())
-    room.function('trim_armors_init').add(armor_init_func())
-    room.function('trim_patterns_init').add(patterns_init_func())
+    class Trim:
+        _num = 0
 
-    def materials_patterns_func(step):
-        yield execute().as_(e().tag(materials_tag)).run(data().modify(s(), 'ArmorItems[]').merge().value(
-            {'tag': {'Trim': {'pattern': step.elem}}}))
-        yield data().merge(e().tag(f'{materials_tag}_label').limit(1), {'CustomName': step.elem.title()})
+        def __init__(self, name: str, types, pos, armor_gen, loop_nbt=None):
+            self.name = name
+            self.types = types
+            self.tag = f'trim_{name}'
+            self.pos = pos
+            self.armor_gen = armor_gen
+            self.loop_nbt = loop_nbt
 
-    def materials_armors_func(step):
-        for i, which in enumerate(armor_pieces):
-            yield execute().as_(e().tag(materials_tag)).run(
-                data().modify(s(), f'ArmorItems[{i}]').merge().value({'id': f'{step.elem}_{which}'}))
-        yield data().merge(e().tag(f'{materials_tag}_label').limit(1), {'CustomName': step.elem.title()})
+            self.num = Trim._num
+            Trim._num += 1
+            self.init = room.function(f'trim_{name}_init').add(self._init())
+            self.loop = room.loop(f'trim_{name}', main_clock).loop(self._loop_func, types)
 
-    def armors_patterns_func(step):
-        yield execute().as_(e().tag(armors_tag)).run(data().modify(s(), 'ArmorItems[]').merge().value(
-            {'tag': {'Trim': {'pattern': step.elem}}}))
-        yield data().merge(e().tag(f'{armors_tag}_label').limit(1), {'CustomName': step.elem.title()})
+        def _init(self):
+            yield kill_em(e().tag(overall_tag))
+            for i, t in enumerate(self.types):
+                stand = base_stand.clone().tag(self.tag)
+                self.armor_gen(stand, t)
+                loc = locs[self.pos[i]]
+                yield stand.summon(loc[0], {'Rotation': good_facing(loc[1]).rotation})
+            yield keep.set(self.num)
+            yield execute().if_().score(keep).is_(EQ, change).run(change.add(1))
+            yield change.operation(MOD, num_categories)
 
-    def armors_materials_func(step):
-        yield execute().as_(e().tag(armors_tag)).run(data().modify(s(), 'ArmorItems[]').merge().value(
-            {'tag': {'Trim': {'material': step.elem}}}))
-        yield data().merge(e().tag(f'{armors_tag}_label').limit(1), {'CustomName': step.elem.title()})
+        def _loop_func(self, step):
+            yield execute().as_(e().tag(overall_tag)).run(data().modify(s(), 'ArmorItems[]').merge().value(
+                self.loop_nbt(step.elem)))
 
-    def patterns_materials_func(step):
-        yield execute().as_(e().tag(patterns_tag)).run(data().modify(s(), 'ArmorItems[]').merge().value(
-            {'tag': {'Trim': {'material': step.elem}}}))
-        yield data().merge(e().tag(f'{patterns_tag}_label').limit(1), {'CustomName': step.elem.title()})
+    class Armors(Trim):
+        def __init__(self, name: str, types, pos, armor_gen):
+            super().__init__(name, types, pos, armor_gen)
 
-    def patterns_armors_func(step):
-        for i, which in enumerate(armor_pieces):
-            yield execute().as_(e().tag(patterns_tag)).run(
-                data().modify(s(), f'ArmorItems[{i}]').merge().value({'id': f'{step.elem}_{which}'}))
-        yield data().merge(e().tag(f'{patterns_tag}_label').limit(1), {'CustomName': step.elem.title()})
+        def _loop_func(self, step):
+            for i, which in enumerate(armor_pieces):
+                yield execute().as_(e().tag(overall_tag)).run(
+                    data().modify(s(), f'ArmorItems[{i}]').merge().value({'id': f'{step.elem}_{which}'}))
 
-    room.loop('trim_materials_patterns', main_clock).loop(materials_patterns_func, trim_patterns)
-    room.loop('trim_materials_armors', main_clock).loop(materials_armors_func, armors)
-    room.loop('trim_armors_patterns', main_clock).loop(armors_patterns_func, trim_patterns)
-    room.loop('trim_armors_materials', main_clock).loop(armors_materials_func, trim_materials)
-    room.loop('trim_patterns_materials', main_clock).loop(patterns_materials_func, trim_materials)
-    room.loop('trim_patterns_armors', main_clock).loop(patterns_armors_func, armors)
+    categories = {'patterns': Trim('patterns', trim_patterns, patterns_pos,
+                                   lambda stand, type: armor_for(stand, 'iron', {'tag': {'Trim': {'pattern': type}}}),
+                                   lambda which: {'tag': {'Trim': {'pattern': which}}}),
+                  'materials': Trim('materials', trim_materials, material_pos,
+                                    lambda stand, type: armor_for(stand, 'iron', {'tag': {'Trim': {'material': type}}}),
+                                    lambda which: {'tag': {'Trim': {'material': which}}}),
+                  'armors': Armors('armors', info.armors, armors_pos,
+                                   lambda stand, type: armor_for(stand, type))}
 
-    def switch(base, to1, to2):
-        room.function(f'trim_{base}_init', exists_ok=True).add(f'function restworld:materials/switch_{base}_to_{to1}')
-        switch_one(base, to2, to1)
-        switch_one(base, to1, to2)
+    trim_init = room.function('trim_init').add(num_categories.set(3), change.set(1))
 
-    def switch_one(base, last, to):
-        room.function(f'switch_{base}_to_{to}', home=False).add(
-            tag(e().tag(f'trim_{base}_home')).remove(f'trim_{base}_{last}_home'),
-            tag(e().tag(f'trim_{base}_home')).add(f'trim_{base}_{to}_home'),
-            function(f'restworld:materials/trim_{base}_{to}_cur'))
+    loop_home = 'trim_loop_home'
+    keep_menu = room.function('trim_keep_menu', home=False)
+    loop_init = room.function('trim_loop_init').add(
+        kill(e().tag(loop_home)),
+        execute().at(e().tag('trim_home')).positioned(r(1, -0.5, 0)).run(
+            function('restworld:materials/trim_loop_home')))
+    trim_init.add(function(loop_init))
+    facing = NORTH
+    for i, cat in enumerate(categories.values()):
+        lines = (None, 'Keep', cat.name.title())
+        set_sign = WallSign(lines, commands=(function(keep_menu),)).place(r(0, -i, 0), facing)
+        place = list(set_sign)
+        place.append(execute().at(e().tag('trim_home')).run(function(f'restworld:materials/trim_{cat.name}_init')))
+        place.append(execute().at(e().tag('trim_keep_home')).run(fill(r(0, 3, 0), r(0, 4, 0), 'air')))
+        keep_menu.add(WallSign(lines, commands=place).place(r(0, i, 0), facing))
+        if i == 0:
+            room.function('trim_keep_init').add(
+                execute().positioned(r(0, 2, 0)).run(set_sign),
+                fill(r(0, 3, 0), r(0, 4, 0), 'air'),
+                execute().at(e().tag('trim_home')).run(function(cat.init)),
+                function(loop_init))
 
-    switch('materials', 'patterns', 'armors')
-    switch('armors', 'materials', 'patterns')
-    switch('patterns', 'materials', 'armors')
+        loop_init.add(
+            execute().if_().score(change).matches(i).run(tag(e().tag(loop_home)).add(f'trim_{cat.name}_home')))
 
-    room.function('trim_chestplate_off', home=False).add(execute().as_(e().tag(overall_tag)).run(
-        item().replace().entity(s(), 'armor.feet').with_('air'),
-        item().replace().entity(s(), 'armor.chest').with_('air')))
-    restore = room.function('trim_restore_chestplate', home=False)
-    for armor in armors:
-        restore.add(execute().if_().entity(s().nbt({'ArmorItems': [{'id': f'minecraft:{armor}_leggings'}]})).run(
-            item().replace().entity(s(), 'armor.feet').with_(f'{armor}_boots'),
-            item().replace().entity(s(), 'armor.chest').with_(f'{armor}_chestplate')))
-    restore.add(data().modify(s(), 'ArmorItems[0].tag.Trim').merge().from_(s(), 'ArmorItems[1].tag.Trim'),
-                data().modify(s(), 'ArmorItems[2].tag.Trim').merge().from_(s(), 'ArmorItems[1].tag.Trim'))
-    room.function('trim_chestplate_on', home=False).add(execute().as_(e().tag(overall_tag)).run(function(restore)))
+    change_menu = room.function('trim_change_menu').add(fill(r(0, 0, 0), r(0, 1, 0), 'air'))
+    change_cleanup = room.function('trim_change_init').add(function(loop_init), fill(r(0, 2, 0), r(0, 3, 0), 'air'))
+    for i, cat in enumerate(categories.values()):
+        sign_num = 0
+        for j, jcat in enumerate(categories.values()):
+            if i == j:
+                continue
+            lines = (None, 'Change', jcat.name.title())
+            commands = (change.set(j), execute().at(e().tag('trim_change_home')).run(function(change_cleanup)))
+            change_menu.add(execute().if_().score(keep).matches(i).run(
+                WallSign(lines, commands=commands).place(r(0, sign_num, 0), facing)))
+            sign_num += 1
+        change_cleanup.add(execute().if_().score(change).matches(i).run(
+            WallSign((None, 'Change', cat.name.title()), commands=(function(change_menu))).place(r(0, 2, 0), facing)))
+
+    # def materials_patterns_func(step):
+    #     yield execute().as_(e().tag(materials_tag)).run(data().modify(s(), 'ArmorItems[]').merge().value(
+    #         {'tag': {'Trim': {'pattern': step.elem}}}))
+    #     yield data().merge(e().tag(f'{materials_tag}_label').limit(1), {'CustomName': step.elem.title()})
+    #
+    # def materials_armors_func(step):
+    #     for i, which in enumerate(armor_pieces):
+    #         yield execute().as_(e().tag(materials_tag)).run(
+    #             data().modify(s(), f'ArmorItems[{i}]').merge().value({'id': f'{step.elem}_{which}'}))
+    #     yield data().merge(e().tag(f'{materials_tag}_label').limit(1), {'CustomName': step.elem.title()})
+    #
+    # def armors_patterns_func(step):
+    #     yield execute().as_(e().tag(armors_tag)).run(data().modify(s(), 'ArmorItems[]').merge().value(
+    #         {'tag': {'Trim': {'pattern': step.elem}}}))
+    #     yield data().merge(e().tag(f'{armors_tag}_label').limit(1), {'CustomName': step.elem.title()})
+    #
+    # def armors_materials_func(step):
+    #     yield execute().as_(e().tag(armors_tag)).run(data().modify(s(), 'ArmorItems[]').merge().value(
+    #         {'tag': {'Trim': {'material': step.elem}}}))
+    #     yield data().merge(e().tag(f'{armors_tag}_label').limit(1), {'CustomName': step.elem.title()})
+    #
+    # def patterns_materials_func(step):
+    #     yield execute().as_(e().tag(patterns_tag)).run(data().modify(s(), 'ArmorItems[]').merge().value(
+    #         {'tag': {'Trim': {'material': step.elem}}}))
+    #     yield data().merge(e().tag(f'{patterns_tag}_label').limit(1), {'CustomName': step.elem.title()})
+    #
+    # def patterns_armors_func(step):
+    #     for i, which in enumerate(armor_pieces):
+    #         yield execute().as_(e().tag(patterns_tag)).run(
+    #             data().modify(s(), f'ArmorItems[{i}]').merge().value({'id': f'{step.elem}_{which}'}))
+    #     yield data().merge(e().tag(f'{patterns_tag}_label').limit(1), {'CustomName': step.elem.title()})
+    #
+    # room.loop('trim_materials_patterns', main_clock).loop(materials_patterns_func, trim_patterns)
+    # room.loop('trim_materials_armors', main_clock).loop(materials_armors_func, armors)
+    # room.loop('trim_armors_patterns', main_clock).loop(armors_patterns_func, trim_patterns)
+    # room.loop('trim_armors_materials', main_clock).loop(armors_materials_func, trim_materials)
+    # room.loop('trim_patterns_materials', main_clock).loop(patterns_materials_func, trim_materials)
+    # room.loop('trim_patterns_armors', main_clock).loop(patterns_armors_func, armors)
+    #
+    # def switch(base, to1, to2):
+    #     room.function(f'trim_{base}_init', exists_ok=True).add(f'function restworld:materials/switch_{base}_to_{to1}')
+    #     switch_one(base, to2, to1)
+    #     switch_one(base, to1, to2)
+    #
+    # def switch_one(base, last, to):
+    #     room.function(f'switch_{base}_to_{to}', home=False).add(
+    #         tag(e().tag(f'trim_{base}_home')).remove(f'trim_{base}_{last}_home'),
+    #         tag(e().tag(f'trim_{base}_home')).add(f'trim_{base}_{to}_home'),
+    #         function(f'restworld:materials/trim_{base}_{to}_cur'))
+    #
+    # switch('materials', 'patterns', 'armors')
+    # switch('armors', 'materials', 'patterns')
+    # switch('patterns', 'materials', 'armors')
+    #
+    # room.function('trim_chestplate_off', home=False).add(execute().as_(e().tag(overall_tag)).run(
+    #     item().replace().entity(s(), 'armor.feet').with_('air'),
+    #     item().replace().entity(s(), 'armor.chest').with_('air')))
+    # restore = room.function('trim_restore_chestplate', home=False)
+    # for armor in armors:
+    #     restore.add(execute().if_().entity(s().nbt({'ArmorItems': [{'id': f'minecraft:{armor}_leggings'}]})).run(
+    #         item().replace().entity(s(), 'armor.feet').with_(f'{armor}_boots'),
+    #         item().replace().entity(s(), 'armor.chest').with_(f'{armor}_chestplate')))
+    # restore.add(data().modify(s(), 'ArmorItems[0].tag.Trim').merge().from_(s(), 'ArmorItems[1].tag.Trim'),
+    #             data().modify(s(), 'ArmorItems[2].tag.Trim').merge().from_(s(), 'ArmorItems[1].tag.Trim'))
+    # room.function('trim_chestplate_on', home=False).add(execute().as_(e().tag(overall_tag)).run(function(restore)))
