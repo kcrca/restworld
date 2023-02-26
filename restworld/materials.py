@@ -7,7 +7,7 @@ from pynecraft.commands import Block, BlockDef, Entity, MOD, RESULT, data, e, ex
     good_block, \
     item, \
     kill, s, \
-    say, setblock, summon, tag
+    setblock, summon, tag
 from pynecraft.enums import BiomeId
 from pynecraft.info import colors, stems, trim_materials, trim_patterns
 from pynecraft.simpler import Item, ItemFrame, Region, Sign, WallSign
@@ -583,14 +583,13 @@ def trim_functions(room):
         def _init(self):
             yield kill_em(e().tag(overall_tag))
             for i, t in enumerate(self.types):
-                stand = base_stand.clone().tag(self.tag)
+                stand = base_stand.clone().tag(self.tag).merge_nbt({'CustomName': t.title()})
                 self.armor_gen(stand, t)
                 loc = places[self.pos[i]]
                 yield stand.summon(loc[0], {'Rotation': good_facing(loc[1]).rotation})
             yield keep.set(self.num)
 
         def _loop_func(self, step):
-            yield say(step.elem)
             yield execute().as_(e().tag(overall_tag)).run(data().modify(s(), 'ArmorItems[]').merge().value(
                 self.loop_nbt(step.elem)))
             yield execute().at(e().tag('trim_change_home')).run(data().merge(r(0, 2, 0), {'Text4': step.elem.title()}))
@@ -600,7 +599,6 @@ def trim_functions(room):
             super().__init__(name, types, pos, armor_gen)
 
         def _loop_func(self, step):
-            yield say(step.elem)
             for i, which in enumerate(armor_pieces):
                 yield execute().as_(e().tag(overall_tag)).run(
                     data().modify(s(), f'ArmorItems[{i}]').merge().value({'id': f'{step.elem}_{which}'}))
