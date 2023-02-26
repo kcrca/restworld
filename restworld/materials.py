@@ -8,7 +8,7 @@ from pynecraft.commands import Block, BlockDef, Entity, JsonText, MOD, PLUS, RES
     good_block, \
     item, \
     kill, s, \
-    say, scoreboard, setblock, summon, tag, tellraw
+    scoreboard, setblock, summon, tag, tellraw
 from pynecraft.enums import BiomeId
 from pynecraft.info import colors, stems, trim_materials, trim_patterns
 from pynecraft.simpler import Item, ItemFrame, Region, Sign, WallSign
@@ -583,7 +583,6 @@ def trim_functions(room):
             yield show.set(self.num)
 
         def _loop_func(self, step):
-            yield say(f'Detect {self.name}')
             yield execute().as_(e().tag(overall_tag)).run(
                 data().modify(s(), f'ArmorItems[].{self.nbt_path}').set().value(step.elem))
             yield execute().at(e().tag('trim_change_home')).run(data().merge(r(0, 2, 0), {'Text4': step.elem.title()}))
@@ -636,6 +635,13 @@ def trim_functions(room):
     room.function('trim_loop_init')
     run_show_cleanup = execute().at(e().tag('trim_show_home')).run(function(show_cleanup))
     run_change_cleanup = execute().at(e().tag('trim_change_home')).run(function(change_cleanup))
+
+    # These have to go somewhere...
+    change_init.add(
+        label(r(-1, 2, -1), "Leggings"),
+        label(r(1, 2, -1), "Turtle Helmet"),
+        label(r(3, 2, -1), "Labels")
+    )
 
     show_init.add(show.set(0), run_show_cleanup)
     show_menu.add(
@@ -697,11 +703,21 @@ def trim_functions(room):
     room.function('trim_chestplate_off', home=False).add(execute().as_(e().tag(overall_tag)).run(
         item().replace().entity(s(), 'armor.feet').with_('air'),
         item().replace().entity(s(), 'armor.chest').with_('air')))
-    restore = room.function('trim_restore_chestplate', home=False)
+
+    chestplate_on = room.function('trim_chestplate_on', home=False)
     for armor in info.armors:
-        restore.add(execute().if_().entity(s().nbt({'ArmorItems': [{'id': f'minecraft:{armor}_leggings'}]})).run(
-            item().replace().entity(s(), 'armor.feet').with_(f'{armor}_boots'),
-            item().replace().entity(s(), 'armor.chest').with_(f'{armor}_chestplate')))
-    restore.add(data().modify(s(), 'ArmorItems[0].tag.Trim').merge().from_(s(), 'ArmorItems[1].tag.Trim'),
-                data().modify(s(), 'ArmorItems[2].tag.Trim').merge().from_(s(), 'ArmorItems[1].tag.Trim'))
-    room.function('trim_chestplate_on', home=False).add(execute().as_(e().tag(overall_tag)).run(function(restore)))
+        chestplate_on.add(
+            execute().as_(e().tag(overall_tag).nbt({'ArmorItems': [{'id': f'minecraft:{armor}_leggings'}]})).run(
+                item().replace().entity(s(), 'armor.feet').with_(f'{armor}_boots'),
+                item().replace().entity(s(), 'armor.chest').with_(f'{armor}_chestplate')))
+    chestplate_on.add(execute().as_(e().tag(overall_tag)).run(
+        data().modify(s(), 'ArmorItems[0].tag.Trim').merge().from_(s(), 'ArmorItems[1].tag.Trim'),
+        data().modify(s(), 'ArmorItems[2].tag.Trim').merge().from_(s(), 'ArmorItems[1].tag.Trim')))
+
+    room.function('trim_turtle_on', home=False).add(
+        execute().as_(e().tag(overall_tag)).run(data().modify(s(), 'ArmorItems[3].id').set().value('turtle_helmet')))
+    turtle_off = room.function('trim_turtle_off', home=False)
+    for armor in info.armors:
+        turtle_off.add(
+            execute().as_(e().tag(overall_tag).nbt({'ArmorItems': [{'id': f'minecraft:{armor}_leggings'}]})).run(
+                data().modify(s(), 'ArmorItems[3].id').set().value(f'{armor}_helmet')))
