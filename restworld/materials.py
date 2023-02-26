@@ -559,7 +559,7 @@ def trim_functions(room):
         (r(-1, 3, 0), NORTH), (r(1, 3, 0), NORTH)
     )
 
-    keep = room.score('trim_keep')
+    all = room.score('trim_all')
     change = room.score('trim_change')
     adjust_change = room.score('trim_adjust_change')
     num_categories = room.score_max('TRIMS')
@@ -587,7 +587,7 @@ def trim_functions(room):
                 self.armor_gen(stand, t)
                 loc = places[self.pos[i]]
                 yield stand.summon(loc[0], {'Rotation': good_facing(loc[1]).rotation})
-            yield keep.set(self.num)
+            yield all.set(self.num)
 
         def _loop_func(self, step):
             yield execute().as_(e().tag(overall_tag)).run(data().modify(s(), 'ArmorItems[]').merge().value(
@@ -613,44 +613,44 @@ def trim_functions(room):
                   'armors': Armors('armors', info.armors, armors_places,
                                    lambda stand, type: armor_for(stand, type))}
 
-    # menu: pop the menu up; call other menu's "cleanup" (for 'keep', first ensure 'change' value != keep value)
+    # menu: pop the menu up; call other menu's "cleanup" (for 'all', first ensure 'change' value != all value)
     # cleanup: pull the menu down, using variable to define "current"
     # each sign: set "current", then cleanup
     # init: Call 'cleanup'
     #
     # change_home: the armor stand for the current "change" value
-    keep_menu = room.function('trim_keep_menu', home=False)
-    keep_cleanup = room.function('trim_keep_cleanup', home=False)
-    keep_init = room.function('trim_keep_init')
+    all_menu = room.function('trim_all_menu', home=False)
+    all_cleanup = room.function('trim_all_cleanup', home=False)
+    all_init = room.function('trim_all_init')
     change_menu = room.function('trim_change_menu', home=False)
     change_cleanup = room.function('trim_change_cleanup', home=False)
     change_init = room.function('trim_change_init')
     room.function('trim_loop_init')
-    run_keep_cleanup = execute().at(e().tag('trim_keep_home')).run(function(keep_cleanup))
+    run_all_cleanup = execute().at(e().tag('trim_all_home')).run(function(all_cleanup))
     run_change_cleanup = execute().at(e().tag('trim_change_home')).run(function(change_cleanup))
 
     facing = NORTH
-    keep_init.add(keep.set(0), run_keep_cleanup)
-    keep_menu.add(
+    all_init.add(all.set(0), run_all_cleanup)
+    all_menu.add(
         execute().at(e().tag('trim_change_home')).if_().block(r(0, 3, 0), 'oak_wall_sign').run(run_change_cleanup))
-    keep_cleanup.add(
+    all_cleanup.add(
         fill(r(0, 3, 0), r(0, 4, 0), 'air'),
-        execute().store(RESULT).score(adjust_change).if_().score(keep).is_(EQ, change),
+        execute().store(RESULT).score(adjust_change).if_().score(all).is_(EQ, change),
         execute().if_().score(adjust_change).matches(True).run(
             change.add(1),
             change.operation(MOD, num_categories),
             run_change_cleanup)
     )
     for i, cat in enumerate(categories.values()):
-        lines = (None, 'Keep', cat.name.title())
-        keep_menu.add(WallSign(lines, commands=(keep.set(i), run_keep_cleanup)).place(r(0, i, 0), facing))
-        keep_cleanup.add(execute().if_().score(keep).matches(i).run(
-            WallSign((None, 'Keep', cat.name.title()), commands=(function(keep_menu),)).place(r(0, 2, 0), facing),
+        lines = (None, 'Show All', cat.name.title())
+        all_menu.add(WallSign(lines, commands=(all.set(i), run_all_cleanup)).place(r(0, i, 0), facing))
+        all_cleanup.add(execute().if_().score(all).matches(i).run(
+            WallSign((None, 'Show All', cat.name.title()), commands=(function(all_menu),)).place(r(0, 2, 0), facing),
             execute().at(e().tag('trim_home')).run(function(cat.init))))
 
     change_init.add(change.set(1), run_change_cleanup)
     change_menu.add(
-        execute().at(e().tag('trim_keep_home')).if_().block(r(0, 3, 0), 'oak_wall_sign').run(run_keep_cleanup))
+        execute().at(e().tag('trim_all_home')).if_().block(r(0, 3, 0), 'oak_wall_sign').run(run_all_cleanup))
     change_cleanup.add(
         fill(r(0, 3, 0), r(0, 4, 0), 'air'),
         kill(e().tag('trim_loop_home')),
@@ -662,7 +662,7 @@ def trim_functions(room):
             if i == j:
                 continue
             lines = (None, 'Change', jcat.name.title())
-            change_menu.add(execute().if_().score(keep).matches(i).run(
+            change_menu.add(execute().if_().score(all).matches(i).run(
                 WallSign(lines, commands=(change.set(j), run_change_cleanup)).place(r(0, sign_num, 0), facing)))
             sign_num += 1
         change_cleanup.add(execute().if_().score(change).matches(i).at(e().tag('trim_change_home')).run(
