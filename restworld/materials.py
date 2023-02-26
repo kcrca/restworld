@@ -2,12 +2,13 @@ from __future__ import annotations
 
 from pynecraft import info
 from pynecraft.base import EAST, EQ, NE, NORTH, NW, Nbt, NbtDef, SOUTH, WEST, good_facing, r, to_id
-from pynecraft.commands import Block, BlockDef, Entity, MOD, RESULT, data, e, execute, fill, fillbiome, \
+from pynecraft.commands import Block, BlockDef, Entity, JsonText, MOD, PLUS, RESULT, a, data, e, execute, fill, \
+    fillbiome, \
     function, \
     good_block, \
     item, \
     kill, s, \
-    setblock, summon, tag
+    say, scoreboard, setblock, summon, tag, tellraw
 from pynecraft.enums import BiomeId
 from pynecraft.info import colors, stems, trim_materials, trim_patterns
 from pynecraft.simpler import Item, ItemFrame, Region, Sign, WallSign
@@ -528,16 +529,6 @@ def armor_for(stand: Entity, kind: str, nbt: NbtDef = None):
     stand.merge_nbt({'ArmorItems': items})
 
 
-#
-# New trim plan:
-#   Sign saying "Show all:", with a second sign wit the current value. Touching the current value sign brings up all
-#   three possibilities to select.
-#
-#   Third sign saying "Change:" with a fourth sign with the current value. Touching the current value behaves similarly.
-#
-#   If the new value of "show all" is the same as the current value of "Change", then "Change" is changed to some
-#   default
-#
 def trim_functions(room):
     overall_tag = 'trim_stand'
     base_stand = Entity('armor_stand',
@@ -559,25 +550,27 @@ def trim_functions(room):
         (r(-1, 3, 0), NORTH), (r(1, 3, 0), NORTH)
     )
 
-    all = room.score('trim_all')
+    show = room.score('trim_show')
     change = room.score('trim_change')
     adjust_change = room.score('trim_adjust_change')
     num_categories = room.score_max('TRIMS')
+    facing = NORTH
 
     class Trim:
         _num = 0
 
-        def __init__(self, name: str, types, pos, armor_gen, loop_nbt=None):
+        def __init__(self, name: str, types, pos, armor_gen, nbt_path):
             self.name = name
             self.types = types
             self.tag = f'trim_{name}'
             self.pos = pos
             self.armor_gen = armor_gen
-            self.loop_nbt = loop_nbt
+            self.nbt_path = nbt_path
 
             self.num = Trim._num
             Trim._num += 1
             self.init = room.function(f'trim_{name}_init').add(self._init())
+            self.detect = room.function(f'trim_{name}_detect', home=False).add(self._detect())
             self.loop = room.loop(f'trim_{name}', main_clock).loop(self._loop_func, types)
 
         def _init(self):
@@ -587,55 +580,69 @@ def trim_functions(room):
                 self.armor_gen(stand, t)
                 loc = places[self.pos[i]]
                 yield stand.summon(loc[0], {'Rotation': good_facing(loc[1]).rotation})
-            yield all.set(self.num)
+            yield show.set(self.num)
 
         def _loop_func(self, step):
-            yield execute().as_(e().tag(overall_tag)).run(data().modify(s(), 'ArmorItems[]').merge().value(
-                self.loop_nbt(step.elem)))
+            yield say(f'Detect {self.name}')
+            yield execute().as_(e().tag(overall_tag)).run(
+                data().modify(s(), f'ArmorItems[].{self.nbt_path}').set().value(step.elem))
             yield execute().at(e().tag('trim_change_home')).run(data().merge(r(0, 2, 0), {'Text4': step.elem.title()}))
+
+        def _detect(self):
+            for i, t in enumerate(self.types):
+                # The path is a.b.c, but we need the last element to be a.b{c:value}, and there is no rreplace, so...
+                path = self._to_path(t)
+                sign = WallSign((None, 'Keep', f'{self.name.title().replace("s", "")}:', t.title()))
+                yield execute().if_().data().entity(e().tag(overall_tag).limit(1), path).run(
+                    sign.place(r(-1, 2, 0), facing))
+
+        def _to_path(self, t):
+            return ('ArmorItems[0].' + self.nbt_path)[::-1].replace('.', '{', 1)[::-1] + ':' + t + '}'
 
     class Armors(Trim):
         def __init__(self, name: str, types, pos, armor_gen):
-            super().__init__(name, types, pos, armor_gen)
+            super().__init__(name, types, pos, armor_gen, 'id')
 
         def _loop_func(self, step):
             for i, which in enumerate(armor_pieces):
                 yield execute().as_(e().tag(overall_tag)).run(
-                    data().modify(s(), f'ArmorItems[{i}]').merge().value({'id': f'{step.elem}_{which}'}))
+                    data().modify(s(), f'ArmorItems[{i}].{self.nbt_path}').set().value(f'{step.elem}_{which}'))
             yield execute().at(e().tag('trim_change_home')).run(data().merge(r(0, 2, 0), {'Text4': step.elem.title()}))
+
+        def _to_path(self, t):
+            return f'ArmorItems[{{id:"minecraft:{t}_boots"}}]'
 
     categories = {'patterns': Trim('patterns', trim_patterns, patterns_places,
                                    lambda stand, type: armor_for(stand, 'iron', {'tag': {'Trim': {'pattern': type}}}),
-                                   lambda which: {'tag': {'Trim': {'pattern': which}}}),
+                                   'tag.Trim.pattern'),
                   'materials': Trim('materials', trim_materials, material_places,
                                     lambda stand, type: armor_for(stand, 'iron', {'tag': {'Trim': {'material': type}}}),
-                                    lambda which: {'tag': {'Trim': {'material': which}}}),
+                                    'tag.Trim.material'),
                   'armors': Armors('armors', info.armors, armors_places,
                                    lambda stand, type: armor_for(stand, type))}
 
-    # menu: pop the menu up; call other menu's "cleanup" (for 'all', first ensure 'change' value != all value)
+    # menu: pop the menu up; call other menu's "cleanup" (for 'show', first ensure 'change' value != 'show' value)
     # cleanup: pull the menu down, using variable to define "current"
     # each sign: set "current", then cleanup
     # init: Call 'cleanup'
     #
     # change_home: the armor stand for the current "change" value
-    all_menu = room.function('trim_all_menu', home=False)
-    all_cleanup = room.function('trim_all_cleanup', home=False)
-    all_init = room.function('trim_all_init')
+    show_menu = room.function('trim_show_menu', home=False)
+    show_cleanup = room.function('trim_show_cleanup', home=False)
+    show_init = room.function('trim_show_init')
     change_menu = room.function('trim_change_menu', home=False)
     change_cleanup = room.function('trim_change_cleanup', home=False)
     change_init = room.function('trim_change_init')
     room.function('trim_loop_init')
-    run_all_cleanup = execute().at(e().tag('trim_all_home')).run(function(all_cleanup))
+    run_show_cleanup = execute().at(e().tag('trim_show_home')).run(function(show_cleanup))
     run_change_cleanup = execute().at(e().tag('trim_change_home')).run(function(change_cleanup))
 
-    facing = NORTH
-    all_init.add(all.set(0), run_all_cleanup)
-    all_menu.add(
+    show_init.add(show.set(0), run_show_cleanup)
+    show_menu.add(
         execute().at(e().tag('trim_change_home')).if_().block(r(0, 3, 0), 'oak_wall_sign').run(run_change_cleanup))
-    all_cleanup.add(
+    show_cleanup.add(
         fill(r(0, 3, 0), r(0, 4, 0), 'air'),
-        execute().store(RESULT).score(adjust_change).if_().score(all).is_(EQ, change),
+        execute().store(RESULT).score(adjust_change).if_().score(show).is_(EQ, change),
         execute().if_().score(adjust_change).matches(True).run(
             change.add(1),
             change.operation(MOD, num_categories),
@@ -643,14 +650,14 @@ def trim_functions(room):
     )
     for i, cat in enumerate(categories.values()):
         lines = (None, 'Show All', cat.name.title())
-        all_menu.add(WallSign(lines, commands=(all.set(i), run_all_cleanup)).place(r(0, i, 0), facing))
-        all_cleanup.add(execute().if_().score(all).matches(i).run(
-            WallSign((None, 'Show All', cat.name.title()), commands=(function(all_menu),)).place(r(0, 2, 0), facing),
+        show_menu.add(WallSign(lines, commands=(show.set(i), run_show_cleanup)).place(r(0, i, 0), facing))
+        show_cleanup.add(execute().if_().score(show).matches(i).run(
+            WallSign((None, 'Show All', cat.name.title()), commands=(function(show_menu),)).place(r(0, 2, 0), facing),
             execute().at(e().tag('trim_home')).run(function(cat.init))))
 
     change_init.add(change.set(1), run_change_cleanup)
     change_menu.add(
-        execute().at(e().tag('trim_all_home')).if_().block(r(0, 3, 0), 'oak_wall_sign').run(run_all_cleanup))
+        execute().at(e().tag('trim_show_home')).if_().block(r(0, 3, 0), 'oak_wall_sign').run(run_show_cleanup))
     change_cleanup.add(
         fill(r(0, 3, 0), r(0, 4, 0), 'air'),
         kill(e().tag('trim_loop_home')),
@@ -662,13 +669,30 @@ def trim_functions(room):
             if i == j:
                 continue
             lines = (None, 'Change', jcat.name.title())
-            change_menu.add(execute().if_().score(all).matches(i).run(
+            change_menu.add(execute().if_().score(show).matches(i).run(
                 WallSign(lines, commands=(change.set(j), run_change_cleanup)).place(r(0, sign_num, 0), facing)))
             sign_num += 1
         change_cleanup.add(execute().if_().score(change).matches(i).at(e().tag('trim_change_home')).run(
             WallSign((None, 'Change', f'{cat.name.title()}:'),
                      commands=(function(change_menu))).place(r(0, 2, 0), facing),
             tag(e().tag('trim_loop_home')).add(f'trim_{cat.name}_home')))
+
+    trim_sum = room.score('trim_sum')
+    keep_detect = room.function('trim_keep_detect', home=False).add(
+        scoreboard().players().operation(trim_sum, EQ, show),
+        scoreboard().players().operation(trim_sum, PLUS, change),
+        # 0 and 1 are use, so the things being kept is 2 (armor). And so on.
+        tellraw(a(), 'detect', ', show=', JsonText.score(show), ', change=', JsonText.score(change), ', sum=',
+                JsonText.score(trim_sum)),
+        execute().if_().score(trim_sum).matches(1).at(e().tag('trim_change_home')).run(
+            function(categories['armors'].detect)),
+        execute().if_().score(trim_sum).matches(2).at(e().tag('trim_change_home')).run(
+            function(categories['materials'].detect)),
+        execute().if_().score(trim_sum).matches(3).at(e().tag('trim_change_home')).run(
+            function(categories['patterns'].detect)),
+    )
+    show_cleanup.add(function(keep_detect))
+    change_cleanup.add(function(keep_detect))
 
     room.function('trim_chestplate_off', home=False).add(execute().as_(e().tag(overall_tag)).run(
         item().replace().entity(s(), 'armor.feet').with_('air'),
