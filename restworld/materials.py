@@ -2,13 +2,13 @@ from __future__ import annotations
 
 from pynecraft import info
 from pynecraft.base import EAST, EQ, NE, NORTH, NW, Nbt, NbtDef, SOUTH, WEST, good_facing, r, to_id
-from pynecraft.commands import Block, BlockDef, Entity, JsonText, MOD, PLUS, RESULT, a, data, e, execute, fill, \
+from pynecraft.commands import Block, BlockDef, Entity, MOD, PLUS, RESULT, data, e, execute, fill, \
     fillbiome, \
     function, \
     good_block, \
     item, \
     kill, s, \
-    scoreboard, setblock, summon, tag, tellraw
+    scoreboard, setblock, summon, tag
 from pynecraft.enums import BiomeId
 from pynecraft.info import colors, stems, trim_materials, trim_patterns
 from pynecraft.simpler import Item, ItemFrame, Region, Sign, WallSign
@@ -54,12 +54,12 @@ def room():
 
     room.loop('all_sand', main_clock).loop(all_sand_loop, range(0, 2))
 
-    room.function('arrows_init').add(WallSign(()).place(r(1, 2, 0), EAST))
+    room.function('arrows_init').add(WallSign(()).place(r(0, 2, -1), NORTH))
 
     def arrows_loop(step):
         yield summon(step.elem, r(0, 3, 0.25), {
             'Tags': ['arrow'], 'NoGravity': True, 'Color': 127, 'CustomPotionColor': 127 if step.i == 2 else ''})
-        yield data().merge(r(1, 2, 0), {'Text2': step.elem.name})
+        yield data().merge(r(0, 2, -1), {'Text2': step.elem.name})
 
     room.loop('arrows', main_clock).add(
         kill(e().tag('arrow'))
@@ -75,10 +75,10 @@ def room():
         p = points[i]
         f = -32768 if i == 0 else points[i - 1]
         yield summon('experience_orb', r(0, 3, 0), {'Value': p, 'Age': 6000 - 40})
-        yield data().merge(r(1, 2, 0), {'Text3': 'Size %d' % (i + 1), 'Text4': '%d - %d' % (f, p)})
+        yield data().merge(r(0, 2, -1), {'Text3': 'Size %d' % (i + 1), 'Text4': '%d - %d' % (f, p)})
 
     room.loop('experience_orbs', fast_clock).loop(experience_orbs_loop, points)
-    room.function('experience_orbs_init').add(WallSign((None, 'Experience Orb')).place(r(1, 2, 0), EAST))
+    room.function('experience_orbs_init').add(WallSign((None, 'Experience Orb')).place(r(0, 2, -1), NORTH))
     ingot_frame = 'ores_ingot_frame'
     frame = ItemFrame(SOUTH, nbt={'Tags': [room.name, ingot_frame]})
     room.function('ores_init').add(
@@ -688,8 +688,6 @@ def trim_functions(room):
         scoreboard().players().operation(trim_sum, EQ, show),
         scoreboard().players().operation(trim_sum, PLUS, change),
         # 0 and 1 are use, so the things being kept is 2 (armor). And so on.
-        tellraw(a(), 'detect', ', show=', JsonText.score(show), ', change=', JsonText.score(change), ', sum=',
-                JsonText.score(trim_sum)),
         execute().if_().score(trim_sum).matches(1).at(e().tag('trim_change_home')).run(
             function(categories['armors'].detect)),
         execute().if_().score(trim_sum).matches(2).at(e().tag('trim_change_home')).run(
