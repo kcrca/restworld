@@ -176,8 +176,13 @@ def room():
     room.function('light_init').add(label(r(1, 2, 0), 'Light Block'))
     blocks('light', SOUTH, (Block('light', {'level': x}) for x in range(0, 15)),
            labels=tuple(('light', f'Level: {i:d}') for i in range(0, 15)), clock=slow_clock)
+    # /setblock -57 102 -9 minecraft:jukebox[has_record=true]{IsPlaying:1,RecordItem:{id:music_disc_pigstep,Count:1}}
     blocks('music', SOUTH, (
-        Block('Note Block'), Block('Jukebox'), Block('jukebox', {'has_record': True}, name='Jukebox|Playing')))
+        Block('Note Block'), Block('Jukebox'),
+        Block('jukebox',
+              {'has_record': True},
+              {'IsPlaying': True, 'RecordItem': {'id': 'music_disc_pigstep', 'Count': 1}},
+              name='Jukebox|Playing')))
     blocks('netherrack', NORTH, ('Netherrack', 'Warped Nylium', 'Crimson Nylium'))
     blocks('obsidian', SOUTH, ('Obsidian', 'Crying Obsidian'))
     blocks('prismarine', NORTH, ('Prismarine', 'Prismarine Bricks', 'Dark Prismarine'))
