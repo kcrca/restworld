@@ -37,14 +37,13 @@ def room():
     hoglins = ('Hoglin', 'Zoglin')
 
     def piglin_loop(step):
-        p = placer(r(0, 2, 0), lhs_dir, 3, 3, tags=('piglin',))
-        yield p.summon(step.elem)
+        p = placer(r(0, 2, 0), lhs_dir, 2, 3, tags=('piglin',))
         yield p.summon(hoglins[step.i])
+        yield p.summon(step.elem)
 
     room.loop('piglin', main_clock).add(kill_em(e().tag('piglin'))).loop(piglin_loop, piglins)
     room.function('strider_init').add(
         placer(r(0, 2, 0), lhs_dir, 0, 3).summon('strider'),
-        label(r(3, 2, 1), 'Saddle'),
         label(r(6, 2, -5), 'Change Height'),
         label(r(6, 2, -3), 'Reset Room'))
 
