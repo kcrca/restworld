@@ -722,13 +722,14 @@ def color_functions(room):
         signables = info.woods + stems
         for w in range(0, len(signables)):
             wood = signables[w]
-            row_len = 4 if w < 8 else 2
+            row_len = 4 if w < 8 else 3
             x = w % row_len - 12
-            y = w / 4 + 2
+            y = int(w / 4) + 2
             z = -(w % row_len) + 3
-            if row_len == 2:
+            if row_len < 4:
                 x += 1
                 z -= 1
+            print(f'{w:2}: {wood}: {x}, {y}, {z}')
             yield from render(x, y, z, color, Block(wood))
 
     def render_signs_glow(x, y, z, _, _2):
