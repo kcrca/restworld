@@ -6,13 +6,12 @@ from typing import Iterable, Union
 from pynecraft import info
 from pynecraft.base import DOWN, EAST, EQ, NORTH, Nbt, SOUTH, WEST, good_facing, r, to_name
 from pynecraft.commands import Block, Entity, JsonText, MOD, MOVE, clone, data, e, execute, fill, function, \
-    good_block, item, \
-    kill, s, say, setblock, summon, tag
+    good_block, item, kill, s, say, setblock, summon, tag
 from pynecraft.function import Loop
 from pynecraft.info import Color, colors, shards, stems
 from pynecraft.simpler import Item, ItemFrame, Region, Sign, WallSign
 from restworld.rooms import Room, label
-from restworld.world import fast_clock, kill_em, main_clock, restworld, slow_clock
+from restworld.world import fast_clock, kill_em, main_clock, restworld
 
 
 def room():
@@ -173,10 +172,6 @@ def room():
         'Glowstone', 'Sea Lantern', 'Shroomlight', 'Ochre|Froglight', 'Pearlescent|Froglight', 'Verdant|Froglight',
         'End Rod'))
     room.function('ladder_init').add(setblock(r(0, 3, 0), 'ladder'))
-    room.function('light_init').add(label(r(1, 2, 0), 'Light Block'))
-    blocks('light', SOUTH, (Block('light', {'level': x}) for x in range(0, 15)),
-           labels=tuple(('light', f'Level: {i:d}') for i in range(0, 15)), clock=slow_clock)
-    # /setblock -57 102 -9 minecraft:jukebox[has_record=true]{IsPlaying:1,RecordItem:{id:music_disc_pigstep,Count:1}}
     blocks('music', SOUTH, (
         Block('Note Block'), Block('Jukebox'),
         Block('jukebox',
@@ -194,11 +189,9 @@ def room():
     blocks('raw_metal', NORTH, ('Raw Iron|Block', 'Raw Copper|Block', 'Raw Gold|Block'))
     blocks('respawn_anchor', NORTH, (Block('Respawn Anchor', {'charges': x}) for x in range(0, 5)),
            labels=tuple(('Respawn Anchor', f'Charges: {x:d}') for x in range(0, 5)))
-    #     blocks('frosted_ice', SOUTH,
-    #            list(Block('frosted_ice', {'age': i}, name=f'Frosted Ice|Age: {i}') for i in range(0, 4)))
-    sands = ('Sand',) + tuple(
-        Block('suspicious_sand', state={'dusted': s}, name=f'Suspicous Sand|Dusted: {s}') for s in range(4))
-    blocks('sand', SOUTH, sands, dx=3)
+    suspicious_sands = tuple(
+        Block('suspicious_sand', state={'dusted': s}, name=f'Suspicious Sand|Dusted: {s}') for s in range(4))
+    blocks('suspicious_sand', SOUTH, suspicious_sands, dx=3)
     red_sandstone = ('Red Sandstone', 'Smooth|Red Sandstone', 'Cut|Red Sandstone', 'Chiseled|Red Sandstone')
     blocks('sandstone', SOUTH, (red_sandstone, tuple(re.sub(' *Red *', '', f) for f in red_sandstone)), dx=3)
     blocks('slabs', NORTH, ('Smooth Stone|Slab', 'Petrified Oak|Slab'))

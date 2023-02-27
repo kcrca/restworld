@@ -311,6 +311,9 @@ class Room(FunctionSet):
                 continue
             f_name = '_' + f
             relevant = filter(lambda x: self._is_func_type(x, f_name), self.functions.values())
+            # Sorting means that we can force something to be first or last (rarely needed, but useful)
+            relevant = list(relevant)
+            relevant.sort(key=lambda f: f.name)
             commands = []
             commands.extend(before_commands.setdefault(f, []))
             commands.extend(

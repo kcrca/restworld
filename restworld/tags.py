@@ -170,6 +170,7 @@ def tags():
     blocks['sand'] = {
         'values': [
             'sand',
+            'suspicious_sand',
             'red_sand',
             'gravel'
         ]
