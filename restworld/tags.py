@@ -167,7 +167,7 @@ def tags():
             'activator_rail'
         ]
     }
-    blocks['sand'] = {
+    blocks['falling'] = {
         'values': [
             'sand',
             'suspicious_sand',

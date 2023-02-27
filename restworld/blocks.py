@@ -914,7 +914,7 @@ def expansion_functions(room):
     )
     room.function('expand_generic', home=False).add(
         # Sand blocks will fall if they aren't supported, so we place barriers under them
-        execute().if_().block(r(0, 3, 0), '#restworld:sand').run(
+        execute().if_().block(r(0, 3, 0), '#restworld:falling').run(
             fill(r(-1, 2, -1), r(1, 2, 1), 'barrier').replace('air')),
 
         # We want to clone up the snow topper, if_().it exists. If it doesn't, we need that layer
