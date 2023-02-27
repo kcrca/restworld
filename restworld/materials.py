@@ -519,7 +519,7 @@ def wood_functions(room):
 armor_pieces = ('boots', 'leggings', 'chestplate', 'helmet')
 
 
-def armor_for(stand: Entity, kind: str, nbt: NbtDef = None):
+def armor_for(stand: Entity, kind: str, nbt: NbtDef = None) -> None:
     if nbt is None:
         nbt = {}
     base_nbt = Nbt({'tag': {'Trim': {'material': 'redstone', 'pattern': 'coast'}}})

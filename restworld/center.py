@@ -4,6 +4,7 @@ from pynecraft.base import EAST, NORTH, SOUTH, WEST, r
 from pynecraft.commands import Entity, Score, clone, e, execute, fill, kill, scoreboard, summon, tag
 from pynecraft.info import Horse
 from pynecraft.simpler import WallSign
+from restworld.materials import armor_for
 from restworld.rooms import Room
 from restworld.world import fast_clock, main_clock, restworld, slow_clock
 
@@ -66,6 +67,8 @@ def room():
     room.loop('slow_lights', slow_clock).loop(lambda x: lights_loop(-5, 'emerald_block'), range(0, 1))
 
     all = {'Tags': ['center', 'mob_display'], 'PersistenceRequired': True}
+    trim_stand = Entity('armor_stand', all).tag('center_stand')
+    armor_for(trim_stand, 'iron', {'tag': {'Trim': {'pattern': 'rib', 'material': 'diamond'}}})
     room.function('mobs_display_init').add(
         kill(e().tag('mob_display')),
 
@@ -78,6 +81,8 @@ def room():
         summon('llama', r(6, 2.5, 0), all),
         summon('mooshroom', r(6, 2.5, 0), all),
         summon('pig', r(6, 2.5, 0), all),
+
+        trim_stand.summon(r(11, 2, 1), facing=NORTH),
 
         kill(e().type('item')),
     )
