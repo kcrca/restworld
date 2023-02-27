@@ -195,7 +195,7 @@ def summon_mob_commands(room, mob):
         if mob.name == '<None>':
             continue
 
-        mob_facing = rotated_facing(sector, 90)
+        mob_facing = rotated_facing(sector, 180)
         mob.merge_nbt({'IsImmuneToZombification': True, 'Invulnerable': True})
         if mob.name in UNDEAD:
             mob.merge_nbt({'ArmorItems': [{}, {}, {}, Item.nbt_for('chainmail_helmet')]})
