@@ -556,6 +556,21 @@ def trim_functions(room):
     num_categories = room.score_max('TRIMS')
     facing = NORTH
 
+    frame = 'trim_frame'
+    frame_stand = Entity('armor_stand')
+    trim_nbt = {'tag': {'Trim': {'pattern': 'sentry', 'material': 'redstone'}}}
+    room.function('trim_init').add(
+        kill(e().tag(frame)),
+        ItemFrame(NORTH).item('iron_boots').merge_nbt(
+            {'Item': trim_nbt}).tag('materials', frame, f'{frame}_boots').summon(r(1, 5, 1)),
+        ItemFrame(NORTH).item('iron_leggings').merge_nbt(
+            {'Item': trim_nbt}).tag('materials', frame, f'{frame}_leggings').summon(r(0, 5, 1)),
+        ItemFrame(NORTH).item('iron_chestplate').merge_nbt(
+            {'Item': trim_nbt}).tag('materials', frame, f'{frame}_chestplate').summon(r(-1, 5, 1)),
+        ItemFrame(NORTH).item('iron_helmet').merge_nbt(
+            {'Item': trim_nbt}).tag('materials', frame, f'{frame}_helmet').summon(r(0, 6, 1)),
+    )
+
     class Trim:
         _num = 0
 
@@ -585,6 +600,7 @@ def trim_functions(room):
         def _loop_func(self, step):
             yield execute().as_(e().tag(overall_tag)).run(
                 data().modify(s(), f'ArmorItems[].{self.nbt_path}').set().value(step.elem))
+            yield execute().as_(e().tag(frame)).run(data().modify(s(), f'Item.{self.nbt_path}').set().value(step.elem))
             yield execute().at(e().tag('trim_change_home')).run(data().merge(r(0, 2, 0), {'Text4': step.elem.title()}))
 
         def _detect(self):
@@ -603,9 +619,12 @@ def trim_functions(room):
             super().__init__(name, types, pos, armor_gen, 'id')
 
         def _loop_func(self, step):
-            for i, which in enumerate(armor_pieces):
+            for i, piece in enumerate(armor_pieces):
+                which = f'{step.elem}_{piece}'
                 yield execute().as_(e().tag(overall_tag)).run(
-                    data().modify(s(), f'ArmorItems[{i}].{self.nbt_path}').set().value(f'{step.elem}_{which}'))
+                    data().modify(s(), f'ArmorItems[{i}].{self.nbt_path}').set().value(which))
+                yield execute().as_(e().tag(f'{frame}_{piece}')).run(
+                    data().modify(s(), f'Item.{self.nbt_path}').set().value(which))
             yield execute().at(e().tag('trim_change_home')).run(data().merge(r(0, 2, 0), {'Text4': step.elem.title()}))
 
         def _to_path(self, t):
