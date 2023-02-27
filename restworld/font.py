@@ -45,6 +45,8 @@ def room():
     room.function('check_sign', home=False).add(
         at.run(function('restworld:font/copy_sign')))
 
+    font_run_init = room.function('font_run_init')
+
     woods = info.woods
     materials = tuple(Block(m) for m in woods + stems)
     copy_sign = room.function('copy_sign', home=False).add(
@@ -57,6 +59,7 @@ def room():
     for i, thing in enumerate(materials):
         pos = r(x - 1, y, -3)
         copy_sign.add(ensure(pos, WallSign((), state={'facing': SOUTH}, wood=thing.id)))
+        font_run_init.add(label(pos, thing.name.title(), SOUTH))
 
         for path in tuple('Text%d' % i for i in range(1, 5)):
             copy_sign.add(data().modify(pos, path).set().from_(src_pos, path))
@@ -89,14 +92,15 @@ def room():
     )
     # noinspection SpellCheckingInspection
     init_text = ('Lorem ipsum', 'dolor sit amet,', 'consectetur', 'adipiscing elit.')
-    font_run_init = room.function('font_run_init').add(
+    font_run_init.add(
         tag(e().tag('font_run_home')).add('font_action_home'),
         WallSign(init_text).place(src_pos, SOUTH),
         execute().at(e().tag('font_action_home')).run(setblock(save_pos, 'air')),
         function('restworld:font/check_sign'),
         WallSign((None, 'Color Holder')).place(r(0, -3, -3), SOUTH),
         label(r(0, 2, -1), 'Reset Room'),
-        label(r(0, 6, -3), 'Glowing', facing=3),
+        label(r(0, 6, -3), 'Glowing', facing=SOUTH),
+        label(r(0, 2, -3), 'Put Sign Here', facing=SOUTH),
     )
 
     for i, c in enumerate(colors):
