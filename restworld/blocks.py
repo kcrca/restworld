@@ -338,7 +338,7 @@ def room():
             else:
                 yield item().replace().block(r(0, 3, 0), f'container.{j:d}').with_('air')
 
-    room.function('brewing_stand_init').add(function('restworld:gui/brewing_init'))
+    room.function('brewing_stand_init').add(setblock(r(0, 3, 0), 'brewing_stand'))
     room.loop('brewing_stand', main_clock).add(
         item().replace().block(r(0, 3, 0), 'container.3').with_('air'),
         item().replace().block(r(0, 3, 0), 'container.4').with_('air'),
@@ -729,7 +729,6 @@ def color_functions(room):
             if row_len < 4:
                 x += 1
                 z -= 1
-            print(f'{w:2}: {wood}: {x}, {y}, {z}')
             yield from render(x, y, z, color, Block(wood))
 
     def render_signs_glow(x, y, z, _, _2):
