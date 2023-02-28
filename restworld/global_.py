@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from pynecraft.base import EQ, GAMETIME, OVERWORLD, THE_END, THE_NETHER, r
-from pynecraft.commands import CREATIVE, Commands, MOD, MOVE, RAIN, RESULT, SIDEBAR, clear, clone, data, e, execute, \
+from pynecraft.commands import CREATIVE, MOD, MOVE, RAIN, RESULT, SIDEBAR, clear, clone, data, e, execute, \
     fill, function, gamemode, gamerule, kill, p, s, scoreboard, setblock, tag, teleport, time, tp, weather
 from pynecraft.enums import ScoreCriteria
 from pynecraft.function import Function
@@ -53,6 +53,8 @@ if_clock_running = execute().at(e().tag('clock_home')).if_().block(r(0, -2, 1), 
 
 
 def room():
+    room = Room('global', restworld)
+
     def use_min_fill(y, filler, filter):
         return execute().at(e().tag('full_reset_home')).run(
             fill((r(0), y, r(0)), (r(166), y, r(180)), filler).replace(filter))
@@ -73,30 +75,30 @@ def room():
             ex = ex.unless().score(c.time).matches((0, 1))
         return ex.run(function('restworld:global/kill_em'))
 
-    def mob_levitation_loop(step) -> Commands:
-        mob_rooms = ('mobs', 'wither', 'nether', 'enders')
-        if step.i == 1:
-            yield execute().at(e().tag('sleeping_bat')).run(clone(r(0, 1, 0), r(0, 1, 0), r(0, 3, 0)).replace(MOVE)),
-            yield execute().at(e().tag('turtle_eggs_home')).run(
-                clone(r(1, 2, 0), r(-2, 2, 0), r(-2, -4, 0)).replace(MOVE)),
-            for mob_room in mob_rooms:
-                room_home = mob_room + '_home'
-                yield execute().as_(e().tag(room_home)).run(data().merge(s(), {'Invisible': True}))
-                yield execute().as_(e().tag(room_home, '!blockers_home')).at(s()).run(tp(s(), r(0, 2, 0)))
-                yield execute().as_(e().tag(mob_room, '!passenger').type('!item_frame')).at(s()).run(
-                    tp(s(), r(0, 2, 0)))
-        else:
-            yield execute().at(e().tag('sleeping_bat')).run(clone(r(0, 1, 0), r(0, 1, 0), r(0, -1, 0)).replace(MOVE)),
-            yield execute().at(e().tag('turtle_eggs_home')).run(
-                clone(r(1, 4, 0), r(-2, 4, 0), r(-2, 2, 0)).replace(MOVE)),
-            for mob_room in mob_rooms:
-                room_home = mob_room + '_home'
-                yield execute().as_(e().tag(room_home)).run(data().merge(s(), {'Invisible': False}))
-                yield execute().as_(e().tag(room_home, '!blockers_home')).at(s()).run(tp(s(), r(0, -2, 0)))
-                yield execute().as_(e().tag(mob_room, '!passenger').type('!item_frame')).at(
-                    s()).run(tp(s(), r(0, -2, 0)))
+    mob_rooms = ('mobs', 'wither', 'nether', 'enders')
 
-    room = Room('global', restworld)
+    def raise_mobs_func():
+        yield execute().at(e().tag('sleeping_bat')).run(clone(r(0, 1, 0), r(0, 1, 0), r(0, 3, 0)).replace(MOVE)),
+        yield execute().at(e().tag('turtle_eggs_home')).run(
+            clone(r(1, 2, 0), r(-2, 2, 0), r(-2, -4, 0)).replace(MOVE)),
+        for mob_room in mob_rooms:
+            room_home = mob_room + '_home'
+            yield execute().as_(e().tag(room_home)).run(data().merge(s(), {'Invisible': True}))
+            yield execute().as_(e().tag(room_home, '!blockers_home')).at(s()).run(tp(s(), r(0, 2, 0)))
+            yield execute().as_(e().tag(mob_room, '!passenger').type('!item_frame')).at(s()).run(
+                tp(s(), r(0, 2, 0)))
+
+    def lower_mobs_func():
+        yield execute().at(e().tag('sleeping_bat')).run(clone(r(0, 1, 0), r(0, 1, 0), r(0, -1, 0)).replace(MOVE)),
+        yield execute().at(e().tag('turtle_eggs_home')).run(
+            clone(r(1, 4, 0), r(-2, 4, 0), r(-2, 2, 0)).replace(MOVE)),
+        for mob_room in mob_rooms:
+            room_home = mob_room + '_home'
+            yield execute().as_(e().tag(room_home)).run(data().merge(s(), {'Invisible': False}))
+            yield execute().as_(e().tag(room_home, '!blockers_home')).at(s()).run(tp(s(), r(0, -2, 0)))
+            yield execute().as_(e().tag(mob_room, '!passenger').type('!item_frame')).at(
+                s()).run(tp(s(), r(0, -2, 0)))
+
     room.function('arena').add(
         execute().in_(OVERWORLD).run(tp(p(), (1126, 103, 1079)).facing((1139, 104, 1079))))
 
@@ -200,7 +202,16 @@ def room():
         weather(RAIN))
     room.home_func('min')
 
-    room.loop('mob_levitation').loop(mob_levitation_loop, range(0, 2))
+    raise_mobs = room.function('raise_mobs', home=False).add(raise_mobs_func())
+    lower_mobs = room.function('lower_mobs', home=False).add(lower_mobs_func())
+
+    mobs_up = room.score('mobs_up')
+    room.function('toggle_raised', home=False).add(
+        execute().store(RESULT).score(mobs_up).at(e().tag('turtle_eggs_home')).if_().entity(
+            e().type('turtle').distance((None, 3))),
+        execute().if_().score(mobs_up).matches(0).run(function(lower_mobs)),
+        execute().unless().score(mobs_up).matches(0).run(function(raise_mobs)),
+    )
 
     room.function('ready', home=False).add(
         clear(p()),
