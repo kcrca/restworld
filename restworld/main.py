@@ -16,6 +16,7 @@ def main():
 
     cmdline = argparse.ArgumentParser()
     cmdline.add_argument('version', type=str, default='1.19.3')
+    # noinspection SpellCheckingInspection
     cmdline.add_argument('--mcversion', type=str)
     args = cmdline.parse_args()
     mc_version = args.mcversion

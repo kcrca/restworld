@@ -2,13 +2,8 @@ from __future__ import annotations
 
 from pynecraft import info
 from pynecraft.base import EAST, EQ, NE, NORTH, NW, Nbt, NbtDef, SOUTH, WEST, good_facing, r, to_id
-from pynecraft.commands import Block, BlockDef, Entity, MOD, PLUS, RESULT, data, e, execute, fill, \
-    fillbiome, \
-    function, \
-    good_block, \
-    item, \
-    kill, s, \
-    scoreboard, setblock, summon, tag
+from pynecraft.commands import Block, BlockDef, Entity, MOD, PLUS, RESULT, data, e, execute, fill, fillbiome, function, \
+    good_block, item, kill, s, scoreboard, setblock, summon, tag
 from pynecraft.enums import BiomeId
 from pynecraft.info import colors, stems, trim_materials, trim_patterns
 from pynecraft.simpler import Item, ItemFrame, Region, Sign, WallSign
@@ -557,7 +552,6 @@ def trim_functions(room):
     facing = NORTH
 
     frame = 'trim_frame'
-    frame_stand = Entity('armor_stand')
     trim_nbt = {'tag': {'Trim': {'pattern': 'sentry', 'material': 'redstone'}}}
     room.function('trim_init').add(
         kill(e().tag(frame)),

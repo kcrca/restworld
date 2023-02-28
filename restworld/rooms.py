@@ -8,8 +8,8 @@ from typing import Callable, Iterable, Tuple
 
 from pynecraft.base import FacingDef, Nbt, ROTATION_180, ROTATION_270, ROTATION_90, UP, r, rotated_facing, to_name
 from pynecraft.commands import Block, BlockDef, CLEAR, Command, Commands, Entity, EntityDef, JsonText, NEAREST, \
-    Position, Score, SignText, a, comment, e, execute, function, good_block, good_entity, good_facing, \
-    good_score, kill, p, schedule, scoreboard, setblock, summon, tag, tellraw, tp, weather
+    Position, Score, SignText, a, comment, e, execute, function, good_block, good_entity, good_facing, good_score, kill, \
+    p, schedule, scoreboard, setblock, summon, tag, tellraw, tp, weather
 from pynecraft.enums import ScoreCriteria
 from pynecraft.function import DataPack, Function, FunctionSet, LATEST_PACK_VERSION, Loop
 from pynecraft.simpler import WallSign

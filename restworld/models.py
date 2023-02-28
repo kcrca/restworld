@@ -3,8 +3,8 @@ from collections import defaultdict
 
 from pynecraft import info
 from pynecraft.base import EAST, EQ, NORTH, d, r, rotated_facing, to_name
-from pynecraft.commands import REPLACE, \
-    comment, data, e, execute, fill, function, item, kill, p, schedule, setblock, summon, tag
+from pynecraft.commands import REPLACE, comment, data, e, execute, fill, function, item, kill, p, schedule, setblock, \
+    summon, tag
 from pynecraft.enums import ValueEnum
 from pynecraft.info import block_items
 from pynecraft.simpler import Item, ItemFrame, WallSign

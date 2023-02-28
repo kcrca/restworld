@@ -5,8 +5,7 @@ import random
 
 from pynecraft.base import EAST, NORTH, Nbt, OVERWORLD, SOUTH, WEST, d, r, rotated_facing
 from pynecraft.commands import Block, CLEAR, Entity, RAIN, REPLACE, a, data, e, execute, fill, fillbiome, function, \
-    item, kill, p, \
-    particle, playsound, schedule, setblock, summon, tp, weather
+    item, kill, p, particle, playsound, schedule, setblock, summon, tp, weather
 from pynecraft.enums import BiomeId, Particle
 from pynecraft.simpler import VILLAGER_BIOMES, VILLAGER_PROFESSIONS, WallSign
 from restworld.rooms import ActionDesc, SignedRoom, Wall, span
@@ -139,7 +138,7 @@ def floor(block):
     return fill(r(-3, -1, -3), r(3, -1, 3), block)
 
 
-def setbiome(biome):
+def set_biome(biome):
     return fillbiome(r(-3, 1, -3), r(3, 5, 3), biome)
 
 
@@ -178,7 +177,7 @@ def room():
         Block('cow'), Block('Pig'), Block('Horse'), Block('Llama'), Block('Sheep'), Block('Polar Bear'), Block('Goat')))
     room.function('ash_init', home=False).add(
         floor('soul_soil'),
-        setbiome(BiomeId.SOUL_SAND_VALLEY))
+        set_biome(BiomeId.SOUL_SAND_VALLEY))
     room.function('barrier', home=False).add(
         main().run(particle(Particle.BLOCK_MARKER, 'barrier', r(0, 2, 0), 0, 0, 0, 0, 1)))
     room.function('light', home=False).add(
@@ -200,7 +199,7 @@ def room():
     room.function('composter_init', home=False).add(setblock(r(0, 0, 0), ('composter', {'level': 3})))
     room.function('crimson_spore_init', home=False).add(
         floor('crimson_nylium'),
-        setbiome(BiomeId.CRIMSON_FOREST))
+        set_biome(BiomeId.CRIMSON_FOREST))
     room.function('crit', home=False).add(fast().run(particle(Particle.CRIT, r(0, 1.5, 0), 0.5, 0.5, 0.5, 0, 10)))
     room.function('crit_init', home=False).add(function('restworld:particles/animal'))
     room.function('damage_indicator', home=False).add(
@@ -368,7 +367,7 @@ def room():
     room.function('particles_clear', home=False).add(
         kill_em(e().tag('particler')),
         fill(r(20, 0, 20), r(-20, 10, -20), 'air').replace('snow'),
-        setbiome(BiomeId.PLAINS),
+        set_biome(BiomeId.PLAINS),
         execute().in_(OVERWORLD).run(weather(CLEAR)))
     room.function('poof', home=False).add(main().run(particle(Particle.POOF, r(0, 1, 0), 0.25, 0.25, 0.25, 0, 30)))
     room.function('portal_init', home=False).add(
@@ -439,7 +438,7 @@ def room():
     room.function('sneeze_init', home=False).add(exemplar('panda', 0, {'NoAI': True, 'Age': -2147483648}))
     room.function('rain_init', home=False).add(weather(RAIN))
     room.function('rain_exit', home=False).add(weather(CLEAR))
-    room.function('snowflake_init', home=False).add(setbiome(BiomeId.SNOWY_TAIGA), weather(RAIN))
+    room.function('snowflake_init', home=False).add(set_biome(BiomeId.SNOWY_TAIGA), weather(RAIN))
     room.function('snowflake_exit', home=False).add(weather(CLEAR))
     room.function('sonic_boom_init', home=False).add(exemplar('warden', 0, {'NoAI': True}))
     room.function('sonic_boom', home=False).add(main().run(particle(Particle.SONIC_BOOM, r(0, 2, 0.5), 0, 0, 0, 1, 1)))
@@ -477,7 +476,7 @@ def room():
         villager_data)
     room.function('warped_spore_init', home=False).add(
         floor('warped_nylium'),
-        setbiome(BiomeId.WARPED_FOREST))
+        set_biome(BiomeId.WARPED_FOREST))
     room.function('wax_on', home=False).add(main().run(function('restworld:particles/wax_on_run')))
     room.function('wax_on_init', home=False).add(
         setblock(r(0, 0, 0), 'cut_copper'),
@@ -499,7 +498,7 @@ def room():
     room.loop('wax_on_run', home=False).loop(wax_on_run_loop, ('', 'Wax On', 'Wax Off', 'Scrape'))
     room.function('white_ash_init', home=False).add(
         floor('basalt'),
-        setbiome(BiomeId.BASALT_DELTAS))
+        set_biome(BiomeId.BASALT_DELTAS))
     room.function('witch', home=False).add(fast().run(particle(Particle.WITCH, r(0, 2.3, 0), 0.3, 0.3, 0.3, 0, 6)))
     room.function('witch_init', home=False).add(exemplar('witch', 0, {'NoAI': True}))
 

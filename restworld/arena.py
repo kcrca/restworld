@@ -3,8 +3,7 @@ from __future__ import annotations
 import sys
 
 from pynecraft.base import EAST, GT, LT, Nbt, r
-from pynecraft.commands import Entity, RANDOM, Score, a, data, e, execute, fill, function, kill, s, setblock, \
-    summon, \
+from pynecraft.commands import Entity, RANDOM, Score, a, data, e, execute, fill, function, kill, s, setblock, summon, \
     tag
 from pynecraft.function import Loop
 from pynecraft.simpler import Item, Region, WallSign

@@ -1,22 +1,20 @@
 from pynecraft.base import EAST, Nbt, SOUTH, d, good_facing, r
 from pynecraft.commands import Entity, FURTHEST, INT, RESULT, data, e, execute, function, kill, s, say, setblock, \
-    summon, \
-    tag, \
-    tp
+    summon, tag, tp
 from pynecraft.simpler import Item, Offset
 from restworld.rooms import Room
 from restworld.world import restworld
 
 """
 Setup:
-Mark the starting point, at a known distance below the NW corner (lowest coordinate values) with an armor stand (say).
+Mark the starting point, at a known distance below the NW corner (the lowest coordinate values) with an armor stand (say).
 These can all have the same tag, so we can use "execute as" commands and hit every room. These must below the lowest
 Y we want to save.
 
 Starting point has
-    Command block that summons armor stand,
-    some standard block that can be flickered with redstone blocks to (re-)summon the stand.
-    structure block with the room name set, placed where it can easily encomass an entre room
+    command block that summons armor stand
+    some standard block that can be flickered with redstone blocks to (re-)summon the stand
+    structure block with the room name set, placed where it can easily encompass an entre room
     some standard block that can be flickered with redstone blocks to (re-)trigger the structure block
 
 For the largest rooms, we need two of these starting points.
@@ -38,7 +36,7 @@ Save:
     remove the 'pending' tag from our stand
     add the 'active' tag to our stand; this is used to identify the home base of all the save action for a single room.
     Set structure block to SAVE block with "save entities" on.
-    Summnon armor stand at floor level, facing S
+    Summon armor stand at floor level, facing S
     Move it forward until it hits marker block at SW corner
     Turn it to face west
     Move it forward until it hits marker block at SE corner
@@ -47,7 +45,7 @@ Save:
         subtract x and Z coords from marker armor stand
         adjust x and z (if needed)
         set width and depth in structure block
-            seems to require setting it somewhere else first, like storage?
+            seems to require setting it somewhere else first, like storage
         set height to known fixed value
         (set width and height in the 'in room' detection too)
         [Note: Can't see how to trigger size detection using corners or I'd use them.]

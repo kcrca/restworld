@@ -164,7 +164,7 @@ def room():
     try:
         pottables[pottables.index(Block('Bamboo Sapling'))] = Block('Bamboo')
     except ValueError:
-        pass    # if it's not there, that's OK
+        pass  # if it's not there, that's OK
     room.loop('pottable', fast_clock).loop(pottable_loop, pottables)
     room.function('propagule_init').add(
         setblock(r(0, 5, 0), 'mangrove_leaves'),

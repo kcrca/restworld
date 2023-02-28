@@ -2,8 +2,7 @@ from __future__ import annotations
 
 from pynecraft import info
 from pynecraft.base import DOWN, EAST, NOON, SOUTH, UP, WEST, r
-from pynecraft.commands import Block, data, e, execute, fill, function, kill, say, setblock, \
-    summon, time
+from pynecraft.commands import Block, data, e, execute, fill, function, kill, say, setblock, summon, time
 from pynecraft.info import instruments, stems
 from pynecraft.simpler import Item, Region, Sign, WallSign
 from restworld.rooms import Room, ensure, label

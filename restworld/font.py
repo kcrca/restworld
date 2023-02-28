@@ -53,7 +53,7 @@ def room():
         execute().if_().block(src_pos, '#wall_signs').run(clone(src_pos, src_pos, save_pos))
     )
     row_lengths = [3, 3, 2, 2]
-    if ('Cherry') in woods:
+    if 'Cherry' in woods:
         row_lengths[2] = 3
     row, x, y = 0, 0, 5
     for i, thing in enumerate(materials):
