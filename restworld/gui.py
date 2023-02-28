@@ -278,6 +278,8 @@ def room():
         lambda step: commands.xp().set(p(), step.elem, LEVELS), (0, 9, 20, 30))
     room.function('survival_init').add(
         gamemode(SURVIVAL, p()),
+        execute().at(e().tag('enchanting_home')).positioned(r(0, -0.5, 1)).run(
+            function('restworld:gui/survival_home')),
         function('restworld:gui/survival_cur'))
     room.function('survival_stop', home=False).add(
         gamemode(CREATIVE, p()),

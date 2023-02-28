@@ -13,7 +13,7 @@ from restworld.world import fast_clock, kill_em, main_clock, restworld
 
 
 def room():
-    room = Room('mobs', restworld, NORTH, ('Villagers,', 'Animals,', 'Mobs,', 'Bosses'), 'Friendly Mobs')
+    room = Room('mobs', restworld, NORTH, ('Villagers,', 'Animals,', 'Mobs,', 'Bosses'), 'Mobs')
     friendlies(room)
     monsters(room)
     aquatic(room)
@@ -57,9 +57,7 @@ def friendlies(room):
 
     room.loop('bee', main_clock).loop(bee_loop, range(0, 4))
 
-    room.function('camel_init').add(
-        placer(*mid_east_placer).summon('camel'),
-        label(r(-3, 2, 1), 'Camel Sits'))
+    room.function('camel_init').add(placer(*mid_east_placer, tags=('saddle',)).summon('camel'))
 
     p = placer(*south_placer)
     room.function('canine_init').add(
@@ -289,9 +287,10 @@ def friendlies(room):
     egg_sign_pos = r(-2, 2, 0, )
     egg_sign_dir = EAST
     room.function('turtle_eggs_init').add(
-        execute().as_(e().tag('turtle_home')).run(tag(s()).add('blockers_home')),
+        tag(e().tag('turtle_eggs_home')).add('blockers_home'),
         WallSign((None, 'Turtle Eggs')).place(egg_sign_pos, egg_sign_dir),
-        label(switch_label_pos, 'On Sand')
+        label(switch_label_pos, 'On Sand'),
+        tag(s().tag('turtle_egg_home')).add('blockers_home')
     )
 
     def turtle_egg_loop(step):

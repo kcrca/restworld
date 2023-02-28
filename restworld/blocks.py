@@ -618,7 +618,7 @@ def room_init_functions(room, block_list_score):
     # The 'zzz' makes sure this is run last
     room.function('zzz_blocks_sign_init').add(
         execute().at(e().tag('blocks_home', '!no_expansion')).run(data().merge(r(0, 2, -1), {
-            'Text1': JsonText.text("").click_event().run_command('function restworld:blocks/toggle_expand')})),
+            'Text1': JsonText.text("").click_event().run_command('function restworld:blocks/toggle_exp''and')})),
         execute().at(e().tag('blocks_home', '!no_expansion')).run(data().merge(r(0, 2, 1), {
             'Text1': JsonText.text("").click_event().run_command('function restworld:blocks/toggle_expand')})),
 
@@ -862,7 +862,11 @@ def expansion_functions(room):
         # If it's not an expander, tag it as one
         execute().as_(e().tag('!expander', '!no_expansion').distance((None, 1))).run(tag(s()).add('expander')),
         # If it has the 'to be stopped' tag, remove the expander tag
-        execute().as_(e().tag('stop_expanding').distance((None, 1))).run(tag(s()).remove('expander')),
+        execute().as_(e().tag('stop_expanding').distance((None, 1))).run(
+            tag(s()).remove('expander'),
+            # Can't stop pot item from being generated, so ... https://bugs.mojang.com/browse/MC-260301
+            kill(e().type('item').distance((None, 10)).nbt({'Item': {'id': 'minecraft:decorated_pot'}}))
+        ),
         # ... and then remove the 'to be stopped' tag
         execute().as_(e().tag('stop_expanding').distance((None, 1))).run(tag(s()).remove('stop_expanding')),
 
@@ -886,7 +890,10 @@ def expansion_functions(room):
         execute().as_(e().tag('blocks_home', '!no_expansion', '!expander')).run(
             execute().at(s()).run(function('restworld:blocks/toggle_expand_at'))))
     room.function('expand', main_clock).add(
-        execute().at(e().tag('expander')).run(function('restworld:blocks/expander')))
+        execute().at(e().tag('expander')).run(function('restworld:blocks/expander')),
+        # Can't stop pot item from being generated, so ... https://bugs.mojang.com/browse/MC-260301
+        kill(e().type('item').distance((None, 10)).nbt({'Item': {'id': 'minecraft:decorated_pot'}}))
+    )
     room.function('expand_dripstone', home=False).add(
         # Clone the original stack to either side to form a line, including anything on top of the block
         clone(r(0, 12, 0), r(0, 3, 0), r(-1, 3, 0)),

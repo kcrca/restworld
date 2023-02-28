@@ -100,7 +100,6 @@ def room():
         WallSign((None, 'Color Holder')).place(r(0, -3, -3), SOUTH),
         label(r(0, 2, -1), 'Reset Room'),
         label(r(0, 6, -3), 'Glowing', facing=SOUTH),
-        label(r(0, 2, -3), 'Put Sign Here', facing=SOUTH),
     )
 
     for i, c in enumerate(colors):

@@ -9,15 +9,15 @@ from restworld.world import restworld
 
 biome_groups = collections.OrderedDict()
 biome_groups['Temperate'] = (
-    'Plains', 'Forest', 'Flower Forest', 'Birch Forest', 'Dark Forest', 'Swamp', 'Mangrove Swamp', 'Jungle',
-    'Mushroom Fields')
+    'Plains', 'Forest', 'Flower Forest', 'Birch Forest', 'Cherry Grove', 'Dark Forest', 'Swamp', 'Mangrove Swamp',
+    'Jungle', 'Mushroom Fields')
 biome_groups['Warm'] = ('Desert', 'Savanna', 'Badlands')
 biome_groups['Cold'] = ('Taiga', 'Stony Shore')
 biome_groups['Snowy'] = ('Snowy Taiga', 'Ice Spikes', 'Snowy Taiga')
 biome_groups['Ocean'] = ('Warm Ocean', 'Ocean', 'Frozen Ocean')
 biome_groups['Cave'] = ('Lush Caves', 'Dripstone Caves', 'Deep Dark')
 biome_groups['Nether'] = ('Nether Wastes', 'Soul Sand Valley', 'Crimson Forest', 'Warped Forest', 'Basalt Deltas')
-biome_groups['End'] = ('The End', 'End City')
+biome_groups['End'] = ('The End', 'End City', 'End Island')
 biome_groups['Structures'] = ('Mineshaft', 'Monument', 'Stronghold', 'Bastion Remnant', 'Fortress')
 biomes = [item for sublist in list(biome_groups.values()) for item in sublist]
 

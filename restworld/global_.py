@@ -74,7 +74,7 @@ def room():
         return ex.run(function('restworld:global/kill_em'))
 
     def mob_levitation_loop(step) -> Commands:
-        mob_rooms = ('friendlies', 'monsters', 'aquatic', 'wither', 'nether', 'enders', 'ancient')
+        mob_rooms = ('mobs', 'wither', 'nether', 'enders')
         if step.i == 1:
             yield execute().at(e().tag('sleeping_bat')).run(clone(r(0, 1, 0), r(0, 1, 0), r(0, 3, 0)).replace(MOVE)),
             yield execute().at(e().tag('turtle_eggs_home')).run(
