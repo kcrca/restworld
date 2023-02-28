@@ -56,8 +56,8 @@ mobs = (
     Mob(7.0, +29, 'mule'),
     Mob(7.0, +43, 'horse', nbt={'Variant': 513}),
 
-    Mob(8.7, -38, 'llama', y=1.5),
-    Mob(8.7, -27, 'polar_bear', y=1.5),
+    Mob(8.7, -38, 'camel', y=1.5),
+    Mob(8.7, -27, 'llama', y=1.5),
     Mob(8.7, -17, 'panda', y=1.5, nbt={'MainGene': 'playful'}),
     Mob(8.7, +5, 'creeper', y=1.5),
     Mob(8.7, +12, 'villager', y=1.5, nbt={'VillagerData': {'profession': 'weaponsmith'}}),
@@ -174,7 +174,7 @@ def room():
         kill(e().type('item'))
     )
     room.function('photo_mobs_view', home=False).add(
-        tp(p(), (-997.5, 109, 1009.5)).facing((-947.5, 84, 1009.5)),
+        tp(p(), (-998.5, 109, 1009.5)).facing((-947.5, 88, 1007)),
         kill(e().type('item')))
     room.function('photo_quilt_view').add(
         tp(p(), e().tag('photo_quilt_view').limit(1)),
