@@ -52,10 +52,10 @@ def room():
             ItemFrame(SOUTH).item(map(23, name_nbt('Battle Arena')))),
         WallSign((None, 'Battle', 'Arena'), SOUTH).place(r(7, 3, -3), SOUTH),
 
-        room.mob_placer(r(8, 5, 0), WEST, adults=True).summon(ItemFrame(WEST).item(map(18, name_nbt('Main (top')))),
+        room.mob_placer(r(8, 5, 0), WEST, adults=True).summon(ItemFrame(WEST).item(map(18, name_nbt('Main (top)')))),
         p_mid.summon(ItemFrame(WEST).item(map(19, name_nbt('Main (left)'))).tag('map_icon_frame')),
         p_mid.summon(ItemFrame(WEST).item(map(14, name_nbt('Main (center)')))),
-        p_mid.summon(ItemFrame(WEST).item(map(21, name_nbt('Main (right')))),
+        p_mid.summon(ItemFrame(WEST).item(map(21, name_nbt('Main (right)')))),
         room.mob_placer(r(8, 3, 0), WEST, adults=True).summon(ItemFrame(WEST).item(map(20, name_nbt('Main (bot)')))),
         WallSign((None, 'Center', 'Area')).place(r(8, 3, 1), WEST),
 
