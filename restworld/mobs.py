@@ -14,6 +14,7 @@ from restworld.world import fast_clock, kill_em, main_clock, restworld
 
 def room():
     room = Room('mobs', restworld, NORTH, ('Villagers,', 'Animals,', 'Mobs,', 'Bosses'), 'Mobs')
+    room.resetAt((0, 15))
     friendlies(room)
     monsters(room)
     aquatic(room)
@@ -97,8 +98,7 @@ def friendlies(room):
             data().merge(s(), {'OnGround': step.elem, 'EggLayTime': 1000000000})), (True, False))
     room.function('colored_mobs_init').add(
         label(r(0, 2, -1), 'Glow'),
-        label(r(0, 2, 2), 'Change Height'),
-        label(r(0, 2, 4), 'Reset Room'))
+        label(r(0, 2, 7), 'Change Height'))
 
     def colored_mobs_loop(step):
         yield execute().as_(e().tag('colorable')).run(

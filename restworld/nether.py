@@ -9,6 +9,7 @@ from restworld.world import kill_em, main_clock, restworld
 
 def room():
     room = Room('nether', restworld, WEST, (None, 'Nether', 'Mobs'))
+    room.resetAt((13, 0))
 
     def placer(*args, **kwargs):
         return room.mob_placer(*args, **kwargs)
@@ -69,8 +70,7 @@ def room():
 
     room.function('strider_init').add(
         placer(r(0, 2, 0), lhs_dir, 0, 3).summon('strider'),
-        label(r(6, 2, -5), 'Change Height'),
-        label(r(6, 2, -3), 'Reset Room'))
+/        label(r(-1, 2, -3), 'Saddle'))
 
     def strider_loop(step):
         yield execute().if_().score(('mob_levitation', 'global')).matches(0).run(setblock(r(0, 1, 0), step.elem))

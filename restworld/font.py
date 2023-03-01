@@ -38,6 +38,7 @@ def formatting_book():
 
 def room():
     room = Room('font', restworld, SOUTH, (None, 'Fonts'))
+    room.resetAt((0, -6))
     src_pos = r(0, 2, -3)
     save_pos = r(0, -2, -3)
     color_pos = r(0, -3, -3)
@@ -98,7 +99,6 @@ def room():
         execute().at(e().tag('font_action_home')).run(setblock(save_pos, 'air')),
         function('restworld:font/check_sign'),
         WallSign((None, 'Color Holder')).place(r(0, -3, -3), SOUTH),
-        label(r(0, 2, -1), 'Reset Room'),
         label(r(0, 6, -3), 'Glowing', facing=SOUTH),
     )
 

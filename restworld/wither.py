@@ -15,6 +15,7 @@ def room():
     skull_rot_nbt = {'Rotation': [skull_rot, 0]}
 
     room = Room('wither', restworld, wither_dir, (None, 'Wither'))
+    room.resetAt((-2, -2))
 
     room.function('painting_init').add(
         kill(e().type('painting').distance((None, 10))),

@@ -6,7 +6,7 @@ from dataclasses import dataclass
 from pynecraft.base import NORTH, Nbt, NbtDef, SOUTH, WEST, r
 from pynecraft.commands import Block, Entity, JsonText, clone, data, e, fill, item, setblock
 from pynecraft.simpler import Book, ItemFrame, Sign, WallSign
-from restworld.rooms import Room, ensure, label
+from restworld.rooms import Room, ensure
 from restworld.world import main_clock, restworld
 
 
@@ -16,6 +16,7 @@ def name_nbt(name: str) -> NbtDef:
 
 def room():
     room = Room('maps', restworld, WEST, (None, 'Maps'))
+    room.resetAt((5, 0))
 
     @dataclass
     class MapIcon:
@@ -66,8 +67,6 @@ def room():
         WallSign((None, 'Photo', 'Area'), NORTH).place(r(2, 3, 3), NORTH),
 
         setblock(r(8, 2, 2), 'cartography_table'),
-
-        label(r(5, 2, 0), 'Reset Room'),
     )
 
     icon_frame = e().tag('map_icon_frame').limit(1)

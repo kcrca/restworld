@@ -7,7 +7,7 @@ from pynecraft import info
 from pynecraft.base import EAST, NE, NORTH, NW, SE, SOUTH, SW, WEST, good_facing, r, rotated_facing
 from pynecraft.commands import Entity, JsonText, comment, data, e, execute, fill, function, kill, s, setblock, tag
 from pynecraft.simpler import Item, VILLAGER_BIOMES, VILLAGER_PROFESSIONS, WallSign
-from restworld.rooms import Room, label
+from restworld.rooms import Room
 from restworld.world import kill_em, restworld
 
 NUM_GROUPS = 12
@@ -68,6 +68,7 @@ HIGHER = {
 
 def room():
     room = Room('multimob', restworld, WEST, (None, 'Random', 'Entities', '(Optifine)'), room_name='Random Entities')
+    room.resetAt((11, 0))
 
     menu_home = e().tag('mob_menu_home').limit(1)
     at_home = execute().at(menu_home)
@@ -76,7 +77,6 @@ def room():
         fill(r(-2, 3, -2), r(2, 6, 2), 'air').replace('#wall_signs'))
     clear = at_home.run(function(menu_clear))
     menu_init = room.function('mob_menu_init').add(
-        label(r(0, 2, 0), 'Reset Room'),
         function(menu_clear),
         fill(r(-9, 2, -9), r(9, 4, 9), 'air').replace('water'),
         fill(r(-9, 2, -9), r(9, 4, 9), 'air').replace('structure_void'))

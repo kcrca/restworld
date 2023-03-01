@@ -119,6 +119,7 @@ def room():
     wall_used = {3: span(1, 5)}
     room = SignedRoom('models', restworld, EAST, (None, 'Models',), mode_sign, modes,
                       (Wall(7, EAST, 1, -1, wall_used),))
+    room.resetAt((-5, 0))
 
     room.function('model_signs_init').add(function('restworld:models/signs'))
 
@@ -142,8 +143,7 @@ def room():
     )
     chest_pos = r(-1, -2, 0)
     room.function('models_room_init', exists_ok=True).add(
-        label(r(-2, 2, 0), 'Keep Inventory'),
-        label(r(-5, 2, 0), 'Reset Room'))
+        label(r(-2, 2, 0), 'Keep Inventory'))
     room.function('model_init').add(
         kill(all_src),
         kill(all_ground),

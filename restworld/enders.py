@@ -10,6 +10,7 @@ from restworld.world import main_clock, restworld
 def room():
     room_dir = NORTH
     room = Room('enders', restworld, room_dir, (None, 'The End'))
+    room.resetAt((-6, 9))
 
     def cage_loop(step):
         if step.i == 0:
@@ -76,7 +77,6 @@ def room():
             bullet_loc, shulker_dir, adults=True).summon(
             'shulker_bullet', nbt={'NoGravity': True, 'TXD': 0, 'TYD': 0, 'TZD': 0, 'Steps': 0, 'Motion': [0, 0, 0]}),
         WallSign((None, 'Shulker Bullet')).place(bullet_sign_loc, shulker_dir),
-        label(r(1, 2, 6), 'Reset Room'),
         label(r(-1, 2, 6), 'Change Height'),
     )
 

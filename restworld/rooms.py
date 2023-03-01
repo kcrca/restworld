@@ -120,8 +120,21 @@ class Room(FunctionSet):
             'Tags': ['homer', '%s_home' % self.name], 'NoGravity': True, 'Small': True})
         self.title = None
         self._player_in_room_setup()
+        self.facing = facing
         if facing:
             self._room_setup(facing, text, room_name)
+
+    def resetAt(self, xz: Tuple[int, int]) -> None:
+        func = self.functions[f'{self.name}_room_init']
+        x = r(xz[0])
+        z = r(xz[1])
+        func.add(
+            label((x, r(2), z), 'Reset Room'),
+            setblock((x, r(2), z), ('stone_button', {'facing': self.facing, 'face': 'floor'})),
+            setblock((x, r(1), z), 'orange_concrete'),
+            setblock((x, r(0), z), 'air'),
+            setblock((x, r(0), z), Block('command_block', nbt={'Command': function(f'restworld:{self.name}/_init')})),
+        )
 
     def _player_in_room_setup(self):
         player_home = self.home_func(f'{self.name}_player')

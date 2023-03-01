@@ -50,6 +50,7 @@ def room():
         Wall(7, SOUTH, 1, -7, wall_used),
         Wall(7, WEST, 7, -7, wall_used),
     ))
+    room.resetAt((0, -6))
 
     # I could give this for only 30 seconds or so, because finding the 'off' sign is hard
     # with the negative effect visuals. But (a bug?) a few of the effects seem to interpret
