@@ -564,6 +564,8 @@ def trim_functions(room):
             {'Item': trim_nbt}).tag('materials', frame, f'{frame}_chestplate').summon(r(-1, 5, 1)),
         ItemFrame(NORTH).item('iron_helmet').merge_nbt(
             {'Item': trim_nbt}).tag('materials', frame, f'{frame}_helmet').summon(r(0, 6, 1)),
+        WallSign((None, 'Material:')).place(r(1, 6, 1), NORTH),
+        WallSign((None, 'Armor:',  'Iron')).place(r(-1, 6, 1), NORTH),
     )
 
     class Trim:
@@ -597,6 +599,14 @@ def trim_functions(room):
                 data().modify(s(), f'ArmorItems[].{self.nbt_path}').set().value(step.elem))
             yield execute().as_(e().tag(frame)).run(data().modify(s(), f'Item.{self.nbt_path}').set().value(step.elem))
             yield execute().at(e().tag('trim_change_home')).run(data().merge(r(0, 2, 0), {'Text4': step.elem.title()}))
+            yield from self._trim_frame_sign(step)
+
+        def _trim_frame_sign(self, step):
+            if 'pattern' in self.nbt_path:
+                return
+            sign_x = 1 if 'material' in self.nbt_path else -1
+            yield execute().at(e().tag(f'{frame}_helmet')).run(
+                data().merge(r(sign_x, 0, 0), {'Text3': step.elem.title()}))
 
         def _detect(self):
             for i, t in enumerate(self.types):
@@ -621,6 +631,7 @@ def trim_functions(room):
                 yield execute().as_(e().tag(f'{frame}_{piece}')).run(
                     data().modify(s(), f'Item.{self.nbt_path}').set().value(which))
             yield execute().at(e().tag('trim_change_home')).run(data().merge(r(0, 2, 0), {'Text4': step.elem.title()}))
+            yield from self._trim_frame_sign(step)
 
         def _to_path(self, t):
             return f'ArmorItems[{{id:"minecraft:{t}_boots"}}]'
@@ -650,7 +661,7 @@ def trim_functions(room):
     run_show_cleanup = execute().at(e().tag('trim_show_home')).run(function(show_cleanup))
     run_change_cleanup = execute().at(e().tag('trim_change_home')).run(function(change_cleanup))
 
-    # These have to go somewhere...
+    # These labels have to go somewhere...
     change_init.add(
         label(r(-1, 2, -1), "Leggings"),
         label(r(1, 2, -1), "Turtle Helmet"),
