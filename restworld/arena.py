@@ -49,7 +49,7 @@ def room():
         ('Blaze', 'Snow Golem'),
         ('Cat', 'Rabbit'),
         ('Warden', 'Iron Golem'),
-        ('Drowned', 'Snow Golem'),
+        ('Axolotl:w', 'Guardian'),
         ('Evoker', 'Iron Golem'),
         ('Fox', 'Chicken'),
         ('Frog', 'Slime'),
@@ -87,7 +87,9 @@ def room():
     #    ('Slime', 'Iron Golem'),
     #    ('Magma Cube', 'Iron Golem'),
     #    ('Goat', 'Sheep'),
-    #            ('Cave Spider', 'Snow Golem'),
+    #    ('Cave Spider', 'Snow Golem'),
+    #    ('Drowned', 'Snow Golem'),
+    #
     # These don't work unless we figure out how to kill the ones that spawn when a larger is killed. For
     # now, we just make sure they are the smallest size.
     #  ('Slime', 'Iron Golem'),
