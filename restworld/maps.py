@@ -1,13 +1,12 @@
 from __future__ import annotations
 
 import re
-from dataclasses import dataclass
 
 from pynecraft.base import NORTH, Nbt, NbtDef, SOUTH, WEST, r
-from pynecraft.commands import Block, Entity, JsonText, clone, data, e, fill, item, setblock
-from pynecraft.simpler import Book, ItemFrame, Sign, WallSign
+from pynecraft.commands import Block, JsonText, clone, data, e, fill, setblock, execute, kill
+from pynecraft.simpler import Book, ItemFrame, WallSign, TextDisplay
 from restworld.rooms import Room, ensure
-from restworld.world import main_clock, restworld
+from restworld.world import restworld
 
 
 def name_nbt(name: str) -> NbtDef:
@@ -18,24 +17,6 @@ def room():
     room = Room('maps', restworld, WEST, (None, 'Maps'))
     room.resetAt((5, 0))
 
-    @dataclass
-    class MapIcon:
-        name: str
-        icon_id: int
-
-    # To set an icon on a map, go to -128 ~ 0 and create a map. Then put that map into an item frame, and set the
-    # desired icon via something like:
-    #   /data modify entity <frame-entity> Item.tag.Decorations set value [{Id:"_",type:1,x:-128,z:0,rot:180}]
-    # Note the map number, and then you can use it as they key in the table below.
-    map_icons = {
-        # 75: MapIcon("Red X", 26),
-        # 76: MapIcon("Ocean Monument", 9),
-        # 96: MapIcon("Woodland Mansion", 8),
-        114: MapIcon('Target Point', 5),
-        113: MapIcon('Target X', 4),
-        112: MapIcon('Frame', 1),
-    }
-
     room.function('maps_room_enter', exists_ok=True).add(
         clone(r(8, -5, 0), r(8, -5, 0), r(8, 1, 0)),
         fill(r(0, -1, -3), r(9, -1, 3), 'redstone_block').replace('glass')
@@ -43,7 +24,17 @@ def room():
     room.function('maps_room_exit').add(fill(r(0, -1, -3), r(9, -1, 3), 'glass').replace('redstone_block'))
     p_north = room.mob_placer(r(3, 4, -3), SOUTH, -1, adults=True)
     p_mid = room.mob_placer(r(8, 4, -1), WEST, -1, adults=True)
-    room.function('maps_room_init', exists_ok=True).add(
+    icons = {
+        'Target X': {'id': "_0", 'type': 4, 'x': 128, 'z': -32, 'rot': 180},
+        'Target Point': {'id': "_1", 'type': 5, 'x': 88, 'z': -16, 'rot': 180},
+        'Mansion': {'id': "_2", 'type': 8, 'x': 128, 'z': 0, 'rot': 180},
+        'Monument': {'id': "_3", 'type': 9, 'x': 88, 'z': 16, 'rot': 180},
+        'Red X': {'id': "_4", 'type': 26, 'x': 128, 'z': 32, 'rot': 180},
+    }
+    icon_frame_tag = 'map_icon_frame'
+    banner_frame_tag = 'map_banner_frame'
+    banner_label = TextDisplay('Banner icons', {'background': 0}).tag('map_label', 'map_banner_label').scale(0.2)
+    room_init = room.function('maps_room_init', exists_ok=True).add(
         p_north.summon(ItemFrame(SOUTH).item(map(26, name_nbt('Biomes (top)')))),
         room.mob_placer(r(3, 3, -3), SOUTH, adults=True).summon(
             ItemFrame(SOUTH).item(map(28, name_nbt('Biomes (bot)')))),
@@ -53,11 +44,14 @@ def room():
             ItemFrame(SOUTH).item(map(23, name_nbt('Battle Arena')))),
         WallSign((None, 'Battle', 'Arena'), SOUTH).place(r(7, 3, -3), SOUTH),
 
+        kill(e().tag('map_label')),
         room.mob_placer(r(8, 5, 0), WEST, adults=True).summon(ItemFrame(WEST).item(map(18, name_nbt('Main (top)')))),
-        p_mid.summon(ItemFrame(WEST).item(map(19, name_nbt('Main (left)'))).tag('map_icon_frame')),
+        p_mid.summon(ItemFrame(WEST).item(map(124, name_nbt('Main (left)'))).tag(banner_frame_tag)),
         p_mid.summon(ItemFrame(WEST).item(map(14, name_nbt('Main (center)')))),
-        p_mid.summon(ItemFrame(WEST).item(map(21, name_nbt('Main (right)')))),
+        p_mid.summon(ItemFrame(WEST).item(map(133, name_nbt('Main (right)'))).tag(icon_frame_tag)),
         room.mob_placer(r(8, 3, 0), WEST, adults=True).summon(ItemFrame(WEST).item(map(20, name_nbt('Main (bot)')))),
+        data().modify(e().tag(icon_frame_tag).limit(1), 'Item.tag.Decorations').set().value(list(icons.values())),
+        execute().at(e().tag(banner_frame_tag)).run(banner_label.summon(r(-0.04, 0.18, -0.11), facing=WEST)),
         WallSign((None, 'Center', 'Area')).place(r(8, 3, 1), WEST),
 
         room.mob_placer(r(6, 4, 3), NORTH, adults=True).summon(ItemFrame(NORTH).item(map(32, name_nbt('Optifine')))),
@@ -68,29 +62,16 @@ def room():
 
         setblock(r(8, 2, 2), 'cartography_table'),
     )
+    for i, (k, v) in enumerate(icons.items()):
+        label = TextDisplay(k, {'background': 0}).tag('map_label', f'map_label_{i}').scale(0.1)
+        y = v['z'] / 128.0 + 0.05
+        z = v['x'] / 128.0 - 1
+        room_init.add(execute().at(e().tag(icon_frame_tag)).run(label.summon(r(-0.04, y, z), facing=WEST)))
+    label = TextDisplay('Frame', {'background': 0}).tag('map_label', f'map_label_{len(icons)}').scale(0.1)
+    room_init.add(execute().at(e().tag(icon_frame_tag)).run(label.summon(r(-0.04, 0, -0.42), facing=WEST)))
 
-    icon_frame = e().tag('map_icon_frame').limit(1)
-    chest_pos = r(0, -2, 1)
-    map_slot = 'container.12'
-
-    # Maps are weird. They aren't stored in the same way as other entities/items, so a direct approach (put up a map
-    # and keep changing its decorations) doesn't work. So we (1) conjure up the map we want by number,
-    # with the decoration specified even though we specify it _every time_; (2) update the sign, and finally (3) move
-    # the conjured map into the frame. The chest is just a workspace where the item conjuring is done, it could be
-    # any container.
-    def icon_loop(step):
-        map_num, map_icon = step.elem
-        yield item().replace().block(chest_pos, map_slot).with_(
-            Entity('filled_map',
-                   dict(map=map_num, Decorations=[dict(Id='_', type=map_icon.icon_id, x=-128, z=0, rot=180)])))
-        yield data().merge(r(0, 4, -1), Sign.lines_nbt((None, map_icon.name)))
-
-    room.loop('map_icons', main_clock).loop(icon_loop, map_icons.items())
     map_chest_pos = r(0, -5, 1)
-    room.function('map_icons_init').add(
-        WallSign(()).place(r(0, 4, -1), WEST),
-        #        #/data modify block 68 94 0 Items[0] merge value {tag:{display: {Name:"\"Test\""}}}
-
+    room.function('map_chest_init').add(
         data().modify(map_chest_pos, 'Items[{Slot:6b}]').merge().value(name_nbt('Optifine')),
         data().modify(map_chest_pos, 'Items[{Slot:20b}]').merge().value(name_nbt('Photo')),
 

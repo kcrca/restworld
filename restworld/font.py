@@ -2,9 +2,9 @@ from __future__ import annotations
 
 from pynecraft import info
 from pynecraft.base import EAST, JSON_COLORS, SOUTH, WEST, r
-from pynecraft.commands import Block, JsonText, clone, data, e, execute, function, kill, s, setblock, tag, Entity
+from pynecraft.commands import Block, JsonText, clone, data, e, execute, function, kill, s, setblock, tag
 from pynecraft.info import colors, stems
-from pynecraft.simpler import Book, WallSign
+from pynecraft.simpler import Book, WallSign, TextDisplay
 from restworld.rooms import Room, ensure, label
 from restworld.world import restworld
 
@@ -101,11 +101,8 @@ def room():
         WallSign((None, 'Color Holder')).place(r(0, -3, -3), SOUTH),
         label(r(0, 6, -3), 'Glowing', facing=SOUTH),
         kill(e().tag('sign_desc')),
-        Entity('text_display',
-               {'Tags': ['sign_desc'], 'text': JsonText.text('A sign here sets the text'), 'text_opacity': 255,
-                'background': 0, 'line_width': 80}).summon(r(0, 2, -3.4)),
-        # For some reason, a transformation above is ignored, why?
-        data().merge(e().tag('sign_desc').limit(1), {'transformation': {'scale': [0.5, 0.5, 0.5]}}),
+        TextDisplay('A sign here sets the text', {'text_opacity': 255, 'background': 0, 'line_width': 80}).tag(
+            'sign_desc').scale(0.5).summon(r(0, 2, -3.4)),
     )
 
     for i, c in enumerate(colors):

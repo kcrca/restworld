@@ -12,7 +12,7 @@ from pynecraft.commands import Block, BlockDef, CLEAR, Command, Commands, Entity
     p, schedule, scoreboard, setblock, summon, tag, tellraw, tp, weather
 from pynecraft.enums import ScoreCriteria
 from pynecraft.function import DataPack, Function, FunctionSet, LATEST_PACK_VERSION, Loop
-from pynecraft.simpler import WallSign
+from pynecraft.simpler import WallSign, TextDisplay
 
 
 def named_frame_item(block: BlockDef = None, name=None, damage=None) -> Nbt:
@@ -152,8 +152,7 @@ class Room(FunctionSet):
         x, z, rot = facing.dx, facing.dz, facing.yaw
         anchor = '%s_anchor' % self.name
         anchor_rot = rotated_facing(facing.name, ROTATION_180)
-        marker = Entity('text_display',
-                       {'Rotation': anchor_rot.rotation, 'Tags': [anchor, 'anchor']})
+        marker = TextDisplay(None, {'Rotation': anchor_rot.rotation, 'Tags': [anchor, 'anchor']})
         self.add(Function('%s_room_init' % self.name).add(
             sign.place(r(x, 6, z), facing),
             kill(e().tag(anchor)),
