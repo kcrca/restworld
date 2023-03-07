@@ -3,7 +3,7 @@ from __future__ import annotations
 from pynecraft import commands
 from pynecraft.base import EAST, NORTH, Nbt, WEST, r
 from pynecraft.commands import BOSSBAR_COLORS, BOSSBAR_STYLES, Block, CREATIVE, Entity, LEVELS, SURVIVAL, a, bossbar, \
-    clone, data, e, execute, fill, function, gamemode, give, item, kill, p, s, setblock, summon
+    clone, data, e, execute, fill, function, gamemode, give, item, kill, p, setblock, summon
 from pynecraft.info import must_give_items
 from pynecraft.simpler import Item, ItemFrame, WallSign
 from restworld.rooms import Room, label
@@ -34,7 +34,7 @@ def room():
         elif step.i == 5:
             yield at(data().merge(r(0, 6, 0), {'Secondary': 10}))
 
-    # Can't use bounce because we need to show two things at full strength.
+    # Can'threshold use bounce because we need to show two things at full strength.
     room.loop('beacon', slow_clock).loop(beacon_loop, (0, 1, 2, 3, 4, 4, 3, 2, 1))
     room.function('beacon_enter').add(
         at(fill(r(0, 1, 0), r(0, 5, 0), 'gold_block')),
@@ -145,21 +145,32 @@ def room():
 
     placer = room.mob_placer(r(0, 2, 0), NORTH, 2, 0, adults=True,
                              nbt={'ChestedHorse': True, 'Tame': True, 'Variant': 2})
-    room.function('llama_init').add(placer.summon('llama', tags=('strength_llama',)))
-    room.loop('llama', main_clock).loop(lambda x: data().merge(s(), {'Strength': x.elem}), range(1, 6))
+
+    def carrier_llama_loop(step):
+        yield data().merge(e().tag('carrier_llama').limit(1), {'Strength': step.elem})
+        yield data().merge(r(0, 2, -1), {'Text3': f'Strength: {step.elem}'})
+
+    room.function('carrier_llama_init').add(
+        placer.summon('llama', tags=('carrier_llama',), auto_tag=False),
+        WallSign((None, 'Llama')).place(r(0, 2, -1), NORTH)
+    )
+    room.loop('carrier_llama', main_clock).loop(carrier_llama_loop, range(1, 6))
 
     def carrier_loop(step):
         placer = room.mob_placer(
-            r(0, 2, 0), NORTH, 2, 0, adults=True, nbt={'ChestedHorse': True, 'Tame': True}, tags=('carrier',))
+            r(0, 2, 0.3), NORTH, 2, 0, adults=True, nbt={'ChestedHorse': True, 'Tame': True}, tags=('carrier',))
         yield kill_em(e().tag('carrier'))
         yield placer.summon(step.elem)
+        yield data().merge(r(0, 2, -1), {'Text3': step.elem.title()})
 
     room.loop('carrier', main_clock).loop(carrier_loop, ('camel', 'donkey'))
+    room.function('carrier_init').add(WallSign((None, 'Saddlable')).place(r(0, 2, -1), NORTH))
 
     placer = room.mob_placer(r(0, 2, 0), NORTH, adults=True, tags=('trades',), auto_tag=False,
-                             nbt={'VillagerData': {'profession': 'farmer', 'level': 3}, 'CanPickUpLoot': False})
+                             nbt={'VillagerData': {'profession': 'mason', 'level': 3}, 'CanPickUpLoot': False})
     room.function('trader_init').add(
         placer.summon('villager'),
+        WallSign(()).place(r(0, 2, -1), NORTH),
         function('restworld:gui/trader_cur'))
 
     room.function('cookers_init').add(
@@ -180,25 +191,28 @@ def room():
     )
 
     def trade_nbt(*args):
-        return {'maxUses': 1000, 'xp': 1, 'uses': args[6],
-                'buy': {'id': args[0], 'Count': args[1]},
-                'buyB': {'id': args[2], 'Count': args[3]},
-                'sell': {'id': args[4], 'Count': args[5]},
-                }
+        return {
+            'maxUses': 1000, 'xp': 1, 'uses': args[6],
+            'buy': {'id': args[0], 'Count': args[1]},
+            'buyB': {'id': args[2], 'Count': args[3]},
+            'sell': {'id': args[4], 'Count': args[5]},
+        }
 
     thresholds = (10, 60, 80, 100)
+    levels = ('Novice', 'Apprentice', 'Journeyman', 'Expert', 'Master')
+    stages = ('Start', 'Middle', 'End')
     xp = []
     level_x = 0
-    for i in range(0, len(thresholds)):
-        for j in range(0, 3):
+    for i, threshold in enumerate(thresholds):
+        for j, stage in enumerate(stages):
             x = level_x
             if j == 1:
-                x = level_x + thresholds[i] / 2
+                x = level_x + threshold / 2
             elif j == 2:
-                x = level_x + thresholds[i] - 1
-            xp += ((i + 1, int(x)),)
-        level_x += thresholds[i]
-    xp += ((5, 250),)
+                x = level_x + threshold - 1
+            xp.append((i + 1, int(x), stage))
+        level_x += threshold
+    xp += ((5, 250, None),)
     trades = (
         ('carrot', 6, 'iron_hoe', 1, 'emerald', 2, 0),
         ('emerald', 1, 'air', 20, 'bread', 6, 1001),
@@ -213,6 +227,11 @@ def room():
     )
 
     def trader_loop(step):
+        if step.elem[2]:
+            stage = f'{step.elem[2]} of Range'
+        else:
+            stage = ''
+        yield data().merge(r(0, 2, -1), WallSign.lines_nbt((None, f'Level: {levels[step.elem[0] - 1]}', stage)))
         yield data().merge(e().tag('trades').limit(1),
                            {'VillagerData': {'level': step.elem[0]}, 'Xp': step.elem[1]}),
         recipes = list(trade_nbt(*t) for t in trades[:(step.elem[0] * 2)])
