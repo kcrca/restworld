@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pynecraft import info
 from pynecraft.base import EAST, JSON_COLORS, SOUTH, WEST, r
-from pynecraft.commands import Block, JsonText, clone, data, e, execute, function, kill, s, setblock, tag
+from pynecraft.commands import Block, JsonText, clone, data, e, execute, function, kill, s, setblock, tag, Entity
 from pynecraft.info import colors, stems
 from pynecraft.simpler import Book, WallSign
 from restworld.rooms import Room, ensure, label
@@ -100,6 +100,12 @@ def room():
         function('restworld:font/check_sign'),
         WallSign((None, 'Color Holder')).place(r(0, -3, -3), SOUTH),
         label(r(0, 6, -3), 'Glowing', facing=SOUTH),
+        kill(e().tag('sign_desc')),
+        Entity('text_display',
+               {'Tags': ['sign_desc'], 'text': JsonText.text('A sign here sets the text'), 'text_opacity': 255,
+                'background': 0, 'line_width': 80}).summon(r(0, 2, -3.4)),
+        # For some reason, a transformation above is ignored, why?
+        data().merge(e().tag('sign_desc').limit(1), {'transformation': {'scale': [0.5, 0.5, 0.5]}}),
     )
 
     for i, c in enumerate(colors):
@@ -108,7 +114,7 @@ def room():
             x += 3
         y = 5 - i % 4
         font_run_init.add(
-            WallSign((None, 'Use', c.name, 'Text'),
+            WallSign((None, c.name, 'Text'),
                      (at.run(data().modify(r(0, -3, -3), 'Color').set().value(c.id)),
                       at.run(setblock(save_pos, 'air'))),
                      nbt={'Color': c.id}).place(r(x, y, -3), SOUTH))
