@@ -7,7 +7,7 @@ from pynecraft.commands import BOSSBAR_COLORS, BOSSBAR_STYLES, Block, CREATIVE, 
 from pynecraft.info import must_give_items
 from pynecraft.simpler import Item, ItemFrame, WallSign
 from restworld.rooms import Room, label
-from restworld.world import fast_clock, main_clock, restworld, slow_clock
+from restworld.world import fast_clock, main_clock, restworld, slow_clock, kill_em
 
 
 def room():
@@ -143,14 +143,19 @@ def room():
         execute().at(e().tag('brewing_home')).run(
             summon('armor_stand', r(0, 0, 0), {'Tags': ['homer', 'brewing_run_home'], 'NoGravity': True})))
 
-    placer = room.mob_placer(r(0, 2, 0), NORTH, 2, 0, tags=('carrier',), adults=True,
-                             nbt={'ChestedHorse': True, 'Tame': True, 'Variant': 2}, auto_tag=False)
-    room.function('carrier_init').add(
-        placer.summon('llama', tags=('strength_llama',)),
-        placer.summon('donkey'),
-    )
-    room.loop('strength_llama', main_clock).loop(
-        lambda x: execute().as_(e().tag('strength_llama')).run(data().merge(s(), {'Strength': x.elem})), range(1, 6))
+    placer = room.mob_placer(r(0, 2, 0), NORTH, 2, 0, adults=True,
+                             nbt={'ChestedHorse': True, 'Tame': True, 'Variant': 2})
+    room.function('llama_init').add(placer.summon('llama', tags=('strength_llama',)))
+    room.loop('llama', main_clock).loop(lambda x: data().merge(s(), {'Strength': x.elem}), range(1, 6))
+
+    def carrier_loop(step):
+        placer = room.mob_placer(
+            r(0, 2, 0), NORTH, 2, 0, adults=True, nbt={'ChestedHorse': True, 'Tame': True}, tags=('carrier',))
+        yield kill_em(e().tag('carrier'))
+        yield placer.summon(step.elem)
+
+    room.loop('carrier', main_clock).loop(carrier_loop, ('camel', 'donkey'))
+
     placer = room.mob_placer(r(0, 2, 0), NORTH, adults=True, tags=('trades',), auto_tag=False,
                              nbt={'VillagerData': {'profession': 'farmer', 'level': 3}, 'CanPickUpLoot': False})
     room.function('trader_init').add(
