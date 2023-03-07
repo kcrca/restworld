@@ -21,19 +21,19 @@ def room():
     @dataclass
     class MapIcon:
         name: str
-        type_id: int
+        icon_id: int
 
-    # To set an icon on a map, go to -128, ~, 0 and create a map. Then put that map into an item frame, and set the
+    # To set an icon on a map, go to -128 ~ 0 and create a map. Then put that map into an item frame, and set the
     # desired icon via something like:
     #   /data modify entity <frame-entity> Item.tag.Decorations set value [{Id:"_",type:1,x:-128,z:0,rot:180}]
-    # Note the map number, and then you can use it in the table below.
+    # Note the map number, and then you can use it as they key in the table below.
     map_icons = {
-        75: MapIcon("Red X", 26),
-        76: MapIcon("Ocean Monument", 9),
-        96: MapIcon("Woodland Mansion", 8),
-        78: MapIcon('Target Point', 5),
-        97: MapIcon('Target X', 4),
-        81: MapIcon('Frame', 1),
+        # 75: MapIcon("Red X", 26),
+        # 76: MapIcon("Ocean Monument", 9),
+        # 96: MapIcon("Woodland Mansion", 8),
+        114: MapIcon('Target Point', 5),
+        113: MapIcon('Target X', 4),
+        112: MapIcon('Frame', 1),
     }
 
     room.function('maps_room_enter', exists_ok=True).add(
@@ -71,7 +71,7 @@ def room():
 
     icon_frame = e().tag('map_icon_frame').limit(1)
     chest_pos = r(0, -2, 1)
-    map_slot = 'container.15'
+    map_slot = 'container.12'
 
     # Maps are weird. They aren't stored in the same way as other entities/items, so a direct approach (put up a map
     # and keep changing its decorations) doesn't work. So we (1) conjure up the map we want by number,
@@ -82,11 +82,10 @@ def room():
         map_num, map_icon = step.elem
         yield item().replace().block(chest_pos, map_slot).with_(
             Entity('filled_map',
-                   dict(map=map_num, Decorations=[dict(Id='_', type=map_icon.type_id, x=-128, z=0, rot=180)])))
+                   dict(map=map_num, Decorations=[dict(Id='_', type=map_icon.icon_id, x=-128, z=0, rot=180)])))
         yield data().merge(r(0, 4, -1), Sign.lines_nbt((None, map_icon.name)))
 
-    room.loop('map_icons', main_clock).loop(icon_loop, map_icons.items()).add(
-        item().replace().entity(icon_frame, 'container.0').from_().block(chest_pos, map_slot))
+    room.loop('map_icons', main_clock).loop(icon_loop, map_icons.items())
     map_chest_pos = r(0, -5, 1)
     room.function('map_icons_init').add(
         WallSign(()).place(r(0, 4, -1), WEST),

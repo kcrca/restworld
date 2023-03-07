@@ -152,12 +152,12 @@ class Room(FunctionSet):
         x, z, rot = facing.dx, facing.dz, facing.yaw
         anchor = '%s_anchor' % self.name
         anchor_rot = rotated_facing(facing.name, ROTATION_180)
-        stand = Entity('armor_stand',
-                       {'Rotation': anchor_rot.rotation, 'Tags': [anchor, 'anchor'], 'Invisible': True, 'Small': True})
+        marker = Entity('text_display',
+                       {'Rotation': anchor_rot.rotation, 'Tags': [anchor, 'anchor']})
         self.add(Function('%s_room_init' % self.name).add(
             sign.place(r(x, 6, z), facing),
             kill(e().tag(anchor)),
-            summon(stand, r(0, 2, 0))
+            summon(marker, r(0, 2, 0))
         ))
         self.function('_goto').add(
             tp(p(), e().tag(anchor).limit(1))
