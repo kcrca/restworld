@@ -70,7 +70,7 @@ def room():
         ('Slime', 'Iron Golem'),  # Low priority, slime vs. frog
         ('Spider', 'Snow Golem'),
         ('Stray', 'Iron Golem'),
-        ('Vex', 'Snow Golem'),  # low priority
+        ('Sniffer', 'Snow Golem'),
         ('Vindicator', 'Iron Golem'),
         ('Witch', 'Snow Golem'),
         ('Wither Skeleton', 'Piglin'),
