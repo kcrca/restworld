@@ -199,7 +199,8 @@ def room():
         }
 
     thresholds = (10, 60, 80, 100)
-    levels = ('Novice', 'Apprentice', 'Journeyman', 'Expert', 'Master')
+    # "Intermediate" is "Journeyman" in vanilla; removing sexism where possible.
+    levels = ('Novice', 'Apprentice', 'Intermediate', 'Expert', 'Master')
     stages = ('Start', 'Middle', 'End')
     xp = []
     level_x = 0
@@ -231,7 +232,7 @@ def room():
             stage = f'{step.elem[2]} of Range'
         else:
             stage = ''
-        yield data().merge(r(0, 2, -1), WallSign.lines_nbt((None, f'Level: {levels[step.elem[0] - 1]}', stage)))
+        yield data().merge(r(0, 2, -1), WallSign.lines_nbt(('Level:', f'{levels[step.elem[0] - 1]}', stage)))
         yield data().merge(e().tag('trades').limit(1),
                            {'VillagerData': {'level': step.elem[0]}, 'Xp': step.elem[1]}),
         recipes = list(trade_nbt(*t) for t in trades[:(step.elem[0] * 2)])

@@ -351,7 +351,9 @@ def villager_funcs(room):
                 if which == 'villager':
                     professions_init.add(p.summon(Entity('villager', name='Child', nbt={'Age': -2147483648})))
                 p = placer(r(0, 2, -7), WEST, -2, tags=('villager', 'professions',), adults=True)
-            professions_init.add(p.summon(Villager(pro, PLAINS, name=pro, zombie=id[0] == 'z'), tags=('villager',)))
+            # Removing sexist language because I want to.
+            name = 'Fisher' if pro == 'Fisherman' else pro
+            professions_init.add(p.summon(Villager(pro, PLAINS, name=name, zombie=id[0] == 'z'), tags=('villager',)))
         professions_init.add(
             function(f'restworld:mobs/{which}_levels_cur'),
             function(f'restworld:mobs/{which}_professions_cur'),
