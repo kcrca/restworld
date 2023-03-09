@@ -33,7 +33,7 @@ def room():
     }
     icon_frame_tag = 'map_icon_frame'
     banner_frame_tag = 'map_banner_frame'
-    banner_label = TextDisplay('Banner icons', {'background': 0}).tag('map_label', 'map_banner_label').scale(0.2)
+    banner_label = TextDisplay('Banner icons', {'background': 0}).scale(0.2).tag('map_label', 'map_banner_label')
     room_init = room.function('maps_room_init', exists_ok=True).add(
         p_north.summon(ItemFrame(SOUTH).item(map(26, name_nbt('Biomes (top)')))),
         room.mob_placer(r(3, 3, -3), SOUTH, adults=True).summon(
@@ -51,7 +51,6 @@ def room():
         p_mid.summon(ItemFrame(WEST).item(map(133, name_nbt('Main (right)'))).tag(icon_frame_tag)),
         room.mob_placer(r(8, 3, 0), WEST, adults=True).summon(ItemFrame(WEST).item(map(20, name_nbt('Main (bot)')))),
         data().modify(e().tag(icon_frame_tag).limit(1), 'Item.tag.Decorations').set().value(list(icons.values())),
-        execute().at(e().tag(banner_frame_tag)).run(banner_label.summon(r(-0.04, 0.18, -0.11), facing=WEST)),
         WallSign((None, 'Center', 'Area')).place(r(8, 3, 1), WEST),
 
         room.mob_placer(r(6, 4, 3), NORTH, adults=True).summon(ItemFrame(NORTH).item(map(32, name_nbt('Optifine')))),
@@ -61,13 +60,15 @@ def room():
         WallSign((None, 'Photo', 'Area'), NORTH).place(r(2, 3, 3), NORTH),
 
         setblock(r(8, 2, 2), 'cartography_table'),
+
+        execute().at(e().tag(banner_frame_tag)).run(banner_label.summon(r(-0.04, 0.1 / 8, -0.11), facing=WEST)),
     )
     for i, (k, v) in enumerate(icons.items()):
-        label = TextDisplay(k, {'background': 0}).tag('map_label', f'map_label_{i}').scale(0.1)
+        label = TextDisplay(k, {'background': 0}).scale(0.1).tag('map_label', f'map_label_{i}')
         y = v['z'] / 128.0 + 0.05
         z = v['x'] / 128.0 - 1
         room_init.add(execute().at(e().tag(icon_frame_tag)).run(label.summon(r(-0.04, y, z), facing=WEST)))
-    label = TextDisplay('Frame', {'background': 0}).tag('map_label', f'map_label_{len(icons)}').scale(0.1)
+    label = TextDisplay('Frame', {'background': 0}).scale(0.1).tag('map_label', f'map_label_{len(icons)}')
     room_init.add(execute().at(e().tag(icon_frame_tag)).run(label.summon(r(-0.04, 0, -0.42), facing=WEST)))
 
     map_chest_pos = r(0, -5, 1)

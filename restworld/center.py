@@ -72,15 +72,16 @@ def room():
     room.function('mobs_display_init').add(
         kill(e().tag('mob_display')),
 
-        summon('cow', r(-6, 2.5, 0), all),
-        summon('polar_bear', r(-6, 2.5, 0), all),
-        summon('panda', r(-6, 2.5, 0), all),
-        summon(Horse('horse', Horse.Color.CHESTNUT, Horse.Markings.WHITE), r(-6, 2.5, 0), all),
+        summon(Entity('cow').tag('mob_display'), r(-6, 2.5, 0), all),
+        summon(Entity('polar_bear').tag('mob_display'), r(-6, 2.5, 0), all),
+        summon(Entity('panda').tag('mob_display'), r(-6, 2.5, 0), all),
+        summon(Horse('horse', Horse.Color.CHESTNUT, Horse.Markings.WHITE).tag('mob_display'), r(-6, 2.5, 0), all),
+        summon(Entity('camel').tag('mob_display'), r(-6, 2.5, 0), all),
 
-        summon('camel', r(6, 2.5, 0), all),
-        summon('llama', r(6, 2.5, 0), all),
-        summon('mooshroom', r(6, 2.5, 0), all),
-        summon('pig', r(6, 2.5, 0), all),
+        summon(Entity('sniffer').tag('mob_display'), r(6, 2.5, 0), all),
+        summon(Entity('llama').tag('mob_display'), r(6, 2.5, 0), all),
+        summon(Entity('mooshroom').tag('mob_display'), r(6, 2.5, 0), all),
+        summon(Entity('pig').tag('mob_display'), r(6, 2.5, 0), all),
 
         trim_stand.summon(r(11, 2, 1), facing=NORTH),
 

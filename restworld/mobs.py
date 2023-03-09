@@ -154,7 +154,7 @@ def friendlies(room):
     room.function('horse_init').add(
         (p.summon(Entity('horse', name=horse.name, nbt={'Variant': h}), tags=(horse.tag,)) for h, horse in
          enumerate(horses)),
-        execute().at(e().tag(to_id(horses[3].tag), 'kid')).run(
+        execute().at(e().tag(to_id(horses[3].tag_name), 'kid')).run(
             WallSign((None, 'Variant:')).place(r(2, 0, 0), EAST)),
         label(r(1, 2, 1), 'Lead'),
         label(r(1, 2, -7), 'Saddles'),
@@ -163,8 +163,8 @@ def friendlies(room):
 
     def horse_loop(step):
         for h, horse in enumerate(horses):
-            yield execute().as_(e().tag(horse.tag)).run(data().merge(s(), {'Variant': step.i * 256 + h}))
-        yield execute().at(e().tag(horses[3].tag).tag('kid')).run(
+            yield execute().as_(e().tag(horse.tag_name)).run(data().merge(s(), {'Variant': step.i * 256 + h}))
+        yield execute().at(e().tag(horses[3].tag_name).tag('kid')).run(
             data().merge(r(2, 0, 0), {'Text3': horse_variants[step.i]}))
 
     room.loop('horse', main_clock).loop(horse_loop, horse_variants)

@@ -159,10 +159,11 @@ def room():
         'decorated_pot', NORTH, ('decorated_pot',) + tuple(
             Block('decorated_pot', nbt={'shards': [shards[i], shards[(i + 1) % 4], shards[(i + 2) % 4]]},
                   name=f'Decorated Pot|{shard_names[i]}') for i in range(4)), air=True)
+
     # Can't stop pot item from being generated, so ... https://bugs.mojang.com/browse/MC-260301
-    pot_loop.add(
-        kill(e().type('item').nbt({'Item': {'id': 'minecraft:decorated_pot'}}))
-    )
+    room.function('decorated_pot_enter').add(setblock(r(1, -1, 0), 'redstone_block'))
+    room.function('decorated_pot_exit').add(setblock(r(1, -1, 0), 'air'))
+
     blocks('dirt', SOUTH, ('Dirt', 'Coarse Dirt', 'Rooted Dirt', 'Farmland'))
     blocks('end', NORTH, ('End Stone', 'End Stone|Bricks'))
     blocks('frosted_ice', SOUTH,
@@ -862,11 +863,7 @@ def expansion_functions(room):
         # If it's not an expander, tag it as one
         execute().as_(e().tag('!expander', '!no_expansion').distance((None, 1))).run(tag(s()).add('expander')),
         # If it has the 'to be stopped' tag, remove the expander tag
-        execute().as_(e().tag('stop_expanding').distance((None, 1))).run(
-            tag(s()).remove('expander'),
-            # Can't stop pot item from being generated, so ... https://bugs.mojang.com/browse/MC-260301
-            kill(e().type('item').distance((None, 10)).nbt({'Item': {'id': 'minecraft:decorated_pot'}}))
-        ),
+        execute().as_(e().tag('stop_expanding').distance((None, 1))).run(tag(s()).remove('expander')),
         # ... and then remove the 'to be stopped' tag
         execute().as_(e().tag('stop_expanding').distance((None, 1))).run(tag(s()).remove('stop_expanding')),
 
@@ -891,8 +888,6 @@ def expansion_functions(room):
             execute().at(s()).run(function('restworld:blocks/toggle_expand_at'))))
     room.function('expand', main_clock).add(
         execute().at(e().tag('expander')).run(function('restworld:blocks/expander')),
-        # Can't stop pot item from being generated, so ... https://bugs.mojang.com/browse/MC-260301
-        kill(e().type('item').distance((None, 10)).nbt({'Item': {'id': 'minecraft:decorated_pot'}}))
     )
     room.function('expand_dripstone', home=False).add(
         # Clone the original stack to either side to form a line, including anything on top of the block
