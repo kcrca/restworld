@@ -3,7 +3,7 @@ from __future__ import annotations
 import re
 
 from pynecraft.base import NORTH, Nbt, NbtDef, SOUTH, WEST, r
-from pynecraft.commands import Block, JsonText, clone, data, e, fill, setblock, execute, kill
+from pynecraft.commands import Block, JsonText, clone, data, e, fill, setblock, execute, kill, schedule, REPLACE
 from pynecraft.simpler import Book, ItemFrame, WallSign, TextDisplay
 from restworld.rooms import Room, ensure
 from restworld.world import restworld
@@ -35,6 +35,8 @@ def room():
     banner_frame_tag = 'map_banner_frame'
     banner_label = TextDisplay('Banner icons',
                                {'background': 0, 'shadow_radius': 0}).scale(0.2).tag('map_label', 'map_banner_label')
+    set_map_icon = room.function('set_map_icons', home=False).add(
+        data().modify(e().tag(icon_frame_tag).limit(1), 'Item.tag.Decorations').set().value(list(icons.values())))
     room_init = room.function('maps_room_init', exists_ok=True).add(
         p_north.summon(ItemFrame(SOUTH).item(map(26, name_nbt('Biomes (top)')))),
         room.mob_placer(r(3, 3, -3), SOUTH, adults=True).summon(
@@ -51,8 +53,8 @@ def room():
         p_mid.summon(ItemFrame(WEST).item(map(14, name_nbt('Main (center)')))),
         p_mid.summon(ItemFrame(WEST).item(map(133, name_nbt('Main (right)'))).tag(icon_frame_tag)),
         room.mob_placer(r(8, 3, 0), WEST, adults=True).summon(ItemFrame(WEST).item(map(20, name_nbt('Main (bot)')))),
-        data().modify(e().tag(icon_frame_tag).limit(1), 'Item.tag.Decorations').set().value(list(icons.values())),
         WallSign((None, 'Center', 'Area')).place(r(8, 3, 1), WEST),
+        schedule().function(set_map_icon, "1s", REPLACE),
 
         room.mob_placer(r(6, 4, 3), NORTH, adults=True).summon(ItemFrame(NORTH).item(map(32, name_nbt('Optifine')))),
         WallSign(('Optifine', 'Connected', 'Textures,', 'Mob Textures'), NORTH).place(r(5, 3, 3), NORTH),
@@ -62,7 +64,7 @@ def room():
 
         setblock(r(8, 2, 2), 'cartography_table'),
 
-        execute().at(e().tag(banner_frame_tag)).run(banner_label.summon(r(-0.04, 0.1 / 8, -0.11), facing=WEST)),
+        execute().at(e().tag(banner_frame_tag)).run(banner_label.summon(r(-0.04, 0.2, -0.11), facing=WEST)),
     )
     for i, (k, v) in enumerate(icons.items()):
         label = TextDisplay(k, {'background': 0, 'shadow_radius': 0}).scale(0.1).tag('map_label', f'map_label_{i}')
