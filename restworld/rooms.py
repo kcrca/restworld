@@ -6,7 +6,8 @@ from copy import deepcopy
 from enum import Enum
 from typing import Callable, Iterable, Tuple
 
-from pynecraft.base import FacingDef, Nbt, ROTATION_180, ROTATION_270, ROTATION_90, UP, r, rotated_facing, to_name
+from pynecraft.base import FacingDef, Nbt, ROTATION_180, ROTATION_270, ROTATION_90, UP, r, rotated_facing, to_name, \
+    ORANGE, BLUE
 from pynecraft.commands import Block, BlockDef, CLEAR, Command, Commands, Entity, EntityDef, JsonText, NEAREST, \
     Position, Score, SignText, a, comment, e, execute, function, good_block, good_entity, good_facing, good_score, kill, \
     p, schedule, scoreboard, setblock, summon, tag, tellraw, tp, weather
@@ -125,15 +126,21 @@ class Room(FunctionSet):
             self._room_setup(facing, text, room_name)
 
     def resetAt(self, xz: Tuple[int, int]) -> None:
+        self._command_block(xz, 'Reset Room', ORANGE, f'restworld:{self.name}/_init')
+
+    def changeHeightAt(self, xz: Tuple[int, int]) -> None:
+        self._command_block(xz, 'Change Height', BLUE, 'restworld:global/toggle_raised')
+
+    def _command_block(self, xz, label_text, color, command):
         func = self.functions[f'{self.name}_room_init']
         x = r(xz[0])
         z = r(xz[1])
         func.add(
-            label((x, r(2), z), 'Reset Room'),
+            label((x, r(2), z), label_text),
             setblock((x, r(2), z), ('stone_button', {'facing': self.facing, 'face': 'floor'})),
-            setblock((x, r(1), z), 'orange_concrete'),
+            setblock((x, r(1), z), f'{color}_concrete'),
             setblock((x, r(0), z), 'air'),
-            setblock((x, r(0), z), Block('command_block', nbt={'Command': function(f'restworld:{self.name}/_init')})),
+            setblock((x, r(0), z), Block('command_block', nbt={'Command': f'function {str(command)}'})),
         )
 
     def _player_in_room_setup(self):

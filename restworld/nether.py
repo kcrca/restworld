@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from pynecraft.base import NORTH, SOUTH, WEST, r
-from pynecraft.commands import Entity, data, e, execute, function, ride, s, setblock
+from pynecraft.commands import Entity, data, e, execute, function, ride, s
 from pynecraft.simpler import Item, WallSign
 from restworld.rooms import Room, label
 from restworld.world import kill_em, main_clock, restworld
@@ -10,6 +10,7 @@ from restworld.world import kill_em, main_clock, restworld
 def room():
     room = Room('nether', restworld, WEST, (None, 'Nether', 'Mobs'))
     room.resetAt((13, 0))
+    room.changeHeightAt((10, 0))
 
     def placer(*args, **kwargs):
         return room.mob_placer(*args, **kwargs)
@@ -71,9 +72,3 @@ def room():
     room.function('strider_init').add(
         placer(r(0, 2, 0), lhs_dir, 0, 3).summon('strider'),
         label(r(-1, 2, -3), 'Saddle'))
-
-    def strider_loop(step):
-        yield execute().if_().score(('mob_levitation', 'global')).matches(0).run(setblock(r(0, 1, 0), step.elem))
-        yield execute().if_().score(('mob_levitation', 'global')).matches(0).run(setblock(r(0, 1, -3), step.elem))
-
-    room.loop('strider', main_clock).loop(strider_loop, ('lava', 'netherrack'))

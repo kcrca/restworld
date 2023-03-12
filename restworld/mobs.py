@@ -15,6 +15,7 @@ from restworld.world import fast_clock, kill_em, main_clock, restworld
 def room():
     room = Room('mobs', restworld, NORTH, ('Villagers,', 'Animals,', 'Mobs,', 'Bosses'), 'Mobs')
     room.resetAt((0, 15))
+    room.changeHeightAt((0, 19))
     friendlies(room)
     monsters(room)
     aquatic(room)
@@ -152,7 +153,7 @@ def friendlies(room):
 
     p = placer(r(-1.2, 2, 0), EAST, -2, kid_delta=2.2, tags=('saddle',), nbt={'Tame': True})
     room.function('horse_init').add(
-        (p.summon(Entity('horse', name=horse.name, nbt={'Variant': h}), tags=(horse.tag,)) for h, horse in
+        (p.summon(Entity('horse', name=horse.name, nbt={'Variant': h}), tags=(horse.tag_name,)) for h, horse in
          enumerate(horses)),
         execute().at(e().tag(to_id(horses[3].tag_name), 'kid')).run(
             WallSign((None, 'Variant:')).place(r(2, 0, 0), EAST)),

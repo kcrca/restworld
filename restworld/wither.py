@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from pynecraft.base import EAST, NORTH, WEST, good_facing, r
+from pynecraft.base import EAST, good_facing, r, NORTH
 from pynecraft.commands import data, e, execute, kill, s, summon
 from pynecraft.simpler import WallSign
 from restworld.rooms import Room
@@ -16,11 +16,12 @@ def room():
 
     room = Room('wither', restworld, wither_dir, (None, 'Wither'))
     room.resetAt((-2, -2))
+    room.changeHeightAt((-2, 2))
 
-    room.function('painting_init').add(
+    room.function('wither_painting_init').add(
         kill(e().type('painting').distance((None, 10))),
-        summon('painting', r(0, 3, 0), {'variant': 'wither', 'facing': good_facing(EAST).number}),
-        WallSign((None, 'Wither')).place(r(0, 3, -1), WEST))
+        summon('painting', r(0, 3, 0), {'variant': 'wither', 'facing': good_facing(NORTH).number}),
+        WallSign((None, 'Wither')).place(r(1, 3, 0), NORTH))
     room.function('wither_mob_init').add(WallSign(()).place(wither_sign_pos, wither_dir))
     # Rotating the wither skull shouldn't be needed, but it is (at least as of RestWorld 1.20
     room.function('wither_mob_enter').add(
@@ -46,6 +47,3 @@ def room():
         kill(e().type('wither_skull')),
         room.mob_placer(r(0, 3, 0), wither_dir, adults=True).summon('Wither Skull', nbt=skull_rot_nbt),
         WallSign((None, 'Wither Skull')).place(skull_sign_pos, wither_dir))
-
-    room.function('wither_painting_init').add(
-        summon('painting', r(0, 3, 0), {'variant': 'wither', 'facing': good_facing(NORTH).number}))
