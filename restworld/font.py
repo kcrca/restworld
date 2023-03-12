@@ -101,8 +101,9 @@ def room():
         WallSign((None, 'Color Holder')).place(r(0, -3, -3), SOUTH),
         label(r(0, 6, -3), 'Glowing', facing=SOUTH),
         kill(e().tag('sign_desc')),
-        TextDisplay('A sign here sets the text', {'text_opacity': 255, 'background': 0, 'line_width': 80}).tag(
-            'sign_desc').scale(0.5).summon(r(0, 2, -3.4)),
+        TextDisplay('A sign here sets the text',
+                    {'text_opacity': 255, 'background': 0, 'line_width': 80, 'shadow_radius': 0}
+                    ).scale(0.5).tag('sign_desc').summon(r(0, 2, -3.4)),
     )
 
     for i, c in enumerate(colors):
