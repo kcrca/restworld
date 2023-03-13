@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 from pynecraft.base import EQ, GAMETIME, OVERWORLD, THE_END, THE_NETHER, r
-from pynecraft.commands import CREATIVE, MOD, MOVE, RAIN, RESULT, SIDEBAR, clear, clone, data, e, execute, fill, \
-    function, gamemode, gamerule, kill, p, s, scoreboard, setblock, tag, teleport, time, tp, weather
+from pynecraft.commands import MOD, MOVE, RAIN, RESULT, clone, data, e, execute, fill, \
+    function, gamerule, kill, p, s, scoreboard, setblock, tag, teleport, time, tp, weather
 from pynecraft.enums import ScoreCriteria
 from pynecraft.function import Function
 from restworld.rooms import Room
@@ -213,16 +213,6 @@ def room():
         execute().unless().score(mobs_up).matches(0).run(function(raise_mobs)),
     )
 
-    room.function('ready', home=False).add(
-        clear(p()),
-        kill(e().type('item')),
-        gamemode(CREATIVE, p()),
-        function('restworld:global/control_book'),
-        tp(p(), (0, 101, 0)).facing((0, 100, 5)),
-        scoreboard().objectives().setdisplay(SIDEBAR),
-        function('restworld:center/reset_clocks'),
-        function('restworld:global/clock_on'),
-    )
 
     clean_time = room.score('ensure_clean_time')
     clean_time_max = room.score_max('ensure_clean_time')

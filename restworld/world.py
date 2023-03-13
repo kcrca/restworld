@@ -4,7 +4,8 @@ import sys
 from datetime import date
 
 from pynecraft.base import DARK_GREEN, DARK_PURPLE, r
-from pynecraft.commands import Commands, Entity, JsonText, data, e, execute, fill, function, give, p, tp
+from pynecraft.commands import Commands, Entity, JsonText, data, e, execute, fill, function, give, p, tp, clear, kill, \
+    gamemode, CREATIVE, scoreboard, SIDEBAR
 from pynecraft.function import Function, FunctionSet
 from pynecraft.simpler import Book, Sign
 from restworld.rooms import Clock, Room, RoomPack
@@ -35,6 +36,17 @@ class Restworld(RoomPack):
             gs = FunctionSet('global', self.function_set)
         gs.add(self.control_book_func())
         self.function_set.add(*self.world_funcs())
+        self.function_set.add(Function('ready').add(
+            clear(p()),
+            kill(e().type('item')),
+            gamemode(CREATIVE, p()),
+            function('restworld:global/control_book'),
+            tp(p(), (0, 101, 0)).facing((0, 100, 5)),
+            scoreboard().objectives().setdisplay(SIDEBAR),
+            function('restworld:center/reset_clocks'),
+            function('restworld:global/clock_on'),
+            function("restworld:_exit"),  # Leave any room we were in
+        ))
         super().save(*args, **kwargs)
 
     # noinspection PyMethodMayBeStatic
