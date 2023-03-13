@@ -46,6 +46,7 @@ class Restworld(RoomPack):
             function('restworld:center/reset_clocks'),
             function('restworld:global/clock_on'),
             function("restworld:_exit"),  # Leave any room we were in
+            function("restworld:center/_enter"),
         ))
         super().save(*args, **kwargs)
 
