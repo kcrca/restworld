@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from pynecraft.base import EAST, SOUTH, WEST, d, r, rotated_facing
+from pynecraft.base import EAST, SOUTH, WEST, d, r, good_facing
 from pynecraft.commands import MAX_EFFECT_SECONDS, e, effect, execute, fill, function, p, setblock
 from pynecraft.enums import Effect
 from pynecraft.simpler import WallSign
@@ -39,7 +39,7 @@ effects.sort()
 
 def room():
     def effect_sign(action_desc, wall):
-        dx, _, dz = rotated_facing(wall.facing).scale(1)
+        dx, _, dz = good_facing(wall.facing).scale(1)
         return WallSign(action_desc.sign_text(), (
             setblock(d(-dx, 0, -dz), 'emerald_block'),
             effect().give(p(), action_desc.enum, MAX_EFFECT_SECONDS)))

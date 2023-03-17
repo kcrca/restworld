@@ -395,9 +395,8 @@ class MobPlacer:
                 if not isinstance(delta, (float, int)) or not isinstance(kid_delta, (float, int)):
                     raise ValueError('Deltas must be floats when using "facing" name')
                 self.delta_x, _, self.delta_z = rotated_facing(facing, ROTATION_90).scale(delta)
-                kid_rot = rotated_facing(facing)
-                self.kid_x, _, self.kid_z = kid_rot.scale(kid_delta)
-                self.rotation = kid_rot.yaw
+                self.kid_x, _, self.kid_z = facing.scale(kid_delta)
+                self.rotation = facing.yaw
             except KeyError:
                 raise ValueError('%s: Unknown "facing" with no "rotation"' % facing.name)
         else:
