@@ -47,3 +47,5 @@ def room():
         kill(e().type('wither_skull')),
         room.mob_placer(r(0, 3, 0), wither_dir, adults=True).summon('Wither Skull', nbt=skull_rot_nbt),
         WallSign((None, 'Wither Skull')).place(skull_sign_pos, wither_dir))
+    # Sometimes the skull gets de-rotated, so this puts it back regularly
+    room.function('wither_skull_enter').add(data().merge(e().tag('wither_skull').limit(1), skull_rot_nbt))
