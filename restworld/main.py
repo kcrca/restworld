@@ -4,9 +4,10 @@ import argparse
 import random
 
 from pynecraft.base import parameters
-from restworld import arena, banners, biomes, blocks, center, connect, diy, effects, enders, font, global_, gui, hud, \
+from restworld import arena, banners, biomes, blocks, center, connect, diy, effects, enders, font, global_, gui, \
+    hud, \
     maps, materials, mobs, models, multimob, nether, paintings, particles, photo, plants, redstone, save, tags, the_end, \
-    time, wither
+    time, wither, tester
 from restworld.world import restworld
 
 
@@ -24,7 +25,7 @@ def main():
         mc_version = args.version
     parameters.version = mc_version
     for m in (
-            blocks, save, multimob, models, global_, arena, banners, biomes, center, connect, gui, diy, effects,
+            tester, blocks, save, multimob, models, global_, arena, banners, biomes, center, connect, gui, diy, effects,
             particles, enders, font, mobs, hud, materials, nether, paintings, photo, plants, redstone, the_end, time,
             wither, maps):
         m.room()
