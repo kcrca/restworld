@@ -19,7 +19,7 @@ def main():
     cmdline.add_argument('version', type=str, default='1.19.3')
     # noinspection SpellCheckingInspection
     cmdline.add_argument('--mcversion', type=str)
-    cmdline.add_argument('--pynecraft_dev', type=bool, default=False)
+    cmdline.add_argument('--pynecraft_dev', action=argparse.BooleanOptionalAction)
     args = cmdline.parse_args()
     mc_version = args.mcversion
     if not mc_version:
