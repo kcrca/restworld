@@ -1,4 +1,4 @@
-from pynecraft.base import SOUTH, NORTH, r
+from pynecraft.base import SOUTH, NORTH, r, UP
 from pynecraft.commands import say
 from pynecraft.menus import Menu, Submenu
 from restworld.rooms import Room
@@ -9,7 +9,7 @@ def room():
     room = Room('tester', restworld, SOUTH, ('Testing',))
 
     menu = Menu('menu_home', lambda x, **kwargs: room.function(f'menu_{x}', home=x == 'init', **kwargs),
-                lambda x: say(x), close_menus=True).add(('One', 'Two', 'Three'))
+                lambda x: say(x), dir=UP, close_menus=True).add(('One', 'Two', 'Three'))
     submenu = Submenu(menu, 'Sub')
     menu.add(submenu)
     submenu.add(('alpha', 'beta', 'gamma'))
