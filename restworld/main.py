@@ -19,13 +19,16 @@ def main():
     cmdline.add_argument('version', type=str, default='1.19.3')
     # noinspection SpellCheckingInspection
     cmdline.add_argument('--mcversion', type=str)
+    cmdline.add_argument('--pynecraft_dev', type=bool, default=False)
     args = cmdline.parse_args()
     mc_version = args.mcversion
     if not mc_version:
         mc_version = args.version
     parameters.version = mc_version
+    if args.pynecraft_dev:
+        tester.room()
     for m in (
-            tester, blocks, save, multimob, models, global_, arena, banners, biomes, center, connect, gui, diy, effects,
+            blocks, save, multimob, models, global_, arena, banners, biomes, center, connect, gui, diy, effects,
             particles, enders, font, mobs, hud, materials, nether, paintings, photo, plants, redstone, the_end, time,
             wither, maps):
         m.room()
