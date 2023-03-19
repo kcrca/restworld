@@ -45,8 +45,8 @@ class Restworld(RoomPack):
             scoreboard().objectives().setdisplay(SIDEBAR),
             function('restworld:center/reset_clocks'),
             function('restworld:global/clock_on'),
-            function("restworld:_exit"),  # Leave any room we were in
-            function("restworld:center/_enter"),
+            function("restworld:_exit"),  # Leave any room we were in by leaving them all
+            execute().at(e().tag('center_home')).run(function("restworld:center/_enter")),
         ))
         super().save(*args, **kwargs)
 
