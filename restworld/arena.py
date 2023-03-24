@@ -55,7 +55,8 @@ def room():
         ('Frog', 'Slime'),
         ('Goat', 'Sheep'),  # medium priority (slow, but charging goat)
         ('Hoglin', 'Vindicator'),
-        ('Illusioner', 'Snow Golem'),
+        ('Ender Dragon', None),
+        # ('Illusioner', 'Snow Golem'), # low priority, Illusioner isn't used
         ('Llama', 'Vindicator'),
         ('Magma Cube', 'Iron Golem'),
         ('Ocelot', 'Chicken'),
@@ -126,17 +127,17 @@ def room():
                         function(f'restworld:arena/{step.loop.score.target}_cur'))
                 )).glowing(True).place(r(x, 2, z), EAST)
             for s in range(0, stride_length):
-                args = step.elem[s] + (None,) * (4 - len(step.elem[s]))
                 y = 3 - int(s / row_length)
                 z = max_z - (s % row_length)
-                hunter, victim, hunter_nbt, victim_nbt = args
+                hunter, victim = step.elem[s]
+                alone = victim is None
 
                 battle_type = 0
                 if hunter[-2] == ':':
                     battle_type = {'w': 1, 'c': 2}[hunter[-1]]
                     hunter = hunter[0:-2]
 
-                def incr_cmd(which, mob):
+                def incr_cmd(which, mob, center=False):
                     my_nbts = Nbt({'Tags': ['battler', which]})
                     added_nbt = fighter_nbts.get(mob, None)
                     if added_nbt:
@@ -147,7 +148,8 @@ def room():
                             # Summoning warden with NBT means that it immediately burrows away, so must special case it
                             # https://bugs.mojang.com/browse/MC-249393 (also see below)
                             my_nbts = None
-                    incr = summon(Entity(mob, my_nbts), r(0, 2, 0))
+                    z_off = 2 if center else 0
+                    incr = summon(Entity(mob, my_nbts), r(0, 2, z_off))
                     incr_cmd = execute().if_().score((f'{which}_count', 'arena')).is_(LT, ('arena_count', 'arena')).at(
                         e().tag(f'{which}_home').sort('random').limit(1)).run(incr)
                     return incr_cmd
@@ -155,11 +157,12 @@ def room():
                 data_change = execute().at(monitor_home)
                 sign_commands = (
                     start_battle_type.set(battle_type),
-                    data_change.run(data().merge(r(3, 0, 0), {'Command': incr_cmd('hunter', hunter)})),
-                    data_change.run(data().merge(r(2, 0, 0), {'Command': incr_cmd('victim', victim)})),
+                    data_change.run(data().merge(r(3, 0, 0), {'Command': incr_cmd('hunter', hunter, alone)})),
+                    data_change.run(
+                        data().merge(r(2, 0, 0), {'Command': incr_cmd('victim', 'marker' if alone else victim)})),
                     function('restworld:arena/start_battle')
                 )
-                sign = WallSign((None, hunter, 'vs.', victim), sign_commands)
+                sign = WallSign((None, hunter, 'vs.', 'Nobody' if alone else victim), sign_commands)
                 yield sign.place(r(-2, y, z), EAST)
 
                 run_type = Score('arena_run_type', 'arena')
