@@ -13,6 +13,8 @@ from restworld.world import kill_em, main_clock, marker_tmpl, restworld
 COUNT_MIN = 1
 COUNT_MAX = 5
 
+battle_types = {'w': 1, 'c': 2, 'g': 3}
+
 
 def room():
     def protected(armor):
@@ -71,7 +73,7 @@ def room():
         ('Slime', 'Iron Golem'),  # Low priority, slime vs. frog
         ('Spider', 'Snow Golem'),
         ('Stray', 'Iron Golem'),
-        ('Sniffer', 'Snow Golem'),
+        ('Sniffer:g', None),
         ('Vindicator', 'Iron Golem'),
         ('Witch', 'Snow Golem'),
         ('Wither Skeleton', 'Piglin'),
@@ -134,7 +136,7 @@ def room():
 
                 battle_type = 0
                 if hunter[-2] == ':':
-                    battle_type = {'w': 1, 'c': 2}[hunter[-1]]
+                    battle_type = battle_types[hunter[-1]]
                     hunter = hunter[0:-2]
 
                 def incr_cmd(which, mob, center=False):
@@ -148,8 +150,9 @@ def room():
                             # Summoning warden with NBT means that it immediately burrows away, so must special case it
                             # https://bugs.mojang.com/browse/MC-249393 (also see below)
                             my_nbts = None
-                    z_off = 2 if center else 0
-                    incr = summon(Entity(mob, my_nbts), r(0, 2, z_off))
+                    y_off = 3 if battle_type == 3 else 2
+                    z_off = -4 if center else 0
+                    incr = summon(Entity(mob, my_nbts), r(0, y_off, z_off))
                     incr_cmd = execute().if_().score((f'{which}_count', 'arena')).is_(LT, ('arena_count', 'arena')).at(
                         e().tag(f'{which}_home').sort('random').limit(1)).run(incr)
                     return incr_cmd
@@ -269,15 +272,17 @@ def room():
         execute().as_(e().type('warden').distance((None, 100)).not_tag('battler')).run(tag(s()).add('battler'))),
 
     # Types: 0-normal, 1-water, 2-undead
-    fill_arena = Region(r(-12, 4, -12), r(12, 2, 12))
-    fill_sky = Region((r(-20), 250, r(-20)), (r(20), 250, r(20)))
+    arena = Region(r(-12, 2, -12), r(12, 4, 12))
+    ground = Region(r(-12, 2, -12), r(12, 2, 12))
+    sky = Region((r(-20), 250, r(-20)), (r(20), 250, r(20)))
+    # See 'battle_types' map above for meanings
     room.function('start_battle').add(
         execute().unless().score(start_battle_type).matches((0, None)).run(start_battle_type.set(0)),
-        execute().if_().score(start_battle_type).matches(0).at(monitor_home).run(fill_arena.fill('air')),
-        execute().if_().score(start_battle_type).matches(2).at(monitor_home).run(fill_arena.fill('air')),
-        execute().if_().score(start_battle_type).matches(1).at(monitor_home).run(fill_arena.fill('water')),
-        execute().if_().score(start_battle_type).matches((0, 1)).at(monitor_home).run(fill_sky.fill('air')),
-        execute().if_().score(start_battle_type).matches(2).at(monitor_home).run(fill_sky.fill('glowstone')),
+        execute().unless().score(start_battle_type).matches(1).at(monitor_home).run(arena.fill('air')),
+        execute().if_().score(start_battle_type).matches(1).at(monitor_home).run(arena.fill('water')),
+        execute().unless().score(start_battle_type).matches(2).at(monitor_home).run(sky.fill('air')),
+        execute().if_().score(start_battle_type).matches(2).at(monitor_home).run(sky.fill('glowstone')),
+        execute().if_().score(start_battle_type).matches(3).at(monitor_home).run(ground.fill('grass_block')),
         tag(a()).add('arena_safe'),
         tag(e().type('armor_stand')).add('arena_safe'),
         kill_em(e().not_tag('arena_safe').distance((None, 100))),
