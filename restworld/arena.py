@@ -6,7 +6,7 @@ from pynecraft.base import EAST, GT, LT, Nbt, r
 from pynecraft.commands import Entity, RANDOM, Score, a, data, e, execute, fill, function, kill, s, setblock, summon, \
     tag
 from pynecraft.function import Loop
-from pynecraft.simpler import Item, Region, WallSign
+from pynecraft.simpler import Item, Region, WallSign, Sign
 from restworld.rooms import Room, label
 from restworld.world import kill_em, main_clock, marker_tmpl, restworld
 
@@ -236,7 +236,7 @@ def room():
     room.function('arena_count_init').add(arena_count.set(1), arena_count_cur)
     room.loop('arena_count', main_clock).loop(
         lambda step: execute().at(e().tag('controls_home')).run(
-            data().merge(r(2, 4, 0), {'Text2': f'{step.elem:d} vs. {step.elem:d}'})), range(0, COUNT_MAX + 1))
+            Sign.change(r(2, 4, 0), (None, f'{step.elem:d} vs. {step.elem:d}'))), range(0, COUNT_MAX + 1))
 
     room.function('arena_run_init').add(
         function('restworld:arena/arena_run_cur')
