@@ -6,7 +6,7 @@ from typing import Iterable, Union
 from pynecraft import info
 from pynecraft.base import DOWN, EAST, EQ, NORTH, Nbt, SOUTH, WEST, good_facing, r, to_name
 from pynecraft.commands import Block, Entity, JsonText, MOD, MOVE, clone, data, e, execute, fill, function, good_block, \
-    item, kill, s, say, setblock, summon, tag
+    item, kill, s, say, setblock, summon, tag, Commands
 from pynecraft.function import Loop
 from pynecraft.info import Color, colors, shards, stems
 from pynecraft.simpler import Item, ItemFrame, Region, Sign, WallSign
@@ -69,9 +69,9 @@ def room():
                     yield setblock(r(x, 3, z), 'air')
                 yield setblock(r(x, 3, z), block)
                 sign_nbt = Sign.lines_nbt(signage)
+                lines = sign_nbt['messages']
                 # Preserve the 'expand' response
-                del sign_nbt['Text1']
-                yield data().merge(r(x + facing.dx, 2, z + facing.dz), sign_nbt)
+                yield Sign.change(r(x + facing.dx, 2, z + facing.dz), signage)
 
                 if show_list:
                     stand = name_stand.clone()
@@ -454,22 +454,19 @@ def room():
               ItemFrame(NORTH, glowing=True).item('Lapis Lazuli'))
     room.loop('item_frame', main_clock).add(item_frame_init).loop(item_frame_loop, frames)
 
-    def lantern_loop(step):
+    def lantern_loop(step) -> Commands:
         lantern = Block('Lantern' if step.i < 2 else 'Soul Lantern', {'hanging': False})
         if step.i in (0, 3):
             yield setblock(r(0, 3, 0), lantern),
             yield setblock(r(0, 4, 0), 'air'),
-            yield data().merge(r(0, 2, -1), {'Text2': '', 'Text4': ''}),
+            yield Sign.change(r(0, 2, -1), (None, '', lantern.name, ' Chain'))
         else:
             lantern.merge_state({'hanging': True}),
             yield setblock(r(0, 3, 0), lantern),
             yield setblock(r(0, 4, 0), 'chain'),
-            yield data().merge(r(0, 2, -1), {'Text2': 'Hanging', 'Text4': 'and Chain'}),
-        yield data().merge(r(0, 2, -1), {'Text3': lantern.name})
+            yield Sign.change(r(0, 2, -1), (None, 'Hanging', lantern.name, 'and Chain'))
 
-    room.function('lantern_init').add(
-        WallSign([]).place(r(0, 2, -1, ), NORTH),
-        data().merge(r(0, 2, -1), {'Text3': 'Lantern'}))
+    room.function('lantern_init').add(WallSign((None, None, 'Lantern')).place(r(0, 2, -1, ), NORTH))
     room.loop('lantern', main_clock).loop(lantern_loop, range(0, 4))
 
     blocks('minor', NORTH, ('Calcite', 'Tuff'))

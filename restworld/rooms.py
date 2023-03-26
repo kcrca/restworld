@@ -9,7 +9,8 @@ from typing import Callable, Iterable, Tuple
 from pynecraft.base import FacingDef, Nbt, ROTATION_180, ROTATION_270, ROTATION_90, UP, r, rotated_facing, to_name, \
     ORANGE, BLUE
 from pynecraft.commands import Block, BlockDef, CLEAR, Command, Commands, Entity, EntityDef, JsonText, NEAREST, \
-    Position, Score, SignText, a, comment, e, execute, function, good_block, good_entity, good_facing, good_score, kill, \
+    Position, Score, SignMessages, a, comment, e, execute, function, good_block, good_entity, good_facing, good_score, \
+    kill, \
     p, schedule, scoreboard, setblock, summon, tag, tellraw, tp, weather
 from pynecraft.enums import ScoreCriteria
 from pynecraft.function import DataPack, Function, FunctionSet, LATEST_PACK_VERSION, Loop
@@ -111,7 +112,7 @@ class RoomPack(DataPack):
 
 
 class Room(FunctionSet):
-    def __init__(self, name: str, dp: RoomPack, facing: str = None, text: SignText = None, room_name: str = None):
+    def __init__(self, name: str, dp: RoomPack, facing: str = None, text: SignMessages = None, room_name: str = None):
         super().__init__(name, dp.function_set)
         self.pack = dp
         self._clocks = {}
