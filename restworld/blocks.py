@@ -5,7 +5,7 @@ from typing import Iterable, Union
 
 from pynecraft import info
 from pynecraft.base import DOWN, EAST, EQ, NORTH, Nbt, SOUTH, WEST, good_facing, r, to_name
-from pynecraft.commands import Block, Entity, JsonText, MOD, MOVE, clone, data, e, execute, fill, function, good_block, \
+from pynecraft.commands import Block, Entity, MOD, MOVE, clone, data, e, execute, fill, function, good_block, \
     item, kill, s, say, setblock, summon, tag, Commands
 from pynecraft.function import Loop
 from pynecraft.info import Color, colors, shards, stems
@@ -197,7 +197,7 @@ def room():
     blocks('sandstone', SOUTH, (red_sandstone, tuple(re.sub(' *Red *', '', f) for f in red_sandstone)), dx=3)
     blocks('slabs', NORTH, ('Smooth Stone|Slab', 'Petrified Oak|Slab'))
     _, loop = blocks('snow_blocks', SOUTH, ('Powder Snow', 'Snow Block'))
-    loop.add(execute().if_().block(r(0, 3, 0), 'powder_snow').run(data().merge(r(0, 2, 1), {'Text3': 'Step In!'})))
+    loop.add(execute().if_().block(r(0, 3, 0), 'powder_snow').run(Sign.change(r(0, 2, 1), (None, None, 'Step In!'))))
     _, loop = blocks('soil', SOUTH, ('Grass Block', 'Podzol', 'Mycelium', 'Dirt Path'))
     # Make sure the block above is air so it doesn't turn dirt path to dirt instantly.
     loop.add(setblock(r(0, 4, 0), 'air'))
@@ -348,19 +348,19 @@ def room():
 
     def cake_loop(step):
         yield setblock(r(0, 3, 0), Block('cake', {'bites': step.elem}))
-        yield data().merge(r(0, 2, -1), {'Text3': f'Bites: {step.elem:d}'})
+        yield Sign.change(r(0, 2, -1), (None, None, f'Bites: {step.elem:d}'))
 
-    room.function('cake_init').add(data().merge(r(0, 2, -1), {'Text2': 'Cake'}))
+    room.function('cake_init').add(WallSign((None, 'Cake')).place(r(0, 2, -1), NORTH))
     room.loop('cake', main_clock).loop(cake_loop, range(0, 7), bounce=True)
 
     def chest_loop(step):
         step.elem.merge_state({'facing': NORTH})
         yield setblock(r(0, 3, 0), step.elem)
-        txt = {'Text2': 'Trapped' if 'T' in step.elem.name else '',
-               'Text3': 'Double Chest' if 'type' in step.elem.state else 'Chest'}
+        txt = [None, 'Trapped' if 'T' in step.elem.name else '',
+               'Double Chest' if 'type' in step.elem.state else 'Chest']
         if 'Ender' in step.elem.name:
-            txt['Text2'] = 'Ender'
-        yield data().merge(r(0, 2, -1), txt)
+            txt[1] = 'Ender'
+        yield Sign.change(r(0, 2, -1), txt)
         if 'type' in step.elem.state:
             step.elem.state['type'] = 'left'
             yield setblock(r(-1, 3, 0), step.elem)
@@ -424,6 +424,8 @@ def room():
     room.function('fire_init').add(WallSign((None, 'Fire')).place(r(0, 2, -1), NORTH))
     room.loop('fire', main_clock).add(fill(r(0, 3, 0), r(0, 5, 0), 'air')).loop(fire_loop, (
         'oak_log', 'oak_log', 'oak_log', 'soul_soil'))
+    # <% types = ("Ice", "Packed Ice", "Blue Ice") %>
+    blocks('ice', SOUTH, ('Ice', 'Packed Ice', 'Blue Ice'))
 
     infestables = []
     for b in ('Cobblestone', 'Deepslate', 'Stone', 'Stone Bricks', 'Chiseled|Stone Bricks', 'Cracked|Stone Bricks',
@@ -542,28 +544,28 @@ def room():
     def snow_loop(step):
         yield setblock(r(0, 3, 0), Block('grass_block', {'snowy': True}))
         yield setblock(r(0, 4, 0), Block('snow', {'layers': step.elem}))
-        yield data().merge(r(0, 2, 1), {'Text3': f'Layers: {step.elem:d}'})
+        yield Sign.change(r(0, 2, 1), (None, None, f'Layers: {step.elem:d}'))
 
     room.loop('snow', main_clock).loop(snow_loop, range(1, 9), bounce=True)
 
     def spawner_loop(step):
         yield data().merge(r(0, 3, 0), {'SpawnData': {'entity': {'id': Entity(step.elem).id}}})
-        yield data().merge(r(0, 2, -1), {'Text2': step.elem})
+        yield Sign.change(r(0, 2, -1), (None, step.elem))
 
     room.function('spawner_init').add(setblock(r(0, 3, 0), 'spawner'))
     room.loop('spawner', main_clock).loop(spawner_loop, ('Pig', 'Zombie', 'Skeleton', 'Spider', 'Cave Spider', 'Blaze'))
 
     def structure_blocks_loop(step):
-        yield data().merge(r(0, 2, 1), {'Text2': step.elem})
+        yield Sign.change(r(0, 2, 1), (None, step.elem))
         yield data().merge(r(0, 3, 0), {'mode': step.elem.upper()})
 
-    room.function('structure_blocks_init').add(data().merge(r(0, 2, 1), {'Text3': 'Structure Block'}))
+    room.function('structure_blocks_init').add(WallSign((None, None, 'Structure Block')).place(r(0, 2, 1), SOUTH))
     room.loop('structure_blocks', main_clock).loop(structure_blocks_loop, ('Data', 'Save', 'Load', 'Corner'))
 
     def tnt_loop(step):
         yield kill(e().type('tnt').distance((None, 10)))
         yield setblock(r(0, 3, 0), Block('tnt', {'unstable': step.elem == 'unstable'}))
-        yield data().merge(r(0, 2, -1), {'Text3': step.elem.title()})
+        yield Sign.change(r(0, 2, -1), (None, None, step.elem.title()))
 
     room.loop('tnt', main_clock).loop(tnt_loop, ('stable', 'unstable'))
 
@@ -571,9 +573,9 @@ def room():
     wall_torches = tuple(Block(x.name.replace('Torch', 'Wall Torch')) for x in torches)
 
     def torches_loop(step):
-        text = ({'Text2': '', 'Text4': ''}, {'Text2': 'Soul', 'Text4': ''}, {'Text2': 'Redstone', 'Text4': '(On)'},
-                {'Text2': 'Redstone', 'Text4': '(Off)'})
-        yield data().merge(r(0, 2, -1), text[step.i])
+        text = ((None, '', None, ''), (None, 'Soul', None, ''), (None, 'Redstone', None, '(On)'),
+                (None, 'Redstone', None, '(Off)'))
+        yield Sign.change(r(0, 2, -1), text[step.i])
         if step.i == len(torches) - 1:
             yield execute().if_().score(wall_torches_score).matches(0).run(setblock(r(0, 2, 0), 'redstone_block'))
             yield execute().if_().score(wall_torches_score).matches(1).run(setblock(r(0, 3, 1), 'redstone_block'))
@@ -587,8 +589,8 @@ def room():
         wall_torches_score.set(0)
     )
     room.loop('torches', main_clock).add(
-        execute().if_().score(wall_torches_score).matches(0).run(data().merge(r(0, 2, -1), {'Text3': 'Torch'})),
-        execute().if_().score(wall_torches_score).matches(1).run(data().merge(r(0, 2, -1), {'Text3': 'Wall Torch'})),
+        execute().if_().score(wall_torches_score).matches(0).run(Sign.change(r(0, 2, -1), (None, None, 'Torch'))),
+        execute().if_().score(wall_torches_score).matches(1).run(Sign.change(r(0, 2, -1), (None, None, 'Wall Torch'))),
         setblock(r(0, 3, 0), 'air'),
         execute().unless().block(r(0, 3, 1), 'air').run(setblock(r(0, 3, 1), 'air')),
         execute().unless().block(r(0, 2, 0), 'air').run(setblock(r(0, 2, 0), 'barrier')),
@@ -615,15 +617,15 @@ def room_init_functions(room, block_list_score):
     )
     # The 'zzz' makes sure this is run last
     room.function('zzz_blocks_sign_init').add(
-        execute().at(e().tag('blocks_home', '!no_expansion')).run(data().merge(r(0, 2, -1), {
-            'Text1': JsonText.text("").click_event().run_command('function restworld:blocks/toggle_exp''and')})),
-        execute().at(e().tag('blocks_home', '!no_expansion')).run(data().merge(r(0, 2, 1), {
-            'Text1': JsonText.text("").click_event().run_command('function restworld:blocks/toggle_expand')})),
+        execute().at(e().tag('blocks_home', '!no_expansion')).run(
+            Sign.change(r(0, 2, -1), ("",), ('function restworld:blocks/toggle_expand',))),
+        execute().at(e().tag('blocks_home', '!no_expansion')).run(
+            Sign.change(r(0, 2, 1), ("",), ('function restworld:blocks/toggle_expand',))),
 
-        execute().at(e().tag('blocks_home', 'no_expansion')).run(data().merge(r(0, 2, -1), {
-            'Text1': JsonText.text("").click_event().run_command('say Sorry, cannot expand this block')})),
-        execute().at(e().tag('blocks_home', 'no_expansion')).run(data().merge(r(0, 2, 1), {
-            'Text1': JsonText.text("").click_event().run_command('say Sorry, cannot expand this block')})),
+        execute().at(e().tag('blocks_home', 'no_expansion')).run(
+            Sign.change(r(0, 2, -1), ("",), (say('Sorry, cannot expand this block'),))),
+        execute().at(e().tag('blocks_home', 'no_expansion')).run(
+            Sign.change(r(0, 2, 1), ("",), (say('Sorry, cannot expand this block'),))),
         tag(e().tag('block_sign_home')).add('no_expansion'),
     )
     room.loop('toggle_block_list', score=block_list_score).loop(
@@ -710,11 +712,11 @@ def color_functions(room):
         yield data().merge(e().tag('colorings_cat').limit(1), {'CollarColor': color.num})
         yield data().merge(e().tag('colorings_dog').limit(1), {'CollarColor': color.num})
 
-        yield data().merge(r(-4, 2, 4), {'Text2': color.name})
+        yield Sign.change(r(-4, 2, 4), (None, color.name))
         yield execute().as_(e().tag('colorings_names')).run(data().merge(s(), {'CustomName': color.name}))
 
         yield data().merge(r(0, 0, -1), {'name': f'restworld:{"plain" if is_plain else color.id}_terra'})
-        yield data().merge(r(1, 2, -0), {'Text1': color.name})
+        yield Sign.change(r(1, 2, -0), (color.name,))
 
     def colored_signs(color, render):
         signables = info.woods + stems
@@ -732,12 +734,13 @@ def color_functions(room):
     def render_signs_glow(x, y, z, _, _2):
         lit_signs = room.score('lit_signs')
         yield execute().if_().score(lit_signs).matches(0).run(
-            data().merge(r(x, y, z), {'GlowingText': False, 'Text4': 'Text'}))
+            data().merge(r(x, y, z), {'front_text': {'has_glowing_text': False}}))
         yield execute().if_().score(lit_signs).matches(1).run(
-            data().merge(r(x, y, z), {'GlowingText': True, 'Text4': 'Text'}))
+            data().merge(r(x, y, z), {'front_text': {'has_glowing_text': True}}))
 
     def render_signs(x, y, z, color, _):
-        yield data().merge(r(x, y, z), {'Color': color.id, 'Text3': color.name})
+        yield Sign.change(r(x, y, z), (None, None, color.name))
+        yield data().merge(r(x, y, z), {'front_text': {'color': color.id}})
 
     def colorings_loop(step):
         yield from colorings(False, step.elem)
