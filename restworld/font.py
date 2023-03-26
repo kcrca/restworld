@@ -74,8 +74,10 @@ def room():
         elif x == 1 and row_lengths[row] == 2:
             x += 1
 
+    # /data modify entity 7f81d935-e1cf-4377-8431-93e07d229fa8 CustomName set from block 10 101 -77 front_text.messages[0]
     copy_sign.add(
-        data().modify(e().tag('font').tag('nameable').limit(1), 'CustomName').set().from_(save_pos, 'Text1'))
+        data().modify(e().tag('font').tag('nameable').limit(1), 'CustomName').set().from_(save_pos,
+                                                                                          'front_text.messages[0]'))
 
     room.function('colored_text').add(
         ensure(r(0, 2, 0), Block('lectern', {'facing': WEST, 'has_book': True}),
@@ -95,7 +97,7 @@ def room():
     init_text = ('Lorem ipsum', 'dolor sit amet,', 'consectetur', 'adipiscing elit.')
     font_run_init.add(
         tag(e().tag('font_run_home')).add('font_action_home'),
-        WallSign(init_text).place(src_pos, SOUTH),
+        WallSign(init_text).wax(False).place(src_pos, SOUTH),
         execute().at(e().tag('font_action_home')).run(setblock(save_pos, 'air')),
         function('restworld:font/check_sign'),
         WallSign((None, 'Color Holder')).place(r(0, -3, -3), SOUTH),
@@ -115,7 +117,7 @@ def room():
             WallSign((None, c.name, 'Text'),
                      (at.run(data().modify(r(0, -3, -3), 'Color').set().value(c.id)),
                       at.run(setblock(save_pos, 'air'))),
-                     nbt={'Color': c.id}).place(r(x, y, -3), SOUTH))
+                     nbt={'front_text': {'color': c.id}}).place(r(x, y, -3), SOUTH))
 
     maybe_glow = room.function('maybe_glow')
     font_glow = room.score('font_glow')
@@ -123,9 +125,9 @@ def room():
         for y in range(0, 4):
             maybe_glow.add(
                 execute().if_().score(font_glow).matches(0).at(e().tag('font_run_home')).run(
-                    data().merge(r(x - 3, y + 2, -3), {'GlowingText': False})),
+                    data().merge(r(x - 3, y + 2, -3), {'front_text': {'has_glowing_text': False}})),
                 execute().if_().score(font_glow).matches(1).at(e().tag('font_run_home')).run(
-                    data().merge(r(x - 3, y + 2, -3), {'GlowingText': True}))
+                    data().merge(r(x - 3, y + 2, -3), {'front_text': {'has_glowing_text': True}}))
             )
 
     room.function('nameable_init').add(
