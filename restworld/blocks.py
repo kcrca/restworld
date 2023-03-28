@@ -154,7 +154,7 @@ def room():
         'Deepslate|Bricks', 'Deepslate|Tiles', 'Cobbled|Deepslate', 'Reinforced|Deepslate'))
     # Have to replace it with air first, so air=True ... https://bugs.mojang.com/browse/MC-260399
     # Also, the order for sides is weird, https://bugs.mojang.com/browse/MC-260399
-    shard_names = tuple(shard.replace('pottery_shard_', '').title() for shard in shards)
+    shard_names = tuple(shard.replace('_pottery_shard', '').title() for shard in shards)
     _, pot_loop = blocks(
         'decorated_pot', NORTH, ('decorated_pot',) + tuple(
             Block('decorated_pot', nbt={'shards': [shards[i], shards[(i + 1) % 4], shards[(i + 2) % 4]]},
@@ -523,6 +523,8 @@ def room():
     blocks('sculk_blocks', NORTH, (
         Block('Sculk Vein', {SOUTH: True, DOWN: True}),
         'Sculk', 'Sculk Sensor',
+        # Shows up waterlogged by default; see https://bugs.mojang.com/browse/MC-261388
+        Block('Calibrated| Sculk Sensor', {'waterlogged': False, 'facing': SOUTH}),
         Block('Sculk Catalyst'),
         Block('sculk_catalyst', {'bloom': True}, name='Sculk Catalyst|Blooming'),
         Block('sculk_shrieker', {'can_summon': True, 'shrieking': False}, name='Sculk Shrieker|Can Summon'),
@@ -535,9 +537,9 @@ def room():
     skulk_loop = room.functions['sculk_blocks_main']
     assert isinstance(skulk_loop, Loop)
     skulk_loop.add(
-        execute().if_().score(skulk_loop.score).matches(6).positioned(r(0, 3, 0)).run(
+        execute().if_().score(skulk_loop.score).matches(7).positioned(r(0, 3, 0)).run(
             function('restworld:particles/shriek_particles')),
-        execute().if_().score(skulk_loop.score).matches(8).positioned(r(0, 3, 0)).run(
+        execute().if_().score(skulk_loop.score).matches(9).positioned(r(0, 3, 0)).run(
             function('restworld:particles/shriek_particles')),
     )
 

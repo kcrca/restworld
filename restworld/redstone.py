@@ -118,9 +118,20 @@ def room():
             yield fill(r(0, 2, 2), r(-1, 2, 3), 'air')
 
     room.loop('repeater', main_clock).loop(repeater_loop, range(0, 3))
+
+    def sculk_loop(step):
+        if step.i % 2 == 0:
+            if step.i == 0:
+                block = 'Sculk Sensor'
+            else:
+                # Shows up waterlogged by default; see https://bugs.mojang.com/browse/MC-261388
+                block = Block('Calibrated|Sculk Sensor', {'waterlogged': False, 'facing': WEST})
+            yield setblock(r(0, 2, 0), block)
+        yield setblock(r(-4, 2, 0), 'air' if step.i < 2 else 'redstone_block')
+
     room.function('sculk_init').add(WallSign((None, 'Sculk Sensor')).place(r(-1, 3, 0), EAST))
-    room.loop('sculk', main_clock).loop(lambda step: setblock(r(-4, 2, 0), 'air' if step.i else 'redstone_block'),
-                                        range(3))
+    room.loop('sculk', main_clock).loop(sculk_loop, range(4))
+
     room.function('target_init').add(WallSign((None, 'Target', None, '(vanilla shows 1)')).place(r(1, 3, 0), WEST))
 
     def target_loop(step):
