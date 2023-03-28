@@ -18,7 +18,7 @@ def room():
         yield setblock(r(0, 2, 0), (step.elem, {'facing': UP}))
         yield setblock(r(0, 4, 0), (step.elem, {'facing': WEST}))
         yield setblock(r(0, 6, 0), (step.elem, {'facing': DOWN}))
-        yield data().merge(r(0, 3, 0), {'Text2': step.elem})
+        yield Sign.change(r(0, 3, 0), (None, step.elem))
 
     room.loop('dispenser', main_clock).loop(dispenser_loop, ('Dispenser', 'Dropper'))
     room.function('hopper_init').add(WallSign((None, 'Which way are', 'they pointing?')).place(r(2, 3, 1), WEST))
@@ -27,7 +27,7 @@ def room():
 
     def lightning_rod_loop(step):
         yield setblock(r(0, 3, 0), step.elem)
-        yield data().merge(r(1, 2, 0), {'Text3': '(Powered)' if 'powered' in str(step.elem) else ''})
+        yield Sign.change(r(1, 2, 0), (None, None, '(Powered)' if 'powered' in str(step.elem) else ''))
 
     room.loop('lightning_rod', main_clock).loop(
         lightning_rod_loop, (Block('Lightning Rod'), Block('Lightning Rod', {'powered': True})))
@@ -79,7 +79,7 @@ def room():
             yield volume.replace('redstone_torch', 'glass')
         else:
             yield volume.replace('glass', 'redstone_torch')
-        yield data().merge(r(1, 2, -2), {'Text2': rail, 'Text3': '(Powered)' if on else ''})
+        yield Sign.change(r(1, 2, -2), (None, rail, '(Powered)' if on else ''))
 
     room.loop('rail', main_clock).loop(rail_loop, rails)
 
@@ -92,10 +92,10 @@ def room():
         volume = Region(r(0, 0, 0), r(7, 0, 7))
         if step.i == 0:
             yield volume.replace('redstone_torch', 'glass')
-            yield data().merge(r(0, 2, 0), {'Text3': '(Powered)'})
+            yield Sign.change(r(0, 2, 0), (None, None, '(Powered)'))
         else:
             yield volume.replace('glass', 'redstone_torch')
-            yield data().merge(r(0, 2, 0), {'Text3': ''})
+            yield Sign.change(r(0, 2, 0), (None, None, ''))
 
     room.loop('redstone_wire', main_clock).loop(redstone_wire_loop, range(0, 2))
     room.function('repeater_init').add(
@@ -125,19 +125,20 @@ def room():
 
     def target_loop(step):
         yield setblock(r(0, 2, 0), ('target', {'power': step.i}))
-        yield data().merge(r(1, 3, 0), {'Text3': f'Power {step.i:d}'})
+        yield Sign.change(r(1, 3, 0), (None, None, f'Power {step.i:d}'))
 
     room.loop('target', fast_clock).loop(target_loop, range(0, 16))
     room.function('wire_strength_init').add(
-        fill(r(1, 2, -1), r(1, 2, -16), ('oak_wall_sign', {'facing': WEST}, {'Text3': 'Powered'})))
+        fill(r(1, 2, -1), r(1, 2, -16),
+             ('oak_wall_sign', {'facing': WEST}, {'front_text': Sign.lines_nbt((None, None, 'Powered'))})))
 
     def wire_strength_loop(step):
         yield setblock(r(0, 2, 0), 'redstone_block' if step.i == 0 else 'air')
         for i in range(0, 16):
             if step.i == 0:
-                yield data().merge(r(1, 2, -(16 - i)), {'Text2': f'{i}'})
+                yield Sign.change(r(1, 2, -(16 - i)), (None, f'{i}'))
             else:
-                yield data().merge(r(1, 2, -(16 - i)), {'Text2': 'Not'})
+                yield Sign.change(r(1, 2, -(16 - i)), (None, 'Not'))
 
     room.loop('wire_strength', main_clock).loop(wire_strength_loop, (0, 1))
 
@@ -150,7 +151,7 @@ def room():
         yield setblock(r(1, 2, 0), ('oak_wall_sign', {'facing': EAST}))
         yield data().merge(r(1, 2, 0), wood.sign_nbt)
         if powered == 'True':
-            yield data().merge(r(1, 2, 0), {'Text4': '(Powered)'})
+            yield Sign.change(r(1, 2, 0), (None, None, None, '(Powered)'))
 
     powerings = []
     for t in ('Stone', 'Polished|Blackstone') + info.woods + stems:
@@ -199,10 +200,9 @@ def light_detector_funcs(room):
     room.function('daylight_detector_setup').add(
         daylight_inv.set(0),
         execute().if_().block(r(0, 2, 1), ('daylight_detector', {'inverted': True})).run(daylight_inv.set(1)),
-        execute().if_().score(daylight_inv).matches(0).run(
-            data().merge(r(0, 2, 0), {'Text2': 'Daylight Detector', 'Text3': ''})),
+        execute().if_().score(daylight_inv).matches(0).run(Sign.change(r(0, 2, 0), (None, 'Daylight Detector', ''))),
         execute().if_().score(daylight_inv).matches(1).run(
-            data().merge(r(0, 2, 0), {'Text2': 'Inverted', 'Text3': 'Daylight Detector'}))
+            Sign.change(r(0, 2, 0), (None, 'Inverted', 'Daylight Detector')))
     )
     room.function('daylight_detector_setup_init').add(
         WallSign(()).place(r(0, 2, 0), EAST),
@@ -271,8 +271,7 @@ def pressure_plate_funcs(room):
         plate_heavy = room.score('plate_heavy')
         yield execute().at(e().tag('pressure_plate_home')).run(
             setblock(r(0, 3, 0), f'{which.lower()}_weighted_pressure_plate'))
-        yield execute().at(e().tag('pressure_plate_home')).run(
-            data().merge(r(1, 2, 0), {'Text2': which, 'Text3': 'Pressure Plate'}))
+        yield execute().at(e().tag('pressure_plate_home')).run(Sign.change(r(1, 2, 0), (None, which, 'Pressure Plate')))
         yield plate_heavy.set(int(heavy))
         yield kill(e().tag('plate_items'))
         yield pressure_plate.set(0)

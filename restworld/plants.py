@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pynecraft import info
 from pynecraft.base import EAST, NORTH, SOUTH, WEST, r, to_id, to_name
-from pynecraft.commands import Block, data, e, execute, fill, fillbiome, function, kill, setblock, tag
+from pynecraft.commands import Block, data, e, execute, fill, fillbiome, function, kill, setblock, tag, JsonText
 from pynecraft.enums import BiomeId
 from pynecraft.info import small_flowers, stems, tulips
 from pynecraft.simpler import Region, Sign, WallSign
@@ -13,8 +13,8 @@ from restworld.world import fast_clock, main_clock, restworld
 def crop(stages, which, x, y, z, step, name='age'):
     for s in range(0, 3):
         yield fill(r(x, y, z - s), r(x + 2, y, z - s), Block(which, {name: stages[(step.i + s) % len(stages)]}))
-        yield data().merge(r(x + 3, 2, z - 1),
-                           {'Text3': f'Stage: {stages[(step.i + 1) % len(stages)]} of {step.count - 2}'})
+        yield Sign.change(r(x + 3, 2, z - 1),
+                          (None, None, f'Stage: {stages[(step.i + 1) % len(stages)]} of {step.count - 2}'))
 
 
 def room():
@@ -73,7 +73,7 @@ def room():
         yield setblock(r(-1, 4, 0), ('cocoa', {'age': step.elem, 'facing': EAST}))
         yield setblock(r(0, 4, 1), ('cocoa', {'age': step.elem, 'facing': NORTH}))
         yield setblock(r(0, 4, -1), ('cocoa', {'age': step.elem, 'facing': SOUTH}))
-        yield data().merge(r(1, 2, 0), {'Text3': 'Stage: %d of 3' % step.stage})
+        yield Sign.change(r(1, 2, 0), (None, None, 'Stage: %d of 3' % step.stage))
 
     room.loop('cocoa', main_clock).loop(cocoa_loop, range(0, 3), bounce=True)
     room.function('coral_init').add(WallSign((None, None, 'Coral')).place(r(0, 2, -2), WEST, water=True))
@@ -90,7 +90,7 @@ def room():
         yield volume.replace('Dead %s Coral Block' % step.elem, '#restworld:dead_coral_blocks')
         yield volume.replace(('Dead %s Coral Fan' % step.elem, watered), '#restworld:dead_coral_fans')
         yield volume.replace_facing(('Dead %s Coral Wall Fan' % step.elem, watered), '#restworld:dead_wall_corals')
-        yield data().merge(r(0, 2, -2), {'Text2': step.elem})
+        yield Sign.change(r(0, 2, -2), (None, step.elem))
 
     room.loop('coral', main_clock).loop(coral_loop, ('Brain', 'Bubble', 'Fire', 'Horn', 'Tube'))
     room.loop('dead_bush_soil', main_clock).loop(lambda step: setblock(r(0, 2, 1), step.elem),
@@ -142,10 +142,14 @@ def room():
         if isinstance(step.elem, str):
             step.elem = Block(step.elem)
         sign_nbt = step.elem.sign_nbt
-        if sign_nbt['Text1'] == '':
-            sign_nbt['Text1'] = 'Potted'
+
+        base_text = sign_nbt['front_text']['messages'][0]['text']
+        if base_text == '':
+            sign_nbt['front_text']['messages'][0] = JsonText.text('Potted')
         else:
-            sign_nbt['Text1'] = 'Potted ' + sign_nbt['Text1']
+            sign_nbt['front_text']['messages'][0] = JsonText.text('Potted ' + base_text)
+        if len(sign_nbt['front_text']['messages'][3]['text']) == 0:
+            sign_nbt['front_text']['messages'] = (JsonText.text(''),) + tuple(sign_nbt['front_text']['messages'][:-1])
         yield setblock(r(0, 3, 0), 'potted_%s' % step.elem.id)
         yield data().merge(r(1, 2, 0), sign_nbt)
 
@@ -161,7 +165,7 @@ def room():
     ]
     pottables = [Block('Mangrove|Propagule' if w == 'Mangrove' else '%s Sapling' % w) for w in saplings] + [
         Block('%s Tulip' % t) for t in tulips] + list(small_flowers) + misc + [Block('%s Roots' % x) for x in stems] + [
-                    Block('%s Fungus' % x) for x in stems] + [Block('Torchflower'), Block('Wither Rose') ]
+                    Block('%s Fungus' % x) for x in stems] + [Block('Torchflower'), Block('Wither Rose')]
     try:
         pottables[pottables.index(Block('Bamboo Sapling'))] = Block('Bamboo')
     except ValueError:
@@ -173,7 +177,7 @@ def room():
 
     def propagule_loop(step):
         yield setblock(r(0, 4, 0), ('mangrove_propagule', {'hanging': True, 'age': step.stage}))
-        yield data().merge(r(1, 2, 0), {'Text3': 'Stage: %d of 4' % step.stage})
+        yield Sign.change(r(1, 2, 0), (None, None, 'Stage: %d of 4' % step.stage))
 
     room.loop('propagule', main_clock).loop(propagule_loop, range(4))
 
@@ -203,19 +207,19 @@ def room():
         if i < 8:
             yield setblock(r(0, 3, -1), ('pumpkin_stem', {'age': i}))
             yield setblock(r(2, 3, -1), ('melon_stem', {'age': i}))
-            yield data().merge(r(3, 2, -1), {'Text3': f'Stage: {i} of {step.count}'})
+            yield Sign.change(r(3, 2, -1), (None, None, f'Stage: {i} of {step.count}'))
         else:
             yield setblock(r(0, 3, -2), 'pumpkin')
             yield setblock(r(2, 3, -2), 'melon')
             yield setblock(r(0, 3, -1), ('attached_pumpkin_stem', {'facing': NORTH}))
             yield setblock(r(2, 3, -1), ('attached_melon_stem', {'facing': NORTH}))
-            yield data().merge(r(3, 2, -1), {'Text3': 'Stage:  Attached'})
+            yield Sign.change(r(3, 2, -1), (None, None, 'Stage:  Attached'))
 
     room.loop('stems', main_clock).loop(stems_loop, range(0, 9))
 
     def sweet_berry_loop(step):
         yield setblock(r(0, 3, 0), ('Sweet Berry Bush', {'age': step.elem}))
-        yield data().merge(r(1, 2, 0), {'Text3': f'Age: {step.elem} of {step.count}'})
+        yield Sign.change(r(1, 2, 0), (None, None, f'Age: {step.elem} of {step.count}'))
 
     room.loop('sweet_berry', main_clock).loop(sweet_berry_loop, range(0, 4), bounce=True)
     room.loop('sweet_berry_soil', main_clock).loop(lambda step: setblock(r(0, 2, 1), step.elem),
@@ -244,8 +248,7 @@ def room():
 
     def tulips_loop(step):
         yield setblock(r(0, 3, 0), f'{to_id(step.elem)}_tulip')
-        yield data().merge(r(1, 2, 0), {'Text3': step.elem})
-        yield data().merge(r(-1, 2, 0), {'Text3': step.elem})
+        yield Sign.change(r(1, 2, 0), (None, None, step.elem))
 
     room.loop('tulips', main_clock).loop(tulips_loop, tulips)
 
@@ -256,7 +259,7 @@ def three_funcs(room):
             count = step.elem
             yield fill(r(0, 5, z), r(0, 5 - (1 - count), z), 'air')
             yield fill(r(0, 3, z), r(0, 3 + count, z), which)
-            yield data().merge(r(1, 2, z), Sign.lines_nbt(('', to_name(which), '', '')))
+            yield data().merge(r(1, 2, z), {'front_text': Sign.lines_nbt(('', to_name(which), '', ''))})
 
         yield from height(0, 'cactus')
         yield from height(-3, 'sugar_cane')
@@ -267,8 +270,8 @@ def three_funcs(room):
             yield setblock(r(0, 5, z), 'air')
             yield setblock(r(0, 4, z), f'{which}[age={age}]')
             yield data().merge(r(1, 2, z),
-                               Sign.lines_nbt(
-                                   (None, to_name(which), f'Top Age: {age} of 16', '(vanilla shows 1)')))
+                               {'front_text': Sign.lines_nbt(
+                                   (None, to_name(which), f'Top Age: {age} of 16', '(vanilla shows 1)'))})
 
         yield from age(0, 'cactus')
         yield from age(-3, 'sugar_cane')
@@ -317,7 +320,7 @@ def bamboo_funcs(room):
             else:
                 height = max
             age = 0 if step.i <= max else 1
-            yield data().merge(r(1, 2, 0), {'Text3': 'Shoot' if step.i == 0 else f'Age: {age:d} of 2'})
+            yield Sign.change(r(1, 2, 0), (None, None, 'Shoot' if step.i == 0 else f'Age: {age:d} of 2'))
             yield fill(r(0, 3, 0), r(0, 3 + height - 1, 0), Block('bamboo', {'age': age, 'leaves': 'none'}))
             if height < max:
                 yield fill(r(0, 3 + max - 1, 0), r(0, 3 + height, 0), 'air')

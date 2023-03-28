@@ -46,7 +46,7 @@ def room():
             if stairs[i][j]:
                 # noinspection PyTypeChecker
                 yield from volume.replace_stairs(stairs[i][j], stairs[o][j])
-        yield data().merge(r(0, 2, 3), {'Text2': blocks[i][0]})
+        yield Sign.change(r(0, 2, 3), (None, blocks[i][0]))
 
     room.loop('all_sand', main_clock).loop(all_sand_loop, range(0, 2))
 
@@ -55,7 +55,7 @@ def room():
     def arrows_loop(step):
         yield summon(step.elem, r(0, 3, 0.25), {
             'Tags': ['arrow'], 'NoGravity': True, 'Color': 127, 'CustomPotionColor': 127 if step.i == 2 else ''})
-        yield data().merge(r(0, 2, -1), {'Text2': step.elem.name})
+        yield Sign.change(r(0, 2, -1), (None, step.elem.name))
 
     room.loop('arrows', main_clock).add(
         kill(e().tag('arrow'))
@@ -71,7 +71,7 @@ def room():
         p = points[i]
         f = -32768 if i == 0 else points[i - 1]
         yield summon('experience_orb', r(0, 3, 0), {'Value': p, 'Age': 6000 - 40})
-        yield data().merge(r(0, 2, -1), {'Text3': 'Size %d' % (i + 1), 'Text4': '%d - %d' % (f, p)})
+        yield Sign.change(r(0, 2, -1), (None, None, f'Size {i + 1}', f'{f} - {p}'))
 
     room.loop('experience_orbs', fast_clock).loop(experience_orbs_loop, points)
     room.function('experience_orbs_init').add(WallSign((None, 'Experience Orb')).place(r(0, 2, -1), NORTH))
@@ -89,7 +89,7 @@ def room():
     def ore_loop(step):
         ore, block, item, raw = (Block(x) if x else None for x in step.elem)
         yield from volume.replace(block.id, '#restworld:ore_blocks')
-        yield data().merge(r(3, 2, 6), {'Text2': ore.name.replace(' Ore', '')})
+        yield Sign.change(r(3, 2, 6), (None, ore.name.replace(' Ore', '')))
         if 'Nether' in ore.name or 'Ancient' in ore.name:
             yield volume.replace(ore.id, '#restworld:ores')
             yield volume.replace('netherrack', '#restworld:ore_background')
@@ -112,7 +112,7 @@ def room():
             yield volume.replace('granite', 'basalt')
 
         if 'Netherite' in item.name:
-            yield data().merge(r(3, 2, 6), {'Text3': '/ Netherite'})
+            yield Sign.change(r(3, 2, 6), (None, None, '/ Netherite'))
         if raw:
             if 'Raw' in raw.name:
                 yield setblock(r(3, 4, 2), '%s_block' % raw.id)
@@ -125,7 +125,7 @@ def room():
 
     room.loop('ores', main_clock).add(
         kill(e().tag(raw_frame)),
-        data().merge(r(3, 2, 6), {'Text3': ''}),
+        Sign.change(r(3, 2, 6), (None, None, '')),
         setblock(r(3, 4, 2), 'air')
     ).loop(ore_loop, (
         ('Coal Ore', 'Coal Block', 'Coal', None),
@@ -145,7 +145,7 @@ def room():
         yield fillbiome(r(-1, 0, -5), r(9, 6, 1), step.elem)
         yield fill(r(-1, 0, -5), r(9, 6, 1), 'water').replace('ice')
         yield fill(r(-1, 0, -5), r(9, 6, 1), 'air').replace('snow')
-        yield data().merge(r(0, 2, 0), {'Text4': step.elem.display_name()})
+        yield Sign.change(r(0, 2, 0), (None, None, None, step.elem.display_name()))
 
     water_biomes = (
         BiomeId.MEADOW,
@@ -439,9 +439,13 @@ def wood_functions(room):
         yield from volume.replace_axes(f'stripped_{wood}', '#restworld:stripped_woodlike')
         yield from volume.replace_doors(f'{id}_door', '#doors')
         yield from volume.replace_trapdoors(f'{id}_trapdoor', '#trapdoors')
-        yield from volume.replace_facing(Block(f'{id}_wall_sign', nbt={'Text2': f'{name} Wall Sign'}),
-                                         '#wall_signs')
-        yield from volume.replace_rotation(Block(f'{id}_sign', nbt={'Text2': f'{name} Sign'}), '#signs')
+        yield from volume.replace_facing(WallSign((None, f'{name}', 'Wall Sign'), wood=id).wax(False), '#wall_signs')
+        yield from volume.replace_rotation(Sign((None, f'{name} Sign'), wood=id).wax(False), '#signs')
+        yield from volume.replace_facing(
+            WallSign((None, f'{name}', 'Hanging', 'Wall Sign'), wood=id, hanging=True).wax(False),
+            '#wall_hanging_signs')
+        yield from volume.replace_rotation(
+            Sign((None, f'{name}', 'Hanging', 'Sign'), wood=id, hanging=True).wax(False), '#ceiling_hanging_signs')
 
         yield from volume.replace_facing(
             Block(f'{id}_wall_hanging_sign', nbt=Sign.lines_nbt((name, 'Wall', 'Hanging', 'Sign'))),
@@ -565,7 +569,7 @@ def trim_functions(room):
         ItemFrame(NORTH).item('iron_helmet').merge_nbt(
             {'Item': trim_nbt}).tag('materials', frame, f'{frame}_helmet').summon(r(0, 6, 1)),
         WallSign((None, 'Material:')).place(r(1, 6, 1), NORTH),
-        WallSign((None, 'Armor:',  'Iron')).place(r(-1, 6, 1), NORTH),
+        WallSign((None, 'Armor:', 'Iron')).place(r(-1, 6, 1), NORTH),
     )
 
     class Trim:
@@ -598,7 +602,8 @@ def trim_functions(room):
             yield execute().as_(e().tag(overall_tag)).run(
                 data().modify(s(), f'ArmorItems[].{self.nbt_path}').set().value(step.elem))
             yield execute().as_(e().tag(frame)).run(data().modify(s(), f'Item.{self.nbt_path}').set().value(step.elem))
-            yield execute().at(e().tag('trim_change_home')).run(data().merge(r(0, 2, 0), {'Text4': step.elem.title()}))
+            yield execute().at(e().tag('trim_change_home')).run(
+                Sign.change(r(0, 2, 0), (None, None, None, step.elem.title())))
             yield from self._trim_frame_sign(step)
 
         def _trim_frame_sign(self, step):
@@ -606,7 +611,7 @@ def trim_functions(room):
                 return
             sign_x = 1 if 'material' in self.nbt_path else -1
             yield execute().at(e().tag(f'{frame}_helmet')).run(
-                data().merge(r(sign_x, 0, 0), {'Text3': step.elem.title()}))
+                Sign.change(r(sign_x, 0, 0), (None, None, step.elem.title())))
 
         def _detect(self):
             for i, t in enumerate(self.types):
@@ -630,7 +635,8 @@ def trim_functions(room):
                     data().modify(s(), f'ArmorItems[{i}].{self.nbt_path}').set().value(which))
                 yield execute().as_(e().tag(f'{frame}_{piece}')).run(
                     data().modify(s(), f'Item.{self.nbt_path}').set().value(which))
-            yield execute().at(e().tag('trim_change_home')).run(data().merge(r(0, 2, 0), {'Text4': step.elem.title()}))
+            yield execute().at(e().tag('trim_change_home')).run(
+                Sign.change(r(0, 2, 0), (None, None, None, step.elem.title())))
             yield from self._trim_frame_sign(step)
 
         def _to_path(self, t):

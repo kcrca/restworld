@@ -7,7 +7,7 @@ from pynecraft.commands import REPLACE, comment, data, e, execute, fill, functio
     summon, tag
 from pynecraft.enums import ValueEnum
 from pynecraft.info import block_items
-from pynecraft.simpler import Item, ItemFrame, WallSign
+from pynecraft.simpler import Item, ItemFrame, WallSign, Sign
 from restworld import global_
 from restworld.rooms import ActionDesc, SignedRoom, Wall, label, named_frame_item, span
 from restworld.world import fast_clock, restworld
@@ -225,18 +225,18 @@ def room():
         def all_loop(step):
             yield item().replace().entity(model_src, 'container.0').with_(step.elem)
             name = step.elem.name.replace(' [x]', '')
-            yield at_home(data().merge(signs[-1], {'Text1': name}))
+            yield at_home(Sign.change(signs[-1], (name,)))
 
         all_things = things
         all_things_loop = room.loop(f'all_{which}', fast_clock, home=False).add(is_empty.set(1))
         for i, pos in enumerate(signs):
             all_things_loop.add(
-                at_home(data().modify(pos, 'Text4').set().from_(pos, 'Text3')),
-                at_home(data().modify(pos, 'Text3').set().from_(pos, 'Text2')),
-                at_home(data().modify(pos, 'Text2').set().from_(pos, 'Text1')),
-                at_home(data().modify(pos, 'Text1').set().from_(signs[i + 1], 'Text4')) if i < len(
-                    signs) - 1 else comment(
-                    'start')
+                at_home(data().modify(pos, 'front_text.messages[3]').set().from_(pos, 'front_text.messages[2]')),
+                at_home(data().modify(pos, 'front_text.messages[2]').set().from_(pos, 'front_text.messages[1]')),
+                at_home(data().modify(pos, 'front_text.messages[1]').set().from_(pos, 'front_text.messages[0]')),
+                at_home(data().modify(pos, 'front_text.messages[0]').set().from_(signs[i + 1],
+                                                                                 'front_text.messages[3]')) if i < len(
+                    signs) - 1 else comment('start')
             )
         all_things_loop.loop(all_loop, all_things)
         room.function(f'all_{which}_home', exists_ok=True).add(tag(e().tag(f'all_{which}_home')).add('all_things_home'))

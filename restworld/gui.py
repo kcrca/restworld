@@ -5,7 +5,7 @@ from pynecraft.base import EAST, NORTH, Nbt, WEST, r
 from pynecraft.commands import BOSSBAR_COLORS, BOSSBAR_STYLES, Block, CREATIVE, Entity, LEVELS, SURVIVAL, a, bossbar, \
     clone, data, e, execute, fill, function, gamemode, give, item, kill, p, setblock, summon
 from pynecraft.info import must_give_items
-from pynecraft.simpler import Item, ItemFrame, WallSign
+from pynecraft.simpler import Item, ItemFrame, WallSign, Sign
 from restworld.rooms import Room, label
 from restworld.world import fast_clock, main_clock, restworld, slow_clock, kill_em
 
@@ -73,15 +73,15 @@ def room():
 
     def bossbar_color_loop(step):
         yield bossbar().set('restworld:bossbar').color(step.elem.lower())
-        yield data().merge(r(0, 2, 1), {'Text3': step.elem.title()})
+        yield Sign.change(r(0, 2, 1), (None, None, step.elem.title()))
 
     def bossbar_style_loop(step):
         yield bossbar().set('restworld:bossbar').style(step.elem)
-        yield data().merge(r(0, 2, 0), {'Text3': step.elem})
+        yield Sign.change(r(0, 2, 0), (None, None, step.elem))
 
     def bossbar_value_loop(step):
         yield bossbar().set('restworld:bossbar').value(step.elem)
-        yield data().merge(r(0, 2, -1), {'Text3': f'{step.elem}'})
+        yield Sign.change(r(0, 2, -1), (None, None, f'{step.elem}'))
 
     bb_color = room.loop('bossbar_color', home=False).loop(bossbar_color_loop, BOSSBAR_COLORS)
     bb_style = room.loop('bossbar_style', home=False).loop(bossbar_style_loop, BOSSBAR_STYLES)
@@ -148,7 +148,7 @@ def room():
 
     def carrier_llama_loop(step):
         yield data().merge(e().tag('carrier_llama').limit(1), {'Strength': step.elem})
-        yield data().merge(r(0, 2, -1), {'Text3': f'Strength: {step.elem}'})
+        yield Sign.change(r(0, 2, -1), (None, None, f'Strength: {step.elem}'))
 
     room.function('carrier_llama_init').add(
         placer.summon('llama', tags=('carrier_llama',), auto_tag=False),
@@ -161,7 +161,7 @@ def room():
             r(0, 2, 0.3), NORTH, 2, 0, adults=True, nbt={'ChestedHorse': True, 'Tame': True}, tags=('carrier',))
         yield kill_em(e().tag('carrier'))
         yield placer.summon(step.elem)
-        yield data().merge(r(0, 2, -1), {'Text3': step.elem.title()})
+        yield Sign.change(r(0, 2, -1), (None, None, step.elem.title()))
 
     room.loop('carrier', main_clock).loop(carrier_loop, ('camel', 'donkey'))
     room.function('carrier_init').add(WallSign((None, 'Saddlable')).place(r(0, 2, -1), NORTH))
@@ -232,7 +232,7 @@ def room():
             stage = f'{step.elem[2]} of Range'
         else:
             stage = ''
-        yield data().merge(r(0, 2, -1), WallSign.lines_nbt(('Level:', f'{levels[step.elem[0] - 1]}', stage)))
+        yield Sign.change(r(0, 2, -1), (None, 'Level:', f'{levels[step.elem[0] - 1]}', stage))
         yield data().merge(e().tag('trades').limit(1),
                            {'VillagerData': {'level': step.elem[0]}, 'Xp': step.elem[1]}),
         recipes = list(trade_nbt(*t) for t in trades[:(step.elem[0] * 2)])

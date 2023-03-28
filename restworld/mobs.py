@@ -7,7 +7,7 @@ from pynecraft.commands import Block, COLORS, Entity, LONG, MOD, RESULT, Score, 
     item, kill, s, scoreboard, setblock, summon, tag, tp
 from pynecraft.enums import ScoreCriteria
 from pynecraft.info import axolotls, colors, horses, music_discs, tropical_fish
-from pynecraft.simpler import Item, PLAINS, VILLAGER_BIOMES, VILLAGER_PROFESSIONS, Villager, WallSign
+from pynecraft.simpler import Item, PLAINS, VILLAGER_BIOMES, VILLAGER_PROFESSIONS, Villager, WallSign, Sign
 from restworld.rooms import MobPlacer, Room, label
 from restworld.world import fast_clock, kill_em, main_clock, restworld
 
@@ -166,7 +166,7 @@ def friendlies(room):
         for h, horse in enumerate(horses):
             yield execute().as_(e().tag(horse.tag_name)).run(data().merge(s(), {'Variant': step.i * 256 + h}))
         yield execute().at(e().tag(horses[3].tag_name).tag('kid')).run(
-            data().merge(r(2, 0, 0), {'Text3': horse_variants[step.i]}))
+            Sign.change(r(2, 0, 0), (None, None, horse_variants[step.i])))
 
     room.loop('horse', main_clock).loop(horse_loop, horse_variants)
 
@@ -182,7 +182,7 @@ def friendlies(room):
     def iron_golem_loop(step):
         i = step.i
         yield execute().as_(e().tag('iron_golem')).run(data().merge(s(), {'Health': step.elem * 25 - 5}))
-        yield data().merge(r(2, 2, 0), {'Text3': f'Damage: {i if i < 4 else 3 - (i - 3):d}'})
+        yield Sign.change(r(2, 2, 0), (None, None, f'Damage: {i if i < 4 else 3 - (i - 3):d}'))
 
     room.loop('iron_golem', main_clock).loop(iron_golem_loop, range(4, 0, -1), bounce=True)
     room.function('lead_off', home=False).add(kill(e().type('leash_knot')))
@@ -298,7 +298,7 @@ def friendlies(room):
         for count in range(4, 0, -1):
             eggs = ('turtle_egg', {'eggs': count, 'hatch': step.elem})
             yield setblock(r(3 - count, 2, 0), eggs)
-        yield data().merge(egg_sign_pos, {'Text3': f'Hatch Age: {step.elem:d}'})
+        yield Sign.change(egg_sign_pos, (None, None, f'Hatch Age: {step.elem:d}'))
 
     room.loop('turtle_eggs', main_clock).loop(turtle_egg_loop, range(0, 3), bounce=True)
     turtle_dir = EAST
@@ -358,14 +358,14 @@ def villager_funcs(room):
         professions_init.add(
             function(f'restworld:mobs/{which}_levels_cur'),
             function(f'restworld:mobs/{which}_professions_cur'),
-            data().merge(r(-5, 2, 0), {'Text3': kind}))
+            Sign.change(r(-5, 2, 0), (None, None, kind)))
 
     professions_init_funcs('villager')
 
     def villager_professions_loop(step):
         yield execute().as_(e().tag('villager')).run(
             data().modify(s(), 'VillagerData.type').set().value(step.elem.lower()))
-        yield data().merge(r(-5, 2, 0), {'Text2': step.elem})
+        yield Sign.change(r(-5, 2, 0), (None, step.elem))
 
     room.loop('villager_professions', main_clock).loop(villager_professions_loop, VILLAGER_BIOMES)
 
@@ -380,7 +380,7 @@ def villager_funcs(room):
         types_init.add(
             function(f'restworld:mobs/{which}_levels_cur'),
             function(f'restworld:mobs/{which}_types_cur'),
-            data().merge(r(-5, 2, 0), {'Text3': kind})
+            Sign.change(r(-5, 2, 0), (None, None, kind))
         )
 
     types_init_funcs('villager')
@@ -393,7 +393,7 @@ def villager_funcs(room):
             data().modify(s(), 'VillagerData.profession').set().value(step.elem.lower()))
         yield execute().as_(e().tag('villager')).run(
             data().modify(s(), 'Age').set().value(-2147483648 if step.elem == 'Child' else 0))
-        yield data().merge(r(-5, 2, 0), {'Text2': step.elem})
+        yield Sign.change(r(-5, 2, 0), (None, step.elem))
 
     roles = VILLAGER_PROFESSIONS + ('Child',)
     room.loop('villager_types', main_clock).loop(villager_types_loop, roles).add(
@@ -470,7 +470,7 @@ def villager_funcs(room):
 
     def villager_level_loop(step):
         yield execute().as_(e().tag('villager')).run(data().modify(s(), 'VillagerData.level').set().value(step.i + 1))
-        yield data().merge(r(-5, 2, 0), {'Text2': f' {step.elem} Level'})
+        yield Sign.change(r(-5, 2, 0), (None, f' {step.elem} Level'))
 
     room.loop('villager_levels', main_clock).loop(villager_level_loop, ('Stone', 'Iron', 'Gold', 'Emerald', 'Diamond'))
 
