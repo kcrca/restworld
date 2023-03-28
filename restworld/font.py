@@ -38,15 +38,15 @@ def formatting_book():
 
 def room():
     room = Room('font', restworld, SOUTH, (None, 'Fonts'))
-    room.resetAt((0, -6))
-    src_pos = r(0, 2, -3)
+    room.resetAt((1, -4))
+    src_pos = r(0, 2, 0)
     save_pos = r(0, -2, -3)
     color_pos = r(0, -3, -3)
     at = execute().at(e().tag('font_action_home'))
     room.function('check_sign', home=False).add(
         at.run(function('restworld:font/copy_sign')))
 
-    font_run_init = room.function('font_run_init')
+    font_run_init = room.function('font_run_init').add(label(r(-1, 2, 1), 'Glowing Text'))
 
     woods = info.woods
     materials = tuple(Block(m) for m in woods + stems)
@@ -58,13 +58,14 @@ def room():
         row_lengths[2] = 3
     row, x, y = 0, 0, 5
     for i, thing in enumerate(materials):
-        pos = r(x - 1, y, -3)
+        pos = r(x - 1, y, 0)
         copy_sign.add(ensure(pos, WallSign((), state={'facing': SOUTH}, wood=thing.id)))
-        font_run_init.add(label(pos, thing.name.title(), SOUTH))
 
-        for path in tuple('Text%d' % i for i in range(1, 5)):
-            copy_sign.add(data().modify(pos, path).set().from_(src_pos, path))
-        copy_sign.add(data().modify(pos, 'Color').set().from_(color_pos, 'Color'))
+        copy_sign.add(
+            data().modify(pos, 'front_text.messages').set().from_(src_pos, 'front_text.messages'),
+            data().modify(pos, 'back_text.messages').set().from_(src_pos, 'front_text.messages'),
+            data().modify(pos, 'front_text.color').set().from_(color_pos, 'front_text.color'),
+            data().modify(pos, 'back_text.color').set().from_(color_pos, 'front_text.color'))
 
         x += 1
         if x >= row_lengths[row]:
@@ -74,7 +75,6 @@ def room():
         elif x == 1 and row_lengths[row] == 2:
             x += 1
 
-    # /data modify entity 7f81d935-e1cf-4377-8431-93e07d229fa8 CustomName set from block 10 101 -77 front_text.messages[0]
     copy_sign.add(
         data().modify(e().tag('font').tag('nameable').limit(1), 'CustomName').set().from_(save_pos,
                                                                                           'front_text.messages[0]'))
@@ -85,13 +85,13 @@ def room():
 
     room.function('font_run_enter').add(
         setblock(r(0, -2, -2), 'redstone_torch'),
-        setblock(r(-3, -2, 0), 'redstone_torch'),
-        setblock(r(3, -2, 0), 'redstone_torch'),
+        setblock(r(-3, -2, 2), 'redstone_torch'),
+        setblock(r(3, -2, 2), 'redstone_torch'),
     )
     room.function('font_run_exit').add(
         setblock(r(0, -2, -2), 'air'),
-        setblock(r(-3, -2, 0), 'air'),
-        setblock(r(3, -2, 0), 'air'),
+        setblock(r(-3, -2, 2), 'air'),
+        setblock(r(3, -2, 2), 'air'),
     )
     # noinspection SpellCheckingInspection
     init_text = ('Lorem ipsum', 'dolor sit amet,', 'consectetur', 'adipiscing elit.')
@@ -101,11 +101,10 @@ def room():
         execute().at(e().tag('font_action_home')).run(setblock(save_pos, 'air')),
         function('restworld:font/check_sign'),
         WallSign((None, 'Color Holder')).place(r(0, -3, -3), SOUTH),
-        label(r(0, 6, -3), 'Glowing', facing=SOUTH),
         kill(e().tag('sign_desc')),
         TextDisplay('A sign here sets the text',
                     {'text_opacity': 255, 'background': 0, 'line_width': 80, 'shadow_radius': 0}
-                    ).scale(0.5).tag('sign_desc').summon(r(0, 2, -3.4)),
+                    ).scale(0.5).tag('sign_desc').summon(r(0, 2, -0.4)),
     )
 
     for i, c in enumerate(colors):
@@ -113,11 +112,12 @@ def room():
         if x > -2:
             x += 3
         y = 5 - i % 4
+        txt = (None, c.name, 'Text')
+        cmds = (at.run(data().modify(r(0, -3, -3), 'front_text.color').set().value(c.id)),
+                at.run(data().modify(r(0, -3, -3), 'back_text.color').set().value(c.id)),
+                at.run(setblock(save_pos, 'air')))
         font_run_init.add(
-            WallSign((None, c.name, 'Text'),
-                     (at.run(data().modify(r(0, -3, -3), 'Color').set().value(c.id)),
-                      at.run(setblock(save_pos, 'air'))),
-                     nbt={'front_text': {'color': c.id}}).place(r(x, y, -3), SOUTH))
+            WallSign(txt, cmds).messages(txt, cmds).color(c.id).place(r(x, y, 0), SOUTH))
 
     maybe_glow = room.function('maybe_glow')
     font_glow = room.score('font_glow')
@@ -125,9 +125,11 @@ def room():
         for y in range(0, 4):
             maybe_glow.add(
                 execute().if_().score(font_glow).matches(0).at(e().tag('font_run_home')).run(
-                    data().merge(r(x - 3, y + 2, -3), {'front_text': {'has_glowing_text': False}})),
+                    data().merge(r(x - 3, y + 2, 0), {'front_text': {'has_glowing_text': False}}),
+                    data().merge(r(x - 3, y + 2, 0), {'back_text': {'has_glowing_text': False}})),
                 execute().if_().score(font_glow).matches(1).at(e().tag('font_run_home')).run(
-                    data().merge(r(x - 3, y + 2, -3), {'front_text': {'has_glowing_text': True}}))
+                    data().merge(r(x - 3, y + 2, 0), {'front_text': {'has_glowing_text': True}}),
+                    data().merge(r(x - 3, y + 2, 0), {'back_text': {'has_glowing_text': True}}))
             )
 
     room.function('nameable_init').add(
