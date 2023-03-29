@@ -537,17 +537,18 @@ def trim_functions(room):
                                   'LeftLeg': [-20, 0, 0], 'RightLeg': [20, 0, 0]}}).tag(room.name,
                                                                                         overall_tag)
 
-    patterns_places = range(11)
-    material_places = list(range(11))
-    material_places.remove(7)
-    armors_places = (0, 1, 4, 5, 9, 10)
+    patterns_places = range(len(trim_patterns))
+    material_places = (0, 1, 4, 5, 8, 9, 10, 13, 14, 15)
+    armors_places = material_places[-6:]
 
     places = (
-        (r(-3, 3, -4), EAST), (r(3, 3, -4), WEST),
-        (r(-2, 2, -3), EAST), (r(2, 2, -3), WEST),
-        (r(-3, 3, -2), EAST), (r(3, 3, -2), WEST),
-        (r(-2, 2, -1), NE), (r(0, 2, -1), NORTH), (r(2, 2, -1), NW),
-        (r(-1, 3, 0), NORTH), (r(1, 3, 0), NORTH)
+        (r(-4, 3, -4), EAST), (r(3, 3, -4), WEST),
+        (r(-3, 2, -3), EAST), (r(2, 2, -3), WEST),
+        (r(-4, 3, -2), EAST), (r(3, 3, -2), WEST),
+        (r(-3, 2, -1), EAST), (r(2, 2, -1), WEST),
+        (r(-4, 3, 0), EAST), (r(3, 3, 0), WEST),
+        (r(-3, 2, 1), NE), (r(-1, 2, 1), NORTH), (r(0, 2, 1), NORTH), (r(2, 2, 1), NW),
+        (r(-2, 3, 2), NORTH), (r(1, 3, 2), NORTH)
     )
 
     show = room.score('trim_show')
@@ -561,15 +562,15 @@ def trim_functions(room):
     room.function('trim_init').add(
         kill(e().tag(frame)),
         ItemFrame(NORTH).item('iron_boots').merge_nbt(
-            {'Item': trim_nbt}).tag('materials', frame, f'{frame}_boots').summon(r(1, 5, 1)),
+            {'Item': trim_nbt}).tag('materials', frame, f'{frame}_boots').summon(r(1, 5, 2)),
         ItemFrame(NORTH).item('iron_leggings').merge_nbt(
-            {'Item': trim_nbt}).tag('materials', frame, f'{frame}_leggings').summon(r(0, 5, 1)),
+            {'Item': trim_nbt}).tag('materials', frame, f'{frame}_leggings').summon(r(0, 5, 2)),
         ItemFrame(NORTH).item('iron_chestplate').merge_nbt(
-            {'Item': trim_nbt}).tag('materials', frame, f'{frame}_chestplate').summon(r(-1, 5, 1)),
+            {'Item': trim_nbt}).tag('materials', frame, f'{frame}_chestplate').summon(r(-1, 5, 2)),
         ItemFrame(NORTH).item('iron_helmet').merge_nbt(
-            {'Item': trim_nbt}).tag('materials', frame, f'{frame}_helmet').summon(r(0, 6, 1)),
-        WallSign((None, 'Material:')).place(r(1, 6, 1), NORTH),
-        WallSign((None, 'Armor:', 'Iron')).place(r(-1, 6, 1), NORTH),
+            {'Item': trim_nbt}).tag('materials', frame, f'{frame}_helmet').summon(r(-2, 5, 2)),
+        WallSign((None, 'Material:')).place(r(0, 6, 2), NORTH),
+        WallSign((None, 'Armor:', 'Iron')).place(r(-1, 6, 2), NORTH),
     )
 
     class Trim:
