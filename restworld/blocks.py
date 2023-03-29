@@ -190,9 +190,18 @@ def room():
     blocks('raw_metal', NORTH, ('Raw Iron|Block', 'Raw Copper|Block', 'Raw Gold|Block'))
     blocks('respawn_anchor', NORTH, (Block('Respawn Anchor', {'charges': x}) for x in range(0, 5)),
            labels=tuple(('Respawn Anchor', f'Charges: {x:d}') for x in range(0, 5)))
-    suspicious_sands = tuple(
-        Block('suspicious_sand', state={'dusted': s}, name=f'Suspicious Sand|Dusted: {s}') for s in range(4))
-    blocks('suspicious_sand', SOUTH, suspicious_sands, dx=3)
+
+    suspicous_data = {'item': {'id': 'emerald', 'Count': 1}}
+
+    def suspicious(which):
+        return (which,) + tuple(
+            Block(f'suspicious_{which}', state={'dusted': s}, nbt=suspicous_data,
+                  name=f'Suspicious {which.title()}|Dusted: {s}') for s in range(4))
+
+    sands = suspicious('sand')
+    gravels = suspicious('gravel')
+    blocks('suspicious', SOUTH, (sands, gravels), dx=3, size=2)
+
     red_sandstone = ('Red Sandstone', 'Smooth|Red Sandstone', 'Cut|Red Sandstone', 'Chiseled|Red Sandstone')
     blocks('sandstone', SOUTH, (red_sandstone, tuple(re.sub(' *Red *', '', f) for f in red_sandstone)), dx=3)
     blocks('slabs', NORTH, ('Smooth Stone|Slab', 'Petrified Oak|Slab'))

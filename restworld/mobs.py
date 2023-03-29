@@ -262,7 +262,10 @@ def friendlies(room):
         p.summon('Sheep', tags=('colorable',)),
         p.summon(Entity('sheep', name='Sheared Sheep', nbt={'Sheared': True})))
     sheep.add(p.summon(Entity('sheep', name='jeb_'), auto_tag=False))
-    room.function('sniffer_init').add(placer(r(0, 2, 0.5), WEST, 0, adults=True).summon('sniffer'))
+    room.function('sniffer_init').add(
+        placer(r(0, 2, 0.5), WEST, 0, adults=True).summon('sniffer'),
+        setblock(r(-1, 2, 2), 'Sniffer Egg'),
+        WallSign((None, 'Sniffer Egg')).place(r(1, 2, 2), WEST))
     room.function('sniffer_kid_init').add(placer(r(0, 2, 0), WEST, 0, kids=True).summon('sniffer'))
     room.function('snow_golem_init').add(
         placer(r(-1.2, 2, 0), EAST, adults=True).summon('snow_golem'))

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from pynecraft import info
-from pynecraft.base import EAST, NORTH, SOUTH, WEST, r, to_id, to_name
+from pynecraft.base import EAST, NORTH, SOUTH, WEST, r, to_id, to_name, Nbt
 from pynecraft.commands import Block, data, e, execute, fill, fillbiome, function, kill, setblock, tag, JsonText
 from pynecraft.enums import BiomeId
 from pynecraft.info import small_flowers, stems, tulips
@@ -10,26 +10,42 @@ from restworld.rooms import Room, label
 from restworld.world import fast_clock, main_clock, restworld
 
 
-def crop(stages, which, x, y, z, step, name='age'):
+def crop(stages, which, x, y, z, step, name='age', extra=None):
+    base_state = Nbt.as_nbt(extra) if extra else Nbt()
     for s in range(0, 3):
-        yield fill(r(x, y, z - s), r(x + 2, y, z - s), Block(which, {name: stages[(step.i + s) % len(stages)]}))
-        yield Sign.change(r(x + 3, 2, z - 1),
-                          (None, None, f'Stage: {stages[(step.i + 1) % len(stages)]} of {step.count - 2}'))
+        yield fill(r(x, y, z - s), r(x + 2, y, z - s),
+                   Block(which, base_state.merge({name: stages[(step.i + s) % len(stages)]})))
+    if z == 0:
+        yield Sign.change(r(x + 3, 2, -1),
+                          (None, None, f'{name.title()}: {stages[(step.i + 1) % len(stages)]} of {step.count - 2}'))
 
 
 def room():
     room = Room('plants', restworld, SOUTH, ('Plants,', 'Mob Effects,', 'Particles,', 'Fonts'))
 
+    stages_3 = list(range(0, 3)) + [2, 2]
+
+    def crops_3_loop(step):
+        yield from crop(stages_3, 'torchflower_crop', 0, 3, 0, step)
+
+    room.loop('3_crops', main_clock).loop(crops_3_loop, stages_3)
+
     stages_4 = list(range(0, 4)) + [3, 3]
 
     def crops_4_loop(step):
         yield from crop(stages_4, 'beetroots', 0, 3, 0, step)
-        yield from crop(stages_4, 'nether_wart', 0, 3, -15, step)
+        yield from crop(stages_4, 'nether_wart', -5, 3, -15, step)
 
     room.loop('4_crops', main_clock).loop(crops_4_loop, stages_4)
 
-    stages_6 = list(range(0, 6)) + [5, 5]
-    room.loop('6_crops', main_clock).loop(lambda step: crop(stages_6, 'chorus_flower', 0, 3, 0, step), stages_6)
+    stages_5_upper = list(range(0, 5)) + [4, 4]
+    stages_5_lower = list(range(0, 5)) + [4, 4]
+
+    def crops_5_loop(step):
+        yield from crop(stages_5_upper, 'pitcher_crop', 0, 4, 0, step, name='age', extra={'half': 'upper'})
+        yield from crop(stages_5_lower, 'pitcher_crop', 0, 3, 0, step, name='age', extra={'half': 'lower'})
+
+    room.loop('5_crops', main_clock).loop(crops_5_loop, stages_5_upper)
 
     def crops_8_loop(step):
         yield from crop(stages_8, 'wheat', 0, 3, 0, step)
@@ -67,6 +83,15 @@ def room():
     room.loop('cave_vines', main_clock).loop(cave_vines_loop,
                                              ((True, True), (True, False), (False, False), (False, True)))
     room.function('chorus_plant_init').add(WallSign((None, 'Chorus Plant')).place(r(1, 2, 0), EAST))
+
+    def chorus_flower_loop(step):
+        yield setblock(r(0, 3, 0), ('chorus_flower', {'age': step.i}))
+        yield Sign.change(r(1, 2, 0), (None, None, f'Age: {step.i} of 6'))
+
+    room.function('chorus_flower_init').add(
+        setblock(r(0, 2, 0), 'chorus_plant'),
+        WallSign((None, 'Chorus Flower', None, '(vanilla shows 2)')).place(r(1, 2, 0), EAST))
+    room.loop('chorus_flower', main_clock).loop(chorus_flower_loop, range(6))
 
     def cocoa_loop(step):
         yield setblock(r(1, 4, 0), ('cocoa', {'age': step.elem, 'facing': WEST}))
