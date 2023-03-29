@@ -157,8 +157,9 @@ def room():
     shard_names = tuple(shard.replace('_pottery_shard', '').title() for shard in shards)
     _, pot_loop = blocks(
         'decorated_pot', NORTH, ('decorated_pot',) + tuple(
-            Block('decorated_pot', nbt={'shards': [shards[i], shards[(i + 1) % 4], shards[(i + 2) % 4]]},
-                  name=f'Decorated Pot|{shard_names[i]}') for i in range(4)), air=True)
+            Block('decorated_pot',
+                  nbt={'shards': [shards[i], shards[(i + 1) % len(shards)], shards[(i + 2) % len(shards)]]},
+                  name=f'Decorated Pot|{shard_names[i]}') for i in range(len(shards))), air=True)
 
     # Can't stop pot item from being generated, so ... https://bugs.mojang.com/browse/MC-260301
     room.function('decorated_pot_enter').add(setblock(r(1, -1, 0), 'redstone_block'))
