@@ -537,10 +537,6 @@ def trim_functions(room):
                                   'LeftLeg': [-20, 0, 0], 'RightLeg': [20, 0, 0]}}).tag(room.name,
                                                                                         overall_tag)
 
-    patterns_places = range(len(trim_patterns))
-    material_places = (0, 1, 4, 5, 8, 9, 10, 13, 14, 15)
-    armors_places = material_places[-6:]
-
     places = (
         (r(-4, 3, -4), EAST), (r(3, 3, -4), WEST),
         (r(-3, 2, -3), EAST), (r(2, 2, -3), WEST),
@@ -550,6 +546,10 @@ def trim_functions(room):
         (r(-3, 2, 1), NE), (r(-1, 2, 1), NORTH), (r(0, 2, 1), NORTH), (r(2, 2, 1), NW),
         (r(-2, 3, 2), NORTH), (r(1, 3, 2), NORTH)
     )
+
+    patterns_places = range(len(trim_patterns))
+    material_places = (4, 5, 6, 7, 8, 9, 10, 13, 14, 15)
+    armors_places = material_places[-6:]
 
     show = room.score('trim_show')
     change = room.score('trim_change')
@@ -643,14 +643,15 @@ def trim_functions(room):
         def _to_path(self, t):
             return f'ArmorItems[{{id:"minecraft:{t}_boots"}}]'
 
-    categories = {'patterns': Trim('patterns', trim_patterns, patterns_places,
-                                   lambda stand, type: armor_for(stand, 'iron', {'tag': {'Trim': {'pattern': type}}}),
-                                   'tag.Trim.pattern'),
-                  'materials': Trim('materials', trim_materials, material_places,
-                                    lambda stand, type: armor_for(stand, 'iron', {'tag': {'Trim': {'material': type}}}),
-                                    'tag.Trim.material'),
-                  'armors': Armors('armors', info.armors, armors_places,
-                                   lambda stand, type: armor_for(stand, type))}
+    categories = {
+        'patterns': Trim('patterns', trim_patterns, patterns_places,
+                         lambda stand, type: armor_for(stand, 'iron', {'tag': {'Trim': {'pattern': type}}}),
+                         'tag.Trim.pattern'),
+        'materials': Trim('materials', trim_materials, material_places,
+                          lambda stand, type: armor_for(stand, 'iron', {'tag': {'Trim': {'material': type}}}),
+                          'tag.Trim.material'),
+        'armors': Armors('armors', info.armors, armors_places,
+                         lambda stand, type: armor_for(stand, type))}
 
     # menu: pop the menu up; call other menu's "cleanup" (for 'show', first ensure 'change' value != 'show' value)
     # cleanup: pull the menu down, using variable to define "current"
