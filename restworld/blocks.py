@@ -534,7 +534,7 @@ def room():
         Block('Sculk Vein', {SOUTH: True, DOWN: True}),
         'Sculk', 'Sculk Sensor',
         # Shows up waterlogged by default; see https://bugs.mojang.com/browse/MC-261388
-        Block('Calibrated| Sculk Sensor', {'waterlogged': False, 'facing': SOUTH}),
+        Block('Calibrated|Sculk Sensor', {'waterlogged': False, 'facing': SOUTH}),
         Block('Sculk Catalyst'),
         Block('sculk_catalyst', {'bloom': True}, name='Sculk Catalyst|Blooming'),
         Block('sculk_shrieker', {'can_summon': True, 'shrieking': False}, name='Sculk Shrieker|Can Summon'),
