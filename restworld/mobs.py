@@ -264,8 +264,10 @@ def friendlies(room):
     sheep.add(p.summon(Entity('sheep', name='jeb_'), auto_tag=False))
     room.function('sniffer_init').add(
         placer(r(0, 2, 0.5), WEST, 0, adults=True).summon('sniffer'),
-        setblock(r(-1, 2, 2), 'Sniffer Egg'),
         WallSign((None, 'Sniffer Egg')).place(r(1, 2, 2), WEST))
+    setblock(r(-1, 2, 2), 'Sniffer Egg'),
+    room.loop('sniffer', main_clock).loop(
+        lambda step: setblock(r(-1, 2, 2), Block('sniffer_egg', {'age': step.i})), range(3))
     room.function('sniffer_kid_init').add(placer(r(0, 2, 0), WEST, 0, kids=True).summon('sniffer'))
     room.function('snow_golem_init').add(
         placer(r(-1.2, 2, 0), EAST, adults=True).summon('snow_golem'))
