@@ -439,13 +439,15 @@ def wood_functions(room):
         yield from volume.replace_axes(f'stripped_{wood}', '#restworld:stripped_woodlike')
         yield from volume.replace_doors(f'{id}_door', '#doors')
         yield from volume.replace_trapdoors(f'{id}_trapdoor', '#trapdoors')
-        yield from volume.replace_facing(WallSign((None, f'{name}', 'Wall Sign'), wood=id).wax(False), '#wall_signs')
-        yield from volume.replace_rotation(Sign((None, f'{name} Sign'), wood=id).wax(False), '#signs')
         yield from volume.replace_facing(
-            WallSign((None, f'{name}', 'Hanging', 'Wall Sign'), wood=id, hanging=True).wax(False),
+            WallSign((), wood=id).messages((None, f'{name}', 'Wall Sign')).wax(False), '#wall_signs')
+        yield from volume.replace_rotation(Sign((), wood=id).messages((None, f'{name} Sign')).wax(False), '#signs')
+        yield from volume.replace_facing(
+            WallSign((), wood=id, hanging=True).messages((None, f'{name}', 'Hanging', 'Wall Sign')).wax(False),
             '#wall_hanging_signs')
         yield from volume.replace_rotation(
-            Sign((None, f'{name}', 'Hanging', 'Sign'), wood=id, hanging=True).wax(False), '#ceiling_hanging_signs')
+            Sign((), wood=id, hanging=True).messages((None, f'{name}', 'Hanging', 'Sign')).wax(False),
+            '#ceiling_hanging_signs')
 
         yield from volume.replace_facing(
             Block(f'{id}_wall_hanging_sign', nbt=Sign.lines_nbt((name, 'Wall', 'Hanging', 'Sign'))),
@@ -534,8 +536,7 @@ def trim_functions(room):
     base_stand = Entity('armor_stand',
                         {'ShowArms': True,
                          'Pose': {'LeftArm': [-20, 0, -120], 'RightArm': [-20, 0, 20],
-                                  'LeftLeg': [-20, 0, 0], 'RightLeg': [20, 0, 0]}}).tag(room.name,
-                                                                                        overall_tag)
+                                  'LeftLeg': [-20, 0, 0], 'RightLeg': [20, 0, 0]}}).tag(room.name, overall_tag)
 
     places = (
         (r(-4, 3, -4), EAST), (r(3, 3, -4), WEST),
@@ -569,8 +570,8 @@ def trim_functions(room):
             {'Item': trim_nbt}).tag('materials', frame, f'{frame}_chestplate').summon(r(-1, 5, 2)),
         ItemFrame(NORTH).item('iron_helmet').merge_nbt(
             {'Item': trim_nbt}).tag('materials', frame, f'{frame}_helmet').summon(r(-2, 5, 2)),
-        WallSign((None, 'Material:')).place(r(0, 6, 2), NORTH),
-        WallSign((None, 'Armor:', 'Iron')).place(r(-1, 6, 2), NORTH),
+        WallSign().messages((None, 'Material:')).place(r(0, 6, 2), NORTH),
+        WallSign().messages((None, 'Armor:', 'Iron')).place(r(-1, 6, 2), NORTH),
     )
 
     class Trim:
@@ -618,7 +619,7 @@ def trim_functions(room):
             for i, t in enumerate(self.types):
                 # The path is a.b.c, but we need the last element to be a.b{c:value}, and there is no rreplace, so...
                 path = self._to_path(t)
-                sign = WallSign((None, 'Keep', f'{self.name.title().replace("s", "")}:', t.title()))
+                sign = WallSign().messages((None, 'Keep', f'{self.name.title().replace("s", "")}:', t.title()))
                 yield execute().if_().data().entity(e().tag(overall_tag).limit(1), path).run(
                     sign.place(r(-1, 2, 0), facing))
 
@@ -689,9 +690,10 @@ def trim_functions(room):
     )
     for i, cat in enumerate(categories.values()):
         lines = (None, 'Show All', cat.name.title())
-        show_menu.add(WallSign(lines, commands=(show.set(i), run_show_cleanup)).place(r(0, i, 0), facing))
+        show_menu.add(WallSign().messages(lines, commands=(show.set(i), run_show_cleanup)).place(r(0, i, 0), facing))
         show_cleanup.add(execute().if_().score(show).matches(i).run(
-            WallSign((None, 'Show All', cat.name.title()), commands=(function(show_menu),)).place(r(0, 2, 0), facing),
+            WallSign().messages(
+                (None, 'Show All', cat.name.title()), commands=(function(show_menu),)).place(r(0, 2, 0), facing),
             execute().at(e().tag('trim_home')).run(function(cat.init))))
 
     change_init.add(change.set(1), run_change_cleanup)
@@ -709,11 +711,12 @@ def trim_functions(room):
                 continue
             lines = (None, 'Change', jcat.name.title())
             change_menu.add(execute().if_().score(show).matches(i).run(
-                WallSign(lines, commands=(change.set(j), run_change_cleanup)).place(r(0, sign_num, 0), facing)))
+                WallSign().messages(lines, commands=(change.set(j), run_change_cleanup)).place(
+                    r(0, sign_num, 0), facing)))
             sign_num += 1
         change_cleanup.add(execute().if_().score(change).matches(i).at(e().tag('trim_change_home')).run(
-            WallSign((None, 'Change', f'{cat.name.title()}:'),
-                     commands=(function(change_menu))).place(r(0, 2, 0), facing),
+            WallSign().messages((None, 'Change', f'{cat.name.title()}:'),
+                                commands=(function(change_menu))).place(r(0, 2, 0), facing),
             tag(e().tag('trim_loop_home')).add(f'trim_{cat.name}_home')))
 
     trim_sum = room.score('trim_sum')

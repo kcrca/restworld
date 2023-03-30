@@ -72,7 +72,7 @@ def room():
         volume = Region(r(3, 3, -3), r(0, 0, 0))
         rail, on = step.elem
         # 'powered=true' only seems to work for detector rail, but it's harmless for the others and maybe someday it
-        # will work for all and we can get rid of the torches.
+        # will work for all, and we can get rid of the torches.
         added = dict(powered=True) if on else None
         yield volume.replace_straight_rails(rail, '#rails', added)
         if on:
@@ -123,13 +123,15 @@ def room():
         if step.i % 2 == 0:
             if step.i == 0:
                 block = 'Sculk Sensor'
+                yield Sign.change(r(-1, 3, -0), (None, ''))
             else:
                 # Shows up waterlogged by default; see https://bugs.mojang.com/browse/MC-261388
                 block = Block('Calibrated|Sculk Sensor', {'waterlogged': False, 'facing': WEST})
+                yield Sign.change(r(-1, 3, -0), (None, 'Calibrated'))
             yield setblock(r(0, 2, 0), block)
         yield setblock(r(-4, 2, 0), 'air' if step.i < 2 else 'redstone_block')
 
-    room.function('sculk_init').add(WallSign((None, 'Sculk Sensor')).place(r(-1, 3, 0), EAST))
+    room.function('sculk_init').add(WallSign((None, None, 'Sculk Sensor')).place(r(-1, 3, 0), EAST))
     room.loop('sculk', main_clock).loop(sculk_loop, range(4))
 
     room.function('target_init').add(WallSign((None, 'Target', None, '(vanilla shows 1)')).place(r(1, 3, 0), WEST))
