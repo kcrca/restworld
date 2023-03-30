@@ -176,13 +176,13 @@ def friendlies(room):
         p.summon('donkey'),
         label(r(2, 2, -1), 'Chests'))
     room.function('iron_golem_init').add(
-        placer(r(-1.2, 2, 0), EAST, adults=True).summon('iron_golem'),
-        WallSign((None, 'Iron Golem')).place(r(2, 2, 0), EAST))
+        placer(r(-0.5, 2, 0), WEST, adults=True).summon('iron_golem'),
+        WallSign((None, 'Iron Golem')).place(r(-3, 2, 0), WEST))
 
     def iron_golem_loop(step):
         i = step.i
         yield execute().as_(e().tag('iron_golem')).run(data().merge(s(), {'Health': step.elem * 25 - 5}))
-        yield Sign.change(r(2, 2, 0), (None, None, f'Damage: {i if i < 4 else 3 - (i - 3):d}'))
+        yield Sign.change(r(-3, 2, 0), (None, None, f'Damage: {i if i < 4 else 3 - (i - 3)}'))
 
     room.loop('iron_golem', main_clock).loop(iron_golem_loop, range(4, 0, -1), bounce=True)
     room.function('lead_off', home=False).add(kill(e().type('leash_knot')))
@@ -263,14 +263,18 @@ def friendlies(room):
         p.summon(Entity('sheep', name='Sheared Sheep', nbt={'Sheared': True})))
     sheep.add(p.summon(Entity('sheep', name='jeb_'), auto_tag=False))
     room.function('sniffer_init').add(
-        placer(r(0, 2, 0.5), WEST, 0, adults=True).summon('sniffer'),
-        WallSign((None, 'Sniffer Egg')).place(r(1, 2, 2), WEST))
+        placer(r(0, 2, 0.5), EAST, 0, adults=True).summon('sniffer'),
+        WallSign((None, 'Sniffer Egg', None, '(vanilla  shows 3)')).place(r(2, 2, 3), EAST))
     setblock(r(-1, 2, 2), 'Sniffer Egg'),
-    room.loop('sniffer', main_clock).loop(
-        lambda step: setblock(r(-1, 2, 2), Block('sniffer_egg', {'age': step.i})), range(3))
-    room.function('sniffer_kid_init').add(placer(r(0, 2, 0), WEST, 0, kids=True).summon('sniffer'))
+
+    def sniffer_egg_loop(step):
+        yield setblock(r(0, 2, 3), Block('sniffer_egg', {'age': step.i}))
+        yield Sign.change(r(2, 2, 3), (None, None, f'Age: {step.i} of 3'))
+
+    room.loop('sniffer', main_clock).loop(sniffer_egg_loop, range(3))
+    room.function('sniffer_kid_init').add(placer(r(-0.5, 2, 0), EAST, 0, kids=True).summon('sniffer'))
     room.function('snow_golem_init').add(
-        placer(r(-1.2, 2, 0), EAST, adults=True).summon('snow_golem'))
+        placer(r(-0.5, 2, 0), WEST, adults=True).summon('snow_golem'))
     room.loop('snow_golem', main_clock).loop(
         lambda step: execute().as_(e().tag('snow_golem')).run(data().merge(s(), {'Pumpkin': step.elem})), (True, False))
     room.function('switch_carpets_on').add(
