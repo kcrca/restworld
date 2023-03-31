@@ -9,7 +9,7 @@ from pynecraft.commands import Block, Entity, MOD, MOVE, clone, data, e, execute
     item, kill, s, say, setblock, summon, tag, Commands
 from pynecraft.function import Loop
 from pynecraft.info import Color, colors, shards, stems
-from pynecraft.simpler import Item, ItemFrame, Region, Sign, WallSign
+from pynecraft.simpler import Item, ItemFrame, Region, Sign, WallSign, TextDisplay
 from restworld.rooms import Room, label
 from restworld.world import fast_clock, kill_em, main_clock, restworld
 
@@ -19,8 +19,7 @@ def room():
 
     block_list_score = room.score('block_list')
 
-    name_stand = Entity('armor_stand', nbt={'Invisible': True, 'NoGravity': True, 'CustomNameVisible': True})
-    name_stand.tag('block_list')
+    list_scale = 0.6
 
     def blocks(name, facing, block_lists: Iterable[Union[Block, str]] | Iterable[Iterable[Union[Block, str]]], dx=0,
                dz=0, size=0, labels=None, clock=main_clock, score=None, air=False):
@@ -74,13 +73,14 @@ def room():
                 yield Sign.change(r(x + facing.dx, 2, z + facing.dz), signage)
 
                 if show_list:
-                    stand = name_stand.clone()
-                    block_list_name = f'block_list_{name}_{x:d}_{z:d}'
-                    block_list_block_name = f'block_list_{name}_{x:d}_{z:d}_{i:d}'
-                    stand.tag('blocks', f'block_list_{name}', block_list_name, block_list_block_name)
-                    stand.merge_nbt({'CustomName': block.name, 'CustomNameVisible': False})
-                    stand_y = 2.5 + i * 0.24
-                    names.add(stand.summon(r(x, stand_y, z)))
+                    block_list_name = f'block_list_{name}_{x}_{z}'
+                    block_list_block_name = f'block_list_{name}_{x}_{z}_{i}'
+                    holder = TextDisplay(
+                        block.name,
+                        nbt={'Rotation': [180.0, 0.0], 'text_opacity': 255, 'background': 0,
+                             'billboard': 'vertical', 'shadow_radius': 0}).scale(list_scale).tag(
+                        'blocks', 'block_list', f'block_list_{name}', block_list_name, block_list_block_name)
+                    names.add(holder.summon(r(x, 4.25 + i * (list_scale / 4), z)))
 
                 x += dx
                 x_size += 1
@@ -641,8 +641,9 @@ def room_init_functions(room, block_list_score):
         tag(e().tag('block_sign_home')).add('no_expansion'),
     )
     room.loop('toggle_block_list', score=block_list_score).loop(
-        lambda step: execute().as_(e().tag('block_list')).run(data().merge(s(), {"CustomNameVisible": step.i > 0})),
-        range(0, 2))
+        lambda step: execute().as_(e().tag('block_list')).run(
+            data().modify(s(), 'text_opacity').set().value(25 if step.i == 0 else 255)),
+        range(2))
     room.function('toggle_block_list_init').add(block_list_score.set(0))
 
 
