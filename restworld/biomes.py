@@ -33,11 +33,11 @@ def categories():
 
 def category_sign(category, x):
     text3 = type_text(category)
-    yield WallSign((None, category, text3), (
+    yield WallSign().messages((None, category, text3), (
         None,
         None,
         execute().at(e().tag('category_home')).run(function(f'restworld:biomes/{to_id(category)}_signs'))),
-                   ).place(r(x, 1, 6), NORTH)
+                              ).place(r(x, 1, 6), NORTH)
 
 
 def type_text(category):
@@ -68,15 +68,15 @@ def group_signs(group, score):
     x = list(biome_groups.keys()).index(group)
     at_biome_loading = execute().at(e().tag('biome_loading_action_home'))
     for i, biome in enumerate(list(biome_groups[group])):
-        yield WallSign((None, biome), (
+        yield WallSign().messages((None, biome), (
             at_biome_loading.run(function('restworld:biomes/clear_biome')),
             score.set(biomes.index(biome)),
             at_biome_loading.run(function('restworld:biomes/load_biome_cur')),
             at_biome_loading.run(function('restworld:biomes/cleanup_biome')),
         )).place(r(6 - i - x, 0, 6), NORTH)
-    yield WallSign((None, group, type_text(group)),
-                   (execute().at(e().tag('category_home')).run(
-                       function('restworld:biomes/category'))), 'birch').place(r(6 - x, 1, 6), NORTH)
+    yield WallSign(wood='birch').messages((None, group, type_text(group)),
+                                          (execute().at(e().tag('category_home')).run(
+                                              function('restworld:biomes/category')))).place(r(6 - x, 1, 6), NORTH)
 
 
 # noinspection PyUnusedLocal
