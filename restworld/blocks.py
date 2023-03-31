@@ -159,11 +159,11 @@ def room():
         'decorated_pot', NORTH, ('decorated_pot',) + tuple(
             Block('decorated_pot',
                   nbt={'shards': [shards[i], shards[(i + 1) % len(shards)], shards[(i + 2) % len(shards)]]},
-                  name=f'Decorated Pot|{shard_names[i]}') for i in range(len(shards))), air=True)
+                  name=f'Decorated Pot|{shard_names[i]}') for i in range(len(shards))), air=True, clock=fast_clock)
 
-    # Can't stop pot item from being generated, so ... https://bugs.mojang.com/browse/MC-260301
-    room.function('decorated_pot_enter').add(setblock(r(1, -1, 0), 'redstone_block'))
-    room.function('decorated_pot_exit').add(setblock(r(1, -1, 0), 'air'))
+    # # Can't stop pot item from being generated, so ... https://bugs.mojang.com/browse/MC-260301
+    # room.function('decorated_pot_enter').add(setblock(r(1, -1, 0), 'redstone_block'))
+    # room.function('decorated_pot_exit').add(setblock(r(1, -1, 0), 'air'))
 
     blocks('dirt', SOUTH, ('Dirt', 'Coarse Dirt', 'Rooted Dirt', 'Farmland'))
     blocks('end', NORTH, ('End Stone', 'End Stone|Bricks'))
