@@ -123,7 +123,7 @@ def room():
             for which_dir in (-1, 1):
                 to = (i + which_dir + num_pages) % num_pages
                 text, z = ('<--', max_z + 1) if which_dir == -1 else ('-->', min_z - 1)
-                yield WallSign((None, text), (
+                yield WallSign().messages((None, text), (
                     step.loop.score.set(to),
                     execute().at(e().tag('controls_home')).run(
                         function(f'restworld:arena/{step.loop.score.target}_cur'))
@@ -165,7 +165,7 @@ def room():
                         data().merge(r(2, 0, 0), {'Command': incr_cmd('victim', 'marker' if alone else victim)})),
                     function('restworld:arena/start_battle')
                 )
-                sign = WallSign((None, hunter, 'vs.', 'Nobody' if alone else victim), sign_commands)
+                sign = WallSign().messages((None, hunter, 'vs.', 'Nobody' if alone else victim), sign_commands)
                 yield sign.place(r(-2, y, z), EAST)
 
                 run_type = Score('arena_run_type', 'arena')
