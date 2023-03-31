@@ -94,7 +94,7 @@ class Restworld(RoomPack):
             r'  Command Blocks\n  Software Design\n  Programming\n',
             JsonText.text(r'JUMBOshrimp277:\n').bold(),
             r'  World Design\n  Testing\n  Rubber Duck\n\n',
-            r'Minecraft Version:\n   1.19.4+x, ' + date.today().strftime('%-d %b %Y'),
+            r'Minecraft Version:\n   1.20, ' + date.today().strftime('%-d %b %Y'),
             JsonText.text(r'\n\nTry the ').italic(),
             JsonText.text(r'Clarity Pack!').underlined().italic().color(DARK_PURPLE).click_event().open_url(
                 'https://claritypack.com')

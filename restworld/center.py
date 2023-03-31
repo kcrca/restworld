@@ -47,7 +47,7 @@ def room():
 
         WallSign(('The control book', 'lets you change', 'clock speeds', 'and step along.')).place(
             (r(4), 101, r(-1)), WEST),
-        WallSign(('Also, you might', 'like my "Clarity"', 'pack, a link is in', 'the control book!'),
+        WallSign(('Also, you might', 'like my "Clarity"', 'pack; a link is in', 'the control book!'),
                  (lambda txt: JsonText.text(txt).click_event().open_url('https://claritypack.com'),)).place(
             (r(4), 101, r(1)), WEST),
 
