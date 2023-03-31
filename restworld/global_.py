@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pynecraft.base import EQ, GAMETIME, OVERWORLD, THE_END, THE_NETHER, r
 from pynecraft.commands import MOD, MOVE, RAIN, RESULT, clone, data, e, execute, fill, \
-    function, gamerule, kill, p, s, scoreboard, setblock, tag, teleport, time, tp, weather
+    function, gamerule, kill, p, s, scoreboard, setblock, tag, teleport, time, tp, weather, FORCE
 from pynecraft.enums import ScoreCriteria
 from pynecraft.function import Function
 from restworld.rooms import Room
@@ -216,7 +216,7 @@ def room():
 
     clean_time = room.score('ensure_clean_time')
     clean_time_max = room.score_max('ensure_clean_time')
-    room.function('ensure_clean_init').add(clean_time_max.set(1200))
+    room.function('ensure_clean_init').add(clean_time_max.set(600))
     room.loop('ensure_clean', tick_clock).add(
         execute().store(RESULT).score(clean_time).run(time().query(GAMETIME)),
         clean_time.operation(MOD, clean_time_max),
@@ -230,7 +230,11 @@ def room():
         # Make sure the item in the display doesn't vanish
         execute().as_(e().tag('item_ground')).run(data().merge(s(), {'Age': -32768, 'PickupDelay': 2147483647})),
         # Frog spawning seems to just happen without the random ticks, so stop it
-        execute().at(e().tag('frog_home')).run(fill(r(-2, 2, -2), r(2, 2, 2), 'frogspawn').replace('frogspawn')),
+        execute().at(e().tag('frog_home')).run(clone(r(1, 2, 0), r(1, 2, 0), r(1, 2, 0)).replace(FORCE)),
         kill_em(e().type('tadpole').tag('!keeper')),
         kill_em(e().type('frog').tag('!frog')),
+        # See https://bugs.mojang.com/browse/MC-261475 -- eventually the egg will hatch even withour randomTicks, so...
+        execute().at(e().tag('sniffer_home')).run(function('restworld:mobs/sniffer_cur')), # if missing, place it.
+        execute().at(e().tag('sniffer_home')).run(function('restworld:mobs/sniffer_egg_reset')), # if there, reset
+        kill_em(e().type('sniffer').tag('!sniffer')), # if spawned, kill that extra sniffer
     )
