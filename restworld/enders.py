@@ -44,7 +44,6 @@ def room():
     dragon_fireball = Entity('dragon_fireball', nbt={'direction': {0.0, 0.0, 0.0}, 'ExplosionPower': 0})
     room.function('dragon_init').add(
         kill(e().type('ender_dragon')),
-        kill(e().type('dragon_fireball')),
         WallSign((None, 'Ender Dragon')).place(r(0, 2, -5), NORTH),
         room.mob_placer(dragon_pos, NORTH, adults=True).summon('ender_dragon', tags=('dragon', 'dragon_thing'))
     )
