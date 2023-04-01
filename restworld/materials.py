@@ -611,9 +611,9 @@ def trim_functions(room):
         def _trim_frame_sign(self, step):
             if 'pattern' in self.nbt_path:
                 return
-            sign_x = 1 if 'material' in self.nbt_path else -1
+            sign_x = 2 if 'material' in self.nbt_path else 1
             yield execute().at(e().tag(f'{frame}_helmet')).run(
-                Sign.change(r(sign_x, 0, 0), (None, None, step.elem.title())))
+                Sign.change(r(sign_x, 1, 0), (None, None, step.elem.title())))
 
         def _detect(self):
             for i, t in enumerate(self.types):
