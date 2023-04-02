@@ -75,9 +75,10 @@ def room():
                 if show_list:
                     block_list_name = f'block_list_{name}_{x}_{z}'
                     block_list_block_name = f'block_list_{name}_{x}_{z}_{i}'
+                    # The opacity of 25 means "invisible" so it starts out that way
                     holder = TextDisplay(
                         block.name,
-                        nbt={'Rotation': [180.0, 0.0], 'text_opacity': 255, 'background': 0,
+                        nbt={'Rotation': [180.0, 0.0], 'text_opacity': 25, 'background': 0,
                              'billboard': 'vertical', 'shadow_radius': 0}).scale(list_scale).tag(
                         'blocks', 'block_list', f'block_list_{name}', block_list_name, block_list_block_name)
                     names.add(holder.summon(r(x, 4.25 + i * (list_scale / 4), z)))
@@ -139,12 +140,23 @@ def room():
         'Bricks', 'Quartz Bricks', 'Mud Bricks', 'Deepslate|Bricks', 'Cracked|Deepslate|Bricks', 'Deepslate|Tiles',
         'Cracked|Deepslate|Tiles', 'Prismarine Bricks', 'Nether Bricks', 'Cracked|Nether Bricks',
         'Chiseled|Nether Bricks', 'Red|Nether Bricks'))
-    blocks('campfire', NORTH, (
+    campfire_food = room.score('campfire_food')
+    campfire_init, campfire_main = blocks('campfire', NORTH, (
         Block('Campfire', {'lit': True}),
         Block('campfire', {'lit': False}, name='Campfire|Unlit'),
         Block('Soul Campfire', {'lit': True}),
         Block('soul_campfire', {'lit': False}, name='Soul Campfire|Unlit'),
     ))
+    campfire_init.add(label(r(-1, 2, 0), 'Cook'))
+    campfire_main.add(
+        execute().if_().score(campfire_food).matches(0).run(data().merge(r(0, 3, 0), {'Items': [{},{},{},{}]})),
+        execute().if_().score(campfire_food).matches(1).run(data().merge(
+            r(0, 3, 0),
+            {'Items':
+                 [Item.nbt_for('porkchop', {'Slot': 0}), Item.nbt_for('beef', {'Slot': 1}),
+                  Item.nbt_for('chicken', {'Slot': 2}), Item.nbt_for('mutton', {'Slot': 3})],
+             'CookingTotalTimes': Nbt.TypedArray('i', (0x7fffffff, 0x7fffffff, 0x7fffffff, 0x7fffffff))}))
+    )
     room.function('campfire_enter').add(function('restworld:/blocks/campfire_cur'))
     room.function('campfire_exit').add(setblock(r(0, 3, 0), Block('campfire', {'lit': False})))
     blocks('clay', SOUTH, ('Clay', 'Mud', 'Muddy|Mangrove Roots', 'Packed Mud'))
