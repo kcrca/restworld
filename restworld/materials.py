@@ -13,7 +13,7 @@ from restworld.world import fast_clock, kill_em, main_clock, restworld
 
 def room():
     room = Room('materials', restworld, WEST, ('Materials', '& Tools,', 'Time, GUI,', 'Redstone, Maps'))
-    room.resetAt((3, 0))
+    room.reset_at((3, 0))
 
     room.function('all_sand_init').add(WallSign((None, None, 'and Sandstone')).place(r(0, 2, 3), WEST))
 

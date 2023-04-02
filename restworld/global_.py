@@ -232,7 +232,7 @@ def room():
         execute().at(e().tag('frog_home')).run(clone(r(1, 2, 0), r(1, 2, 0), r(1, 2, 0)).replace(FORCE)),
         kill_em(e().type('tadpole').tag('!keeper')),
         kill_em(e().type('frog').tag('!frog')),
-        # See https://bugs.mojang.com/browse/MC-261475 -- eventually the egg will hatch even withour randomTicks, so...
+        # See https://bugs.mojang.com/browse/MC-261475 -- eventually the egg will hatch even without randomTicks, so...
         execute().at(e().tag('sniffer_home')).run(function('restworld:mobs/sniffer_cur')),  # if missing, place it.
         execute().at(e().tag('sniffer_home')).run(function('restworld:mobs/sniffer_egg_reset')),  # if there, reset
         kill_em(e().type('sniffer').tag('!sniffer')),  # if spawned, kill that extra sniffer

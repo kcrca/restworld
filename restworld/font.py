@@ -38,7 +38,7 @@ def formatting_book():
 
 def room():
     room = Room('font', restworld, SOUTH, (None, 'Fonts'))
-    room.resetAt((1, -4))
+    room.reset_at((1, -4))
     src_pos = r(0, 2, 0)
     save_pos = r(0, -2, -3)
     color_pos = r(0, -3, -3)

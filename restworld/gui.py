@@ -12,7 +12,7 @@ from restworld.world import fast_clock, main_clock, restworld, slow_clock, kill_
 
 def room():
     room = Room('gui', restworld, NORTH, ('GUI,', 'HUD,', 'Items'))
-    room.resetAt((0, 18))
+    room.reset_at((0, 18))
 
     room.function('anvil_container_enter').add(setblock(r(0, 2, 0), 'anvil'))
 
@@ -34,7 +34,7 @@ def room():
         elif step.i == 5:
             yield at(data().merge(r(0, 6, 0), {'Secondary': 10}))
 
-    # Can'threshold use bounce because we need to show two things at full strength.
+    # Can't use bounce because we need to show two things at full strength.
     room.loop('beacon', slow_clock).loop(beacon_loop, (0, 1, 2, 3, 4, 4, 3, 2, 1))
     room.function('beacon_enter').add(
         at(fill(r(0, 1, 0), r(0, 5, 0), 'gold_block')),

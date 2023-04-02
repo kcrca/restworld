@@ -68,7 +68,7 @@ HIGHER = {
 
 def room():
     room = Room('multimob', restworld, WEST, (None, 'Random', 'Entities', '(Optifine)'), room_name='Random Entities')
-    room.resetAt((11, 0))
+    room.reset_at((11, 0))
 
     menu_home = e().tag('mob_menu_home').limit(1)
     at_home = execute().at(menu_home)

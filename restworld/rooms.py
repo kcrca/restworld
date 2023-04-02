@@ -10,8 +10,7 @@ from pynecraft.base import FacingDef, Nbt, ROTATION_180, ROTATION_270, ROTATION_
     ORANGE, BLUE
 from pynecraft.commands import Block, BlockDef, CLEAR, Command, Commands, Entity, EntityDef, JsonText, NEAREST, \
     Position, Score, SignMessages, a, comment, e, execute, function, good_block, good_entity, good_facing, good_score, \
-    kill, \
-    p, schedule, scoreboard, setblock, summon, tag, tellraw, tp, weather
+    kill, p, schedule, scoreboard, setblock, summon, tag, tellraw, tp, weather
 from pynecraft.enums import ScoreCriteria
 from pynecraft.function import DataPack, Function, FunctionSet, LATEST_PACK_VERSION, Loop
 from pynecraft.simpler import WallSign, TextDisplay
@@ -126,10 +125,10 @@ class Room(FunctionSet):
         if facing:
             self._room_setup(facing, text, room_name)
 
-    def resetAt(self, xz: Tuple[int, int]) -> None:
+    def reset_at(self, xz: Tuple[int, int]) -> None:
         self._command_block(xz, 'Reset Room', ORANGE, f'restworld:{self.name}/_init')
 
-    def changeHeightAt(self, xz: Tuple[int, int]) -> None:
+    def change_height_at(self, xz: Tuple[int, int]) -> None:
         self._command_block(xz, 'Change Height', BLUE, 'restworld:global/toggle_raised')
 
     def _command_block(self, xz, label_text, color, command):

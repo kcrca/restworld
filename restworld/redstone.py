@@ -106,7 +106,7 @@ def room():
         mode = 'compare' if step.i < 2 else 'subtract'
         yield setblock(r(-1, 2, -1),
                        ('comparator', {'facing': 'east', 'mode': mode}))
-        yield Sign.change(r(-1, 2, -2), ((None, 'Comparator Mode:', mode.title())))
+        yield Sign.change(r(-1, 2, -2), (None, 'Comparator Mode:', mode.title()))
         if step.i > 0:
             yield fill(r(0, 2, -1), r(0, 2, 1), 'redstone_block').replace('air')
         else:

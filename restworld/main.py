@@ -5,8 +5,7 @@ import random
 
 from pynecraft.base import parameters
 from pynecraft.simpler import Sign
-from restworld import arena, banners, biomes, blocks, center, connect, diy, effects, enders, font, global_, gui, \
-    hud, \
+from restworld import arena, banners, biomes, blocks, center, connect, diy, effects, enders, font, global_, gui, hud, \
     maps, materials, mobs, models, multimob, nether, paintings, particles, photo, plants, redstone, save, tags, the_end, \
     time, wither, tester
 from restworld.world import restworld

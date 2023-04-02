@@ -9,8 +9,8 @@ from restworld.world import kill_em, main_clock, restworld
 
 def room():
     room = Room('nether', restworld, WEST, (None, 'Nether', 'Mobs'))
-    room.resetAt((13, 0))
-    room.changeHeightAt((10, 0))
+    room.reset_at((13, 0))
+    room.change_height_at((10, 0))
 
     def placer(*args, **kwargs):
         return room.mob_placer(*args, **kwargs)

@@ -64,7 +64,7 @@ Show area:
     Set structure block to LOAD block with borders enabled
 
 Load area:
-    Set structure block to LOAD block with "load entites" on and borders off
+    Set structure block to LOAD block with "load entities" on and borders off
     flash redstone block to load
 """
 

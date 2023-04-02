@@ -14,8 +14,8 @@ from restworld.world import fast_clock, kill_em, main_clock, restworld
 
 def room():
     room = Room('mobs', restworld, NORTH, ('Villagers,', 'Animals,', 'Mobs,', 'Bosses'), 'Mobs')
-    room.resetAt((0, 15))
-    room.changeHeightAt((0, 19))
+    room.reset_at((0, 15))
+    room.change_height_at((0, 19))
     friendlies(room)
     monsters(room)
     aquatic(room)
@@ -274,7 +274,7 @@ def friendlies(room):
         yield Sign.change(r(2, 2, 3), (None, None, f'Age: {step.i} of 3'))
 
     room.loop('sniffer', main_clock).loop(sniffer_egg_loop, range(3))
-    # See https://bugs.mojang.com/browse/MC-261475 -- eventually the egg will hatch even withour randomTicks, so...
+    # See https://bugs.mojang.com/browse/MC-261475 -- eventually the egg will hatch even without randomTicks, so...
     room.function('sniffer_egg_reset').add(clone(egg_pos, egg_pos, egg_pos).replace(FORCE))
     room.function('sniffer_kid_init').add(placer(r(-0.5, 2, 0), EAST, 0, kids=True).summon('sniffer'))
     room.function('snow_golem_init').add(

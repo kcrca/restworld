@@ -67,8 +67,6 @@ def room():
                 if air:
                     yield setblock(r(x, 3, z), 'air')
                 yield setblock(r(x, 3, z), block)
-                sign_nbt = Sign.lines_nbt(signage)
-                lines = sign_nbt['messages']
                 # Preserve the 'expand' response
                 yield Sign.change(r(x + facing.dx, 2, z + facing.dz), signage)
 
@@ -204,11 +202,11 @@ def room():
     blocks('respawn_anchor', NORTH, (Block('Respawn Anchor', {'charges': x}) for x in range(0, 5)),
            labels=tuple(('Respawn Anchor', f'Charges: {x:d}') for x in range(0, 5)))
 
-    suspicous_data = {'item': {'id': 'emerald', 'Count': 1}}
+    suspicious_data = {'item': {'id': 'emerald', 'Count': 1}}
 
     def suspicious(which):
         return (which,) + tuple(
-            Block(f'suspicious_{which}', state={'dusted': s}, nbt=suspicous_data,
+            Block(f'suspicious_{which}', state={'dusted': s}, nbt=suspicious_data,
                   name=f'Suspicious {which.title()}|Dusted: {s}') for s in range(4))
 
     sands = suspicious('sand')

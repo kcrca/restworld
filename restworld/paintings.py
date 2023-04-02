@@ -10,7 +10,7 @@ from restworld.world import restworld
 # noinspection SpellCheckingInspection
 def room():
     room = Room('paintings', restworld, NORTH, (None, 'Paintings'))
-    room.resetAt((0, 3))
+    room.reset_at((0, 3))
 
     def painting(id, facing, x, z, sx=0, sy=0, sz=0, note=''):
         thing = Block(id)

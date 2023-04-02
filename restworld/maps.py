@@ -15,7 +15,7 @@ def name_nbt(name: str) -> NbtDef:
 
 def room():
     room = Room('maps', restworld, WEST, (None, 'Maps'))
-    room.resetAt((5, 0))
+    room.reset_at((5, 0))
 
     room.function('maps_room_enter', exists_ok=True).add(
         clone(r(8, -5, 0), r(8, -5, 0), r(8, 1, 0)),

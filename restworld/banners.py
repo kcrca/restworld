@@ -67,7 +67,7 @@ authored_patterns = (
 
 def room():
     room = Room('banners', restworld, SOUTH, (None, 'Banners &', 'Shields'))
-    room.resetAt((0, -11))
+    room.reset_at((0, -11))
 
     banner_color = room.score('banner_color')
     banner_ink = room.score('banner_ink')
@@ -223,7 +223,7 @@ def room():
     room.function('banner_controls_init').add(
         label(r(5, 2, 4), 'Banner / Ink'),
         label(r(3, 2, 4), 'Labels'),
-        label(r(4, 2, 3), 'Controls')        ,
+        label(r(4, 2, 3), 'Controls'),
         function('restworld:banners/switch_to_color'),
     )
     room.function('banner_controls_remove', home=False).add(

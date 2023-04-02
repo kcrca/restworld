@@ -10,8 +10,8 @@ from restworld.world import main_clock, restworld
 def room():
     room_dir = NORTH
     room = Room('enders', restworld, room_dir, (None, 'The End'))
-    room.resetAt((-2, 5))
-    room.changeHeightAt((2, 5))
+    room.reset_at((-2, 5))
+    room.change_height_at((2, 5))
 
     def cage_loop(step):
         if step.i == 0:
