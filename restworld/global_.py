@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pynecraft.base import EQ, GAMETIME, OVERWORLD, THE_END, THE_NETHER, r
 from pynecraft.commands import MOD, MOVE, RAIN, RESULT, clone, data, e, execute, fill, \
-    function, gamerule, kill, p, s, scoreboard, setblock, tag, teleport, time, tp, weather, FORCE
+    function, gamerule, kill, p, s, scoreboard, setblock, tag, teleport, time, tp, weather, FORCE, say
 from pynecraft.enums import ScoreCriteria
 from pynecraft.function import Function
 from restworld.rooms import Room
@@ -213,7 +213,6 @@ def room():
         execute().unless().score(mobs_up).matches(0).run(function(raise_mobs)),
     )
 
-
     clean_time = room.score('ensure_clean_time')
     clean_time_max = room.score_max('ensure_clean_time')
     room.function('ensure_clean_init').add(clean_time_max.set(600))
@@ -234,7 +233,10 @@ def room():
         kill_em(e().type('tadpole').tag('!keeper')),
         kill_em(e().type('frog').tag('!frog')),
         # See https://bugs.mojang.com/browse/MC-261475 -- eventually the egg will hatch even withour randomTicks, so...
-        execute().at(e().tag('sniffer_home')).run(function('restworld:mobs/sniffer_cur')), # if missing, place it.
-        execute().at(e().tag('sniffer_home')).run(function('restworld:mobs/sniffer_egg_reset')), # if there, reset
-        kill_em(e().type('sniffer').tag('!sniffer')), # if spawned, kill that extra sniffer
+        execute().at(e().tag('sniffer_home')).run(function('restworld:mobs/sniffer_cur')),  # if missing, place it.
+        execute().at(e().tag('sniffer_home')).run(function('restworld:mobs/sniffer_egg_reset')),  # if there, reset
+        kill_em(e().type('sniffer').tag('!sniffer')),  # if spawned, kill that extra sniffer
+        # Make sure the TNT never goes off
+        execute().as_(e().tag('block_tnt')).run(data().merge(s(), {'Fuse': 0x7fff})),
+        say('hi'),
     )

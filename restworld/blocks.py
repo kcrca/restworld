@@ -149,7 +149,7 @@ def room():
     ))
     campfire_init.add(label(r(-1, 2, 0), 'Cook'))
     campfire_main.add(
-        execute().if_().score(campfire_food).matches(0).run(data().merge(r(0, 3, 0), {'Items': [{},{},{},{}]})),
+        execute().if_().score(campfire_food).matches(0).run(data().merge(r(0, 3, 0), {'Items': [{}, {}, {}, {}]})),
         execute().if_().score(campfire_food).matches(1).run(data().merge(
             r(0, 3, 0),
             {'Items':
@@ -587,11 +587,14 @@ def room():
     room.loop('structure_blocks', main_clock).loop(structure_blocks_loop, ('Data', 'Save', 'Load', 'Corner'))
 
     def tnt_loop(step):
-        yield kill(e().type('tnt').distance((None, 10)))
-        yield setblock(r(0, 3, 0), Block('tnt', {'unstable': step.elem == 'unstable'}))
+        if step.i < 2:
+            yield setblock(r(0, 3, 0), Block('tnt', {'unstable': step.elem == 'unstable'}))
+        else:
+            yield setblock(r(0, 3, 0), 'air')
+            yield summon(('tnt', {'Fuse': 0x7fff, 'Tags': ['block_tnt']}), r(0, 3, 0))
         yield Sign.change(r(0, 2, -1), (None, None, step.elem.title()))
 
-    room.loop('tnt', main_clock).loop(tnt_loop, ('stable', 'unstable'))
+    room.loop('tnt', main_clock).add(kill(e().tag('block_tnt'))).loop(tnt_loop, ('stable', 'unstable', 'primed'))
 
     torches = (Block('Torch'), Block('Soul Torch'), Block('Redstone Torch'), Block('Redstone Torch'))
     wall_torches = tuple(Block(x.name.replace('Torch', 'Wall Torch')) for x in torches)
