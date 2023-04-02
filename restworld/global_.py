@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pynecraft.base import EQ, GAMETIME, OVERWORLD, THE_END, THE_NETHER, r
 from pynecraft.commands import MOD, MOVE, RAIN, RESULT, clone, data, e, execute, fill, \
-    function, gamerule, kill, p, s, scoreboard, setblock, tag, teleport, time, tp, weather, FORCE, say
+    function, gamerule, kill, p, s, scoreboard, setblock, tag, teleport, time, tp, weather, FORCE
 from pynecraft.enums import ScoreCriteria
 from pynecraft.function import Function
 from restworld.rooms import Room
@@ -238,5 +238,4 @@ def room():
         kill_em(e().type('sniffer').tag('!sniffer')),  # if spawned, kill that extra sniffer
         # Make sure the TNT never goes off
         execute().as_(e().tag('block_tnt')).run(data().merge(s(), {'Fuse': 0x7fff})),
-        say('hi'),
     )
