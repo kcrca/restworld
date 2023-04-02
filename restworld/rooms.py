@@ -458,7 +458,7 @@ class MobPlacer:
             stand = MobPlacer._armor_stand_tmpl.clone()
             stand.tag(*tmpl.nbt.get('Tags'))
             tmpl.merge_nbt({'id': tmpl.full_id()})
-            stand.nbt.get_list('Passengers').append(tmpl.nbt())
+            stand.nbt.get_list('Passengers').append(tmpl.nbt)
             tmpl = stand
         return tmpl.summon(pos)
 

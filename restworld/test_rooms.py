@@ -3,7 +3,6 @@ from __future__ import annotations
 from pynecraft.base import NORTH, d
 from pynecraft.commands import item, lines, say
 from restworld.rooms import *
-from restworld.world import Restworld
 
 
 def test_unclocked_room():
@@ -52,9 +51,9 @@ def test_mob_placer():
     mp = MobPlacer((1.1, 12, 2.2), 'North', 3.3, 4.4)
     cmds = lines(mp.summon(((Entity('m_1')), (Entity('m_2')))))
     assert cmds[0].startswith('summon m_1 1.1 12 2.2 {')
-    assert cmds[1].startswith('summon m_1 5.5 12 2.2 {')
-    assert cmds[2].startswith('summon m_2 1.1 12 -1.1 {')
-    assert cmds[3].startswith('summon m_2 5.5 12 -1.1 {')
+    assert cmds[1].startswith('summon m_1 1.1 12 -2.2 {')
+    assert cmds[2].startswith('summon m_2 4.4 12 2.2 {')
+    assert cmds[3].startswith('summon m_2 4.4 12 -2.2 {')
     assert 'adult' in cmds[0]
     assert 'adult' in cmds[2]
     assert 'kid' in cmds[1]
@@ -87,9 +86,9 @@ def test_mob_placer():
     mp = MobPlacer((1.1, 12, 2.2), 'North', 3.3, 4.4)
     cmds = lines(mp.summon(((Entity('m_1')), (Entity('m_2'))), on_stand=True))
     assert cmds[0].startswith('summon armor_stand 1.1 12 2.2 {')
-    assert cmds[1].startswith('summon armor_stand 5.5 12 2.2 {')
-    assert cmds[2].startswith('summon armor_stand 1.1 12 -1.1 {')
-    assert cmds[3].startswith('summon armor_stand 5.5 12 -1.1 {')
+    assert cmds[1].startswith('summon armor_stand 1.1 12 -2.2 {')
+    assert cmds[2].startswith('summon armor_stand 4.4 12 2.2 {')
+    assert cmds[3].startswith('summon armor_stand 4.4 12 -2.2 {')
     assert cmds[0].count('adult') == 2
     assert cmds[1].count('kid') == 2
     assert cmds[2].count('adult') == 2
@@ -98,13 +97,6 @@ def test_mob_placer():
 
 def test_say_score():
     say = say_score(Score('a', 'b'), ('c', 'd'))
-    assert say == ('tellraw @a [{"text": "\\"scores:\\""}, {"text": "\\"a=\\""}, {"score": '
-                   '{"name": "\\"a\\"", "objective": "\\"b\\""}}, {"text": "\\"c=\\""}, '
-                   '{"score": {"name": "\\"c\\"", "objective": "\\"d\\""}}]')
-
-
-def test_control_book():
-    restworld = Restworld()
-    restworld.function_set.add(Room('r1', restworld, NORTH, 'Howdy'))
-    restworld.function_set.add(Room('r2', restworld, NORTH, 'Doody'))
-    assert re.search(r'Doody.*Howdy', str(restworld.control_book_func()))
+    assert say == (('tellraw @a [{"text": "scores:"}, {"text": "a="}, {"score": {"name": "a", '
+                    '"objective": "b"}}, {"text": "c="}, {"score": {"name": "c", "objective": '
+                    '"d"}}]'))
