@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 from pynecraft.base import NORTH, r
-from pynecraft.commands import Block, e, fill, kill, summon
+from pynecraft.commands import e, fill, kill, summon
+from pynecraft.info import Painting
 from pynecraft.simpler import WallSign
 from restworld.rooms import Room
 from restworld.world import restworld
@@ -13,13 +14,13 @@ def room():
     room.reset_at((0, 3))
 
     def painting(id, facing, x, z, sx=0, sy=0, sz=0, note=''):
-        thing = Block(id)
+        thing = Painting(id)
         px, pz = ((-1, 0), (0, -1), (1, 0), (0, 1))[facing]
         px += sx
         pz += sz
         dir = ('south', 'west', 'north', 'east')[facing]
-        yield summon('painting', r(x, 3, z), {'variant': thing.id, 'facing': facing, 'Tags': ['painting']})
-        yield WallSign((None, thing.name, note)).place(r(x + px, 2 + sy, z + pz), dir)
+        yield summon('painting', r(x, 3, z), {'variant': thing.variant, 'facing': facing, 'Tags': ['painting']})
+        yield WallSign((None, thing.info.name, note)).place(r(x + px, 2 + sy, z + pz), dir)
 
     room.function('all_paintings_init').add(
         kill(e().tag('painting')),
