@@ -235,7 +235,7 @@ def room():
         # See https://bugs.mojang.com/browse/MC-261475 -- eventually the egg will hatch even without randomTicks, so...
         execute().at(e().tag('sniffer_home')).run(function('restworld:mobs/sniffer_cur')),  # if missing, place it.
         execute().at(e().tag('sniffer_home')).run(function('restworld:mobs/sniffer_egg_reset')),  # if there, reset
-        kill_em(e().type('sniffer').tag('!sniffer')),  # if spawned, kill that extra sniffer
+        kill_em(e().type('sniffer').tag('!sniffer').distance((None, 100))),  # if spawned, kill that extra sniffer
         # Make sure the TNT never goes off
         execute().as_(e().tag('block_tnt')).run(data().merge(s(), {'Fuse': 0x7fff})),
     )
