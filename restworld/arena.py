@@ -64,7 +64,7 @@ def room():
         ('Ocelot', 'Chicken'),
         ('Panda', 'Vindicator'),
         ('Parrot', 'Vindicator'),
-        ('Phantom:c', 'Rabbit'),
+        ('Phantom:c', None),
         ('Piglin Brute', 'Vindicator'),
         ('Pillager', 'Snow Golem'),
         ('Polar Bear', 'Vindicator'),
@@ -193,25 +193,11 @@ def room():
             for z in range(-1, 2):
                 yield stand.summon(r(x, -0.5, z))
 
-    place_battlers = Score('place_batters', 'arena')
-
     def monitor(actor: str):
-        other = 'hunter' if actor == 'victim' else 'victim'
         count = Score(actor + '_count', 'arena')
-        close = Score(actor + '_close', 'arena')
-        athome = Score(actor + '_athome', 'arena')
         return (
-            execute().unless().entity(e().tag(actor)).run(place_battlers.set(1)),
             count.set(0),
             execute().as_(e().tag(actor)).run(count.add(1)),
-            close.set(0),
-            execute().at(
-                e().tag(other + '_home')).positioned(r(-2, 0, -2)).as_(
-                e().tag(actor).volume((4, 5, 4))).run(close.add(1)),
-            athome.set(0),
-            execute().at(
-                e().tag(actor + '_home')).positioned(r(-2, 0, -2)).as_(
-                e().tag(actor).volume((4, 5, 4))).run(athome.add(1)),
         )
 
     def toggle_peace(step):
@@ -255,7 +241,6 @@ def room():
     room.function('hunter_home').add(random_stand('hunter'))
     room.function('victim_home').add(random_stand('victim'))
 
-    # monitor_init function looks out-of-date and unused
     room.function('monitor').add(monitor('hunter'), monitor('victim'),
                                  kill(e().type('item').distance((None, 50))),
                                  kill(e().type('experience_orb').distance((None, 50)))),
