@@ -86,7 +86,7 @@ def room():
         function(do_drop),
         kill(e().type('item')))
     room.function('photo_sample_view', home=False).add(
-        execute().in_(OVERWORLD).run(tp(p(), (-1000.001, 109, 1016)).facing((-1000.001, 105.5, 1030))),
+        execute().in_(OVERWORLD).run(tp(p(), (-1000.001, 109, 1016)).facing((-1000.001, 105, 1030))),
         function(do_drop))
 
     shoot_offset = Offset(0, 4, 0)
