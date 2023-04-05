@@ -44,24 +44,26 @@ def room():
         'Zombified Piglin': {'HandItems': [Item.nbt_for('golden_sword'), {}]},
     }
 
+    # Lower priority ones can be used as filler
     battles = [
-        ('Axolotl:w', 'Drowned'),  # low priority
-        ('Axolotl:w', 'Elder Guardian'),
-        ('Skeleton', 'Iron Golem'),
-        ('Blaze', 'Snow Golem'),
-        ('Cat', 'Rabbit'),
-        ('Warden', 'Iron Golem'),
+        ('Axolotl:w', 'Drowned'),
+        ('Axolotl:w', 'Elder Guardian'),  # low priority
         ('Axolotl:w', 'Guardian'),
+        ('Blaze', 'Snow Golem'),
+        ('Breeze', 'Iron Golem'),
+        ('Cat', 'Rabbit'),
+        # ('Cave Spider', 'Snow Golem'), # low priority
+        # ('Drowned', 'Snow Golem'), # lwo priority
+        ('Ender Dragon', None),
         ('Evoker', 'Iron Golem'),
         ('Fox', 'Chicken'),
-        ('Frog', 'Slime'),
+        ('Frog', 'Slime'),  # low priority
         ('Goat', 'Sheep'),  # medium priority (slow, but charging goat)
         ('Hoglin', 'Vindicator'),
-        ('Ender Dragon', None),
         # ('Illusioner', 'Snow Golem'), # low priority, Illusioner isn't used
         ('Llama', 'Vindicator'),
-        ('Magma Cube', 'Iron Golem'),
-        ('Ocelot', 'Chicken'),
+        ('Magma Cube', 'Iron Golem'),  # low priority
+        ('Ocelot', 'Chicken'),  # low priority
         ('Panda', 'Vindicator'),
         ('Parrot', 'Vindicator'),
         ('Phantom:c', None),
@@ -70,11 +72,12 @@ def room():
         ('Polar Bear', 'Vindicator'),
         ('Ravager', 'Iron Golem'),
         ('Shulker', 'Vindicator'),
-        ('Breeze', 'Iron Golem'),
+        ('Skeleton', 'Iron Golem'),
+        ('Sniffer:g', None),
         ('Spider', 'Snow Golem'),
         ('Stray', 'Iron Golem'),
-        ('Sniffer:g', None),
         ('Vindicator', 'Iron Golem'),
+        ('Warden', 'Iron Golem'),
         ('Witch', 'Snow Golem'),
         ('Wither Skeleton', 'Piglin'),
         ('Wither', 'Pillager'),
@@ -83,23 +86,14 @@ def room():
         ('Zombie', 'Iron Golem'),
         ('Zombified Piglin', 'Vindicator'),
     ]
-    # Lower priority ones that can be used as filler
-    #    ('Axolotl:w', 'Elder Guardian'),
-    #    ('Axolotl:w', 'Guardian'),
-    #    ('Ocelot', 'Chicken'),
-    #    ('Slime', 'Iron Golem'),
-    #    ('Frog', 'Slime')
-    #    ('Magma Cube', 'Iron Golem'),
-    #    ('Goat', 'Sheep'),
-    #    ('Cave Spider', 'Snow Golem'),
-    #    ('Drowned', 'Snow Golem'),
-    #
     # These don't work unless we figure out how to kill the ones that spawn when a larger is killed. For
-    # now, we just make sure they are the smallest size.
+    # now, we just make sure they are the smallest size:
+    #
     #  ('Slime', 'Iron Golem'),
     #  ('Magma Cube', 'Iron Golem'),
+    #
     # The problem isn't just killing them, it's knowing when to spawn a new one. With singleton mobs, you can simply
-    # say "there must be (say) 3", but here, you want something that will spawn a new full size cube when (approximately
+    # say "there must be [say] 3", but here, you want something that will spawn a new full size cube when (approximately
     # at least) all its small ones have been killed. This is different enough that it probably requires a specialized
     # mechanism, which probaly isn't worth it (though it would be fun).
 
