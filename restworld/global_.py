@@ -196,7 +196,7 @@ def room():
             ('arena', OVERWORLD, (1014, 106, -1000), (1000, 100, -1000))):
         room.function('goto_' + place[0], home=False).add(
             execute().in_(place[1]).run(teleport(p(), place[2]).facing(place[3])))
-    room.function('goto_photo').add(function('restworld:photo/photo_example_view'))
+    room.function('goto_photo').add(function('restworld:photo/photo_complete_view'))
     room.function('goto_weather', home=False).add(
         execute().in_(OVERWORLD).run(teleport(p(), (1009, 101, 1000)).facing((1004, 102, 1000))),
         weather(RAIN))
