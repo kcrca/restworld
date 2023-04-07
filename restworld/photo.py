@@ -74,7 +74,7 @@ def room():
         drop.set(0),
         execute().as_(p().gamemode(CREATIVE)).run(drop.set(1)),
         # Using 'as server' means that it won't report the changes to the player
-        execute().if_().score(drop).matches(1).as_('server').run(gamemode(SURVIVAL, p()), gamemode(CREATIVE, p())))
+        execute().if_().score(drop).matches(1).run(gamemode(SURVIVAL, p()), gamemode(CREATIVE, p())))
     room.function('photo_complete_view', home=False).add(
         # /execute in overworld run tp @p -1002 108 1009 facing -1019.0 93 993.0
         execute().in_(OVERWORLD).run(tp(p(), (-1002, 109, 1009)).facing((-1019.00, 93, 993.00))),
