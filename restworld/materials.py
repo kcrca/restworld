@@ -513,8 +513,8 @@ def wood_functions(room):
         else:
             yield data().remove(e().tag('wood_boat_frame').limit(1), 'Item.id')
 
-    woods = info.woods
-    woods = woods + ('Bamboo Mosaic',)
+    i = info.woods.index('Bamboo') + 1
+    woods = info.woods[:i] + ('Bamboo Mosaic',) + info.woods[i:]
     room.loop('wood', main_clock).add(kill_em(e().tag('wood_boat'))).loop(wood_loop, woods + stems)
 
 
