@@ -9,7 +9,7 @@ from restworld.world import restworld
 
 
 def tags():
-    colorings = {
+    colorable = {
         'banner': None,
         'carpet': None,
         'concrete': None,
@@ -23,7 +23,7 @@ def tags():
         'terracotta': 'terracotta'}
 
     blocks = restworld.tags(BLOCKS)
-    for thing, added in colorings.items():
+    for thing, added in colorable.items():
         blocks[thing] = {
             'values': ['%s_%s' % (c, thing) for c in COLORS]
         }
@@ -89,6 +89,8 @@ def tags():
     blocks['saplinglike'] = {
         'values': [
             'acacia_sapling',
+            'bamboo_sapling',
+            'bamboo',
             'birch_sapling',
             'cherry_sapling',
             'jungle_sapling',
@@ -102,7 +104,6 @@ def tags():
             'crimson_fungus'
         ]
     }
-    blocks['saplinglike']['values'].extend(('bamboo_sapling', 'bamboo'))
     coral_ids = tuple(x.lower() for x in corals)
     blocks['coral_fans'] = {'values': [f'{x}_coral_fan' for x in coral_ids]}
     blocks['dead_coral_plants'] = {'values': [f'dead_{x}_coral' for x in coral_ids]}
@@ -188,6 +189,8 @@ def tags():
     blocks['stepable_planks'] = {
         'values': [
             'acacia_planks',
+            'bamboo_planks',
+            'bamboo_mosaic_block',
             'birch_planks',
             'cherry_planks',
             'jungle_planks',
@@ -236,7 +239,6 @@ def tags():
             'oxidized_cut_copper'
         ]
     }
-    blocks['stepable_planks']['values'].extend(('bamboo_planks', 'bamboo_mosaic_block'))
     blocks['planks'] = {
         'values': ['#planks', 'bamboo_mosaic']
     }
