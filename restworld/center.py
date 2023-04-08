@@ -74,11 +74,11 @@ def room():
 
         summon(Entity('cow').tag('mob_display'), r(-6, 2.5, 0), all),
         summon(Entity('polar_bear').tag('mob_display'), r(-6, 2.5, 0), all),
-        summon(Entity('panda').tag('mob_display'), r(-6, 2.5, 0), all),
+        summon(Entity('panda', {'MainGene': 'playful'}).tag('mob_display'), r(-6, 2.5, 0), all),
         summon(Horse('horse', Horse.Color.CHESTNUT, Horse.Markings.WHITE).tag('mob_display'), r(-6, 2.5, 0), all),
         summon(Entity('camel').tag('mob_display'), r(-6, 2.5, 0), all),
 
-        summon(Entity('sniffer').tag('mob_display'), r(6, 2.5, 0), all),
+        summon(Entity('sniffer').tag('mob_display', 'keeper'), r(6, 2.5, 0), all),
         summon(Entity('llama').tag('mob_display'), r(6, 2.5, 0), all),
         summon(Entity('mooshroom').tag('mob_display'), r(6, 2.5, 0), all),
         summon(Entity('pig').tag('mob_display'), r(6, 2.5, 0), all),

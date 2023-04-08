@@ -201,7 +201,10 @@ class Room(FunctionSet):
     def mob_placer(self, *args, **kwargs):
         tag_list = kwargs.setdefault('tags', [])
         if not isinstance(tag_list, list):
-            tag_list = list(tag_list)
+            if isinstance(tag_list, str):
+                tag_list = [tag_list]
+            else:
+                tag_list = list(tag_list)
         tag_list.append(self.name)
         kwargs['tags'] = tag_list
         return MobPlacer(*args, **kwargs)

@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import Callable
+
 from pynecraft import info
 from pynecraft.base import EAST, NORTH, SOUTH, WEST, r, to_id, to_name, Nbt
 from pynecraft.commands import Block, data, e, execute, fill, fillbiome, function, kill, setblock, tag, JsonText
@@ -10,11 +12,15 @@ from restworld.rooms import Room, label
 from restworld.world import fast_clock, main_clock, restworld
 
 
-def crop(stages, which, x, y, z, step, name='age', extra=None):
+def crop(stages, which: str | Callable[[int, str], Block], x, y, z, step, name='age', extra=None):
     base_state = Nbt.as_nbt(extra) if extra else Nbt()
     for s in range(0, 3):
-        yield fill(r(x, y, z - s), r(x + 2, y, z - s),
-                   Block(which, base_state.merge({name: stages[(step.i + s) % len(stages)]})))
+        stage = stages[((step.i + s) % len(stages))]
+        if isinstance(which, str):
+            block = Block(which, base_state.merge({name: stage}))
+        else:
+            block = which(stage, name)
+        yield fill(r(x, y, z - s), r(x + 2, y, z - s), block)
     if z == 0:
         yield Sign.change(r(x + 3, 2, -1),
                           (None, None, f'{name.title()}: {stages[(step.i + 1) % len(stages)]} of {step.count - 2}'))
@@ -25,8 +31,14 @@ def room():
 
     stages_3 = list(range(0, 3)) + [2, 2]
 
+    def torchflower_crop(stage: int, name: str) -> Block:
+        if stage >= 2:
+            return Block('torchflower')
+        else:
+            return Block('torchflower_crop', {name: stage})
+
     def crops_3_loop(step):
-        yield from crop(stages_3, 'torchflower_crop', 0, 3, 0, step)
+        yield from crop(stages_3, torchflower_crop, 0, 3, 0, step)
 
     room.loop('3_crops', main_clock).loop(crops_3_loop, stages_3)
 
@@ -38,14 +50,22 @@ def room():
 
     room.loop('4_crops', main_clock).loop(crops_4_loop, stages_4)
 
+    def pitcher_crop(stage: int, name: str) -> Block:
+        if stage < 3:
+            return Block('air')
+        else:
+            return Block('pitcher_crop', {name: stage, 'half': 'upper'})
+
     stages_5_upper = list(range(0, 5)) + [4, 4]
     stages_5_lower = list(range(0, 5)) + [4, 4]
 
     def crops_5_loop(step):
-        yield from crop(stages_5_upper, 'pitcher_crop', 0, 4, 0, step, name='age', extra={'half': 'upper'})
+        yield from crop(stages_5_upper, pitcher_crop, 0, 4, 0, step, name='age', extra={'half': 'upper'})
         yield from crop(stages_5_lower, 'pitcher_crop', 0, 3, 0, step, name='age', extra={'half': 'lower'})
 
-    room.loop('5_crops', main_clock).loop(crops_5_loop, stages_5_upper)
+    # setting the top block to air drops a pitcher plant, the kill removes them.
+    room.loop('5_crops', main_clock).loop(crops_5_loop, stages_5_upper).add(
+        kill(e().nbt({'Item': {'id': 'minecraft:pitcher_plant'}})))
 
     def crops_8_loop(step):
         yield from crop(stages_8, 'wheat', 0, 3, 0, step)
@@ -54,12 +74,6 @@ def room():
 
     stages_8 = list(range(0, 8)) + [7, 7]
     room.loop('8_crops', main_clock).loop(crops_8_loop, stages_8)
-
-    room.function('torchflower_crop_init').add(
-        fill(r(0, 3, 0), r(2, 3, 0), ('torchflower_crop', {'age': 0})),
-        fill(r(0, 3, -1), r(2, 3, -1), ('torchflower_crop', {'age': 1})),
-        fill(r(0, 3, -2), r(2, 3, -2), ('torchflower_crop', {'age': 2}))
-    )
 
     def azalea_loop(step):
         yield setblock(r(0, 3, 0), step.elem.id)
@@ -356,5 +370,5 @@ def bamboo_funcs(room):
 
     room.loop('bamboo', main_clock).loop(bamboo_loop, range(0, 2 * max + 1))
     room.loop('bamboo_soil', main_clock).loop(lambda step: setblock(r(0, 2, 1), step.elem), (
-        'Grass Block', 'Dirt', 'Coarse Dirt', 'Rooted Dirt', 'Podzol', 'Sand', 'Moss Block', 'Mycelium', 'Red Sand',
-        'Mud'))
+        'Grass Block', 'Dirt', 'Coarse Dirt', 'Rooted Dirt', 'Podzol', 'Sand', 'Gravel', 'Moss Block', 'Mycelium',
+        'Red Sand', 'Mud'))
