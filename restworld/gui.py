@@ -3,7 +3,7 @@ from __future__ import annotations
 from pynecraft import commands
 from pynecraft.base import EAST, NORTH, Nbt, WEST, r
 from pynecraft.commands import BOSSBAR_COLORS, BOSSBAR_STYLES, Block, CREATIVE, Entity, LEVELS, SURVIVAL, a, bossbar, \
-    clone, data, e, execute, fill, function, gamemode, give, item, kill, p, setblock, summon
+    clone, data, e, execute, fill, function, gamemode, give, item, kill, p, setblock, summon, return_, effect
 from pynecraft.info import must_give_items
 from pynecraft.simpler import Item, ItemFrame, WallSign, Sign
 from restworld.rooms import Room, label
@@ -18,7 +18,8 @@ def room():
 
     # These offsets are used inside beacon functions so we can center the calculations under the middle of the pyramid,
     # which is easier to reason about.
-    at = execute().positioned(r(0, -4, -5)).run
+    at = execute().at(e().tag('beacon_home')).positioned(r(0, -4, -5)).run
+    primary = (-1, 3, 8, 5, 5)
 
     def beacon_loop(step):
         depth = step.elem
@@ -29,18 +30,30 @@ def room():
         if start_gold >= 0:
             yield at(fill(r(4, 5, 4), r(-4, 5 - start_gold, -4), 'gold_block').replace('chiseled_quartz_block'))
 
-        if step.i == 4:
-            yield at(data().merge(r(0, 6, 0), {'Secondary': -1}))
-        elif step.i == 5:
-            yield at(data().merge(r(0, 6, 0), {'Secondary': 10}))
+        secondary = 10 if step.i == 5 else -1
+
+        yield at(data().merge(r(0, 6, 0), {'Primary': primary[step.elem], 'Secondary': secondary}))
+        yield at(WallSign.change(r(-1, 6, 0), (None, f'Pyramid Height: {step.elem}')))
 
     # Can't use bounce because we need to show two things at full strength.
-    room.loop('beacon', slow_clock).loop(beacon_loop, (0, 1, 2, 3, 4, 4, 3, 2, 1))
-    room.function('beacon_enter').add(
+    beacon_on = room.score('beacon_on')
+    room.loop('beacon', slow_clock).add(
+        execute().unless().score(beacon_on).matches(1).run(return_(0))).loop(
+        beacon_loop, (0, 1, 2, 3, 4, 4, 3, 2, 1))
+    start = room.function('beacon_start', home=False).add(
         at(fill(r(0, 1, 0), r(0, 5, 0), 'gold_block')),
         at(clone(r(0, -5, 1), r(0, -5, 1), r(0, 6, 1))))
-    room.function('beacon_exit').add(
-        at(fill(r(0, 1, 0), r(0, 5, 0), 'chiseled_quartz_block')))
+    stop = room.function('beacon_stop', home=False).add(
+        at(fill(r(0, 1, 0), r(0, 5, 0), 'chiseled_quartz_block')),
+        effect().clear(p()))
+    room.function('beacon_on', home=False).add(beacon_on.set(1), function(start))
+    off = room.function('beacon_off', home=False).add(beacon_on.set(0), function(stop))
+    room.function('beacon_enter').add(execute().if_().score(beacon_on).matches(1).run(function(start)))
+    room.function('beacon_exit').add(function(stop))
+    room.function('beacon_init').add(
+        at(WallSign((None, 'Pyremid Height: 0')).place(r(-1, 6, 0), WEST)),
+        at(label(r(-5, 2, -2), 'Beacon')),
+        function(off))
 
     bossbar_which = room.score('bossbar_which')
     room.function('bossbar_exit').add(bossbar().set('restworld:bossbar').visible(False))
