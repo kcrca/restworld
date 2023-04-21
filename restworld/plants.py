@@ -115,23 +115,7 @@ def room():
         yield Sign.change(r(1, 2, 0), (None, None, 'Stage: %d of 3' % step.stage))
 
     room.loop('cocoa', main_clock).loop(cocoa_loop, range(0, 3), bounce=True)
-    room.function('coral_init').add(WallSign((None, None, 'Coral')).place(r(0, 2, -2), WEST, water=True))
 
-    volume = Region(r(-1, 2, -5), r(1, 4, 1))
-    watered = {'waterlogged': True}
-
-    def coral_loop(step):
-        yield volume.replace(('%s Coral' % step.elem, watered), '#coral_plants', )
-        yield volume.replace('%s Coral Block' % step.elem, '#coral_blocks')
-        yield volume.replace(('%s Coral Fan' % step.elem, watered), '#restworld:coral_fans')
-        yield volume.replace_facing(('%s Coral Wall Fan' % step.elem, watered), '#wall_corals')
-        yield volume.replace(('Dead %s Coral' % step.elem, watered), '#restworld:dead_coral_plants', )
-        yield volume.replace('Dead %s Coral Block' % step.elem, '#restworld:dead_coral_blocks')
-        yield volume.replace(('Dead %s Coral Fan' % step.elem, watered), '#restworld:dead_coral_fans')
-        yield volume.replace_facing(('Dead %s Coral Wall Fan' % step.elem, watered), '#restworld:dead_wall_corals')
-        yield Sign.change(r(0, 2, -2), (None, step.elem))
-
-    room.loop('coral', main_clock).loop(coral_loop, ('Brain', 'Bubble', 'Fire', 'Horn', 'Tube'))
     room.loop('dead_bush_soil', main_clock).loop(lambda step: setblock(r(0, 2, 1), step.elem),
                                                  ('Sand', 'Red Sand', 'Terracotta', 'Dirt', 'Podzol', 'Mud'))
 
@@ -163,11 +147,6 @@ def room():
             yield setblock(r(0, 1, -i), ('farmland', {'moisture': 7 - i}))
 
     room.loop('farmland_strip', main_clock).loop(farmland_loop, range(0, 1))
-    kelp_init = room.function('kelp_init').add(fill(r(0, 2, 0), r(2, 6, 0), 'water'))
-    for x in range(0, 3):
-        kelp_init.add(fill(r(x, 2, 0), r(x, 5, 0), 'kelp'))
-        if x > 0:
-            kelp_init.add(setblock(r(x, 6, 0), ('kelp', {'age': 25})))
     room.function('lily_pad_init').add(WallSign((None, 'Lily Pad')).place(r(0, 2, 0), WEST))
 
     def mushroom_loop(step):
@@ -219,12 +198,6 @@ def room():
         yield Sign.change(r(1, 2, 0), (None, None, 'Stage: %d of 4' % step.stage))
 
     room.loop('propagule', main_clock).loop(propagule_loop, range(4))
-
-    def sea_pickles_loop(step):
-        yield setblock(r(0, 3, 0), ('sea_pickle', {'pickles': step.elem}))
-        yield setblock(r(0, 3, -2), ('sea_pickle', {'waterlogged': False, 'pickles': step.elem}))
-
-    room.loop('sea_pickles', main_clock).loop(sea_pickles_loop, range(1, 4))
 
     room.function('shrooms_init').add(label(r(1, 2, 1), 'Vine Age 25'))
 
@@ -372,3 +345,36 @@ def bamboo_funcs(room):
     room.loop('bamboo_soil', main_clock).loop(lambda step: setblock(r(0, 2, 1), step.elem), (
         'Grass Block', 'Dirt', 'Coarse Dirt', 'Rooted Dirt', 'Podzol', 'Sand', 'Gravel', 'Moss Block', 'Mycelium',
         'Red Sand', 'Mud'))
+
+    water_funcs(room)
+
+
+def water_funcs(room):
+    volume = Region(r(-1, 2, -5), r(1, 4, 1))
+    watered = {'waterlogged': True}
+
+    def coral_loop(step):
+        yield volume.replace(('%s Coral' % step.elem, watered), '#coral_plants', )
+        yield volume.replace('%s Coral Block' % step.elem, '#coral_blocks')
+        yield volume.replace(('%s Coral Fan' % step.elem, watered), '#restworld:coral_fans')
+        yield volume.replace_facing(('%s Coral Wall Fan' % step.elem, watered), '#wall_corals')
+        yield volume.replace(('Dead %s Coral' % step.elem, watered), '#restworld:dead_coral_plants', )
+        yield volume.replace('Dead %s Coral Block' % step.elem, '#restworld:dead_coral_blocks')
+        yield volume.replace(('Dead %s Coral Fan' % step.elem, watered), '#restworld:dead_coral_fans')
+        yield volume.replace_facing(('Dead %s Coral Wall Fan' % step.elem, watered), '#restworld:dead_wall_corals')
+        yield Sign.change(r(0, 2, -2), (None, step.elem))
+
+    room.loop('coral', main_clock).loop(coral_loop, ('Brain', 'Bubble', 'Fire', 'Horn', 'Tube'))
+    room.function('coral_init').add(WallSign((None, None, 'Coral')).glowing(True).place(r(0, 2, -2), WEST, water=True))
+
+    kelp_init = room.function('kelp_init').add(fill(r(0, 2, 0), r(2, 6, 0), 'water'))
+    for x in range(0, 3):
+        kelp_init.add(fill(r(x, 2, 0), r(x, 5, 0), 'kelp'))
+        if x > 0:
+            kelp_init.add(setblock(r(x, 6, 0), ('kelp', {'age': 25})))
+
+    def sea_pickles_loop(step):
+        yield setblock(r(0, 3, 0), ('sea_pickle', {'pickles': step.elem}))
+        yield setblock(r(0, 3, -2), ('sea_pickle', {'waterlogged': False, 'pickles': step.elem}))
+
+    room.loop('sea_pickles', main_clock).loop(sea_pickles_loop, range(1, 4))

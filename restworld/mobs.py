@@ -662,7 +662,7 @@ def aquatic(room):
         fish.tag(kind.lower())
         placer = room.mob_placer(r(-int(i / 4), 3.2, int(i % 4)), EAST, adults=True)
         t_fish.add(placer.summon(fish))
-    t_fish.add(WallSign().messages(('Naturally', 'Occurring', u'Tropical Fish', u'→ → →')).place(
+    t_fish.add(WallSign().messages(('Naturally', 'Occurring', u'Tropical Fish', u'→ → →')).glowing(True).place(
         r(1, 2, (len(tropical_fish) - 1) % 4), EAST, water=True))
 
     axolotl_placer = room.mob_placer(r(-0.4, 3, 0), WEST, None, 1.8)
@@ -718,7 +718,8 @@ def all_fish_funcs(room):
     kinds = tuple(tropical_fish.keys())
 
     def all_fish_init():
-        yield WallSign().messages((None, 'All Possible', 'Tropical Fish', '← ← ←')).place(r(0, 2, 0), EAST, water=True)
+        yield WallSign().messages((None, 'All Possible', 'Tropical Fish', '← ← ←')).glowing(True).place(
+            r(0, 2, 0), EAST, water=True)
         start, facing, delta = r(0, 3.2, 0), EAST, 1
         placer = room.mob_placer(start, facing, delta, adults=True)
         for i in range(0, 12):
