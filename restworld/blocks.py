@@ -772,31 +772,32 @@ def color_functions(room):
         yield from colorings(False, step.elem)
         yield from colored_signs(step.elem, render_signs)
 
+    mob_nbt = {'Time': True, 'NoAI': True, 'Silent': True}
     horse_nbt = Nbt({
         'Variant': 5, 'Tags': ['colorings_horse', 'colorings_item', 'colorings_names'],
-        'ArmorItem': Item.nbt_for('leather_horse_armor'), 'Rotation': [-25, 0], 'Tame': True, 'NoAI': True,
-        'Silent': True})
+        'ArmorItem': Item.nbt_for('leather_horse_armor'), 'Rotation': [-25, 0]}).merge(mob_nbt)
     dog_nbt = Nbt(
-        {'Owner': 'dummy', 'Tags': ['colorings_dog', 'colorings_item'], 'Sitting': True, 'Tame': True, 'NoAI': True})
+        {'Owner': 'dummy', 'Tags': ['colorings_dog', 'colorings_item'], 'Sitting': True}).merge(mob_nbt)
     cat_nbt = Nbt(
         {'variant': 'persian', 'Owner': 'dummy', 'Tags': ['colorings_cat', 'colorings_item'], 'ColorColor': 3,
-         'Rotation': [90, 0], 'Tame': True, 'NoAI': True})
+         'Rotation': [90, 0]}).merge(mob_nbt)
+    llama_nbt = Nbt(
+        {'Tags': ['colorings_llama', 'colorings_item', 'colorings_names'], 'Variant': 1, 'Rotation': [20, 0],
+         'Leashed': True}).merge(mob_nbt)
+    sheep_nbt = Nbt(
+        {'Tags': ['colorings_sheep', 'colorings_item'], 'Variant': 1, 'Rotation': [-35, 0], 'Leashed': True}).merge(
+        mob_nbt)
+    stand_nbt = {'Tags': ['colorings_armor_stand', 'colorings_item'], 'Rotation': [30, 0]}
     room.function('colorings_init').add(
         kill_em(e().tag('colorings_item')),
-
         Entity('item_frame', {
             'Facing': 3, 'Tags': ['colorings_item_frame', 'colorings_item'], 'Fixed': True}).summon(r(-4.5, 4, 0.5)),
         Entity('horse', horse_nbt).summon(r(0.7, 2, 4.4)),
         Entity('wolf', dog_nbt).summon(r(-8, 2, 2)),
         Entity('cat', cat_nbt).summon(r(-2, 2, 2)),
-        Entity('armor_stand', {
-            'Tags': ['colorings_armor_stand', 'colorings_item'], 'Rotation': [30, 0]}).summon(r(-1.1, 2, 3)),
-        Entity('llama', {
-            'Tags': ['colorings_llama', 'colorings_item', 'colorings_names'], 'Variant': 1, 'Tame': True, 'NoAI': True,
-            'Silent': True, 'Rotation': [20, 0], 'Leashed': True}).summon(r(-11, 2, 5.8)),
-        Entity('sheep', {
-            'Tags': ['colorings_sheep', 'colorings_item'], 'Variant': 1, 'NoAI': True, 'Silent': True,
-            'Rotation': [-35, 0], 'Leashed': True}).summon(r(-9.0, 2, 5.0)),
+        Entity('armor_stand', stand_nbt).summon(r(-1.1, 2, 3)),
+        Entity('llama', llama_nbt).summon(r(-11, 2, 5.8)),
+        Entity('sheep', sheep_nbt).summon(r(-9.0, 2, 5.0)),
 
         execute().as_(e().tag('colorings_names')).run(data().merge(s(), {'CustomNameVisible': True})),
 
