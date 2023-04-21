@@ -2,13 +2,13 @@ from __future__ import annotations
 
 import copy
 
-from pynecraft.base import EQ, GAMETIME, OVERWORLD, THE_END, THE_NETHER, r, TimeSpec
+from pynecraft.base import EQ, GAMETIME, OVERWORLD, THE_END, THE_NETHER, r, TimeSpec, NORTH, SOUTH, EAST, WEST
 from pynecraft.commands import MOD, MOVE, RAIN, RESULT, clone, data, e, execute, fill, \
     function, gamerule, kill, p, scoreboard, setblock, tag, teleport, time, tp, weather, FORCE, Score, schedule, \
     REPLACE, s, MINUS
 from pynecraft.enums import ScoreCriteria
 from pynecraft.function import Function
-from pynecraft.simpler import VILLAGER_PROFESSIONS
+from pynecraft.simpler import VILLAGER_PROFESSIONS, WallSign
 from restworld.rooms import Room
 from restworld.world import clock, kill_em, restworld, tick_clock
 
@@ -70,8 +70,7 @@ def room():
         return (
             use_min_fill(100, after, before),
             execute().at(e().tag('full_reset_home')).run(setblock((0, 105, -78), after)),
-            execute().at(e().tag('aquatic_anchor')).run(fill(r(-7, -1, 0), r(7, 5, 20), after).replace(before)),
-        )
+            execute().at(e().tag('aquatic_anchor')).run(fill(r(-7, -1, 0), r(7, 5, 20), after).replace(before)))
 
     def kill_if_time():
         ex = execute()
@@ -142,6 +141,16 @@ def room():
             execute().if_().score(clock_toggle).matches(1).run(function('restworld:global/clock_off')),
         ),
     )
+
+    def clock_sign(dir):
+        name = f'clock_toggle_sign_{dir}_init'
+        room.function(name, home=tag(s()).add('clock_sign')).add(
+            WallSign(state={'waterlogged': True}).messages(
+                (None, 'Toggle Clock'), (function('restworld:global/clock_toggle'),)).place(r(0, 2, 0), dir),
+            setblock(r(0, 1, 0), 'lime_concrete'))
+
+    for dir in (NORTH, SOUTH, EAST, WEST):
+        clock_sign(dir)
 
     # The death functions
     death_home = room.home_func('death')
