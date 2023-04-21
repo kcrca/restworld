@@ -69,19 +69,21 @@ def room():
     all = {'Tags': ['center', 'mob_display'], 'PersistenceRequired': True}
     trim_stand = Entity('armor_stand', all).tag('center_stand')
     armor_for(trim_stand, 'iron', {'tag': {'Trim': {'pattern': 'dune', 'material': 'emerald'}}})
+    silent = {'Silent': True}
     room.function('mobs_display_init').add(
         kill(e().tag('mob_display')),
 
-        summon(Entity('cow').tag('mob_display'), r(-6, 2.5, 0), all),
-        summon(Entity('polar_bear').tag('mob_display'), r(-6, 2.5, 0), all),
-        summon(Entity('panda', {'MainGene': 'playful'}).tag('mob_display'), r(-6, 2.5, 0), all),
-        summon(Horse('horse', Horse.Color.CHESTNUT, Horse.Markings.WHITE).tag('mob_display'), r(-6, 2.5, 0), all),
-        summon(Entity('camel').tag('mob_display'), r(-6, 2.5, 0), all),
+        summon(Entity('cow', silent).tag('mob_display'), r(-6, 2.5, 0), all),
+        summon(Entity('polar_bear', silent).tag('mob_display'), r(-6, 2.5, 0), all),
+        summon(Entity('panda', {'MainGene': 'playful', 'Silent': True}).tag('mob_display'), r(-6, 2.5, 0), all),
+        summon(Horse('horse', Horse.Color.CHESTNUT, Horse.Markings.WHITE, silent).tag('mob_display'), r(-6, 2.5, 0),
+               all),
+        summon(Entity('camel', silent).tag('mob_display'), r(-6, 2.5, 0), all),
 
-        summon(Entity('sniffer').tag('mob_display', 'keeper'), r(6, 2.5, 0), all),
-        summon(Entity('llama').tag('mob_display'), r(6, 2.5, 0), all),
-        summon(Entity('mooshroom').tag('mob_display'), r(6, 2.5, 0), all),
-        summon(Entity('pig').tag('mob_display'), r(6, 2.5, 0), all),
+        summon(Entity('sniffer', silent).tag('mob_display', 'keeper'), r(6, 2.5, 0), all),
+        summon(Entity('llama', silent).tag('mob_display'), r(6, 2.5, 0), all),
+        summon(Entity('mooshroom', silent).tag('mob_display'), r(6, 2.5, 0), all),
+        summon(Entity('pig', silent).tag('mob_display'), r(6, 2.5, 0), all),
 
         trim_stand.summon(r(11, 2, 1), facing=NORTH),
 
