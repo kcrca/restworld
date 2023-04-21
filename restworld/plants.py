@@ -110,8 +110,8 @@ def room():
     def cocoa_loop(step):
         yield setblock(r(1, 4, 0), ('cocoa', {'age': step.elem, 'facing': WEST}))
         yield setblock(r(-1, 4, 0), ('cocoa', {'age': step.elem, 'facing': EAST}))
-        yield setblock(r(0, 4, 1), ('cocoa', {'age': step.elem, 'facing': NORTH}))
-        yield setblock(r(0, 4, -1), ('cocoa', {'age': step.elem, 'facing': SOUTH}))
+        yield setblock(r(0, 4, 1), ('cocoa', {'age': (step.elem + 1) % step.count, 'facing': NORTH}))
+        yield setblock(r(0, 4, -1), ('cocoa', {'age': (step.elem + 2) % step.count, 'facing': SOUTH}))
         yield Sign.change(r(1, 2, 0), (None, None, 'Stage: %d of 3' % step.stage))
 
     room.loop('cocoa', main_clock).loop(cocoa_loop, range(0, 3), bounce=True)
@@ -287,7 +287,7 @@ def room():
 
     def tulips_loop(step):
         yield setblock(r(0, 3, 0), f'{to_id(step.elem)}_tulip')
-        yield Sign.change(r(1, 2, 0), (None, None, step.elem))
+        yield Sign.change(r(1, 2, 0), (None, step.elem))
 
     room.loop('tulips', main_clock).loop(tulips_loop, tulips)
 
