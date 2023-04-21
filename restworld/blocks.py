@@ -8,7 +8,7 @@ from pynecraft.base import DOWN, EAST, EQ, NORTH, Nbt, SOUTH, WEST, good_facing,
 from pynecraft.commands import Block, Entity, MOD, MOVE, clone, data, e, execute, fill, function, good_block, \
     item, kill, s, say, setblock, summon, tag, Commands
 from pynecraft.function import Loop
-from pynecraft.info import Color, colors, shards, stems
+from pynecraft.info import Color, colors, sherds, stems
 from pynecraft.simpler import Item, ItemFrame, Region, Sign, WallSign, TextDisplay
 from restworld.rooms import Room, label
 from restworld.world import fast_clock, kill_em, main_clock, restworld
@@ -164,12 +164,12 @@ def room():
         'Deepslate|Bricks', 'Deepslate|Tiles', 'Cobbled|Deepslate', 'Reinforced|Deepslate'))
     # Have to replace it with air first, so air=True ... https://bugs.mojang.com/browse/MC-260399
     # Also, the order for sides is weird, https://bugs.mojang.com/browse/MC-260399
-    shard_names = tuple(shard.replace('_pottery_shard', '').title() for shard in shards)
+    sherd_names = tuple(sherd.replace('_pottery_sherd', '').title() for sherd in sherds)
     _, pot_loop = blocks(
         'decorated_pot', NORTH, ('decorated_pot',) + tuple(
             Block('decorated_pot',
-                  nbt={'shards': [shards[i], shards[(i + 1) % len(shards)], shards[(i + 2) % len(shards)]]},
-                  name=f'Decorated Pot|{shard_names[i]}') for i in range(len(shards))), air=True, clock=fast_clock)
+                  nbt={'sherds': [sherds[i], sherds[(i + 1) % len(sherds)], sherds[(i + 2) % len(sherds)]]},
+                  name=f'Decorated Pot|{sherd_names[i]}') for i in range(len(sherds))), air=True, clock=fast_clock)
 
     # # Can't stop pot item from being generated, so ... https://bugs.mojang.com/browse/MC-260301
     # room.function('decorated_pot_enter').add(setblock(r(1, -1, 0), 'redstone_block'))

@@ -24,8 +24,7 @@ particles = [
     ActionDesc(Particle.DAMAGE_INDICATOR),
     ActionDesc(Particle.DOLPHIN),
     ActionDesc(Particle.DRAGON_BREATH),
-    ActionDesc(Particle.DRIPPING_CHERRY_LEAVES, 'Dripping|Cherry Leaves', note='Falling, Landing',
-               also=(Particle.FALLING_CHERRY_LEAVES, Particle.LANDING_CHERRY_LEAVES)),
+    ActionDesc(Particle.CHERRY_LEAVES, 'Cherry Leaves'),
     ActionDesc(Particle.DRIPPING_LAVA, note='Falling, Landing', also=(
         Particle.FALLING_LAVA, Particle.LANDING_LAVA, Particle.DRIPPING_DRIPSTONE_LAVA,
         Particle.FALLING_DRIPSTONE_LAVA)),
@@ -224,7 +223,7 @@ def room():
     )
     room.function('dragon_breath_finish', home=False).add(
         data().merge(e().tag('particle_dragonball').limit(1), {'Motion': [0, -0.5, -0.5]}))
-    cherry = room.function('dripping_cherry_leaves_init', home=False).add(
+    cherry = room.function('cherry_leaves_init', home=False).add(
         fill(r(2, 4, 2), r(-2, 4, -2), 'cherry_leaves'), floor('grass_block'))
     for x in range(-3, 4):
         for z in range(-3, 4):

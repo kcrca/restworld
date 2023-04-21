@@ -1,10 +1,14 @@
 from __future__ import annotations
 
-from pynecraft.base import EQ, GAMETIME, OVERWORLD, THE_END, THE_NETHER, r
+import copy
+
+from pynecraft.base import EQ, GAMETIME, OVERWORLD, THE_END, THE_NETHER, r, TimeSpec
 from pynecraft.commands import MOD, MOVE, RAIN, RESULT, clone, data, e, execute, fill, \
-    function, gamerule, kill, p, s, scoreboard, setblock, tag, teleport, time, tp, weather, FORCE
+    function, gamerule, kill, p, scoreboard, setblock, tag, teleport, time, tp, weather, FORCE, Score, schedule, \
+    REPLACE, s, MINUS
 from pynecraft.enums import ScoreCriteria
 from pynecraft.function import Function
+from pynecraft.simpler import VILLAGER_PROFESSIONS
 from restworld.rooms import Room
 from restworld.world import clock, kill_em, restworld, tick_clock
 
@@ -239,3 +243,27 @@ def room():
         # Make sure the TNT never goes off
         execute().as_(e().tag('block_tnt')).run(data().merge(s(), {'Fuse': 0x7fff})),
     )
+
+    census = room.function('census', home=False).add(tag(e().tag('all')).remove('none'))
+    middle = e().tag('census_taker')
+    prof_scores = {}
+    base_selector = e().type('villager').distance((None, 50))
+    for profession in ('All', 'Kid') + VILLAGER_PROFESSIONS:
+        score = Score(profession.lower(), 'census')
+        prof_scores[profession] = score
+        selector = copy.deepcopy(base_selector)
+        if profession == 'Kid':
+            selector = selector.not_nbt({'Age': 0})
+        elif profession != 'All':
+            selector = selector.nbt({'VillagerData': {'profession': f'minecraft:{profession.lower()}'}})
+        census.add(
+            score.set(0),
+            execute().at(middle).as_(selector).run(score.add(1)),
+            tag(selector).add(profession.lower()))
+    employed = Score('employed', 'census')
+    census.add(
+        employed.operation(EQ, prof_scores['All']),
+        employed.operation(MINUS, prof_scores['None']),
+        prof_scores['None'].operation(MINUS, prof_scores['Kid']),
+        tag(e().tag('kid')).remove('none'),
+        schedule().function("minecraft:census", TimeSpec('15s'), REPLACE))
