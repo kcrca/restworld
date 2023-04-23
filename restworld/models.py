@@ -119,7 +119,7 @@ def room():
     wall_used = {3: span(1, 5)}
     room = SignedRoom('models', restworld, EAST, (None, 'Models',), mode_sign, modes,
                       (Wall(7, EAST, 1, -1, wall_used),))
-    room.reset_at((-5, 0))
+    room.reset_at((-5, 1))
 
     room.function('model_signs_init').add(function('restworld:models/signs'))
 
