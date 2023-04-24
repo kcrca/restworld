@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from pynecraft.base import DAYTIME, EAST, NOON, NORTH, WEST, good_facing, r
+from pynecraft.base import DAYTIME, EAST, NOON, NORTH, WEST, as_facing, r
 from pynecraft.commands import RESULT, data, e, execute, fill, function, kill, setblock, summon, time, worldborder
 from pynecraft.info import moon_phases
 from pynecraft.simpler import Item, WallSign
@@ -25,11 +25,11 @@ def room():
         (moon_sign(0, 8, i + (1 if i > 3 else 0), *phase) for i, phase in enumerate(moon_phases)),
         kill(e().tag('time_frame')),
         summon(('item_frame',
-                {'Facing': good_facing(WEST).number, 'Item': Item.nbt_for('clock'),
+                {'Facing': as_facing(WEST).number, 'Item': Item.nbt_for('clock'),
                  'Tags': ['time_frame', room.name], 'Fixed': True}),
                r(0, 8, 4)),
         summon(('item_frame',
-                {'Facing': good_facing(EAST).number, 'Item': Item.nbt_for('clock'),
+                {'Facing': as_facing(EAST).number, 'Item': Item.nbt_for('clock'),
                  'Tags': ['time_frame', room.name], 'Fixed': True}),
                r(-10, 8, 4)),
         label(r(-1, 7, 4), 'Reset Room', facing=WEST),

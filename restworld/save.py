@@ -1,4 +1,4 @@
-from pynecraft.base import EAST, Nbt, SOUTH, d, good_facing, r
+from pynecraft.base import EAST, Nbt, SOUTH, d, as_facing, r
 from pynecraft.commands import Entity, FURTHEST, INT, RESULT, data, e, execute, function, kill, s, say, setblock, \
     summon, tag, tp
 from pynecraft.simpler import Item, Offset
@@ -84,7 +84,7 @@ def room():
 
     helmet = Item.nbt_for('turtle_helmet')
     detector_stand = Entity('armor_stand',
-                            dict(Rotation=good_facing(EAST).rotation, Small=True, NoGravity=True,
+                            dict(Rotation=as_facing(EAST).rotation, Small=True, NoGravity=True,
                                  ArmorItems=[{}, {}, {}, helmet])).tag('save_detector')
     block_nbt = Nbt(sizeY=SAVE_HEIGHT, posX=0, posY=1, posZ=-1, ignoreEntities=False)
 
@@ -111,7 +111,7 @@ def room():
         execute().if_().score(found).matches(0).run(x.add(1)),
         execute().if_().score(found).matches(1).run(z.add(1)),
         as_detector.if_().block(r(0, 0, 0), MARKER).run(
-            data().merge(s(), {'Rotation': good_facing(SOUTH).rotation}),
+            data().merge(s(), {'Rotation': as_facing(SOUTH).rotation}),
             found.add(1),
         ),
         execute().if_().score(step_num).matches((MAX_STEPS, None)).run(say("NO END FOUND")),

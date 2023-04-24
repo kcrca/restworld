@@ -6,10 +6,10 @@ from copy import deepcopy
 from enum import Enum
 from typing import Callable, Iterable, Tuple
 
-from pynecraft.base import FacingDef, Nbt, ROTATION_180, ROTATION_270, ROTATION_90, UP, r, rotated_facing, to_name, \
+from pynecraft.base import FacingDef, Nbt, ROTATION_180, ROTATION_270, ROTATION_90, UP, r, rotate_facing, to_name, \
     ORANGE, BLUE
 from pynecraft.commands import Block, BlockDef, CLEAR, Command, Commands, Entity, EntityDef, JsonText, NEAREST, \
-    Position, Score, SignMessages, a, comment, e, execute, function, good_block, good_entity, good_facing, good_score, \
+    Position, Score, SignMessages, a, comment, e, execute, function, as_block, as_entity, as_facing, as_score, \
     kill, p, schedule, scoreboard, setblock, summon, tag, tellraw, tp, weather
 from pynecraft.enums import ScoreCriteria
 from pynecraft.function import DataPack, Function, FunctionSet, LATEST_PACK_VERSION, Loop
@@ -19,7 +19,7 @@ from pynecraft.simpler import WallSign, TextDisplay
 def named_frame_item(block: BlockDef = None, name=None, damage=None) -> Nbt:
     if not block and not name:
         return Nbt({'display': {}})
-    block = good_block(block)
+    block = as_block(block)
     tag_nbt = Nbt({'display': {'Name': str(JsonText.text(str(name if name else block.name))), }})
     if damage:
         tag_nbt.update(damage)
@@ -30,7 +30,7 @@ def named_frame_item(block: BlockDef = None, name=None, damage=None) -> Nbt:
 
 
 def ensure(pos: Position, block: BlockDef, nbt=None):
-    block = good_block(block)
+    block = as_block(block)
     to_place = block.clone()
     to_place.merge_nbt(nbt)
     return execute().unless().block(pos, block).run(setblock(pos, to_place))
@@ -52,7 +52,7 @@ def label(pos: Position, txt: str, facing=UP, invis=True, tags=(), block=Block('
             kill(e().type('item_frame').tag('label').sort(NEAREST).distance((None, 1)).limit(1))),
         summon('item_frame', pos,
                named_frame_item(block, txt).merge(
-                   {'Invisible': invis, 'Facing': good_facing(facing).number, 'Tags': tags, 'Fixed': True})),
+                   {'Invisible': invis, 'Facing': as_facing(facing).number, 'Tags': tags, 'Fixed': True})),
     )
 
 
@@ -155,10 +155,10 @@ class Room(FunctionSet):
         self._record_room(text, room_name)
         text = tuple((JsonText.text(x).bold().italic() if x else x) for x in text)
         sign = WallSign(text)
-        facing = good_facing(facing)
+        facing = as_facing(facing)
         x, z, rot = facing.dx, facing.dz, facing.yaw
         anchor = '%s_anchor' % self.name
-        anchor_rot = rotated_facing(facing.name, ROTATION_180)
+        anchor_rot = rotate_facing(facing.name, ROTATION_180)
         marker = TextDisplay(None, {'Rotation': anchor_rot.rotation, 'shadow_radius': 0}).tag(anchor, 'anchor')
         self.add(Function('%s_room_init' % self.name).add(
             sign.place(r(x, 6, z), facing),
@@ -396,13 +396,13 @@ class MobPlacer:
         self.adults = adults
         self.auto_tag = auto_tag
         if not isinstance(facing, (float, int)):
-            facing = good_facing(facing)
+            facing = as_facing(facing)
             delta = delta if delta else 2
             kid_delta = kid_delta if kid_delta else 1.2
             try:
                 if not isinstance(delta, (float, int)) or not isinstance(kid_delta, (float, int)):
                     raise ValueError('Deltas must be floats when using "facing" name')
-                self.delta_x, _, self.delta_z = rotated_facing(facing, ROTATION_90).scale(delta)
+                self.delta_x, _, self.delta_z = rotate_facing(facing, ROTATION_90).scale(delta)
                 self.kid_x, _, self.kid_z = facing.scale(kid_delta)
                 self.rotation = facing.yaw
             except KeyError:
@@ -425,7 +425,7 @@ class MobPlacer:
         if tags and isinstance(tags, str):
             tags = list(tags)
         for mob in mobs:
-            mob = good_entity(mob)
+            mob = as_entity(mob)
             tmpl = mob.clone()
             if self.nbt:
                 tmpl.merge_nbt(self.nbt)
@@ -482,7 +482,7 @@ class MobPlacer:
 def say_score(*scores):
     say = [JsonText.text('scores:')]
     for s in scores:
-        s = good_score(s)
+        s = as_score(s)
         say.append(JsonText.text(str(s.target) + '='))
         say.append(JsonText.score(s))
     return tellraw(a(), *say)
@@ -491,13 +491,13 @@ def say_score(*scores):
 class Wall:
     def __init__(self, width, facing, x, z, used):
         self.width = width
-        self.facing = good_facing(facing)
+        self.facing = as_facing(facing)
         self.used = used
         self.x = x
         self.z = z
 
     def signs(self, desc_iter, get_sign):
-        dx, _, dz = rotated_facing(self.facing, ROTATION_270).scale(1)
+        dx, _, dz = rotate_facing(self.facing, ROTATION_270).scale(1)
         for y in self.used.keys():
             for h in self.used[y]:
                 sign = get_sign(next(desc_iter), self)

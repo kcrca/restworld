@@ -2,7 +2,7 @@ import re
 from collections import defaultdict
 
 from pynecraft import info
-from pynecraft.base import EAST, EQ, NORTH, d, r, to_name, good_facing
+from pynecraft.base import EAST, EQ, NORTH, d, r, to_name, as_facing
 from pynecraft.commands import REPLACE, comment, data, e, execute, fill, function, item, kill, p, schedule, setblock, \
     summon, tag
 from pynecraft.enums import ValueEnum
@@ -110,7 +110,7 @@ def room():
     model_home = e().tag('model_home')
 
     def mode_sign(action_desc, wall):
-        dx, _, dz = good_facing(wall.facing).scale(1)
+        dx, _, dz = as_facing(wall.facing).scale(1)
         return WallSign(action_desc.sign_text(), (
             fill(r(-dx, -2, -5), r(-dx, 2, 5), 'smooth_quartz').replace('emerald_block'),
             setblock(d(-dx, 0, -dz), 'emerald_block'),

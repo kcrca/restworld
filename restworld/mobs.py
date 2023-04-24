@@ -3,7 +3,7 @@ from __future__ import annotations
 import copy
 
 from pynecraft.base import EAST, EQ, NORTH, SOUTH, WEST, r, to_id
-from pynecraft.commands import Block, COLORS, Entity, LONG, MOD, RESULT, Score, data, e, execute, function, good_facing, \
+from pynecraft.commands import Block, COLORS, Entity, LONG, MOD, RESULT, Score, data, e, execute, function, as_facing, \
     item, kill, s, scoreboard, setblock, summon, tag, tp, clone, FORCE
 from pynecraft.enums import ScoreCriteria
 from pynecraft.info import axolotls, colors, horses, music_discs, tropical_fish
@@ -531,7 +531,7 @@ def monsters(room):
     def ravager_loop(step):
         ravager = Entity('ravager')
         if step.elem is not None:
-            ravager.passenger(Entity(step.elem, {'Rotation': good_facing(EAST).rotation}).merge_nbt(MobPlacer.base_nbt))
+            ravager.passenger(Entity(step.elem, {'Rotation': as_facing(EAST).rotation}).merge_nbt(MobPlacer.base_nbt))
         yield placer(r(1, 2, 0), EAST, adults=True).summon(ravager)
 
     room.loop('ravager', main_clock).add(kill_em(e().tag('ravager'))).loop(
@@ -540,7 +540,7 @@ def monsters(room):
     silverfish_dir = method_name()
     room.function('silverfish_init').add(placer(r(0.2, 2, 0), silverfish_dir, adults=True).summon('silverfish'))
 
-    east = good_facing(EAST)
+    east = as_facing(EAST)
     east_rot = {'Rotation': east.rotation, 'Facing': east.name}
 
     def skeleton_horse_loop(step):
@@ -575,7 +575,7 @@ def monsters(room):
         Entity(step.elem, nbt={'HandItems': [bow]}).tag('skeletal')), ('Skeleton', 'Stray'))
 
     spider_dir = NORTH
-    spider_facing = good_facing(spider_dir)
+    spider_facing = as_facing(spider_dir)
     spider_rot = {'Rotation': spider_facing.rotation, 'Facing': spider_facing.name}
 
     def spider_loop(step):

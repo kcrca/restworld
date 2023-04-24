@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from pynecraft.base import EAST, good_facing, r, NORTH
+from pynecraft.base import EAST, as_facing, r, NORTH
 from pynecraft.commands import data, e, execute, kill, s, summon
 from pynecraft.simpler import WallSign
 from restworld.rooms import Room
@@ -20,7 +20,7 @@ def room():
 
     room.function('wither_painting_init').add(
         kill(e().type('painting').distance((None, 10))),
-        summon('painting', r(0, 3, 0), {'variant': 'wither', 'facing': good_facing(NORTH).number}),
+        summon('painting', r(0, 3, 0), {'variant': 'wither', 'facing': as_facing(NORTH).number}),
         WallSign((None, 'Wither')).place(r(1, 3, 0), NORTH))
     room.function('wither_mob_init').add(WallSign(()).place(wither_sign_pos, wither_dir))
     # Rotating the wither skull shouldn't be needed, but it is (at least as of RestWorld 1.20

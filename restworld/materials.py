@@ -1,9 +1,9 @@
 from __future__ import annotations
 
 from pynecraft import info
-from pynecraft.base import EAST, EQ, NE, NORTH, NW, Nbt, NbtDef, SOUTH, WEST, good_facing, r, to_id
+from pynecraft.base import EAST, EQ, NE, NORTH, NW, Nbt, NbtDef, SOUTH, WEST, as_facing, r, to_id
 from pynecraft.commands import Block, BlockDef, Entity, MOD, PLUS, RESULT, data, e, execute, fill, fillbiome, function, \
-    good_block, item, kill, s, scoreboard, setblock, summon, tag
+    as_block, item, kill, s, scoreboard, setblock, summon, tag
 from pynecraft.enums import BiomeId
 from pynecraft.info import colors, stems, trim_materials, trim_patterns
 from pynecraft.simpler import Item, ItemFrame, Region, Sign, WallSign
@@ -340,7 +340,7 @@ def fencelike_functions(room):
     )
 
     def fencelike(block: BlockDef):
-        block = good_block(block)
+        block = as_block(block)
         yield volume.replace(block, '#restworld:fencelike')
         yield execute().at(e().tag('fencelike_home')).run(data().merge(r(6, 2, 0), block.sign_nbt))
 
@@ -597,7 +597,7 @@ def trim_functions(room):
                 stand = base_stand.clone().tag(self.tag).merge_nbt({'CustomName': t.title()})
                 self.armor_gen(stand, t)
                 loc = places[self.pos[i]]
-                yield stand.summon(loc[0], {'Rotation': good_facing(loc[1]).rotation})
+                yield stand.summon(loc[0], {'Rotation': as_facing(loc[1]).rotation})
             yield show.set(self.num)
 
         def _loop_func(self, step):

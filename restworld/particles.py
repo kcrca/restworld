@@ -3,7 +3,7 @@ from __future__ import annotations
 import math
 import random
 
-from pynecraft.base import EAST, NORTH, Nbt, OVERWORLD, SOUTH, WEST, d, r, good_facing
+from pynecraft.base import EAST, NORTH, Nbt, OVERWORLD, SOUTH, WEST, d, r, as_facing
 from pynecraft.commands import Block, CLEAR, Entity, RAIN, REPLACE, a, data, e, execute, fill, fillbiome, function, \
     item, kill, p, particle, playsound, schedule, setblock, summon, tp, weather
 from pynecraft.enums import BiomeId, Particle
@@ -145,7 +145,7 @@ def room():
     check_for_unused()
 
     def particle_sign(action_desc, wall):
-        dx, _, dz = good_facing(wall.facing).scale(1)
+        dx, _, dz = as_facing(wall.facing).scale(1)
         run_at = execute().at(e().tag('particles_action_home')).positioned(r(0, 2, 0))
         return WallSign(action_desc.sign_text(), (
             run_at.run(setblock(r(0, -4, 0), 'redstone_block')),

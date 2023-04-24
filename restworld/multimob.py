@@ -4,7 +4,7 @@ import copy
 import math
 
 from pynecraft import info
-from pynecraft.base import EAST, NE, NORTH, NW, SE, SOUTH, SW, WEST, good_facing, r, rotated_facing
+from pynecraft.base import EAST, NE, NORTH, NW, SE, SOUTH, SW, WEST, as_facing, r, rotate_facing
 from pynecraft.commands import Entity, JsonText, comment, data, e, execute, fill, function, kill, s, setblock, tag
 from pynecraft.simpler import Item, VILLAGER_BIOMES, VILLAGER_PROFESSIONS, WallSign
 from restworld.rooms import Room
@@ -98,10 +98,10 @@ def room():
         if i == full_groups and full_groups != NUM_GROUPS:
             stride -= 1
         dir = dir_order[i // row_len]
-        facing = good_facing(dir)
+        facing = as_facing(dir)
         x, _, z = facing.scale(2)
-        move_facing = rotated_facing(facing, 90)
-        sign_facing = rotated_facing(facing, 180)
+        move_facing = rotate_facing(facing, 90)
+        sign_facing = rotate_facing(facing, 180)
         dx, _, dz = move_facing.scale(1)
 
         def menu_matrix(name, values, matrix_row_len, func_gen):
@@ -195,7 +195,7 @@ def summon_mob_commands(room, mob):
         if mob.name == '<None>':
             continue
 
-        mob_facing = rotated_facing(sector, 180)
+        mob_facing = rotate_facing(sector, 180)
         mob.merge_nbt({'IsImmuneToZombification': True, 'Invulnerable': True})
         if mob.name in UNDEAD:
             mob.merge_nbt({'ArmorItems': [{}, {}, {}, Item.nbt_for('chainmail_helmet')]})

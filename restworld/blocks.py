@@ -4,8 +4,8 @@ import re
 from typing import Iterable, Union
 
 from pynecraft import info
-from pynecraft.base import DOWN, EAST, EQ, NORTH, Nbt, SOUTH, WEST, good_facing, r, to_name
-from pynecraft.commands import Block, Entity, MOD, MOVE, clone, data, e, execute, fill, function, good_block, \
+from pynecraft.base import DOWN, EAST, EQ, NORTH, Nbt, SOUTH, WEST, as_facing, r, to_name
+from pynecraft.commands import Block, Entity, MOD, MOVE, clone, data, e, execute, fill, function, as_block, \
     item, kill, s, say, setblock, summon, tag, Commands
 from pynecraft.function import Loop
 from pynecraft.info import Color, colors, sherds, stems
@@ -23,7 +23,7 @@ def room():
 
     def blocks(name, facing, block_lists: Iterable[Union[Block, str]] | Iterable[Iterable[Union[Block, str]]], dx=0,
                dz=0, size=0, labels=None, clock=main_clock, score=None, air=False):
-        facing = good_facing(facing)
+        facing = as_facing(facing)
 
         if not isinstance(block_lists, list):
             block_lists = list(block_lists)
@@ -35,7 +35,7 @@ def room():
                 # noinspection PyTypeChecker
                 if block == '':
                     block = Block(id='structure_void', name='')
-                nsublist.append(good_block(block))
+                nsublist.append(as_block(block))
             block_lists[i] = nsublist
         # noinspection PyUnresolvedReferences
         show_list = len(set(x.id for x in block_lists[0])) > 1
@@ -285,7 +285,7 @@ def room():
         'Amethyst Cluster')
 
     def amethyst_loop(step):
-        block = good_block(step.elem)
+        block = as_block(step.elem)
         if step.elem == amethyst_phases[0]:
             yield setblock(r(0, 4, 0), block.id)
         else:
@@ -294,7 +294,7 @@ def room():
                 yield setblock(r(0, 3, 0), block.clone().merge_state({'facing': 'down'}))
                 yield setblock(r(0, 5, 0), block.clone().merge_state({'facing': 'up'}))
                 for offset in (NORTH, EAST, WEST, SOUTH):
-                    facing = good_facing(offset)
+                    facing = as_facing(offset)
                     yield setblock(r(facing.dx, 4, facing.dz), block.clone().merge_state({'facing': offset}))
         yield data().merge(r(0, 2, -1), block.sign_nbt)
 

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from pynecraft.base import EAST, NORTH, SOUTH, WEST, good_facing, r
+from pynecraft.base import EAST, NORTH, SOUTH, WEST, as_facing, r
 from pynecraft.commands import Entity, MOVE, clone, data, e, execute, fill, kill, s, setblock, summon, tag, tp, NEAREST
 from pynecraft.simpler import WallSign
 from restworld.rooms import Room, label
@@ -94,7 +94,7 @@ def room():
         WallSign((None, 'Shulker Bullet')).place(bullet_sign_loc, shulker_dir),
     )
 
-    shulker_facing = good_facing(shulker_dir)
+    shulker_facing = as_facing(shulker_dir)
 
     def shulker_loop(step):
         yield data().merge(e().tag('shulker').limit(1), {'Peek': step.elem})

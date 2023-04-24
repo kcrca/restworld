@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import math
 
-from pynecraft.base import OVERWORLD, good_facing, NE, r, SW
+from pynecraft.base import OVERWORLD, as_facing, NE, r, SW
 from pynecraft.commands import Entity, e, execute, kill, p, tp, gamemode, CREATIVE, SURVIVAL, function
 from pynecraft.simpler import Offset
 from restworld.rooms import MobPlacer, Room, label
@@ -98,7 +98,7 @@ def room():
     )
 
     room.function('sampler_init').add(
-        room.mob_placer(r(-4, 2, 0), good_facing(NE), adults=True).summon('creeper'),
-        room.mob_placer(r(-1, 2, 0), good_facing(NE), adults=True).summon('minecart'),
-        room.mob_placer(r(4.5, 2, 0), good_facing(SW), adults=True).summon('chest_boat'),
+        room.mob_placer(r(-4, 2, 0), as_facing(NE), adults=True).summon('creeper'),
+        room.mob_placer(r(-1, 2, 0), as_facing(NE), adults=True).summon('minecart'),
+        room.mob_placer(r(4.5, 2, 0), as_facing(SW), adults=True).summon('chest_boat'),
     )
