@@ -617,9 +617,9 @@ def monsters(room):
                 east_rot).merge_nbt(MobPlacer.base_nbt))
         p = placer(r(2.0, 2, 0), EAST, 0, 2.2, tags=('zombieish',), kids=True)
         yield execute().if_().score(zombie_jockey).matches(1).run(p.summon(chicken))
-        if step.elem == 'Drowned':
-            yield execute().as_(e().tag('zombieish').tag('!kid')).run(
-                data().merge(s(), {'HandItems': [Item.nbt_for('trident')]}))
+        hand_item = {'Drowned': 'trident', 'Husk': 'iron_sword', 'Zombie': 'iron_shovel'}[step.elem]
+        yield execute().as_(e().tag('zombieish').tag('adult')).run(
+            data().merge(s(), {'LeftHanded': step.elem == 'Zombie', 'HandItems': [Item.nbt_for(hand_item)]}))
 
     room.loop('zombie', main_clock).add(kill_em(e().tag('zombieish'))).loop(
         zombie_loop, ('Zombie', 'Husk', 'Drowned'))
