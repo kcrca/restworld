@@ -117,7 +117,8 @@ def room():
     room.loop('cocoa', main_clock).loop(cocoa_loop, range(0, 3), bounce=True)
 
     room.loop('dead_bush_soil', main_clock).loop(lambda step: setblock(r(0, 2, 1), step.elem),
-                                                 ('Sand', 'Red Sand', 'Terracotta', 'Dirt', 'Podzol', 'Mud'))
+                                                 ('Sand', 'Red Sand', 'Terracotta', 'Dirt', 'Podzol', 'Mud',
+                                                  'Moss Block'))
 
     tilts = ('none', 'unstable', 'partial', 'full')
     upper = tuple(Block('Big Dripleaf', {'tilt': x, 'facing': EAST}) for x in tilts) + (
@@ -247,7 +248,7 @@ def room():
         yield setblock(r(-1, -1, -1), 'redstone_block')
         yield setblock(r(-1, -1, -1), 'air')
         yield WallSign((None, f'{tree} Trees', 'Biome:', to_name(str(biome)))).place(r(1, 2, 7), WEST)
-        plant_room = Region(r(0, -5, 0), r(33, 10, 52))
+        plant_room = Region(r(0, -5, -1), r(33, 10, 52))
         yield execute().at(e().tag('biome_home')).run(plant_room.fillbiome(biome),
                                                       plant_room.fill('air', replace='snow'))
         # Fill the tall tree area
