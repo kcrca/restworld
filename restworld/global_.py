@@ -251,7 +251,7 @@ def room():
         execute().at(e().tag('sniffer_home')).run(function('restworld:mobs/sniffer_egg_reset')),  # if there, reset
         kill_em(e().type('sniffer').tag('!keeper').distance((None, 100))),  # if spawned, kill that extra sniffer
         # Make sure the TNT never goes off
-        execute().as_(e().tag('block_tnt')).run(data().merge(s(), {'Fuse': 0x7fff})),
+        execute().as_(e().type('tnt')).run(data().merge(s(), {'Fuse': 0x7fff})),
     )
 
     census = room.function('census', home=False).add(tag(e().tag('all')).remove('none'))
