@@ -780,7 +780,7 @@ def color_functions(room):
         {'Owner': 'dummy', 'Tags': ['colorings_dog', 'colorings_item'], 'Sitting': True}).merge(mob_nbt)
     cat_nbt = Nbt(
         {'variant': 'persian', 'Owner': 'dummy', 'Tags': ['colorings_cat', 'colorings_item'], 'ColorColor': 3,
-         'Rotation': [90, 0]}).merge(mob_nbt)
+         'Rotation': [110, 0]}).merge(mob_nbt)
     llama_nbt = Nbt(
         {'Tags': ['colorings_llama', 'colorings_item', 'colorings_names'], 'Variant': 1, 'Rotation': [20, 0],
          'Leashed': True}).merge(mob_nbt)
@@ -794,7 +794,7 @@ def color_functions(room):
             'Facing': 3, 'Tags': ['colorings_item_frame', 'colorings_item'], 'Fixed': True}).summon(r(-4.5, 4, 0.5)),
         Entity('horse', horse_nbt).summon(r(0.7, 2, 4.4)),
         Entity('wolf', dog_nbt).summon(r(-8, 2, 2)),
-        Entity('cat', cat_nbt).summon(r(-2, 2, 2)),
+        Entity('cat', cat_nbt).summon(r(-2.7, 2, 2)),
         Entity('armor_stand', stand_nbt).summon(r(-1.1, 2, 3)),
         Entity('llama', llama_nbt).summon(r(-11, 2, 5.8)),
         Entity('sheep', sheep_nbt).summon(r(-9.0, 2, 5.0)),
