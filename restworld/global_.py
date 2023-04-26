@@ -226,6 +226,9 @@ def room():
         execute().if_().score(mobs_up).matches(0).run(function(lower_mobs)),
         execute().unless().score(mobs_up).matches(0).run(function(raise_mobs)),
     )
+    room.function('reset_raised', home=False).add(
+        execute().unless().score(mobs_up).matches(0).run(function(lower_mobs)),
+        mobs_up.set(0))
 
     clean_time = room.score('ensure_clean_time')
     clean_time_max = room.score_max('ensure_clean_time')

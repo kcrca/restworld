@@ -126,6 +126,7 @@ class Room(FunctionSet):
             self._room_setup(facing, text, room_name)
 
     def reset_at(self, xz: Tuple[int, int]) -> None:
+        self.function('_init').add(function('restworld:global/reset_raised'))
         self._command_block(xz, 'Reset Room', ORANGE, f'restworld:{self.name}/_init')
 
     def change_height_at(self, xz: Tuple[int, int]) -> None:
