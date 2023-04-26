@@ -2,9 +2,10 @@ from __future__ import annotations
 
 import copy
 
+from pynecraft import commands
 from pynecraft.base import EAST, EQ, NORTH, SOUTH, WEST, r, to_id
 from pynecraft.commands import Block, COLORS, Entity, LONG, MOD, RESULT, Score, data, e, execute, function, as_facing, \
-    item, kill, s, scoreboard, setblock, summon, tag, tp, clone, FORCE
+    item, kill, s, scoreboard, setblock, summon, tag, tp, clone, FORCE, ride
 from pynecraft.enums import ScoreCriteria
 from pynecraft.info import axolotls, colors, horses, music_discs, tropical_fish
 from pynecraft.simpler import Item, PLAINS, VILLAGER_BIOMES, VILLAGER_PROFESSIONS, Villager, WallSign, Sign
@@ -531,8 +532,8 @@ def monsters(room):
     def ravager_loop(step):
         ravager = Entity('ravager')
         if step.elem is not None:
-            ravager.passenger(Entity(step.elem, {'Rotation': as_facing(EAST).rotation}).merge_nbt(MobPlacer.base_nbt))
-        yield placer(r(1, 2, 0), EAST, adults=True).summon(ravager)
+            ravager.passenger(Entity(step.elem, {'Rotation': as_facing(WEST).rotation}).merge_nbt(MobPlacer.base_nbt))
+        yield placer(r(1, 2, 0), WEST, adults=True).summon(ravager)
 
     room.loop('ravager', main_clock).add(kill_em(e().tag('ravager'))).loop(
         ravager_loop, (None, 'Pillager', 'Vindicator', 'Evoker'))
@@ -543,8 +544,14 @@ def monsters(room):
     east = as_facing(EAST)
     east_rot = {'Rotation': east.rotation, 'Facing': east.name}
 
+    place = list(copy.deepcopy(east_placer))
+    place[0][2] += 0.5
+    undead_horse_tag = 'undead_horse'
+
+    skeleton_horse_rider = 'skeleton_horse_rider'
+    rider_entity = e().tag(skeleton_horse_rider).limit(1)
+
     def skeleton_horse_loop(step):
-        horse = Entity('Skeleton Horse')
         if step.i == 1:
             helmet = {'id': 'iron_helmet', 'Count': 1, 'tag': {'RepairCost': 1, 'Enchantments': [
                 {'lvl': 3, 'id': 'unbreaking'}]}}
@@ -552,27 +559,40 @@ def monsters(room):
                    'tag': {'RepairCost': 1, 'Enchantments': [{'lvl': 3, 'id': 'unbreaking'}]}}
             skel = Entity('Skeleton', nbt={'ArmorItems': [{}, {}, {}, helmet], 'HandItems': [bow, {}]})
             skel.merge_nbt(MobPlacer.base_nbt).merge_nbt(east_rot)
-            skel.tag('mobs', 'passenger')
-            horse.passenger(skel)
-        yield placer(*east_placer, adults=True).summon(horse)
+            skel.tag('mobs', skeleton_horse_rider)
+            yield skel.summon(r(0, 3, 0))
+            yield ride(rider_entity).mount(e().tag('skeleton_horse', 'adult').limit(1))
+        else:
+            yield ride(rider_entity).dismount()
+            yield kill_em(rider_entity)
 
-    room.loop('skeleton_horse').add(
-        kill_em(e().tag('skeleton_horse', '!kid'))
-    ).loop(skeleton_horse_loop, range(0, 2))
+    room.loop('skeleton_horse').loop(skeleton_horse_loop, range(0, 2)).add(
+        function('restworld:mobs/undead_saddle_cur')
+    )
 
     room.function('skeleton_horse_init').add(
-        placer(*east_placer).summon('Skeleton Horse'),
-        label(r(2, 2, -1), 'Rider'))
+        placer(*place).summon('Skeleton Horse'),
+        tag(e().tag('skeleton_horse', 'adult')).add(undead_horse_tag),
+        label(r(2, 2, 0), 'Rider'),
+        label(r(2, 2, 2), 'Saddles'))
 
     bow = Item.nbt_for('bow')
     helmet = Item.nbt_for('iron_helmet')
     rider = Entity('Skeleton', nbt={'ArmorItems': [{}, {}, {}, helmet], 'HandItems': [bow, {}]}).merge_nbt(
         MobPlacer.base_nbt)
 
+    def undead_saddle_loop(step):
+        item = 'air' if step.i == 0 else 'saddle'
+        yield commands.item().replace().entity(e().tag(undead_horse_tag), 'horse.saddle').with_(item)
+
+    room.loop('undead_saddle').loop(undead_saddle_loop, range(2))
+
+    armorable_tag = 'armorable'
     room.loop('skeleton', main_clock).add(
         kill_em(e().tag('skeletal'))
-    ).loop(lambda step: placer(*west_placer, adults=True).summon(
-        Entity(step.elem, nbt={'HandItems': [bow]}).tag('skeletal')), ('Skeleton', 'Stray'))
+    ).loop(lambda step: placer(*east_placer, adults=True).summon(
+        Entity(step.elem, nbt={'HandItems': [bow]}).tag('skeletal', armorable_tag)), ('Skeleton', 'Stray'))
+    room.function('skeleton_init').add(label(r(2, 2, 0), 'Armor'))
 
     spider_dir = NORTH
     spider_facing = as_facing(spider_dir)
@@ -595,34 +615,54 @@ def monsters(room):
     place = list(copy.deepcopy(west_placer))
     place[0][2] -= 0.5
     room.function('witch_init').add(placer(*place, adults=True).summon('witch'))
-    place = list(copy.deepcopy(east_placer))
-    place[0][2] -= 0.5
+
     room.function('zombie_horse_init').add(
-        placer(*place).summon(Entity('zombie_horse', name='Zombie Horse (Unused)')))
-    zombie_jockey = room.score('zombie_jockey')
-    room.function('zombie_init').add(
-        zombie_jockey.set(0),
-        execute().as_(e().tag('zombie_home')).run(tag(s()).add('zombie_home_selector')),
-        execute().as_(e().tag('zombie_jockey_home')).run(tag(s()).add('zombie_home_selector')),
-        label(r(2, 2, -1), 'Jockey'))
+        placer(*east_placer).summon(Entity('zombie_horse', name='Zombie Horse (Unused)')),
+        tag(e().tag('zombie_horse', 'adult')).add(undead_horse_tag)
+    )
+
+    def armorable_loop(step):
+        items = ([], [Item.nbt_for('iron_boots'), Item.nbt_for('iron_leggings'),
+                      Item.nbt_for('iron_chestplate'), Item.nbt_for('iron_helmet')])[step.i]
+        yield execute().as_(e().tag(armorable_tag)).run(data().merge(s(), {'ArmorItems': items}))
+
+    room.loop('mob_armor').loop(armorable_loop, range(2))
+
+    zombie_jockey_chicken_tag = 'zombie_jockey_chicken'
+    zombie_jockey_chicken = e().tag('zombie_jockey_chicken').limit(1)
+
+    zombie_kid = e().tag('zombieish', 'kid')
+
+    def zombie_jockey_loop(step):
+        if step.i == 0:
+            yield ride(zombie_kid.limit(1)).dismount()
+            yield kill_em(zombie_jockey_chicken)
+            yield tp(zombie_kid, r(2, 2, 0))
+        else:
+            place = list(copy.deepcopy(east_placer))
+            place[0][0] += 2
+            p = placer(*place, adults=True)
+            yield p.summon(Entity('chicken').tag(zombie_jockey_chicken_tag, 'zombieish'))
+            yield ride(zombie_kid.limit(1)).mount(zombie_jockey_chicken)
+
+    room.loop('zombie_jockey', home=False).loop(zombie_jockey_loop, range(2))
+    room.function('zombie_init').add(label(r(2, 2, 1), 'Jockey'))
 
     def zombie_loop(step):
+        yield kill_em(e().tag('zombieish'))
+        yield kill(e().tag('zombieish'))
         p = placer(r(0.2, 2, 0), EAST, 0, 1.8, tags=('zombieish',))
-        yield execute().if_().score(zombie_jockey).matches(0).run(p.summon(Entity(step.elem)))
-
-        p = placer(r(0.2, 2, 0), EAST, 0, 2.2, tags=('zombieish',), adults=True)
-        yield execute().if_().score(zombie_jockey).matches(1).run(p.summon(Entity(step.elem)))
-        chicken = Entity('Chicken').passenger(
-            Entity(step.elem, {'Tags': ['kid', room.name], 'IsBaby': True, 'Age': -2147483648}).merge_nbt(
-                east_rot).merge_nbt(MobPlacer.base_nbt))
-        p = placer(r(2.0, 2, 0), EAST, 0, 2.2, tags=('zombieish',), kids=True)
-        yield execute().if_().score(zombie_jockey).matches(1).run(p.summon(chicken))
+        yield p.summon(Entity(step.elem))
         hand_item = {'Drowned': 'trident', 'Husk': 'iron_sword', 'Zombie': 'iron_shovel'}[step.elem]
         yield execute().as_(e().tag('zombieish').tag('adult')).run(
+            tag(s()).add(armorable_tag),
             data().merge(s(), {'LeftHanded': step.elem == 'Zombie', 'HandItems': [Item.nbt_for(hand_item)]}))
 
     room.loop('zombie', main_clock).add(kill_em(e().tag('zombieish'))).loop(
-        zombie_loop, ('Zombie', 'Husk', 'Drowned'))
+        zombie_loop, ('Zombie', 'Husk', 'Drowned')).add(
+        function('restworld:mobs/mob_armor_cur'),
+        function('restworld:mobs/zombie_jockey_cur')
+    )
 
     placer = room.mob_placer(r(0, 2, 0), NORTH, adults=True)
     room.function('enderman_init').add(

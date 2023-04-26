@@ -326,7 +326,7 @@ class Room(FunctionSet):
             'init': [scoreboard().objectives().add(self.name, ScoreCriteria.DUMMY),
                      scoreboard().objectives().add(self.name + '_max', ScoreCriteria.DUMMY),
                      (x.set(0) for x in sorted(self._scores, key=lambda x: str(x))),
-                     to_incr.set(1)] + [tp(e().tag(self.name), e().tag('death').limit(1))]}
+                     to_incr.set(1)] + [tp(e().tag(self.name), e().tag('death').limit(1)), kill(e().tag(self.name))]}
         after_commands = {
             'enter': [weather(CLEAR)],
             'init': [function('%s/_cur' % self.full_name)],
