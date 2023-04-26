@@ -42,7 +42,7 @@ def room():
     def add_rider(riders, num, on_tag):
         new_tag = f'hoglin_rider_{num}'
         riders.add(execute().if_().entity(e().tag(*on_tag).limit(1)).run(
-            Entity('piglin', {'NoAI': True, 'NoGravity': True, 'IsBaby': True,
+            Entity('piglin', {'NoAI': True, 'NoGravity': True, 'IsBaby': True, 'Silent': True,
                               'Tags': [room.name, 'hoglin_rider', new_tag]}).summon(
                 r(0, 2.25 + num, -3), facing=NORTH),
             ride(e().tag(new_tag).limit(1)).mount(e().tag(*on_tag).limit(1))))
