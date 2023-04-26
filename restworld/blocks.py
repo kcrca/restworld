@@ -777,7 +777,8 @@ def color_functions(room):
         'Variant': 5, 'Tags': ['colorings_horse', 'colorings_item', 'colorings_names'],
         'ArmorItem': Item.nbt_for('leather_horse_armor'), 'Rotation': [-25, 0]}).merge(mob_nbt)
     dog_nbt = Nbt(
-        {'Owner': 'dummy', 'Tags': ['colorings_dog', 'colorings_item'], 'Sitting': True}).merge(mob_nbt)
+        {'Owner': 'dummy', 'Tags': ['colorings_dog', 'colorings_item'], 'Sitting': True,
+         'Rotation': [-25, 0]}).merge(mob_nbt)
     cat_nbt = Nbt(
         {'variant': 'persian', 'Owner': 'dummy', 'Tags': ['colorings_cat', 'colorings_item'], 'ColorColor': 3,
          'Rotation': [110, 0]}).merge(mob_nbt)
