@@ -605,12 +605,10 @@ def monsters(room):
                 spider.passenger(rider.merge_nbt(spider_rot).merge_nbt(MobPlacer.base_nbt))
             yield p.summon(spider)
 
-    room.loop('spiders').add(
+    room.loop('spiders', main_clock).add(
         kill_em(e().tag('spiders'))
     ).loop(spider_loop, range(0, 2))
-    room.function('spiders_init').add(
-        function('restworld:mobs/spiders_cur'),
-        label(r(-2, 2, -1), 'Jockey'))
+    room.function('spiders_init').add(function('restworld:mobs/spiders_cur'))
     place = list(copy.deepcopy(west_placer))
     place[0][2] -= 0.5
     room.function('witch_init').add(placer(*place, adults=True).summon('witch'))
