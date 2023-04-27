@@ -560,20 +560,19 @@ def monsters(room):
             skel = Entity('Skeleton', nbt={'ArmorItems': [{}, {}, {}, helmet], 'HandItems': [bow, {}]})
             skel.merge_nbt(MobPlacer.base_nbt).merge_nbt(east_rot)
             skel.tag('mobs', skeleton_horse_rider)
-            yield skel.summon(r(0, 3, 0))
+            yield skel.summon(r(-0.2, 2.42, 0.5))
             yield ride(rider_entity).mount(e().tag('skeleton_horse', 'adult').limit(1))
         else:
             yield ride(rider_entity).dismount()
             yield kill_em(rider_entity)
 
-    room.loop('skeleton_horse').loop(skeleton_horse_loop, range(0, 2)).add(
+    room.loop('skeleton_horse', main_clock).loop(skeleton_horse_loop, range(0, 2)).add(
         function('restworld:mobs/undead_saddle_cur')
     )
 
     room.function('skeleton_horse_init').add(
         placer(*place).summon('Skeleton Horse'),
         tag(e().tag('skeleton_horse', 'adult')).add(undead_horse_tag),
-        label(r(2, 2, 0), 'Rider'),
         label(r(2, 2, 2), 'Saddles'))
 
     bow = Item.nbt_for('bow')
