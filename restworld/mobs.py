@@ -598,7 +598,7 @@ def monsters(room):
     spider_rot = {'Rotation': spider_facing.rotation, 'Facing': spider_facing.name}
 
     def spider_loop(step):
-        p = placer(r(-0.2, 2.5, -0.2), spider_dir, -2.5, nbt={'Tags': ['spiders']}, adults=True)
+        p = placer(r(-0.5, 2.5, -0.2), spider_dir, -3, nbt={'Tags': ['spiders']}, adults=True)
         for s in ('Spider', 'Cave Spider'):
             spider = Entity(s)
             if step.i == 1:
