@@ -242,13 +242,13 @@ def room():
     room.function('copper_init', exists_ok=True).add(
         tag(e().tag('copper_home')).add('copper_base'),
         tag(e().tag('waxed_copper_home')).add('copper_base'))
-    room.function('switch_to_copper').add(
+    room.function('switch_to_copper', home=False).add(
         tag(e().tag('copper_base')).add('copper_home'),
-        tag(e().tag('copper_base')).remove('copper_waxed_home'),
+        tag(e().tag('copper_base')).remove('waxed_copper_home'),
         execute().at(e().tag('copper_base')).run(function('restworld:blocks/copper_cur')))
-    room.function('switch_to_waxed_copper').add(
+    room.function('switch_to_waxed_copper', home=False).add(
         tag(e().tag('copper_base')).remove('copper_home'),
-        tag(e().tag('copper_base')).add('copper_waxed_home'),
+        tag(e().tag('copper_base')).add('waxed_copper_home'),
         execute().at(e().tag('copper_base')).run(function('restworld:blocks/waxed_copper_cur')))
 
     woods = info.woods  # Read the current state of info.woods, which the version can change
@@ -575,7 +575,8 @@ def room():
         yield Sign.change(r(0, 2, -1), (None, step.elem))
 
     room.function('spawner_init').add(setblock(r(0, 3, 0), 'spawner'))
-    room.loop('spawner', main_clock).loop(spawner_loop, ('Pig', 'Zombie', 'Skeleton', 'Spider', 'Cave Spider', 'Blaze'))
+    room.loop('spawner', main_clock).loop(spawner_loop, (
+        'Pig', 'Zombie', 'Skeleton', 'Spider', 'Cave Spider', 'Silverfish', 'Blaze', 'Magma Cube'))
 
     def structure_blocks_loop(step):
         yield Sign.change(r(0, 2, 1), (None, step.elem))
