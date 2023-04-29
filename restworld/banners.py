@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from pynecraft.base import SOUTH, d, r
+from pynecraft.base import SOUTH, d, r, EQ
 from pynecraft.commands import Block, COLORS, Entity, INT, RESULT, WHITE, data, e, execute, fill, function, kill, s, \
     setblock, tag
 from pynecraft.enums import Pattern
@@ -201,7 +201,13 @@ def room():
     ).loop(render_authored_banners, range(0, half))
 
     room.function('banner_color_init').add(banner_color_init)
-    room.loop('banner_color', main_clock).add(
+
+    color_loop = room.loop('banner_color', main_clock)
+    ink_loop = room.loop('banner_ink', main_clock)
+
+    color_loop.adjust(
+        execute().if_().score(color_loop.score).is_(EQ, ink_loop.score).run(color_loop.score.add(1))
+    ).add(
         fill(r(1, 3, 0), r(11, 5, 0), 'air').replace('#banners'),
         fill(r(12, 3, 1), r(12, 5, 11), 'air').replace('#banners'),
         fill(r(1, 3, 12), r(11, 5, 12), 'air').replace('#banners'),
@@ -248,7 +254,9 @@ def room():
     room.function('banner_controls_remove', home=False).add(
         fill(r(0, 2, 0), r(8, 4, 4), 'air').replace('#wall_signs'))
 
-    room.loop('banner_ink', main_clock).loop(None, COLORS).add(*banner_ink_change())
+    ink_loop.adjust(
+        execute().if_().score(ink_loop.score).is_(EQ, color_loop.score).run(ink_loop.score.add(1))
+    ).loop(None, COLORS).add(*banner_ink_change())
 
     # ^Cyan Lozenge
     # ^Light Gray Base
