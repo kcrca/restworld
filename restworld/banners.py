@@ -4,7 +4,7 @@ from pynecraft.base import SOUTH, d, r
 from pynecraft.commands import Block, COLORS, Entity, INT, RESULT, WHITE, data, e, execute, fill, function, kill, s, \
     setblock, tag
 from pynecraft.enums import Pattern
-from pynecraft.simpler import Shield, WallSign
+from pynecraft.simpler import Shield, WallSign, TextDisplay
 from restworld.rooms import Room, label
 from restworld.world import die, main_clock, restworld
 
@@ -73,13 +73,31 @@ def room():
     banner_ink = room.score('banner_ink')
     stands = e().tag('banner_stand')
 
+    room.function('names_on', home=False).add(execute().as_(e().tag('banner_name')).run(
+        data().merge(s(), {'text_opacity': 255, 'background': 0x40_00_00_00})))
+    names_off = room.function('names_off', home=False).add(execute().as_(e().tag('banner_name')).run(
+        data().merge(s(), {'text_opacity': 25, 'background': 25})))
+
     # noinspection PyUnusedLocal
     def armor_stands(x, xn, z, zn, angle, facing, bx, bz, y_banner, y_shield, pattern, handback=None):
         shield = Shield().add_pattern(pattern, 9)
         stand = stand_tmpl.clone()
-        stand.merge_nbt({'CustomName': ' '.join(Pattern.sign_text(pattern)), 'Rotation': [angle, 0]})
+        stand.merge_nbt({'Rotation': [angle, 0]})
         stand.nbt['HandItems'].append(shield.nbt)
         yield stand.summon(r(x + xn, y_shield, z + zn))
+
+        text_y = y_shield + 0.5
+        if (x + z) % 2 == 0:
+            text_y -= 0.25
+        xt = 0.6 if abs(xn) > abs(zn) else 0
+        zt = 0.6 if abs(zn) > abs(xn) else 0
+        if xn < 0:
+            xt = -xt
+        if zn < 0:
+            zt = -zt
+        name = ' '.join(Pattern.sign_text(pattern))
+        nbt = {'Rotation': [angle, 0], 'Tags': stand.nbt['Tags']}
+        yield TextDisplay(name).scale(0.5).tag('banner_name').summon(r(x + xt, text_y, z + zt), nbt)
 
     def render_banners(render, handback=None):
         # These are in the first adjustment, but python doesn't know that, so this keeps it happy
@@ -172,6 +190,7 @@ def room():
         custom_banner(11.8, 11.8, -0.1),
         banner_color_init,
         function('restworld:banners/banner_color_cur'),
+        function(names_off),
     )
 
     if len(authored_patterns) % 2 != 0:
