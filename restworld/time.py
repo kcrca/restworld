@@ -1,11 +1,12 @@
 from __future__ import annotations
 
 from pynecraft.base import DAYTIME, EAST, NOON, NORTH, WEST, as_facing, r
-from pynecraft.commands import RESULT, data, e, execute, fill, function, kill, setblock, summon, time, worldborder
+from pynecraft.commands import RESULT, data, e, execute, fill, function, kill, setblock, summon, time, worldborder, \
+    tag
 from pynecraft.info import moon_phases
 from pynecraft.simpler import Item, WallSign
 from restworld.rooms import Room, label
-from restworld.world import restworld
+from restworld.world import restworld, main_clock
 
 
 def room():
@@ -13,16 +14,28 @@ def room():
 
     barriers = fill(r(1, 8, 0), r(1, 8, 8), 'barrier')
 
-    def moon_sign(x, y, z, when, name):
-        return WallSign((None, name, 'Moon'), (
-            execute().at(e().tag('moon_home')).run(barriers),
-            time().set(when),
-            setblock(r(1, 0, 0), 'emerald_block'))).place(r(x, y, z), WEST)
+    def moon_run_loop(step):
+        z = step.i
+        if z > 3:
+            z += 1
+        yield time().set(step.elem[0])
+        yield setblock(r(1, 8, z), 'emerald_block')
 
-    room.function('moon_init').add(
+    def moon_sign(x, y, z, when, name):
+        value = z
+        if z > 3:
+            z += 1
+        return WallSign((None, name, 'Moon'), (
+            moon.score.set(value),
+            execute().at(e().tag('moon_home')).run(function('restworld:time/moon_run_cur')))).place(r(x, y, z), WEST)
+
+    moon = room.loop('moon_run', main_clock)
+    moon.add(barriers).loop(moon_run_loop, moon_phases)
+    moon_init = room.function('moon_init')
+    moon_init.add(
         fill(r(1, 8, 0), r(0, 8, 8), 'air'),
         barriers,
-        (moon_sign(0, 8, i + (1 if i > 3 else 0), *phase) for i, phase in enumerate(moon_phases)),
+        (moon_sign(0, 8, i, *phase) for i, phase in enumerate(moon_phases)),
         kill(e().tag('time_frame')),
         summon(('item_frame',
                 {'Facing': as_facing(WEST).number, 'Item': Item.nbt_for('clock'),
@@ -32,10 +45,21 @@ def room():
                 {'Facing': as_facing(EAST).number, 'Item': Item.nbt_for('clock'),
                  'Tags': ['time_frame', room.name], 'Fixed': True}),
                r(-10, 8, 4)),
+        label(r(-2, 7, 4), 'Moon Phases'),
         label(r(-1, 7, 4), 'Reset Room', facing=WEST),
         label(r(-9, 7, 4), 'Reset Room', facing=EAST),
-        room.score('moon').set(0),
     )
+
+    def moon_running_loop(step):
+        if step.i == 0:
+            yield tag(e().tag('moon_home')).remove('moon_run_home')
+            yield execute().at(e().tag('moon_home')).run(function(moon_init))
+            yield time().set(NOON)
+        else:
+            yield tag(e().tag('moon_home')).add('moon_run_home')
+            yield execute().at(e().tag('moon_home')).run(function('restworld:time/moon_run_cur'))
+
+    room.loop('moon_running').loop(moon_running_loop, range(2))
 
     slow, norm = 3, 30
     morn = (21900, 24600)
