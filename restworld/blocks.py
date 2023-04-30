@@ -574,8 +574,10 @@ def room():
         yield data().merge(r(0, 3, 0), {'SpawnData': {'entity': {'id': Entity(step.elem).id}}})
         yield Sign.change(r(0, 2, -1), (None, step.elem))
 
-    room.function('spawner_init').add(setblock(r(0, 3, 0), 'spawner'))
-    room.loop('spawner', main_clock).loop(spawner_loop, (
+    room.function('spawner_init').add(setblock(r(0, 3, 0), 'spawner').nbt({'SpawnCount': 0}))
+    reset_delay = execute().if_().block(r(0, 3, 0), Block('spawner', nbt={'Delay': '0s'})).run(
+        data().merge(r(0, 3, 0), {'Delay': 200}))
+    room.loop('spawner', main_clock).add(reset_delay).loop(spawner_loop, (
         'Pig', 'Zombie', 'Skeleton', 'Spider', 'Cave Spider', 'Silverfish', 'Blaze', 'Magma Cube'))
 
     def structure_blocks_loop(step):
