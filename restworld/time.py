@@ -30,10 +30,13 @@ def room():
             execute().at(e().tag('moon_home')).run(function('restworld:time/moon_run_cur')))).place(r(x, y, z), WEST)
 
     moon = room.loop('moon_run', main_clock)
-    moon.add(barriers).loop(moon_run_loop, moon_phases)
+    moon_running = room.loop('moon_running')
     moon_init = room.function('moon_init')
+
+    moon.add(barriers).loop(moon_run_loop, moon_phases)
     moon_init.add(
-        fill(r(1, 8, 0), r(0, 8, 8), 'air'),
+        moon_running.score.set(0),
+        tag(e().tag('moon_home')).remove('moon_run_home'),
         barriers,
         (moon_sign(0, 8, i, *phase) for i, phase in enumerate(moon_phases)),
         kill(e().tag('time_frame')),
@@ -59,7 +62,7 @@ def room():
             yield tag(e().tag('moon_home')).add('moon_run_home')
             yield execute().at(e().tag('moon_home')).run(function('restworld:time/moon_run_cur'))
 
-    room.loop('moon_running').loop(moon_running_loop, range(2))
+    moon_running.loop(moon_running_loop, range(2))
 
     slow, norm = 3, 30
     morn = (21900, 24600)
