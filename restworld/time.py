@@ -12,7 +12,10 @@ from restworld.world import restworld, main_clock
 def room():
     room = Room('time', restworld, NORTH, (None, 'Time,', 'World', 'Boundary'))
 
-    barriers = fill(r(1, 8, 0), r(1, 8, 8), 'barrier')
+    reset_moon = (
+        fill(r(1, 8, 0), r(1, 8, 8), 'barrier'),
+        (data().modify(r(0, 8, z), 'front_text.has_glowing_text').set().value(False) for z in range(0, 9))
+    )
 
     def moon_run_loop(step):
         z = step.i
@@ -20,6 +23,7 @@ def room():
             z += 1
         yield time().set(step.elem[0])
         yield setblock(r(1, 8, z), 'emerald_block')
+        yield data().modify(r(0, 8, z), 'front_text.has_glowing_text').set().value(True)
 
     def moon_sign(x, y, z, when, name):
         value = z
@@ -33,11 +37,11 @@ def room():
     moon_running = room.loop('moon_running')
     moon_init = room.function('moon_init')
 
-    moon.add(barriers).loop(moon_run_loop, moon_phases)
+    moon.add(reset_moon).loop(moon_run_loop, moon_phases)
     moon_init.add(
         moon_running.score.set(0),
         tag(e().tag('moon_home')).remove('moon_run_home'),
-        barriers,
+        reset_moon,
         (moon_sign(0, 8, i, *phase) for i, phase in enumerate(moon_phases)),
         kill(e().tag('time_frame')),
         summon(('item_frame',
