@@ -3,7 +3,6 @@ from __future__ import annotations
 import argparse
 import random
 
-from pynecraft.base import parameters
 from pynecraft.simpler import Sign
 from restworld import arena, banners, biomes, blocks, center, connect, diy, effects, enders, font, global_, gui, hud, \
     maps, materials, mobs, models, multimob, nether, paintings, particles, photo, plants, redstone, save, tags, the_end, \
@@ -18,13 +17,8 @@ def main():
     cmdline = argparse.ArgumentParser()
     cmdline.add_argument('version', type=str, default='1.19.3')
     # noinspection SpellCheckingInspection
-    cmdline.add_argument('--mcversion', type=str)
     cmdline.add_argument('--pynecraft_dev', action=argparse.BooleanOptionalAction)
     args = cmdline.parse_args()
-    mc_version = args.mcversion
-    if not mc_version:
-        mc_version = args.version
-    parameters.version = mc_version
     Sign.waxed = True
     if args.pynecraft_dev:
         tester.room()
