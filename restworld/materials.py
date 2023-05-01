@@ -342,7 +342,7 @@ def fencelike_functions(room):
     def fencelike(block: BlockDef):
         block = as_block(block)
         yield volume.replace(block, '#restworld:fencelike')
-        yield execute().at(e().tag('fencelike_home')).run(data().merge(r(6, 2, 0), block.sign_nbt))
+        yield execute().at(e().tag('fencelike_home')).run(data().merge(r(6, 2, 0), block.sign_nbt()))
 
     def switch_to_fencelike(which):
         room.function(f'switch_to_{which}', home=False).add(

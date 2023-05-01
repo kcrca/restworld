@@ -77,7 +77,7 @@ def room():
 
     def azalea_loop(step):
         yield setblock(r(0, 3, 0), step.elem.id)
-        yield data().merge(r(1, 2, 0), step.elem.sign_nbt)
+        yield data().merge(r(1, 2, 0), step.elem.sign_nbt())
 
     room.loop('azalea', main_clock).loop(azalea_loop, (Block('Azalea'), Block('Flowering Azalea')))
 
@@ -160,7 +160,7 @@ def room():
     def pottable_loop(step):
         if isinstance(step.elem, str):
             step.elem = Block(step.elem)
-        sign_nbt = step.elem.sign_nbt
+        sign_nbt = step.elem.sign_nbt()
 
         base_text = sign_nbt['front_text']['messages'][0]['text']
         if base_text == '':

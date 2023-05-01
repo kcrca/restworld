@@ -38,7 +38,7 @@ def room():
     def minecart_loop(step):
         yield kill_em(e().tag('minecart_type'))
         yield summon(step.elem.merge_nbt({'Tags': ['minecart_type']}), r(0, 3, 0))
-        yield data().merge(r(-1, 2, 0), step.elem.sign_nbt)
+        yield data().merge(r(-1, 2, 0), step.elem.sign_nbt())
 
     room.loop('minecarts', main_clock).loop(minecart_loop, minecart_types)
     room.loop('observer', main_clock).loop(
@@ -162,7 +162,7 @@ def room():
         yield setblock(r(0, 3, 0), ('redstone_lamp', {'lit': powered}))
         yield setblock(r(0, 2, -1), ('redstone_lamp', {'lit': powered}))
         yield setblock(r(1, 2, 0), ('oak_wall_sign', {'facing': EAST}))
-        yield data().merge(r(1, 2, 0), wood.sign_nbt)
+        yield data().merge(r(1, 2, 0), wood.sign_nbt())
         if powered == 'True':
             yield Sign.change(r(1, 2, 0), (None, None, None, '(Powered)'))
 
