@@ -169,7 +169,7 @@ def room():
 
     room.function('quilt_init').add(
         quilt(),
-        label((-1049, 104, 1028), 'Frame Quilt Photo'),
+        label((-1049, 104, 1028), 'Quilt Photo'),
         label((-1049, 104, 1027), 'Back to Platform'))
 
     mob_offset = Offset(-1, 9, 7)
@@ -204,11 +204,11 @@ def room():
 
     shoot_offset = Offset(0, 4, 0)
     room.function('photo_shoot_init').add(
-        label(shoot_offset.r(-1, 15, 6), 'Frame Complete Photo'),
-        label(shoot_offset.r(1, 15, 6), 'Frame Mob Photo'),
-        label(shoot_offset.r(0, 15, 8), 'Frame Quilt View'),
+        label(shoot_offset.r(-1, 15, 6), 'Complete Photo'),
+        label(shoot_offset.r(1, 15, 6), 'Mob Photo'),
+        label(shoot_offset.r(0, 15, 8), 'Quilt Photo'),
         label(shoot_offset.r(0, 15, 10), 'Go Home'),
-        label(shoot_offset.r(0, 15, 13), 'Frame Sample Photo'),
+        label(shoot_offset.r(0, 15, 13), 'Sample Photo'),
     )
 
     room.function('sampler_init').add(
