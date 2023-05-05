@@ -1,12 +1,24 @@
 from __future__ import annotations
 
 import math
+import os
+import re
 
-from pynecraft.base import OVERWORLD, as_facing, NE, r, SW
-from pynecraft.commands import Entity, e, execute, kill, p, tp, gamemode, CREATIVE, SURVIVAL, function
+from pynecraft.base import OVERWORLD, to_id, EAST, NORTH, as_facing, NE, r, SW
+from pynecraft.commands import Entity, e, execute, kill, p, tp, gamemode, CREATIVE, SURVIVAL, function, fill, Block, \
+    setblock
+from pynecraft.info import colors, woods, stems, corals
 from pynecraft.simpler import Offset
 from restworld.rooms import MobPlacer, Room, label
 from restworld.world import restworld
+
+materials = (
+    'Iron', 'Coal', 'Copper', 'Gold', 'Diamond', 'Emerald', 'Chainmail', 'Redstone', 'Lapis Lazuli', 'Granite',
+    'Andesite', 'Diorite', 'Netherite', 'Blackstone', 'Stone', 'Cobblestone', 'End Stone', 'Sandstone', 'Red Sandstone',
+    'Bone', 'Honey', 'Honeycomb', 'Grass', 'Sticky', 'Nether')
+stepables = (
+    'Sandstone', 'Red Sandstone', 'Quartz', 'Cobblestone', 'Stone Brick', 'Nether Brick', 'Brick', 'Purpur',
+    'Prismarine', 'Prismarine Brick', 'Dark Prismarine',)
 
 
 class PhotoMob:
@@ -59,8 +71,106 @@ mobs = (
 )
 
 
+def get_normal_blocks():
+    modifiers = tuple(c.name for c in colors) + woods + stems + materials + stepables + corals + (
+        'Weathered', 'Oxidized', 'Exposed')
+    modifiers = tuple(sorted(set(modifiers), key=lambda x: len(x), reverse=True))
+    mod_re = re.compile(fr'^(.*? ?)(\b(?:Mossy )?{"|".join(modifiers)}\b)($| (.*))')
+    block_re = re.compile(r'Block of (.*)')
+    command_re = re.compile(r'(.*)Command Block')
+    with open(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'some_blocks')) as f:
+        lines = f.readlines()
+    good_blocks = {}
+    for block in lines:
+        if block[0] == '#':
+            continue
+        block = block.strip()
+        block = block_re.sub(r'\1 Block', block)  # 'Block of Foo' -> 'Foo Block'
+        m = mod_re.match(block)
+        if not m:
+            m = command_re.match(block)
+            if not m:
+                name = block
+            else:
+                name = 'Command Block'
+        else:
+            name = (m.group(1) + m.group(3))
+        name = name.replace('  ', ' ').strip()
+
+        # Special cases to force grouping and sometimes placement.
+        if 'Azalea' in name:
+            name = 'Azalea ' + name
+        if 'Amethyst' in name:
+            name = 'Amethyst ' + name
+        if 'Coral' in name:
+            name = 'E-Coral ' + name
+        elif name in ('Dropper', 'Dispenser', 'Furnace', 'Observer'):
+            name = 'Furnace ' + name
+        elif 'Froglight' in name:
+            name = f'Froglight {name}'
+        elif 'Sponge' in name:
+            name = f'Sponge {name}'
+        elif 'Ore' in name:
+            name = f'Ore {name}'
+        elif name in (
+                'Crafting Table', 'Cartography Table', 'Smithing Table', 'Fletching Table', 'Smoker', 'Blast Furnace',
+                'Cauldron'):
+            name = 'Profession ' + name
+        elif 'Glass' in name:
+            # 'M' to move it away from corals so the water trough behind the coral doesn't overlap
+            name = 'CGlass ' + name
+        elif 'Copper' in block and 'Deepslate' not in block and name not in ('Ore', 'Raw Block'):
+            name = 'Copper'
+
+        if name not in good_blocks:
+            good_blocks[name] = []
+        good_blocks[name] += (block,)
+    for b in sorted(good_blocks):
+        for w in sorted(good_blocks[b]):
+            yield to_id(w).replace('_lazuli', '').replace('bale', 'block')
+
+
 def room():
     room = Room('photo', restworld)
+
+    # Currently it seems rally hard to figure out where to put a home stand for the quilt, so I'm just
+    # using absolute coordinates. I can fix this later if I get tired o fit.
+    def quilt():
+        coral_stage = 0
+        line_length = 25
+        p = Offset(-1061, 113, 1040)
+        yield fill(p.p(0, -1, -2), p.p(line_length, -20, 2), 'air')
+        for i, b in enumerate(get_normal_blocks()):
+            block = Block(b)
+            z = i % line_length
+            y = -(int(i / line_length) + 1)
+            dir = y % 2 == 0
+            if dir == 0:
+                z = line_length - z - 1
+            if '_log' in b or ('basalt' in b and 'smooth' not in b) or ('stem' in b and 'mush' not in b):
+                block.merge_state({'axis': 'z'})
+            elif 'command_block' in 'b':
+                block.merge_nbt({'facing': EAST})
+            elif b == 'observer':
+                block.merge_nbt({'facing': NORTH})
+
+            yield setblock(p.p(z, y, 0), block)
+            if 'coral' in b and 'dead' not in b:
+                if coral_stage == 0:
+                    yield setblock(p.p(z - 1 if dir == 1 else z + 1, y, 1), 'stone')
+                    coral_stage += 1
+                yield setblock(p.p(z, y, 1), 'water')
+                yield setblock(p.p(z, y, 2), 'stone')
+                yield setblock(p.p(z, y - 1, 1), 'stone')
+                yield setblock(p.p(z, y - 2, 1), Block('stone_slab', {'type': 'top'}))
+            elif coral_stage == 1:
+                yield setblock(p.p(z, y, 1), 'stone')
+                coral_stage += 1
+
+    room.function('quilt_init').add(
+        quilt(),
+        label((-1049, 104, 1028), 'Frame Quilt Photo'),
+        label((-1049, 104, 1027), 'Back to Platform'))
 
     mob_offset = Offset(-1, 9, 7)
     room.function('photo_mobs_init').add(
@@ -69,7 +179,7 @@ def room():
         (Entity(m.mob, m.nbt).tag('photo_mob').merge_nbt(MobPlacer.base_nbt).summon(
             mob_offset.r(m.x, m.y, m.z), {'Rotation': [m.rotation, 0], 'OnGround': True}) for m in mobs))
 
-    drop = room.score('heeds_drop')
+    drop = room.score('needs_drop')
     do_drop = room.function('drop_if_needed', home=False).add(
         drop.set(0),
         execute().as_(p().gamemode(CREATIVE)).run(drop.set(1)),
@@ -88,11 +198,15 @@ def room():
     room.function('photo_sample_view', home=False).add(
         execute().in_(OVERWORLD).run(tp(p(), (-1000.001, 109, 1016)).facing((-1000.001, 105, 1030))),
         function(do_drop))
+    room.function('photo_quilt_view').add(
+        execute().in_(OVERWORLD).run(tp(p(), (-1049, 104.51, 1029.61)).facing((-1049, 104.51, 1045))),
+        function(do_drop))
 
     shoot_offset = Offset(0, 4, 0)
     room.function('photo_shoot_init').add(
         label(shoot_offset.r(-1, 15, 6), 'Frame Complete Photo'),
         label(shoot_offset.r(1, 15, 6), 'Frame Mob Photo'),
+        label(shoot_offset.r(0, 15, 8), 'Frame Quilt View'),
         label(shoot_offset.r(0, 15, 10), 'Go Home'),
         label(shoot_offset.r(0, 15, 13), 'Frame Sample Photo'),
     )
