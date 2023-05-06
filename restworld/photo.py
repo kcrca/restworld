@@ -206,8 +206,9 @@ def room():
     room.function('photo_shoot_init').add(
         label(shoot_offset.r(-1, 15, 6), 'Complete Photo'),
         label(shoot_offset.r(1, 15, 6), 'Mob Photo'),
-        label(shoot_offset.r(0, 15, 8), 'Quilt Photo'),
-        label(shoot_offset.r(0, 15, 10), 'Go Home'),
+        label(shoot_offset.r(0, 15, 7), 'Reset Room'),
+        label(shoot_offset.r(0, 15, 9), 'Go Home'),
+        label(shoot_offset.r(0, 15, 11), 'Quilt Photo'),
         label(shoot_offset.r(0, 15, 13), 'Sample Photo'),
     )
 
