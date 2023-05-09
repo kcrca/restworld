@@ -620,8 +620,7 @@ def trim_functions(room):
                 # The path is a.b.c, but we need the last element to be a.b{c:value}, and there is no rreplace, so...
                 path = self._to_path(t)
                 sign = WallSign().messages((None, 'Keep', f'{self.name.title().replace("s", "")}:', t.title()))
-                yield execute().if_().data().entity(e().tag(overall_tag).limit(1), path).run(
-                    sign.place(r(-1, 2, 0), facing))
+                yield execute().if_().data(e().tag(overall_tag).limit(1), path).run(sign.place(r(-1, 2, 0), facing))
 
         def _to_path(self, t):
             return ('ArmorItems[0].' + self.nbt_path)[::-1].replace('.', '{', 1)[::-1] + ':' + t + '}'

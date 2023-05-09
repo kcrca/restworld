@@ -173,8 +173,8 @@ def room():
     named_frame_data = named_frame_item(name='Invisible Frame').merge({'ItemRotation': 0})
     model_copy = room.function('model_copy', home=False).add(
         data().merge(model_src, {'ItemRotation': 0}),
-        execute().unless().data().entity(model_src, 'Item.id').run(kill(all_ground)),
-        execute().if_().data().entity(model_src, 'Item.id').run(
+        execute().unless().data(model_src, 'Item.id').run(kill(all_ground)),
+        execute().if_().data(model_src, 'Item.id').run(
             execute().unless().entity(model_ground).at(model_home).run(
                 summon('item', r(1, 3, -2), ground_default_nbt)),
             data().modify(model_ground, 'Item').set().from_(model_src, 'Item'),
@@ -203,7 +203,7 @@ def room():
     room.function('model_run', home=False).add(
         was_empty.operation(EQ, is_empty),
         is_empty.set(1),
-        execute().if_().data().entity(model_src, 'Item.id').run(is_empty.set(0)),
+        execute().if_().data(model_src, 'Item.id').run(is_empty.set(0)),
         execute().unless().score(was_empty).is_(EQ, is_empty).run(function(model_copy)),
     )
     redstone_block_pos = r(1, -2, 0)
