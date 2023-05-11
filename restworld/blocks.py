@@ -68,7 +68,7 @@ def room():
                     yield setblock(r(x, 3, z), 'air')
                 yield setblock(r(x, 3, z), block)
                 # Preserve the 'expand' response
-                yield Sign.change(r(x + facing.dx, 2, z + facing.dz), signage)
+                yield Sign.change(r(x + facing.dx, 2, z + facing.dz), signage, start=1)
 
                 if show_list:
                     block_list_name = f'block_list_{name}_{x}_{z}'
@@ -631,7 +631,7 @@ def room():
     for b in (
             'amethyst', 'anvil', 'bell', 'brewing_stand', 'cake', 'campfire', 'chest', 'colored_beam', 'colorings',
             'frosted_ice', 'grindstone', 'item_frame', 'lantern', 'armor_stand', 'torches', 'blocks_room', 'ladder',
-            'stepable'):
+            'stepable', 'tnt'):
         room.function(b + '_init', exists_ok=True).add(tag(e().tag(b + '_home')).add('no_expansion'))
 
 
