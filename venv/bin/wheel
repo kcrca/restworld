@@ -1,4 +1,4 @@
-#!/Users/kcrca/restworld/venv/bin/python
+#!/Users/arnold/restworld/venv/bin/python
 # -*- coding: utf-8 -*-
 import re
 import sys
