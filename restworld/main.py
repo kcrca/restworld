@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import random
+from pathlib import Path
 
 from pynecraft.simpler import Sign
 from restworld import arena, banners, biomes, blocks, center, connect, diy, effects, enders, font, global_, gui, hud, \
@@ -28,7 +29,7 @@ def main():
             wither, maps):
         m.room()
     tags.tags()
-    dir = f'/Users/kcrca/clarity/home/saves/RestWorld_{args.version}'
+    dir = f'{Path.home()}/clarity/home/saves/RestWorld_{args.version}'
     print(dir)
     restworld.save(dir)
 

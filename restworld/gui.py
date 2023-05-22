@@ -4,7 +4,7 @@ from pynecraft import commands
 from pynecraft.base import EAST, NORTH, Nbt, WEST, r
 from pynecraft.commands import BOSSBAR_COLORS, BOSSBAR_STYLES, Block, CREATIVE, Entity, LEVELS, SURVIVAL, a, bossbar, \
     clone, data, e, execute, fill, function, gamemode, give, item, kill, p, setblock, summon, return_, effect
-from pynecraft.info import must_give_items
+from pynecraft.info import must_give_items, operator_menu
 from pynecraft.simpler import Item, ItemFrame, WallSign, Sign
 from restworld.rooms import Room, label
 from restworld.world import fast_clock, main_clock, restworld, slow_clock, kill_em
@@ -262,42 +262,42 @@ def room():
     room.function('ingredients_enter').add(
         clone(r(20, -5, 30), r(-15, -5, 1), r(-15, 1, 1)).filtered('chest'))
 
-    non_inventory = list(must_give_items.values())
+    non_inventory = list(filter(lambda x: x.name not in operator_menu, must_give_items.values()))
     non_inventory.append(Entity('elytra', nbt={'Damage': 450}, name='Damaged Elytra'))
 
-    only_item_chest_pos = r(-1, -5, -2)
+    only_item_chest_pos = r(2, -5, -4)
 
     def only_items_init_func():
-        rows = [(0, 5), (0, 5), (0, 5)]
+        rows = [(0, 3), (0, 3)]
         dx = 2
-        dz = 1
-        x = -1
+        dz = 2
+        z = -3
         items = list(non_inventory)
         yield kill(e().tag('only_item_frame'))
         index = 0
         while len(items) > 0:
-            z, end = rows.pop(0)
+            x, end = rows.pop(0)
             for i in range(0, end):
-                if len(rows) == 2 and i == 2:
-                    # There are 14 items, 2x7 is too large; skip the middle of the front row to get about 3 rows of 5
-                    z += dz
-                    continue
+                # if len(rows) == 2 and i == 2:
+                #     # There are 14 items, 2x7 is too large; skip the middle of the front row to get about 3 rows of 5
+                #     x += dx
+                #     continue
                 t = items.pop(0)
                 frame = ItemFrame(NORTH).item(t).named(t.name)
                 frame.tag('gui', 'only_item_frame', f'only_item_frame_{t.id}')
                 if t.id == 'elytra':
                     frame.merge_nbt({'Item': {'tag': {'Damage': 450}}})
-                yield frame.summon(r(x, 2, z - 4), facing=WEST)
+                yield frame.summon(r(x, 2, z), facing=NORTH)
                 yield item().replace().block(only_item_chest_pos, f'container.{index}').with_(t)
-                z += dz
+                x += dz
                 index += 1
-            x += dx
+            z += dz
 
         clone_pos = list(only_item_chest_pos)
         clone_pos[1] = r(1)
         # noinspection PyTypeChecker
         yield clone(only_item_chest_pos, only_item_chest_pos, tuple(clone_pos))
-        yield WallSign((None, 'Items Not', 'in Creative', 'Inventory')).place(r(5, 3, -2), WEST)
+        yield WallSign((None, 'Items Not', 'in Creative', 'Inventory')).place(r(2, 3, 1), NORTH)
 
     giveable = non_inventory[:-1]
     giveable.append(Entity('Elytra', {'Damage': 450}))
@@ -307,7 +307,7 @@ def room():
         (give(p(), x) for x in giveable)
     )
     room.function('only_items_init').add(
-        label(r(-2, 2, -2), 'Give'),
+        label(r(3, 2, -4), 'Give'),
         setblock(only_item_chest_pos, Block('chest', {'facing': WEST}))
     ).add(list(only_items_init_func()))
 
