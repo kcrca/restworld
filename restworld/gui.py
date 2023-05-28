@@ -3,7 +3,7 @@ from __future__ import annotations
 from pynecraft import commands
 from pynecraft.base import EAST, NORTH, Nbt, WEST, r
 from pynecraft.commands import BOSSBAR_COLORS, BOSSBAR_STYLES, Block, CREATIVE, Entity, LEVELS, SURVIVAL, a, bossbar, \
-    clone, data, e, execute, fill, function, gamemode, give, item, kill, p, setblock, summon, return_, effect
+    clone, data, e, execute, fill, function, gamemode, give, item, kill, p, setblock, summon, effect
 from pynecraft.info import must_give_items, operator_menu
 from pynecraft.simpler import Item, ItemFrame, WallSign, Sign
 from restworld.rooms import Room, label
@@ -36,9 +36,7 @@ def room():
         yield at(WallSign.change(r(-1, 6, 0), (None, f'Pyramid Height: {step.elem}')))
 
     # Can't use bounce because we need to show two things at full strength.
-    beacon_on = room.score('beacon_on')
-    room.loop('beacon', slow_clock).add(
-        execute().unless().score(beacon_on).matches(1).run(return_(0))).loop(
+    room.loop('beacon', slow_clock).loop(
         beacon_loop, (0, 1, 2, 3, 4, 4, 3, 2, 1))
     start = room.function('beacon_start', home=False).add(
         at(fill(r(0, 1, 0), r(0, 5, 0), 'gold_block')),
@@ -46,14 +44,12 @@ def room():
     stop = room.function('beacon_stop', home=False).add(
         at(fill(r(0, 1, 0), r(0, 5, 0), 'chiseled_quartz_block')),
         effect().clear(p()))
-    room.function('beacon_on', home=False).add(beacon_on.set(1), function(start))
-    off = room.function('beacon_off', home=False).add(beacon_on.set(0), function(stop))
-    room.function('beacon_enter').add(execute().if_().score(beacon_on).matches(1).run(function(start)))
+    room.function('beacon_enter').add(function(start))
     room.function('beacon_exit').add(function(stop))
     room.function('beacon_init').add(
-        at(WallSign((None, 'Pyremid Height: 0')).place(r(-1, 6, 0), WEST)),
+        at(WallSign((None, 'Pyramid Height: 0')).place(r(-1, 6, 0), WEST)),
         at(label(r(-5, 2, -2), 'Beacon')),
-        function(off))
+        function(stop))
 
     bossbar_which = room.score('bossbar_which')
     room.function('bossbar_exit').add(bossbar().set('restworld:bossbar').visible(False))
@@ -269,7 +265,6 @@ def room():
 
     def only_items_init_func():
         rows = [(0, 3), (0, 3)]
-        dx = 2
         dz = 2
         z = -3
         items = list(non_inventory)
@@ -278,10 +273,6 @@ def room():
         while len(items) > 0:
             x, end = rows.pop(0)
             for i in range(0, end):
-                # if len(rows) == 2 and i == 2:
-                #     # There are 14 items, 2x7 is too large; skip the middle of the front row to get about 3 rows of 5
-                #     x += dx
-                #     continue
                 t = items.pop(0)
                 frame = ItemFrame(NORTH).item(t).named(t.name)
                 frame.tag('gui', 'only_item_frame', f'only_item_frame_{t.id}')
