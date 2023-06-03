@@ -138,7 +138,7 @@ def room():
     def quilt():
         coral_stage = 0
         line_length = 25
-        p = Offset(-1061, 113, 1040)
+        p = Offset(-1069, 113, 1067)
         yield fill(p.p(0, -1, -2), p.p(line_length, -20, 2), 'air')
         for i, b in enumerate(get_normal_blocks()):
             block = Block(b)
@@ -169,8 +169,8 @@ def room():
 
     room.function('quilt_init').add(
         quilt(),
-        label((-1049, 104, 1028), 'Quilt Photo'),
-        label((-1049, 104, 1027), 'Back to Platform'))
+        label((-1057, 104, 1055), 'Quilt Photo'),
+        label((-1057, 104, 1054), 'Back to Platform'))
 
     mob_offset = Offset(-1, 9, 7)
     room.function('photo_mobs_init').add(
@@ -187,19 +187,19 @@ def room():
         execute().if_().score(drop).matches(1).run(gamemode(SURVIVAL, p()), gamemode(CREATIVE, p())))
     room.function('photo_complete_view', home=False).add(
         # /execute in overworld run tp @p -1002 108 1009 facing -1019.0 93 993.0
-        execute().in_(OVERWORLD).run(tp(p(), (-1002, 109, 1009)).facing((-1019.00, 93, 993.00))),
+        execute().in_(OVERWORLD).run(tp(p(), (-1010, 109, 1036)).facing((-1027.00, 93, 1020.00))),
         function(do_drop),
         kill(e().type('item'))
     )
     room.function('photo_mobs_view', home=False).add(
-        execute().in_(OVERWORLD).run(tp(p(), (-998.5, 109, 1009.5)).facing((-947.5, 88, 1007))),
+        execute().in_(OVERWORLD).run(tp(p(), (-1006.5, 109, 1036.5)).facing((-955.5, 88, 1034))),
         function(do_drop),
         kill(e().type('item')))
     room.function('photo_sample_view', home=False).add(
-        execute().in_(OVERWORLD).run(tp(p(), (-1000.001, 109, 1016)).facing((-1000.001, 105, 1030))),
+        execute().in_(OVERWORLD).run(tp(p(), (-1008.001, 109, 1043)).facing((-1008.001, 105, 1057))),
         function(do_drop))
     room.function('photo_quilt_view').add(
-        execute().in_(OVERWORLD).run(tp(p(), (-1049, 104.51, 1029.61)).facing((-1049, 104.51, 1045))),
+        execute().in_(OVERWORLD).run(tp(p(), (-1057, 104.51, 1056.61)).facing((-1057, 104.51, 1072))),
         function(do_drop))
 
     shoot_offset = Offset(0, 4, 0)
