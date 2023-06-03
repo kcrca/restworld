@@ -201,13 +201,14 @@ def room():
             ('spawnRadius', 0),
         ))
     )
+    # ('arena', OVERWORLD, (1014, 106, -1000), (1000, 100, -1000))
     for place in (
-            ('biomes', OVERWORLD, (-1000, 101, -1000), (-1000, 80, -970)),
-            ('optifine', OVERWORLD, (1000, 101, 1000), (1000, 101, 990)),
+            ('biomes', OVERWORLD, (-1024, 101, -937), (-1024, 80, -907)),
+            ('optifine', OVERWORLD, (1023, 101, 1024), (1023, 101, 114)),
             ('end_home', THE_END, (100, 49, 0), (90, 50, 0)),
             ('home', OVERWORLD, (0, 101, 0), (0, 101, 10)),
             ('nether', THE_NETHER, (22, 99, -13), (28, 100, -13)),
-            ('arena', OVERWORLD, (1014, 106, -1000), (1000, 100, -1000))):
+            ('arena', OVERWORLD, (1040, 106, -1026), (1036, 104, -1026))):
         room.function('goto_' + place[0], home=False).add(
             execute().in_(place[1]).run(teleport(p(), place[2]).facing(place[3])))
     room.function('goto_photo').add(function('restworld:photo/photo_complete_view'))

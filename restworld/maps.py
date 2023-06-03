@@ -38,9 +38,7 @@ def room():
     set_map_icon = room.function('set_map_icons', home=False).add(
         data().modify(e().tag(icon_frame_tag).limit(1), 'Item.tag.Decorations').set().value(list(icons.values())))
     room_init = room.function('maps_room_init', exists_ok=True).add(
-        p_north.summon(ItemFrame(SOUTH).item(map(26, name_nbt('Biomes (top)')))),
-        room.mob_placer(r(3, 3, -3), SOUTH, adults=True).summon(
-            ItemFrame(SOUTH).item(map(28, name_nbt('Biomes (bot)')))),
+        p_north.summon(ItemFrame(SOUTH).item(map(142, name_nbt('Biomes')))),
         WallSign((None, 'Biome', 'Sampler'), SOUTH).place(r(4, 3, -3), SOUTH),
 
         room.mob_placer(r(6, 4, -3), SOUTH, adults=True).summon(
@@ -86,8 +84,7 @@ def room():
         data().modify(map_chest_pos, 'Items[{Slot:14b}]').merge().value(name_nbt('Main (right)')),
         data().modify(map_chest_pos, 'Items[{Slot:22b}]').merge().value(name_nbt('Main (bot)')),
 
-        data().modify(map_chest_pos, 'Items[{Slot:1b}]').merge().value(name_nbt('Biomes (top)')),
-        data().modify(map_chest_pos, 'Items[{Slot:2b}]').merge().value(name_nbt('Biomes (bot)')),
+        data().modify(map_chest_pos, 'Items[{Slot:2b}]').merge().value(name_nbt('Biomes')),
         data().modify(map_chest_pos, 'Items[{Slot:24b}]').merge().value(name_nbt('Battle Arena)')),
     )
 

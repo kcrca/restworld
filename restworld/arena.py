@@ -191,7 +191,7 @@ def room():
         stand = marker_tmpl.clone().merge_nbt({'Tags': [var, 'home', 'arena_home']})
         for x in range(-1, 2):
             for z in range(-1, 2):
-                yield stand.summon(r(x, -0.5, z))
+                yield stand.summon(r(x, 0.5, z))
 
     def monitor(actor: str):
         count = Score(actor + '_count', 'arena')
