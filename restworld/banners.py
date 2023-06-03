@@ -272,5 +272,5 @@ def room():
                          {'Pattern': 'bo', 'Color': 8}, {'Pattern': 'ms', 'Color': 15}, {'Pattern': 'hh', 'Color': 8},
                          {'Pattern': 'mc', 'Color': 8}, {'Pattern': 'bo', 'Color': 15}]})))
 
-    room.function('switch_to_color').add(switch_banners('color'))
-    room.function('switch_to_ink').add(switch_banners('ink'))
+    room.function('switch_to_color', home=False).add(switch_banners('color'))
+    room.function('switch_to_ink', home=False).add(switch_banners('ink'))

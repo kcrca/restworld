@@ -235,7 +235,7 @@ class Room(FunctionSet):
             score = Score(base_name, self.name)
         loop = self._add_func(Loop(score, name=name, base_name=base_name), name, clock, home)
         if not base_name + '_cur' in self.functions:
-            self.function(base_name + '_cur').add(loop.cur())
+            self.function(base_name + '_cur', home=home).add(loop.cur())
         self._scores.add(loop.score)
         self._scores.add(loop.to_incr)
         return loop

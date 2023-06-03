@@ -211,7 +211,7 @@ def room():
 
     arena_count = Score('arena_count', 'arena')
 
-    arena_count_finish = room.function('arena_count_finish').add(
+    arena_count_finish = room.function('arena_count_finish', home=False).add(
         execute().if_().score(arena_count).matches((None, COUNT_MIN)).run(arena_count.set(COUNT_MIN)),
         execute().if_().score(arena_count).matches((COUNT_MAX, None)).run(arena_count.set(COUNT_MAX)),
         function('restworld:arena/arena_count_cur'),
@@ -219,8 +219,8 @@ def room():
     arena_count_cur = function(arena_count_finish.full_name)
     room.function('arena_count_decr', home=False).add(arena_count.remove(1), arena_count_cur)
     room.function('arena_count_incr', home=False).add(arena_count.add(1), arena_count_cur)
-    room.function('arena_count_init').add(arena_count.set(1), arena_count_cur)
-    room.loop('arena_count', main_clock).loop(
+    room.function('arena_count_init', home=False).add(arena_count.set(1), arena_count_cur)
+    room.loop('arena_count', main_clock, home=False).loop(
         lambda step: execute().at(e().tag('controls_home')).run(
             Sign.change(r(2, 4, 0), (None, f'{step.elem:d} vs. {step.elem:d}'))), range(0, COUNT_MAX + 1))
 
@@ -261,7 +261,7 @@ def room():
     ground = Region(r(-12, 2, -12), r(12, 2, 12))
     sky = Region((r(-20), 250, r(-20)), (r(20), 250, r(20)))
     # See 'battle_types' map above for meanings
-    room.function('start_battle').add(
+    room.function('start_battle', home=False).add(
         execute().unless().score(start_battle_type).matches((0, None)).run(start_battle_type.set(0)),
         execute().unless().score(start_battle_type).matches(1).at(monitor_home).run(arena.fill('air')),
         execute().if_().score(start_battle_type).matches(1).at(monitor_home).run(arena.fill('water')),
@@ -273,4 +273,5 @@ def room():
         kill_em(e().not_tag('arena_safe').distance((None, 100))),
     )
 
-    room.loop('toggle_peace').loop(toggle_peace, (True, False)).add(function('restworld:arena/start_battle'))
+    room.loop('toggle_peace', home=False).loop(toggle_peace, (True, False)).add(
+        function('restworld:arena/start_battle'))
