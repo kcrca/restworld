@@ -228,7 +228,7 @@ def room():
             yield at_home(Sign.change(signs[-1], (name,)))
 
         all_things = things
-        all_things_loop = room.loop(f'all_{which}', fast_clock, home=False).add(is_empty.set(1))
+        all_things_loop = room.loop(f'all_{which}', fast_clock).add(is_empty.set(1))
         for i, pos in enumerate(signs):
             all_things_loop.add(
                 at_home(data().modify(pos, 'front_text.messages[3]').set().from_(pos, 'front_text.messages[2]')),
