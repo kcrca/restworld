@@ -480,12 +480,13 @@ def room():
         lantern = Block('Lantern' if step.i < 2 else 'Soul Lantern', {'hanging': False})
         if step.i in (0, 3):
             yield setblock(r(0, 3, 0), lantern),
-            yield setblock(r(0, 4, 0), 'air'),
+            yield fill(r(0, 4, 0), r(0, 5, 0), 'air'),
             yield Sign.change(r(0, 2, -1), (None, '', lantern.name, ' Chain'))
         else:
             lantern.merge_state({'hanging': True}),
             yield setblock(r(0, 3, 0), lantern),
             yield setblock(r(0, 4, 0), 'chain'),
+            yield setblock(r(0, 5, 0), 'smooth_stone_slab'),
             yield Sign.change(r(0, 2, -1), (None, 'Hanging', lantern.name, 'and Chain'))
 
     room.function('lantern_init').add(WallSign((None, None, 'Lantern')).place(r(0, 2, -1, ), NORTH))
