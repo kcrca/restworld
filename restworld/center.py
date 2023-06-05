@@ -85,7 +85,7 @@ def room():
         summon(Entity('mooshroom', silent).tag('mob_display'), r(6, 2.5, 0), all),
         summon(Entity('pig', silent).tag('mob_display'), r(6, 2.5, 0), all),
 
-        trim_stand.summon(r(11, 2, 1), facing=NORTH),
+        trim_stand.summon(r(10.51, 2, 0), facing=NORTH),
 
         kill(e().type('item')),
     )
