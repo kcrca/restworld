@@ -61,7 +61,7 @@ def room():
                 if signage == ('Structure Void',):
                     signage = ()
                 if len(signage) < 3:
-                    signage = signage + ('',) * (4 - len(signage))
+                    signage = signage + ('',) * (3 - len(signage))
 
                 if air:
                     yield setblock(r(x, 3, z), 'air')
