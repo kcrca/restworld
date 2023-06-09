@@ -16,7 +16,7 @@ def room():
 
     def dispenser_loop(step):
         yield setblock(r(0, 2, 0), (step.elem, {'facing': UP}))
-        yield setblock(r(0, 4, 0), (step.elem, {'facing': WEST}))
+        yield setblock(r(1, 4, 0), (step.elem, {'facing': WEST}))
         yield setblock(r(0, 6, 0), (step.elem, {'facing': DOWN}))
         yield Sign.change(r(0, 3, 0), (None, step.elem))
 

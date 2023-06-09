@@ -299,7 +299,7 @@ def three_funcs(room):
 
     room.loop('three_height', main_clock).loop(three_height_loop, range(3), bounce=True)
     room.loop('three_age', fast_clock).add(
-        fill(r(0, 5, 0), (0, 5, -3), 'air'),
+        fill(r(0, 5, 0), r(0, 5, -3), 'air'),
         setblock(r(0, 3, 0), 'cactus'),
         setblock(r(0, 3, -3), 'sugar_cane')
     ).loop(three_age_loop, range(16))

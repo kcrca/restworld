@@ -38,18 +38,15 @@ def room():
     # Can't use bounce because we need to show two things at full strength.
     room.loop('beacon', slow_clock).loop(
         beacon_loop, (0, 1, 2, 3, 4, 4, 3, 2, 1))
-    start = room.function('beacon_start', home=False).add(
+    beacon_start = room.function('beacon_start', home=False).add(
         at(fill(r(0, 1, 0), r(0, 5, 0), 'gold_block')),
         at(clone(r(0, -5, 1), r(0, -5, 1), r(0, 6, 1))))
-    stop = room.function('beacon_stop', home=False).add(
+    beacon_stop = room.function('beacon_stop', home=False).add(
         at(fill(r(0, 1, 0), r(0, 5, 0), 'chiseled_quartz_block')),
         effect().clear(p()))
-    room.function('beacon_enter').add(function(start))
-    room.function('beacon_exit').add(function(stop))
-    room.function('beacon_init').add(
-        at(WallSign((None, 'Pyramid Height: 0')).place(r(-1, 6, 0), WEST)),
-        at(label(r(-5, 2, -2), 'Beacon')),
-        function(stop))
+    room.function('beacon_enter').add(function(beacon_start))
+    room.function('beacon_exit').add(function(beacon_stop))
+    room.function('beacon_init').add(at(WallSign((None, 'Pyramid Height: 0')).place(r(-1, 6, 0), WEST)))
 
     bossbar_which = room.score('bossbar_which')
     room.function('bossbar_exit').add(bossbar().set('restworld:bossbar').visible(False))

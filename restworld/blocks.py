@@ -60,8 +60,7 @@ def room():
                 signage = labels[i] if labels else block.sign_text
                 if signage == ('Structure Void',):
                     signage = ()
-                if len(signage) < 4:
-                    signage = ('', *signage)
+                if len(signage) < 3:
                     signage = signage + ('',) * (4 - len(signage))
 
                 if air:

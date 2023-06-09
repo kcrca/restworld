@@ -19,9 +19,9 @@ def room():
 
     room.function('maps_room_enter', exists_ok=True).add(
         clone(r(8, -5, 0), r(8, -5, 0), r(8, 1, 0)),
-        fill(r(0, -1, -3), r(9, -1, 3), 'redstone_block').replace('glass')
+        fill(r(0, -1, -3), r(9, -1, 3), 'redstone_torch').replace('glass')
     )
-    room.function('maps_room_exit').add(fill(r(0, -1, -3), r(9, -1, 3), 'glass').replace('redstone_block'))
+    room.function('maps_room_exit').add(fill(r(0, -1, -3), r(9, -1, 3), 'glass').replace('redstone_torch'))
     p_north = room.mob_placer(r(3, 4, -3), SOUTH, -1, adults=True)
     p_mid = room.mob_placer(r(8, 4, -1), WEST, -1, adults=True)
     icons = {
