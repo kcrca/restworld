@@ -7,7 +7,7 @@ from pynecraft.base import DARK_GREEN, DARK_PURPLE, r
 from pynecraft.commands import Commands, Entity, JsonText, data, e, execute, fill, function, give, p, tp, clear, kill, \
     gamemode, CREATIVE, scoreboard, SIDEBAR
 from pynecraft.function import Function, FunctionSet
-from pynecraft.simpler import Book, Sign
+from pynecraft.simpler import Book, Sign, TextDisplay
 from restworld.rooms import Clock, Room, RoomPack
 
 
@@ -199,3 +199,8 @@ class Wall:
             if y < self.y_last:
                 return None, None
         return x, y
+
+
+def text_display(text: str, shown: bool = True) -> TextDisplay:
+    return TextDisplay(text, nbt={'Rotation': [180.0, 0.0], 'text_opacity': 255 if shown else 25, 'background': 0,
+                                  'billboard': 'vertical', 'shadow_radius': 0}).scale(0.6)

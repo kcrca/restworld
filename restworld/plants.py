@@ -9,7 +9,7 @@ from pynecraft.enums import BiomeId
 from pynecraft.info import small_flowers, stems, tulips
 from pynecraft.simpler import Region, Sign, WallSign
 from restworld.rooms import Room, label
-from restworld.world import fast_clock, main_clock, restworld
+from restworld.world import fast_clock, main_clock, restworld, text_display
 
 
 def crop(stages, which: str | Callable[[int, str], Block], x, y, z, step, name='age', extra=None):
@@ -147,7 +147,20 @@ def room():
             yield setblock(r(0, 1, i), ('farmland', {'moisture': 7 - i}))
             yield setblock(r(0, 1, -i), ('farmland', {'moisture': 7 - i}))
 
-    room.loop('farmland_strip', main_clock).loop(farmland_loop, range(0, 1))
+    room.loop('farmland_strip', main_clock).loop(farmland_loop, range(0, 1)).add(
+        kill(e().type('item').nbt({'Item': {'id': 'minecraft:pitcher_pod'}}))
+    )
+    farmland_init = room.function('farmland_strip_init').add(
+        kill(e().tag('farmland_strip_labels')),
+        label(r(-3, 2, 0), 'Moisture Values')
+    )
+
+    farmland_init.add(text_display('Moisture').tag('farmland_strip_labels').summon(r(0, 2.3, 0)))
+    for i in range(0, 8):
+        td = text_display(str(7 - i)).tag('farmland_strip_labels')
+        farmland_init.add(td.summon(r(0, 2.1, i)))
+        farmland_init.add(td.summon(r(0, 2.1, -i)))
+
     room.function('lily_pad_init').add(WallSign((None, 'Lily Pad')).place(r(0, 2, 0), WEST))
 
     def mushroom_loop(step):
