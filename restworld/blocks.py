@@ -223,10 +223,10 @@ def room():
     blocks('sponge', SOUTH, ('Sponge', 'Wet Sponge'))
     blocks('sticky', SOUTH, ('Slime Block', 'Honey block'))
     blocks('stone_bricks', NORTH, (
-        'Stone Bricks', 'Mossy|Stone Bricks', 'Cracked|Stone Bricks', 'Chiseled|Stone Bricks',
-        'Polished|Blackstone Bricks', 'Cracked Polished|Blackstone Bricks', 'End Stone|Bricks'))
+        'Stone Bricks', 'Mossy|Stone Bricks', 'Cracked|Stone Bricks', 'Chiseled|Stone Bricks', 'Chiseled|Tuff Bricks',
+        'Tuff Bricks', 'Polished|Blackstone Bricks', 'Cracked Polished|Blackstone Bricks', 'End Stone|Bricks'))
 
-    stone_types = ('Basalt', 'Stone', 'Deepslate', 'Andesite', 'Diorite', 'Granite', 'Blackstone', 'Basalt')
+    stone_types = ('Basalt', 'Stone', 'Deepslate', 'Andesite', 'Diorite', 'Granite', 'Tuff', 'Blackstone', 'Basalt')
     polished_types = ('Smooth Basalt', 'Smooth Stone') + tuple(f'Polished|{t}' for t in stone_types[2:])
     blocks('stone', NORTH, (stone_types, polished_types), dz=3)
 
@@ -500,7 +500,6 @@ def room():
     room.function('lantern_init').add(WallSign((None, None, 'Lantern')).place(r(0, 2, -1, ), NORTH))
     room.loop('lantern', main_clock).loop(lantern_loop, range(0, 4))
 
-    blocks('minor', NORTH, ('Calcite', 'Tuff'))
     room.function('ore_blocks_init').add(label(r(-1, 2, 0), 'Deepslate'))
     basic = ['Coal', 'Iron', 'Copper', 'Gold', 'Lapis', 'Redstone', 'Diamond', 'Emerald']
     odder = ['Nether Quartz', 'Nether Gold']
@@ -1043,7 +1042,7 @@ def stepable_functions(room):
         'Andesite', 'Polished|Andesite',
         'Diorite', 'Polished|Diorite',
         'Granite', 'Polished|Granite',
-        'Tuff', 'Polished|Tuff',
+        'Tuff', 'Tuff Bricks', 'Polished|Tuff',
         'Cobbled|Deepslate',
         'Polished|Deepslate',
         'Deepslate|Bricks',

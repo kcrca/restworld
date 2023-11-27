@@ -223,6 +223,7 @@ def tags():
             'granite',
             'polished_granite',
             'tuff',
+            'tuff_bricks',
             'polished_tuff',
             'blackstone',
             'polished_blackstone',
