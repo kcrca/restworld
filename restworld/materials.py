@@ -1,10 +1,13 @@
 from __future__ import annotations
 
+import re
+
 from pynecraft import info
 from pynecraft.base import EAST, EQ, NE, NORTH, NW, Nbt, NbtDef, SOUTH, WEST, as_facing, r, to_id
 from pynecraft.commands import Block, BlockDef, Entity, MOD, PLUS, RESULT, data, e, execute, fill, fillbiome, function, \
     as_block, item, kill, s, scoreboard, setblock, summon, tag
 from pynecraft.enums import BiomeId
+from pynecraft.function import BLOCKS
 from pynecraft.info import colors, stems, trim_materials, trim_patterns
 from pynecraft.simpler import Item, ItemFrame, Region, Sign, WallSign
 from restworld.rooms import Room, label
@@ -50,12 +53,12 @@ def room():
 
     room.loop('all_sand', main_clock).loop(all_sand_loop, range(0, 2))
 
-    room.function('arrows_init').add(WallSign(()).place(r(0, 2, -1), NORTH))
+    room.function('arrows_init').add(WallSign(()).place(r(1, 2, 0), EAST))
 
     def arrows_loop(step):
         yield summon(step.elem, r(0, 3, 0.25), {
             'Tags': ['arrow'], 'NoGravity': True, 'Color': 127, 'CustomPotionColor': 127 if step.i == 2 else ''})
-        yield Sign.change(r(0, 2, -1), (None, step.elem.name))
+        yield Sign.change(r(1, 2, 0), (None, step.elem.name))
 
     room.loop('arrows', main_clock).add(
         kill(e().tag('arrow'))
@@ -71,10 +74,10 @@ def room():
         p = points[i]
         f = -32768 if i == 0 else points[i - 1]
         yield summon('experience_orb', r(0, 3, 0), {'Value': p, 'Age': 6000 - 40})
-        yield Sign.change(r(0, 2, -1), (None, None, f'Size {i + 1}', f'{f} - {p}'))
+        yield Sign.change(r(1, 2, 0), (None, None, f'Size {i + 1}', f'{f} - {p}'))
 
     room.loop('experience_orbs', fast_clock).loop(experience_orbs_loop, points)
-    room.function('experience_orbs_init').add(WallSign((None, 'Experience Orb')).place(r(0, 2, -1), NORTH))
+    room.function('experience_orbs_init').add(WallSign((None, 'Experience Orb')).place(r(1, 2, 0), EAST))
     ingot_frame = 'ores_ingot_frame'
     frame = ItemFrame(SOUTH, nbt={'Tags': [room.name, ingot_frame]})
     room.function('ores_init').add(
@@ -166,6 +169,7 @@ def room():
     basic_functions(room)
     fencelike_functions(room)
     wood_functions(room)
+    copper_functions(room)
     trim_functions(room)
 
 
@@ -371,6 +375,50 @@ def fencelike_functions(room):
         'Cobbled|Deepslate', 'Polished|Deepslate', 'Prismarine',
     )))
     switch_to_fencelike('walls')
+
+
+def copper_functions(room):
+    tags = restworld.tags(BLOCKS)
+
+    def copper_tags(type) -> None:
+        blocks = list(re.sub('^_', '', f'{v}{type}') for v in ('', 'exposed_', 'weathered_', 'oxidized_'))
+        if blocks[0] == 'copper':
+            blocks[0] += '_block'
+        tag_name = type
+        if tag_name[-1] != 's':
+            tag_name += 's'
+        tags[tag_name] = {'values': blocks}
+
+    volume = Region(r(0, 1, 0), r(4, 5, 6))
+    copper_tags('copper')
+    copper_tags('cut_copper')
+    copper_tags('chiseled_copper')
+    copper_tags('copper_grate')
+    copper_tags('copper_bulb')
+    copper_tags('cut_copper_stairs')
+    copper_tags('cut_copper_slab')
+    copper_tags('copper_door')
+    copper_tags('copper_trapdoor')
+
+    def copper_loop(step):
+        type = step.elem.lower()
+        basic = 'copper'
+        if len(type) > 0:
+            type += '_'
+        else:
+            basic += '_block'
+        yield from volume.replace(type + basic, '#restworld:coppers')
+        yield from volume.replace(type + 'cut_copper', '#restworld:cut_coppers')
+        yield from volume.replace(type + 'chiseled_copper', '#restworld:chiseled_coppers')
+        yield from volume.replace(type + 'copper_grate', '#restworld:copper_grates')
+        yield from volume.replace(type + 'copper_bulb', '#restworld:copper_bulbs', {'lit': True})
+        yield from volume.replace(type + 'copper_bulb', '#restworld:copper_bulbs', {'lit': False})
+        yield from volume.replace_stairs(type + 'cut_copper_stairs', '#restworld:cut_copper_stairs')
+        yield from volume.replace_slabs(type + 'cut_copper_slab', '#restworld:cut_copper_slabs')
+        yield from volume.replace_doors(type + 'copper_door', '#restworld:copper_doors')
+        yield from volume.replace_trapdoors(type + 'copper_trapdoor', '#restworld:copper_trapdoors')
+
+    room.loop('coppers', main_clock).loop(copper_loop, ('', 'exposed', 'weathered', 'oxidized'))
 
 
 def wood_functions(room):
