@@ -279,7 +279,7 @@ def room():
     job_sites('grindstone', NORTH, ('Grindstone',),
               {'Grindstone': list({'face': f} for f in ('floor', 'wall', 'ceiling'))})
     job_sites('job_sites_1', NORTH,
-              ('Crafting Table', 'Cartography Table', 'Fletching Table', 'Smithing Table', 'Loom', 'Stonecutter'))
+              ('Crafting Table', 'Crafter', 'Cartography Table', 'Fletching Table', 'Smithing Table', 'Loom', 'Stonecutter'))
     job_sites('job_sites_2', NORTH, ('Blast Furnace', 'Smoker', 'Barrel', 'Lectern'),
               {'Blast Furnace': ({'lit': False}, {'lit': True}),
                'Smoker': ({'lit': False}, {'lit': True}),
