@@ -261,9 +261,9 @@ def room():
     only_item_chest_pos = r(2, -5, -4)
 
     def only_items_init_func():
-        rows = [(0, 3), (-1, 4)]
-        dz = 2
-        z = -3
+        rows = [(-1, 7)]
+        dz = 1
+        z = 0
         items = list(non_inventory)
         yield kill(e().tag('only_item_frame'))
         index = 0
