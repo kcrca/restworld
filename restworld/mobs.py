@@ -539,7 +539,7 @@ def monsters(room):
         ravager_loop, (None, 'Pillager', 'Vindicator', 'Evoker'))
 
     silverfish_dir = method_name()
-    room.function('silverfish_init').add(placer(r(0.2, 2, 0), silverfish_dir, adults=True).summon('silverfish'))
+    room.function('silverfish_init').add(placer(r(0, 2, 0), silverfish_dir, adults=True).summon('silverfish'))
 
     east = as_facing(EAST)
     east_rot = {'Rotation': east.rotation, 'Facing': east.name}
@@ -665,7 +665,9 @@ def monsters(room):
     room.function('enderman_init').add(
         execute().unless().entity(e().type('enderman').distance((None, 5))).run(list(placer.summon('enderman'))[0]))
 
-    # room.function('silverfish_init').add(placer(r(0.2, 2, 0), silverfish_dir, adults=True).summon('silverfish'))
+    placer = room.mob_placer(r(0, 2, 0.2), NORTH, adults=True)
+    room.function('breeze_init').add(placer.summon('breeze'))
+
     placer = room.mob_placer(r(0, 2, 0.2), NORTH, adults=True)
     room.function('endermite_init').add(placer.summon('endermite'))
 
