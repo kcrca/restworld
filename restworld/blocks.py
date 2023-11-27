@@ -215,8 +215,7 @@ def room():
     red_sandstone = ('Red Sandstone', 'Smooth|Red Sandstone', 'Cut|Red Sandstone', 'Chiseled|Red Sandstone')
     blocks('sandstone', SOUTH, (red_sandstone, tuple(re.sub(' *Red *', '', f) for f in red_sandstone)), dx=3)
     blocks('slabs', NORTH, ('Smooth Stone|Slab', 'Petrified Oak|Slab'))
-    _, loop = blocks('snow_blocks', SOUTH, ('Powder Snow', 'Snow Block'))
-    loop.add(execute().if_().block(r(0, 3, 0), 'powder_snow').run(Sign.change(r(0, 2, 1), (None, None, 'Step In!'))))
+    blocks('snow_blocks', SOUTH, ('Powder Snow', 'Snow Block'))
     _, loop = blocks('soil', SOUTH, ('Grass Block', 'Podzol', 'Mycelium', 'Dirt Path'))
     # Make sure the block above is air so it doesn't turn dirt path to dirt instantly.
     loop.add(setblock(r(0, 4, 0), 'air'))
@@ -231,24 +230,33 @@ def room():
     polished_types = ('Smooth Basalt', 'Smooth Stone') + tuple(f'Polished|{t}' for t in stone_types[2:])
     blocks('stone', NORTH, (stone_types, polished_types), dz=3)
 
-    copper_types = ('Copper Block', 'Exposed Copper', 'Weathered|Copper', 'Oxidized Copper')
-    copper_blocks = list(
-        x.replace('Copper', 'Cut Copper').replace(' Block', '').replace(' Cut', '|Cut') for x in copper_types)
-    waxed_types = tuple(f'Waxed|{x}' for x in copper_types)
-    waxed_block = tuple(f'Waxed|{x}' for x in copper_blocks)
-    blocks('copper', NORTH, (copper_types, copper_blocks), dx=-3)
-    blocks('waxed_copper', NORTH, (waxed_types, waxed_block), dx=-3, score=room.score('copper'))
-    room.function('copper_init', exists_ok=True).add(
-        tag(e().tag('copper_home')).add('copper_base'),
-        tag(e().tag('waxed_copper_home')).add('copper_base'))
-    room.function('switch_to_copper', home=False).add(
-        tag(e().tag('copper_base')).add('copper_home'),
-        tag(e().tag('copper_base')).remove('waxed_copper_home'),
-        execute().at(e().tag('copper_base')).run(function('restworld:blocks/copper_cur')))
-    room.function('switch_to_waxed_copper', home=False).add(
-        tag(e().tag('copper_base')).remove('copper_home'),
-        tag(e().tag('copper_base')).add('waxed_copper_home'),
-        execute().at(e().tag('copper_base')).run(function('restworld:blocks/waxed_copper_cur')))
+    copper_blocks = (
+        'Copper Block', 'Cut Copper', 'Chiseled Copper', 'Copper Grate', 'Copper Bulb', 'Copper Trapdoor')
+
+    def coppers(weathering):
+        return tuple(f'{weathering}|{f}'.replace(' Block', '') for f in copper_blocks)
+
+    blocks('copper_blocks', NORTH, (copper_blocks, coppers('Exposed'), coppers('Weathered'), coppers('Oxidized')),
+           dx=-3, dz=3, size=2)
+
+    # copper_types = ('Copper Block', 'Exposed Copper', 'Weathered|Copper', 'Oxidized Copper')
+    # copper_blocks = list(
+    #     x.replace('Copper', 'Cut Copper').replace(' Block', '').replace(' Cut', '|Cut') for x in copper_types)
+    # waxed_types = tuple(f'Waxed|{x}' for x in copper_types)
+    # waxed_block = tuple(f'Waxed|{x}' for x in copper_blocks)
+    # blocks('copper', NORTH, (copper_types, copper_blocks), dx=-3)
+    # blocks('waxed_copper', NORTH, (waxed_types, waxed_block), dx=-3, score=room.score('copper'))
+    # room.function('copper_init', exists_ok=True).add(
+    #     tag(e().tag('copper_home')).add('copper_base'),
+    #     tag(e().tag('waxed_copper_home')).add('copper_base'))
+    # room.function('switch_to_copper', home=False).add(
+    #     tag(e().tag('copper_base')).add('copper_home'),
+    #     tag(e().tag('copper_base')).remove('waxed_copper_home'),
+    #     execute().at(e().tag('copper_base')).run(function('restworld:blocks/copper_cur')))
+    # room.function('switch_to_waxed_copper', home=False).add(
+    #     tag(e().tag('copper_base')).remove('copper_home'),
+    #     tag(e().tag('copper_base')).add('waxed_copper_home'),
+    #     execute().at(e().tag('copper_base')).run(function('restworld:blocks/waxed_copper_cur')))
 
     woods = info.woods  # Read the current state of info.woods, which the version can change
     woodlike = woods + stems
@@ -563,12 +571,12 @@ def room():
             function('restworld:particles/shriek_particles')),
     )
 
-    def snow_loop(step):
+    def snow_depth_loop(step):
         yield setblock(r(0, 3, 0), Block('grass_block', {'snowy': True}))
         yield setblock(r(0, 4, 0), Block('snow', {'layers': step.elem}))
         yield Sign.change(r(0, 2, 1), (None, None, f'Layers: {step.elem:d}'))
 
-    room.loop('snow', main_clock).loop(snow_loop, range(1, 9), bounce=True)
+    room.loop('snow_depth', main_clock).loop(snow_depth_loop, range(1, 9), bounce=True)
 
     def spawner_loop(step):
         yield data().merge(r(0, 3, 0), {'SpawnData': {'entity': {'id': Entity(step.elem).id}}})
