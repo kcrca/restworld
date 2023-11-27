@@ -592,10 +592,10 @@ def room():
             yield setblock(r(0, 3, 0), Block('tnt', {'unstable': step.elem == 'unstable'}))
         else:
             yield setblock(r(0, 3, 0), 'air')
-            yield summon(('tnt', {'Fuse': 0x7fff, 'Tags': ['block_tnt']}), r(0, 3, 0))
+            yield summon(('tnt', {'fuse': 0x7fff, 'Tags': ['block_tnt']}), r(0, 3, 0))
         yield Sign.change(r(0, 2, -1), (None, None, step.elem.title()))
 
-    room.loop('tnt', main_clock).add(kill(e().tag('block_tnt'))).loop(tnt_loop, ('stable', 'unstable', 'primed'))
+    room.loop('tnt', main_clock).add(kill(e().tag('block_tnt'))).loop(tnt_loop, ('stable', 'unstable'))
 
     torches = (Block('Torch'), Block('Soul Torch'), Block('Redstone Torch'), Block('Redstone Torch'))
     wall_torches = tuple(Block(x.name.replace('Torch', 'Wall Torch')) for x in torches)
