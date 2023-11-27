@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import re
+
 from pynecraft import info
 from pynecraft.base import DOWN, EAST, NOON, SOUTH, UP, WEST, r
 from pynecraft.commands import Block, data, e, execute, fill, function, kill, say, setblock, summon, time
@@ -49,16 +51,31 @@ def room():
         extended = step.i in (1, 4)
         block = 'redstone_block' if extended else 'air'
         piston = 'Piston' if step.i < 3 else 'Sticky Piston'
-        if block == 'air':
-            yield setblock(r(-1, 2, 0), 'air')
-        yield ensure(r(0, 2, 0), block)
+        yield ensure(r(1, 3, 0), block)
         if step.i in (0, 3):
-            yield ensure(r(0, 2, -1), f'{piston}[facing=north]')
-            yield ensure(r(0, 2, 1), f'{piston}[facing=west]')
-            yield ensure(r(0, 3, 0), f'{piston}[facing=up,]')
+            yield ensure(r(0, 3, 0), f'{piston}[facing=west]')
+            yield ensure(r(1, 4, 0), f'{piston}[facing=up,]')
         yield WallSign((None, piston)).place(r(-1, 2, 0), WEST)
 
     room.loop('piston', main_clock).loop(piston_loop, range(6))
+
+    def copper_bulb_loop(step):
+        bulb = Block(step.elem)
+        yield ensure(r(0, 3, 0), bulb)
+        yield setblock(r(1, 3, 0), 'redstone_torch' if step.i % 2 == 0 else 'air')
+        text = [''] + list(bulb.sign_text)
+        text.extend([''] * (4 - len(text)))
+        text[3] = '(' + ('Lit' if step.i % 4 < 2 else 'Unlit') + ')'
+        yield Sign.change(r(-1, 2, 0), text)
+
+    bulbs = []
+    on = False
+    for s in ('', 'Exposed', 'Weathered', 'Oxidized'):
+        bulb = re.sub(r'^\|', '', f'{s}|Copper Bulb')
+        bulbs.extend((bulb,) * 4)
+        on = not on
+    room.loop('copper_bulb', fast_clock).loop(copper_bulb_loop, bulbs)
+
     room.function('rail_init').add(WallSign(()).place(r(1, 2, -2), WEST))
     rails = (
         ('Rail', False),
