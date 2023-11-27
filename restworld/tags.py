@@ -222,6 +222,8 @@ def tags():
             'polished_diorite',
             'granite',
             'polished_granite',
+            'tuff',
+            'polished_tuff',
             'blackstone',
             'polished_blackstone',
             'polished_blackstone_bricks',
@@ -246,7 +248,7 @@ def tags():
         'values': [
             re.sub(r'blocks*', 'stairs',
                    re.sub(r'planks', 'stairs',
-                          re.sub(r'(copper|stone$|marine$|ite$|slate$|_quartz$).*', r'\1_stairs',
+                          re.sub(r'(copper|stone$|tuff$|marine$|ite$|slate$|_quartz$).*', r'\1_stairs',
                                  re.sub(r'(brick|tile)s*', r'\1_stairs', x))))
             for x in blocks['stepable_planks']['values']]
     }

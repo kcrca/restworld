@@ -279,7 +279,8 @@ def room():
     job_sites('grindstone', NORTH, ('Grindstone',),
               {'Grindstone': list({'face': f} for f in ('floor', 'wall', 'ceiling'))})
     job_sites('job_sites_1', NORTH,
-              ('Crafting Table', 'Crafter', 'Cartography Table', 'Fletching Table', 'Smithing Table', 'Loom', 'Stonecutter'))
+              ('Crafting Table', 'Crafter', 'Cartography Table', 'Fletching Table', 'Smithing Table', 'Loom',
+               'Stonecutter'))
     job_sites('job_sites_2', NORTH, ('Blast Furnace', 'Smoker', 'Barrel', 'Lectern'),
               {'Blast Furnace': ({'lit': False}, {'lit': True}),
                'Smoker': ({'lit': False}, {'lit': True}),
@@ -1033,7 +1034,7 @@ def stepable_functions(room):
         yield volume.replace_slabs(slabs[i], '#restworld:stepable_slabs')
         yield volume.replace_stairs(stairs[i], '#restworld:stepable_stairs')
         sign_text = Sign.lines_nbt(Block(step.elem).full_text)
-        yield data().merge(r(1, 2, -1), sign_text)
+        yield data().merge(r(1, 2, -1), {'front_text': sign_text})
 
     blocks = [
         'Stone', 'Cobblestone', 'Mossy|Cobblestone',
@@ -1042,6 +1043,7 @@ def stepable_functions(room):
         'Andesite', 'Polished|Andesite',
         'Diorite', 'Polished|Diorite',
         'Granite', 'Polished|Granite',
+        'Tuff', 'Polished|Tuff',
         'Cobbled|Deepslate',
         'Polished|Deepslate',
         'Deepslate|Bricks',
@@ -1060,13 +1062,14 @@ def stepable_functions(room):
         'End Stone Bricks', 'Purpur Block',
     ]
     stairs = tuple(re.sub('(marine|ite)$', r'\1 Stairs', re.sub('[Ss]tone$', 'Stone Stairs',
-                                                                f.replace('Planks', 'Stairs')
-                                                                .replace('Tiles', 'Tile Stairs')
-                                                                .replace('Copper', 'Copper Stairs')
-                                                                .replace('Bricks', 'Brick Stairs')
-                                                                .replace('Block', 'Stairs')
-                                                                .replace('|Quartz', ' Quartz Stairs')
-                                                                .replace('|Deepslate', '|Deepslate Stairs')))
+                                                                re.sub('[Tt]uff$', 'Tuff Stairs',
+                                                                       f.replace('Planks', 'Stairs')
+                                                                       .replace('Tiles', 'Tile Stairs')
+                                                                       .replace('Copper', 'Copper Stairs')
+                                                                       .replace('Bricks', 'Brick Stairs')
+                                                                       .replace('Block', 'Stairs')
+                                                                       .replace('|Quartz', ' Quartz Stairs')
+                                                                       .replace('|Deepslate', '|Deepslate Stairs'))))
                    for f in blocks)
     slabs = tuple(f.replace('Stairs', 'Slab') for f in stairs)
     # The mosaic's "Block" is here so it fits in the patterns, but it actually doesn't exist, so we remove it.
