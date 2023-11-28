@@ -70,7 +70,7 @@ def room():
         ('Polar Bear', 'Vindicator'),
         ('Ravager', 'Iron Golem'),
         ('Shulker', 'Vindicator'),
-        ('Slime', 'Iron Golem'),  # Low priority, slime vs. frog
+        ('Breeze', 'Iron Golem'),
         ('Spider', 'Snow Golem'),
         ('Stray', 'Iron Golem'),
         ('Sniffer:g', None),
@@ -88,6 +88,7 @@ def room():
     #    ('Axolotl:w', 'Guardian'),
     #    ('Ocelot', 'Chicken'),
     #    ('Slime', 'Iron Golem'),
+    #    ('Frog', 'Slime')
     #    ('Magma Cube', 'Iron Golem'),
     #    ('Goat', 'Sheep'),
     #    ('Cave Spider', 'Snow Golem'),
