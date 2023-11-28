@@ -52,7 +52,7 @@ mobs = (
     PhotoMob(7.0, -27, 'cow'),
     PhotoMob(7.0, -13, 'pig'),
     PhotoMob(7.0, -1, 'sheep', nbt={'Color': 3}),
-    PhotoMob(7.0, +14, 'donkey'),
+    PhotoMob(7.0, +12, 'breeze'),
     PhotoMob(7.0, +29, 'horse', nbt={'Variant': 513}),
     PhotoMob(7.0, +49, 'sniffer'),
 
