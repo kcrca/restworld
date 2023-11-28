@@ -416,8 +416,13 @@ def copper_functions(room):
         yield from volume.replace(type + 'copper_bulb', '#restworld:copper_bulbs', {'lit': False})
         yield from volume.replace_stairs(type + 'cut_copper_stairs', '#restworld:cut_copper_stairs')
         yield from volume.replace_slabs(type + 'cut_copper_slab', '#restworld:cut_copper_slabs')
-        yield from volume.replace_doors(type + 'copper_door', '#restworld:copper_doors')
+        # doors can't be generically replaced, see below for the manual placement
         yield from volume.replace_trapdoors(type + 'copper_trapdoor', '#restworld:copper_trapdoors')
+
+        # The door won't be set unless we manually remove previous one.
+        yield fill(r(0, 2, 4), r(0, 3, 4), 'air')
+        yield setblock(r(0, 2, 4), (type + 'copper_door', {'facing': NORTH, 'half': 'lower'}))
+        yield setblock(r(0, 3, 4), (type + 'copper_door', {'facing': NORTH, 'half': 'upper'}))
 
         sign_text = ['', type.replace('_', ' ').title(), 'Copper', '']
         yield Sign.change(r(2, 2, 0), sign_text)
@@ -487,12 +492,6 @@ def wood_functions(room):
             elif 'Bamboo' in name:
                 saplings = ('bamboo_sapling', Block('bamboo', {'age': 0, 'leaves': 'small'}), 'grass_block')
 
-        # Remove special cases
-        yield from volume.fill('air', 'vine')
-        yield kill_em(e().tag('wood_boat'))
-        yield fill(r(4, 2, -1), r(4, 3, -1), 'air')
-        yield fill(r(4, 2, 1), r(4, 3, 2), 'air')
-
         # General replacement
         yield from volume.replace(wood, '#restworld:woodlike')
         yield from volume.replace(leaves, '#restworld:leaflike')
@@ -506,7 +505,7 @@ def wood_functions(room):
         yield from volume.replace_axes(log, '#restworld:loglike')
         yield from volume.replace_axes(f'stripped_{log}', '#restworld:stripped_loglike')
         yield from volume.replace_axes(f'stripped_{wood}', '#restworld:stripped_woodlike')
-        yield from volume.replace_doors(f'{id}_door', '#doors')
+        # doors can't be generically replaced, see below for the manual placement
         yield from volume.replace_trapdoors(f'{id}_trapdoor', '#trapdoors')
         yield from volume.replace_facing(
             WallSign((), wood=id).messages((None, f'{name}', 'Wall Sign')).wax(False), '#wall_signs')
@@ -530,6 +529,7 @@ def wood_functions(room):
                 shared_states={'attached': attached})
 
         # Add special cases
+        yield from volume.fill('air', 'vine')   # remove any existing vine
         if name == ('Jungle', 'Mangrove'):
             yield fill(r(-4, 2, -2), r(-4, 4, -2), ('vine', {'north': True}))
 
@@ -547,6 +547,9 @@ def wood_functions(room):
             workplace = Block('fletching_table')
         yield setblock(r(4, 2, 0), workplace)
 
+        # The doors won't be set unless we manually remove previous ones.
+        yield fill(r(4, 2, -1), r(4, 3, -1), 'air')
+        yield fill(r(4, 2, 1), r(4, 3, 2), 'air')
         yield setblock(r(4, 2, -1), (f'{id}_door', {'facing': WEST, 'half': 'lower'}))
         yield setblock(r(4, 3, -1), (f'{id}_door', {'facing': WEST, 'half': 'upper'}))
         yield setblock(r(4, 2, 1), (f'{id}_door', {'facing': WEST, 'half': 'lower', 'hinge': 'right'}))
@@ -559,6 +562,7 @@ def wood_functions(room):
         yield execute().as_(e().tag('wood_hanging_sign_frame')).run(
             data().merge(s(), ItemFrame(SOUTH).item(f'{id}_hanging_sign').named(f'{name} Hanging Sign').nbt))
 
+        yield kill_em(e().tag('wood_boat')) # remove existing boat
         if 'stem' not in log:
             wood_boat_chest = room.score('wood_boat_chest')
             location = r(-0.5, 1.525, 2)
