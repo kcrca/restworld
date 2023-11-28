@@ -387,6 +387,7 @@ def copper_functions(room):
         tag_name = type
         if tag_name[-1] != 's':
             tag_name += 's'
+        blocks.extend(list('waxed_' + b for b in blocks))
         tags[tag_name] = {'values': blocks}
 
     volume = Region(r(0, 1, 0), r(4, 5, 6))
@@ -401,12 +402,12 @@ def copper_functions(room):
     copper_tags('copper_trapdoor')
 
     def copper_loop(step):
-        type = step.elem.lower()
+        type: str = step.elem.lower()
         basic = 'copper'
+        if type in ('', 'waxed'):
+            basic += '_block'
         if len(type) > 0:
             type += '_'
-        else:
-            basic += '_block'
         yield from volume.replace(type + basic, '#restworld:coppers')
         yield from volume.replace(type + 'cut_copper', '#restworld:cut_coppers')
         yield from volume.replace(type + 'chiseled_copper', '#restworld:chiseled_coppers')
@@ -418,7 +419,27 @@ def copper_functions(room):
         yield from volume.replace_doors(type + 'copper_door', '#restworld:copper_doors')
         yield from volume.replace_trapdoors(type + 'copper_trapdoor', '#restworld:copper_trapdoors')
 
-    room.loop('coppers', main_clock).loop(copper_loop, ('', 'exposed', 'weathered', 'oxidized'))
+        sign_text = ['', type.replace('_', ' ').title(), 'Copper', '']
+        yield Sign.change(r(2, 2, 0), sign_text)
+
+    # Share a score so we only change 'waxness', not oxidization level
+    copper_score = room.score('coppers')
+    room.loop('unwaxed_coppers', main_clock, score=copper_score).loop(
+        copper_loop, ('', 'exposed', 'weathered', 'oxidized'))
+    room.loop('waxed_coppers', main_clock, score=copper_score).loop(
+        copper_loop, ('waxed', 'waxed_exposed', 'waxed_weathered', 'waxed_oxidized'))
+    copper_home = e().tag('coppers_home')
+    run_unwaxed = room.function('unwaxed_coppers_run', home=False).add(
+        tag(copper_home).remove('waxed_coppers_home'),
+        tag(copper_home).add('unwaxed_coppers_home'),
+        execute().at(copper_home).run(function('restworld:materials/unwaxed_coppers_cur')),
+    )
+    room.function('waxed_coppers_run', home=False).add(
+        tag(copper_home).remove('unwaxed_coppers_home'),
+        tag(copper_home).add('waxed_coppers_home'),
+        execute().at(copper_home).run(function('restworld:materials/waxed_coppers_cur')),
+    )
+    room.function('copper_blocks_init').add(function(run_unwaxed))
 
 
 def wood_functions(room):

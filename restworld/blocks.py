@@ -233,30 +233,34 @@ def room():
     copper_blocks = (
         'Copper Block', 'Cut Copper', 'Chiseled Copper', 'Copper Grate', 'Copper Bulb', 'Copper Trapdoor')
 
-    def coppers(weathering):
-        return tuple(f'{weathering}|{f}'.replace(' Block', '') for f in copper_blocks)
+    def coppers(oxidation, waxed=False):
+        prefix = 'Waxed ' if waxed else ''
+        return tuple(f'{prefix}{oxidation}|{f}'.replace(' Block', '') for f in copper_blocks)
 
-    blocks('copper_blocks', NORTH, (copper_blocks, coppers('Exposed'), coppers('Weathered'), coppers('Oxidized')),
-           dx=-3, dz=3, size=2)
+    _, copper_loop = blocks('unwaxed_copper_blocks', NORTH,
+                            (copper_blocks, coppers('Exposed'), coppers('Weathered'), coppers('Oxidized')),
+                            dx=-3, dz=3, size=2)
+    blocks('waxed_copper_blocks', NORTH,
+           (list(f'Waxed {b}' for b in copper_blocks), coppers('Waxed Exposed'), coppers('Waxed Weathered'),
+            coppers('Waxed Oxidized')),
+           score=copper_loop.score, dx=-3, dz=3, size=2)
 
-    # copper_types = ('Copper Block', 'Exposed Copper', 'Weathered|Copper', 'Oxidized Copper')
-    # copper_blocks = list(
-    #     x.replace('Copper', 'Cut Copper').replace(' Block', '').replace(' Cut', '|Cut') for x in copper_types)
-    # waxed_types = tuple(f'Waxed|{x}' for x in copper_types)
-    # waxed_block = tuple(f'Waxed|{x}' for x in copper_blocks)
-    # blocks('copper', NORTH, (copper_types, copper_blocks), dx=-3)
-    # blocks('waxed_copper', NORTH, (waxed_types, waxed_block), dx=-3, score=room.score('copper'))
-    # room.function('copper_init', exists_ok=True).add(
-    #     tag(e().tag('copper_home')).add('copper_base'),
-    #     tag(e().tag('waxed_copper_home')).add('copper_base'))
-    # room.function('switch_to_copper', home=False).add(
-    #     tag(e().tag('copper_base')).add('copper_home'),
-    #     tag(e().tag('copper_base')).remove('waxed_copper_home'),
-    #     execute().at(e().tag('copper_base')).run(function('restworld:blocks/copper_cur')))
-    # room.function('switch_to_waxed_copper', home=False).add(
-    #     tag(e().tag('copper_base')).remove('copper_home'),
-    #     tag(e().tag('copper_base')).add('waxed_copper_home'),
-    #     execute().at(e().tag('copper_base')).run(function('restworld:blocks/waxed_copper_cur')))
+    copper_home = e().tag('copper_blocks_home')
+    run_unwaxed = room.function('unwaxed_copper_blocks_run', home=False).add(
+        tag(copper_home).remove('waxed_copper_blocks_home'),
+        tag(copper_home).add('unwaxed_copper_blocks_home'),
+        execute().at(copper_home).run(function('restworld:blocks/unwaxed_copper_blocks_cur')),
+    )
+    room.function('waxed_copper_blocks_run', home=False).add(
+        tag(copper_home).remove('unwaxed_copper_blocks_home'),
+        tag(copper_home).add('waxed_copper_blocks_home'),
+        execute().at(copper_home).run(function('restworld:blocks/waxed_copper_blocks_cur')),
+    )
+    room.function('copper_blocks_init').add(
+        label(r(-2, 2, -1), 'Waxed'),
+        function(run_unwaxed),
+        WallSign().place(r(2, 2, 0), NORTH),
+    )
 
     woods = info.woods  # Read the current state of info.woods, which the version can change
     woodlike = woods + stems
