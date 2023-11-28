@@ -291,7 +291,6 @@ def room():
                'Barrel': ({'facing': NORTH, 'open': True}, {'facing': NORTH, 'open': False}),
                'Lectern': ({'has_book': False}, {'has_book': True})})
 
-    room.function('amethyst_init').add(tag(e().tag('amethyst_home')))
     amethyst_phases = (
         'Amethyst Block', 'Budding Amethyst', 'Small Amethyst|Bud', 'Medium Amethyst|Bud', 'Large Amethyst|Bud',
         'Amethyst Cluster')
