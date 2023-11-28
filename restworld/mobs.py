@@ -665,7 +665,7 @@ def monsters(room):
     room.function('enderman_init').add(
         execute().unless().entity(e().type('enderman').distance((None, 5))).run(list(placer.summon('enderman'))[0]))
 
-    placer = room.mob_placer(r(0, 2, 0.2), NORTH, adults=True)
+    placer = room.mob_placer(r(0, 3, 0.2), NORTH, adults=True)
     room.function('breeze_init').add(placer.summon('breeze'))
 
     placer = room.mob_placer(r(0, 2, 0.2), NORTH, adults=True)
