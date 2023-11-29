@@ -61,19 +61,27 @@ def room():
 
     def copper_bulb_loop(step):
         bulb = Block(step.elem)
+        # We want "powered" to stay the same when switching oxidaztion level
+        powered = (step.i + int(step.i / 4)) % 2 == 0
+        lit = step.i % 4 < 2
         yield ensure(r(0, 3, 0), bulb)
-        yield setblock(r(1, 3, 0), 'redstone_torch' if step.i % 2 == 0 else 'air')
+        yield setblock(r(-1, 2, 0), 'air')
+        yield setblock(r(0, 2, 0), ('redstone_wall_torch', {'facing': WEST}) if powered else 'air')
+        state_names = []
+        if powered:
+            state_names.append('Powered')
+        if lit:
+            state_names.append('Lit')
+        state = ', '.join(state_names)
         text = [''] + list(bulb.sign_text)
         text.extend([''] * (4 - len(text)))
-        text[3] = '(' + ('Lit' if step.i % 4 < 2 else 'Unlit') + ')'
-        yield Sign.change(r(-1, 2, 0), text)
+        text[3] = f'({state})' if len(state) > 0 else ''
+        yield WallSign(text).place(r(-1, 2, 0), WEST)
 
     bulbs = []
-    on = False
     for s in ('', 'Exposed', 'Weathered', 'Oxidized'):
         bulb = re.sub(r'^\|', '', f'{s}|Copper Bulb')
         bulbs.extend((bulb,) * 4)
-        on = not on
     room.loop('copper_bulb', fast_clock).loop(copper_bulb_loop, bulbs)
 
     room.function('rail_init').add(WallSign(()).place(r(1, 2, -2), WEST))
