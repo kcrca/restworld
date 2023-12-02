@@ -3,7 +3,8 @@ from __future__ import annotations
 from pynecraft import commands
 from pynecraft.base import EAST, NORTH, Nbt, WEST, r
 from pynecraft.commands import BOSSBAR_COLORS, BOSSBAR_STYLES, Block, CREATIVE, Entity, LEVELS, SURVIVAL, a, bossbar, \
-    clone, data, e, execute, fill, function, gamemode, give, item, kill, p, setblock, summon, effect
+    clone, data, e, execute, fill, function, gamemode, give, item, kill, p, setblock, summon, effect, schedule, \
+    REPLACE
 from pynecraft.info import must_give_items, operator_menu
 from pynecraft.simpler import Item, ItemFrame, WallSign, Sign
 from restworld.rooms import Room, label
@@ -20,6 +21,19 @@ def room():
     # which is easier to reason about.
     at = execute().at(e().tag('beacon_home')).positioned(r(0, -4, -5)).run
     primary = (-1, 3, 8, 5, 5)
+
+    crafter_clean = room.function('crafter_clean', home=False).add(
+        execute().at(e().tag('crafter_home')).run(kill(e().type('item').distance((None, 10)))))
+
+    def crafter_loop(step):
+        if step.i == 0:
+            yield setblock(r(0, 2, 1), 'air')
+        else:
+            yield item().replace().block(r(0, 2, 2), 'container.4').with_('oak_log')
+            yield setblock(r(0, 2, 1), 'redstone_torch')
+            yield schedule().function(crafter_clean, 5, REPLACE)
+
+    room.loop('crafter', main_clock).loop(crafter_loop, range(0, 2))
 
     def beacon_loop(step):
         depth = step.elem
