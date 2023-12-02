@@ -135,8 +135,8 @@ def room():
     blocks('bookshelves', SOUTH, bookshelves)
     blocks('bricks', NORTH, (
         'Bricks', 'Quartz Bricks', 'Mud Bricks', 'Deepslate|Bricks', 'Cracked|Deepslate|Bricks', 'Deepslate|Tiles',
-        'Cracked|Deepslate|Tiles', 'Prismarine Bricks', 'Nether Bricks', 'Cracked|Nether Bricks',
-        'Chiseled|Nether Bricks', 'Red|Nether Bricks'))
+        'Cracked|Deepslate|Tiles', 'Prismarine Bricks', 'Tuff Bricks', 'Chiseled Tuff|Bricks', 'Nether Bricks',
+        'Cracked|Nether Bricks', 'Chiseled|Nether Bricks', 'Red|Nether Bricks'))
     campfire_food = room.score('campfire_food')
     campfire_init, campfire_main = blocks('campfire', NORTH, (
         Block('Campfire', {'lit': True}),
@@ -1045,7 +1045,7 @@ def stepable_functions(room):
         'Andesite', 'Polished|Andesite',
         'Diorite', 'Polished|Diorite',
         'Granite', 'Polished|Granite',
-        'Tuff', 'Tuff Bricks', 'Polished|Tuff',
+        'Tuff', 'Polished|Tuff', 'Tuff Bricks',
         'Cobbled|Deepslate',
         'Polished|Deepslate',
         'Deepslate|Bricks',
