@@ -137,6 +137,11 @@ def room():
         'Bricks', 'Quartz Bricks', 'Mud Bricks', 'Deepslate|Bricks', 'Cracked|Deepslate|Bricks', 'Deepslate|Tiles',
         'Cracked|Deepslate|Tiles', 'Prismarine Bricks', 'Tuff Bricks', 'Chiseled Tuff|Bricks', 'Nether Bricks',
         'Cracked|Nether Bricks', 'Chiseled|Nether Bricks', 'Red|Nether Bricks'))
+    blocks('stone_bricks', NORTH, (
+        'Stone Bricks', 'Mossy|Stone Bricks', 'Cracked|Stone Bricks', 'Chiseled|Stone Bricks',
+        'Polished|Blackstone Bricks', 'Cracked Polished|Blackstone Bricks', 'End Stone|Bricks'))
+    blocks('chiseled', SOUTH,
+           ('Chiseled|Deepslate', 'Chiseled|Polished|Blackstone', 'Chiseled|Quartz Block', 'Chiseled|Tuff'))
     campfire_food = room.score('campfire_food')
     campfire_init, campfire_main = blocks('campfire', NORTH, (
         Block('Campfire', {'lit': True}),
@@ -221,10 +226,7 @@ def room():
     loop.add(setblock(r(0, 4, 0), 'air'))
     blocks('soul_stuff', NORTH, ('Soul Sand', 'Soul Soil'))
     blocks('sponge', SOUTH, ('Sponge', 'Wet Sponge'))
-    blocks('sticky', SOUTH, ('Slime Block', 'Honey block'))
-    blocks('stone_bricks', NORTH, (
-        'Stone Bricks', 'Mossy|Stone Bricks', 'Cracked|Stone Bricks', 'Chiseled|Stone Bricks', 'Chiseled|Tuff Bricks',
-        'Tuff Bricks', 'Polished|Blackstone Bricks', 'Cracked Polished|Blackstone Bricks', 'End Stone|Bricks'))
+    blocks('sticky', SOUTH, ('Slime Block', 'Honey block', 'Honeycomb Block'))
 
     stone_types = ('Basalt', 'Stone', 'Deepslate', 'Andesite', 'Diorite', 'Granite', 'Tuff', 'Blackstone', 'Basalt')
     polished_types = ('Smooth Basalt', 'Smooth Stone') + tuple(f'Polished|{t}' for t in stone_types[2:])
