@@ -337,10 +337,10 @@ def fencelike_functions(room):
 
     room.function('fencelike_init').add(
         WallSign(()).place(r(6, 2, 0), NORTH),
-        label(r(6, 2, -1), 'Change Height'),
-        label(r(4, 2, -1), 'Glass Panes'),
-        label(r(3, 2, -1), 'Walls'),
-        label(r(2, 2, -1), 'Fences'),
+        label(r(6, 2, -2), 'Change Height'),
+        label(r(4, 2, -2), 'Glass Panes'),
+        label(r(3, 2, -2), 'Walls'),
+        label(r(2, 2, -2), 'Fences'),
     )
 
     def fencelike(block: BlockDef):
@@ -444,7 +444,10 @@ def copper_functions(room):
         tag(copper_home).add('waxed_coppers_home'),
         execute().at(copper_home).run(function('restworld:materials/waxed_coppers_cur')),
     )
-    room.function('copper_blocks_init').add(function(run_unwaxed))
+    room.function('coppers_init').add(
+        label(r(2, 2, -2), 'Waxed'),
+        function(run_unwaxed)
+    )
 
 
 def wood_functions(room):
@@ -529,7 +532,7 @@ def wood_functions(room):
                 shared_states={'attached': attached})
 
         # Add special cases
-        yield from volume.fill('air', 'vine')   # remove any existing vine
+        yield from volume.fill('air', 'vine')  # remove any existing vine
         if name == ('Jungle', 'Mangrove'):
             yield fill(r(-4, 2, -2), r(-4, 4, -2), ('vine', {'north': True}))
 
@@ -562,7 +565,7 @@ def wood_functions(room):
         yield execute().as_(e().tag('wood_hanging_sign_frame')).run(
             data().merge(s(), ItemFrame(SOUTH).item(f'{id}_hanging_sign').named(f'{name} Hanging Sign').nbt))
 
-        yield kill_em(e().tag('wood_boat')) # remove existing boat
+        yield kill_em(e().tag('wood_boat'))  # remove existing boat
         if 'stem' not in log:
             wood_boat_chest = room.score('wood_boat_chest')
             location = r(-0.5, 1.525, 2)
