@@ -83,7 +83,6 @@ def room():
         summon(Entity('llama', silent).tag('mob_display'), r(6, 2.5, 0), all),
         summon(Entity('mooshroom', silent).tag('mob_display'), r(6, 2.5, 0), all),
         summon(Entity('pig', silent).tag('mob_display'), r(6, 2.5, 0), all),
-        summon(Entity('breeze', silent).tag('mob_display'), r(6, 2.5, 0), all),
 
         trim_stand.summon(r(10.51, 2, 0), facing=NORTH),
 
