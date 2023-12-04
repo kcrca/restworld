@@ -18,7 +18,7 @@ biome_groups['Ocean'] = ('Warm Ocean', 'Ocean', 'Frozen Ocean')
 biome_groups['Cave'] = ('Lush Caves', 'Dripstone Caves', 'Deep Dark')
 biome_groups['Nether'] = ('Nether Wastes', 'Soul Sand Valley', 'Crimson Forest', 'Warped Forest', 'Basalt Deltas')
 biome_groups['End'] = ('The End', 'End City', 'End Island')
-biome_groups['Structures'] = ('Mineshaft', 'Monument', 'Stronghold', 'Bastion Remnant', 'Fortress')
+biome_groups['Structures'] = ('Mineshaft', 'Monument', 'Stronghold', 'Trial Chambers', 'Bastion Remnant', 'Fortress')
 biomes = [item for sublist in list(biome_groups.values()) for item in sublist]
 
 biome_ids = {'End City': BiomeId.SMALL_END_ISLANDS, 'Monument': BiomeId.WARM_OCEAN,
