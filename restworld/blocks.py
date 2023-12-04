@@ -584,14 +584,20 @@ def room():
     room.loop('snow_depth', main_clock).loop(snow_depth_loop, range(1, 9), bounce=True)
 
     def spawner_loop(step):
-        yield data().merge(r(0, 3, 0), {'SpawnData': {'entity': {'id': Entity(step.elem).id}}})
+        # As of 1.20.3+x the trial spawner only sets the visible mob after the first spawn, and we don't have one, so
+        # this does nothing. I leave this here in case someday it works.
+        nbt = {'SpawnData': {'entity': {'id': 'minecraft:skeleton'}}} if step.elem == 'Spawner' else {
+            'ticks_between_spawn': 0xfffffff,
+            'spawn_potentials': [{'data': {'entity': {'id': 'minecraft:breeze'}}, 'weight': 1}],
+            'spawn_data': {'entity': {'id': 'minecraft:breeze'}},
+        }
+        yield setblock(r(0, 3, 0), Block(step.elem, {}, nbt))
         yield Sign.change(r(0, 2, -1), (None, step.elem))
 
     room.function('spawner_init').add(setblock(r(0, 3, 0), 'spawner').nbt({'SpawnCount': 0}))
     reset_delay = execute().if_().block(r(0, 3, 0), Block('spawner', nbt={'Delay': '0s'})).run(
         data().merge(r(0, 3, 0), {'Delay': 200}))
-    room.loop('spawner', main_clock).add(reset_delay).loop(spawner_loop, (
-        'Pig', 'Zombie', 'Skeleton', 'Spider', 'Cave Spider', 'Silverfish', 'Blaze', 'Magma Cube'))
+    room.loop('spawner', main_clock).add(reset_delay).loop(spawner_loop, ('Spawner', 'Trial Spawner'))
 
     def structure_blocks_loop(step):
         yield Sign.change(r(0, 2, 1), (None, step.elem))
