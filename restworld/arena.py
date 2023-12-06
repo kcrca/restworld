@@ -98,6 +98,10 @@ def room():
     # now, we just make sure they are the smallest size.
     #  ('Slime', 'Iron Golem'),
     #  ('Magma Cube', 'Iron Golem'),
+    # The problem isn't just killing them, it's knowing when to spawn a new one. With singleton mobs, you can simply
+    # say "there must be (say) 3", but here, you want something that will spawn a new full size cube when (approximately
+    # at least) all its small ones have been killed. This is different enough that it probably requires a specialized
+    # mechanism, which probaly isn't worth it (though it would be fun).
 
     stride_length = 6
     num_rows = 2
