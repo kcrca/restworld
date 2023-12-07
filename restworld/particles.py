@@ -90,7 +90,7 @@ unused_particles = {
     Particle.FALLING_NECTAR,  # Shown with the bees in the Friendlies room
     Particle.SPORE_BLOSSOM_AIR, Particle.FALLING_SPORE_BLOSSOM,  # Just outside the room
 }
-particles.sort(key=lambda x: str(x).replace('|', ' '))
+particles.sort(key=lambda x: x.sort_key())
 # Notes:
 #    Maybe spit can be made to work with a live llama hitting a wolf, but the llama must be penned in, etc.
 #
@@ -151,9 +151,9 @@ def room():
         return WallSign(action_desc.sign_text(), (
             run_at.run(setblock(r(0, -4, 0), 'redstone_block')),
             run_at.run(data().merge(r(0, -4, -2), {
-                'Command': f'{str(run_at.run(""))} function restworld:particles/{action_desc}_init'})),
+                'Command': f'{str(run_at.run(""))} function restworld:particles/{action_desc.func()}_init'})),
             run_at.run(data().merge(r(-1, -2, 0), {
-                'Command': f'{str(run_at.run(""))} function restworld:particles/{action_desc}'})),
+                'Command': f'{str(run_at.run(""))} function restworld:particles/{action_desc.func()}'})),
             setblock(d(-dx, 0, -dz), 'emerald_block')
         ))
 
@@ -317,7 +317,7 @@ def room():
         fill(r(2, 0, -2), r(2, 0, 2), 'soul_torch'),
         setblock(r(0, 0, 0), Block('spawner', nbt={'SpawnData': {'entity': {'id': 'zombie'}}}))
     )
-    room.function('gust_init', home=False).add(exemplar('breeze', 2, {'NoAI': True}, -1))
+    room.function('gust_init', home=False).add(exemplar('breeze', 1, {'NoAI': True}, -1))
     room.function('gust', home=False).add(main().run(particle('gust', r(0, 2, 1), 0.5, 0.5, 0.5, 0, 5)))
     room.function('happy_villager', home=False).add(
         fast().run(particle(Particle.HAPPY_VILLAGER, r(0, 1, 0), 0.5, 0.5, 0.5, 0, 5)))

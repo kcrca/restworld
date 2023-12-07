@@ -534,6 +534,12 @@ class ActionDesc:
         assert self.enum.__class__ == other.enum.__class__
         return self.name < other.name
 
+    def sort_key(self):
+        return str(self.enum).replace('|', ' ') if self.enum else self.name
+
+    def func(self):
+        return str(self.enum) if self.enum else self.name
+
     def sign_text(self):
         block = Block(self.enum.value if self.enum else self.name, name=self.name.title())
         sign_text = list(block.sign_text)
