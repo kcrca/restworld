@@ -140,7 +140,7 @@ def room():
     blocks('stone_bricks', NORTH, (
         'Stone Bricks', 'Mossy|Stone Bricks', 'Cracked|Stone Bricks', 'Chiseled|Stone Bricks',
         'Polished|Blackstone Bricks', 'Cracked Polished|Blackstone Bricks', 'End Stone|Bricks'))
-    blocks('chiseled', SOUTH,
+    blocks('chiseled', NORTH,
            ('Chiseled|Deepslate', 'Chiseled|Polished|Blackstone', 'Chiseled|Quartz Block', 'Chiseled|Tuff'))
     campfire_food = room.score('campfire_food')
     campfire_init, campfire_main = blocks('campfire', NORTH, (
@@ -183,7 +183,7 @@ def room():
     blocks('end', NORTH, ('End Stone', 'End Stone|Bricks'))
     blocks('frosted_ice', SOUTH,
            list(Block('frosted_ice', {'age': i}, name=f'Frosted Ice|Age: {i}') for i in range(0, 4)))
-    blocks('glass', NORTH, ('Glass', 'Tinted Glass'))
+    blocks('glass', SOUTH, ('Glass', 'Tinted Glass'))
     blocks('lighting', SOUTH, (
         'Glowstone', 'Sea Lantern', 'Shroomlight', 'Ochre|Froglight', 'Pearlescent|Froglight', 'Verdant|Froglight',
         'End Rod'))
