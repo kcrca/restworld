@@ -508,11 +508,17 @@ class Wall:
 
 
 class ActionDesc:
-    def __init__(self, enum: Enum, name=None, note=None, also=()):
-        self.enum = enum
-        if name is None:
-            # noinspection PyUnresolvedReferences
-            name = enum.display_name()
+    def __init__(self, which: Enum | str, name=None, note=None, also=()):
+        if isinstance(which, str):
+            self.enum = None
+            self.name = which
+            if name is None:
+                name = which
+        else:
+            self.enum = which
+            if name is None:
+                # noinspection PyUnresolvedReferences
+                name = which.display_name()
         self.name = name
         self.note = '(%s)' % note if note else None
         if isinstance(also, Iterable):
@@ -521,7 +527,7 @@ class ActionDesc:
             self.also = (also,)
 
     def __str__(self):
-        return self.name + ' [' + self.enum + ']'
+        return self.name + (f' [{self.enum}]' if self.enum else '')
 
     def __lt__(self, other):
         assert self.__class__ == other.__class__
@@ -529,7 +535,7 @@ class ActionDesc:
         return self.name < other.name
 
     def sign_text(self):
-        block = Block(self.enum.value, name=self.name)
+        block = Block(self.enum.value if self.enum else self.name, name=self.name.title())
         sign_text = list(block.sign_text)
         if self.note:
             sign_text.append(self.note)

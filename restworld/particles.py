@@ -44,8 +44,8 @@ particles = [
     ActionDesc(Particle.EXPLOSION_EMITTER),
     ActionDesc(Particle.FALLING_DUST),
     ActionDesc(Particle.FIREWORK, note='and Flash', also=Particle.FLASH),
-    ActionDesc(Particle.FISHING),
     ActionDesc(Particle.FLAME, also=Particle.SOUL_FIRE_FLAME),
+    ActionDesc('gust'),
     ActionDesc(Particle.HAPPY_VILLAGER),
     ActionDesc(Particle.HEART),
     ActionDesc(Particle.INSTANT_EFFECT),
@@ -78,6 +78,7 @@ particles = [
     ActionDesc(Particle.WITCH),
 ]
 unused_particles = {
+    Particle.FISHING,
     Particle.BLOCK,  # This just happens in the game, plus I can't see how to generate it.
     Particle.CAMPFIRE_COSY_SMOKE,  # In block room
     Particle.CAMPFIRE_SIGNAL_SMOKE,  # Same as regular campfire smoke, just goes higher
@@ -89,7 +90,7 @@ unused_particles = {
     Particle.FALLING_NECTAR,  # Shown with the bees in the Friendlies room
     Particle.SPORE_BLOSSOM_AIR, Particle.FALLING_SPORE_BLOSSOM,  # Just outside the room
 }
-particles.sort(key=lambda x: str(x.enum).replace('|', ' '))
+particles.sort(key=lambda x: str(x).replace('|', ' '))
 # Notes:
 #    Maybe spit can be made to work with a live llama hitting a wolf, but the llama must be penned in, etc.
 #
@@ -128,9 +129,9 @@ def slow(delay=0):
     return clock(slow_clock, delay)
 
 
-def exemplar(id, y, nbt=None):
+def exemplar(id, y, nbt=None, z=0):
     nbt = Nbt({'Tags': ['particler'], 'Silent': True, 'PersistenceRequired': True}).merge(nbt)
-    return summon(id, r(0, y, 0), nbt)
+    return summon(id, r(0, y, z), nbt)
 
 
 def floor(block):
@@ -150,9 +151,9 @@ def room():
         return WallSign(action_desc.sign_text(), (
             run_at.run(setblock(r(0, -4, 0), 'redstone_block')),
             run_at.run(data().merge(r(0, -4, -2), {
-                'Command': f'{str(run_at.run(""))} function restworld:particles/{action_desc.enum}_init'})),
+                'Command': f'{str(run_at.run(""))} function restworld:particles/{action_desc}_init'})),
             run_at.run(data().merge(r(-1, -2, 0), {
-                'Command': f'{str(run_at.run(""))} function restworld:particles/{action_desc.enum}'})),
+                'Command': f'{str(run_at.run(""))} function restworld:particles/{action_desc}'})),
             setblock(d(-dx, 0, -dz), 'emerald_block')
         ))
 
@@ -316,6 +317,8 @@ def room():
         fill(r(2, 0, -2), r(2, 0, 2), 'soul_torch'),
         setblock(r(0, 0, 0), Block('spawner', nbt={'SpawnData': {'entity': {'id': 'zombie'}}}))
     )
+    room.function('gust_init', home=False).add(exemplar('breeze', 2, {'NoAI': True}, -1))
+    room.function('gust', home=False).add(main().run(particle('gust', r(0, 2, 1), 0.5, 0.5, 0.5, 0, 5)))
     room.function('happy_villager', home=False).add(
         fast().run(particle(Particle.HAPPY_VILLAGER, r(0, 1, 0), 0.5, 0.5, 0.5, 0, 5)))
     room.function('happy_villager_init', home=False).add(function('restworld:particles/villager'))
