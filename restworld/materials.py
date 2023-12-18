@@ -58,7 +58,7 @@ def room():
     def arrows_loop(step):
         nbt = {'Tags': ['arrow'], 'NoGravity': True}
         if step.i == 2:
-            nbt['Color'] = 127
+            nbt['Color'] = 0xff00ff
         yield summon(step.elem, r(0, 3, 0.25), nbt)
         yield Sign.change(r(1, 2, 0), (None, step.elem.name))
 
@@ -67,7 +67,7 @@ def room():
     ).loop(arrows_loop, (
         Block('Arrow'),
         Block('Spectral Arrow'),
-        Entity('Tipped Arrow', {'Potion': 'minecraft:regeneration'})))
+        Block('arrow', name='Tipped Arrow')))
 
     points = (2, 6, 16, 36, 72, 148, 306, 616, 1236, 2476, 32767)
 
