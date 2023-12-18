@@ -3,7 +3,7 @@ from __future__ import annotations
 from pynecraft import commands
 from pynecraft.base import EAST, NORTH, Nbt, WEST, r
 from pynecraft.commands import BOSSBAR_COLORS, BOSSBAR_STYLES, Block, CREATIVE, Entity, LEVELS, SURVIVAL, a, bossbar, \
-    clone, data, e, execute, fill, function, gamemode, give, item, kill, p, setblock, summon, effect, schedule, \
+    clone, data, e, execute, fill, function, gamemode, item, kill, p, setblock, summon, effect, schedule, \
     REPLACE
 from pynecraft.info import must_give_items, operator_menu
 from pynecraft.simpler import Item, ItemFrame, WallSign, Sign
@@ -272,12 +272,10 @@ def room():
     non_inventory = list(filter(lambda x: x.name not in operator_menu, must_give_items.values()))
     non_inventory.append(Entity('elytra', nbt={'Damage': 450}, name='Damaged Elytra'))
 
-    only_item_chest_pos = r(2, -5, -4)
-
     def only_items_init_func():
-        rows = [(-1, 7)]
+        rows = [(1, 2)]
         dz = 1
-        z = 0
+        z = -1
         items = list(non_inventory)
         yield kill(e().tag('only_item_frame'))
         index = 0
@@ -290,28 +288,14 @@ def room():
                 if t.id == 'elytra':
                     frame.merge_nbt({'Item': {'tag': {'Damage': 450}}})
                 yield frame.summon(r(x, 2, z), facing=NORTH)
-                yield item().replace().block(only_item_chest_pos, f'container.{index}').with_(t)
                 x += dz
                 index += 1
             z += dz
-
-        clone_pos = list(only_item_chest_pos)
-        clone_pos[1] = r(1)
-        # noinspection PyTypeChecker
-        yield clone(only_item_chest_pos, only_item_chest_pos, tuple(clone_pos))
         yield WallSign((None, 'Items Not', 'in Creative', 'Inventory')).place(r(2, 3, 1), NORTH)
 
-    giveable = non_inventory[:-1]
-    giveable.append(Entity('Elytra', {'Damage': 450}))
-    room.function('only_items_give', home=False).add(
-        give(p(), 'chain_command_block'),
-        give(p(), 'repeating_command_block'),
-        (give(p(), x) for x in giveable)
-    )
     room.function('only_items_init').add(
         label(r(3, 2, -4), 'Give'),
-        setblock(only_item_chest_pos, Block('chest', {'facing': WEST}))
-    ).add(list(only_items_init_func()))
+        only_items_init_func())
 
     enchant_chest = {
         'Items': [{'Slot': 0, 'id': 'lapis_lazuli', 'Count': 64}, {'Slot': 1, 'id': 'book', 'Count': 64}]}
