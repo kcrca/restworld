@@ -5,7 +5,7 @@ import re
 from pynecraft import info
 from pynecraft.base import EAST, EQ, NE, NORTH, NW, Nbt, NbtDef, SOUTH, WEST, as_facing, r, to_id
 from pynecraft.commands import Block, BlockDef, Entity, MOD, PLUS, RESULT, data, e, execute, fill, fillbiome, function, \
-    as_block, item, kill, s, scoreboard, setblock, summon, tag
+    as_block, item, kill, s, scoreboard, setblock, summon, tag, random, LONG
 from pynecraft.enums import BiomeId
 from pynecraft.function import BLOCKS
 from pynecraft.info import colors, stems, trim_materials, trim_patterns
@@ -57,9 +57,11 @@ def room():
 
     def arrows_loop(step):
         nbt = {'Tags': ['arrow'], 'NoGravity': True}
-        if step.i == 2:
-            nbt['Color'] = 0xff00ff
         yield summon(step.elem, r(0, 3, 0.25), nbt)
+        if step.i == 2:
+            # Choose a random color
+            yield execute().store(RESULT).entity(e().tag('arrow').limit(1), 'Color', LONG).run(
+                random().value((0, 0xffffff)))
         yield Sign.change(r(1, 2, 0), (None, step.elem.name))
 
     room.loop('arrows', main_clock).add(
