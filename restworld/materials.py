@@ -56,8 +56,10 @@ def room():
     room.function('arrows_init').add(WallSign(()).place(r(1, 2, 0), EAST))
 
     def arrows_loop(step):
-        yield summon(step.elem, r(0, 3, 0.25), {
-            'Tags': ['arrow'], 'NoGravity': True, 'Color': 127, 'CustomPotionColor': 127 if step.i == 2 else ''})
+        nbt = {'Tags': ['arrow'], 'NoGravity': True}
+        if step.i == 2:
+            nbt['Color'] = 127
+        yield summon(step.elem, r(0, 3, 0.25), nbt)
         yield Sign.change(r(1, 2, 0), (None, step.elem.name))
 
     room.loop('arrows', main_clock).add(
@@ -65,7 +67,7 @@ def room():
     ).loop(arrows_loop, (
         Block('Arrow'),
         Block('Spectral Arrow'),
-        Block('arrow', name='Tipped Arrow')))
+        Entity('Tipped Arrow', {'Potion': 'minecraft:regeneration'})))
 
     points = (2, 6, 16, 36, 72, 148, 306, 616, 1236, 2476, 32767)
 
