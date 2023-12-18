@@ -838,7 +838,7 @@ def color_functions(room):
         kill(e().type('item')),
 
         label(r(-1, 2, 7), 'Lit Candles'),
-        label(r(-7, 2, 7), 'Plain'),
+        label(r(-8, 2, 7), 'Plain'),
         label(r(-11, 2, 3), 'Glowing'),
     ),
     room.loop('colorings', main_clock).add(
