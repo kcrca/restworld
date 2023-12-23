@@ -212,12 +212,9 @@ def room():
         fill(r(12, 3, 1), r(12, 5, 11), 'air').replace('#banners'),
         fill(r(1, 3, 12), r(11, 5, 12), 'air').replace('#banners'),
         fill(r(0, 3, 11), r(0, 5, 1), 'air').replace('#banners'),
-    ).loop(banner_color_loop, COLORS).add(
-        execute().as_(stands).run(
-            execute().store(RESULT).entity(s(), 'HandItems[1].tag.BlockEntityTag.Base', INT, 1).run(
-                banner_color.get())),
-        function('restworld:banners/banner_ink_cur'),
-    )
+    ).loop(banner_color_loop, COLORS).add(execute().as_(stands).run(
+        execute().store(RESULT).entity(s(), 'HandItems[1].tag.BlockEntityTag.Base', INT, 1).run(
+            banner_color.get())), function('restworld:banners/banner_ink_cur'))
 
     banner_controls = room.function('banner_controls').add(
         function('restworld:banners/banner_controls_remove'),
@@ -237,14 +234,12 @@ def room():
         z = 1 if row == 0 else 2
         if_colors = execute().at(e().tag('banner_color_home'))
         if_ink = execute().at(e().tag('banner_ink_home'))
-        banner_controls.add(
-            WallSign((None, c), (
-                if_colors.run(banner_color.set(i)),
-                if_colors.run(function('restworld:banners/banner_color_cur')),
-                if_ink.run(banner_ink.set(i)),
-                if_ink.run(function('restworld:banners/banner_ink_cur')),
-            )).place(r(x, y, z), SOUTH)
-        )
+        banner_controls.add(WallSign((None, c), (
+            if_colors.run(banner_color.set(i)),
+            if_colors.run(function('restworld:banners/banner_color_cur')),
+            if_ink.run(banner_ink.set(i)),
+            if_ink.run(function('restworld:banners/banner_ink_cur')),
+        )).place(r(x, y, z), SOUTH))
     room.function('banner_controls_init').add(
         label(r(5, 2, 4), 'Banner / Ink'),
         label(r(3, 2, 4), 'Labels'),

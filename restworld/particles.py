@@ -230,10 +230,9 @@ def room():
         for z in range(-3, 4):
             level = random.randint(0, 4)
             if level > 0:
-                cherry.add(
-                    setblock(r(x, 0, z), ('pink_petals',
-                                          {'flower_amount': level,
-                                           'facing': ('north', 'east', 'south', 'west')[random.randint(0, 3)]})))
+                cherry.add(setblock(r(x, 0, z), ('pink_petals',
+                                                 {'flower_amount': level,
+                                                  'facing': ('north', 'east', 'south', 'west')[random.randint(0, 3)]})))
     room.function('dripping_honey_init', home=False).add(
         fill(r(2, 4, 2), r(-2, 4, -2), ('beehive', {'honey_level': 5, 'facing': SOUTH})),
         fill(r(2, 4, -2), r(-2, 4, -2), ('beehive', {'honey_level': 5, 'facing': NORTH})),

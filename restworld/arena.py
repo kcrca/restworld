@@ -257,9 +257,9 @@ def room():
             for who in ('hunter', 'victim')))
     # Summoning warden with NBT means that it immediately burrows away, so must special case it
     # https://bugs.mojang.com/browse/MC-249393 (also see above)
-    cleanup.add(
-        execute().as_(e().type('warden').distance((None, 100)).not_tag('hunter')).run(tag(s()).add('hunter')),
-        execute().as_(e().type('warden').distance((None, 100)).not_tag('battler')).run(tag(s()).add('battler'))),
+    cleanup.add(execute().as_(e().type('warden').distance((None, 100)).not_tag('hunter')).run(tag(s()).add('hunter')),
+                execute().as_(e().type('warden').distance((None, 100)).not_tag('battler')).run(
+                    tag(s()).add('battler'))),
 
     # Types: 0-normal, 1-water, 2-undead
     arena = Region(r(-12, 2, -12), r(12, 4, 12))

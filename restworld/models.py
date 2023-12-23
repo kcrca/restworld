@@ -236,8 +236,7 @@ def room():
                 at_home(data().modify(pos, 'front_text.messages[1]').set().from_(pos, 'front_text.messages[0]')),
                 at_home(data().modify(pos, 'front_text.messages[0]').set().from_(signs[i + 1],
                                                                                  'front_text.messages[3]')) if i < len(
-                    signs) - 1 else comment('start')
-            )
+                    signs) - 1 else comment('start'))
         all_things_loop.loop(all_loop, all_things)
         room.function(f'all_{which}_home', exists_ok=True).add(tag(e().tag(f'all_{which}_home')).add('all_things_home'))
 

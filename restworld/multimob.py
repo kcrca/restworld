@@ -164,9 +164,8 @@ def room():
 
         x += (-1 + within) * dx
         z += (-1 + within) * dz
-        menu_init.add(
-            WallSign((None, all_mobs[start], JsonText.text('to').italic(), all_mobs[start + stride - 1]),
-                     (clear, at_home.run(function(popup)))).place(r(x, 2, z), sign_facing))
+        menu_init.add(WallSign((None, all_mobs[start], JsonText.text('to').italic(), all_mobs[start + stride - 1]),
+                               (clear, at_home.run(function(popup)))).place(r(x, 2, z), sign_facing))
 
         start += stride
         within = (within + 1) % row_len
@@ -184,13 +183,11 @@ def summon_mob_commands(room, mob):
         run_at = execute().at(e().tag(f'multimob_{sector}_home')).run
         summon_mob.add(run_at(kill_em(e().tag(facing_tag))))
         if mob.name in WATER:
-            summon_mob.add(
-                run_at(fill(r(-1, 2, -1), r(5, 4, 5), 'structure_void').replace('air')),
-                run_at(fill(r(0, 2, 0), r(4, 4, 4), 'water').replace('structure_void')))
+            summon_mob.add(run_at(fill(r(-1, 2, -1), r(5, 4, 5), 'structure_void').replace('air')),
+                           run_at(fill(r(0, 2, 0), r(4, 4, 4), 'water').replace('structure_void')))
         else:
-            summon_mob.add(
-                run_at(fill(r(0, 2, 0), r(4, 4, 4), 'air').replace('water')),
-                run_at(fill(r(-1, 2, -1), r(5, 4, 5), 'air').replace('structure_void')))
+            summon_mob.add(run_at(fill(r(0, 2, 0), r(4, 4, 4), 'air').replace('water')),
+                           run_at(fill(r(-1, 2, -1), r(5, 4, 5), 'air').replace('structure_void')))
 
         if mob.name == '<None>':
             continue

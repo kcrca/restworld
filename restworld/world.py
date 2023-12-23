@@ -35,7 +35,8 @@ class Restworld(RoomPack):
         if gs is None:
             gs = FunctionSet('global', self.function_set)
         gs.add(self.control_book_func())
-        self.function_set.add(*self.world_funcs())
+        for f in self.world_funcs():
+            self.function_set.add(f)
         self.function_set.add(Function('ready').add(
             clear(p()),
             kill(e().type('item')),

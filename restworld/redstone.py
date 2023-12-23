@@ -224,30 +224,22 @@ def light_detector_funcs(room):
             yield execute().if_().score(daylight_inv).matches(1).run(
                 fill(r(inv, height, inv), r(-inv, height, -inv), 'stone'))
 
-    room.loop('daylight_detector', main_clock).add(
-        execute().at(e().tag('daylight_detector_setup_home')).run(
-            function('restworld:redstone/daylight_detector_setup')),
-        fill(r(3, height, 3), r(-3, height, -3), 'air')
-    ).loop(daylight_detector_loop, day_times)
-    room.function('daylight_detector_reset').add(
-        time().set(NOON),
-        execute().at(e().tag('daylight_detector_home')).run(fill(r(3, 8, 3), r(-3, 8, -3), 'air')),
-        daylight_detector.set(0),
-        kill(e().tag('daylight_detector_home'))
-    )
-    room.function('daylight_detector_setup').add(
-        daylight_inv.set(0),
-        execute().if_().block(r(0, 2, 1), ('daylight_detector', {'inverted': True})).run(daylight_inv.set(1)),
-        execute().if_().score(daylight_inv).matches(0).run(Sign.change(r(0, 2, 0), (None, 'Daylight Detector', ''))),
-        execute().if_().score(daylight_inv).matches(1).run(
-            Sign.change(r(0, 2, 0), (None, 'Inverted', 'Daylight Detector')))
-    )
-    room.function('daylight_detector_setup_init').add(
-        WallSign(()).place(r(0, 2, 0), EAST),
-        execute().at(e().tag('daylight_detector_setup_home')).run(
-            function('restworld:redstone/daylight_detector_setup')),
-        label(r(2, 2, 2), 'Daylight Changing'),
-        label(r(2, 2, 0), 'Invert Detector'))
+    room.loop('daylight_detector', main_clock).add(execute().at(e().tag('daylight_detector_setup_home')).run(
+        function('restworld:redstone/daylight_detector_setup')),
+        fill(r(3, height, 3), r(-3, height, -3), 'air')).loop(daylight_detector_loop, day_times)
+    room.function('daylight_detector_reset').add(time().set(NOON), execute().at(e().tag('daylight_detector_home')).run(
+        fill(r(3, 8, 3), r(-3, 8, -3), 'air')), daylight_detector.set(0), kill(e().tag('daylight_detector_home')))
+    room.function('daylight_detector_setup').add(daylight_inv.set(0), execute().if_().block(r(0, 2, 1), (
+    'daylight_detector', {'inverted': True})).run(daylight_inv.set(1)),
+                                                 execute().if_().score(daylight_inv).matches(0).run(
+                                                     Sign.change(r(0, 2, 0), (None, 'Daylight Detector', ''))),
+                                                 execute().if_().score(daylight_inv).matches(1).run(
+                                                     Sign.change(r(0, 2, 0), (None, 'Inverted', 'Daylight Detector'))))
+    room.function('daylight_detector_setup_init').add(WallSign(()).place(r(0, 2, 0), EAST),
+                                                      execute().at(e().tag('daylight_detector_setup_home')).run(
+                                                          function('restworld:redstone/daylight_detector_setup')),
+                                                      label(r(2, 2, 2), 'Daylight Changing'),
+                                                      label(r(2, 2, 0), 'Invert Detector'))
 
 
 def note_block_funcs(room):
@@ -272,14 +264,11 @@ def note_block_funcs(room):
         x -= row_len / 2
         x = int(x)
         y = 3 - int(i / row_len)
-        note_block_init.add(
-            WallSign(
-                (None, instr.name, f'({instr.exemplar.name})'),
-                (instrument.set(i),
-                 execute().at(e().tag('note_block_home')).run(setblock(r(0, 2, 0), instr.exemplar)))
-            ).place(r(x, y, 1), SOUTH),
-            label(r(0, 2, 1), 'Powered')
-        )
+        note_block_init.add(WallSign(
+            (None, instr.name, f'({instr.exemplar.name})'),
+            (instrument.set(i),
+             execute().at(e().tag('note_block_home')).run(setblock(r(0, 2, 0), instr.exemplar)))
+        ).place(r(x, y, 1), SOUTH), label(r(0, 2, 1), 'Powered'))
 
 
 def pressure_plate_funcs(room):
@@ -289,20 +278,18 @@ def pressure_plate_funcs(room):
 
     plate_heavy = room.score('plate_heavy')
     pressure_plate = room.score('pressure_plate')
-    room.function('pressure_plate_add', home=False).add(
-        one_item(),
-        (execute().if_().score(plate_heavy).matches((1, None)).run(one_item()) for _ in range(0, 9)))
+    room.function('pressure_plate_add', home=False).add(one_item(), (
+    execute().if_().score(plate_heavy).matches((1, None)).run(one_item()) for _ in range(0, 9)))
     room.function('pressure_plate_init').add(label(r(2, 2, 0), 'Pressure Plate Type'))
 
-    room.function('pressure_plate_cur').add(
-        kill(e().tag('plate_items')),
-        (execute().if_().score(pressure_plate).matches((i, None)).run(function(
-            'restworld:redstone/pressure_plate_add')) for i in range(1, 16)))
+    room.function('pressure_plate_cur').add(kill(e().tag('plate_items')),
+                                            (execute().if_().score(pressure_plate).matches((i, None)).run(function(
+                                                'restworld:redstone/pressure_plate_add')) for i in range(1, 16)))
 
     room.loop('pressure_plate', main_clock).add(
         execute().if_().score(pressure_plate).matches(0).run(kill(e().tag('plate_items'))),
-        execute().unless().score(pressure_plate).matches(0).run(function('restworld:redstone/pressure_plate_add'))
-    ).loop(None, range(0, 16))
+        execute().unless().score(pressure_plate).matches(0).run(
+            function('restworld:redstone/pressure_plate_add'))).loop(None, range(0, 16))
 
     def plate(heavy):
         which = 'Heavy' if heavy else 'Light'

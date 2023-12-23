@@ -180,38 +180,30 @@ def room():
 def basic_functions(room):
     stand = Entity('armor_stand', {'Tags': ['basic_stand', 'material_static'], 'ShowArms': True, 'NoGravity': True})
     invis_stand = stand.clone().merge_nbt({'Tags': ['material_static'], 'Invisible': True})
-    basic_init = room.function('basic_init').add(
-        kill(e().tag('material_static')),
-        stand.summon(r(0, 2.0, 0), facing=NORTH, nbt={'CustomNameVisible': True}),
-    )
+    basic_init = room.function('basic_init').add(kill(e().tag('material_static')),
+                                                 stand.summon(r(0, 2.0, 0), facing=NORTH,
+                                                              nbt={'CustomNameVisible': True}))
     for i in range(0, 5):
-        basic_init.add(
-            invis_stand.summon(r(-(0.8 + i * 0.7), 2.0, 0), facing=NORTH,
-                               nbt={'Tags': ['material_%d' % (4 + i), 'material_static']}))
+        basic_init.add(invis_stand.summon(r(-(0.8 + i * 0.7), 2.0, 0), facing=NORTH,
+                                          nbt={'Tags': ['material_%d' % (4 + i), 'material_static']}))
         if i < 4:
-            basic_init.add(
-                invis_stand.summon(r(+(0.6 + i * 0.7), 2.0, 0), facing=NORTH,
-                                   nbt={'Tags': ['material_%d' % (3 - i), 'material_static']}))
+            basic_init.add(invis_stand.summon(r(+(0.6 + i * 0.7), 2.0, 0), facing=NORTH,
+                                              nbt={'Tags': ['material_%d' % (3 - i), 'material_static']}))
 
-    basic_init.add(
-        fill(r(-3, 2, 2), r(-3, 5, 2), 'stone'),
-
-        kill(e().tag('armor_frame')),
-        summon('item_frame', r(-3, 2, 1), {'Facing': 2, 'Tags': ['armor_boots', 'enchantable', 'armor_frame']}),
-        summon('item_frame', r(-3, 3, 1),
-               {'Facing': 2, 'Tags': ['armor_leggings', 'enchantable', 'armor_frame']}),
-        summon('item_frame', r(-3, 4, 1),
-               {'Facing': 2, 'Tags': ['armor_chestplate', 'enchantable', 'armor_frame']}),
-        summon('item_frame', r(-3, 5, 1), {'Facing': 2, 'Tags': ['armor_helmet', 'enchantable', 'armor_frame']}),
-        summon('item_frame', r(3, 2, 1), {'Facing': 2, 'Tags': ['armor_gem', 'armor_frame']}),
-        summon('item_frame', r(4, 4, 1),
-               {'Facing': 2, 'Tags': ['armor_horse_frame', 'enchantable', 'armor_frame']}),
-
-        label(r(5, 2, -2), 'Saddle'),
-        label(r(3, 2, -2), 'Enchanted'),
-        label(r(1, 2, -2), 'Turtle Helmet'),
-        label(r(-1, 2, -2), 'Elytra'),
-    )
+    basic_init.add(fill(r(-3, 2, 2), r(-3, 5, 2), 'stone'), kill(e().tag('armor_frame')),
+                   summon('item_frame', r(-3, 2, 1),
+                          {'Facing': 2, 'Tags': ['armor_boots', 'enchantable', 'armor_frame']}),
+                   summon('item_frame', r(-3, 3, 1),
+                          {'Facing': 2, 'Tags': ['armor_leggings', 'enchantable', 'armor_frame']}),
+                   summon('item_frame', r(-3, 4, 1),
+                          {'Facing': 2, 'Tags': ['armor_chestplate', 'enchantable', 'armor_frame']}),
+                   summon('item_frame', r(-3, 5, 1),
+                          {'Facing': 2, 'Tags': ['armor_helmet', 'enchantable', 'armor_frame']}),
+                   summon('item_frame', r(3, 2, 1), {'Facing': 2, 'Tags': ['armor_gem', 'armor_frame']}),
+                   summon('item_frame', r(4, 4, 1),
+                          {'Facing': 2, 'Tags': ['armor_horse_frame', 'enchantable', 'armor_frame']}),
+                   label(r(5, 2, -2), 'Saddle'), label(r(3, 2, -2), 'Enchanted'), label(r(1, 2, -2), 'Turtle Helmet'),
+                   label(r(-1, 2, -2), 'Elytra'))
 
     materials = (
         ('wooden', 'leather', True, Block('oak_planks'), 'oak_sign'),
@@ -312,24 +304,18 @@ def basic_functions(room):
             yield data().merge(e().tag('material_%d' % j).limit(1), {'HandItems': [{}, hands[j]]})
         yield data().merge(r(-2, 0, 1), {'name': f'restworld:material_{material}', 'mode': 'LOAD'})
 
-    room.loop('basic', main_clock).add(
-        fill(r(2, 2, 2), r(-2, 5, 4), 'air'),
-        kill_em(e().tag('material_thing'))
-    ).loop(basic_loop, materials).add(
-        enchant(True),
-        enchant(False),
-        execute().if_().score(turtle_helmet).matches(1).run(
-            data().modify(e().tag('basic_stand').limit(1), 'ArmorItems[3].id').set().value('turtle_helmet')),
-        execute().if_().score(turtle_helmet).matches(1).run(
-            data().modify(e().tag('armor_helmet').limit(1), 'Item.id').set().value('turtle_helmet')),
-        execute().if_().score(elytra).matches(1).run(
+    room.loop('basic', main_clock).add(fill(r(2, 2, 2), r(-2, 5, 4), 'air'), kill_em(e().tag('material_thing'))).loop(
+        basic_loop, materials).add(enchant(True), enchant(False), execute().if_().score(turtle_helmet).matches(1).run(
+        data().modify(e().tag('basic_stand').limit(1), 'ArmorItems[3].id').set().value('turtle_helmet')),
+                                   execute().if_().score(turtle_helmet).matches(1).run(
+                                       data().modify(e().tag('armor_helmet').limit(1), 'Item.id').set().value(
+                                           'turtle_helmet')), execute().if_().score(elytra).matches(1).run(
             data().modify(e().tag('basic_stand').limit(1), 'ArmorItems[2].id').set().value('elytra')),
-        execute().if_().score(elytra).matches(1).run(
-            data().modify(e().tag('armor_chestplate').limit(1), 'Item.id').set().value('elytra')),
-        fill(r(-2, 2, 2), r(2, 4, 4), 'air'),
-        setblock(r(-2, 0, 0), 'redstone_block'),
-        execute().positioned(r(-2, 0, 2)).run(kill(e().type('item').volume((5, 3, 4))))
-    )
+                                   execute().if_().score(elytra).matches(1).run(
+                                       data().modify(e().tag('armor_chestplate').limit(1), 'Item.id').set().value(
+                                           'elytra')), fill(r(-2, 2, 2), r(2, 4, 4), 'air'),
+                                   setblock(r(-2, 0, 0), 'redstone_block'),
+                                   execute().positioned(r(-2, 0, 2)).run(kill(e().type('item').volume((5, 3, 4)))))
 
     room.function('basic_update').add(
         execute().at(e().tag('basic_home')).run(function('restworld:materials/basic_cur')),
@@ -339,13 +325,9 @@ def basic_functions(room):
 def fencelike_functions(room):
     volume = Region(r(8, 3, 6), r(0, 2, 0))
 
-    room.function('fencelike_init').add(
-        WallSign(()).place(r(6, 2, 0), NORTH),
-        label(r(6, 2, -2), 'Change Height'),
-        label(r(4, 2, -2), 'Glass Panes'),
-        label(r(3, 2, -2), 'Walls'),
-        label(r(2, 2, -2), 'Fences'),
-    )
+    room.function('fencelike_init').add(WallSign(()).place(r(6, 2, 0), NORTH), label(r(6, 2, -2), 'Change Height'),
+                                        label(r(4, 2, -2), 'Glass Panes'), label(r(3, 2, -2), 'Walls'),
+                                        label(r(2, 2, -2), 'Fences'))
 
     def fencelike(block: BlockDef):
         block = as_block(block)
@@ -353,12 +335,13 @@ def fencelike_functions(room):
         yield execute().at(e().tag('fencelike_home')).run(data().merge(r(6, 2, 0), block.sign_nbt()))
 
     def switch_to_fencelike(which):
-        room.function(f'switch_to_{which}', home=False).add(
-            kill(e().tag('which_fencelike_home')),
-            execute().at(e().tag('fencelike_home')).positioned(r(1, -0.5, 0)).run(
-                function('restworld:materials/%s_home' % which)),
-            tag(e().tag('%s_home' % which)).add('which_fencelike_home'),
-            execute().at(e().tag('%s_home' % which)).run(function('restworld:materials/%s_cur' % which)))
+        room.function(f'switch_to_{which}', home=False).add(kill(e().tag('which_fencelike_home')),
+                                                            execute().at(e().tag('fencelike_home')).positioned(
+                                                                r(1, -0.5, 0)).run(
+                                                                function('restworld:materials/%s_home' % which)),
+                                                            tag(e().tag('%s_home' % which)).add('which_fencelike_home'),
+                                                            execute().at(e().tag('%s_home' % which)).run(
+                                                                function('restworld:materials/%s_cur' % which)))
 
     def fence_loop(step):
         yield from fencelike(step.elem)
@@ -438,33 +421,27 @@ def copper_functions(room):
     room.loop('waxed_coppers', main_clock, score=copper_score).loop(
         copper_loop, ('waxed', 'waxed_exposed', 'waxed_weathered', 'waxed_oxidized'))
     copper_home = e().tag('coppers_home')
-    run_unwaxed = room.function('unwaxed_coppers_run', home=False).add(
-        tag(copper_home).remove('waxed_coppers_home'),
-        tag(copper_home).add('unwaxed_coppers_home'),
-        execute().at(copper_home).run(function('restworld:materials/unwaxed_coppers_cur')),
-    )
-    room.function('waxed_coppers_run', home=False).add(
-        tag(copper_home).remove('unwaxed_coppers_home'),
-        tag(copper_home).add('waxed_coppers_home'),
-        execute().at(copper_home).run(function('restworld:materials/waxed_coppers_cur')),
-    )
-    room.function('coppers_init').add(
-        label(r(2, 2, -2), 'Waxed'),
-        function(run_unwaxed)
-    )
+    run_unwaxed = room.function('unwaxed_coppers_run', home=False).add(tag(copper_home).remove('waxed_coppers_home'),
+                                                                       tag(copper_home).add('unwaxed_coppers_home'),
+                                                                       execute().at(copper_home).run(function(
+                                                                           'restworld:materials/unwaxed_coppers_cur')))
+    room.function('waxed_coppers_run', home=False).add(tag(copper_home).remove('unwaxed_coppers_home'),
+                                                       tag(copper_home).add('waxed_coppers_home'),
+                                                       execute().at(copper_home).run(
+                                                           function('restworld:materials/waxed_coppers_cur')))
+    room.function('coppers_init').add(label(r(2, 2, -2), 'Waxed'), function(run_unwaxed))
 
 
 def wood_functions(room):
-    wood_init = room.function('wood_init').add(
-        summon('item_frame', r(2, 3, -3), {
-            'Tags': ['wood_boat_frame', room.name], 'Facing': 3, 'Fixed': True, 'Item': {'id': 'stone', 'Count': 1}}),
-        summon('item_frame', r(3, 3, -3), {
-            'Tags': ['wood_sign_frame', room.name], 'Facing': 3, 'Fixed': True, 'Item': {'id': 'stone', 'Count': 1}}),
-        label(r(-1, 2, 4), 'Chest Boat'))
-    wood_init.add(
-        summon('item_frame', r(3, 4, -3), {
-            'Tags': ['wood_hanging_sign_frame', room.name], 'Facing': 3, 'Fixed': True,
-            'Item': {'id': 'stone', 'Count': 1}}))
+    wood_init = room.function('wood_init').add(summon('item_frame', r(2, 3, -3), {
+        'Tags': ['wood_boat_frame', room.name], 'Facing': 3, 'Fixed': True, 'Item': {'id': 'stone', 'Count': 1}}),
+                                               summon('item_frame', r(3, 3, -3), {
+                                                   'Tags': ['wood_sign_frame', room.name], 'Facing': 3, 'Fixed': True,
+                                                   'Item': {'id': 'stone', 'Count': 1}}),
+                                               label(r(-1, 2, 4), 'Chest Boat'))
+    wood_init.add(summon('item_frame', r(3, 4, -3), {
+        'Tags': ['wood_hanging_sign_frame', room.name], 'Facing': 3, 'Fixed': True,
+        'Item': {'id': 'stone', 'Count': 1}}))
 
     volume = Region(r(-5, 1, -5), r(6, 5, 3))
 
@@ -640,19 +617,16 @@ def trim_functions(room):
 
     frame = 'trim_frame'
     trim_nbt = {'tag': {'Trim': {'pattern': 'sentry', 'material': 'redstone'}}}
-    room.function('trim_init').add(
-        kill(e().tag(frame)),
-        ItemFrame(NORTH).item('iron_boots').merge_nbt(
-            {'Item': trim_nbt}).tag('materials', frame, f'{frame}_boots').summon(r(1, 5, 2)),
-        ItemFrame(NORTH).item('iron_leggings').merge_nbt(
-            {'Item': trim_nbt}).tag('materials', frame, f'{frame}_leggings').summon(r(0, 5, 2)),
-        ItemFrame(NORTH).item('iron_chestplate').merge_nbt(
+    room.function('trim_init').add(kill(e().tag(frame)), ItemFrame(NORTH).item('iron_boots').merge_nbt(
+        {'Item': trim_nbt}).tag('materials', frame, f'{frame}_boots').summon(r(1, 5, 2)),
+                                   ItemFrame(NORTH).item('iron_leggings').merge_nbt(
+                                       {'Item': trim_nbt}).tag('materials', frame, f'{frame}_leggings').summon(
+                                       r(0, 5, 2)), ItemFrame(NORTH).item('iron_chestplate').merge_nbt(
             {'Item': trim_nbt}).tag('materials', frame, f'{frame}_chestplate').summon(r(-1, 5, 2)),
-        ItemFrame(NORTH).item('iron_helmet').merge_nbt(
-            {'Item': trim_nbt}).tag('materials', frame, f'{frame}_helmet').summon(r(-2, 5, 2)),
-        WallSign().messages((None, 'Material:')).place(r(0, 6, 2), NORTH),
-        WallSign().messages((None, 'Armor:', 'Iron')).place(r(-1, 6, 2), NORTH),
-    )
+                                   ItemFrame(NORTH).item('iron_helmet').merge_nbt(
+                                       {'Item': trim_nbt}).tag('materials', frame, f'{frame}_helmet').summon(
+                                       r(-2, 5, 2)), WallSign().messages((None, 'Material:')).place(r(0, 6, 2), NORTH),
+                                   WallSign().messages((None, 'Armor:', 'Iron')).place(r(-1, 6, 2), NORTH))
 
     class Trim:
         _num = 0
@@ -750,23 +724,17 @@ def trim_functions(room):
     run_change_cleanup = execute().at(e().tag('trim_change_home')).run(function(change_cleanup))
 
     # These labels have to go somewhere...
-    change_init.add(
-        label(r(-1, 2, -1), "Leggings"),
-        label(r(1, 2, -1), "Turtle Helmet"),
-        label(r(3, 2, -1), "Labels")
-    )
+    change_init.add(label(r(-1, 2, -1), "Leggings"), label(r(1, 2, -1), "Turtle Helmet"), label(r(3, 2, -1), "Labels"))
 
     show_init.add(show.set(0), run_show_cleanup)
     show_menu.add(
         execute().at(e().tag('trim_change_home')).if_().block(r(0, 3, 0), 'oak_wall_sign').run(run_change_cleanup))
-    show_cleanup.add(
-        fill(r(0, 3, 0), r(0, 4, 0), 'air'),
-        execute().store(RESULT).score(adjust_change).if_().score(show).is_(EQ, change),
-        execute().if_().score(adjust_change).matches(True).run(
-            change.add(1),
-            change.operation(MOD, num_categories),
-            run_change_cleanup)
-    )
+    show_cleanup.add(fill(r(0, 3, 0), r(0, 4, 0), 'air'),
+                     execute().store(RESULT).score(adjust_change).if_().score(show).is_(EQ, change),
+                     execute().if_().score(adjust_change).matches(True).run(
+                         change.add(1),
+                         change.operation(MOD, num_categories),
+                         run_change_cleanup))
     for i, cat in enumerate(categories.values()):
         lines = (None, 'Show All', cat.name.title())
         show_menu.add(WallSign().messages(lines, commands=(show.set(i), run_show_cleanup)).place(r(0, i, 0), facing))
@@ -778,11 +746,9 @@ def trim_functions(room):
     change_init.add(change.set(1), run_change_cleanup)
     change_menu.add(
         execute().at(e().tag('trim_show_home')).if_().block(r(0, 3, 0), 'oak_wall_sign').run(run_show_cleanup))
-    change_cleanup.add(
-        fill(r(0, 3, 0), r(0, 4, 0), 'air'),
-        kill(e().tag('trim_loop_home')),
-        execute().at(e().tag('trim_change_home')).positioned(r(-1, -0.5, 0)).run(
-            function('restworld:materials/trim_loop_home')))
+    change_cleanup.add(fill(r(0, 3, 0), r(0, 4, 0), 'air'), kill(e().tag('trim_loop_home')),
+                       execute().at(e().tag('trim_change_home')).positioned(r(-1, -0.5, 0)).run(
+                           function('restworld:materials/trim_loop_home')))
     for i, cat in enumerate(categories.values()):
         sign_num = 0
         for j, jcat in enumerate(categories.values()):
@@ -800,16 +766,13 @@ def trim_functions(room):
 
     trim_sum = room.score('trim_sum')
     keep_detect = room.function('trim_keep_detect', home=False).add(
-        scoreboard().players().operation(trim_sum, EQ, show),
-        scoreboard().players().operation(trim_sum, PLUS, change),
-        # 0 and 1 are use, so the things being kept is 2 (armor). And so on.
+        scoreboard().players().operation(trim_sum, EQ, show), scoreboard().players().operation(trim_sum, PLUS, change),
         execute().if_().score(trim_sum).matches(1).at(e().tag('trim_change_home')).run(
             function(categories['armors'].detect)),
         execute().if_().score(trim_sum).matches(2).at(e().tag('trim_change_home')).run(
             function(categories['materials'].detect)),
         execute().if_().score(trim_sum).matches(3).at(e().tag('trim_change_home')).run(
-            function(categories['patterns'].detect)),
-    )
+            function(categories['patterns'].detect)))
     show_cleanup.add(function(keep_detect))
     change_cleanup.add(function(keep_detect))
 

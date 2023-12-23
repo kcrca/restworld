@@ -45,8 +45,7 @@ def room():
             WallSign(()).place(r(facing.dx, 2, facing.dz), facing)
         )
         if show_list:
-            block_init.add(
-                execute().if_().score(block_list_score).matches(0).run(kill(e().tag(f'block_list_{name}'))))
+            block_init.add(execute().if_().score(block_list_score).matches(0).run(kill(e().tag(f'block_list_{name}'))))
             names = room.function(name + '_names', home=False)
             block_init.add(function(names.full_name))
 
@@ -315,9 +314,7 @@ def room():
         fill(r(-1, 3, -1), r(1, 5, 1), 'air')
     ).loop(
         amethyst_loop, amethyst_phases, bounce=True
-    ).add(
-        kill(e().type('item').nbt({'Item': {'id': 'minecraft:amethyst_shard'}}))
-    )
+    ).add(kill(e().type('item').nbt({'Item': {'id': 'minecraft:amethyst_shard'}})))
 
     def bell_loop(step):
         facing = EAST
@@ -655,26 +652,19 @@ def room():
 
 
 def room_init_functions(room, block_list_score):
-    room.functions['blocks_room_init'].add(
-        label(r(-16, 2, 3), 'List Blocks'),
-        label(r(-16, 2, -3), 'List Blocks'),
-        label(r(-43, 2, 3), 'List Blocks'),
-        label(r(-43, 2, -3), 'List Blocks'),
-        kill(e().tag('block_list'))
-    )
+    room.functions['blocks_room_init'].add(label(r(-16, 2, 3), 'List Blocks'), label(r(-16, 2, -3), 'List Blocks'),
+                                           label(r(-43, 2, 3), 'List Blocks'), label(r(-43, 2, -3), 'List Blocks'),
+                                           kill(e().tag('block_list')))
     # The 'zzz' makes sure this is run last
-    room.function('zzz_blocks_sign_init').add(
-        execute().at(e().tag('blocks_home', '!no_expansion')).run(
-            Sign.change(r(0, 2, -1), ("",), ('function restworld:blocks/toggle_expand',))),
+    room.function('zzz_blocks_sign_init').add(execute().at(e().tag('blocks_home', '!no_expansion')).run(
+        Sign.change(r(0, 2, -1), ("",), ('function restworld:blocks/toggle_expand',))),
         execute().at(e().tag('blocks_home', '!no_expansion')).run(
             Sign.change(r(0, 2, 1), ("",), ('function restworld:blocks/toggle_expand',))),
-
         execute().at(e().tag('blocks_home', 'no_expansion')).run(
             Sign.change(r(0, 2, -1), ("",), (say('Sorry, cannot expand this block'),))),
         execute().at(e().tag('blocks_home', 'no_expansion')).run(
             Sign.change(r(0, 2, 1), ("",), (say('Sorry, cannot expand this block'),))),
-        tag(e().tag('block_sign_home')).add('no_expansion'),
-    )
+        tag(e().tag('block_sign_home')).add('no_expansion'))
     room.loop('toggle_block_list', score=block_list_score).loop(
         lambda step: execute().as_(e().tag('block_list')).run(
             data().modify(s(), 'text_opacity').set().value(25 if step.i == 0 else 255)),
@@ -811,66 +801,55 @@ def color_functions(room):
         {'Tags': ['colorings_sheep', 'colorings_item'], 'Variant': 1, 'Rotation': [-35, 0], 'Leashed': True}).merge(
         mob_nbt)
     stand_nbt = {'Tags': ['colorings_armor_stand', 'colorings_item'], 'Rotation': [30, 0]}
-    room.function('colorings_init').add(
-        kill_em(e().tag('colorings_item')),
-        Entity('item_frame', {
-            'Facing': 3, 'Tags': ['colorings_item_frame', 'colorings_item'], 'Fixed': True}).summon(r(-4.5, 4, 0.5)),
-        Entity('horse', horse_nbt).summon(r(0.7, 2, 4.4)),
-        Entity('wolf', dog_nbt).summon(r(-8, 2, 2)),
-        Entity('cat', cat_nbt).summon(r(-2.7, 2, 2)),
-        Entity('armor_stand', stand_nbt).summon(r(-1.1, 2, 3)),
-        Entity('llama', llama_nbt).summon(r(-11, 2, 5.8)),
-        Entity('sheep', sheep_nbt).summon(r(-9.0, 2, 5.0)),
-
-        execute().as_(e().tag('colorings_names')).run(data().merge(s(), {'CustomNameVisible': True})),
-
-        WallSign((None, 'Terracotta')).place(r(-1, 3, 1), SOUTH),
-        WallSign((None, 'Shulker Box')).place(r(-3, 3, 1), SOUTH),
-        WallSign((None, 'Dye')).place(r(-4, 3, 1, ), SOUTH),
-        WallSign((None, 'Concrete')).place(r(-5, 3, 1), SOUTH),
-        WallSign((None, 'Glass')).place(r(-7, 3, 1), SOUTH),
-
-        colored_signs(None,
-                      lambda x, y, z, _, wood:
-                      Sign((wood.name, 'Sign With', 'Default', 'Text'), wood=wood.id).place(r(x, y, z), 14)),
-        WallSign([]).place(r(-4, 2, 4, ), SOUTH),
-
-        kill(e().type('item')),
-
-        label(r(-1, 2, 7), 'Lit Candles'),
-        label(r(-8, 2, 7), 'Plain'),
-        label(r(-11, 2, 3), 'Glowing'),
-    ),
-    room.loop('colorings', main_clock).add(
-        fill(r(-9, 2, 2), r(-9, 2, 3), 'air')
-    ).loop(colorings_loop, colors).add(
-        colored_signs(None, render_signs_glow),
-        setblock(r(-7, -1, 3), 'redstone_block'),
-        setblock(r(-7, -1, 3), 'air'),
-    )
+    room.function('colorings_init').add(kill_em(e().tag('colorings_item')), Entity('item_frame', {
+        'Facing': 3, 'Tags': ['colorings_item_frame', 'colorings_item'], 'Fixed': True}).summon(r(-4.5, 4, 0.5)),
+                                        Entity('horse', horse_nbt).summon(r(0.7, 2, 4.4)),
+                                        Entity('wolf', dog_nbt).summon(r(-8, 2, 2)),
+                                        Entity('cat', cat_nbt).summon(r(-2.7, 2, 2)),
+                                        Entity('armor_stand', stand_nbt).summon(r(-1.1, 2, 3)),
+                                        Entity('llama', llama_nbt).summon(r(-11, 2, 5.8)),
+                                        Entity('sheep', sheep_nbt).summon(r(-9.0, 2, 5.0)),
+                                        execute().as_(e().tag('colorings_names')).run(
+                                            data().merge(s(), {'CustomNameVisible': True})),
+                                        WallSign((None, 'Terracotta')).place(r(-1, 3, 1), SOUTH),
+                                        WallSign((None, 'Shulker Box')).place(r(-3, 3, 1), SOUTH),
+                                        WallSign((None, 'Dye')).place(r(-4, 3, 1, ), SOUTH),
+                                        WallSign((None, 'Concrete')).place(r(-5, 3, 1), SOUTH),
+                                        WallSign((None, 'Glass')).place(r(-7, 3, 1), SOUTH), colored_signs(None,
+                                                                                                           lambda x, y,
+                                                                                                                  z, _,
+                                                                                                                  wood:
+                                                                                                           Sign((
+                                                                                                                wood.name,
+                                                                                                                'Sign With',
+                                                                                                                'Default',
+                                                                                                                'Text'),
+                                                                                                                wood=wood.id).place(
+                                                                                                               r(x, y,
+                                                                                                                 z),
+                                                                                                               14)),
+                                        WallSign([]).place(r(-4, 2, 4, ), SOUTH), kill(e().type('item')),
+                                        label(r(-1, 2, 7), 'Lit Candles'), label(r(-8, 2, 7), 'Plain'),
+                                        label(r(-11, 2, 3), 'Glowing')),
+    room.loop('colorings', main_clock).add(fill(r(-9, 2, 2), r(-9, 2, 3), 'air')).loop(colorings_loop, colors).add(
+        colored_signs(None, render_signs_glow), setblock(r(-7, -1, 3), 'redstone_block'), setblock(r(-7, -1, 3), 'air'))
     room.function('colorings_plain_off', home=False).add(
         clone((coloring_coords[0][0], coloring_coords[0][1].value - coloring_coords[1][1].value + 1,
                coloring_coords[0][2]),
               (coloring_coords[1][0], 0, coloring_coords[1][2]),
               (coloring_coords[1][0], coloring_coords[1][1] - 1, coloring_coords[1][2])),
-
         tag(e().tag('colorings_base_home')).add('colorings_home'),
         execute().at(e().tag('colorings_home')).run(function('restworld:blocks/colorings_init')),
         execute().at(e().tag('colorings_home')).run(function('restworld:blocks/colorings_cur')),
-        kill(e().type('item').distance((None, 20))),
-    )
+        kill(e().type('item').distance((None, 20))))
     room.function('colorings_plain_on', home=False).add(
         clone((coloring_coords[0][0], coloring_coords[0][1], coloring_coords[0][2]),
               (coloring_coords[1][0], coloring_coords[1][1] - 1, coloring_coords[1][2]),
               (coloring_coords[1][0], 0, coloring_coords[1][2])),
-
         tag(e().tag('colorings_base_home')).remove('colorings_home'),
         item().replace().entity(e().tag('colorings_item_frame'), 'container.0').with_('air'),
-        colorings(True, Color('Plain', 0x0)),
-        setblock(r(-7, -1, 3), 'redstone_torch'),
-        setblock(r(-7, -1, 3), 'air'),
-        kill(e().type('item').distance((None, 20))),
-    )
+        colorings(True, Color('Plain', 0x0)), setblock(r(-7, -1, 3), 'redstone_torch'), setblock(r(-7, -1, 3), 'air'),
+        kill(e().type('item').distance((None, 20))))
     room.functions['colorings_home'].add(tag(e().tag('colorings_home')).add('colorings_base_home'))
     room.function('colorings_enter').add(
         execute().as_(e().tag('colorings_names')).run(data().merge(s(), {'CustomNameVisible': True})))
@@ -905,135 +884,81 @@ def expansion_functions(room):
         execute().positioned(r(0, -2, -1)).run(function('restworld:blocks/toggle_expand_at')),
         execute().positioned(r(0, -2, 1)).run(function('restworld:blocks/toggle_expand_at')))
     room.function('toggle_expand_at', home=False).add(
-        # There are two possible cases: Either this homer is already
-        # expanding or it is not.  We need to swap that.
-
-        # If it's an expander, add a temporary 'to be stopped' tag to it
         execute().as_(e().tag('expander').distance((None, 1))).run(tag(s()).add('stop_expanding')),
-        # If it's not an expander, tag it as one
         execute().as_(e().tag('!expander', '!no_expansion').distance((None, 1))).run(tag(s()).add('expander')),
-        # If it has the 'to be stopped' tag, remove the expander tag
         execute().as_(e().tag('stop_expanding').distance((None, 1))).run(tag(s()).remove('expander')),
-        # ... and then remove the 'to be stopped' tag
         execute().as_(e().tag('stop_expanding').distance((None, 1))).run(tag(s()).remove('stop_expanding')),
-
-        # Now it has the right tagging, do an immediate().action on it
         execute().at(e().tag('expander').distance((None, 1))).run(function('restworld:blocks/expander')),
         execute().at(e().tag('!expander', '!no_expansion').distance((None, 1))).run(
             function('restworld:blocks/contracter')),
-
-        # And, as a cleanup, if it never will be an expander, say 'sorry'
         execute().at(e().tag('no_expansion').distance((None, 1))).run(say('Sorry, cannot expand this.')),
-        execute().at(e().tag('no_expansion', 'fire_home').distance((None, 1))).run(say('Sorry, cannot expand this.')),
-    )
+        execute().at(e().tag('no_expansion', 'fire_home').distance((None, 1))).run(say('Sorry, cannot expand this.')))
     room.function('expander').add(
         execute().if_().entity(e().tag('fire_home').distance((None, 1))).run(function('restworld:blocks/expand_fire')),
         execute().if_().entity(e().tag('dripstone_home').distance((None, 1))).run(
             function('restworld:blocks/expand_dripstone')),
         execute().unless().entity(e().tag('fire_home').distance((None, 1))).unless().entity(
-            e().tag('dripstone_home').distance((None, 1))).run(function('restworld:blocks/expand_generic'))
-    )
-    room.function('expand_all', home=False).add(
-        execute().as_(e().tag('blocks_home', '!no_expansion', '!expander')).run(
-            execute().at(s()).run(function('restworld:blocks/toggle_expand_at'))))
+            e().tag('dripstone_home').distance((None, 1))).run(function('restworld:blocks/expand_generic')))
+    room.function('expand_all', home=False).add(execute().as_(e().tag('blocks_home', '!no_expansion', '!expander')).run(
+        execute().at(s()).run(function('restworld:blocks/toggle_expand_at'))))
     room.function('expand', main_clock).add(
-        execute().at(e().tag('expander')).run(function('restworld:blocks/expander')),
-    )
-    room.function('expand_dripstone', home=False).add(
-        # Clone the original stack to either side to form a line, including anything on top of the block
-        clone(r(0, 12, 0), r(0, 3, 0), r(-1, 3, 0)),
-        clone(r(0, 12, 0), r(0, 3, 0), r(1, 3, 0)),
-
-        # Clone the line to either side to get a 3x3 level
-        clone(r(1, 12, 0), r(-1, 3, 0), r(-1, 3, -1)),
-        clone(r(1, 12, 0), r(-1, 3, 0), r(-1, 3, 1)),
-    )
+        execute().at(e().tag('expander')).run(function('restworld:blocks/expander')))
+    room.function('expand_dripstone', home=False).add(clone(r(0, 12, 0), r(0, 3, 0), r(-1, 3, 0)),
+                                                      clone(r(0, 12, 0), r(0, 3, 0), r(1, 3, 0)),
+                                                      clone(r(1, 12, 0), r(-1, 3, 0), r(-1, 3, -1)),
+                                                      clone(r(1, 12, 0), r(-1, 3, 0), r(-1, 3, 1)))
     fire_score = room.score('fire')
     room.function('expand_fire', home=False).add(
         execute().unless().score(fire_score).matches(1).run(fill(r(-2, 4, 1), r(-2, 4, -1), 'air')),
         execute().unless().score(fire_score).matches(1).run(fill(r(2, 4, 1), r(2, 4, -1), 'air')),
         execute().unless().score(fire_score).matches(1).run(fill(r(1, 4, -2), r(-1, 4, -2), 'air')),
         execute().unless().score(fire_score).matches(1).run(fill(r(1, 4, 2), r(-1, 4, 2), 'air')),
-        clone(r(0, 5, 0), r(0, 3, 0), r(1, 3, 0)),
-        clone(r(0, 5, 0), r(0, 3, 0), r(-1, 3, 0)),
-        clone(r(1, 5, 0), r(-1, 3, 0), r(-1, 3, 1)),
-        clone(r(1, 5, 0), r(-1, 3, 0), r(-1, 3, -1)),
+        clone(r(0, 5, 0), r(0, 3, 0), r(1, 3, 0)), clone(r(0, 5, 0), r(0, 3, 0), r(-1, 3, 0)),
+        clone(r(1, 5, 0), r(-1, 3, 0), r(-1, 3, 1)), clone(r(1, 5, 0), r(-1, 3, 0), r(-1, 3, -1)),
         execute().if_().score(fire_score).matches(1).run(fill(r(-2, 4, 1), r(-2, 4, -1), 'fire[west=true]')),
         execute().if_().score(fire_score).matches(1).run(fill(r(2, 4, 1), r(2, 4, -1), 'fire[east=true]')),
         execute().if_().score(fire_score).matches(1).run(fill(r(1, 4, -2), r(-1, 4, -2), 'fire[north=true]')),
-        execute().if_().score(fire_score).matches(1).run(fill(r(1, 4, 2), r(-1, 4, 2), 'fire[south=true]')),
-    )
-    room.function('expand_generic', home=False).add(
-        # Sand blocks will fall if they aren't supported, so we place barriers under them
-        execute().if_().block(r(0, 3, 0), '#restworld:falling').run(
-            fill(r(-1, 2, -1), r(1, 2, 1), 'barrier').replace('air')),
-
-        # We want to clone up the snow topper, if_().it exists. If it doesn't, we need that layer
-        # to be cleared (it might have something from a previous expansion). And snow is the
-        # only thing that is normally placed on that level.
+        execute().if_().score(fire_score).matches(1).run(fill(r(1, 4, 2), r(-1, 4, 2), 'fire[south=true]')))
+    room.function('expand_generic', home=False).add(execute().if_().block(r(0, 3, 0), '#restworld:falling').run(
+        fill(r(-1, 2, -1), r(1, 2, 1), 'barrier').replace('air')),
         execute().unless().block(r(0, 4, 0), 'snow').run(fill(r(-1, 4, -1), r(1, 4, 1), 'air')),
-
-        # Clone the original block to either side to form a line, including anything on top of the block
-        clone(r(0, 4, 0), r(0, 3, 0), r(-1, 3, 0)),
-        clone(r(0, 4, 0), r(0, 3, 0), r(1, 3, 0)),
-
-        # Clone the line to either side to get a 3x3 level
-        clone(r(1, 4, 0), r(-1, 3, 0), r(-1, 3, -1)),
-        clone(r(1, 4, 0), r(-1, 3, 0), r(-1, 3, 1)),
-
-        # Clone the fill bottom level to the top
+        clone(r(0, 4, 0), r(0, 3, 0), r(-1, 3, 0)), clone(r(0, 4, 0), r(0, 3, 0), r(1, 3, 0)),
+        clone(r(1, 4, 0), r(-1, 3, 0), r(-1, 3, -1)), clone(r(1, 4, 0), r(-1, 3, 0), r(-1, 3, 1)),
         clone(r(1, 4, 1), r(-1, 3, -1), r(-1, 5, -1)),
-
-        # Soil needs the middle level filled with dirt
         execute().if_().block(r(0, 5, 0), '#restworld:soil').run(fill(r(-1, 3, -1), r(1, 4, 1), 'dirt')),
+        execute().unless().block(r(0, 5, 0), '#restworld:soil').run(clone(r(1, 5, 1), r(-1, 5, -1), r(-1, 4, -1))))
 
-        # Otherwise, fill the middle level with the top level
-        execute().unless().block(r(0, 5, 0), '#restworld:soil').run(clone(r(1, 5, 1), r(-1, 5, -1), r(-1, 4, -1))),
-    )
-
-    room.function('contracter').add(
-        execute().if_().entity(e().tag('fire_home').distance((None, 1))).run(
-            function('restworld:blocks/contract_fire')),
+    room.function('contracter').add(execute().if_().entity(e().tag('fire_home').distance((None, 1))).run(
+        function('restworld:blocks/contract_fire')),
         execute().if_().entity(e().tag('dripstone_home').distance((None, 1))).run(
             function('restworld:blocks/contract_dripstone')),
         execute().unless().entity(e().tag('fire_home').distance((None, 1))).unless().entity(
-            e().tag('dripstone_home').distance((None, 1))).run(function('restworld:blocks/contract_generic')),
-    )
+            e().tag('dripstone_home').distance((None, 1))).run(function('restworld:blocks/contract_generic')))
     room.function('contract_all', home=False).add(
         execute().as_(e().tag('blocks_home', '!no_expansion', 'expander')).run(
             execute().at(s()).run(function('restworld:blocks/toggle_expand_at'))))
-    room.function('contract_dripstone').add(
-        # Erase the front and back lines
-        fill(r(1, 12, 1), r(-1, 3, 1), 'air'),
-        fill(r(1, 12, -1), r(-1, 3, -1), 'air'),
+    room.function('contract_dripstone').add(fill(r(1, 12, 1), r(-1, 3, 1), 'air'),
+                                            fill(r(1, 12, -1), r(-1, 3, -1), 'air'),
+                                            fill(r(1, 12, 0), r(1, 3, 0), 'air'),
+                                            fill(r(-1, 12, 0), r(-1, 3, 0), 'air'))
+    room.function('contract_fire').add(fill(r(1, 5, 1), r(-1, 3, -1), 'air'), function('restworld:blocks/fire_cur'))
+    room.function('contract_generic').add(clone(r(0, 5, 0), r(0, 6, 0), r(0, -10, 0)),
+                                          fill(r(-1, 3, -1), r(1, 6, 1), 'air'),
+                                          clone(r(0, -9, 0), r(0, -10, 0), r(0, 3, 0)).replace(MOVE),
+                                          setblock(r(0, 2, 0), 'stone'),
+                                          fill(r(-1, 2, -1), r(1, 2, 1), 'air').replace('barrier'),
+                                          setblock(r(0, 2, 0), 'barrier'))
 
-        # Erase either side
-        fill(r(1, 12, 0), r(1, 3, 0), 'air'),
-        fill(r(-1, 12, 0), r(-1, 3, 0), 'air'),
-    )
-    room.function('contract_fire').add(
-        fill(r(1, 5, 1), r(-1, 3, -1), 'air'),
-        function('restworld:blocks/fire_cur'))
-    room.function('contract_generic').add(
-        clone(r(0, 5, 0), r(0, 6, 0), r(0, -10, 0)),
-        fill(r(-1, 3, -1), r(1, 6, 1), 'air'),
-        clone(r(0, -9, 0), r(0, -10, 0), r(0, 3, 0)).replace(MOVE),
-        setblock(r(0, 2, 0), 'stone'),
-        fill(r(-1, 2, -1), r(1, 2, 1), 'air').replace('barrier'),
-        setblock(r(0, 2, 0), 'barrier')
-    )
-
-    room.function('generic_home', home=False).add(
-        kill(e().tag('generic_home').distance((None, 2))),
-        summon('armor_stand', r(0, 0.5, 0),
-               {'Tags': ['generic_home', 'homer', 'blocks_home'], 'NoGravity': True, 'Small': True}),
-    )
+    room.function('generic_home', home=False).add(kill(e().tag('generic_home').distance((None, 2))),
+                                                  summon('armor_stand', r(0, 0.5, 0),
+                                                         {'Tags': ['generic_home', 'homer', 'blocks_home'],
+                                                          'NoGravity': True, 'Small': True}))
     # generic_home is used for entirely static blocks. This is used for blocks that are changed, but
     # by a different command block than the one under it. These want to be expanded as they change,
-    room.function('just_expand_home', home=False).add(
-        kill(e().tag('just_expand_home').distance((None, 2))),
-        summon('armor_stand', r(0, 0.5, 0),
-               {'Tags': ['just_expand_home', 'homer', 'blocks_home'], 'NoGravity': True, 'Small': True}))
+    room.function('just_expand_home', home=False).add(kill(e().tag('just_expand_home').distance((None, 2))),
+                                                      summon('armor_stand', r(0, 0.5, 0),
+                                                             {'Tags': ['just_expand_home', 'homer', 'blocks_home'],
+                                                              'NoGravity': True, 'Small': True}))
 
 
 def stepable_functions(room):
@@ -1085,8 +1010,7 @@ def stepable_functions(room):
     # The mosaic's "Block" is here so it fits in the patterns, but it actually doesn't exist, so we remove it.
     blocks[blocks.index('Bamboo Mosaic Block')] = 'Bamboo Mosaic'
 
-    room.function('stepable_init').add(
-        WallSign((None, 'Block')).place(r(3, 4, 5, ), NORTH),
-        WallSign((None, 'Double slab')).place(r(3, 5, 5, ), NORTH),
-        WallSign((None, 'Slabs & Stairs')).place(r(1, 2, -1, ), NORTH))
+    room.function('stepable_init').add(WallSign((None, 'Block')).place(r(3, 4, 5, ), NORTH),
+                                       WallSign((None, 'Double slab')).place(r(3, 5, 5, ), NORTH),
+                                       WallSign((None, 'Slabs & Stairs')).place(r(1, 2, -1, ), NORTH))
     room.loop('stepable', fast_clock).loop(stepable_loop, blocks)

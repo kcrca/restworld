@@ -303,31 +303,27 @@ def three_funcs(room):
         yield from age(-3, 'sugar_cane')
 
     def switch_to_func(which):
-        room.function(f'three_change_{which}', home=False).add(
-            kill(e().tag('three_runner')),
-            execute().at(e().tag('three_home')).positioned(r(-1, -0.5, 2)).run(
-                function(f'restworld:plants/three_{which}_home')),
-            tag(e().tag(f'three_{which}_home')).add('three_runner'),
-            execute().at(e().tag(f'three_{which}_home')).run(function(f'restworld:plants/three_{which}_cur')))
+        room.function(f'three_change_{which}', home=False).add(kill(e().tag('three_runner')),
+                                                               execute().at(e().tag('three_home')).positioned(
+                                                                   r(-1, -0.5, 2)).run(
+                                                                   function(f'restworld:plants/three_{which}_home')),
+                                                               tag(e().tag(f'three_{which}_home')).add('three_runner'),
+                                                               execute().at(e().tag(f'three_{which}_home')).run(
+                                                                   function(f'restworld:plants/three_{which}_cur')))
 
     room.loop('three_height', main_clock).loop(three_height_loop, range(3), bounce=True)
-    room.loop('three_age', fast_clock).add(
-        fill(r(0, 5, 0), r(0, 5, -3), 'air'),
-        setblock(r(0, 3, 0), 'cactus'),
-        setblock(r(0, 3, -3), 'sugar_cane')
-    ).loop(three_age_loop, range(16))
+    room.loop('three_age', fast_clock).add(fill(r(0, 5, 0), r(0, 5, -3), 'air'), setblock(r(0, 3, 0), 'cactus'),
+                                           setblock(r(0, 3, -3), 'sugar_cane')).loop(three_age_loop, range(16))
     room.function('three_init').add(label(r(-1, 2, 0), 'Change Age'))
     switch_to_func('height')
     switch_to_func('age')
     room.loop('cactus_soil', main_clock).loop(lambda step: setblock(r(0, 2, 1), step.elem), ('Sand', 'Red Sand'))
     room.loop('cane_soil', main_clock).loop(lambda step: setblock(r(0, 2, 1), step.elem), (
         'Grass Block', 'Dirt', 'Coarse Dirt', 'Podzol', 'Sand', 'Red Sand', 'Moss Block', 'Mycelium', 'Mud'))
-    room.function('cane_init').add(
-        function('restworld:plants/three_change_height'),
-        WallSign((None, 'Sugar Cane')).place(r(-2, 2, 0), EAST),
-        setblock(r(-1, 2, -1), 'structure_void'),
-        setblock(r(-1, 2, 1), 'structure_void'),
-        setblock(r(-1, 2, 0), 'water'))
+    room.function('cane_init').add(function('restworld:plants/three_change_height'),
+                                   WallSign((None, 'Sugar Cane')).place(r(-2, 2, 0), EAST),
+                                   setblock(r(-1, 2, -1), 'structure_void'), setblock(r(-1, 2, 1), 'structure_void'),
+                                   setblock(r(-1, 2, 0), 'water'))
 
 
 def bamboo_funcs(room):

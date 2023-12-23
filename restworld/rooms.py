@@ -252,11 +252,10 @@ class Room(FunctionSet):
             self.home_func(base_name, home)
         return func
 
-    def add(self, *functions: Function) -> FunctionSet:
-        for f in functions:
-            if f.name.endswith('_home'):
-                self._homes.add(f.name[:-len('_home')])
-        return super().add(*functions)
+    def add(self, function: Function) -> Function:
+        if function.name.endswith('_home'):
+            self._homes.add(function.name[:-len('_home')])
+        return super().add(function)
 
     def _base_name(self, name, clock):
         if not clock:

@@ -108,39 +108,35 @@ def room():
     # The clock functions
     clock_toggle = room.score('clock_toggle')
     room.home_func('clock'),
-    room.add(
-        Function('clock_init').add(
-            scoreboard().objectives().remove('clocks'),
-            scoreboard().objectives().add('clocks', ScoreCriteria.DUMMY),
-            list(c.speed.set(c.init_speed) for c in restworld.clocks()),
-            list(c.time.set(-1) for c in restworld.clocks()),
-            tick_clock.time.set(0),
-            function('restworld:global/clock_off'),
-        ),
-        Function('clock_tick').add(
-            clock.time.add(1),
-            (c.time.operation(EQ, clock.time) for c in restworld.clocks()),
-            (c.time.operation(MOD, c.speed) for c in restworld.clocks()),
-            kill_if_time()
-        ),
-        Function('clock_on').add(
-            execute().at(e().tag('clock_home')).run(setblock(r(0, -2, 1), 'redstone_block'))),
-        Function('clock_off').add(
-            execute().at(e().tag('clock_home')).run(setblock(r(0, -2, 1), 'diamond_block'))),
-        Function('clock_switched_on').add(
-            clock_blocks(True)),
-        Function('clock_switched_off').add(
-            clock_blocks(False),
-            (c.time.operation(EQ, c.speed) for c in restworld.clocks()),
-            (c.time.remove(1) for c in restworld.clocks()),
-        ),
-        Function('clock_toggle').add(
-            clock_toggle.set(0),
-            if_clock_running.run(clock_toggle.set(1)),
-            execute().if_().score(clock_toggle).matches(0).run(function('restworld:global/clock_on')),
-            execute().if_().score(clock_toggle).matches(1).run(function('restworld:global/clock_off')),
-        ),
-    )
+    room.add(Function('clock_init').add(
+        scoreboard().objectives().remove('clocks'),
+        scoreboard().objectives().add('clocks', ScoreCriteria.DUMMY),
+        list(c.speed.set(c.init_speed) for c in restworld.clocks()),
+        list(c.time.set(-1) for c in restworld.clocks()),
+        tick_clock.time.set(0),
+        function('restworld:global/clock_off'),
+    ))
+    room.add(Function('clock_tick').add(
+        clock.time.add(1),
+        (c.time.operation(EQ, clock.time) for c in restworld.clocks()),
+        (c.time.operation(MOD, c.speed) for c in restworld.clocks()),
+        kill_if_time()
+    ))
+    room.add(Function('clock_on').add(
+        execute().at(e().tag('clock_home')).run(setblock(r(0, -2, 1), 'redstone_block'))))
+    room.add(Function('clock_off').add(
+        execute().at(e().tag('clock_home')).run(setblock(r(0, -2, 1), 'diamond_block'))))
+    room.add(Function('clock_switched_on').add(
+        clock_blocks(True)))
+    room.add(Function('clock_switched_off').add(
+        clock_blocks(False),
+        (c.time.operation(EQ, c.speed) for c in restworld.clocks()),
+        (c.time.remove(1) for c in restworld.clocks())))
+    room.add(Function('clock_toggle').add(
+        clock_toggle.set(0),
+        if_clock_running.run(clock_toggle.set(1)),
+        execute().if_().score(clock_toggle).matches(0).run(function('restworld:global/clock_on')),
+        execute().if_().score(clock_toggle).matches(1).run(function('restworld:global/clock_off'))))
 
     def clock_sign(dir):
         name = f'clock_toggle_sign_{dir}_init'
@@ -270,14 +266,9 @@ def room():
             selector = selector.not_nbt({'Age': 0})
         elif profession != 'All':
             selector = selector.nbt({'VillagerData': {'profession': f'minecraft:{profession.lower()}'}})
-        census.add(
-            score.set(0),
-            execute().at(middle).as_(selector).run(score.add(1)),
-            tag(selector).add(profession.lower()))
+        census.add(score.set(0), execute().at(middle).as_(selector).run(score.add(1)),
+                   tag(selector).add(profession.lower()))
     employed = Score('employed', 'census')
-    census.add(
-        employed.operation(EQ, prof_scores['All']),
-        employed.operation(MINUS, prof_scores['None']),
-        prof_scores['None'].operation(MINUS, prof_scores['Kid']),
-        tag(e().tag('kid')).remove('none'),
-        schedule().function("minecraft:census", TimeSpec('15s'), REPLACE))
+    census.add(employed.operation(EQ, prof_scores['All']), employed.operation(MINUS, prof_scores['None']),
+               prof_scores['None'].operation(MINUS, prof_scores['Kid']), tag(e().tag('kid')).remove('none'),
+               schedule().function("minecraft:census", TimeSpec('15s'), REPLACE))
