@@ -26,7 +26,7 @@ biome_ids = {'End City': BiomeId.SMALL_END_ISLANDS, 'Monument': BiomeId.WARM_OCE
 
 
 def categories():
-    yield fill(r(6, 0, 6), r(-6, 0, 6), 'air')
+    yield fill(r(6, 0, 6), r(-8, 0, 6), 'air')
     for i, group in enumerate(biome_groups):
         yield category_sign(group, 6 - i)
 
