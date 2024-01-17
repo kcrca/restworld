@@ -42,9 +42,11 @@ def friendlies(room):
     pollen_label_pos = r(-2, 2, -1)
     room.function('bee_init').add(placer(r(0, 3, 0), WEST, 0, 2).summon('bee'), label(stinger_label_pos, 'Stinger'),
                                   label(pollen_label_pos, 'Pollen'))
+
     def armadillo_loop(step):
         # /data modify entity 629100ab-859f-4627-abd2-27fafc7ab9d2 state set value scared
         yield execute().as_(e().tag('armadillo')).run(data().modify(s(), 'state').set().value(step.elem))
+
     p = placer(*mid_west_placer, tags='keeper')
     room.function('armadillo_init').add(p.summon('Armadillo'))
     room.loop('armadillo', main_clock).loop(armadillo_loop, ('idle', 'scared'))
@@ -68,7 +70,8 @@ def friendlies(room):
 
     p = placer(*south_placer)
     room.function('canine_init').add(p.summon('wolf'),
-                                     p.summon(Entity('wolf', nbt={'Owner': 'dummy'}, name='Dog'), tags=('collared',)),
+                                     p.summon(Entity('wolf', nbt={'Owner': 'dummy'}, name='Tamed Wolf'),
+                                              tags=('collared',)),
                                      label(r(1, 2, 2), 'Sit'),
                                      label(r(1, 2, 0), 'Armor'))
 
