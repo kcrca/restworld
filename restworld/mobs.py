@@ -42,6 +42,12 @@ def friendlies(room):
     pollen_label_pos = r(-2, 2, -1)
     room.function('bee_init').add(placer(r(0, 3, 0), WEST, 0, 2).summon('bee'), label(stinger_label_pos, 'Stinger'),
                                   label(pollen_label_pos, 'Pollen'))
+    def armadillo_loop(step):
+        # /data modify entity 629100ab-859f-4627-abd2-27fafc7ab9d2 state set value scared
+        yield execute().as_(e().tag('armadillo')).run(data().modify(s(), 'state').set().value(step.elem))
+    p = placer(*mid_west_placer, tags='keeper')
+    room.function('armadillo_init').add(p.summon('Armadillo'))
+    room.loop('armadillo', main_clock).loop(armadillo_loop, ('idle', 'scared'))
 
     def bee_loop(step):
         bee_house = 'beehive' if step.i == 0 else 'bee_nest'
@@ -63,7 +69,8 @@ def friendlies(room):
     p = placer(*south_placer)
     room.function('canine_init').add(p.summon('wolf'),
                                      p.summon(Entity('wolf', nbt={'Owner': 'dummy'}, name='Dog'), tags=('collared',)),
-                                     label(r(1, 2, 2), 'Sit'))
+                                     label(r(1, 2, 2), 'Sit'),
+                                     label(r(1, 2, 0), 'Armor'))
 
     room.loop('canine', main_clock).loop(
         lambda step: execute().as_(e().tag('wolf')).run(data().merge(s(), {'Angry': step.elem})), (True, False))
@@ -241,8 +248,6 @@ def friendlies(room):
     p = placer(*mid_west_placer, tags='keeper')
     room.function('sheep_init').add(p.summon('Sheep', tags=('colorable',)),
                                     p.summon(Entity('sheep', name='Sheared Sheep', nbt={'Sheared': True})))
-    p = placer(*mid_west_placer, tags='keeper')
-    room.function('armadillo_init').add(p.summon('Armadillo'))
     room.function('sniffer_init').add(placer(r(0, 2, 0.5), EAST, 0, adults=True, tags='keeper').summon('sniffer'),
                                       WallSign((None, 'Sniffer Egg', None, '(vanilla  shows 3)')).place(r(2, 2, 3),
                                                                                                         EAST))
