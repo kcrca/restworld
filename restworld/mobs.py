@@ -239,9 +239,10 @@ def friendlies(room):
                                        execute().at(e().tag('cat_home')).run(function('restworld:mobs/cat_init')),
                                        execute().at(e().tag('cat_home')).run(function('restworld:mobs/cat_cur')))
     p = placer(*mid_west_placer, tags='keeper')
-    sheep = room.function('sheep_init').add(p.summon('Sheep', tags=('colorable',)),
-                                            p.summon(Entity('sheep', name='Sheared Sheep', nbt={'Sheared': True})))
-    sheep.add(p.summon(Entity('sheep', name='jeb_'), auto_tag=False))
+    room.function('sheep_init').add(p.summon('Sheep', tags=('colorable',)),
+                                    p.summon(Entity('sheep', name='Sheared Sheep', nbt={'Sheared': True})))
+    p = placer(*mid_west_placer, tags='keeper')
+    room.function('armadillo_init').add(p.summon('Armadillo'))
     room.function('sniffer_init').add(placer(r(0, 2, 0.5), EAST, 0, adults=True, tags='keeper').summon('sniffer'),
                                       WallSign((None, 'Sniffer Egg', None, '(vanilla  shows 3)')).place(r(2, 2, 3),
                                                                                                         EAST))
@@ -544,8 +545,9 @@ def monsters(room):
     room.loop('undead_saddle').loop(undead_saddle_loop, range(2))
 
     armorable_tag = 'armorable'
-    room.loop('skeleton', main_clock).add(kill_em(e().tag('skeletal'))).loop(lambda step: placer(*east_placer, adults=True).summon(
-        Entity(step.elem, nbt={'HandItems': [bow]}).tag('skeletal', armorable_tag)), ('Skeleton', 'Stray'))
+    room.loop('skeleton', main_clock).add(kill_em(e().tag('skeletal'))).loop(
+        lambda step: placer(*east_placer, adults=True).summon(
+            Entity(step.elem, nbt={'HandItems': [bow]}).tag('skeletal', armorable_tag)), ('Skeleton', 'Stray'))
     room.function('skeleton_init').add(label(r(2, 2, 0), 'Armor'))
 
     spider_dir = NORTH
