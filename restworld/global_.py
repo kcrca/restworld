@@ -83,7 +83,9 @@ def room():
     def raise_mobs_func():
         yield execute().at(e().tag('sleeping_bat')).run(clone(r(0, 1, 0), r(0, 1, 0), r(0, 3, 0)).replace(MOVE)),
         yield execute().at(e().tag('turtle_eggs_home')).run(
-            clone(r(1, 2, 0), r(-2, 2, 0), r(-2, -4, 0)).replace(MOVE)),
+            clone(r(2, 2, 0), r(-1, 2, 0), r(-1, 4, 0)).replace(MOVE)),
+        yield execute().at(e().tag('sniffer_home')).run(
+            clone(r(0, 2, 3), r(0, 2, 3), r(0, 4, 3)).replace(MOVE)),
         for mob_room in mob_rooms:
             room_home = mob_room + '_home'
             yield execute().as_(e().tag(room_home)).run(data().merge(s(), {'Invisible': True}))
@@ -94,7 +96,9 @@ def room():
     def lower_mobs_func():
         yield execute().at(e().tag('sleeping_bat')).run(clone(r(0, 1, 0), r(0, 1, 0), r(0, -1, 0)).replace(MOVE)),
         yield execute().at(e().tag('turtle_eggs_home')).run(
-            clone(r(1, 4, 0), r(-2, 4, 0), r(-2, 2, 0)).replace(MOVE)),
+            clone(r(2, 4, 0), r(-1, 4, 0), r(-1, 2, 0)).replace(MOVE)),
+        yield execute().at(e().tag('sniffer_home')).run(
+            clone(r(0, 4, 3), r(0, 4, 3), r(0, 2, 3)).replace(MOVE)),
         for mob_room in mob_rooms:
             room_home = mob_room + '_home'
             yield execute().as_(e().tag(room_home)).run(data().merge(s(), {'Invisible': False}))
