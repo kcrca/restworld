@@ -76,7 +76,7 @@ def friendlies(room):
                                      label(r(1, 2, 0), 'Armor'))
 
     room.loop('canine', main_clock).loop(
-        lambda step: execute().as_(e().tag('wolf')).run(data().merge(s(), {'Angry': step.elem})), (True, False))
+        lambda step: execute().as_(e().tag('wolf')).run(data().merge(s(), {'AngerTime': step.elem})), (0, 1000000000))
     room.function('cat_init').add(placer(*south_placer, tags=('collared',)).summon('cat'),
                                   label(r(1, 2, 2), 'Cat Collar'))
     room.loop('cat', main_clock).loop(
