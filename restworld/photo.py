@@ -41,9 +41,9 @@ mobs = (
     PhotoMob(3, +29, 'ocelot'),
     PhotoMob(3.2, +47, 'fox'),
 
-    PhotoMob(4.9, -45, 'frog'),
-    PhotoMob(4.3, -33, 'rabbit', nbt={'RabbitType': 3}),
-    PhotoMob(4.5, -20, 'bee'),
+    PhotoMob(4.9, -45, 'rabbit', nbt={'RabbitType': 3}),
+    PhotoMob(4.3, -32, 'bee'),
+    PhotoMob(4.5, -14, 'armadillo'),
     PhotoMob(5.0, 0, 'chicken'),
     PhotoMob(4.7, +22, 'spider', y=0.2),
     PhotoMob(4.5, +42, 'wolf'),
@@ -113,8 +113,8 @@ def get_normal_blocks():
         elif 'Ore' in name:
             name = f'Ore {name}'
         elif name in (
-                'Crafting Table', 'Cartography Table', 'Smithing Table', 'Fletching Table', 'Smoker', 'Blast Furnace',
-                'Cauldron'):
+                'Crafting Table', 'Crafter', 'Cartography Table', 'Smithing Table', 'Fletching Table', 'Smoker',
+                'Blast Furnace', 'Cauldron'):
             name = 'Profession ' + name
         elif 'Glass' in name:
             # 'M' to move it away from corals so the water trough behind the coral doesn't overlap
