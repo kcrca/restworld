@@ -2,10 +2,10 @@ from __future__ import annotations
 
 import sys
 
-from pynecraft.base import EAST, GT, LT, Nbt, r
-from pynecraft.commands import Entity, RANDOM, Score, a, data, e, execute, fill, function, kill, s, setblock, summon, \
+from pynecraft.base import EAST, GT, LT, Nbt, r, to_id, Arg
+from pynecraft.commands import Entity, RANDOM, Score, a, data, e, execute, fill, function, kill, setblock, summon, \
     tag
-from pynecraft.function import Loop
+from pynecraft.function import Loop, Function
 from pynecraft.simpler import Item, Region, WallSign, Sign
 from restworld.rooms import Room, label
 from restworld.world import kill_em, main_clock, marker_tmpl, restworld
@@ -16,7 +16,13 @@ COUNT_MAX = 5
 battle_types = {'w': 1, 'c': 2, 'g': 3}
 
 
+def is_splitter_mob(mob):
+    return mob in ('Slime', 'Magma Cube')
+
+
 def room():
+    room = Room('arena', restworld)
+
     def protected(armor):
         return {'id': armor, 'Count': 1,
                 'tag': {'RepairCost': 1, 'Enchantments': [{'lvl': 9, 'id': 'protection'}]}}
@@ -27,7 +33,8 @@ def room():
         'Goat': {'IsScreamingGoat': True, 'HasLeftHorn': True, 'HasRightHorn': True},
         'Hoglin': {'IsImmuneToZombification': True},
         'Llama': {'Strength': 5},
-        'Magma Cube': {'Size': 0},
+        'Magma Cube': {'Size': 3},
+        'Slime': {'Size': 3},
         'Panda': {'MainGene': 'aggressive'},
         'Phantom': {'AX': 1000, 'AY': 110, 'AZ': -1000},
         'Piglin Brute': {'HandItems': [Item.nbt_for('golden_axe')], 'IsImmuneToZombification': 'True'},
@@ -35,10 +42,11 @@ def room():
         'Pillager': {'HandItems': [Item.nbt_for('crossbow'), {}]},
         'Skeleton': {'HandItems': [Item.nbt_for('bow')],
                      'ArmorItems': [protected('iron_boots'), {}, {}, protected('iron_helmet')]},
-        'Slime': {'Size': 0},
         'Stray': {'HandItems': [Item.nbt_for('bow')],
                   'ArmorItems': [protected('iron_boots'), {}, {}, protected('iron_helmet')]},
         'Vindicator': {'Johnny': 'True', 'HandItems': [Item.nbt_for('iron_axe'), {}]},
+        # Workaround for https://bugs.mojang.com/browse/MC-249393; stops warden from digging down immediately
+        'Warden': {'Brain': {'memories': {'minecraft:dig_cooldown': {'value': {}, 'ttl': 1200}}}},
         'Wither Skeleton': {'HandItems': [Item.nbt_for('stone_sword'), {}]},
         'Zombie': {'ArmorItems': [{}, {}, {}, Item.nbt_for('iron_helmet')]},
         'Zombified Piglin': {'HandItems': [Item.nbt_for('golden_sword'), {}]},
@@ -57,7 +65,7 @@ def room():
         ('Ender Dragon', None),
         ('Evoker', 'Iron Golem'),
         ('Fox', 'Chicken'),
-        ('Frog', 'Slime'),  # low priority
+        # ('Frog', 'Slime'),  # low priority
         ('Goat', 'Sheep'),  # medium priority (slow, but charging goat)
         ('Hoglin', 'Vindicator'),
         # ('Illusioner', 'Snow Golem'), # low priority, Illusioner isn't used
@@ -73,6 +81,7 @@ def room():
         ('Ravager', 'Iron Golem'),
         ('Shulker', 'Vindicator'),
         ('Skeleton', 'Iron Golem'),
+        ('Slime', 'Iron Golem'),
         ('Sniffer:g', None),
         ('Spider', 'Snow Golem'),
         ('Stray', 'Iron Golem'),
@@ -86,16 +95,14 @@ def room():
         ('Zombie', 'Iron Golem'),
         ('Zombified Piglin', 'Vindicator'),
     ]
-    # These don't work unless we figure out how to kill the ones that spawn when a larger is killed. For
-    # now, we just make sure they are the smallest size:
-    #
-    #  ('Slime', 'Iron Golem'),
-    #  ('Magma Cube', 'Iron Golem'),
-    #
-    # The problem isn't just killing them, it's knowing when to spawn a new one. With singleton mobs, you can simply
-    # say "there must be [say] 3", but here, you want something that will spawn a new full size cube when (approximately
-    # at least) all its small ones have been killed. This is different enough that it probably requires a specialized
-    # mechanism, which probaly isn't worth it (though it would be fun).
+    # With Slime and Magma Cube it _mostly_ works, but not perfectly. These are handled by giving a custom name to
+    # the summoned mob, which is inherited by its descendants. We then see, if the count is at least 3, whether there
+    # is any mob labelled "3" (say). If not a new top-level "3"" is summoned. This way each mob will only be replaced
+    # when all its descendants are gone. But... the problem is there is a gap in time between when "3" is killed and
+    # its kids are spawned, during which time there is no "3". So a new one is summoned. Thus, the actual count of
+    # slimes and magma cubes is off a bit. If I figure out a way to fix this, I'll fix it. For now it seems mildly
+    # annoying, but better than the previous alternative where only the smallest slimes and cubes could be summoned,
+    # since that could be handled by the general algorithm.
 
     stride_length = 6
     num_rows = 2
@@ -145,12 +152,17 @@ def room():
                         my_nbts = my_nbts.merge(added_nbt)
                     if which == 'hunter':
                         my_nbts = my_nbts.merge({'Rotation': [180, 0]})
-                        if hunter == 'Warden':
-                            # Summoning warden with NBT means that it immediately burrows away, so must special case it
-                            # https://bugs.mojang.com/browse/MC-249393 (also see below)
-                            my_nbts = None
+                    splitter_mob = is_splitter_mob(mob)
                     y_off = 3 if battle_type == 3 else 2
                     z_off = -4 if center else 0
+                    if splitter_mob:
+                        f = room.function(f'incr_{to_id(mob)}_{which}', home=False)
+                        for i in range(COUNT_MIN, COUNT_MAX + 1):
+                            incr = summon(Entity(mob, my_nbts).merge_nbt(
+                                {'CustomName': str(i), 'CustomNameVisible': False}), r(0, y_off, z_off))
+                            f.add(execute().if_().score(arena_count).matches((i, COUNT_MAX)).unless().entity(
+                                e().nbt({'CustomName': str(i)}).limit(1)).run(incr))
+                        return function(f)
                     incr = summon(Entity(mob, my_nbts), r(0, y_off, z_off))
                     incr_cmd = execute().if_().score((f'{which}_count', 'arena')).is_(LT, ('arena_count', 'arena')).at(
                         e().tag(f'{which}_home').sort('random').limit(1)).run(incr)
@@ -158,11 +170,12 @@ def room():
 
                 data_change = execute().at(monitor_home)
                 sign_commands = (
-                    start_battle_type.set(battle_type),
                     data_change.run(data().merge(r(3, 0, 0), {'Command': incr_cmd('hunter', hunter, alone)})),
                     data_change.run(
                         data().merge(r(2, 0, 0), {'Command': incr_cmd('victim', 'marker' if alone else victim)})),
-                    function('restworld:arena/start_battle')
+                    start_battle_type.set(battle_type),
+                    function('restworld:arena/start_battle', {'hunter_is_splitter': is_splitter_mob(hunter),
+                                                              'victim_is_splitter': is_splitter_mob(victim)})
                 )
                 sign = WallSign().messages((None, hunter, 'vs.', 'Nobody' if alone else victim), sign_commands)
                 yield sign.place(r(-2, y, z), EAST)
@@ -192,23 +205,25 @@ def room():
             for z in range(-1, 2):
                 yield stand.summon(r(x, 0.5, z))
 
-    def monitor(actor: str):
-        count = Score(actor + '_count', 'arena')
-        return (
+    def counter(battler: str, splitter: Score) -> Function:
+        count = room.score(f'{battler}_count')
+        func = room.function(f'count_{battler}', home=False).add(
             count.set(0),
-            execute().as_(e().tag(actor)).run(count.add(1)),
+            execute().if_().score(splitter).matches(0).as_(e().tag(battler)).run(count.add(1))
         )
+        for i in range(COUNT_MIN, COUNT_MAX + 1):
+            func.add(execute().unless().score(splitter).matches(0).if_().entity(
+                e().nbt({'CustomName': str(i)}).limit(1)).run(count.add(1)))
+        return func
 
     def toggle_peace(step):
         return (
             execute().at(e().tag('monitor_home')).run(fill(
-                r(2, -1, 0), r(3, -1, 0), 'redstone_torch' if step.elem else 'air')),
+                r(2, -1, 0), r(3, -1, 0), 'redstone_block' if step.elem else 'air')),
             setblock(r(0, 1, 0), f'{"red" if step.elem else "lime"}_concrete'),
         )
 
-    room = Room('arena', restworld)
-
-    arena_count = Score('arena_count', 'arena')
+    arena_count = room.score('arena_count')
 
     arena_count_finish = room.function('arena_count_finish', home=False).add(
         execute().if_().score(arena_count).matches((None, COUNT_MIN)).run(arena_count.set(COUNT_MIN)),
@@ -240,20 +255,29 @@ def room():
     room.function('hunter_home').add(random_stand('hunter'))
     room.function('victim_home').add(random_stand('victim'))
 
-    room.function('monitor').add(monitor('hunter'), monitor('victim'),
-                                 kill(e().type('item').distance((None, 50))),
-                                 kill(e().type('experience_orb').distance((None, 50)))),
+    h_is_splitter = room.score('hunter_is_splitter')
+    v_is_splitter = room.score('victim_is_splitter')
+    h_counter = counter('hunter', h_is_splitter)
+    v_counter = counter('victim', v_is_splitter)
+
+    room.function('monitor_init').add(h_is_splitter.set(0), v_is_splitter.set(0))
+    room.function('monitor').add(
+        function(h_counter),
+        function(v_counter),
+        kill(e().type('item').distance((None, 50))),
+        kill(e().type('experience_orb').distance((None, 50))),
+    )
     # For some reason, arena_count_init doesn't always get run on _init, so we make sure that value is always in range.
-    cleanup = room.function('monitor_cleanup', home=False).add(
+    room.function('monitor_cleanup', home=False).add(
         execute().unless().score(arena_count).matches((COUNT_MIN, COUNT_MAX)).run(arena_count.set(1)),
         (execute().if_().score(room.score(f'{who}_count')).is_(GT, arena_count).run(kill(
             e().tag(who).sort(RANDOM).limit(1).distance((None, 100))))
-            for who in ('hunter', 'victim')))
-    # Summoning warden with NBT means that it immediately burrows away, so must special case it
-    # https://bugs.mojang.com/browse/MC-249393 (also see above)
-    cleanup.add(execute().as_(e().type('warden').distance((None, 100)).not_tag('hunter')).run(tag(s()).add('hunter')),
-                execute().as_(e().type('warden').distance((None, 100)).not_tag('battler')).run(
-                    tag(s()).add('battler'))),
+            for who in ('hunter', 'victim')),
+        (execute().if_().score(room.score(f'{who}_count')).is_(LT, arena_count).run(
+            execute().at(e().tag(f'{who}_home')).run(setblock(r(-3, -1, 0), 'redstone_block'),
+                                                     setblock(r(-3, -1, 0), 'air')))
+            for who in ('hunter', 'victim')),
+    )
 
     # Types: 0-normal, 1-water, 2-undead
     arena = Region(r(-12, 2, -12), r(12, 4, 12))
@@ -261,6 +285,8 @@ def room():
     sky = Region((r(-20), 250, r(-20)), (r(20), 250, r(20)))
     # See 'battle_types' map above for meanings
     room.function('start_battle', home=False).add(
+        h_is_splitter.set(Arg('hunter_is_splitter')),
+        v_is_splitter.set(Arg('victim_is_splitter')),
         execute().unless().score(start_battle_type).matches((0, None)).run(start_battle_type.set(0)),
         execute().unless().score(start_battle_type).matches(1).at(monitor_home).run(arena.fill('air')),
         execute().if_().score(start_battle_type).matches(1).at(monitor_home).run(arena.fill('water')),
@@ -268,8 +294,8 @@ def room():
         execute().if_().score(start_battle_type).matches(2).at(monitor_home).run(sky.fill('glowstone')),
         execute().if_().score(start_battle_type).matches(3).at(monitor_home).run(ground.fill('grass_block')),
         tag(a()).add('arena_safe'),
-        tag(e().type('armor_stand')).add('arena_safe'),
-        kill_em(e().not_tag('arena_safe').distance((None, 100))),
+        execute().at(monitor_home).run(tag(e().type('armor_stand').distance((None, 100))).add('arena_safe')),
+        execute().at(monitor_home).run(kill_em(e().not_tag('arena_safe').distance((None, 100)))),
     )
 
     room.loop('toggle_peace', home=False).loop(toggle_peace, (True, False)).add(
