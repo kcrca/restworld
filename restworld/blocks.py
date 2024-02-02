@@ -4,12 +4,12 @@ import re
 from typing import Iterable, Union
 
 from pynecraft import info
-from pynecraft.base import DOWN, EAST, EQ, NORTH, Nbt, SOUTH, WEST, as_facing, r, to_name
-from pynecraft.commands import Block, Entity, MOD, MOVE, clone, data, e, execute, fill, function, as_block, \
-    item, kill, s, say, setblock, summon, tag, Commands
+from pynecraft.base import DOWN, EAST, EQ, NORTH, Nbt, RelCoord, SOUTH, WEST, as_facing, r, to_name
+from pynecraft.commands import Block, Commands, Entity, MOD, MOVE, a, as_block, clone, data, e, execute, fill, function, \
+    item, kill, s, say, setblock, summon, tag
 from pynecraft.function import Loop
 from pynecraft.info import Color, colors, sherds, stems
-from pynecraft.simpler import Item, ItemFrame, Region, Sign, WallSign, TextDisplay
+from pynecraft.simpler import Item, ItemFrame, Region, Sign, TextDisplay, WallSign
 from restworld.rooms import Room, label
 from restworld.world import fast_clock, kill_em, main_clock, restworld
 
@@ -398,7 +398,7 @@ def room():
             yield setblock(r(-1, 3, 0), 'air')
 
     room.loop('chest', main_clock).loop(chest_loop, (
-        Block('Chest'), Block('Ender Chest'), Block('Trapped Chest'), Block('Chest', state={'type': 'right'}),
+        Block('Chest'), Block('Trapped Chest'), Block('Ender Chest'), Block('Chest', state={'type': 'right'}),
         Block('Trapped Chest', state={'type': 'right'})))
 
     def command_block_loop(step):
@@ -582,19 +582,53 @@ def room():
 
     def spawner_loop(step):
         # As of 1.20.3+x the trial spawner only sets the visible mob after the first spawn, and we don't have one, so
-        # this does nothing. I leave this here in case someday it works.
-        nbt = {'SpawnData': {'entity': {'id': 'minecraft:skeleton'}}} if step.elem == 'Spawner' else {
-            'ticks_between_spawn': 0xfffffff,
-            'spawn_potentials': [{'data': {'entity': {'id': 'minecraft:breeze'}}, 'weight': 1}],
-            'spawn_data': {'entity': {'id': 'minecraft:breeze'}},
-        }
-        yield setblock(r(0, 3, 0), Block(step.elem, {}, nbt))
-        yield Sign.change(r(0, 2, -1), (None, step.elem))
+        # this does nothing. I leave this here in case someday it works. (It's a no-op for the vault.)
+        pos = r(0, 3, 0)
+        sign_pos = r(0, 2, -1)
+        if isinstance(step.elem, str):
+            nbt = {'SpawnData': {'entity': {'id': 'minecraft:skeleton'}}} if step.elem == 'Spawner' else {
+                'ticks_between_spawn': 0xfffffff,
+                'spawn_potentials': [{'data': {'entity': {'id': 'minecraft:breeze'}}, 'weight': 1}],
+                'spawn_data': {'entity': {'id': 'minecraft:breeze'}},
+            }
+            yield setblock(pos, Block(step.elem, {}, nbt))
+            yield Sign.change(sign_pos, (None, step.elem, ''))
+        else:
+            if step.elem == 0:
+                yield setblock(pos, Block('vault'))
+                state = 'Ready'
+            elif step.elem == 1:
+                yield setblock(pos, Block('vault', {'vault_state': 'unlocking'}))
+                state = 'Unlocking'
+            elif step.elem == 2:
+                state = 'Ejecting'
+                yield setblock(pos, Block('vault', {'vault_state': 'ejecting'}))
+                nbt = {'items_to_eject': [{'id': "minecraft:shield", 'Count': 1, 'Tags': 'ejected'},
+                                          {'id': "minecraft:diamond_chestplate", 'Count': 1,
+                                           'tag': {'Enchantments': [{'lvl': 3, 'id': "minecraft:blast_protection"}]}},
+                                          {'id': "minecraft:shield", 'Count': 1},
+                                          {'id': "minecraft:iron_shovel", 'Count': 1,
+                                           'tag': {'Enchantments': [{'lvl': 2, 'id': "minecraft:efficiency"}]}},
+                                          {'id': "minecraft:iron_helmet", 'Count': 1,
+                                           'tag': {'Enchantments': [{'lvl': 1, 'id': "minecraft:fire_protection"}]}},
+                                          {'id': "minecraft:enchanted_book", 'Count': 1,
+                                           'tag': {'StoredEnchantments': [{'lvl': 4, 'id': "minecraft:efficiency"}]}}
+                                          ],
+                       'total_ejections_needed': 6}
+                yield data().merge(pos, {'server_data': nbt})
+                yield execute().as_(a()).run(
+                    data().modify(pos, 'server_data.rewarded_players').append().from_(s(), 'UUID'))
+            else:
+                yield execute().positioned(RelCoord.add(pos, r(0, 0.5, 0))).run(
+                    kill(e().distance((None, 1)).type('item')))
+                yield data().modify(pos, 'server_data.items_to_eject').set().value([])
+                state = 'Used'
+            yield Sign.change(sign_pos, (None, 'Vault', f'({state})'))
 
     room.function('spawner_init').add(setblock(r(0, 3, 0), 'spawner').nbt({'SpawnCount': 0}))
     reset_delay = execute().if_().block(r(0, 3, 0), Block('spawner', nbt={'Delay': '0s'})).run(
         data().merge(r(0, 3, 0), {'Delay': 200}))
-    room.loop('spawner', main_clock).add(reset_delay).loop(spawner_loop, ('Spawner', 'Trial Spawner'))
+    room.loop('spawner', main_clock).add(reset_delay).loop(spawner_loop, ('Spawner', 'Trial Spawner', *range(0, 4)))
 
     def structure_blocks_loop(step):
         yield Sign.change(r(0, 2, 1), (None, step.elem))
@@ -820,11 +854,11 @@ def color_functions(room):
                                                                                                                   z, _,
                                                                                                                   wood:
                                                                                                            Sign((
-                                                                                                                wood.name,
-                                                                                                                'Sign With',
-                                                                                                                'Default',
-                                                                                                                'Text'),
-                                                                                                                wood=wood.id).place(
+                                                                                                               wood.name,
+                                                                                                               'Sign With',
+                                                                                                               'Default',
+                                                                                                               'Text'),
+                                                                                                               wood=wood.id).place(
                                                                                                                r(x, y,
                                                                                                                  z),
                                                                                                                14)),
