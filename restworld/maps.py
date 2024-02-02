@@ -3,8 +3,8 @@ from __future__ import annotations
 import re
 
 from pynecraft.base import NORTH, Nbt, NbtDef, SOUTH, WEST, r
-from pynecraft.commands import Block, JsonText, clone, data, e, fill, setblock, execute, kill, schedule, REPLACE
-from pynecraft.simpler import Book, ItemFrame, WallSign, TextDisplay
+from pynecraft.commands import Block, JsonText, REPLACE, clone, data, e, execute, fill, kill, schedule, setblock
+from pynecraft.simpler import Book, ItemFrame, TextDisplay, WallSign
 from restworld.rooms import Room, ensure
 from restworld.world import restworld
 
@@ -25,15 +25,36 @@ def room():
     p_north = room.mob_placer(r(3, 4, -3), SOUTH, -1, adults=True)
     p_mid = room.mob_placer(r(8, 4, -1), WEST, -1, adults=True)
     icons = {
-        'Target X': {'id': "_0", 'type': 4, 'x': 128, 'z': -32, 'rot': 180},
-        'Target Point': {'id': "_1", 'type': 5, 'x': 88, 'z': -16, 'rot': 180},
-        'Mansion': {'id': "_2", 'type': 8, 'x': 128, 'z': 0, 'rot': 180},
-        'Monument': {'id': "_3", 'type': 9, 'x': 88, 'z': 16, 'rot': 180},
-        'Red X': {'id': "_4", 'type': 26, 'x': 128, 'z': 32, 'rot': 180},
+        'Target X': {'type': 4},
+        'Target Point': {'type': 5},
+        'Red X': {'type': 26},
+        'Monument': {'type': 9},
+        'Mansion': {'type': 8},
+        'Desert Village': {'type': 27},
+        'Plains Village': {'type': 28},
+        'Savannah Village': {'type': 29},
+        'Snowy Village': {'type': 30},
+        'Tiaga Village': {'type': 31},
+        'Jungle Pyramid': {'type': 32},
+        'Swamp Hut': {'type': 33},
     }
+    four_per_z = 128 / 5
+    xs = (88, 128, 168)
+    col = 0
+    z = -64 + four_per_z
+    for i, name in enumerate(icons):
+        nbt = icons[name]
+        nbt['id'] = f'_{i}'
+        nbt['x'] = xs[col]
+        nbt['z'] = z
+        nbt['rot'] = 180
+        if i % 4 == 3:
+            col += 1
+            z = -64
+        z += four_per_z
     icon_frame_tag = 'map_icon_frame'
     banner_frame_tag = 'map_banner_frame'
-    banner_label = TextDisplay('Banner icons',
+    banner_label = TextDisplay('Banner Icons',
                                {'background': 0, 'shadow_radius': 0}).scale(0.2).tag('map_label', 'map_banner_label')
     set_map_icon = room.function('set_map_icons', home=False).add(
         data().modify(e().tag(icon_frame_tag).limit(1), 'Item.tag.Decorations').set().value(list(icons.values())))
@@ -62,16 +83,16 @@ def room():
 
         setblock(r(8, 2, 2), 'cartography_table'),
 
-        execute().at(e().tag(banner_frame_tag)).run(banner_label.summon(r(-0.04, 0.2, -0.11), facing=WEST)),
+        execute().at(e().tag(banner_frame_tag)).run(banner_label.summon(r(-0.04, 0.17, -0.12), facing=WEST)),
     )
     for i, (k, v) in enumerate(icons.items()):
         label = TextDisplay(k, {'background': 0, 'shadow_radius': 0}).scale(0.1).tag('map_label', f'map_label_{i}')
-        y = v['z'] / 128.0 + 0.05
+        y = v['z'] / -128.0 + 0.05
         z = v['x'] / 128.0 - 1
         room_init.add(execute().at(e().tag(icon_frame_tag)).run(label.summon(r(-0.04, y, z), facing=WEST)))
     label = TextDisplay('Frame',
                         {'background': 0, 'shadow_radius': 0}).scale(0.1).tag('map_label', f'map_label_{len(icons)}')
-    room_init.add(execute().at(e().tag(icon_frame_tag)).run(label.summon(r(-0.04, 0, -0.42), facing=WEST)))
+    room_init.add(execute().at(e().tag(icon_frame_tag)).run(label.summon(r(-0.04, 0.035, -0.47), facing=WEST)))
 
     map_chest_pos = r(0, -5, 1)
     room.function('map_chest_init').add(
