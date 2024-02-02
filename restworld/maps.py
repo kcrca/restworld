@@ -34,7 +34,7 @@ def room():
         'Plains Village': {'type': 28},
         'Savannah Village': {'type': 29},
         'Snowy Village': {'type': 30},
-        'Tiaga Village': {'type': 31},
+        'Taiga Village': {'type': 31},
         'Jungle Pyramid': {'type': 32},
         'Swamp Hut': {'type': 33},
     }
