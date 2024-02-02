@@ -2,13 +2,12 @@ from __future__ import annotations
 
 from pynecraft import commands
 from pynecraft.base import EAST, NORTH, Nbt, WEST, r
-from pynecraft.commands import BOSSBAR_COLORS, BOSSBAR_STYLES, Block, CREATIVE, Entity, LEVELS, SURVIVAL, a, bossbar, \
-    clone, data, e, execute, fill, function, gamemode, item, kill, p, setblock, summon, effect, schedule, \
-    REPLACE
+from pynecraft.commands import BOSSBAR_COLORS, BOSSBAR_STYLES, Block, CREATIVE, Entity, LEVELS, REPLACE, SURVIVAL, a, \
+    bossbar, clone, data, e, effect, execute, fill, function, gamemode, item, kill, p, schedule, setblock, summon
 from pynecraft.info import must_give_items, operator_menu
-from pynecraft.simpler import Item, ItemFrame, WallSign, Sign
+from pynecraft.simpler import Item, ItemFrame, Sign, WallSign
 from restworld.rooms import Room, label
-from restworld.world import fast_clock, main_clock, restworld, slow_clock, kill_em
+from restworld.world import fast_clock, kill_em, main_clock, restworld, slow_clock
 
 
 def room():
@@ -191,6 +190,7 @@ def room():
     room.function('trader_init').add(
         placer.summon('villager'),
         WallSign(()).place(r(0, 2, -1), NORTH),
+        WallSign(('To see villager', 'GUI mid-trade,', 'offer to', 'buy something')).place(r(1, 2, -1), NORTH),
         function('restworld:gui/trader_cur'))
 
     room.function('cookers_init').add(
@@ -235,11 +235,11 @@ def room():
         level_x += threshold
     xp += ((5, 250, None),)
     trades = (
-        ('carrot', 6, 'iron_hoe', 1, 'emerald', 2, 0),
-        ('emerald', 1, 'air', 20, 'bread', 6, 1001),
+        ('carrot', 6, 'iron_hoe', 1, 'emerald', 1, 1001),
+        ('emerald', 1, 'air', 0, 'bread', 1, 2),
         ('pumpkin', 6, 'air', 1, 'emerald', 1, 0),
-        ('emerald', 1, 'air', 1, 'pumpkin_pie', 1, 0),
-        ('melon', 4, 'air', 1, 'emerald', 1, 1001),
+        ('emerald', 1, 'air', 1, 'pumpkin_pie', 1, 1001),
+        ('melon', 4, 'air', 1, 'emerald', 1, 0),
         ('emerald', 1, 'cocoa_beans', 1, 'cookie', 18, 0),
         ('emerald', 1, 'air', 1, 'cake', 1, 0),
         ('emerald', 1, 'air', 1, 'suspicious_stew', 1, 0),
