@@ -83,16 +83,13 @@ def room():
         execute().if_().score(toggle_bossbar).matches(0).run(function(bb_off)),
     )
 
-    bb_color_init = room.function('bossbar_color_init', home=False).add(
-        label(r(1, 2, 1), 'Color'), WallSign((None, 'Color:', BOSSBAR_COLORS[0].title())).place(r(0, 2, 1), EAST))
-    bb_style_init = room.function('bossbar_style_init', home=False).add(
-        label(r(1, 2, 0), 'Style'), WallSign((None, 'Style:', BOSSBAR_STYLES[0])).place(r(0, 2, 0, ), EAST))
-    bb_value_init = room.function('bossbar_value_init', home=False).add(
-        label(r(1, 2, -1), 'Value'), WallSign((None, 'Value:', str(50))).place(r(0, 2, -1), EAST))
+    bb_color_init = room.function('bossbar_color_init', home=False).add(label(r(1, 2, 1), 'Color'))
+    bb_style_init = room.function('bossbar_style_init', home=False).add(label(r(1, 2, 0), 'Style'))
+    bb_value_init = room.function('bossbar_value_init', home=False).add(label(r(1, 2, -1), 'Value'))
 
     def bossbar_color_loop(step):
         yield bossbar().set('restworld:bossbar').color(step.elem.lower())
-        yield Sign.change(r(0, 2, 1), (None, None, step.elem.title()))
+        yield Sign.change(r(0, 2, 0), (f'Color: {step.elem.title()}',))
 
     def bossbar_style_loop(step):
         yield bossbar().set('restworld:bossbar').style(step.elem)
@@ -100,13 +97,15 @@ def room():
 
     def bossbar_value_loop(step):
         yield bossbar().set('restworld:bossbar').value(step.elem)
-        yield Sign.change(r(0, 2, -1), (None, None, f'{step.elem}'))
+        yield Sign.change(r(0, 2, 0), (None, None, None, f'Value: {step.elem}'))
 
     bb_color = room.loop('bossbar_color', home=False).loop(bossbar_color_loop, BOSSBAR_COLORS)
     bb_style = room.loop('bossbar_style', home=False).loop(bossbar_style_loop, BOSSBAR_STYLES)
     bb_value = room.loop('bossbar_value', home=False).loop(bossbar_value_loop, (50, 75, 100, 0, 25))
 
     room.function('bossbar_init').add(
+        WallSign((f'Color: {BOSSBAR_COLORS[0].title()}', 'Style:', BOSSBAR_STYLES[0], 'Value: 50')).place(
+            r(2, 2, 0), EAST),
         bossbar().add('restworld:bossbar', 'Ornamental Stud'),
         bossbar().set('restworld:bossbar').players(a()),
         function(bb_on),
