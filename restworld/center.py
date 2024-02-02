@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from pynecraft.base import EAST, NORTH, SOUTH, WEST, r
-from pynecraft.commands import Entity, Score, clone, e, execute, fill, kill, scoreboard, summon, tag, JsonText
+from pynecraft.commands import Entity, JsonText, Score, clone, e, execute, fill, kill, scoreboard, summon, tag
 from pynecraft.info import Horse
 from pynecraft.simpler import WallSign
 from restworld.materials import armor_for
@@ -83,6 +83,7 @@ def room():
         summon(Entity('llama', silent).tag('mob_display'), r(6, 2.5, 0), all),
         summon(Entity('mooshroom', silent).tag('mob_display'), r(6, 2.5, 0), all),
         summon(Entity('pig', silent).tag('mob_display'), r(6, 2.5, 0), all),
+        summon(Entity('armadillo', silent).tag('mob_display'), r(6, 2.5, 0), all),
 
         trim_stand.summon(r(10.51, 2, 0), facing=NORTH),
 
