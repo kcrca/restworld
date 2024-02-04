@@ -6,14 +6,14 @@ from copy import deepcopy
 from enum import Enum
 from typing import Callable, Iterable, Tuple
 
-from pynecraft.base import FacingDef, Nbt, ROTATION_180, ROTATION_270, ROTATION_90, UP, r, rotate_facing, to_name, \
-    ORANGE, BLUE
-from pynecraft.commands import Block, BlockDef, CLEAR, Command, Commands, Entity, EntityDef, JsonText, NEAREST, \
-    Position, Score, SignMessages, a, comment, e, execute, function, as_block, as_entity, as_facing, as_score, \
-    kill, p, schedule, scoreboard, setblock, summon, tag, tellraw, tp, weather
+from pynecraft.base import BLUE, FacingDef, Nbt, ORANGE, ROTATION_180, ROTATION_270, ROTATION_90, UP, r, rotate_facing, \
+    to_name
+from pynecraft.commands import Block, BlockDef, CLEAR, Command, Commands, Entity, EntityDef, INT, JsonText, MINUS, \
+    NEAREST, Position, RESULT, Score, SignMessages, a, as_block, as_entity, as_facing, as_score, comment, data, e, \
+    execute, function, kill, p, schedule, scoreboard, setblock, summon, tag, tellraw, tp, weather
 from pynecraft.enums import ScoreCriteria
 from pynecraft.function import DataPack, Function, FunctionSet, LATEST_PACK_VERSION, Loop
-from pynecraft.simpler import WallSign, TextDisplay
+from pynecraft.simpler import TextDisplay, WallSign
 
 
 def named_frame_item(block: BlockDef = None, name=None, damage=None) -> Nbt:
@@ -150,6 +150,25 @@ class Room(FunctionSet):
         self.function('_enter', exists_ok=True).add(
             execute().positioned(r(1, -1, 1)).run(function(player_home.full_name)))
         self.function('_exit', exists_ok=True).add(kill(e().tag(f'{self.name}_player_home')))
+        self.function(f'{self.name}_room_end')
+        dx = self.score('dx')
+        dz = self.score('dz')
+        dx_beg = self.score('dx_beg')
+        dz_beg = self.score('dz_beg')
+        dx.set(0)
+        store = f'{self.pack.name}:{self.name}_pos'
+        self.function(f'{self.name}_room_beg_init').add(
+            dx.set(data().get(e().tag(f'{self.name}_room_end_home').limit(1), 'Pos[0]')),
+            dz.set(data().get(e().tag(f'{self.name}_room_end_home').limit(1), 'Pos[2]')),
+            dx_beg.set(data().get(e().tag(f'{self.name}_room_beg_home').limit(1), 'Pos[0]')),
+            dz_beg.set(data().get(e().tag(f'{self.name}_room_beg_home').limit(1), 'Pos[2]')),
+            dx.operation(MINUS, dx_beg),
+            dz.operation(MINUS, dz_beg),
+            execute().store(RESULT).storage(store, 'dx', INT).run(dx.get()),
+            execute().store(RESULT).storage(store, 'dz', INT).run(dz.get()),
+            data().modify(store, 'tag').set().value(f'{self.name}_room_beg_home'),
+            function('restworld:global/room_bounds').with_().storage(store),
+        )
 
     def _room_setup(self, facing, text, room_name):
         text = _to_list(text)

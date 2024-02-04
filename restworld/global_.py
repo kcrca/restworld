@@ -2,10 +2,11 @@ from __future__ import annotations
 
 import copy
 
-from pynecraft.base import EQ, GAMETIME, OVERWORLD, THE_END, THE_NETHER, r, TimeSpec, NORTH, SOUTH, EAST, WEST
-from pynecraft.commands import MOD, MOVE, RAIN, RESULT, clone, data, e, execute, fill, \
-    function, gamerule, kill, p, scoreboard, setblock, tag, teleport, time, tp, weather, FORCE, Score, schedule, \
-    REPLACE, s, MINUS
+from pynecraft.base import Arg, EAST, EQ, GAMETIME, NORTH, OVERWORLD, SOUTH, THE_END, THE_NETHER, TimeSpec, WEST, r
+from pynecraft.commands import FORCE, MINUS, MOD, MOVE, RAIN, REPLACE, RESULT, Score, clone, data, e, \
+    execute, \
+    fill, \
+    function, gamerule, kill, p, return_, s, schedule, scoreboard, setblock, tag, teleport, time, tp, weather
 from pynecraft.enums import ScoreCriteria
 from pynecraft.function import Function
 from pynecraft.simpler import VILLAGER_PROFESSIONS, WallSign
@@ -152,6 +153,20 @@ def room():
 
     for dir in (NORTH, SOUTH, EAST, WEST):
         clock_sign(dir)
+
+    stone_dx = room.score('stone_dx')
+    stone_dz = room.score('stone_dz')
+    room.function('room_bounds', home=False).add(
+        execute().at(e().tag(Arg('tag'))).run(
+            data().modify(r(-1, 0, -1), 'Command').set().value(
+                str(execute().positioned(r(0, -2, 0)).as_(p().volume((Arg('dx'), 15, Arg('dz'))).limit(1)).run(
+                    return_(0)))[1:]
+            ),
+        ),
+        # debug stuff commented out
+        # execute().at(e().tag(Arg('tag'))).positioned(r(-1, 0, -1)).run(setblock(r(0, 10, 0), 'stone')),
+        # execute().at(e().tag(Arg('tag'))).positioned(r(0, 0, 0)).run(setblock(r(Arg('dx'), 10, Arg('dz')), 'stone')),
+      )
 
     # The death functions
     death_home = room.home_func('death')
