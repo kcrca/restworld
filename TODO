@@ -1,3 +1,1 @@
 maybe keep all the areas loaded so room specific tp works
-
-get 'room_bounds' global function to set all the surrounding commmand blocks' commands correctly (using the room name)

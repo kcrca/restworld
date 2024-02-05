@@ -172,7 +172,6 @@ class Room(FunctionSet):
             execute().store(RESULT).storage(store, 'dx', INT).run(dx.get()),
             execute().store(RESULT).storage(store, 'dz', INT).run(dz.get()),
             data().modify(store, 'room').set().value(f'{self.name}'),
-            data().modify(store, 'tag').set().value(f'{self.name}_room_beg_home'),
             execute().at(e().tag(f'{self.name}_room_beg_home')).run(function('restworld:global/room_bounds').with_().storage(store)),
         )
 
