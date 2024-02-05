@@ -4,8 +4,8 @@ import sys
 from datetime import date
 
 from pynecraft.base import DARK_GREEN, DARK_PURPLE, r
-from pynecraft.commands import Commands, Entity, JsonText, data, e, execute, fill, function, give, p, tp, clear, kill, \
-    gamemode, CREATIVE, scoreboard, SIDEBAR
+from pynecraft.commands import CREATIVE, Commands, Entity, JsonText, SIDEBAR, clear, data, e, execute, fill, function, \
+    gamemode, give, kill, p, scoreboard, tp
 from pynecraft.function import Function, FunctionSet
 from pynecraft.simpler import Book, Sign, TextDisplay
 from restworld.rooms import Clock, Room, RoomPack

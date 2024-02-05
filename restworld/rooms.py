@@ -6,8 +6,7 @@ from copy import deepcopy
 from enum import Enum
 from typing import Callable, Iterable, Tuple
 
-from pynecraft.base import BLUE, FacingDef, Nbt, ORANGE, ROTATION_180, ROTATION_270, ROTATION_90, UP, r, \
-    rotate_facing, \
+from pynecraft.base import BLUE, FacingDef, Nbt, ORANGE, ROTATION_180, ROTATION_270, ROTATION_90, UP, r, rotate_facing, \
     to_name
 from pynecraft.commands import Block, BlockDef, CLEAR, Command, Commands, Entity, EntityDef, INT, JsonText, MINUS, \
     NEAREST, Position, RESULT, Score, SignMessages, a, as_block, as_entity, as_facing, as_score, comment, data, e, \
@@ -172,7 +171,8 @@ class Room(FunctionSet):
             execute().store(RESULT).storage(store, 'dx', INT).run(dx.get()),
             execute().store(RESULT).storage(store, 'dz', INT).run(dz.get()),
             data().modify(store, 'room').set().value(f'{self.name}'),
-            execute().at(e().tag(f'{self.name}_room_beg_home')).run(function('restworld:global/room_bounds').with_().storage(store)),
+            execute().at(e().tag(f'{self.name}_room_beg_home')).run(
+                function('restworld:global/room_bounds').with_().storage(store)),
         )
 
     def _room_setup(self, facing, text, room_name):

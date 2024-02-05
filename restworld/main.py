@@ -6,8 +6,8 @@ from pathlib import Path
 
 from pynecraft.simpler import Sign
 from restworld import arena, banners, biomes, blocks, center, connect, diy, effects, enders, font, global_, gui, hud, \
-    maps, materials, mobs, models, multimob, nether, paintings, particles, photo, plants, redstone, save, tags, the_end, \
-    time, wither, tester
+    maps, materials, mobs, models, multimob, nether, paintings, particles, photo, plants, redstone, save, tags, tester, \
+    the_end, time, wither
 from restworld.world import restworld
 
 

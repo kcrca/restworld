@@ -4,8 +4,8 @@ import re
 
 from pynecraft import info
 from pynecraft.base import EAST, EQ, NE, NORTH, NW, Nbt, NbtDef, SOUTH, WEST, as_facing, r, to_id
-from pynecraft.commands import Block, BlockDef, Entity, MOD, PLUS, RESULT, data, e, execute, fill, fillbiome, function, \
-    as_block, item, kill, s, scoreboard, setblock, summon, tag, random, LONG
+from pynecraft.commands import Block, BlockDef, Entity, LONG, MOD, PLUS, RESULT, as_block, data, e, execute, fill, \
+    fillbiome, function, item, kill, random, s, scoreboard, setblock, summon, tag
 from pynecraft.enums import BiomeId
 from pynecraft.function import BLOCKS
 from pynecraft.info import colors, stems, trim_materials, trim_patterns
@@ -761,7 +761,7 @@ def trim_functions(room):
             sign_num += 1
         change_cleanup.add(execute().if_().score(change).matches(i).at(e().tag('trim_change_home')).run(
             WallSign().messages((None, 'Change', f'{cat.name.title()}:'),
-                                commands=(function(change_menu))).place(r(0, 2, 0), facing),
+                                commands=(function(change_menu),)).place(r(0, 2, 0), facing),
             tag(e().tag('trim_loop_home')).add(f'trim_{cat.name}_home')))
 
     trim_sum = room.score('trim_sum')

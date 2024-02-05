@@ -2,12 +2,12 @@ import re
 from collections import defaultdict
 
 from pynecraft import info
-from pynecraft.base import EAST, EQ, NORTH, d, r, to_name, as_facing
+from pynecraft.base import EAST, EQ, NORTH, as_facing, d, r, to_name
 from pynecraft.commands import REPLACE, comment, data, e, execute, fill, function, item, kill, p, schedule, setblock, \
     summon, tag
 from pynecraft.enums import ValueEnum
 from pynecraft.info import block_items
-from pynecraft.simpler import Item, ItemFrame, WallSign, Sign
+from pynecraft.simpler import Item, ItemFrame, Sign, WallSign
 from restworld import global_
 from restworld.rooms import ActionDesc, SignedRoom, Wall, label, named_frame_item, span
 from restworld.world import fast_clock, restworld

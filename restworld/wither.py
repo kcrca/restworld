@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from pynecraft.base import EAST, as_facing, r, NORTH
+from pynecraft.base import EAST, NORTH, as_facing, r
 from pynecraft.commands import data, e, execute, kill, s, summon
 from pynecraft.simpler import WallSign
 from restworld.rooms import Room

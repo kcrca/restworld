@@ -1,4 +1,4 @@
-from pynecraft.base import SOUTH, NORTH, r, UP
+from pynecraft.base import NORTH, SOUTH, UP, r
 from pynecraft.commands import say
 from pynecraft.menus import Menu, Submenu
 from restworld.rooms import Room

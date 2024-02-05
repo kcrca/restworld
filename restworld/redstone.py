@@ -230,7 +230,7 @@ def light_detector_funcs(room):
     room.function('daylight_detector_reset').add(time().set(NOON), execute().at(e().tag('daylight_detector_home')).run(
         fill(r(3, 8, 3), r(-3, 8, -3), 'air')), daylight_detector.set(0), kill(e().tag('daylight_detector_home')))
     room.function('daylight_detector_setup').add(daylight_inv.set(0), execute().if_().block(r(0, 2, 1), (
-    'daylight_detector', {'inverted': True})).run(daylight_inv.set(1)),
+        'daylight_detector', {'inverted': True})).run(daylight_inv.set(1)),
                                                  execute().if_().score(daylight_inv).matches(0).run(
                                                      Sign.change(r(0, 2, 0), (None, 'Daylight Detector', ''))),
                                                  execute().if_().score(daylight_inv).matches(1).run(
@@ -279,7 +279,7 @@ def pressure_plate_funcs(room):
     plate_heavy = room.score('plate_heavy')
     pressure_plate = room.score('pressure_plate')
     room.function('pressure_plate_add', home=False).add(one_item(), (
-    execute().if_().score(plate_heavy).matches((1, None)).run(one_item()) for _ in range(0, 9)))
+        execute().if_().score(plate_heavy).matches((1, None)).run(one_item()) for _ in range(0, 9)))
     room.function('pressure_plate_init').add(label(r(2, 2, 0), 'Pressure Plate Type'))
 
     room.function('pressure_plate_cur').add(kill(e().tag('plate_items')),

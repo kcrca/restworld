@@ -2,11 +2,10 @@ from __future__ import annotations
 
 import sys
 
-from pynecraft.base import EAST, GT, LT, Nbt, r, to_id, Arg
-from pynecraft.commands import Entity, RANDOM, Score, a, data, e, execute, fill, function, kill, setblock, summon, \
-    tag
-from pynecraft.function import Loop, Function
-from pynecraft.simpler import Item, Region, WallSign, Sign
+from pynecraft.base import Arg, EAST, GT, LT, Nbt, r, to_id
+from pynecraft.commands import Entity, RANDOM, Score, a, data, e, execute, fill, function, kill, setblock, summon, tag
+from pynecraft.function import Function, Loop
+from pynecraft.simpler import Item, Region, Sign, WallSign
 from restworld.rooms import Room, label
 from restworld.world import kill_em, main_clock, marker_tmpl, restworld
 

@@ -1,12 +1,11 @@
 from __future__ import annotations
 
 from pynecraft.base import DAYTIME, EAST, NOON, NORTH, WEST, as_facing, r
-from pynecraft.commands import RESULT, data, e, execute, fill, function, kill, setblock, summon, time, worldborder, \
-    tag
+from pynecraft.commands import RESULT, data, e, execute, fill, function, kill, setblock, summon, tag, time, worldborder
 from pynecraft.info import moon_phases
 from pynecraft.simpler import Item, WallSign
 from restworld.rooms import Room, label
-from restworld.world import restworld, main_clock
+from restworld.world import main_clock, restworld
 
 
 def room():
@@ -25,7 +24,7 @@ def room():
         yield setblock(r(1, 8, z), 'emerald_block')
         yield data().modify(r(0, 8, z), 'front_text.has_glowing_text').set().value(True)
 
-    def moon_sign(x, y, z, when, name):
+    def moon_sign(x, y, z, name):
         value = z
         if z > 3:
             z += 1

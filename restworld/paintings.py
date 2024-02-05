@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pynecraft.base import NORTH, r
 from pynecraft.commands import e, fill, kill, summon
-from pynecraft.simpler import WallSign, Painting
+from pynecraft.simpler import Painting, WallSign
 from restworld.rooms import Room
 from restworld.world import restworld
 

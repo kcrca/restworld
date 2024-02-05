@@ -4,10 +4,8 @@ import copy
 
 from pynecraft.base import Arg, EAST, EQ, GAMETIME, NORTH, OVERWORLD, Position, SOUTH, THE_END, THE_NETHER, TimeSpec, \
     WEST, r
-from pynecraft.commands import Block, FORCE, MINUS, MOD, MOVE, RAIN, REPLACE, RESULT, Score, clone, data, e, \
-    execute, \
-    fill, \
-    function, gamerule, kill, p, return_, s, schedule, scoreboard, setblock, tag, teleport, time, tp, weather
+from pynecraft.commands import Block, FORCE, MINUS, MOD, MOVE, RAIN, REPLACE, RESULT, Score, clone, data, e, execute, \
+    fill, function, gamerule, kill, p, return_, s, schedule, scoreboard, setblock, tag, teleport, time, tp, weather
 from pynecraft.enums import ScoreCriteria
 from pynecraft.function import Function
 from pynecraft.simpler import VILLAGER_PROFESSIONS, WallSign
@@ -171,8 +169,8 @@ def room():
                                 )),
         setblock(r(0, -1, -1), ('red_sandstone_slab', {'type': 'top'})),
         setblock(r(0, 0, -1), ('comparator', {'facing': WEST})),
-        func(r(1, 0, -1), '_enter',  SOUTH),
-        func(r(1, 0, 0), '_tick',  SOUTH, repeat=True),
+        func(r(1, 0, -1), '_enter', SOUTH),
+        func(r(1, 0, 0), '_tick', SOUTH, repeat=True),
         setblock(r(2, 0, -1), ('redstone_wall_torch', {'facing': EAST})),
         func(r(3, 0, -1), '_exit', SOUTH),
         setblock(r(-1, -1, -1), 'air'),
