@@ -6,11 +6,12 @@ from copy import deepcopy
 from enum import Enum
 from typing import Callable, Iterable, Tuple
 
-from pynecraft.base import BLUE, FacingDef, Nbt, ORANGE, ROTATION_180, ROTATION_270, ROTATION_90, UP, r, rotate_facing, \
+from pynecraft.base import BLUE, FacingDef, Nbt, ORANGE, ROTATION_180, ROTATION_270, ROTATION_90, UP, r, \
+    rotate_facing, \
     to_name
 from pynecraft.commands import Block, BlockDef, CLEAR, Command, Commands, Entity, EntityDef, INT, JsonText, MINUS, \
     NEAREST, Position, RESULT, Score, SignMessages, a, as_block, as_entity, as_facing, as_score, comment, data, e, \
-    execute, function, kill, p, schedule, scoreboard, setblock, summon, tag, tellraw, tp, weather
+    execute, function, kill, p, say, schedule, scoreboard, setblock, summon, tag, tellraw, tp, weather
 from pynecraft.enums import ScoreCriteria
 from pynecraft.function import DataPack, Function, FunctionSet, LATEST_PACK_VERSION, Loop
 from pynecraft.simpler import TextDisplay, WallSign
@@ -157,17 +158,22 @@ class Room(FunctionSet):
         dz_beg = self.score('dz_beg')
         dx.set(0)
         store = f'{self.pack.name}:{self.name}_pos'
+        beg_tag = e().tag(f'{self.name}_room_beg_home').limit(1)
+        end_tag = e().tag(f'{self.name}_room_end_home').limit(1)
         self.function(f'{self.name}_room_beg_init').add(
-            dx.set(data().get(e().tag(f'{self.name}_room_end_home').limit(1), 'Pos[0]')),
-            dz.set(data().get(e().tag(f'{self.name}_room_end_home').limit(1), 'Pos[2]')),
-            dx_beg.set(data().get(e().tag(f'{self.name}_room_beg_home').limit(1), 'Pos[0]')),
-            dz_beg.set(data().get(e().tag(f'{self.name}_room_beg_home').limit(1), 'Pos[2]')),
+            execute().unless().entity(beg_tag).run(say(f'WARNING: no entity {self.name} beg')),
+            dx.set(data().get(end_tag, 'Pos[0]')),
+            dz.set(data().get(end_tag, 'Pos[2]')),
+            execute().unless().entity(end_tag).run(say(f'WARNING: no entity {self.name} end')),
+            dx_beg.set(data().get(beg_tag, 'Pos[0]')),
+            dz_beg.set(data().get(beg_tag, 'Pos[2]')),
             dx.operation(MINUS, dx_beg),
             dz.operation(MINUS, dz_beg),
             execute().store(RESULT).storage(store, 'dx', INT).run(dx.get()),
             execute().store(RESULT).storage(store, 'dz', INT).run(dz.get()),
+            data().modify(store, 'room').set().value(f'{self.name}'),
             data().modify(store, 'tag').set().value(f'{self.name}_room_beg_home'),
-            function('restworld:global/room_bounds').with_().storage(store),
+            execute().at(e().tag(f'{self.name}_room_beg_home')).run(function('restworld:global/room_bounds').with_().storage(store)),
         )
 
     def _room_setup(self, facing, text, room_name):

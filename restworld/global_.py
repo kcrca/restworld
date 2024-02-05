@@ -2,8 +2,9 @@ from __future__ import annotations
 
 import copy
 
-from pynecraft.base import Arg, EAST, EQ, GAMETIME, NORTH, OVERWORLD, SOUTH, THE_END, THE_NETHER, TimeSpec, WEST, r
-from pynecraft.commands import FORCE, MINUS, MOD, MOVE, RAIN, REPLACE, RESULT, Score, clone, data, e, \
+from pynecraft.base import Arg, EAST, EQ, GAMETIME, NORTH, OVERWORLD, Position, SOUTH, THE_END, THE_NETHER, TimeSpec, \
+    WEST, r
+from pynecraft.commands import Block, FORCE, MINUS, MOD, MOVE, RAIN, REPLACE, RESULT, Score, clone, data, e, \
     execute, \
     fill, \
     function, gamerule, kill, p, return_, s, schedule, scoreboard, setblock, tag, teleport, time, tp, weather
@@ -154,19 +155,37 @@ def room():
     for dir in (NORTH, SOUTH, EAST, WEST):
         clock_sign(dir)
 
-    stone_dx = room.score('stone_dx')
-    stone_dz = room.score('stone_dz')
+    def func(pos: Position, which: str, dir: str, repeat=False) -> str:
+        yield setblock(pos, 'air')
+        block = 'Repeating Command Block' if repeat else 'Command Block'
+        yield setblock(pos, Block(block, {'facing': dir},
+                                  {'Command': f'function restworld:{Arg("room")}/{which}'}))
+
     room.function('room_bounds', home=False).add(
-        execute().at(e().tag(Arg('tag'))).run(
-            data().modify(r(-1, 0, -1), 'Command').set().value(
-                str(execute().positioned(r(0, -2, 0)).as_(p().volume((Arg('dx'), 15, Arg('dz'))).limit(1)).run(
-                    return_(0)))[1:]
-            ),
-        ),
+        # data().modify(r(-1, 0, -1), 'Command').set().value(
+        #     str(execute().positioned(r(0, -2, 0)).as_(p().volume((Arg('dx'), 15, Arg('dz'))).limit(1)).run(return_(0)))[
+        #     1:]
+        # ),
+        func(r(-1, 0, 0), '_init', EAST),
+        setblock(r(-1, -1, 0), 'pumpkin'),
+        setblock(r(-1, -2, -1), 'glowstone'),
+        setblock(r(-1, 0, -1), 'air'),
+        setblock(r(-1, 0, -1), ('repeating_command_block', {'facing': EAST}, {'auto': True, 'Command': str(
+            execute().positioned(r(0, -2, 0)).as_(p().volume((Arg('dx'), 15, Arg('dz'))).limit(1)).run(return_(0)))[1:]}
+                                )),
+        setblock(r(0, -1, -1), ('red_sandstone_slab', {'type': 'top'})),
+        setblock(r(0, 0, -1), ('comparator', {'facing': WEST})),
+        func(r(1, 0, -1), '_enter',  SOUTH),
+        func(r(1, 0, 0), '_tick',  SOUTH, repeat=True),
+        setblock(r(2, 0, -1), ('redstone_wall_torch', {'facing': EAST})),
+        func(r(3, 0, -1), '_exit', SOUTH),
+        setblock(r(-1, -1, -1), 'air'),
+        setblock(r(3, 0, 0), 'glowstone'),
+
         # debug stuff commented out
-        # execute().at(e().tag(Arg('tag'))).positioned(r(-1, 0, -1)).run(setblock(r(0, 10, 0), 'stone')),
-        # execute().at(e().tag(Arg('tag'))).positioned(r(0, 0, 0)).run(setblock(r(Arg('dx'), 10, Arg('dz')), 'stone')),
-      )
+        # execute().positioned(r(-1, 0, -1)).run(setblock(r(0, 10, 0), 'stone')),
+        # setblock(r(Arg('dx'), 10, Arg('dz')), 'stone'),
+    )
 
     # The death functions
     death_home = room.home_func('death')
