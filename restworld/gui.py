@@ -59,7 +59,10 @@ def room():
         effect().clear(p()))
     room.function('beacon_enter').add(function(beacon_start))
     room.function('beacon_exit').add(function(beacon_stop))
-    room.function('beacon_init').add(at(WallSign((None, 'Pyramid Height: 0')).place(r(-1, 6, 0), WEST)))
+    room.function('beacon_init').add(
+        at(WallSign((None, 'Pyramid Height: 0')).place(r(-1, 6, 0), WEST)),
+        label(r(-3, 2, -5), 'Beacon'),
+    )
 
     bossbar_which = room.score('bossbar_which')
     room.function('bossbar_exit').add(bossbar().set('restworld:bossbar').visible(False))

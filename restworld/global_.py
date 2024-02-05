@@ -162,10 +162,6 @@ def room():
                                   {'Command': f'function restworld:{Arg("room")}/{which}'}))
 
     room.function('room_bounds', home=False).add(
-        # data().modify(r(-1, 0, -1), 'Command').set().value(
-        #     str(execute().positioned(r(0, -2, 0)).as_(p().volume((Arg('dx'), 15, Arg('dz'))).limit(1)).run(return_(0)))[
-        #     1:]
-        # ),
         func(r(-1, 0, 0), '_init', EAST),
         setblock(r(-1, -1, 0), 'pumpkin'),
         setblock(r(-1, -2, -1), 'glowstone'),
