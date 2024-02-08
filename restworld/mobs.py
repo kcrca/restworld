@@ -5,7 +5,7 @@ import copy
 from pynecraft import commands
 from pynecraft.base import EAST, EQ, NORTH, SOUTH, WEST, r, to_id
 from pynecraft.commands import Block, COLORS, Entity, FORCE, LONG, MOD, RESULT, Score, as_facing, clone, data, e, \
-    execute, function, item, kill, ride, s, scoreboard, setblock, summon, tag, tp
+    execute, function, item, kill, player, ride, s, scoreboard, setblock, summon, tag, tp
 from pynecraft.enums import ScoreCriteria
 from pynecraft.info import axolotls, colors, horses, music_discs, tropical_fish
 from pynecraft.simpler import Item, PLAINS, Sign, VILLAGER_BIOMES, VILLAGER_PROFESSIONS, Villager, WallSign
@@ -74,6 +74,7 @@ def friendlies(room):
                                               tags=('collared',)),
                                      label(r(1, 2, 2), 'Sit'),
                                      label(r(1, 2, 0), 'Armor'))
+    room.function('canine_enter').add(data().modify(e().tag('wolf', 'collared').limit(1), 'Owner').set().from_(player(), 'UUID'))
 
     room.loop('canine', main_clock).loop(
         lambda step: execute().as_(e().tag('wolf')).run(data().merge(s(), {'AngerTime': step.elem})), (0, 1000000000))
@@ -186,7 +187,7 @@ def friendlies(room):
         data().merge(s(), {'Leash': {'X': -12, 'Y': 101, 'Z': 35}})))
     room.loop('llamas_carpets', main_clock).loop(
         lambda step: execute().as_(e().tag('llama').tag('!kid')).run(
-            data().merge(s(), {'DecorItem': {'id': step.elem.id + '_carpet', 'Count': 1}})), colors)
+            data().merge(s(), {'body_armor_item': {'id': step.elem.id + '_carpet', 'Count': 1}})), colors)
 
     room.function('llamas_init').add(placer(r(0, 2, 0), WEST, 0, 2).summon('llama'),
                                      placer(r(1, 3.5, -1), WEST, adults=True,
@@ -273,7 +274,7 @@ def friendlies(room):
         function('restworld:mobs/llamas_carpets_home')),
         execute().at(e().tag('llamas_carpets_home')).run(function('restworld:mobs/llamas_carpets_cur')))
     room.function('switch_carpets_off').add(
-        execute().as_(e().tag('llama')).run(data().merge(s(), {'DecorItem': {'id': 'white_carpet', 'Count': 0}})),
+        execute().as_(e().tag('llama')).run(data().merge(s(), {'body_armor_item': {'id': 'white_carpet', 'Count': 0}})),
         kill(e().tag('llamas_carpets_home')))
 
     room.function('trader_llama_init').add(placer(r(0, 2, -2), WEST, adults=True).summon('wandering_trader'),

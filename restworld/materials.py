@@ -226,8 +226,8 @@ def basic_functions(room):
             value, cmd = 0, lambda path: data().remove(s(), path)
 
         yield enchanter(value, 'enchantable', cmd('Item.tag'))
-        yield enchanter(value, 'armor_horse', cmd('ArmorItem.tag'))
-        yield enchanter(value, 'material_static', cmd('ArmorItem.tag'))
+        yield enchanter(value, 'armor_horse', cmd('body_armor_item.tag'))
+        yield enchanter(value, 'material_static', cmd('body_armor_item.tag'))
 
         for a in range(0, 4):
             yield enchanter(value, 'material_static', cmd('ArmorItems[%d].tag' % a))
@@ -245,7 +245,8 @@ def basic_functions(room):
             e().tag('basic_stand').limit(1), {
                 'CustomName': material.capitalize(),
                 'ArmorItems': [{'id': '%s_boots' % armor, 'Count': 1}, {'id': '%s_leggings' % armor, 'Count': 1},
-                               {'id': '%s_chestplate' % armor, 'Count': 1}, {'id': '%s_helmet' % armor, 'Count': 1}]})
+                                     {'id': '%s_chestplate' % armor, 'Count': 1},
+                                     {'id': '%s_helmet' % armor, 'Count': 1}]})
 
         yield fill(r(-3, 2, 2), r(-3, 5, 2), background.id)
         yield setblock(r(3, 2, 2), background.id)
@@ -267,7 +268,7 @@ def basic_functions(room):
                 room.mob_placer(r(4.5, 2, 0.5), NORTH, adults=True).summon(
                     'horse', nbt={'Variant': 1, 'Tame': True, 'Tags': ['armor_horse', 'material_static']}))
             yield data().merge(e().tag('armor_horse').limit(1).sort('nearest'), {
-                'ArmorItem': {'id': '%s_horse_armor' % armor, 'Count': 1}})
+                'body_armor_item': {'id': '%s_horse_armor' % armor, 'Count': 1}})
             yield data().merge(e().tag('armor_horse_frame').limit(1),
                                {'Item': {'id': '%s_horse_armor' % armor, 'Count': 1}, 'ItemRotation': 0})
             yield execute().if_().score(horse_saddle).matches(1).run(
@@ -304,7 +305,10 @@ def basic_functions(room):
             yield data().merge(e().tag('material_%d' % j).limit(1), {'HandItems': [{}, hands[j]]})
         yield data().merge(r(-2, 0, 1), {'name': f'restworld:material_{material}', 'mode': 'LOAD'})
 
-    room.loop('basic', main_clock).add(fill(r(2, 2, 2), r(-2, 5, 4), 'air'), kill_em(e().tag('material_thing'))).loop(
+    room.loop('basic', main_clock).add(
+        fill(r(2, 2, 2), r(-2, 5, 4), 'air'),
+        kill_em(e().tag('material_thing'))
+    ).loop(
         basic_loop, materials).add(enchant(True), enchant(False), execute().if_().score(turtle_helmet).matches(1).run(
         data().modify(e().tag('basic_stand').limit(1), 'ArmorItems[3].id').set().value('turtle_helmet')),
                                    execute().if_().score(turtle_helmet).matches(1).run(
@@ -671,7 +675,7 @@ def trim_functions(room):
 
         def _detect(self):
             for i, t in enumerate(self.types):
-                # The path is a.b.c, but we need the last element to be a.b{c:value}, and there is no rreplace, so...
+                # The path is a.b.c, but we need the last element to be a.b{c:value}, and there is no replace, so...
                 path = self._to_path(t)
                 sign = WallSign().messages((None, 'Keep', f'{self.name.title().replace("s", "")}:', t.title()))
                 yield execute().if_().data(e().tag(overall_tag).limit(1), path).run(sign.place(r(-1, 2, 0), facing))
@@ -791,7 +795,8 @@ def trim_functions(room):
         data().modify(s(), 'ArmorItems[2].tag.Trim').merge().from_(s(), 'ArmorItems[1].tag.Trim')))
 
     room.function('trim_turtle_on', home=False).add(
-        execute().as_(e().tag(overall_tag)).run(data().modify(s(), 'ArmorItems[3].id').set().value('turtle_helmet')))
+        execute().as_(e().tag(overall_tag)).run(
+            data().modify(s(), 'ArmorItems[3].id').set().value('turtle_helmet')))
     turtle_off = room.function('trim_turtle_off', home=False)
     for armor in info.armors:
         turtle_off.add(

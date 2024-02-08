@@ -769,17 +769,17 @@ def color_functions(room):
             yield kill_em(e().tag('colorings_horse'))
             yield kill_em(e().tag('colorings_dog'))
             yield kill_em(e().tag('colorings_cat'))
-            horse = Entity('horse', nbt=horse_nbt.merge({'ArmorItem': {'id': 'leather_horse_armor', 'Count': 1}}))
+            horse = Entity('horse', nbt=horse_nbt.merge({'body_armor_item': {'id': 'leather_horse_armor', 'Count': 1}}))
             yield horse.summon(r(0.7, 2, 4.4))
 
         yield data().merge(e().tag('colorings_armor_stand').limit(1), {
             'ArmorItems': [Item.nbt_for('leather_boots', nbt=leather_color),
-                           Item.nbt_for('leather_leggings', nbt=leather_color),
-                           Item.nbt_for('leather_chestplate', nbt=leather_color),
-                           Item.nbt_for('leather_helmet', nbt=leather_color)]})
+                                 Item.nbt_for('leather_leggings', nbt=leather_color),
+                                 Item.nbt_for('leather_chestplate', nbt=leather_color),
+                                 Item.nbt_for('leather_helmet', nbt=leather_color)]})
         yield data().merge(e().tag('colorings_horse').limit(1),
-                           {'ArmorItem': Item.nbt_for('leather_horse_armor', nbt=horse_leather_color)})
-        yield data().merge(e().tag('colorings_llama').limit(1), {'DecorItem': llama_decor})
+                           {'body_armor_item': Item.nbt_for('leather_horse_armor', nbt=horse_leather_color)})
+        yield data().merge(e().tag('colorings_llama').limit(1), {'body_armor_item': llama_decor})
         yield data().merge(e().tag('colorings_sheep').limit(1), sheep_nbt)
         yield data().merge(e().tag('colorings_cat').limit(1), {'CollarColor': color.num})
         yield data().merge(e().tag('colorings_dog').limit(1), {'CollarColor': color.num})
@@ -821,7 +821,7 @@ def color_functions(room):
     mob_nbt = {'Time': True, 'NoAI': True, 'Silent': True}
     horse_nbt = Nbt({
         'Variant': 5, 'Tags': ['colorings_horse', 'colorings_item', 'colorings_names'],
-        'ArmorItem': Item.nbt_for('leather_horse_armor'), 'Rotation': [-25, 0]}).merge(mob_nbt)
+        'body_armor_item': Item.nbt_for('leather_horse_armor'), 'Rotation': [-25, 0]}).merge(mob_nbt)
     dog_nbt = Nbt(
         {'Owner': 'dummy', 'Tags': ['colorings_dog', 'colorings_item'], 'Sitting': True,
          'Rotation': [-25, 0]}).merge(mob_nbt)
