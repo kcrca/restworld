@@ -4,9 +4,9 @@ import re
 
 from pynecraft import info
 from pynecraft.base import DOWN, EAST, NOON, SOUTH, UP, WEST, r
-from pynecraft.commands import Block, data, e, execute, fill, function, kill, say, setblock, summon, time
+from pynecraft.commands import Block, JsonText, data, e, execute, fill, function, kill, say, setblock, summon, time
 from pynecraft.info import instruments, stems
-from pynecraft.simpler import Item, Region, Sign, WallSign
+from pynecraft.simpler import Item, Region, Sign, TextDisplay, WallSign
 from restworld.rooms import Room, ensure, label
 from restworld.world import fast_clock, kill_em, main_clock, restworld
 
@@ -246,16 +246,29 @@ def note_block_funcs(room):
     instrument = room.score('instrument')
     note_powered = room.score('note_powered')
 
+    note_display = TextDisplay('A', {'billboard': 'fixed', 'Tags': []})
+    note_block_init = room.function('note_block_init').add(
+        instrument.set(0),
+        setblock(r(0, 2, 0), 'grass_block'),
+        room.mob_placer(r(0, 2.25, 0.51), facing=SOUTH, adults=True, tags='note_display').summon(note_display)
+    )
+
+    notes = (
+        'Low\\nF♯/G♭', 'Low\\nG', 'Low\\nG♯/A♭', 'Low\\nA', 'Low\\nA♯/B♭', 'Low\\nB', 'Low\\nC', 'Low\\nC♯/D♭',
+        'Low\\nD', 'Low\\nD♯/E♭', 'Low\\nE', 'Low\\nF', 'Mid\\nF♯/G♭', 'Mid\\nG', 'Mid\\nG♯/A♭', 'Mid\\nA',
+        'Mid\\nA♯/B♭', 'Mid\\nB', 'Mid\\nC', 'Mid\\nC♯/D♭', 'Mid\\nD', 'Mid\\nD♯/E♭', 'Mid\\nE', 'Mid\\nF',
+        'High\\nF♯/G♭')
+
     def note_block_loop(step):
         for i, inst in enumerate(instruments):
             yield execute().if_().score(instrument).matches(i).run(
-                setblock(r(0, 3, 0), ('note_block', {'note': step.elem, 'instrument': inst.id})))
+                setblock(r(0, 3, 0), ('note_block', {'note': step.i, 'instrument': inst.id})))
+            yield data().modify(e().tag('note_display').limit(1), 'text').set().value(JsonText.text(step.elem))
 
-    room.loop('note_block', fast_clock).loop(note_block_loop, range(0, 25)).add(
-        execute().if_().score(note_powered).matches(1).run(setblock(r(0, 3, -1), 'redstone_torch')),
-        execute().if_().score(note_powered).matches(1).run(setblock(r(0, 3, -1), 'air')))
+    room.loop('note_block', fast_clock).loop(note_block_loop, notes).add(
+        execute().if_().score(note_powered).matches(1).run(setblock(r(0, 3, -1), 'redstone_torch'),
+                                                           setblock(r(0, 3, -1), 'air')))
 
-    note_block_init = room.function('note_block_init').add(instrument.set(0), setblock(r(0, 2, 0), 'grass_block'))
     for i, instr in enumerate(instruments):
         row_len = len(instruments) / 2
         x = i % row_len
@@ -268,7 +281,7 @@ def note_block_funcs(room):
             (None, instr.name, f'({instr.exemplar.name})'),
             (instrument.set(i),
              execute().at(e().tag('note_block_home')).run(setblock(r(0, 2, 0), instr.exemplar)))
-        ).place(r(x, y, 1), SOUTH), label(r(0, 2, 1), 'Powered'))
+        ).place(r(x, y, 1), SOUTH), label(r(1, 2, 2), 'Powered'))
 
 
 def pressure_plate_funcs(room):
