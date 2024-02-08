@@ -4,9 +4,9 @@ import re
 
 from pynecraft import info
 from pynecraft.base import DOWN, EAST, NOON, SOUTH, UP, WEST, r
-from pynecraft.commands import Block, JsonText, data, e, execute, fill, function, kill, say, setblock, summon, time
+from pynecraft.commands import Block, data, e, execute, fill, function, kill, say, setblock, summon, time
 from pynecraft.info import instruments, stems
-from pynecraft.simpler import Item, Region, Sign, TextDisplay, WallSign
+from pynecraft.simpler import Item, Region, Sign, WallSign
 from restworld.rooms import Room, ensure, label
 from restworld.world import fast_clock, kill_em, main_clock, restworld
 
@@ -246,24 +246,24 @@ def note_block_funcs(room):
     instrument = room.score('instrument')
     note_powered = room.score('note_powered')
 
-    note_display = TextDisplay('A', {'billboard': 'fixed', 'Tags': []})
+    sign_pos = r(0, 2, 1)
+    note_display = WallSign((None, 'A'))
     note_block_init = room.function('note_block_init').add(
         instrument.set(0),
         setblock(r(0, 2, 0), 'grass_block'),
-        room.mob_placer(r(0, 2.25, 0.51), facing=SOUTH, adults=True, tags='note_display').summon(note_display)
+        note_display.place(sign_pos, SOUTH),
     )
 
     notes = (
-        'Low\\nF♯/G♭', 'Low\\nG', 'Low\\nG♯/A♭', 'Low\\nA', 'Low\\nA♯/B♭', 'Low\\nB', 'Low\\nC', 'Low\\nC♯/D♭',
-        'Low\\nD', 'Low\\nD♯/E♭', 'Low\\nE', 'Low\\nF', 'Mid\\nF♯/G♭', 'Mid\\nG', 'Mid\\nG♯/A♭', 'Mid\\nA',
-        'Mid\\nA♯/B♭', 'Mid\\nB', 'Mid\\nC', 'Mid\\nC♯/D♭', 'Mid\\nD', 'Mid\\nD♯/E♭', 'Mid\\nE', 'Mid\\nF',
-        'High\\nF♯/G♭')
+        'Low F♯/G♭', 'Low G', 'Low G♯/A♭', 'Low A', 'Low A♯/B♭', 'Low B', 'Low C', 'Low C♯/D♭', 'Low D', 'Low D♯/E♭',
+        'Low E', 'Low F', 'Mid F♯/G♭', 'Mid G', 'Mid G♯/A♭', 'Mid A', 'Mid A♯/B♭', 'Mid B', 'Mid C', 'Mid C♯/D♭',
+        'Mid D', 'Mid D♯/E♭', 'Mid E', 'Mid F', 'High F♯/G♭')
 
     def note_block_loop(step):
         for i, inst in enumerate(instruments):
             yield execute().if_().score(instrument).matches(i).run(
                 setblock(r(0, 3, 0), ('note_block', {'note': step.i, 'instrument': inst.id})))
-            yield data().modify(e().tag('note_display').limit(1), 'text').set().value(JsonText.text(step.elem))
+            yield Sign.change(sign_pos, (None, *step.elem.split(' ')))
 
     room.loop('note_block', fast_clock).loop(note_block_loop, notes).add(
         execute().if_().score(note_powered).matches(1).run(setblock(r(0, 3, -1), 'redstone_torch'),
