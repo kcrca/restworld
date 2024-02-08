@@ -41,7 +41,7 @@ def room():
         moon_running.score.set(0),
         tag(e().tag('moon_home')).remove('moon_run_home'),
         reset_moon,
-        (moon_sign(0, 8, i, *phase) for i, phase in enumerate(moon_phases)),
+        (moon_sign(0, 8, i, phase[1]) for i, phase in enumerate(moon_phases)),
         kill(e().tag('time_frame')),
         summon(('item_frame',
                 {'Facing': as_facing(WEST).number, 'Item': Item.nbt_for('clock'),
