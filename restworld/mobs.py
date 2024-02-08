@@ -249,8 +249,8 @@ def friendlies(room):
                                        execute().at(e().tag('cat_home')).run(function('restworld:mobs/cat_init')),
                                        execute().at(e().tag('cat_home')).run(function('restworld:mobs/cat_cur')))
     p = placer(*mid_west_placer, tags='keeper')
-    room.function('sheep_init').add(p.summon('Sheep', tags=('colorable',)),
-                                    p.summon(Entity('sheep', name='Sheared Sheep', nbt={'Sheared': True})))
+    room.function('sheep_init').add(p.summon(Entity('sheep', name='Sheared Sheep', nbt={'Sheared': True})),
+                                    p.summon('Sheep', tags=('colorable',)))
     room.function('sniffer_init').add(placer(r(0, 2, 0.5), EAST, 0, adults=True, tags='keeper').summon('sniffer'),
                                       WallSign((None, 'Sniffer Egg', None, '(vanilla  shows 3)')).place(r(2, 2, 3),
                                                                                                         EAST))
