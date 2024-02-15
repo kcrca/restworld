@@ -4,7 +4,7 @@ import math
 import os
 import re
 
-from pynecraft.base import EAST, NE, NORTH, OVERWORLD, SW, as_facing, r, to_id
+from pynecraft.__init__ import EAST, NE, NORTH, OVERWORLD, SW, as_facing, r, to_id
 from pynecraft.commands import Block, CREATIVE, Entity, SURVIVAL, e, execute, fill, function, gamemode, kill, p, \
     setblock, tp
 from pynecraft.info import colors, corals, stems, woods

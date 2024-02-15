@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from pynecraft.base import EQ, SOUTH, d, r
+from pynecraft.__init__ import EQ, SOUTH, d, r
 from pynecraft.commands import Block, COLORS, Entity, INT, RESULT, WHITE, data, e, execute, fill, function, kill, s, \
     setblock, tag
 from pynecraft.enums import Pattern

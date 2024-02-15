@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from pynecraft import commands
-from pynecraft.base import EAST, NORTH, Nbt, WEST, r
+from pynecraft.__init__ import EAST, NORTH, Nbt, WEST, r
 from pynecraft.commands import BOSSBAR_COLORS, BOSSBAR_STYLES, Block, CREATIVE, Entity, LEVELS, REPLACE, SURVIVAL, a, \
     bossbar, clone, data, e, effect, execute, fill, function, gamemode, item, kill, p, schedule, setblock, summon
 from pynecraft.info import must_give_items, operator_menu

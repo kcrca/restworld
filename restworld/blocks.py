@@ -4,7 +4,7 @@ import re
 from typing import Iterable, Union
 
 from pynecraft import info
-from pynecraft.base import DOWN, EAST, EQ, NORTH, Nbt, RelCoord, SOUTH, WEST, as_facing, r, to_name
+from pynecraft.__init__ import DOWN, EAST, EQ, NORTH, Nbt, RelCoord, SOUTH, WEST, as_facing, r, to_name
 from pynecraft.commands import Block, Commands, Entity, MOD, MOVE, a, as_block, clone, data, e, execute, fill, function, \
     item, kill, s, say, setblock, summon, tag
 from pynecraft.function import Loop

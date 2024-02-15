@@ -3,7 +3,7 @@ from __future__ import annotations
 import copy
 
 from pynecraft import commands
-from pynecraft.base import EAST, EQ, NORTH, SOUTH, WEST, r, to_id
+from pynecraft.__init__ import EAST, EQ, NORTH, SOUTH, WEST, r, to_id
 from pynecraft.commands import Block, COLORS, Entity, FORCE, LONG, MOD, RESULT, Score, as_facing, clone, data, e, \
     execute, function, item, kill, player, ride, s, scoreboard, setblock, summon, tag, tp
 from pynecraft.enums import ScoreCriteria

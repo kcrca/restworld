@@ -6,7 +6,8 @@ from copy import deepcopy
 from enum import Enum
 from typing import Callable, Iterable, Tuple
 
-from pynecraft.base import BLUE, FacingDef, Nbt, ORANGE, ROTATION_180, ROTATION_270, ROTATION_90, UP, r, rotate_facing, \
+from pynecraft.__init__ import BLUE, FacingDef, Nbt, ORANGE, ROTATION_180, ROTATION_270, ROTATION_90, UP, r, \
+    rotate_facing, \
     to_name
 from pynecraft.commands import Block, BlockDef, CLEAR, Command, Commands, Entity, EntityDef, INT, JsonText, MINUS, \
     NEAREST, Position, RESULT, Score, SignMessages, a, as_block, as_entity, as_facing, as_score, comment, data, e, \

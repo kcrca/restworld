@@ -2,7 +2,7 @@ import re
 from collections import defaultdict
 
 from pynecraft import info
-from pynecraft.base import EAST, EQ, NORTH, as_facing, d, r, to_name
+from pynecraft.__init__ import EAST, EQ, NORTH, as_facing, d, r, to_name
 from pynecraft.commands import REPLACE, comment, data, e, execute, fill, function, item, kill, p, schedule, setblock, \
     summon, tag
 from pynecraft.enums import ValueEnum

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from pynecraft.base import NORTH, SOUTH, WEST, r
+from pynecraft.__init__ import NORTH, SOUTH, WEST, r
 from pynecraft.commands import Entity, data, e, execute, function, ride, s
 from pynecraft.simpler import Item, WallSign
 from restworld.rooms import Room, label

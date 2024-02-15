@@ -3,7 +3,7 @@ from __future__ import annotations
 import sys
 from datetime import date
 
-from pynecraft.base import DARK_GREEN, DARK_PURPLE, r
+from pynecraft.__init__ import DARK_GREEN, DARK_PURPLE, r
 from pynecraft.commands import CREATIVE, Commands, Entity, JsonText, SIDEBAR, clear, data, e, execute, fill, function, \
     gamemode, give, kill, p, scoreboard, tp
 from pynecraft.function import Function, FunctionSet

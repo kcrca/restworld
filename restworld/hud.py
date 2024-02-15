@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from pynecraft.base import NORTH, Nbt, r
+from pynecraft.__init__ import NORTH, Nbt, r
 from pynecraft.commands import CREATIVE, Entity, LEVELS, POINTS, SUCCESS, SURVIVAL, data, e, effect, execute, function, \
     gamemode, item, p, xp
 from pynecraft.enums import Effect

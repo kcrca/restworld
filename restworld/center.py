@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from pynecraft.base import EAST, NORTH, SOUTH, WEST, r
+from pynecraft.__init__ import EAST, NORTH, SOUTH, WEST, r
 from pynecraft.commands import Entity, JsonText, Score, clone, e, execute, fill, kill, scoreboard, summon, tag
 from pynecraft.info import Horse
 from pynecraft.simpler import WallSign
