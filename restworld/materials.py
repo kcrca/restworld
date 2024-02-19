@@ -3,7 +3,7 @@ from __future__ import annotations
 import re
 
 from pynecraft import info
-from pynecraft.__init__ import EAST, EQ, NE, NORTH, NW, Nbt, NbtDef, SOUTH, WEST, as_facing, r, to_id
+from pynecraft.base import EAST, EQ, NE, NORTH, NW, Nbt, NbtDef, SOUTH, WEST, as_facing, r, to_id
 from pynecraft.commands import Block, BlockDef, Entity, LONG, MOD, PLUS, RESULT, as_block, data, e, execute, fill, \
     fillbiome, function, item, kill, random, s, scoreboard, setblock, summon, tag
 from pynecraft.enums import BiomeId
@@ -245,8 +245,8 @@ def basic_functions(room):
             e().tag('basic_stand').limit(1), {
                 'CustomName': material.capitalize(),
                 'ArmorItems': [{'id': '%s_boots' % armor, 'Count': 1}, {'id': '%s_leggings' % armor, 'Count': 1},
-                                     {'id': '%s_chestplate' % armor, 'Count': 1},
-                                     {'id': '%s_helmet' % armor, 'Count': 1}]})
+                               {'id': '%s_chestplate' % armor, 'Count': 1},
+                               {'id': '%s_helmet' % armor, 'Count': 1}]})
 
         yield fill(r(-3, 2, 2), r(-3, 5, 2), background.id)
         yield setblock(r(3, 2, 2), background.id)

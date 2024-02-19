@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from pynecraft.__init__ import r
+from pynecraft.base import r
 from restworld.rooms import Room, label
 from restworld.world import restworld
 

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import re
 
-from pynecraft.__init__ import NORTH, Nbt, NbtDef, SOUTH, WEST, r
+from pynecraft.base import NORTH, Nbt, NbtDef, SOUTH, WEST, r
 from pynecraft.commands import Block, JsonText, REPLACE, clone, data, e, execute, fill, kill, schedule, setblock
 from pynecraft.simpler import Book, ItemFrame, TextDisplay, WallSign
 from restworld.rooms import Room, ensure

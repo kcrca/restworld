@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from pynecraft.__init__ import EAST, NORTH, SOUTH, WEST, r
+from pynecraft.base import EAST, NORTH, SOUTH, WEST, r
 from pynecraft.commands import MOVE, clone, fill, function
 from pynecraft.simpler import WallSign
 from restworld.rooms import Room, label

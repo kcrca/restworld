@@ -3,7 +3,7 @@ from __future__ import annotations
 import copy
 
 from pynecraft import commands
-from pynecraft.__init__ import EAST, EQ, NORTH, SOUTH, WEST, r, to_id
+from pynecraft.base import EAST, EQ, NORTH, SOUTH, WEST, r, to_id
 from pynecraft.commands import Block, COLORS, Entity, FORCE, LONG, MOD, RESULT, Score, as_facing, clone, data, e, \
     execute, function, item, kill, player, ride, s, scoreboard, setblock, summon, tag, tp
 from pynecraft.enums import ScoreCriteria
@@ -74,7 +74,8 @@ def friendlies(room):
                                               tags=('collared',)),
                                      label(r(1, 2, 2), 'Sit'),
                                      label(r(1, 2, 0), 'Armor'))
-    room.function('canine_enter').add(data().modify(e().tag('wolf', 'collared').limit(1), 'Owner').set().from_(player(), 'UUID'))
+    room.function('canine_enter').add(
+        data().modify(e().tag('wolf', 'collared').limit(1), 'Owner').set().from_(player(), 'UUID'))
 
     room.loop('canine', main_clock).loop(
         lambda step: execute().as_(e().tag('wolf')).run(data().merge(s(), {'AngerTime': step.elem})), (0, 1000000000))
@@ -556,7 +557,8 @@ def monsters(room):
     armorable_tag = 'armorable'
     room.loop('skeleton', main_clock).add(kill_em(e().tag('skeletal'))).loop(
         lambda step: placer(*east_placer, adults=True).summon(
-            Entity(step.elem, nbt={'HandItems': [bow]}).tag('skeletal', armorable_tag)), ('Skeleton', 'Stray'))
+            Entity(step.elem, nbt={'HandItems': [bow]}).tag('skeletal', armorable_tag)),
+        ('Skeleton', 'Stray', 'Boggeed'))
     room.function('skeleton_init').add(label(r(2, 2, 0), 'Armor'))
 
     spider_dir = NORTH

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import copy
 
-from pynecraft.__init__ import Arg, EAST, EQ, GAMETIME, NORTH, OVERWORLD, Position, SOUTH, THE_END, THE_NETHER, \
+from pynecraft.base import Arg, EAST, EQ, GAMETIME, NORTH, OVERWORLD, Position, SOUTH, THE_END, THE_NETHER, \
     TimeSpec, \
     WEST, r
 from pynecraft.commands import Block, FORCE, MINUS, MOD, MOVE, RAIN, REPLACE, RESULT, Score, clone, data, e, execute, \

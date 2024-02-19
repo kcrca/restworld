@@ -1,7 +1,7 @@
 import re
 
 from pynecraft import info
-from pynecraft.__init__ import to_id
+from pynecraft.base import to_id
 from pynecraft.commands import COLORS
 from pynecraft.function import BLOCKS
 from pynecraft.info import corals, stems

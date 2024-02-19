@@ -3,7 +3,7 @@ from __future__ import annotations
 import math
 import random
 
-from pynecraft.__init__ import EAST, NORTH, Nbt, OVERWORLD, SOUTH, WEST, as_facing, d, r
+from pynecraft.base import EAST, NORTH, Nbt, OVERWORLD, SOUTH, WEST, as_facing, d, r
 from pynecraft.commands import Block, CLEAR, Entity, RAIN, REPLACE, a, data, e, execute, fill, fillbiome, function, \
     item, kill, p, particle, playsound, schedule, setblock, summon, tp, weather
 from pynecraft.enums import BiomeId, Particle

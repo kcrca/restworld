@@ -1,6 +1,6 @@
 import collections
 
-from pynecraft.__init__ import NORTH, OVERWORLD, r, to_id
+from pynecraft.base import NORTH, OVERWORLD, r, to_id
 from pynecraft.commands import CLEAR, data, e, execute, fill, fillbiome, function, kill, say, setblock, weather
 from pynecraft.enums import BiomeId
 from pynecraft.simpler import WallSign

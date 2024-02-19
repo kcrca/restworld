@@ -1,4 +1,4 @@
-from pynecraft.__init__ import EAST, Nbt, SOUTH, as_facing, d, r
+from pynecraft.base import EAST, Nbt, SOUTH, as_facing, d, r
 from pynecraft.commands import Entity, FURTHEST, INT, RESULT, data, e, execute, function, kill, s, say, setblock, \
     summon, tag, tp
 from pynecraft.simpler import Item, Offset

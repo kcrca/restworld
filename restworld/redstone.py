@@ -3,7 +3,7 @@ from __future__ import annotations
 import re
 
 from pynecraft import info
-from pynecraft.__init__ import DOWN, EAST, NOON, SOUTH, UP, WEST, r
+from pynecraft.base import DOWN, EAST, NOON, SOUTH, UP, WEST, r
 from pynecraft.commands import Block, data, e, execute, fill, function, kill, say, setblock, summon, time
 from pynecraft.info import instruments, stems
 from pynecraft.simpler import Item, Region, Sign, WallSign

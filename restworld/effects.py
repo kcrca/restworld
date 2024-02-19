@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from pynecraft.__init__ import EAST, SOUTH, WEST, as_facing, d, r
+from pynecraft.base import EAST, SOUTH, WEST, as_facing, d, r
 from pynecraft.commands import MAX_EFFECT_SECONDS, e, effect, execute, fill, function, p, setblock
 from pynecraft.enums import Effect
 from pynecraft.simpler import WallSign

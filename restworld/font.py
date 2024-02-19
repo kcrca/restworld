@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from pynecraft import info
-from pynecraft.__init__ import EAST, JSON_COLORS, SOUTH, WEST, r
+from pynecraft.base import EAST, JSON_COLORS, SOUTH, WEST, r
 from pynecraft.commands import Block, JsonText, clone, data, e, execute, function, kill, s, setblock, tag
 from pynecraft.info import colors, stems
 from pynecraft.simpler import Book, TextDisplay, WallSign

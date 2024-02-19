@@ -4,7 +4,7 @@ import copy
 import math
 
 from pynecraft import info
-from pynecraft.__init__ import EAST, NE, NORTH, NW, SE, SOUTH, SW, WEST, as_facing, r, rotate_facing
+from pynecraft.base import EAST, NE, NORTH, NW, SE, SOUTH, SW, WEST, as_facing, r, rotate_facing
 from pynecraft.commands import Entity, JsonText, comment, data, e, execute, fill, function, kill, s, setblock, tag
 from pynecraft.simpler import Item, VILLAGER_BIOMES, VILLAGER_PROFESSIONS, WallSign
 from restworld.rooms import Room

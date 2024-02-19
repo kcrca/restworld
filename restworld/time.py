@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from pynecraft.__init__ import DAYTIME, EAST, NOON, NORTH, WEST, as_facing, r
+from pynecraft.base import DAYTIME, EAST, NOON, NORTH, WEST, as_facing, r
 from pynecraft.commands import RESULT, data, e, execute, fill, function, kill, setblock, summon, tag, time, worldborder
 from pynecraft.info import moon_phases
 from pynecraft.simpler import Item, WallSign

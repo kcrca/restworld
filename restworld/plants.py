@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import Callable
 
 from pynecraft import info
-from pynecraft.__init__ import EAST, NORTH, Nbt, SOUTH, WEST, r, to_id, to_name
+from pynecraft.base import EAST, NORTH, Nbt, SOUTH, WEST, r, to_id, to_name
 from pynecraft.commands import Block, JsonText, data, e, execute, fill, fillbiome, function, kill, setblock, tag
 from pynecraft.enums import BiomeId
 from pynecraft.info import small_flowers, stems, tulips

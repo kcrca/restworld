@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import sys
 
-from pynecraft.__init__ import Arg, EAST, GT, LT, Nbt, r, to_id
+from pynecraft.base import Arg, EAST, GT, LT, Nbt, r, to_id
 from pynecraft.commands import Entity, RANDOM, Score, a, data, e, execute, fill, function, kill, setblock, summon, tag
 from pynecraft.function import Function, Loop
 from pynecraft.simpler import Item, Region, Sign, WallSign

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from pynecraft.__init__ import EAST, d, r
+from pynecraft.base import EAST, d, r
 from pynecraft.commands import Block, Entity, FORCE, clone, e, execute, fill, function, say, setblock, tp
 from pynecraft.simpler import Item
 from restworld.rooms import Room, label
