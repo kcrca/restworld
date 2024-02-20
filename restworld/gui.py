@@ -3,7 +3,8 @@ from __future__ import annotations
 from pynecraft import commands
 from pynecraft.base import EAST, NORTH, Nbt, WEST, r
 from pynecraft.commands import BOSSBAR_COLORS, BOSSBAR_STYLES, Block, CREATIVE, Entity, LEVELS, REPLACE, SURVIVAL, a, \
-    bossbar, clone, data, e, effect, execute, fill, function, gamemode, item, kill, p, schedule, setblock, summon
+    bossbar, clone, data, e, effect, execute, fill, function, gamemode, item, kill, p, schedule, setblock, summon, \
+    tag
 from pynecraft.info import must_give_items, operator_menu
 from pynecraft.simpler import Item, ItemFrame, Sign, WallSign
 from restworld.rooms import Room, label
@@ -52,10 +53,12 @@ def room():
     room.loop('beacon', slow_clock).loop(
         beacon_loop, (0, 1, 2, 3, 4, 4, 3, 2, 1))
     beacon_start = room.function('beacon_start', home=False).add(
+        tag(e().tag('beacon_homer')).add('beacon_home'),
         at(fill(r(0, 1, 0), r(0, 5, 0), 'gold_block')),
         at(clone(r(0, -5, 1), r(0, -5, 1), r(0, 6, 1))))
     beacon_stop = room.function('beacon_stop', home=False).add(
         at(fill(r(0, 1, 0), r(0, 5, 0), 'chiseled_quartz_block')),
+        tag(e().tag('beacon_homer')).remove('beacon_home'),
         effect().clear(p()))
     room.function('beacon_enter').add(function(beacon_start))
     room.function('beacon_exit').add(function(beacon_stop))
@@ -63,7 +66,7 @@ def room():
         at(WallSign((None, 'Pyramid Height: 0')).place(r(-1, 6, 0), WEST)),
         label(r(-3, 2, -5), 'Beacon'),
     )
-
+    room.function('beacon_home', exists_ok=True).add(tag(e().tag('beacon_home')).add('beacon_homer'))
     bossbar_which = room.score('bossbar_which')
     room.function('bossbar_exit').add(bossbar().set('restworld:bossbar').visible(False))
     room.function('bossbar_enter').add(

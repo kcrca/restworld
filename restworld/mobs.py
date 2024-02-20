@@ -3,7 +3,7 @@ from __future__ import annotations
 import copy
 
 from pynecraft import commands
-from pynecraft.base import EAST, EQ, NORTH, SOUTH, WEST, r, to_id
+from pynecraft.base import EAST, EQ, NORTH, Nbt, SOUTH, WEST, r, to_id
 from pynecraft.commands import Block, COLORS, Entity, FORCE, LONG, MOD, RESULT, Score, as_facing, clone, data, e, \
     execute, function, item, kill, player, ride, s, scoreboard, setblock, summon, tag, tp
 from pynecraft.enums import ScoreCriteria
@@ -185,7 +185,7 @@ def friendlies(room):
     room.loop('iron_golem', main_clock).loop(iron_golem_loop, range(4, 0, -1), bounce=True)
     room.function('lead_off', home=False).add(kill(e().type('leash_knot')))
     room.function('lead_on', home=False).add(execute().as_(e().tag('white_horses').tag('!kid')).run(
-        data().merge(s(), {'Leash': {'X': -12, 'Y': 101, 'Z': 35}})))
+        data().merge(s(), {'leash': Nbt.IntArray((-12, 101, 35))})))
     room.loop('llamas_carpets', main_clock).loop(
         lambda step: execute().as_(e().tag('llama').tag('!kid')).run(
             data().merge(s(), {'body_armor_item': {'id': step.elem.id + '_carpet', 'Count': 1}})), colors)
@@ -301,7 +301,7 @@ def friendlies(room):
 
     room.loop('turtle_eggs', main_clock).loop(turtle_egg_loop, range(0, 3), bounce=True)
     turtle_dir = EAST
-    room.function('turtle_init').add(placer(r(0, 2, 0.2), turtle_dir, 2, 2).summon('turtle'))
+    room.function('turtle_init').add(placer(r(0, 2, 0), turtle_dir, 2, 2).summon('turtle'))
 
     villager_funcs(room)
 
@@ -558,7 +558,7 @@ def monsters(room):
     room.loop('skeleton', main_clock).add(kill_em(e().tag('skeletal'))).loop(
         lambda step: placer(*east_placer, adults=True).summon(
             Entity(step.elem, nbt={'HandItems': [bow]}).tag('skeletal', armorable_tag)),
-        ('Skeleton', 'Stray', 'Boggeed'))
+        ('Skeleton', 'Stray', 'Bogged'))
     room.function('skeleton_init').add(label(r(2, 2, 0), 'Armor'))
 
     spider_dir = NORTH

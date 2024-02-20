@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 from pynecraft.base import NORTH, Nbt, r
-from pynecraft.commands import CREATIVE, Entity, LEVELS, POINTS, SUCCESS, SURVIVAL, data, e, effect, execute, function, \
+from pynecraft.commands import CREATIVE, Entity, LEVELS, POINTS, SUCCESS, SURVIVAL, data, e, effect, execute, \
+    function, \
     gamemode, item, p, xp
 from pynecraft.enums import Effect
 from pynecraft.simpler import WallSign
@@ -77,9 +78,10 @@ def room():
             cur_health.set(data().get(entity, 'Health')),
 
             # If there is no effect currently going, act as if the health is too low.
-            execute().store(SUCCESS).score(healthing).run(data().get(entity, 'ActiveEffects')),
-            execute().if_().score(healthing).matches(0).run(cur_health.set(0)),
-            execute().if_().score(healthing).matches(0).run(health_up.set(0)),
+            execute().store(SUCCESS).score(healthing).run(data().get(entity, 'active_effects')),
+            execute().if_().score(healthing).matches(0).run(
+                cur_health.set(0),
+                health_up.set(0)),
 
             execute().if_().score(cur_health).matches((None, min_health)).run(
                 execute().if_().score(health_up).matches(0).run(
@@ -102,7 +104,7 @@ def room():
         room.function('switch_to_wither', home=False).add(
             execute().if_().score(withering).matches(0).run(
                 execute().store(SUCCESS).score(switch_effect).run(
-                    data().get(entity, f'ActiveEffects[{{Id:{Effect.POISON.id()}}}]')),
+                    data().get(entity, f'active_effects[{{Id:{Effect.POISON.id()}}}]')),
                 execute().if_().score(switch_effect).matches(1).run(
                     clear_effect(Effect.POISON),
                     give_effect(Effect.WITHER)
@@ -111,7 +113,7 @@ def room():
         room.function('switch_to_poison', home=False).add(
             execute().if_().score(withering).matches(1).run(
                 execute().store(SUCCESS).score(switch_effect).run(
-                    data().get(entity, f'ActiveEffects[{{Id:{Effect.WITHER.id()}}}]')),
+                    data().get(entity, f'active_effects[{{Id:{Effect.WITHER.id()}}}]')),
                 execute().if_().score(switch_effect).matches(1).run(
                     clear_effect(Effect.WITHER),
                     give_effect(Effect.POISON)

@@ -76,7 +76,7 @@ def room():
         schedule().function(set_map_icon, "1s", REPLACE),
 
         room.mob_placer(r(6, 4, 3), NORTH, adults=True).summon(ItemFrame(NORTH).item(map(32, name_nbt('Optifine')))),
-        WallSign(('Optifine', 'Connected', 'Textures,', 'Mob Textures'), NORTH).place(r(5, 3, 3), NORTH),
+        WallSign(('Optifine:', 'Connected', 'Textures and', 'Mob Textures'), NORTH).place(r(5, 3, 3), NORTH),
 
         room.mob_placer(r(3, 4, 3), NORTH, adults=True).summon(ItemFrame(NORTH).item(map(22, name_nbt('Photo')))),
         WallSign((None, 'Photo', 'Area'), NORTH).place(r(2, 3, 3), NORTH),
