@@ -27,6 +27,8 @@ def room():
                 'tag': {'RepairCost': 1, 'Enchantments': [{'lvl': 9, 'id': 'protection'}]}}
 
     start_battle_type = Score('battle_type', 'arena')
+    skeleton_nbts = {'HandItems': [Item.nbt_for('bow')],
+                     'ArmorItems': [protected('iron_boots'), {}, {}, protected('iron_helmet')]}
     fighter_nbts = {
         'Drowned': {'HandItems': [Item.nbt_for('trident')], 'ArmorItems': [{}, {}, {}, Item.nbt_for('iron_helmet')]},
         'Goat': {'IsScreamingGoat': True, 'HasLeftHorn': True, 'HasRightHorn': True},
@@ -39,10 +41,9 @@ def room():
         'Piglin Brute': {'HandItems': [Item.nbt_for('golden_axe')], 'IsImmuneToZombification': 'True'},
         'Piglin': {'IsImmuneToZombification': 'True', 'HandItems': [Item.nbt_for('golden_sword'), {}]},
         'Pillager': {'HandItems': [Item.nbt_for('crossbow'), {}]},
-        'Skeleton': {'HandItems': [Item.nbt_for('bow')],
-                     'ArmorItems': [protected('iron_boots'), {}, {}, protected('iron_helmet')]},
-        'Stray': {'HandItems': [Item.nbt_for('bow')],
-                  'ArmorItems': [protected('iron_boots'), {}, {}, protected('iron_helmet')]},
+        'Skeleton': skeleton_nbts,
+        'Stray': skeleton_nbts,
+        'Bogged': skeleton_nbts,
         'Vindicator': {'Johnny': 'True', 'HandItems': [Item.nbt_for('iron_axe'), {}]},
         # Workaround for https://bugs.mojang.com/browse/MC-249393; stops warden from digging down immediately
         'Warden': {'Brain': {'memories': {'minecraft:dig_cooldown': {'value': {}, 'ttl': 1200}}}},
@@ -57,6 +58,7 @@ def room():
         ('Axolotl:w', 'Elder Guardian'),  # low priority
         ('Axolotl:w', 'Guardian'),
         ('Blaze', 'Snow Golem'),
+        ('Bogged', 'Iron Golem'),
         ('Breeze', 'Iron Golem'),
         ('Cat', 'Rabbit'),
         # ('Cave Spider', 'Snow Golem'), # low priority
@@ -69,8 +71,8 @@ def room():
         ('Hoglin', 'Vindicator'),
         # ('Illusioner', 'Snow Golem'), # low priority, Illusioner isn't used
         ('Llama', 'Vindicator'),
-        ('Magma Cube', 'Iron Golem'),  # low priority
-        ('Ocelot', 'Chicken'),  # low priority
+        ('Magma Cube', 'Iron Golem'),
+        # ('Ocelot', 'Chicken'),  # low priority
         ('Panda', 'Vindicator'),
         ('Parrot', 'Vindicator'),
         ('Phantom:c', None),
