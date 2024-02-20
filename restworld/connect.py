@@ -18,8 +18,8 @@ from restworld.world import restworld
 # block. So now the source area is that block plus air everywhere else.
 #
 # (3) We clone 'source' area into the workspace filtered on 'air'. All the sampler blocks in the workspace are thus
-# replaced by air, except those that are the original pattern block. So now thw the workspace is only the sampler block
-# in the shape of the pattern block.
+# replaced by air, except those that are the original pattern block. So now the workspace is only the sampler block in
+# the shape of the pattern block.
 #
 # (4) We then copy the workspace to the main area using a masked copy, which copies everything but the air; that is, it
 # copies the pattern-block-shaped set of sampler blocks.
@@ -42,8 +42,8 @@ def room():
 
         fill(r(2, -8, 2), r(-2, -9, -2), 'air'),
 
-        WallSign(below1).place(r(0, -8, 2), SOUTH),
-        WallSign(below1).place(r(0, -8, -2), NORTH),
+        WallSign(below1).back((None, '⇧', 'Go Up')).place(r(0, -8, 2), SOUTH),
+        WallSign(below1).back((None, '⇧', 'Go Up')).place(r(0, -8, -2), NORTH),
         WallSign(below1).place(r(2, -8, 0), EAST),
         WallSign(below1).place(r(-2, -8, 0), WEST),
         WallSign(below2).place(r(0, -9, 2), SOUTH),
