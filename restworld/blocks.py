@@ -259,8 +259,7 @@ def room():
     )
     room.function('copper_blocks_init').add(
         label(r(-2, 2, -1), 'Waxed'),
-        function(run_unwaxed),
-        WallSign().place(r(2, 2, 0), NORTH),
+        function(run_unwaxed)
     )
 
     woods = info.woods  # Read the current state of info.woods, which the version can change
@@ -406,8 +405,8 @@ def room():
         yield setblock(r(0, 3, 0), block)
         words = step.elem[0].split(' ')
         modifier = '' if len(words) == 2 else words[0]
-        yield data().merge(r(0, 2, 1),
-                           Sign.lines_nbt((None, modifier, None, '(Conditional)' if step.elem[1] else '')))
+        sign_nbt = Sign.lines_nbt((None, modifier, 'Command Block', '(Conditional)' if step.elem[1] else ''))
+        yield data().merge(r(0, 2, 1), {'front_text': sign_nbt})
 
     room.function('command_blocks_init').add(WallSign((None, None, 'Command Block', None)).place(r(0, 2, 1), SOUTH))
     room.loop('command_blocks', main_clock).loop(command_block_loop, (
@@ -449,7 +448,8 @@ def room():
                     yield setblock(r(s[0], 4, s[1]), Block('fire', {s[2]: True}))
             else:
                 yield setblock(r(0, 4, -1 if step.i == 1 else 0), Block('fire', dirs[step.i]))
-        yield data().merge(r(0, 2, -1), Sign.lines_nbt((None, 'Soul Fire' if step.elem == 'soul_soil' else 'Fire')))
+        nbt = Sign.lines_nbt((None, 'Soul Fire' if step.elem == 'soul_soil' else 'Fire'))
+        yield data().merge(r(0, 2, -1), {'front_text':nbt})
 
     room.function('fire_init').add(WallSign((None, 'Fire')).place(r(0, 2, -1), NORTH))
     room.loop('fire', main_clock).add(fill(r(0, 3, 0), r(0, 5, 0), 'air')).loop(fire_loop, (
@@ -476,7 +476,7 @@ def room():
 
     def item_frame_loop(step):
         yield step.elem.merge_nbt({'Tags': ['item_frame_as_block']}).summon(r(0, 3, -1)),
-        yield data().merge(r(0, 2, -1), Sign.lines_nbt((None, *step.elem.sign_text)))
+        yield data().merge(r(0, 2, -1), {'front_text':Sign.lines_nbt((None, *step.elem.sign_text))})
 
     item_frame_init = kill(e().tag('item_frame_as_block'))
     room.function('item_frame_init').add(item_frame_init)
