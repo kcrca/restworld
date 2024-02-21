@@ -185,7 +185,7 @@ def friendlies(room):
     room.loop('iron_golem', main_clock).loop(iron_golem_loop, range(4, 0, -1), bounce=True)
     room.function('lead_off', home=False).add(kill(e().type('leash_knot')))
     room.function('lead_on', home=False).add(execute().as_(e().tag('white_horses').tag('!kid')).run(
-        data().merge(s(), {'leash': Nbt.IntArray((-12, 101, 35))})))
+        data().merge(s(), {'leash': Nbt.TypedArray('I', (-12, 101, 35))})))
     room.loop('llamas_carpets', main_clock).loop(
         lambda step: execute().as_(e().tag('llama').tag('!kid')).run(
             data().merge(s(), {'body_armor_item': {'id': step.elem.id + '_carpet', 'Count': 1}})), colors)
