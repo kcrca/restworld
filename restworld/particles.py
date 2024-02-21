@@ -7,7 +7,7 @@ from pynecraft.base import EAST, NORTH, Nbt, OVERWORLD, SOUTH, WEST, as_facing, 
 from pynecraft.commands import Block, CLEAR, Entity, RAIN, REPLACE, a, data, e, execute, fill, fillbiome, function, \
     item, kill, p, particle, playsound, schedule, setblock, summon, tp, weather
 from pynecraft.enums import BiomeId, Particle
-from pynecraft.simpler import VILLAGER_BIOMES, VILLAGER_PROFESSIONS, WallSign
+from pynecraft.simpler import TextDisplay, VILLAGER_BIOMES, VILLAGER_PROFESSIONS, WallSign
 from restworld.rooms import ActionDesc, SignedRoom, Wall, span
 from restworld.world import fast_clock, kill_em, main_clock, restworld, slow_clock
 
@@ -15,8 +15,10 @@ particles = [
     ActionDesc(Particle.AMBIENT_ENTITY_EFFECT, 'Ambient|Entity|Effect'),
     ActionDesc(Particle.ANGRY_VILLAGER),
     ActionDesc(Particle.ASH),
+    ActionDesc(Particle.BLOCK_MARKER),
     ActionDesc(Particle.BUBBLE, 'Bubbles|Currents|Whirlpools',
                also=(Particle.BUBBLE_POP, Particle.BUBBLE_COLUMN_UP, Particle.CURRENT_DOWN)),
+    ActionDesc(Particle.CHERRY_LEAVES, 'Cherry Leaves'),
     ActionDesc(Particle.CLOUD, note='Evaporation'),
     ActionDesc(Particle.COMPOSTER),
     ActionDesc(Particle.CRIMSON_SPORE),
@@ -24,17 +26,17 @@ particles = [
     ActionDesc(Particle.DAMAGE_INDICATOR),
     ActionDesc(Particle.DOLPHIN),
     ActionDesc(Particle.DRAGON_BREATH),
-    ActionDesc(Particle.CHERRY_LEAVES, 'Cherry Leaves'),
+    ActionDesc(Particle.DRIPPING_HONEY, note='Falling, Landing', also=(Particle.FALLING_HONEY, Particle.LANDING_HONEY)),
     ActionDesc(Particle.DRIPPING_LAVA, note='Falling, Landing', also=(
-        Particle.FALLING_LAVA, Particle.LANDING_LAVA, Particle.DRIPPING_DRIPSTONE_LAVA,
-        Particle.FALLING_DRIPSTONE_LAVA)),
-    ActionDesc(Particle.DRIPPING_WATER, note='Falling',
-               also=(Particle.FALLING_WATER, Particle.DRIPPING_DRIPSTONE_WATER, Particle.FALLING_DRIPSTONE_WATER)),
+    Particle.FALLING_LAVA, Particle.LANDING_LAVA, Particle.DRIPPING_DRIPSTONE_LAVA, Particle.FALLING_DRIPSTONE_LAVA)),
     ActionDesc(Particle.DRIPPING_OBSIDIAN_TEAR, 'Dripping|Obsidian Tear', note='Falling, Landing',
                also=(Particle.FALLING_OBSIDIAN_TEAR, Particle.LANDING_OBSIDIAN_TEAR)),
-    ActionDesc(Particle.DRIPPING_HONEY, note='Falling, Landing', also=(Particle.FALLING_HONEY, Particle.LANDING_HONEY)),
+    ActionDesc(Particle.DRIPPING_WATER, note='Falling',
+               also=(Particle.FALLING_WATER, Particle.DRIPPING_DRIPSTONE_WATER, Particle.FALLING_DRIPSTONE_WATER)),
     ActionDesc(Particle.DUST, note='Redstone Dust'),
+    ActionDesc(Particle.DUST_PLUME),
     ActionDesc(Particle.EFFECT),
+    ActionDesc(Particle.EGG_CRACK),
     ActionDesc(Particle.ELECTRIC_SPARK),
     ActionDesc(Particle.ENCHANT),
     ActionDesc(Particle.ENCHANTED_HIT),
@@ -44,8 +46,9 @@ particles = [
     ActionDesc(Particle.EXPLOSION_EMITTER),
     ActionDesc(Particle.FALLING_DUST),
     ActionDesc(Particle.FIREWORK, note='and Flash', also=Particle.FLASH),
-    ActionDesc(Particle.FLAME, also=Particle.SOUL_FIRE_FLAME),
-    ActionDesc('gust'),
+    ActionDesc(Particle.FLAME, 'Flame, Small Flame|and Smoke',
+               also=(Particle.SMALL_FLAME, Particle.SOUL_FIRE_FLAME, Particle.SMOKE)),
+    ActionDesc(Particle.GUST, 'Gust|Gust Emitter|Gust Dust', also=(Particle.GUST_DUST, Particle.GUST_EMITTER)),
     ActionDesc(Particle.HAPPY_VILLAGER),
     ActionDesc(Particle.HEART),
     ActionDesc(Particle.INSTANT_EFFECT),
@@ -53,17 +56,15 @@ particles = [
     ActionDesc(Particle.ITEM_SNOWBALL),
     ActionDesc(Particle.LARGE_SMOKE),
     ActionDesc(Particle.LAVA),
-    ActionDesc(Particle.BLOCK_MARKER),
     ActionDesc(Particle.MYCELIUM),
     ActionDesc(Particle.NAUTILUS, note='with Conduit'),
     ActionDesc(Particle.POOF, note='Small Explosion'),
     ActionDesc(Particle.PORTAL),
-    ActionDesc(Particle.VIBRATION, 'Sculk Sensor', note='Vibration'),
+    ActionDesc(Particle.RAIN),
+    ActionDesc(Particle.REVERSE_PORTAL),
     ActionDesc(Particle.SCULK_SOUL, also=(Particle.SCULK_CHARGE, Particle.SCULK_CHARGE_POP)),
     ActionDesc(Particle.SHRIEK, 'Shriek'),
-    ActionDesc(Particle.SMOKE),
     ActionDesc(Particle.SNEEZE),
-    ActionDesc(Particle.RAIN),
     ActionDesc(Particle.SNOWFLAKE, 'Snow'),
     ActionDesc(Particle.SONIC_BOOM),
     ActionDesc(Particle.SOUL),
@@ -71,9 +72,12 @@ particles = [
     ActionDesc(Particle.SQUID_INK, note='and Glow Squid', also=(Particle.GLOW, Particle.GLOW_SQUID_INK)),
     ActionDesc(Particle.SWEEP_ATTACK),
     ActionDesc(Particle.TOTEM_OF_UNDYING),
+    ActionDesc(Particle.TRIAL_SPAWNER_DETECTION),
     ActionDesc(Particle.UNDERWATER),
-    ActionDesc(Particle.WAX_ON, 'Wax', note='and Copper', also=(Particle.WAX_OFF, Particle.SCRAPE)),
+    ActionDesc(Particle.VAULT_CONNECTION),
+    ActionDesc(Particle.VIBRATION, 'Sculk Sensor', note='Vibration'),
     ActionDesc(Particle.WARPED_SPORE),
+    ActionDesc(Particle.WAX_ON, 'Wax', note='and Copper', also=(Particle.WAX_OFF, Particle.SCRAPE)),
     ActionDesc(Particle.WHITE_ASH),
     ActionDesc(Particle.WITCH),
 ]
@@ -97,8 +101,6 @@ particles.sort(key=lambda x: x.sort_key())
 #    Lower priority, easily seen around: DUST, NOTE, UNDERWATER (also not much to see), SPORE_BLOSSOM (right outside
 #    the room), MYCELIUM (same), PORTAL (which can be seen in Materials), SCULK_SENSOR (Redstone)
 #
-#    Could loop the BLOCK_MARKER types in one thing.
-#    Could loop WHITE_ASH, CRIMSON_SPORE, etc.?
 #    Could loop various explosions?
 
 villager_data = []
@@ -157,9 +159,9 @@ def room():
             setblock(d(-dx, 0, -dz), 'emerald_block')
         ))
 
-    e_wall_used = {5: (1, 2, 5, 6), 4: span(1, 6), 3: span(1, 6), 2: span(1, 6)}
+    e_wall_used = {5: span(1, 6), 4: span(1, 6), 3: span(1, 6), 2: span(1, 6)}
     n_wall_used = {4: span(1, 5), 3: span(1, 5), 2: span(1, 5)}
-    w_wall_used = {5: (0, 1, 4, 5), 4: span(0, 5), 3: span(0, 5), 2: span(0, 5)}
+    w_wall_used = {5: span(0, 5), 4: span(0, 5), 3: span(0, 5), 2: span(0, 5)}
     room = SignedRoom('particles', restworld, SOUTH, (None, 'Particles'), particle_sign, particles, (
         Wall(7, EAST, 1, -1, e_wall_used),
         Wall(7, SOUTH, 1, -7, n_wall_used),
@@ -178,10 +180,6 @@ def room():
     room.function('ash_init', home=False).add(
         floor('soul_soil'),
         set_biome(BiomeId.SOUL_SAND_VALLEY))
-    room.function('barrier', home=False).add(
-        main().run(particle(Particle.BLOCK_MARKER, 'barrier', r(0, 2, 0), 0, 0, 0, 0, 1)))
-    room.function('light', home=False).add(
-        main().run(particle(Particle.BLOCK_MARKER, 'light', r(0, 2, 0), 0, 0, 0, 0, 1)))
 
     def block_marker_loop(step):
         yield particle(Particle.BLOCK_MARKER, step.elem, r(0, 2, 0))
@@ -265,8 +263,16 @@ def room():
         setblock(r(-2, 0, -2), 'redstone_block'),
         setblock(r(-2, 0, -1), 'repeater'),
     )
+    room.function('dust_plume_init', home=False).add(
+        exemplar(TextDisplay('Put Something in the Pot', {'line_width': 50, 'billboard': 'vertical'}).scale(0.5), 2),
+        setblock(r(0, 0, 0), 'decorated_pot')
+    )
     room.function('effect', home=False).add(fast().run(particle(Particle.EFFECT, r(0, 1, 0), 0.25, 0.5, 0.5, 0.2, 20)))
     room.function('effect_init', home=False).add(exemplar('evoker', 0, {'NoAI': True}))
+    room.function('egg_crack_init', home=False).add(floor('moss_block'))
+    room.function('egg_crack', home=False).add(main().run(
+        setblock(r(0, 0, 0), 'air'),
+        setblock(r(0, 0, 0), 'sniffer_egg')))
     room.function('electric_spark', home=False).add(main().run(summon('lightning_bolt', r(0, 1, 0))))
     room.function('electric_spark_init', home=False).add(setblock(r(0, 0, 0), 'lightning_rod'))
     room.function('enchant_init', home=False).add(
@@ -316,8 +322,15 @@ def room():
         fill(r(2, 0, -2), r(2, 0, 2), 'soul_torch'),
         setblock(r(0, 0, 0), Block('spawner', nbt={'SpawnData': {'entity': {'id': 'zombie'}}}))
     )
-    room.function('gust_init', home=False).add(exemplar('breeze', 1, {'NoAI': True}, -1))
-    room.function('gust', home=False).add(main().run(particle('gust', r(0, 2, 1), 0.5, 0.5, 0.5, 0, 5)))
+    room.function('gust_init', home=False).add(
+        setblock(r(0, 2, -1), ('dispenser', {'facing': SOUTH})),
+        fill(r(-1, 2, 4), r(1, 2, 4), 'glass'),
+        setblock(r(0, 3, 4), 'glass'))
+    room.function('gust', home=False).add(
+        main().run(item().replace().block(r(0, 2, -1), 'container.0').with_('wind_charge', 1)),
+        main().run(setblock(r(0, 3, -1), ('stone_button', {'powered': True, 'face': 'floor'}))),
+        main().run(setblock(r(0, 3, -1), 'air')),
+    )
     room.function('happy_villager', home=False).add(
         fast().run(particle(Particle.HAPPY_VILLAGER, r(0, 1, 0), 0.5, 0.5, 0.5, 0, 5)))
     room.function('happy_villager_init', home=False).add(function('restworld:particles/villager'))
@@ -333,7 +346,7 @@ def room():
         tp(p().distance((None, 7)), r(0, 0, -3)).facing(r(0, 0, 5)))
     room.function('item_snowball', home=False).add(
         fast().run(item().replace().block(r(0, 2, -1), 'container.0').with_('snowball', 1)),
-        fast().run(setblock(r(0, 3, -1), ('stone_button', {'powered': True, 'face': 'floor'}))),
+        # fast().run(setblock(r(0, 3, -1), ('stone_button', {'powered': True, 'face': 'floor'}))),
         fast().run(setblock(r(0, 3, -1), 'air')),
     )
     room.function('item_snowball_init', home=False).add(
@@ -469,9 +482,13 @@ def room():
         squid_ink_loop, ('squid', 'glow_squid'))
     room.function('sweep_attack', home=False).add(
         main().run(particle(Particle.SWEEP_ATTACK, r(0, 1, 0), 0.3, 0.2, 0.3, 0, 3)))
+    room.function('trial_spawner_detection_init', home=False).add(setblock(r(0, 0, 0), 'trial_spawner'))
+    room.function('trial_spawner_detection', home=False).add(
+        particle(Particle.TRIAL_SPAWNER_DETECTION, r(0, 0.5, 0), 0.25, 0.25, 0.25, 0, 1))
     room.function('totem_of_undying', home=False).add(
         main().run(particle(Particle.TOTEM_OF_UNDYING, r(0, 2, 0), 0.5, 1, 0.5, 0.5, 50)))
     room.function('underwater_init', home=False).add(function('restworld:particles/ocean'))
+    room.function('vault_connection_init', home=False).add(setblock(r(0, 0, 0), 'vault'))
     room.loop('villager', home=False).loop(
         lambda step: exemplar('villager', 0, {'NoAI': True, 'VillagerData': step.elem}),
         villager_data)
