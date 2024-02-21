@@ -1,28 +1,28 @@
 from __future__ import annotations
 
-from pynecraft.base import EAST, NORTH, SOUTH, WEST, r
-from pynecraft.commands import MOVE, clone, fill, function
-from pynecraft.simpler import WallSign
+from pynecraft.base import Arg, EAST, NORTH, SOUTH, WEST, as_facing, r
+from pynecraft.commands import clone, data, e, execute, fill, function, loot
+from pynecraft.simpler import Item, WallSign
 from restworld.rooms import Room, label
 from restworld.world import restworld
 
 
-# There is no way to fill in a block that is named at runtime. There is also no way to filter a clone for everything
-# _except_ a certain value. So when the user puts in a sampler block for (say) the SE position...
+# Replacements are done in a multistep process using macros. When a new block is placed in one of the 'fill' spots,
+# a function is run that, for each of the eight directions...
 #
-# (1) We fill up a 'workspace' region of space with the sampler block by successive cloning of the block the user
-# placed.
+# (1) clears out the working area below the lower level.
+# (2) copies all the exemplar blocks for that direction into the lower level (and nothing else)
+# (3) Gets the ID of the block in that direction from the middle. (The hack is to do this is commented.)
+# (4) Puts that ID, and that of the example block into a storage area
+# (5) Invokes a function with that storage area as the incoming parameters.
+# (6) That function fills the cloned blocks with the replacement block
+# (7) ... and then clones the resulting blocks to the play area
 #
-# (2) We know that for any given position, there is one block in the pattern space below the area that corresponds to
-# it. For SE, that is 'stone'. So we clear out a 'source' area with air, and clone the downstairs area filtered on that
-# block. So now the source area is that block plus air everywhere else.
+# This must be done on the side to avoid problems when one of the fill blocks is the same as one of the exemplar blocks.
 #
-# (3) We clone 'source' area into the workspace filtered on 'air'. All the sampler blocks in the workspace are thus
-# replaced by air, except those that are the original pattern block. So now the workspace is only the sampler block in
-# the shape of the pattern block.
-#
-# (4) We then copy the workspace to the main area using a masked copy, which copies everything but the air; that is, it
-# copies the pattern-block-shaped set of sampler blocks.
+# We could just do the one replaced block, but this mechanism repairs any damage anywhere else, plus adapts to any
+# changes made to the blow area since the last fill. Plus it just ain't that expensive.
+
 
 def room():
     room = Room('connect', restworld, EAST, (None, 'Connected', 'Textures', '(Optifine)'),
@@ -66,52 +66,33 @@ def room():
         'w': 'diorite',
     }
 
-    # The function that spreads out the user's sample block into the workspace. This is invoked by the direction-specific
-    # functions.
-    spread_height = 15
-    spread_start = r(0, spread_height, 0)
+    size = 26
+    redo_one = room.function('redo_one', home=False).add(
+        fill(r(size, -15, size), r(0, -19, 0), Arg('to')).replace(Arg('from')),
+        clone(r(size, -15, size), r(0, -19, 0), r(0, 2, 0)).filtered(Arg('to')),
+    )
 
-    def spread_func():
-        def needed(value, largest):
-            if value * 2 < largest:
-                return value - 1
-            else:
-                return largest - value - 1
+    mid = e().tag('connect_mid_home').limit(1)
+    miner = Item('iron_pickaxe', nbt={'Enchantments': [{'lvl': 1, 'id': "silk_touch"}]})
+    center = r(13, 1, 13)
 
-        x = 1
-        while x < 25:
-            yield clone(spread_start, r(needed(x, 25), spread_height, 0), r(x, spread_height, 0))
-            x *= 2
-        z = 1
-        while z < 25:
-            yield clone(r(25, spread_height, 0), r(0, spread_height, needed(z, 25)), r(0, spread_height, z))
-            z *= 2
-        y = 1
-        while y < 5:
-            yield clone(r(25, spread_height, 25), r(0, spread_height + needed(y, 5), 0), r(0, spread_height + y, 0))
-            y *= 2
-        # Fill the source with air so the direction-specific code that invoked this will start with a clean area.
-        yield fill(r(13, -14, 13), r(-12, -19, -12), 'air')
+    def redo_one_example(dir):
+        facing = as_facing(dir)
+        yield execute().positioned(center).run(
+            loot().replace().entity(mid, 'armor.head').mine(r(*facing.block_delta), miner))
+        yield data().modify('redo', 'to').set().from_(mid, 'ArmorItems[3].id')
+        yield data().modify('redo', 'from').set().value(block_map[dir])
+        yield function(redo_one).with_().storage('redo')
 
-    spread = room.function('spread_source').add(spread_func())
-
-    # This generates the function for a specific direction.
-    def connect_func(dir, sx, sz):
-        room.function(f'connect_{dir}', home=False).add(
-            fill(r(0, spread_height, 0), r(25, spread_height + 5, 25), 'air'),
-            clone(r(sx, 1, sz), r(sx, 1, sz), spread_start),
-            function(spread),
-            clone(r(13, -4, 13), r(-12, -9, -12), r(-12, -19, -12)).filtered(block_map[dir]),
-            clone(r(13, -14, 13), r(-12, -19, -12), spread_start).filtered('air'),
-            clone(r(25, spread_height + 5, 25), spread_start, r(-12, 2, -12)).masked(MOVE),
+    redo_run = room.function('redo_run', home=False)
+    clear_below = fill(r(size, -15, size), r(0, -19, 0), 'air')
+    for dir in block_map:
+        redo_run.add(
+            clear_below,
+            clone(r(size, -5, size), r(0, -9, 0), r(0, -19, 0)).filtered(block_map[dir]),
+            redo_one_example(dir)
         )
-
-    # Generate each direction-specific function
-    connect_func('e', 1, 0)
-    connect_func('n', 0, -1)
-    connect_func('ne', 1, -1)
-    connect_func('nw', -1, -1)
-    connect_func('s', 0, 1)
-    connect_func('se', 1, 1)
-    connect_func('sw', -1, 1)
-    connect_func('w', -1, 0)
+    redo_run.add(clear_below)
+    
+    room.function('redo').add(
+        execute().unless().block(r(0, 3, 0), 'air').at(e().tag('redo_home')).run(function(redo_run)))
