@@ -78,9 +78,18 @@ def room():
 
     def redo_one_example(dir):
         facing = as_facing(dir)
-        yield execute().positioned(center).run(
-            loot().replace().entity(mid, 'armor.head').mine(r(*facing.block_delta), miner))
+        block_pos = r(*facing.block_delta)
+        # There is no way to get a block's ID directly. This indirection gets it by looting it into being the helmet
+        # of a known armor stand (that happens to be nearby), using a silk touch pickaxe (or stone would turn to
+        # cobblestone, for example). Then we use the ID of the block that is the "helmet". This works for almost
+        # everything (but see below).
+        yield execute().positioned(center).run(loot().replace().entity(mid, 'armor.head').mine(block_pos, miner))
         yield data().modify('redo', 'to').set().from_(mid, 'ArmorItems[3].id')
+        # Bedrock cannot be mined, so it isn't set by the above, so do it as a special case. Note that there are other
+        # non-mineable blocks (command blocks, jigsaw, barrier, maybe others) that this won't help with. Sigh. I don't
+        # believe these are important enough for this use to fix them all. I await a truly general solution.
+        yield execute().positioned(center).run(
+            execute().if_().block(block_pos, 'bedrock').run(data().modify('redo', 'to').set().value('bedrock')))
         yield data().modify('redo', 'from').set().value(block_map[dir])
         yield function(redo_one).with_().storage('redo')
 
@@ -93,6 +102,6 @@ def room():
             redo_one_example(dir)
         )
     redo_run.add(clear_below)
-    
+
     room.function('redo').add(
         execute().unless().block(r(0, 3, 0), 'air').at(e().tag('redo_home')).run(function(redo_run)))
