@@ -97,7 +97,7 @@ def room():
     redo = room.function('redo', fast_clock).add(
         filled.set(0),
         execute().as_(e().tag('connect_frame').nbt({'Item': {}})).run(filled.add(1)),
-        execute().unless().score(filled).matches(8).run(return_(0)),
+        execute().unless().score(filled).matches(8).run(data().modify('redo', 'cur').set().value(''), return_(0)),
         data().modify('redo', 'prev').set().from_('redo', 'cur'),
         data().modify('redo', 'concat.all').set().value(''),
     )
