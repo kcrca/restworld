@@ -24,7 +24,7 @@ def main():
     if args.pynecraft_dev:
         tester.room()
     for m in (
-            photo, blocks, save, multimob, models, global_, arena, banners, biomes, center, connect, gui, diy, effects,
+            connect, photo, blocks, save, multimob, models, global_, arena, banners, biomes, center, gui, diy, effects,
             particles, enders, font, mobs, hud, materials, nether, paintings, plants, redstone, the_end, time,
             wither, maps):
         m.room()
