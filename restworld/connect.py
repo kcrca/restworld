@@ -1,9 +1,9 @@
 from __future__ import annotations
 
 from pynecraft.base import Arg, EAST, NORTH, RelCoord, SOUTH, UP, WEST, as_facing, r
-from pynecraft.commands import clone, data, e, execute, fill, function, kill, return_, s, say
+from pynecraft.commands import clone, data, e, execute, fill, function, kill, return_, say
 from pynecraft.simpler import ItemFrame, WallSign
-from pynecraft.utils import strcmp, utils_init
+from pynecraft.utils import Scores, strcmp, utils_init
 from restworld.rooms import Room, label
 from restworld.world import fast_clock, restworld
 
@@ -31,7 +31,7 @@ def room():
 
     room.function('connect_room_init', exists_ok=True).add(label(r(8, 2, 0), 'Go Home'))
 
-    above = ('Change the block', 'in the floor', 'to change the', 'block used')
+    above = ('Change a block', 'in an item frame', 'to change the', 'block used')
     below1 = ('These blocks are', 'templates for the', 'blocks above')
     below2 = ('Change them, then', 'change a "type"', 'block in the', 'floor above.')
 
@@ -78,27 +78,15 @@ def room():
     center = r(13, 1, 13)
 
     def redo_one_example(dir):
-        yield data().modify('redo', 'to').set().from_(e().tag(f'redo_frame_{dir}').limit(1), 'Item.id')
+        yield data().modify('redo', 'to').set().from_(e().tag(f'connect_frame_{dir}').limit(1), 'Item.id')
         yield data().modify('redo', 'from').set().value(block_map[dir])
         yield function(redo_one).with_().storage('redo')
 
-    # check_one = room.function('check_one').add(
-    #     say('prev: $(prev), dir: $(dir)'),
-    #     execute().unless().data('redo', '{$(dir).cur: $(prev)').run(filled.set(1))
-    # )
-    #
-    # redo = room.function('redo')
-    # for dir, v in block_map.items():
-    #     redo.add(
-    #         data().modify('redo', f'{dir}.cur').set().from_(e().tag(f'redo_frame_{dir}').limit(1), 'Item.id'),
-    #         data().modify('redo', 'check.prev').set().from_('redo', f'{dir}.prev'),
-    #         data().modify('redo', 'check.dir').set().value(dir),
-    #         function(check_one).with_().storage('redo.check'),
-    #     )
-
-    init = room.function('redo_init').add(kill(e().tag('redo_frame')))
+    init = room.function('redo_init').add(kill(e().tag('connect_frame')))
     for dir, v in block_map.items():
-        frame = ItemFrame(UP).item(v).tag('redo_frame', f'redo_frame_{dir}').fixed(False)
+        if v.startswith('redstone'):
+            v = 'glass'
+        frame = ItemFrame(UP).item(v).tag('connect_frame', f'connect_frame_{dir}').fixed(False)
         pos = RelCoord.add(r(*as_facing(dir).block_delta), (0, 1, 0))
         init.add(execute().positioned(center).run(frame.summon(pos)))
 
@@ -109,7 +97,7 @@ def room():
     filled = room.score('filled')
     redo = room.function('redo', fast_clock).add(
         filled.set(0),
-        execute().as_(e().tag('redo_frame').nbt({'Item':{}})).run(filled.add(1)),
+        execute().as_(e().tag('connect_frame').nbt({'Item': {}})).run(filled.add(1)),
         execute().unless().score(filled).matches(8).run(say('empty'), return_(0)),
         data().modify('redo', 'prev').set().from_('redo', 'cur'),
         data().modify('redo', 'concat.all').set().value(''),
@@ -117,14 +105,14 @@ def room():
 
     for dir in block_map:
         redo.add(
-            data().modify('redo', 'concat.add').set().from_(e().tag(f'redo_frame_{dir}').limit(1), 'Item.id'),
+            data().modify('redo', 'concat.add').set().from_(e().tag(f'connect_frame_{dir}').limit(1), 'Item.id'),
             function(concat).with_().storage('redo', 'concat'),
         )
 
     redo.add(
         data().modify('redo', 'cur').set().from_('redo', 'concat.all'),
         strcmp(('redo', 'prev'), ('redo', 'cur')),
-        # execute().if_().score(Scores.strcmp).matches(0).run(say('same'), return_(0)),
+        execute().if_().score(Scores.strcmp).matches(0).run(say('same'), return_(0)),
         say('redo'),
     )
 
@@ -136,22 +124,3 @@ def room():
             redo_one_example(dir)
         )
     redo.add(clear_below)
-
-    append_id = room.function('append_id', home=False).add(
-        filled.add(1),
-        data().modify('redo', 'concat.add').set().from_(s(), 'Item.id'),
-        function(concat).with_().storage('redo.concat')
-    )
-
-    # redo = room.loop('redo', fast_clock).add(
-    #     filled.set(0),
-    #     data().modify('redo', 'concat.all').set().value(''),
-    #     execute().as_(e().tag('redo_frame').sort(NEAREST)).run(function(append_id)),
-    # )
-    # for dir, v in block_map.items():
-    #     redo.add(
-    #         data().modify('redo', f'{dir}.cur').set().from_(e().tag(f'redo_frame_{dir}').limit(1), 'Item.id'),
-    #         data().modify('redo', 'check.prev').set().from_('redo', f'{dir}.prev'),
-    #         data().modify('redo', 'check.dir').set().value(dir),
-    #         function(check_one).with_().storage('redo.check'),
-    #     )
