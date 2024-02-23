@@ -7,21 +7,6 @@ from pynecraft.simpler import WallSign
 from restworld.rooms import ActionDesc, SignedRoom, Wall, label, span
 from restworld.world import restworld
 
-effect_note = {
-    'Slowness': 'Negative',
-    'Mining Fatigue': 'Negative',
-    'Weakness': 'Negative',
-    'Instant Damage': 'Negative',
-    'Nausea': 'Negative',
-    'Blindness': 'Negative',
-    'Hunger': 'Negative',
-    'Poison': 'Negative',
-    'Wither': 'Negative',
-    'Glowing': 'Neutral',
-    'Levitation': 'Negative',
-    'unluck': 'Negative',
-    'Bad Omen': 'Negative',
-}
 display_names = {
     Effect.BAD_LUCK: 'Bad Luck',
     Effect.HERO_OF_THE_VILLAGE: 'Hero|of the Village',
