@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from pynecraft.base import Arg, EAST, NORTH, RelCoord, SOUTH, UP, WEST, as_facing, r
-from pynecraft.commands import clone, data, e, execute, fill, function, kill, return_, say
+from pynecraft.commands import clone, data, e, execute, fill, function, kill, return_
 from pynecraft.simpler import ItemFrame, WallSign
 from pynecraft.utils import Scores, strcmp, utils_init
 from restworld.rooms import Room, label
@@ -70,7 +70,6 @@ def room():
 
     size = 26
     redo_one = room.function('redo_one', home=False).add(
-        say('$(from) -> $(to)'),
         fill(r(size, -15, size), r(0, -19, 0), Arg('to')).replace(Arg('from')),
         clone(r(size, -15, size), r(0, -19, 0), r(0, 2, 0)).filtered(Arg('to')),
     )
@@ -98,7 +97,7 @@ def room():
     redo = room.function('redo', fast_clock).add(
         filled.set(0),
         execute().as_(e().tag('connect_frame').nbt({'Item': {}})).run(filled.add(1)),
-        execute().unless().score(filled).matches(8).run(say('empty'), return_(0)),
+        execute().unless().score(filled).matches(8).run(return_(0)),
         data().modify('redo', 'prev').set().from_('redo', 'cur'),
         data().modify('redo', 'concat.all').set().value(''),
     )
@@ -112,8 +111,7 @@ def room():
     redo.add(
         data().modify('redo', 'cur').set().from_('redo', 'concat.all'),
         strcmp(('redo', 'prev'), ('redo', 'cur')),
-        execute().if_().score(Scores.strcmp).matches(0).run(say('same'), return_(0)),
-        say('redo'),
+        execute().if_().score(Scores.strcmp).matches(0).run(return_(0)),
     )
 
     clear_below = fill(r(size, -15, size), r(0, -19, 0), 'air')

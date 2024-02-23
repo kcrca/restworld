@@ -4,7 +4,7 @@ import re
 
 from pynecraft import info
 from pynecraft.base import DOWN, EAST, NOON, SOUTH, UP, WEST, r
-from pynecraft.commands import Block, data, e, execute, fill, function, kill, say, setblock, summon, time
+from pynecraft.commands import Block, data, e, execute, fill, function, kill, setblock, summon, time
 from pynecraft.info import instruments, stems
 from pynecraft.simpler import Item, Region, Sign, WallSign
 from restworld.rooms import Room, ensure, label
@@ -91,7 +91,7 @@ def room():
         ('Detector Rail', False), ('Detector Rail', True),
         ('Activator Rail', False), ('Activator Rail', True),
     )
-    room.function('rail_clean', home=False).add(say('clean'), kill_em(e().tag('tmp_minecart')))
+    room.function('rail_clean', home=False).add(kill_em(e().tag('tmp_minecart')))
 
     def rail_loop(step):
         volume = Region(r(3, 3, -3), r(0, 0, 0))
