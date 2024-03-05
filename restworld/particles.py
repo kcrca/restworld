@@ -6,93 +6,93 @@ import random
 from pynecraft.base import EAST, NORTH, Nbt, OVERWORLD, SOUTH, WEST, as_facing, d, r
 from pynecraft.commands import Block, CLEAR, Entity, RAIN, REPLACE, a, data, e, execute, fill, fillbiome, function, \
     item, kill, p, particle, playsound, schedule, setblock, summon, tp, weather
-from pynecraft.enums import BiomeId, Particle
 from pynecraft.simpler import TextDisplay, VILLAGER_BIOMES, VILLAGER_PROFESSIONS, WallSign
+from pynecraft.values import *
 from restworld.rooms import ActionDesc, SignedRoom, Wall, span
 from restworld.world import fast_clock, kill_em, main_clock, restworld, slow_clock
 
 particles = [
-    ActionDesc(Particle.AMBIENT_ENTITY_EFFECT, 'Ambient|Entity|Effect'),
-    ActionDesc(Particle.ANGRY_VILLAGER),
-    ActionDesc(Particle.ASH),
-    ActionDesc(Particle.BLOCK_MARKER),
-    ActionDesc(Particle.BUBBLE, 'Bubbles|Currents|Whirlpools',
-               also=(Particle.BUBBLE_POP, Particle.BUBBLE_COLUMN_UP, Particle.CURRENT_DOWN)),
-    ActionDesc(Particle.CHERRY_LEAVES, 'Cherry Leaves'),
-    ActionDesc(Particle.CLOUD, note='Evaporation'),
-    ActionDesc(Particle.COMPOSTER),
-    ActionDesc(Particle.CRIMSON_SPORE),
-    ActionDesc(Particle.CRIT),
-    ActionDesc(Particle.DAMAGE_INDICATOR),
-    ActionDesc(Particle.DOLPHIN),
-    ActionDesc(Particle.DRAGON_BREATH),
-    ActionDesc(Particle.DRIPPING_HONEY, note='Falling, Landing', also=(Particle.FALLING_HONEY, Particle.LANDING_HONEY)),
-    ActionDesc(Particle.DRIPPING_LAVA, note='Falling, Landing', also=(
-    Particle.FALLING_LAVA, Particle.LANDING_LAVA, Particle.DRIPPING_DRIPSTONE_LAVA, Particle.FALLING_DRIPSTONE_LAVA)),
-    ActionDesc(Particle.DRIPPING_OBSIDIAN_TEAR, 'Dripping|Obsidian Tear', note='Falling, Landing',
-               also=(Particle.FALLING_OBSIDIAN_TEAR, Particle.LANDING_OBSIDIAN_TEAR)),
-    ActionDesc(Particle.DRIPPING_WATER, note='Falling',
-               also=(Particle.FALLING_WATER, Particle.DRIPPING_DRIPSTONE_WATER, Particle.FALLING_DRIPSTONE_WATER)),
-    ActionDesc(Particle.DUST, note='Redstone Dust'),
-    ActionDesc(Particle.DUST_PLUME),
-    ActionDesc(Particle.EFFECT),
-    ActionDesc(Particle.EGG_CRACK),
-    ActionDesc(Particle.ELECTRIC_SPARK),
-    ActionDesc(Particle.ENCHANT),
-    ActionDesc(Particle.ENCHANTED_HIT),
-    ActionDesc(Particle.END_ROD),
-    ActionDesc(Particle.ENTITY_EFFECT),
-    ActionDesc(Particle.EXPLOSION),
-    ActionDesc(Particle.EXPLOSION_EMITTER),
-    ActionDesc(Particle.FALLING_DUST),
-    ActionDesc(Particle.FIREWORK, note='and Flash', also=Particle.FLASH),
-    ActionDesc(Particle.FLAME, 'Flame, Small Flame|and Smoke',
-               also=(Particle.SMALL_FLAME, Particle.SOUL_FIRE_FLAME, Particle.SMOKE)),
-    ActionDesc(Particle.GUST, 'Gust|Gust Emitter|Gust Dust', also=(Particle.GUST_DUST, Particle.GUST_EMITTER)),
-    ActionDesc(Particle.HAPPY_VILLAGER),
-    ActionDesc(Particle.HEART),
-    ActionDesc(Particle.INSTANT_EFFECT),
-    ActionDesc(Particle.ITEM_SLIME),
-    ActionDesc(Particle.ITEM_SNOWBALL),
-    ActionDesc(Particle.LARGE_SMOKE),
-    ActionDesc(Particle.LAVA),
-    ActionDesc(Particle.MYCELIUM),
-    ActionDesc(Particle.NAUTILUS, note='with Conduit'),
-    ActionDesc(Particle.POOF, note='Small Explosion'),
-    ActionDesc(Particle.PORTAL),
-    ActionDesc(Particle.RAIN),
-    ActionDesc(Particle.REVERSE_PORTAL),
-    ActionDesc(Particle.SCULK_SOUL, also=(Particle.SCULK_CHARGE, Particle.SCULK_CHARGE_POP)),
-    ActionDesc(Particle.SHRIEK, 'Shriek'),
-    ActionDesc(Particle.SNEEZE),
-    ActionDesc(Particle.SNOWFLAKE, 'Snow'),
-    ActionDesc(Particle.SONIC_BOOM),
-    ActionDesc(Particle.SOUL),
-    ActionDesc(Particle.SPLASH),
-    ActionDesc(Particle.SQUID_INK, note='and Glow Squid', also=(Particle.GLOW, Particle.GLOW_SQUID_INK)),
-    ActionDesc(Particle.SWEEP_ATTACK),
-    ActionDesc(Particle.TOTEM_OF_UNDYING),
-    ActionDesc(Particle.TRIAL_SPAWNER_DETECTION),
-    ActionDesc(Particle.UNDERWATER),
-    ActionDesc(Particle.VAULT_CONNECTION),
-    ActionDesc(Particle.VIBRATION, 'Sculk Sensor', note='Vibration'),
-    ActionDesc(Particle.WARPED_SPORE),
-    ActionDesc(Particle.WAX_ON, 'Wax', note='and Copper', also=(Particle.WAX_OFF, Particle.SCRAPE)),
-    ActionDesc(Particle.WHITE_ASH),
-    ActionDesc(Particle.WITCH),
+    ActionDesc(AMBIENT_ENTITY_EFFECT, 'Ambient|Entity|Effect'),
+    ActionDesc(ANGRY_VILLAGER),
+    ActionDesc(ASH),
+    ActionDesc(BLOCK_MARKER),
+    ActionDesc(BUBBLE, 'Bubbles|Currents|Whirlpools',
+               also=(BUBBLE_POP, BUBBLE_COLUMN_UP, CURRENT_DOWN)),
+    ActionDesc(CHERRY_LEAVES, 'Cherry Leaves'),
+    ActionDesc(CLOUD, note='Evaporation'),
+    ActionDesc(COMPOSTER),
+    ActionDesc(CRIMSON_SPORE),
+    ActionDesc(CRIT),
+    ActionDesc(DAMAGE_INDICATOR),
+    ActionDesc(DOLPHIN),
+    ActionDesc(DRAGON_BREATH),
+    ActionDesc(DRIPPING_HONEY, note='Falling, Landing', also=(FALLING_HONEY, LANDING_HONEY)),
+    ActionDesc(DRIPPING_LAVA, note='Falling, Landing', also=(
+        FALLING_LAVA, LANDING_LAVA, DRIPPING_DRIPSTONE_LAVA, FALLING_DRIPSTONE_LAVA)),
+    ActionDesc(DRIPPING_OBSIDIAN_TEAR, 'Dripping|Obsidian Tear', note='Falling, Landing',
+               also=(FALLING_OBSIDIAN_TEAR, LANDING_OBSIDIAN_TEAR)),
+    ActionDesc(DRIPPING_WATER, note='Falling',
+               also=(FALLING_WATER, DRIPPING_DRIPSTONE_WATER, FALLING_DRIPSTONE_WATER)),
+    ActionDesc(DUST, note='Redstone Dust'),
+    ActionDesc(DUST_PLUME),
+    ActionDesc(EFFECT),
+    ActionDesc(EGG_CRACK),
+    ActionDesc(ELECTRIC_SPARK),
+    ActionDesc(ENCHANT),
+    ActionDesc(ENCHANTED_HIT),
+    ActionDesc(END_ROD),
+    ActionDesc(ENTITY_EFFECT),
+    ActionDesc(EXPLOSION),
+    ActionDesc(EXPLOSION_EMITTER),
+    ActionDesc(FALLING_DUST),
+    ActionDesc(FIREWORK, note='and Flash', also=FLASH),
+    ActionDesc(FLAME, 'Flame, Small Flame|and Smoke',
+               also=(SMALL_FLAME, SOUL_FIRE_FLAME, SMOKE)),
+    ActionDesc(GUST, 'Gust|Gust Emitter|Gust Dust', also=(GUST_DUST, GUST_EMITTER)),
+    ActionDesc(HAPPY_VILLAGER),
+    ActionDesc(HEART),
+    ActionDesc(INSTANT_EFFECT),
+    ActionDesc(ITEM_SLIME),
+    ActionDesc(ITEM_SNOWBALL),
+    ActionDesc(LARGE_SMOKE),
+    ActionDesc(LAVA),
+    ActionDesc(MYCELIUM),
+    ActionDesc(NAUTILUS, note='with Conduit'),
+    ActionDesc(POOF, note='Small Explosion'),
+    ActionDesc(PORTAL),
+    ActionDesc(RAIN),
+    ActionDesc(REVERSE_PORTAL),
+    ActionDesc(SCULK_SOUL, also=(SCULK_CHARGE, SCULK_CHARGE_POP)),
+    ActionDesc(SHRIEK, 'Shriek'),
+    ActionDesc(SNEEZE),
+    ActionDesc(SNOWFLAKE, 'Snow'),
+    ActionDesc(SONIC_BOOM),
+    ActionDesc(SOUL),
+    ActionDesc(SPLASH),
+    ActionDesc(SQUID_INK, note='and Glow Squid', also=(GLOW, GLOW_SQUID_INK)),
+    ActionDesc(SWEEP_ATTACK),
+    ActionDesc(TOTEM_OF_UNDYING),
+    ActionDesc(TRIAL_SPAWNER_DETECTION),
+    ActionDesc(UNDERWATER),
+    ActionDesc(VAULT_CONNECTION),
+    ActionDesc(VIBRATION, 'Sculk Sensor', note='Vibration'),
+    ActionDesc(WARPED_SPORE),
+    ActionDesc(WAX_ON, 'Wax', note='and Copper', also=(WAX_OFF, SCRAPE)),
+    ActionDesc(WHITE_ASH),
+    ActionDesc(WITCH),
 ]
 unused_particles = {
-    Particle.FISHING,
-    Particle.BLOCK,  # This just happens in the game, plus I can't see how to generate it.
-    Particle.CAMPFIRE_COSY_SMOKE,  # In block room
-    Particle.CAMPFIRE_SIGNAL_SMOKE,  # Same as regular campfire smoke, just goes higher
-    Particle.DUST_COLOR_TRANSITION,  # Can the player control its look? AFAICT, it's just when the power level changes?
-    Particle.ELDER_GUARDIAN,  # Just the elder guardian face in your face, and makes it hard to turn off.
-    Particle.ITEM,  # Same as BLOCK
-    Particle.NOTE,  # Always shown in the redstone room (as is DUST, FWIW)
-    Particle.SPIT,  # Broke at 1.19, can't get the summoned spit to move.
-    Particle.FALLING_NECTAR,  # Shown with the bees in the Friendlies room
-    Particle.SPORE_BLOSSOM_AIR, Particle.FALLING_SPORE_BLOSSOM,  # Just outside the room
+    FISHING,
+    BLOCK,  # This just happens in the game, plus I can't see how to generate it.
+    CAMPFIRE_COSY_SMOKE,  # In block room
+    CAMPFIRE_SIGNAL_SMOKE,  # Same as regular campfire smoke, just goes higher
+    DUST_COLOR_TRANSITION,  # Can the player control its look? AFAICT, it's just when the power level changes?
+    ELDER_GUARDIAN,  # Just the elder guardian face in your face, and makes it hard to turn off.
+    ITEM,  # Same as BLOCK
+    NOTE,  # Always shown in the redstone room (as is DUST, FWIW)
+    SPIT,  # Broke at 1.19, can't get the summoned spit to move.
+    FALLING_NECTAR,  # Shown with the bees in the Friendlies room
+    SPORE_BLOSSOM_AIR, FALLING_SPORE_BLOSSOM,  # Just outside the room
 }
 particles.sort(key=lambda x: x.sort_key())
 # Notes:
@@ -170,19 +170,19 @@ def room():
     room.function('signs_init', home=False).add(function('restworld:particles/signs'))
 
     room.function('ambient_entity_effect', home=False).add(
-        main().run(particle(Particle.AMBIENT_ENTITY_EFFECT, r(0, 0, 0), 0.5, 5, 0.5, 1, 500)))
+        main().run(particle(AMBIENT_ENTITY_EFFECT, r(0, 0, 0), 0.5, 5, 0.5, 1, 500)))
     room.function('ambient_entity_effect_init', home=False).add(function('restworld:particles/villager'))
     room.function('angry_villager', home=False).add(
-        fast().run(particle(Particle.ANGRY_VILLAGER, r(0, 1, 0), 0.5, 0.5, 0.5, 0, 5)))
+        fast().run(particle(ANGRY_VILLAGER, r(0, 1, 0), 0.5, 0.5, 0.5, 0, 5)))
     room.function('angry_villager_init', home=False).add(function('restworld:particles/villager'))
     room.loop('animal', home=False).loop(lambda step: exemplar(step.elem, 0, {'NoAI': True}), (
         Block('cow'), Block('Pig'), Block('Horse'), Block('Llama'), Block('Sheep'), Block('Polar Bear'), Block('Goat')))
     room.function('ash_init', home=False).add(
         floor('soul_soil'),
-        set_biome(BiomeId.SOUL_SAND_VALLEY))
+        set_biome(SOUL_SAND_VALLEY))
 
     def block_marker_loop(step):
-        yield particle(Particle.BLOCK_MARKER, step.elem, r(0, 2, 0))
+        yield particle(BLOCK_MARKER, step.elem, r(0, 2, 0))
 
     room.loop('block_marker_run').loop(block_marker_loop, ('barrier', 'light'))
     room.function('block_marker', home=False).add(
@@ -191,17 +191,17 @@ def room():
         fill(r(1, -1, 1), r(1, -1, -1), 'magma_block'),
         fill(r(-1, -1, 1), r(-1, -1, -1), 'soul_sand'),
         function('restworld:particles/ocean'))
-    room.function('cloud', home=False).add(main().run(particle(Particle.CLOUD, r(0, 1, 0), 0.25, 0.25, 0.25, 0.05, 50)))
+    room.function('cloud', home=False).add(main().run(particle(CLOUD, r(0, 1, 0), 0.25, 0.25, 0.25, 0.05, 50)))
     room.function('composter', home=False).add(
-        main().run(particle(Particle.COMPOSTER, r(0, 0.9, 0), 0.2, 0.1, 0.2, 1, 12)))
+        main().run(particle(COMPOSTER, r(0, 0.9, 0), 0.2, 0.1, 0.2, 1, 12)))
     room.function('composter_init', home=False).add(setblock(r(0, 0, 0), ('composter', {'level': 3})))
     room.function('crimson_spore_init', home=False).add(
         floor('crimson_nylium'),
-        set_biome(BiomeId.CRIMSON_FOREST))
-    room.function('crit', home=False).add(fast().run(particle(Particle.CRIT, r(0, 1.5, 0), 0.5, 0.5, 0.5, 0, 10)))
+        set_biome(CRIMSON_FOREST))
+    room.function('crit', home=False).add(fast().run(particle(CRIT, r(0, 1.5, 0), 0.5, 0.5, 0.5, 0, 10)))
     room.function('crit_init', home=False).add(function('restworld:particles/animal'))
     room.function('damage_indicator', home=False).add(
-        fast().run(particle(Particle.DAMAGE_INDICATOR, r(0, 1.5, 0), 0.5, 0.5, 0.5, 0, 5)))
+        fast().run(particle(DAMAGE_INDICATOR, r(0, 1.5, 0), 0.5, 0.5, 0.5, 0, 5)))
     room.function('damage_indicator_init', home=False).add(function('restworld:particles/animal'))
     room.function('dolphin_init', home=False).add(
         fill(r(-3, 0, 5), r(3, 6, 5), 'barrier').replace('air'),
@@ -267,7 +267,7 @@ def room():
         exemplar(TextDisplay('Put Something in the Pot', {'line_width': 50, 'billboard': 'vertical'}).scale(0.5), 2),
         setblock(r(0, 0, 0), 'decorated_pot')
     )
-    room.function('effect', home=False).add(fast().run(particle(Particle.EFFECT, r(0, 1, 0), 0.25, 0.5, 0.5, 0.2, 20)))
+    room.function('effect', home=False).add(fast().run(particle(EFFECT, r(0, 1, 0), 0.25, 0.5, 0.5, 0.2, 20)))
     room.function('effect_init', home=False).add(exemplar('evoker', 0, {'NoAI': True}))
     room.function('egg_crack_init', home=False).add(floor('moss_block'))
     room.function('egg_crack', home=False).add(main().run(
@@ -282,23 +282,23 @@ def room():
         setblock(r(0, 0, 0), 'enchanting_table'),
     )
     room.function('enchanted_hit', home=False).add(
-        fast().run(particle(Particle.ENCHANTED_HIT, r(0, 1, 0, 0.5), 0.5, 0.5, 0, 15)))
+        fast().run(particle(ENCHANTED_HIT, r(0, 1, 0, 0.5), 0.5, 0.5, 0, 15)))
     room.function('enchanted_hit_init', home=False).add(function('restworld:particles/animal'))
     room.function('end_rod_init', home=False).add(
         fill(r(-1, 0, 0), r(1, 0, 0), 'end_rod'),
         fill(r(-1, 2, -2), r(1, 2, -2), ('end_rod', {'facing': SOUTH})))
     room.function('entity_effect', home=False).add(
-        main().run(particle(Particle.ENTITY_EFFECT, r(0, 1, 0), 0.25, 0.5, 0.5, 0.2, 80)))
+        main().run(particle(ENTITY_EFFECT, r(0, 1, 0), 0.25, 0.5, 0.5, 0.2, 80)))
     room.function('entity_effect_init', home=False).add(function('restworld:particles/animal'))
     room.function('explosion', home=False).add(
-        main().run(particle(Particle.EXPLOSION, r(0, 1, 0), 0.5, 0.5, 0.5, 2, 8)))
+        main().run(particle(EXPLOSION, r(0, 1, 0), 0.5, 0.5, 0.5, 2, 8)))
     room.function('explosion_emitter', home=False).add(
-        main().run(particle(Particle.EXPLOSION_EMITTER, r(0, 1, 0), 0.5, 0.5, 0.5, 0.2, 1)))
+        main().run(particle(EXPLOSION_EMITTER, r(0, 1, 0), 0.5, 0.5, 0.5, 0.2, 1)))
     room.function('falling_dust', home=False).add(main().run(function('restworld:particles/falling_dust_change')))
 
     def falling_dust_loop(step):
         yield fill(r(-2, 5, -2), r(2, 5, 2), step.elem.id)
-        yield particle(Particle.FALLING_DUST, step.elem.id, r(0, 4.9, 0), 1.5, 0, 1.5, 0, 50)
+        yield particle(FALLING_DUST, step.elem.id, r(0, 4.9, 0), 1.5, 0, 1.5, 0, 50)
 
     room.loop('falling_dust_change', home=False).loop(falling_dust_loop, (
         Block('Dragon Egg'), Block('Sand'), Block('Red Sand'), Block('Gravel'), Block('Green Concrete Powder')))
@@ -313,7 +313,7 @@ def room():
         setblock(r(0, 0, 0), 'redstone_torch'),
         setblock(r(0, 0, 0), 'air'))
     room.function('firework_init', home=False).add(setblock(r(0, 1, 0), ('dispenser', {'facing': 'up'})))
-    room.function('fishing', home=False).add(fast().run(particle(Particle.FISHING, r(0, 1.5, 0), 0.2, 0, 0.2, 0, 6)))
+    room.function('fishing', home=False).add(fast().run(particle(FISHING, r(0, 1.5, 0), 0.2, 0, 0.2, 0, 6)))
     room.function('fishing_init', home=False).add(
         fill(r(-3, 0, 4), r(3, 0, 4), 'oak_wall_sign'),
         fill(r(3, 0, 3), r(-3, 0, -3), 'water'))
@@ -332,12 +332,12 @@ def room():
         main().run(setblock(r(0, 3, -1), 'air')),
     )
     room.function('happy_villager', home=False).add(
-        fast().run(particle(Particle.HAPPY_VILLAGER, r(0, 1, 0), 0.5, 0.5, 0.5, 0, 5)))
+        fast().run(particle(HAPPY_VILLAGER, r(0, 1, 0), 0.5, 0.5, 0.5, 0, 5)))
     room.function('happy_villager_init', home=False).add(function('restworld:particles/villager'))
-    room.function('heart', home=False).add(fast().run(particle(Particle.HEART, r(0, 1.5, 0), 0.5, 0.2, 0.5, 0, 5)))
+    room.function('heart', home=False).add(fast().run(particle(HEART, r(0, 1.5, 0), 0.5, 0.2, 0.5, 0, 5)))
     room.function('heart_init', home=False).add(function('restworld:particles/small_animal'))
     room.function('instant_effect', home=False).add(
-        fast().run(particle(Particle.INSTANT_EFFECT, r(0, 1.5, 0), 0.5, 1, 0.5, 0, 10)))
+        fast().run(particle(INSTANT_EFFECT, r(0, 1.5, 0), 0.5, 1, 0.5, 0, 10)))
     room.function('instant_effect_init', home=False).add(function('restworld:particles/animal'))
     room.function('item_slime_init', home=False).add(
         fill(r(-2, 0, -2), r(2, 1, 2), 'barrier'),
@@ -381,9 +381,9 @@ def room():
     room.function('particles_clear', home=False).add(
         kill_em(e().tag('particler')),
         fill(r(20, 0, 20), r(-20, 10, -20), 'air').replace('snow'),
-        set_biome(BiomeId.PLAINS),
+        set_biome(PLAINS),
         execute().in_(OVERWORLD).run(weather(CLEAR)))
-    room.function('poof', home=False).add(main().run(particle(Particle.POOF, r(0, 1, 0), 0.25, 0.25, 0.25, 0, 30)))
+    room.function('poof', home=False).add(main().run(particle(POOF, r(0, 1, 0), 0.25, 0.25, 0.25, 0, 30)))
     room.function('portal_init', home=False).add(
         fill(r(-2, 0, -1), r(2, 4, -1), 'obsidian'),
         fill(r(-1, 1, -1), r(1, 3, -1), 'nether_portal'))
@@ -417,20 +417,20 @@ def room():
         main(delay=16).run(function('restworld:particles/sculk_pop')),
     )
     room.function('sculk_soul_show', home=False).add(
-        particle(Particle.SCULK_SOUL, r(0, 0.5, 2)),
-        particle(Particle.SCULK_SOUL, r(-1.5, 0.5, 1)),
-        particle(Particle.SCULK_SOUL, r(1, 0.5, -1)))
+        particle(SCULK_SOUL, r(0, 0.5, 2)),
+        particle(SCULK_SOUL, r(-1.5, 0.5, 1)),
+        particle(SCULK_SOUL, r(1, 0.5, -1)))
     sculk_pos = (r(-1, -1, -1), r(0, -1, -1), r(-1, -1, 1), r(0, 0, -1), r(0, 0, 1), r(1, 0, 0))
     spread = room.function('sculk_spread', home=False)
     pop = room.function('sculk_pop', home=False)
     for i, pos in enumerate(sculk_pos):
         block = 'sculk' if str(pos[1]) == '~-1' else ('sculk_vein', {'down': True})
         height = 1.3 if str(pos[1]) == '~-1' else 0.5
-        spread.add(particle(Particle.SCULK_CHARGE, random.uniform(-math.pi / 6, +math.pi / 6),
+        spread.add(particle(SCULK_CHARGE, random.uniform(-math.pi / 6, +math.pi / 6),
                             (pos[0], pos[1] + height, pos[2])))
         pop.add(
             setblock(pos, block),
-            particle(Particle.SCULK_CHARGE_POP, (pos[0], pos[1] + height, pos[2])))
+            particle(SCULK_CHARGE_POP, (pos[0], pos[1] + height, pos[2])))
     room.function('shriek', home=False).add(
         slow().run(function('restworld:particles/shriek_out')),
         slow(delay=7 * 8).run(setblock(r(0, 0, 0), ('sculk_shrieker', {'can_summon': True, 'shrieking': False}))))
@@ -439,7 +439,7 @@ def room():
         setblock(r(0, 0, 0), ('sculk_shrieker', {'can_summon': True, 'shrieking': True})),
         function('restworld:particles/shriek_particles'))
     room.function('shriek_particles', home=False).add(
-        (particle(Particle.SHRIEK, i * 7, r(0, 1, 0)) for i in range(0, 8)))
+        (particle(SHRIEK, i * 7, r(0, 1, 0)) for i in range(0, 8)))
     room.loop('small_animal', home=False).loop(lambda step: exemplar(step.elem, 0, {'CatType': 1, 'NoAI': True}),
                                                ('ocelot', 'horse', 'llama'))
     room.function('smoke_init', home=False).add(
@@ -447,22 +447,22 @@ def room():
         setblock(r(0, 0, 0), 'brewing_stand'),
         setblock(r(1, 0, 0), 'soul_torch'))
     room.function('sneeze', home=False).add(
-        main().run(particle(Particle.SNEEZE, r(0, 0.25, 1.25), 0.05, 0.05, 0.5, 0.0, 2)),
+        main().run(particle(SNEEZE, r(0, 0.25, 1.25), 0.05, 0.05, 0.5, 0.0, 2)),
         main().run(playsound('entity.panda.sneeze', 'neutral', a(), r(0, 0, 0))))
     room.function('sneeze_init', home=False).add(exemplar('panda', 0, {'NoAI': True, 'Age': -2147483648}))
     room.function('rain_init', home=False).add(weather(RAIN))
     room.function('rain_exit', home=False).add(weather(CLEAR))
-    room.function('snowflake_init', home=False).add(set_biome(BiomeId.SNOWY_TAIGA), weather(RAIN))
+    room.function('snowflake_init', home=False).add(set_biome(SNOWY_TAIGA), weather(RAIN))
     room.function('snowflake_exit', home=False).add(weather(CLEAR))
     room.function('sonic_boom_init', home=False).add(exemplar('warden', 0, {'NoAI': True}))
-    room.function('sonic_boom', home=False).add(main().run(particle(Particle.SONIC_BOOM, r(0, 2, 0.5), 0, 0, 0, 1, 1)))
-    room.function('soul', home=False).add(main().run(particle(Particle.SOUL, r(0, 0.75, 0), 0.05, 0, 0.05, 0.05, 4)))
+    room.function('sonic_boom', home=False).add(main().run(particle(SONIC_BOOM, r(0, 2, 0.5), 0, 0, 0, 1, 1)))
+    room.function('soul', home=False).add(main().run(particle(SOUL, r(0, 0.75, 0), 0.05, 0, 0.05, 0.05, 4)))
     room.function('soul_init', home=False).add(floor('soul_soil'))
     room.function('spit', home=False).add(fast().run(summon('llama_spit', r(0, 1.6, 0.7),
                                                             {'Motion': [0.0, 0.0, 1.0], 'direction': [0.0, 0.0, 1.0],
                                                              'ExplosionPower': 1})))
     room.function('spit_init', home=False).add(exemplar('llama', 0, {'NoAI': True}))
-    room.function('splash', home=False).add(fast().run(particle(Particle.SPLASH, r(0, 1, 0), 0.5, 0.1, 0.5, 1, 50)))
+    room.function('splash', home=False).add(fast().run(particle(SPLASH, r(0, 1, 0), 0.5, 0.1, 0.5, 1, 50)))
     room.function('splash_init', home=False).add(
         fill(r(-2, 0, -2), r(2, 0, 2), 'stone'),
         fill(r(-1, 0, -1), r(1, 0, 1), 'water'))
@@ -481,12 +481,12 @@ def room():
         kill_em(e().tag('particler'))).loop(
         squid_ink_loop, ('squid', 'glow_squid'))
     room.function('sweep_attack', home=False).add(
-        main().run(particle(Particle.SWEEP_ATTACK, r(0, 1, 0), 0.3, 0.2, 0.3, 0, 3)))
+        main().run(particle(SWEEP_ATTACK, r(0, 1, 0), 0.3, 0.2, 0.3, 0, 3)))
     room.function('trial_spawner_detection_init', home=False).add(setblock(r(0, 0, 0), 'trial_spawner'))
     room.function('trial_spawner_detection', home=False).add(
-        particle(Particle.TRIAL_SPAWNER_DETECTION, r(0, 0.5, 0), 0.25, 0.25, 0.25, 0, 1))
+        particle(TRIAL_SPAWNER_DETECTION, r(0, 0.5, 0), 0.25, 0.25, 0.25, 0, 1))
     room.function('totem_of_undying', home=False).add(
-        main().run(particle(Particle.TOTEM_OF_UNDYING, r(0, 2, 0), 0.5, 1, 0.5, 0.5, 50)))
+        main().run(particle(TOTEM_OF_UNDYING, r(0, 2, 0), 0.5, 1, 0.5, 0.5, 50)))
     room.function('underwater_init', home=False).add(function('restworld:particles/ocean'))
     room.function('vault_connection_init', home=False).add(setblock(r(0, 0, 0), 'vault'))
     room.loop('villager', home=False).loop(
@@ -494,7 +494,7 @@ def room():
         villager_data)
     room.function('warped_spore_init', home=False).add(
         floor('warped_nylium'),
-        set_biome(BiomeId.WARPED_FOREST))
+        set_biome(WARPED_FOREST))
     room.function('wax_on', home=False).add(main().run(function('restworld:particles/wax_on_run')))
     room.function('wax_on_init', home=False).add(
         setblock(r(0, 0, 0), 'cut_copper'),
@@ -506,18 +506,18 @@ def room():
         if step.i == 0:
             yield setblock(r(0, 0, 0), 'exposed_cut_copper')
         elif step.i == 1:
-            yield particle(Particle.WAX_ON, r(0, 0.5, 0), 0.5, 0.5, 0.5, 0, 10)
+            yield particle(WAX_ON, r(0, 0.5, 0), 0.5, 0.5, 0.5, 0, 10)
         elif step.i == 2:
-            yield particle(Particle.WAX_OFF, r(0, 0.5, 0), 0.5, 0.5, 0.5, 0, 10)
+            yield particle(WAX_OFF, r(0, 0.5, 0), 0.5, 0.5, 0.5, 0, 10)
         else:
             yield setblock(r(0, 0, 0), 'cut_copper')
-            yield particle(Particle.SCRAPE, r(0, 0.5, 0), 0.5, 0.5, 0.5, 0, 10)
+            yield particle(SCRAPE, r(0, 0.5, 0), 0.5, 0.5, 0.5, 0, 10)
 
     room.loop('wax_on_run', home=False).loop(wax_on_run_loop, ('', 'Wax On', 'Wax Off', 'Scrape'))
     room.function('white_ash_init', home=False).add(
         floor('basalt'),
-        set_biome(BiomeId.BASALT_DELTAS))
-    room.function('witch', home=False).add(fast().run(particle(Particle.WITCH, r(0, 2.3, 0), 0.3, 0.3, 0.3, 0, 6)))
+        set_biome(BASALT_DELTAS))
+    room.function('witch', home=False).add(fast().run(particle(WITCH, r(0, 2.3, 0), 0.3, 0.3, 0.3, 0, 6)))
     room.function('witch_init', home=False).add(exemplar('witch', 0, {'NoAI': True}))
 
     # Keeping these in case of future need:
@@ -531,7 +531,7 @@ def check_for_unused():
         used.add(p.enum)
         for a in p.also:
             used.add(a)
-    avail = set(x for x in Particle) - unused_particles
+    avail = set(x.name for x in particles) - unused_particles
     unused = tuple(sorted((str(x) for x in (avail - used))))
     if unused:
         raise ValueError(f'Unused particles: {unused}')
