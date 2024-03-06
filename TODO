@@ -1,5 +1,3 @@
-Remove 'enum' case in ActionDesc (no longer used)
-
 maybe keep all the areas loaded so room specific tp works
 
 slime molds aren't all removed on arean switches

@@ -53,12 +53,10 @@ def room():
     room.loop('beacon', slow_clock).loop(
         beacon_loop, (0, 1, 2, 3, 4, 4, 3, 2, 1))
     beacon_start = room.function('beacon_start', home=False).add(
-        tag(e().tag('beacon_homer')).add('beacon_home'),
         at(fill(r(0, 1, 0), r(0, 5, 0), 'gold_block')),
         at(clone(r(0, -5, 1), r(0, -5, 1), r(0, 6, 1))))
     beacon_stop = room.function('beacon_stop', home=False).add(
         at(fill(r(0, 1, 0), r(0, 5, 0), 'chiseled_quartz_block')),
-        tag(e().tag('beacon_homer')).remove('beacon_home'),
         effect().clear(p()))
     room.function('beacon_enter').add(function(beacon_start))
     room.function('beacon_exit').add(function(beacon_stop))
