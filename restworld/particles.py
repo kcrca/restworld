@@ -174,7 +174,7 @@ def set_biome(biome):
 def room():
     check_for_unused()
 
-    def particle_sign(action_desc, wall):
+    def particle_sign(action_desc: ActionDesc, wall):
         dx, _, dz = as_facing(wall.facing).scale(1)
         run_at = execute().at(e().tag('particles_action_home')).positioned(r(0, 2, 0))
         return WallSign(action_desc.sign_text(), (

@@ -104,7 +104,7 @@ def room():
         room.function('switch_to_wither', home=False).add(
             execute().if_().score(withering).matches(0).run(
                 execute().store(SUCCESS).score(switch_effect).run(
-                    data().get(entity, f'active_effects[{{Id:{POISON}}}]')),
+                    data().get(entity, f'active_effects[{{id:"minecraft:poison"}}]')),
                 execute().if_().score(switch_effect).matches(1).run(
                     clear_effect(POISON),
                     give_effect(WITHER)
@@ -113,7 +113,7 @@ def room():
         room.function('switch_to_poison', home=False).add(
             execute().if_().score(withering).matches(1).run(
                 execute().store(SUCCESS).score(switch_effect).run(
-                    data().get(entity, f'active_effects[{{Id:{WITHER}}}]')),
+                    data().get(entity, f'active_effects[{{id:"minecraft:wither"}}]')),
                 execute().if_().score(switch_effect).matches(1).run(
                     clear_effect(WITHER),
                     give_effect(POISON)

@@ -555,7 +555,7 @@ class ActionDesc:
         return str(self.enum).replace('|', ' ') if self.enum else self.name
 
     def func(self):
-        return str(self.enum) if self.enum else self.name
+        return str(self.enum) if self.enum else self.which
 
     def sign_text(self):
         block = Block(self.enum.value if self.enum else self.which, name=self.name.title())
