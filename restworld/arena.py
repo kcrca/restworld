@@ -2,8 +2,11 @@ from __future__ import annotations
 
 import sys
 
-from pynecraft.base import Arg, EAST, GT, LT, Nbt, r, to_id
-from pynecraft.commands import Entity, RANDOM, Score, a, data, e, execute, fill, function, kill, setblock, summon, tag
+from pynecraft.base import Arg, EAST, GT, LT, Nbt, r, seconds, to_id
+from pynecraft.commands import Entity, RANDOM, REPLACE, Score, a, data, e, execute, fill, function, kill, \
+    schedule, \
+    setblock, \
+    summon, tag
 from pynecraft.function import Function, Loop
 from pynecraft.simpler import Item, Region, Sign, WallSign
 from restworld.rooms import Room, label
@@ -280,14 +283,29 @@ def room():
             for who in ('hunter', 'victim')),
     )
 
-    # Types: 0-normal, 1-water, 2-undead
+    # The splitters create a problem -- if a splitter was killed but, before its kids are spawned, a new battle is
+    # started, those kids will spawn into the new battle. We clean this up by figuring out if we are switching from
+    # an old battle with splitters to a new one without, and if so, we schedule a killing of holdover splitters a
+    # second later. There is a standard "frog_food" entity tag that includes all splitters, which we use for killing
+    # them; otherwise we'd invent one. But we can't use an "if entity" on them to see if the old battle has splitters
+    # because of a tiny chance that the only such entity was just killed, so the entity wouldn't be found at the "if"
+    # test.
     arena = Region(r(-12, 2, -12), r(12, 4, 12))
     ground = Region(r(-12, 2, -12), r(12, 2, 12))
     sky = Region((r(-20), 250, r(-20)), (r(20), 250, r(20)))
-    # See 'battle_types' map above for meanings
+    is_splitters = room.score('is_splitters')
+    was_splitters = room.score('was_splitters')
+    kill_splitters = room.function('kill_splitters', home=False).add(
+        execute().at(monitor_home).run(kill_em(e().type('#frog_food').distance((None, 100))))
+    )
+    # Battle types: 0-normal, 1-water, 2-undead
     room.function('start_battle', home=False).add(
+        was_splitters.set(h_is_splitter + v_is_splitter),
         h_is_splitter.set(Arg('hunter_is_splitter')),
         v_is_splitter.set(Arg('victim_is_splitter')),
+        is_splitters.set(h_is_splitter + v_is_splitter),
+        execute().unless().score(was_splitters).matches(0).if_().score(is_splitters).matches(0).run(
+            schedule().function(kill_splitters, seconds(1), REPLACE)),
         execute().unless().score(start_battle_type).matches((0, None)).run(start_battle_type.set(0)),
         execute().unless().score(start_battle_type).matches(1).at(monitor_home).run(arena.fill('air')),
         execute().if_().score(start_battle_type).matches(1).at(monitor_home).run(arena.fill('water')),
