@@ -6,10 +6,10 @@ from pynecraft import info
 from pynecraft.base import EAST, EQ, NE, NORTH, NW, Nbt, NbtDef, SOUTH, WEST, as_facing, r, to_id
 from pynecraft.commands import Block, BlockDef, Entity, LONG, MOD, PLUS, RESULT, as_block, data, e, execute, fill, \
     fillbiome, function, item, kill, random, s, scoreboard, setblock, summon, tag
-from pynecraft.enums import BiomeId
 from pynecraft.function import BLOCKS
 from pynecraft.info import colors, stems, trim_materials, trim_patterns
-from pynecraft.simpler import Item, ItemFrame, Region, Sign, WallSign
+from pynecraft.simpler import Item, ItemFrame, Region, SWAMP, Sign, WallSign
+from pynecraft.values import COLD_OCEAN, FROZEN_OCEAN, LUKEWARM_OCEAN, MANGROVE_SWAMP, MEADOW, OCEAN, WARM_OCEAN, biomes
 from restworld.rooms import Room, label
 from restworld.world import fast_clock, kill_em, main_clock, restworld
 
@@ -152,18 +152,9 @@ def room():
         yield fillbiome(r(-1, 0, -5), r(9, 6, 1), step.elem)
         yield fill(r(-1, 0, -5), r(9, 6, 1), 'water').replace('ice')
         yield fill(r(-1, 0, -5), r(9, 6, 1), 'air').replace('snow')
-        yield Sign.change(r(0, 2, 0), (None, None, None, step.elem.display_name()))
+        yield Sign.change(r(0, 2, 0), (None, None, None, biomes[step.elem].name))
 
-    water_biomes = (
-        BiomeId.MEADOW,
-        BiomeId.FROZEN_OCEAN,
-        BiomeId.COLD_OCEAN,
-        BiomeId.OCEAN,
-        BiomeId.LUKEWARM_OCEAN,
-        BiomeId.WARM_OCEAN,
-        BiomeId.SWAMP,
-        BiomeId.MANGROVE_SWAMP,
-    )
+    water_biomes = (MEADOW, FROZEN_OCEAN, COLD_OCEAN, OCEAN, LUKEWARM_OCEAN, WARM_OCEAN, SWAMP, MANGROVE_SWAMP)
     room.function('water_init').add(
         WallSign((None, 'Flowing Water', 'Biome:')).place(r(0, 2, 0), WEST),
         WallSign((None, 'Flowing Lava')).place(r(0, 2, 6), WEST),

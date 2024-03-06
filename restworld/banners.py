@@ -3,8 +3,8 @@ from __future__ import annotations
 from pynecraft.base import EQ, SOUTH, d, r
 from pynecraft.commands import Block, COLORS, Entity, INT, RESULT, WHITE, data, e, execute, fill, function, kill, s, \
     setblock, tag
-from pynecraft.enums import Pattern
 from pynecraft.simpler import Shield, TextDisplay, WallSign
+from pynecraft.values import PATTERN_GROUP, as_pattern, patterns
 from restworld.rooms import Room, label
 from restworld.world import die, main_clock, restworld
 
@@ -95,14 +95,15 @@ def room():
             xt = -xt
         if zn < 0:
             zt = -zt
-        name = ' '.join(Pattern.sign_text(pattern))
+        name = patterns[as_pattern(pattern)].name
         nbt = {'Rotation': [angle, 0], 'Tags': stand.nbt['Tags']}
         yield TextDisplay(name).scale(0.5).tag('banner_name').summon(r(x + xt, text_y, z + zt), nbt)
 
     def render_banners(render, handback=None):
         # These are in the first adjustment, but python doesn't know that, so this keeps it happy
         x = z = xd = zd = xn = zn = angle = facing = bx = bz = 0
-        for i, pattern in enumerate(Pattern):
+        for i, pat in enumerate(PATTERN_GROUP):
+            pattern = patterns[pat]
             try:
                 x, xn, xd, z, zn, zd, angle, facing, bx, bz = adjustments[i]
             except KeyError:
@@ -111,7 +112,7 @@ def room():
             if i > 10 and i % 10 == 6:
                 x += xd
                 z += zd
-            yield render(x, xn, z, zn, angle, facing, bx, bz, 3.65, 3.65, pattern, handback)
+            yield render(x, xn, z, zn, angle, facing, bx, bz, 3.65, 3.65, pattern.value, handback)
 
     def custom_banner(x, z, nudge):
         stand1 = stand_tmpl.clone()

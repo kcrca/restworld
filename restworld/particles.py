@@ -6,12 +6,39 @@ import random
 from pynecraft.base import EAST, NORTH, Nbt, OVERWORLD, SOUTH, WEST, as_facing, d, r
 from pynecraft.commands import Block, CLEAR, Entity, RAIN, REPLACE, a, data, e, execute, fill, fillbiome, function, \
     item, kill, p, particle, playsound, schedule, setblock, summon, tp, weather
-from pynecraft.simpler import TextDisplay, VILLAGER_BIOMES, VILLAGER_PROFESSIONS, WallSign
-from pynecraft.values import *
+from pynecraft.simpler import PLAINS, TextDisplay, VILLAGER_BIOMES, VILLAGER_PROFESSIONS, WallSign
+from pynecraft.values import AMBIENT_ENTITY_EFFECT, ANGRY_VILLAGER, ASH, BASALT_DELTAS, BLOCK, BLOCK_MARKER, BUBBLE, \
+    BUBBLE_COLUMN_UP, \
+    BUBBLE_POP, CAMPFIRE_COSY_SMOKE, CAMPFIRE_SIGNAL_SMOKE, CHERRY_LEAVES, CLOUD, COMPOSTER, CRIMSON_FOREST, \
+    CRIMSON_SPORE, CRIT, \
+    CURRENT_DOWN, \
+    DAMAGE_INDICATOR, DOLPHIN, \
+    DRAGON_BREATH, DRIPPING_DRIPSTONE_LAVA, DRIPPING_DRIPSTONE_WATER, DRIPPING_HONEY, DRIPPING_LAVA, \
+    DRIPPING_OBSIDIAN_TEAR, \
+    DRIPPING_WATER, DUST, DUST_COLOR_TRANSITION, DUST_PLUME, EFFECT, EGG_CRACK, ELDER_GUARDIAN, ELECTRIC_SPARK, ENCHANT, \
+    ENCHANTED_HIT, \
+    END_ROD, \
+    ENTITY_EFFECT, EXPLOSION, EXPLOSION_EMITTER, FALLING_DRIPSTONE_LAVA, \
+    FALLING_DRIPSTONE_WATER, FALLING_DUST, FALLING_HONEY, \
+    FALLING_LAVA, FALLING_NECTAR, FALLING_OBSIDIAN_TEAR, FALLING_SPORE_BLOSSOM, FALLING_WATER, FIREWORK, FISHING, FLAME, \
+    FLASH, GLOW, \
+    GLOW_SQUID_INK, GUST, \
+    GUST_DUST, \
+    GUST_EMITTER, \
+    HAPPY_VILLAGER, HEART, INSTANT_EFFECT, ITEM, ITEM_SLIME, ITEM_SNOWBALL, LANDING_HONEY, \
+    LANDING_LAVA, LANDING_OBSIDIAN_TEAR, LARGE_SMOKE, LAVA, MYCELIUM, NAUTILUS, NOTE, POOF, PORTAL, \
+    REVERSE_PORTAL, \
+    SCRAPE, SCULK_CHARGE, SCULK_CHARGE_POP, SCULK_SOUL, SHRIEK, SMALL_FLAME, SMOKE, \
+    SNEEZE, SNOWFLAKE, SNOWY_TAIGA, SONIC_BOOM, SOUL, SOUL_FIRE_FLAME, SOUL_SAND_VALLEY, SPIT, SPLASH, \
+    SPORE_BLOSSOM_AIR, SQUID_INK, \
+    SWEEP_ATTACK, \
+    TOTEM_OF_UNDYING, \
+    TRIAL_SPAWNER_DETECTION, UNDERWATER, VAULT_CONNECTION, VIBRATION, WARPED_FOREST, WARPED_SPORE, WAX_OFF, WAX_ON, \
+    WHITE_ASH, WITCH
 from restworld.rooms import ActionDesc, SignedRoom, Wall, span
 from restworld.world import fast_clock, kill_em, main_clock, restworld, slow_clock
 
-particles = [
+actions = [
     ActionDesc(AMBIENT_ENTITY_EFFECT, 'Ambient|Entity|Effect'),
     ActionDesc(ANGRY_VILLAGER),
     ActionDesc(ASH),
@@ -94,7 +121,7 @@ unused_particles = {
     FALLING_NECTAR,  # Shown with the bees in the Friendlies room
     SPORE_BLOSSOM_AIR, FALLING_SPORE_BLOSSOM,  # Just outside the room
 }
-particles.sort(key=lambda x: x.sort_key())
+actions.sort(key=lambda x: x.sort_key())
 # Notes:
 #    Maybe spit can be made to work with a live llama hitting a wolf, but the llama must be penned in, etc.
 #
@@ -162,7 +189,7 @@ def room():
     e_wall_used = {5: span(1, 6), 4: span(1, 6), 3: span(1, 6), 2: span(1, 6)}
     n_wall_used = {4: span(1, 5), 3: span(1, 5), 2: span(1, 5)}
     w_wall_used = {5: span(0, 5), 4: span(0, 5), 3: span(0, 5), 2: span(0, 5)}
-    room = SignedRoom('particles', restworld, SOUTH, (None, 'Particles'), particle_sign, particles, (
+    room = SignedRoom('particles', restworld, SOUTH, (None, 'Particles'), particle_sign, actions, (
         Wall(7, EAST, 1, -1, e_wall_used),
         Wall(7, SOUTH, 1, -7, n_wall_used),
         Wall(7, WEST, 7, -7, w_wall_used),
@@ -527,11 +554,11 @@ def room():
 def check_for_unused():
     # Check for unexpectedly unhandled particles
     used = set()
-    for p in particles:
+    for p in actions:
         used.add(p.enum)
         for a in p.also:
             used.add(a)
-    avail = set(x.name for x in particles) - unused_particles
+    avail = set(x.enum for x in actions) - unused_particles
     unused = tuple(sorted((str(x) for x in (avail - used))))
     if unused:
         raise ValueError(f'Unused particles: {unused}')

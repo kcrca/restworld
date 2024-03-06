@@ -2,8 +2,8 @@ import collections
 
 from pynecraft.base import NORTH, OVERWORLD, r, to_id
 from pynecraft.commands import CLEAR, data, e, execute, fill, fillbiome, function, kill, say, setblock, weather
-from pynecraft.enums import BiomeId
-from pynecraft.simpler import WallSign
+from pynecraft.simpler import PLAINS, WallSign
+from pynecraft.values import BASALT_DELTAS, NETHER_WASTES, SMALL_END_ISLANDS, WARM_OCEAN, as_biome
 from restworld.rooms import Room, label
 from restworld.world import restworld
 
@@ -21,8 +21,8 @@ biome_groups['End'] = ('The End', 'End City', 'End Island')
 biome_groups['Structures'] = ('Mineshaft', 'Monument', 'Stronghold', 'Trial Chambers', 'Bastion Remnant', 'Fortress')
 biomes = [item for sublist in list(biome_groups.values()) for item in sublist]
 
-biome_ids = {'End City': BiomeId.SMALL_END_ISLANDS, 'Monument': BiomeId.WARM_OCEAN,
-             'Bastion Remnant': BiomeId.BASALT_DELTAS, 'Fortress': BiomeId.NETHER_WASTES}
+biome_ids = {'End City': SMALL_END_ISLANDS, 'Monument': WARM_OCEAN, 'Bastion Remnant': BASALT_DELTAS,
+             'Fortress': NETHER_WASTES}
 
 
 def categories():
@@ -92,9 +92,9 @@ def trigger(biome, prefix, i, x, y, z, handback):
 
 def load_biome_loop(step):
     try:
-        biome_id = BiomeId(to_id(step.elem))
+        biome_id = as_biome(to_id(step.elem))
     except ValueError:
-        biome_id = biome_ids.get(step.elem, BiomeId.PLAINS)
+        biome_id = biome_ids.get(step.elem, PLAINS)
 
     # noinspection PyUnusedLocal
     def setup(biome, prefix, i, x, y, z, handback):

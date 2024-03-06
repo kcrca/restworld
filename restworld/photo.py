@@ -8,7 +8,7 @@ from pynecraft.base import EAST, NE, NORTH, OVERWORLD, SW, as_facing, r, to_id
 from pynecraft.commands import Block, CREATIVE, Entity, SURVIVAL, e, execute, fill, function, gamemode, kill, p, \
     setblock, tp
 from pynecraft.info import colors, corals, stems, woods
-from pynecraft.simpler import Offset
+from pynecraft.simpler import Item, Offset
 from restworld.rooms import MobPlacer, Room, label
 from restworld.world import restworld
 
@@ -130,6 +130,11 @@ def get_normal_blocks():
             yield to_id(w).replace('_lazuli', '').replace('bale', 'block')
 
 
+def armor(kind):
+    return Entity('armor_stand', nbt={
+        'ArmorItems': list(Item.nbt_for(f'{kind}_{a}') for a in ('helmet', 'chestplate', 'leggings''boots'))})
+
+
 def room():
     room = Room('photo', restworld)
 
@@ -191,6 +196,9 @@ def room():
         function(do_drop),
         kill(e().type('item'))
     )
+    # room.function('photo_armors_init').add(
+    #     armor('leather').summon(r(0, 3, 0), SOUTH)
+    # )
     room.function('photo_mobs_view', home=False).add(
         execute().in_(OVERWORLD).run(tp(p(), (-1006.5, 109, 1036.5)).facing((-955.5, 88, 1034))),
         function(do_drop),

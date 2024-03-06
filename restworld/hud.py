@@ -4,8 +4,8 @@ from pynecraft.base import NORTH, Nbt, r
 from pynecraft.commands import CREATIVE, Entity, LEVELS, POINTS, SUCCESS, SURVIVAL, data, e, effect, execute, \
     function, \
     gamemode, item, p, xp
-from pynecraft.enums import Effect
 from pynecraft.simpler import WallSign
+from pynecraft.values import ABSORPTION, POISON, REGENERATION, WITHER
 from restworld.rooms import Room, label
 from restworld.world import kill_em, main_clock, restworld
 
@@ -57,10 +57,10 @@ def room():
     # Use for both the player and the horse. The horse will never have absorption or wither, but it isn't very expensive
     # to check for them, and keeps this code simpler.
     def health_funcs(prefix, entity, min_health, max_health):
-        def give_effect(ef: Effect):
+        def give_effect(ef: str):
             return effect().give(entity, ef, effect_time, 0, True)
 
-        def clear_effect(ef: Effect | None):
+        def clear_effect(ef: str | None):
             return effect().clear(entity, ef)
 
         cur_health = room.score(f'{prefix}cur_health')
@@ -85,17 +85,17 @@ def room():
 
             execute().if_().score(cur_health).matches((None, min_health)).run(
                 execute().if_().score(health_up).matches(0).run(
-                    clear_effect(Effect.POISON),
-                    clear_effect(Effect.WITHER),
-                    give_effect(Effect.REGENERATION)),
+                    clear_effect(POISON),
+                    clear_effect(WITHER),
+                    give_effect(REGENERATION)),
                 health_up.set(1)),
             execute().if_().score(cur_health).matches(max_health).if_().score(health_up).matches(1).run(
                 execute().if_().score(absorption).matches(0).run(
-                    give_effect(Effect.ABSORPTION)),
+                    give_effect(ABSORPTION)),
                 execute().unless().score(absorption).matches(0).run(
-                    clear_effect(Effect.REGENERATION),
-                    execute().if_().score(withering).matches(1).run(give_effect(Effect.WITHER)),
-                    execute().unless().score(withering).matches(1).run(give_effect(Effect.POISON)),
+                    clear_effect(REGENERATION),
+                    execute().if_().score(withering).matches(1).run(give_effect(WITHER)),
+                    execute().unless().score(withering).matches(1).run(give_effect(POISON)),
                     health_up.set(0))))
         room.function(f'{prefix}health_exit').add(clear_effect(None))
         if 'horse' in prefix:
@@ -104,19 +104,19 @@ def room():
         room.function('switch_to_wither', home=False).add(
             execute().if_().score(withering).matches(0).run(
                 execute().store(SUCCESS).score(switch_effect).run(
-                    data().get(entity, f'active_effects[{{Id:{Effect.POISON.id()}}}]')),
+                    data().get(entity, f'active_effects[{{Id:{POISON}}}]')),
                 execute().if_().score(switch_effect).matches(1).run(
-                    clear_effect(Effect.POISON),
-                    give_effect(Effect.WITHER)
+                    clear_effect(POISON),
+                    give_effect(WITHER)
                 )),
             withering.set(1))
         room.function('switch_to_poison', home=False).add(
             execute().if_().score(withering).matches(1).run(
                 execute().store(SUCCESS).score(switch_effect).run(
-                    data().get(entity, f'active_effects[{{Id:{Effect.WITHER.id()}}}]')),
+                    data().get(entity, f'active_effects[{{Id:{WITHER}}}]')),
                 execute().if_().score(switch_effect).matches(1).run(
-                    clear_effect(Effect.WITHER),
-                    give_effect(Effect.POISON)
+                    clear_effect(WITHER),
+                    give_effect(POISON)
                 )),
             withering.set(0))
 

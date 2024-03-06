@@ -5,9 +5,9 @@ from typing import Callable
 from pynecraft import info
 from pynecraft.base import EAST, NORTH, Nbt, SOUTH, WEST, r, to_id, to_name
 from pynecraft.commands import Block, JsonText, data, e, execute, fill, fillbiome, function, kill, setblock, tag
-from pynecraft.enums import BiomeId
 from pynecraft.info import small_flowers, stems, tulips
-from pynecraft.simpler import Region, Sign, WallSign
+from pynecraft.simpler import JUNGLE, PLAINS, Region, SAVANNA, Sign, WallSign
+from pynecraft.values import BIRCH_FOREST, DARK_FOREST, MANGROVE_SWAMP, SNOWY_TAIGA
 from restworld.rooms import Room, label
 from restworld.world import fast_clock, main_clock, restworld, text_display
 
@@ -251,9 +251,10 @@ def room():
     room.loop('sweet_berry_soil', main_clock).loop(lambda step: setblock(r(0, 2, 1), step.elem),
                                                    ('Grass Block', 'Dirt', 'Podzol', 'Coarse Dirt'))
 
-    tree_types = {'Acacia': BiomeId.SAVANNA, 'Birch': BiomeId.BIRCH_FOREST, 'Cherry': "cherry_grove",
-                  'Jungle': BiomeId.JUNGLE, 'Mangrove': BiomeId.MANGROVE_SWAMP, 'Oak': BiomeId.PLAINS,
-                  'Dark Oak': BiomeId.DARK_FOREST, 'Spruce': BiomeId.SNOWY_TAIGA}
+    tree_types = {
+        'Acacia': SAVANNA, 'Birch': BIRCH_FOREST, 'Cherry': "cherry_grove", 'Jungle': JUNGLE,
+        'Mangrove': MANGROVE_SWAMP, 'Oak': PLAINS, 'Dark Oak': DARK_FOREST, 'Spruce': SNOWY_TAIGA
+    }
 
     def trees_loop(step):
         tree, biome = step.elem

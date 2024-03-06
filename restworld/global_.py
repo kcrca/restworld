@@ -7,9 +7,9 @@ from pynecraft.base import Arg, EAST, EQ, GAMETIME, NORTH, OVERWORLD, Position, 
     WEST, r
 from pynecraft.commands import Block, FORCE, MINUS, MOD, MOVE, RAIN, REPLACE, RESULT, Score, clone, data, e, execute, \
     fill, function, gamerule, kill, p, return_, s, schedule, scoreboard, setblock, tag, teleport, time, tp, weather
-from pynecraft.enums import ScoreCriteria
 from pynecraft.function import Function
 from pynecraft.simpler import VILLAGER_PROFESSIONS, WallSign
+from pynecraft.values import DUMMY
 from restworld.rooms import Room
 from restworld.world import clock, kill_em, restworld, tick_clock
 
@@ -115,7 +115,7 @@ def room():
     room.home_func('clock'),
     room.add(Function('clock_init').add(
         scoreboard().objectives().remove('clocks'),
-        scoreboard().objectives().add('clocks', ScoreCriteria.DUMMY),
+        scoreboard().objectives().add('clocks', DUMMY),
         list(c.speed.set(c.init_speed) for c in restworld.clocks()),
         list(c.time.set(-1) for c in restworld.clocks()),
         tick_clock.time.set(0),

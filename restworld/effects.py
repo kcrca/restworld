@@ -2,35 +2,35 @@ from __future__ import annotations
 
 from pynecraft.base import EAST, SOUTH, WEST, as_facing, d, r
 from pynecraft.commands import MAX_EFFECT_SECONDS, e, effect, execute, fill, function, p, setblock
-from pynecraft.enums import Effect
 from pynecraft.simpler import WallSign
+from pynecraft.values import BAD_LUCK, EFFECT_GROUP, HERO_OF_THE_VILLAGE, effects
 from restworld.rooms import ActionDesc, SignedRoom, Wall, label, span
 from restworld.world import restworld
 
 display_names = {
-    Effect.BAD_LUCK: 'Bad Luck',
-    Effect.HERO_OF_THE_VILLAGE: 'Hero|of the Village',
+    BAD_LUCK: 'Bad Luck',
+    HERO_OF_THE_VILLAGE: 'Hero|of the Village',
 }
 
 
 def _desc_for(effect):
-    pos = effect.positive()
+    pos = effects[effect].positive
     return 'Positive' if pos else 'Negative' if pos is not None else None
 
 
-effects = [ActionDesc(e, display_names.get(e, None), _desc_for(e)) for e in Effect]
-effects.sort()
+actions = [ActionDesc(e, display_names.get(e, None), _desc_for(e)) for e in EFFECT_GROUP]
+actions.sort()
 
 
 def room():
     def effect_sign(action_desc, wall):
         dx, _, dz = as_facing(wall.facing).scale(1)
-        return WallSign(action_desc.sign_text(), (
+        return WallSign(effects[action_desc.which].name, (
             setblock(d(-dx, 0, -dz), 'emerald_block'),
             effect().give(p(), action_desc.enum, MAX_EFFECT_SECONDS)))
 
     wall_used = {4: span(2, 4), 3: span(1, 5), 2: span(2, 4)}
-    room = SignedRoom('effects', restworld, SOUTH, (None, 'Mob Effects'), effect_sign, effects, (
+    room = SignedRoom('effects', restworld, SOUTH, (None, 'Mob Effects'), effect_sign, actions, (
         Wall(7, EAST, 1, -1, wall_used),
         Wall(7, SOUTH, 1, -7, wall_used),
         Wall(7, WEST, 7, -7, wall_used),
@@ -43,7 +43,7 @@ def room():
     # to find the 'off' button. Reexamine this if someone complains, maybe the bug will be
     # fixed then?
     room.function('effects_all').add(
-        (effect().give(p(), x, MAX_EFFECT_SECONDS) for x in Effect),
+        (effect().give(p(), x, MAX_EFFECT_SECONDS) for x in EFFECT_GROUP),
         execute().at(e().tag('effects_signs_home')).positioned(r(0, 1, 0)).run(
             function('restworld:effects/effects_all_shown')))
     effects_none = room.function('effects_none').add(

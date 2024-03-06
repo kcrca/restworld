@@ -5,13 +5,11 @@ from pynecraft import info
 from pynecraft.base import EAST, EQ, NORTH, as_facing, d, r, to_name
 from pynecraft.commands import REPLACE, comment, data, e, execute, fill, function, item, kill, p, schedule, setblock, \
     summon, tag
-from pynecraft.enums import ValueEnum
 from pynecraft.info import block_items
 from pynecraft.simpler import Item, ItemFrame, Sign, WallSign
 from restworld import global_
 from restworld.rooms import ActionDesc, SignedRoom, Wall, label, named_frame_item, span
 from restworld.world import fast_clock, restworld
-
 
 # The item area...
 #
@@ -45,15 +43,9 @@ from restworld.world import fast_clock, restworld
 # (*) Some blocks have no item version (e.g., water and lava). We leave
 # them out of the block list.
 
-class Mode(ValueEnum):
-    SAMPLER_BLOCKS = 'sampler_blocks'
-    BLOCKS = 'blocks'
-    MANUAL = 'manual'
-    ITEMS = 'items'
-    SAMPLER_ITEMS = 'sampler_items'
+modes = ['sampler_blocks', 'blocks', 'manual', 'items', 'sampler_items']
 
-
-modes = [ActionDesc(e, to_name(e.value)) for e in Mode]
+modes = [ActionDesc(e, to_name(e)) for e in modes]
 
 sample_pats = (
     'Stairs', r'Slab', r'Planks', r'Fence$', r'Fence Gate', r'Stripped.* (?:Logs|Stem)', r'(?<!Stripped).* Wood$',
@@ -109,12 +101,12 @@ def sample(which, things):
 def room():
     model_home = e().tag('model_home')
 
-    def mode_sign(action_desc, wall):
+    def mode_sign(action_desc: ActionDesc, wall):
         dx, _, dz = as_facing(wall.facing).scale(1)
         return WallSign(action_desc.sign_text(), (
             fill(r(-dx, -2, -5), r(-dx, 2, 5), 'smooth_quartz').replace('emerald_block'),
             setblock(d(-dx, 0, -dz), 'emerald_block'),
-            execute().at(model_home).run(function(f'restworld:models/start_{action_desc.enum}'))))
+            execute().at(model_home).run(function(f'restworld:models/start_{action_desc.which}'))))
 
     wall_used = {3: span(1, 5)}
     room = SignedRoom('models', restworld, EAST, (None, 'Models',), mode_sign, modes,

@@ -6,9 +6,9 @@ from pynecraft import commands
 from pynecraft.base import EAST, EQ, NORTH, Nbt, SOUTH, WEST, r, to_id
 from pynecraft.commands import Block, COLORS, Entity, FORCE, LONG, MOD, RESULT, Score, as_facing, clone, data, e, \
     execute, function, item, kill, player, ride, s, scoreboard, setblock, summon, tag, tp
-from pynecraft.enums import ScoreCriteria
 from pynecraft.info import axolotls, colors, horses, music_discs, tropical_fish
 from pynecraft.simpler import Item, PLAINS, Sign, VILLAGER_BIOMES, VILLAGER_PROFESSIONS, Villager, WallSign
+from pynecraft.values import DUMMY
 from restworld.rooms import MobPlacer, Room, label
 from restworld.world import fast_clock, kill_em, main_clock, restworld
 
@@ -730,7 +730,7 @@ def all_fish_funcs(room):
             yield summon
         yield (
             scoreboard().objectives().remove('fish'),
-            scoreboard().objectives().add('fish', ScoreCriteria.DUMMY),
+            scoreboard().objectives().add('fish', DUMMY),
             num_colors.set(len(COLORS)),
             pattern.set(0),
             pattern_size.set(len(COLORS) ** 2),

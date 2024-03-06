@@ -3,7 +3,6 @@ from __future__ import annotations
 import copy
 import re
 from copy import deepcopy
-from enum import Enum
 from typing import Callable, Iterable, Tuple
 
 from pynecraft.base import BLUE, FacingDef, Nbt, ORANGE, ROTATION_180, ROTATION_270, ROTATION_90, UP, r, \
@@ -12,9 +11,9 @@ from pynecraft.base import BLUE, FacingDef, Nbt, ORANGE, ROTATION_180, ROTATION_
 from pynecraft.commands import Block, BlockDef, CLEAR, Command, Commands, Entity, EntityDef, INT, JsonText, MINUS, \
     NEAREST, Position, RESULT, Score, SignMessages, a, as_block, as_entity, as_facing, as_score, comment, data, e, \
     execute, function, kill, p, say, schedule, scoreboard, setblock, summon, tag, tellraw, tp, weather
-from pynecraft.enums import ScoreCriteria
 from pynecraft.function import DataPack, Function, FunctionSet, LATEST_PACK_VERSION, Loop
 from pynecraft.simpler import TextDisplay, WallSign
+from pynecraft.values import DUMMY
 
 
 def named_frame_item(block: BlockDef = None, name=None, damage=None) -> Nbt:
@@ -348,8 +347,8 @@ class Room(FunctionSet):
     def _add_other_funcs(self):
         to_incr = self.score('_to_incr')
         before_commands = {
-            'init': [scoreboard().objectives().add(self.name, ScoreCriteria.DUMMY),
-                     scoreboard().objectives().add(self.name + '_max', ScoreCriteria.DUMMY),
+            'init': [scoreboard().objectives().add(self.name, DUMMY),
+                     scoreboard().objectives().add(self.name + '_max', DUMMY),
                      (x.set(0) for x in sorted(self._scores, key=lambda x: str(x))),
                      to_incr.set(1)] + [tp(e().tag(self.name), e().tag('death').limit(1)), kill(e().tag(self.name))]}
         after_commands = {
@@ -532,18 +531,12 @@ class Wall:
 
 
 class ActionDesc:
-    def __init__(self, which: Enum | str, name=None, note=None, also=()):
-        if isinstance(which, str):
-            self.enum = None
-            self.name = which
-            if name is None:
-                name = which
-        else:
-            self.enum = which
-            if name is None:
-                # noinspection PyUnresolvedReferences
-                name = which.display_name()
-        self.name = name
+    def __init__(self, which: str, name=None, note=None, also=()):
+        self.enum = None
+        self.which = which
+        self.name = to_name(which)
+        if name is not None:
+            self.name = name
         self.note = '(%s)' % note if note else None
         if isinstance(also, Iterable):
             self.also = also
@@ -565,7 +558,7 @@ class ActionDesc:
         return str(self.enum) if self.enum else self.name
 
     def sign_text(self):
-        block = Block(self.enum.value if self.enum else self.name, name=self.name.title())
+        block = Block(self.enum.value if self.enum else self.which, name=self.name.title())
         sign_text = list(block.sign_text)
         if self.note:
             sign_text.append(self.note)
