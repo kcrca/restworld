@@ -4,7 +4,7 @@ import math
 import os
 import re
 
-from pynecraft.base import EAST, NE, NORTH, OVERWORLD, SW, as_facing, r, to_id
+from pynecraft.base import EAST, NE, NORTH, OVERWORLD, SOUTH, SW, as_facing, r, to_id
 from pynecraft.commands import Block, CREATIVE, Entity, SURVIVAL, e, execute, fill, function, gamemode, kill, p, \
     setblock, tp
 from pynecraft.info import colors, corals, stems, woods
@@ -132,7 +132,8 @@ def get_normal_blocks():
 
 def armor(kind):
     return Entity('armor_stand', nbt={
-        'ArmorItems': list(Item.nbt_for(f'{kind}_{a}') for a in ('helmet', 'chestplate', 'leggings''boots'))})
+        'ArmorItems': list(Item.nbt_for(f'{kind}_{a}') for a in ('boots', 'leggings', 'chestplate', 'helmet'))}).tag(
+        'photo')
 
 
 def room():
@@ -196,9 +197,23 @@ def room():
         function(do_drop),
         kill(e().type('item'))
     )
-    # room.function('photo_armors_init').add(
-    #     armor('leather').summon(r(0, 3, 0), SOUTH)
-    # )
+    # /summon armor_stand ~ ~ ~ {ShowArms:1b,Pose:{LeftArm:[297f,45f,0f]}}
+    room.function('armors_init').add(
+        armor('leather').summon(r(0, 3, 0), facing=SOUTH),
+        armor('iron').summon(r(3, 3, 0), facing=SOUTH),
+        armor('chainmail').summon(r(0, 4, -1), facing=SOUTH),
+
+        Entity('armor_stand', nbt={
+            'ShowArms': True,
+            'HandItems': [Item.nbt_for('trident'), Item.nbt_for('shield')],
+            'Pose': {'LeftArm': [330, 45, 0]},
+            'ArmorItems': [{}, {}, {}, Item.nbt_for('turtle_helmet')]}).tag(
+            'photo').summon(r(1.5, 4, -1), facing=SOUTH),
+
+        armor('golden').summon(r(3, 4, -1), facing=SOUTH),
+        armor('diamond').summon(r(0, 5, -2), facing=SOUTH),
+        armor('netherite').summon(r(3, 5, -2), facing=SOUTH),
+    )
     room.function('photo_mobs_view', home=False).add(
         execute().in_(OVERWORLD).run(tp(p(), (-1006.5, 109, 1036.5)).facing((-955.5, 88, 1034))),
         function(do_drop),
