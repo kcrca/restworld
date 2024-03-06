@@ -25,9 +25,9 @@ actions.sort()
 def room():
     def effect_sign(action_desc, wall):
         dx, _, dz = as_facing(wall.facing).scale(1)
-        return WallSign(effects[action_desc.which].name, (
+        return WallSign(action_desc.sign_text(), (
             setblock(d(-dx, 0, -dz), 'emerald_block'),
-            effect().give(p(), action_desc.enum, MAX_EFFECT_SECONDS)))
+            effect().give(p(), action_desc.which, MAX_EFFECT_SECONDS)))
 
     wall_used = {4: span(2, 4), 3: span(1, 5), 2: span(2, 4)}
     room = SignedRoom('effects', restworld, SOUTH, (None, 'Mob Effects'), effect_sign, actions, (
