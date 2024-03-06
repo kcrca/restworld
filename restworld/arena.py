@@ -3,10 +3,8 @@ from __future__ import annotations
 import sys
 
 from pynecraft.base import Arg, EAST, GT, LT, Nbt, r, seconds, to_id
-from pynecraft.commands import Entity, RANDOM, REPLACE, Score, a, data, e, execute, fill, function, kill, \
-    schedule, \
-    setblock, \
-    summon, tag
+from pynecraft.commands import Entity, RANDOM, REPLACE, Score, a, data, e, execute, fill, function, kill, schedule, \
+    setblock, summon, tag
 from pynecraft.function import Function, Loop
 from pynecraft.simpler import Item, Region, Sign, WallSign
 from restworld.rooms import Room, label

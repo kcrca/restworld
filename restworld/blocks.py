@@ -449,7 +449,7 @@ def room():
             else:
                 yield setblock(r(0, 4, -1 if step.i == 1 else 0), Block('fire', dirs[step.i]))
         nbt = Sign.lines_nbt((None, 'Soul Fire' if step.elem == 'soul_soil' else 'Fire'))
-        yield data().merge(r(0, 2, -1), {'front_text':nbt})
+        yield data().merge(r(0, 2, -1), {'front_text': nbt})
 
     room.function('fire_init').add(WallSign((None, 'Fire')).place(r(0, 2, -1), NORTH))
     room.loop('fire', main_clock).add(fill(r(0, 3, 0), r(0, 5, 0), 'air')).loop(fire_loop, (
@@ -476,7 +476,7 @@ def room():
 
     def item_frame_loop(step):
         yield step.elem.merge_nbt({'Tags': ['item_frame_as_block']}).summon(r(0, 3, -1)),
-        yield data().merge(r(0, 2, -1), {'front_text':Sign.lines_nbt((None, *step.elem.sign_text))})
+        yield data().merge(r(0, 2, -1), {'front_text': Sign.lines_nbt((None, *step.elem.sign_text))})
 
     item_frame_init = kill(e().tag('item_frame_as_block'))
     room.function('item_frame_init').add(item_frame_init)

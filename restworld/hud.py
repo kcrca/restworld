@@ -1,8 +1,7 @@
 from __future__ import annotations
 
 from pynecraft.base import NORTH, Nbt, r
-from pynecraft.commands import CREATIVE, Entity, LEVELS, POINTS, SUCCESS, SURVIVAL, data, e, effect, execute, \
-    function, \
+from pynecraft.commands import CREATIVE, Entity, LEVELS, POINTS, SUCCESS, SURVIVAL, data, e, effect, execute, function, \
     gamemode, item, p, xp
 from pynecraft.simpler import WallSign
 from pynecraft.values import ABSORPTION, POISON, REGENERATION, WITHER
