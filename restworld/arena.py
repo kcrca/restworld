@@ -47,7 +47,7 @@ def room():
         'Bogged': skeleton_nbts,
         'Vindicator': {'Johnny': 'True', 'HandItems': [Item.nbt_for('iron_axe'), {}]},
         # Workaround for https://bugs.mojang.com/browse/MC-249393; stops warden from digging down immediately
-        'Warden': {'Brain': {'memories': {'minecraft:dig_cooldown': {'value': {}, 'ttl': 1200}}}},
+        'Warden': {'Brain': {'memories': {'dig_cooldown': {'value': {}, 'ttl': 1200}}}},
         'Wither Skeleton': {'HandItems': [Item.nbt_for('stone_sword'), {}]},
         'Zombie': {'ArmorItems': [{}, {}, {}, Item.nbt_for('iron_helmet')]},
         'Zombified Piglin': {'HandItems': [Item.nbt_for('golden_sword'), {}]},
