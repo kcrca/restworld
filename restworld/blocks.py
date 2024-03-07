@@ -756,20 +756,18 @@ def color_functions(room):
 
         if is_plain:
             leather_color = {}
-            horse_leather_color = {}
-            llama_decor = {'Count': 0}
+            llama_decor = Item.nbt_for('air')
             sheep_nbt = {'Sheared': True}
         else:
-            leather_color = {'tag': {'Variant': 2, 'display': {'color': color.leather}}}
-            horse_leather_color = {'tag': {'display': {'color': color.leather}}}
-            llama_decor = {'id': color.id + '_carpet', 'Count': 1}
+            leather_color = {'components': {'dyed_color': {'rgb': color.leather}}}
+            llama_decor = {'id': color.id + '_carpet'}
             sheep_nbt = {'Color': color.num, 'Sheared': False}
 
         if is_plain:
             yield kill_em(e().tag('colorings_horse'))
             yield kill_em(e().tag('colorings_dog'))
             yield kill_em(e().tag('colorings_cat'))
-            horse = Entity('horse', nbt=horse_nbt.merge({'body_armor_item': {'id': 'leather_horse_armor', 'Count': 1}}))
+            horse = Entity('horse', nbt=horse_nbt.merge({'body_armor_item': {'id': 'leather_horse_armor'}}))
             yield horse.summon(r(0.7, 2, 4.4))
 
         yield data().merge(e().tag('colorings_armor_stand').limit(1), {
@@ -777,8 +775,7 @@ def color_functions(room):
                            Item.nbt_for('leather_leggings', nbt=leather_color),
                            Item.nbt_for('leather_chestplate', nbt=leather_color),
                            Item.nbt_for('leather_helmet', nbt=leather_color)]})
-        yield data().merge(e().tag('colorings_horse').limit(1),
-                           {'body_armor_item': Item.nbt_for('leather_horse_armor', nbt=horse_leather_color)})
+        yield data().modify(e().tag('colorings_horse').limit(1), 'body_armor_item.components.dyed_color.rgb').set().value(color.leather)
         yield data().merge(e().tag('colorings_llama').limit(1), {'body_armor_item': llama_decor})
         yield data().merge(e().tag('colorings_sheep').limit(1), sheep_nbt)
         yield data().merge(e().tag('colorings_cat').limit(1), {'CollarColor': color.num})
