@@ -3,14 +3,14 @@ from __future__ import annotations
 import re
 
 from pynecraft.base import NORTH, Nbt, NbtDef, SOUTH, WEST, r
-from pynecraft.commands import Block, JsonText, REPLACE, clone, data, e, execute, fill, kill, schedule, setblock
+from pynecraft.commands import Block, JsonText, clone, data, e, execute, fill, kill, setblock
 from pynecraft.simpler import Book, ItemFrame, TextDisplay, WallSign
 from restworld.rooms import Room, ensure
 from restworld.world import restworld
 
 
 def name_nbt(name: str) -> NbtDef:
-    return {'tag': {'display': {'Name': JsonText.text(name)}}}
+    return {'components': {'custom_name': JsonText.text(name)}}
 
 
 def room():
@@ -25,29 +25,26 @@ def room():
     p_north = room.mob_placer(r(3, 4, -3), SOUTH, -1, adults=True)
     p_mid = room.mob_placer(r(8, 4, -1), WEST, -1, adults=True)
     icons = {
-        'Target X': {'type': 4},
-        'Target Point': {'type': 5},
-        'Red X': {'type': 26},
-        'Monument': {'type': 9},
-        'Mansion': {'type': 8},
-        'Desert Village': {'type': 27},
-        'Plains Village': {'type': 28},
-        'Savannah Village': {'type': 29},
-        'Snowy Village': {'type': 30},
-        'Taiga Village': {'type': 31},
-        'Jungle Pyramid': {'type': 32},
-        'Swamp Hut': {'type': 33},
+        'Target X': 'target_x',
+        'Target Point': 'target_point',
+        'Red X': 'red_x',
+        'Monument': 'monument',
+        'Mansion': 'mansion',
+        'Desert Village': 'village_desert',
+        'Plains Village': 'village_plains',
+        'Savanna Village': 'village_savanna',
+        'Snowy Village': 'village_snowy',
+        'Taiga Village': 'village_taiga',
+        'Jungle Temple': 'jungle_temple',
+        'Swamp Hut': 'swamp_hut'
     }
+    decorations = Nbt()
     four_per_z = 128 / 5
     xs = (88, 128, 168)
     col = 0
     z = -64 + four_per_z
-    for i, name in enumerate(icons):
-        nbt = icons[name]
-        nbt['id'] = f'_{i}'
-        nbt['x'] = xs[col]
-        nbt['z'] = z
-        nbt['rot'] = 180
+    for i, (name, id) in enumerate(icons.items()):
+        decorations[id] = {'rotation': 180, 'x': xs[col], 'z': z, 'type': id, 'name': name}
         if i % 4 == 3:
             col += 1
             z = -64
@@ -56,8 +53,6 @@ def room():
     banner_frame_tag = 'map_banner_frame'
     banner_label = TextDisplay('Banner Icons',
                                {'background': 0, 'shadow_radius': 0}).scale(0.2).tag('map_label', 'map_banner_label')
-    set_map_icon = room.function('set_map_icons', home=False).add(
-        data().modify(e().tag(icon_frame_tag).limit(1), 'Item.tag.Decorations').set().value(list(icons.values())))
     room_init = room.function('maps_room_init', exists_ok=True).add(
         p_north.summon(ItemFrame(SOUTH).item(map(142, name_nbt('Biomes')))),
         WallSign((None, 'Biome', 'Sampler'), SOUTH).place(r(4, 3, -3), SOUTH),
@@ -73,8 +68,7 @@ def room():
         p_mid.summon(ItemFrame(WEST).item(map(133, name_nbt('Main (right)'))).tag(icon_frame_tag)),
         room.mob_placer(r(8, 3, 0), WEST, adults=True).summon(ItemFrame(WEST).item(map(20, name_nbt('Main (bot)')))),
         WallSign((None, 'Center', 'Area')).place(r(8, 3, 1), WEST),
-        schedule().function(set_map_icon, "1s", REPLACE),
-
+        data().modify(e().tag(icon_frame_tag).limit(1), 'Item.components.map_decorations').set().value(decorations),
         room.mob_placer(r(6, 4, 3), NORTH, adults=True).summon(ItemFrame(NORTH).item(map(32, name_nbt('Optifine')))),
         WallSign(('Optifine:', 'Connected', 'Textures and', 'Mob Textures'), NORTH).place(r(5, 3, 3), NORTH),
 
@@ -85,8 +79,9 @@ def room():
 
         execute().at(e().tag(banner_frame_tag)).run(banner_label.summon(r(-0.04, 0.17, -0.12), facing=WEST)),
     )
-    for i, (k, v) in enumerate(icons.items()):
-        label = TextDisplay(k, {'background': 0, 'shadow_radius': 0}).scale(0.1).tag('map_label', f'map_label_{i}')
+    for i, (k, v) in enumerate(decorations.items()):
+        label = TextDisplay(v['name'], {'background': 0, 'shadow_radius': 0}).scale(0.1).tag('map_label',
+                                                                                             f'map_label_{i}')
         y = v['z'] / -128.0 + 0.05
         z = v['x'] / 128.0 - 1
         room_init.add(execute().at(e().tag(icon_frame_tag)).run(label.summon(r(-0.04, y, z), facing=WEST)))
@@ -135,7 +130,7 @@ def apologia():
 
 
 def map(num: int, added_nbt: NbtDef = None):
-    nbt = Nbt({'tag': {'map': num}})
+    nbt = Nbt({'components': {'map_id': num}})
     if added_nbt:
         nbt = nbt.merge(added_nbt)
     return 'filled_map', {}, nbt
