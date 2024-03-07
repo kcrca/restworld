@@ -189,9 +189,7 @@ def room():
     room.function('ladder_init').add(setblock(r(0, 3, 0), 'ladder'))
     blocks('music', SOUTH, (
         Block('Note Block'), Block('Jukebox'),
-        Block('jukebox',
-              {'has_record': True},
-              {'IsPlaying': True, 'RecordItem': {'id': 'music_disc_pigstep', 'Count': 1}},
+        Block('jukebox', {'has_record': True}, {'IsPlaying': True, 'RecordItem': {'id': 'music_disc_pigstep'}},
               name='Jukebox|Playing')))
     blocks('netherrack', NORTH, ('Netherrack', 'Warped Nylium', 'Crimson Nylium'))
     blocks('obsidian', SOUTH, ('Obsidian', 'Crying Obsidian'))
@@ -205,7 +203,7 @@ def room():
     blocks('respawn_anchor', NORTH, (Block('Respawn Anchor', {'charges': x}) for x in range(0, 5)),
            labels=tuple(('Respawn Anchor', f'Charges: {x:d}') for x in range(0, 5)))
 
-    suspicious_data = {'item': {'id': 'emerald', 'Count': 1}}
+    suspicious_data = {'item': {'id': 'emerald'}}
 
     def suspicious(which):
         return (which,) + tuple(
@@ -603,15 +601,15 @@ def room():
             elif step.elem == 2:
                 state = 'Ejecting'
                 yield setblock(pos, Block('vault', {'vault_state': 'ejecting'}))
-                nbt = {'items_to_eject': [{'id': "minecraft:shield", 'Count': 1, 'Tags': 'ejected'},
-                                          {'id': "minecraft:diamond_chestplate", 'Count': 1,
+                nbt = {'items_to_eject': [{'id': "minecraft:shield", 'Tags': 'ejected'},
+                                          {'id': "minecraft:diamond_chestplate",
                                            'tag': {'Enchantments': [{'lvl': 3, 'id': "minecraft:blast_protection"}]}},
-                                          {'id': "minecraft:shield", 'Count': 1},
-                                          {'id': "minecraft:iron_shovel", 'Count': 1,
+                                          {'id': "minecraft:shield"},
+                                          {'id': "minecraft:iron_shovel",
                                            'tag': {'Enchantments': [{'lvl': 2, 'id': "minecraft:efficiency"}]}},
-                                          {'id': "minecraft:iron_helmet", 'Count': 1,
+                                          {'id': "minecraft:iron_helmet",
                                            'tag': {'Enchantments': [{'lvl': 1, 'id': "minecraft:fire_protection"}]}},
-                                          {'id': "minecraft:enchanted_book", 'Count': 1,
+                                          {'id': "minecraft:enchanted_book",
                                            'tag': {'StoredEnchantments': [{'lvl': 4, 'id': "minecraft:efficiency"}]}}
                                           ],
                        'total_ejections_needed': 6}
@@ -706,6 +704,12 @@ def room_init_functions(room, block_list_score):
     room.function('toggle_block_list_init').add(block_list_score.set(0))
 
 
+def armor_frame(which, where):
+    frame = Entity('item_frame',
+                   {'Facing': 3, 'Tags': ['colorings_item', f'colorings_frame_{which}'], 'Fixed': True})
+    return frame.summon(where)
+
+
 def color_functions(room):
     coloring_coords = (r(1, 4, 6), r(-13, 2, -1))
     volume = Region(*coloring_coords)
@@ -747,7 +751,7 @@ def color_functions(room):
         if is_plain:
             yield fill(r(-9, 2, 2), r(-9, 2, 3), 'air')
             yield volume.replace('air', '#standing_signs')
-            yield data().merge(e().tag('colorings_item_frame').limit(1), {'Item': {'Count': 0}})
+            yield data().remove(e().tag('colorings_item_frame').limit(1), 'Item')
         else:
             yield setblock(r(-9, 2, 2), Block(f'{color.id}_bed', {'facing': NORTH, 'part': 'head'}))
             yield setblock(r(-9, 2, 3), Block(f'{color.id}_bed', {'facing': NORTH, 'part': 'foot'}))
@@ -775,11 +779,16 @@ def color_functions(room):
                            Item.nbt_for('leather_leggings', nbt=leather_color),
                            Item.nbt_for('leather_chestplate', nbt=leather_color),
                            Item.nbt_for('leather_helmet', nbt=leather_color)]})
-        yield data().modify(e().tag('colorings_horse').limit(1), 'body_armor_item.components.dyed_color.rgb').set().value(color.leather)
+        for w in armor_frames:
+            yield data().modify(e().tag(f'colorings_frame_{w}').limit(1), 'Item').set().value(
+                Item.nbt_for(w, nbt=leather_color)),
+        for w in 'horse, dog':
+            yield data().modify(e().tag(f'colorings_{w}').limit(1),
+                                'body_armor_item.components.dyed_color.rgb').set().value(color.leather)
+        for w in 'cat', 'dog':
+            yield data().merge(e().tag(f'colorings_{w}').limit(1), {'CollarColor': color.num})
         yield data().merge(e().tag('colorings_llama').limit(1), {'body_armor_item': llama_decor})
         yield data().merge(e().tag('colorings_sheep').limit(1), sheep_nbt)
-        yield data().merge(e().tag('colorings_cat').limit(1), {'CollarColor': color.num})
-        yield data().merge(e().tag('colorings_dog').limit(1), {'CollarColor': color.num})
 
         yield Sign.change(r(-4, 2, 4), (None, color.name))
         yield execute().as_(e().tag('colorings_names')).run(data().merge(s(), {'CustomName': color.name}))
@@ -792,9 +801,9 @@ def color_functions(room):
         for w in range(0, len(signables)):
             wood = signables[w]
             row_len = 4 if w < 8 else 3
-            x = w % row_len - 12
+            x = w % row_len - 13
             y = int(w / 4) + 2
-            z = -(w % row_len) + 3
+            z = -(w % row_len) + 4
             if row_len < 4:
                 x += 1
                 z -= 1
@@ -820,8 +829,8 @@ def color_functions(room):
         'Variant': 5, 'Tags': ['colorings_horse', 'colorings_item', 'colorings_names'],
         'body_armor_item': Item.nbt_for('leather_horse_armor'), 'Rotation': [-25, 0]}).merge(mob_nbt)
     dog_nbt = Nbt(
-        {'Owner': 'dummy', 'Tags': ['colorings_dog', 'colorings_item'], 'Sitting': True,
-         'Rotation': [-25, 0]}).merge(mob_nbt)
+        {'Owner': 'dummy', 'Tags': ['colorings_dog', 'colorings_item'], 'body_armor_item': Item.nbt_for('wolf_armor'),
+         'Rotation': [-65, 0]}).merge(mob_nbt)
     cat_nbt = Nbt(
         {'variant': 'persian', 'Owner': 'dummy', 'Tags': ['colorings_cat', 'colorings_item'], 'ColorColor': 3,
          'Rotation': [110, 0]}).merge(mob_nbt)
@@ -832,36 +841,39 @@ def color_functions(room):
         {'Tags': ['colorings_sheep', 'colorings_item'], 'Variant': 1, 'Rotation': [-35, 0], 'Leashed': True}).merge(
         mob_nbt)
     stand_nbt = {'Tags': ['colorings_armor_stand', 'colorings_item'], 'Rotation': [30, 0]}
-    room.function('colorings_init').add(kill_em(e().tag('colorings_item')), Entity('item_frame', {
-        'Facing': 3, 'Tags': ['colorings_item_frame', 'colorings_item'], 'Fixed': True}).summon(r(-4.5, 4, 0.5)),
-                                        Entity('horse', horse_nbt).summon(r(0.7, 2, 4.4)),
-                                        Entity('wolf', dog_nbt).summon(r(-8, 2, 2)),
-                                        Entity('cat', cat_nbt).summon(r(-2.7, 2, 2)),
-                                        Entity('armor_stand', stand_nbt).summon(r(-1.1, 2, 3)),
-                                        Entity('llama', llama_nbt).summon(r(-11, 2, 5.8)),
-                                        Entity('sheep', sheep_nbt).summon(r(-9.0, 2, 5.0)),
-                                        execute().as_(e().tag('colorings_names')).run(
-                                            data().merge(s(), {'CustomNameVisible': True})),
-                                        WallSign((None, 'Terracotta')).place(r(-1, 3, 1), SOUTH),
-                                        WallSign((None, 'Shulker Box')).place(r(-3, 3, 1), SOUTH),
-                                        WallSign((None, 'Dye')).place(r(-4, 3, 1, ), SOUTH),
-                                        WallSign((None, 'Concrete')).place(r(-5, 3, 1), SOUTH),
-                                        WallSign((None, 'Glass')).place(r(-7, 3, 1), SOUTH), colored_signs(None,
-                                                                                                           lambda x, y,
-                                                                                                                  z, _,
-                                                                                                                  wood:
-                                                                                                           Sign((
-                                                                                                               wood.name,
-                                                                                                               'Sign With',
-                                                                                                               'Default',
-                                                                                                               'Text'),
-                                                                                                               wood=wood.id).place(
-                                                                                                               r(x, y,
-                                                                                                                 z),
-                                                                                                               14)),
-                                        WallSign([]).place(r(-4, 2, 4, ), SOUTH), kill(e().type('item')),
-                                        label(r(-1, 2, 7), 'Lit Candles'), label(r(-8, 2, 7), 'Plain'),
-                                        label(r(-11, 2, 3), 'Glowing')),
+    armor_frames = {
+        'wolf_armor': r(-8, 4, 1),
+        'leather_boots': r(0, 2, 1),
+        'leather_leggings': r(0, 3, 1),
+        'leather_chestplate': r(0, 4, 1),
+        'leather_helmet': r(0, 5, 1),
+        'leather_horse_armor': r(1, 5, 1),
+    }
+    room.function('colorings_init').add(
+        kill_em(e().tag('colorings_item')),
+        Entity('item_frame', {
+            'Facing': 3, 'Tags': ['colorings_item_frame', 'colorings_item'],
+            'Fixed': True}).summon(r(-4.5, 4, 0.5)),
+        Entity('horse', horse_nbt).summon(r(0.7, 2, 4.4)),
+        Entity('wolf', dog_nbt).summon(r(-7.5, 2, 2)),
+        Entity('cat', cat_nbt).summon(r(-2.7, 2, 2)),
+        Entity('armor_stand', stand_nbt).summon(r(-1.1, 2, 3)),
+        Entity('llama', llama_nbt).summon(r(-11, 2, 5.8)),
+        Entity('sheep', sheep_nbt).summon(r(-9.0, 2, 5.0)),
+        (armor_frame(k, v) for k, v in armor_frames.items()),
+        execute().as_(e().tag('colorings_names')).run(
+            data().merge(s(), {'CustomNameVisible': True})),
+        WallSign((None, 'Terracotta')).place(r(-1, 3, 1), SOUTH),
+        WallSign((None, 'Shulker Box')).place(r(-3, 3, 1), SOUTH),
+        WallSign((None, 'Dye')).place(r(-4, 3, 1, ), SOUTH),
+        WallSign((None, 'Concrete')).place(r(-5, 3, 1), SOUTH),
+        WallSign((None, 'Glass')).place(r(-7, 3, 1), SOUTH),
+        colored_signs(None,
+                      lambda x, y, z, _, wood: Sign((wood.name, 'Sign With', 'Default', 'Text'), wood=wood.id).place(
+                          r(x, y, z), 14)),
+        WallSign([]).place(r(-4, 2, 4, ), SOUTH), kill(e().type('item')),
+        label(r(-1, 2, 7), 'Lit Candles'), label(r(-8, 2, 7), 'Plain'),
+        label(r(-11, 2, 3), 'Glowing')),
     room.loop('colorings', main_clock).add(fill(r(-9, 2, 2), r(-9, 2, 3), 'air')).loop(colorings_loop, colors).add(
         colored_signs(None, render_signs_glow), setblock(r(-7, -1, 3), 'redstone_block'), setblock(r(-7, -1, 3), 'air'))
     room.function('colorings_plain_off', home=False).add(
