@@ -782,7 +782,7 @@ def color_functions(room):
         for w in armor_frames:
             yield data().modify(e().tag(f'colorings_frame_{w}').limit(1), 'Item').set().value(
                 Item.nbt_for(w, nbt=leather_color)),
-        for w in 'horse, dog':
+        for w in 'horse', 'dog':
             yield data().modify(e().tag(f'colorings_{w}').limit(1),
                                 'body_armor_item.components.dyed_color.rgb').set().value(color.leather)
         for w in 'cat', 'dog':
