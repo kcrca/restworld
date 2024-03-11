@@ -3,7 +3,7 @@ from __future__ import annotations
 import copy
 
 from pynecraft import commands
-from pynecraft.base import EAST, EQ, NORTH, Nbt, SOUTH, WEST, r, to_id
+from pynecraft.base import EAST, EQ, NORTH, Nbt, SOUTH, WEST, r, to_id, to_name
 from pynecraft.commands import Block, COLORS, Entity, FORCE, LONG, MOD, RESULT, Score, as_facing, clone, data, e, \
     execute, function, item, kill, player, ride, s, scoreboard, setblock, summon, tag, tp
 from pynecraft.info import axolotls, colors, horses, music_discs, tropical_fish, wolves
@@ -79,10 +79,13 @@ def friendlies(room):
     room.function('canine_enter').add(
         data().modify(e().tag('wolf', 'collared').limit(1), 'Owner').set().from_(player(), 'UUID'))
 
-    room.loop('canine', main_clock).loop(
-        lambda step: execute().as_(e().tag('wolf')).run(data().modify(s(), 'variant').set().value(step.elem)), wolves)
+    def wolf_loop(step):
+        yield execute().as_(e().tag('wolf')).run(
+            data().merge(s(), {'CustomName': to_name(step.elem), 'variant': step.elem}))
+
+    room.loop('canine', main_clock).loop(wolf_loop, wolves)
     room.function('cat_init').add(placer(*south_placer, tags=('collared',)).summon('cat'),
-                                  label(r(1, 2, 2), 'Cat Collar'))
+                                  label(r(-1, 2, 2), 'Cat Collar'))
     room.loop('cat', main_clock).loop(
         lambda step: execute().as_(e().tag('cat')).run(
             data().merge(s(), {'variant': step.elem.id, 'CustomName': step.elem.name})),
