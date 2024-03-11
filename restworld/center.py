@@ -68,7 +68,7 @@ def room():
 
     all = {'Tags': ['center', 'mob_display'], 'PersistenceRequired': True}
     trim_stand = Entity('armor_stand', all).tag('center_stand')
-    armor_for(trim_stand, 'iron', {'tag': {'Trim': {'pattern': 'dune', 'material': 'emerald'}}})
+    armor_for(trim_stand, 'iron', {'components': {'trim': {'pattern': 'dune', 'material': 'emerald'}}})
     silent = {'Silent': True}
     room.function('mobs_display_init').add(
         kill(e().tag('mob_display')),

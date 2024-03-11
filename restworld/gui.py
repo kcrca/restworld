@@ -272,7 +272,7 @@ def room():
         clone(r(20, -5, 30), r(-15, -5, 1), r(-15, 1, 1)).filtered('chest'))
 
     non_inventory = list(filter(lambda x: x.name not in operator_menu, must_give_items.values()))
-    non_inventory.append(Entity('elytra', nbt={'components': {'damage': 450, 'custom_name': '"Damaged Elytra"'}}))
+    non_inventory.append(Entity('elytra', name='Damaged Elytra', nbt={'components': {'damage': 450}}))
 
     def only_items_init_func():
         rows = [(1, 2)]
@@ -288,7 +288,7 @@ def room():
                 frame = ItemFrame(NORTH).item(t).named(t.name)
                 frame.tag('gui', 'only_item_frame', f'only_item_frame_{t.id}')
                 if t.id == 'elytra':
-                    frame.merge_nbt({'Item': {'tag': {'Damage': 450}}})
+                    frame.merge_nbt({'Item': {'components': {'damage': 450}}})
                 yield frame.summon(r(x, 2, z), facing=NORTH)
                 x += dz
                 index += 1

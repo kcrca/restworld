@@ -189,7 +189,8 @@ def friendlies(room):
         yield Sign.change(r(-3, 2, 0), (None, None, f'Damage: {i if i < 4 else 3 - (i - 3)}'))
 
     room.loop('iron_golem', main_clock).loop(iron_golem_loop, range(4, 0, -1), bounce=True)
-    clean_lead = room.function('clean_lead', home=False).add(kill(e().type('item').nbt({'Item': {'id': 'minecraft:lead'}})))
+    clean_lead = room.function('clean_lead', home=False).add(
+        kill(e().type('item').nbt({'Item': {'id': 'minecraft:lead'}})))
     room.function('lead_off', home=False).add(
         kill(e().type('leash_knot')),
         schedule().function(clean_lead, 1, REPLACE)
@@ -533,10 +534,10 @@ def monsters(room):
 
     def skeleton_horse_loop(step):
         if step.i == 1:
-            helmet = {'id': 'iron_helmet', 'Count': 1, 'tag': {'RepairCost': 1, 'Enchantments': [
-                {'lvl': 3, 'id': 'unbreaking'}]}}
+            helmet = {'id': 'iron_helmet', 'Count': 1,
+                      'components': {'repair_cost': 1, 'enchantments': {"levels": {'unbreaking': 3}}}}
             bow = {'id': 'bow', 'Count': 1,
-                   'tag': {'RepairCost': 1, 'Enchantments': [{'lvl': 3, 'id': 'unbreaking'}]}}
+                   'components': {'repair_cost': 1, 'enchantments': {"levels": {'unbreaking': 3}}}}
             skel = Entity('Skeleton', nbt={'ArmorItems': [{}, {}, {}, helmet], 'HandItems': [bow, {}]})
             skel.merge_nbt(MobPlacer.base_nbt).merge_nbt(east_rot)
             skel.tag('mobs', skeleton_horse_rider)

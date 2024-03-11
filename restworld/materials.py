@@ -577,7 +577,7 @@ armor_pieces = ('boots', 'leggings', 'chestplate', 'helmet')
 def armor_for(stand: Entity, kind: str, nbt: NbtDef = None) -> None:
     if nbt is None:
         nbt = {}
-    base_nbt = Nbt({'tag': {'Trim': {'material': 'redstone', 'pattern': 'coast'}}})
+    base_nbt = Nbt({'components': {'trim': {'material': 'redstone', 'pattern': 'coast'}}})
     base_nbt = base_nbt.merge(nbt)
     items = [Item.nbt_for(f'{kind}_{x}', base_nbt)
              for x in armor_pieces]
@@ -612,7 +612,7 @@ def trim_functions(room):
     facing = NORTH
 
     frame = 'trim_frame'
-    trim_nbt = {'tag': {'Trim': {'pattern': 'sentry', 'material': 'redstone'}}}
+    trim_nbt = {'components': {'trim': {'pattern': 'sentry', 'material': 'redstone'}}}
     room.function('trim_init').add(kill(e().tag(frame)), ItemFrame(NORTH).item('iron_boots').merge_nbt(
         {'Item': trim_nbt}).tag('materials', frame, f'{frame}_boots').summon(r(1, 5, 2)),
                                    ItemFrame(NORTH).item('iron_leggings').merge_nbt(
@@ -695,11 +695,11 @@ def trim_functions(room):
 
     categories = {
         'patterns': Trim('patterns', trim_patterns, patterns_places,
-                         lambda stand, type: armor_for(stand, 'iron', {'tag': {'Trim': {'pattern': type}}}),
-                         'tag.Trim.pattern'),
+                         lambda stand, type: armor_for(stand, 'iron', {'components': {'trim': {'pattern': type}}}),
+                         'components.trim.pattern'),
         'materials': Trim('materials', trim_materials, material_places,
-                          lambda stand, type: armor_for(stand, 'iron', {'tag': {'Trim': {'material': type}}}),
-                          'tag.Trim.material'),
+                          lambda stand, type: armor_for(stand, 'iron', {'components': {'trim': {'material': type}}}),
+                          'components.trim.material'),
         'armors': Armors('armors', info.armors, armors_places,
                          lambda stand, type: armor_for(stand, type))}
 

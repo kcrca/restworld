@@ -601,18 +601,18 @@ def room():
             elif step.elem == 2:
                 state = 'Ejecting'
                 yield setblock(pos, Block('vault', {'vault_state': 'ejecting'}))
-                nbt = {'items_to_eject': [{'id': "minecraft:shield", 'Tags': 'ejected'},
-                                          {'id': "minecraft:diamond_chestplate",
-                                           'tag': {'Enchantments': [{'lvl': 3, 'id': "minecraft:blast_protection"}]}},
-                                          {'id': "minecraft:shield"},
-                                          {'id': "minecraft:iron_shovel",
-                                           'tag': {'Enchantments': [{'lvl': 2, 'id': "minecraft:efficiency"}]}},
-                                          {'id': "minecraft:iron_helmet",
-                                           'tag': {'Enchantments': [{'lvl': 1, 'id': "minecraft:fire_protection"}]}},
-                                          {'id': "minecraft:enchanted_book",
-                                           'tag': {'StoredEnchantments': [{'lvl': 4, 'id': "minecraft:efficiency"}]}}
-                                          ],
-                       'total_ejections_needed': 6}
+                nbt = {
+                    'total_ejections_needed': 6,
+                    'items_to_eject': [
+                        {'id': "minecraft:shield", 'Tags': 'ejected'},
+                        {'id': "minecraft:diamond_chestplate",
+                         'components': {'enchantments': {'levels': {'protection': 3}}}},
+                        {'id': "minecraft:shield"},
+                        {'id': "minecraft:iron_shovel", 'components': {'enchantments': {'levels': {'efficiency': 2}}}},
+                        {'id': "minecraft:iron_helmet", 'components': {'enchantments': {'levels': {'protection': 1}}}},
+                        {'id': "minecraft:enchanted_book",
+                         'components': {'stored_enchantments': {'levels': {'efficiency': 4}}}},
+                    ]}
                 yield data().merge(pos, {'server_data': nbt})
                 yield execute().as_(a()).run(
                     data().modify(pos, 'server_data.rewarded_players').append().from_(s(), 'UUID'))
