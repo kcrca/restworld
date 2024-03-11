@@ -269,8 +269,7 @@ def basic_functions(room):
             yield execute().if_().score(horse_saddle).matches(0).run(
                 item().replace().entity(e().tag('armor_horse'), 'horse.saddle').with_('air'))
         else:
-            yield data().merge(e().tag('armor_horse_frame').limit(1), {
-                'Item': {'id': 'air', 'Count': 1}})
+            yield data().remove(e().tag('armor_horse_frame').limit(1), 'Item')
             yield execute().if_().entity(e().tag('armor_horse').distance((None, 10))).run(
                 kill_em(e().tag('armor_horse')))
 
@@ -290,7 +289,7 @@ def basic_functions(room):
             hands_row[7] = 'compass'
         elif material == 'golden':
             hands_row[6] = 'clock'
-        hands = list({'id': h if h else '', 'Count': 1} for h in hands_row)
+        hands = list({'id': h} if h else {} for h in hands_row)
 
         for j in range(0, 4):
             yield data().merge(e().tag('material_%d' % j).limit(1), {'HandItems': [hands[j], {}]})
