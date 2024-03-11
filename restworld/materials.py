@@ -4,8 +4,8 @@ import re
 
 from pynecraft import info
 from pynecraft.base import EAST, EQ, NE, NORTH, NW, Nbt, NbtDef, SOUTH, WEST, as_facing, r, to_id
-from pynecraft.commands import Block, BlockDef, Entity, MOD, PLUS, RESULT, as_block, data, e, execute, fill, \
-    fillbiome, function, item, kill, s, scoreboard, setblock, summon, tag
+from pynecraft.commands import Block, BlockDef, Entity, LONG, MOD, PLUS, RESULT, as_block, data, e, execute, fill, \
+    fillbiome, function, item, kill, random, s, scoreboard, setblock, summon, tag
 from pynecraft.function import BLOCKS
 from pynecraft.info import colors, stems, trim_materials, trim_patterns
 from pynecraft.simpler import Item, ItemFrame, Region, SWAMP, Sign, WallSign
@@ -58,10 +58,11 @@ def room():
     def arrows_loop(step):
         nbt = {'Tags': ['arrow'], 'NoGravity': True}
         yield summon(step.elem, r(0, 3, 0.25), nbt)
-        # if step.i == 2:
-        #     # Choose a random color
-        #     yield execute().store(RESULT).entity(e().tag('arrow').limit(1), 'Color', LONG).run(
-        #         random().value((0, 0xffffff)))
+        if step.i == 2:
+            # Choose a random color
+            yield execute().store(RESULT).entity(e().tag('arrow').limit(1),
+                                                 'item.components.potion_contents.custom_color', LONG).run(
+                random().value((0, 0xffffff)))
         yield Sign.change(r(1, 2, 0), (None, step.elem.name))
 
     room.loop('arrows', main_clock).add(
@@ -69,7 +70,9 @@ def room():
     ).loop(arrows_loop, (
         Block('Arrow'),
         Block('Spectral Arrow'),
-        Block('arrow', nbt={'item': {'components': {'potion_contents': {'potion': 'strong_poison'}}}},
+        Block('arrow',
+              nbt={'item': {'components': {'potion_contents': {'potion': 'poison'}}, 'id': 'tipped_arrow'},
+                   'NoGravity': True},
               name='Tipped Arrow')))
 
     points = (2, 6, 16, 36, 72, 148, 306, 616, 1236, 2476, 32767)
