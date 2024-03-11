@@ -3,7 +3,7 @@ from __future__ import annotations
 import re
 
 from pynecraft import info
-from pynecraft.base import EAST, EQ, NE, NORTH, NW, Nbt, NbtDef, SOUTH, WEST, as_facing, r, to_id
+from pynecraft.base import Arg, EAST, EQ, NE, NORTH, NW, Nbt, NbtDef, SOUTH, WEST, as_facing, r, to_id
 from pynecraft.commands import Block, BlockDef, Entity, LONG, MOD, PLUS, RESULT, as_block, data, e, execute, fill, \
     fillbiome, function, item, kill, random, s, scoreboard, setblock, summon, tag
 from pynecraft.function import BLOCKS
@@ -53,7 +53,9 @@ def room():
 
     room.loop('all_sand', main_clock).loop(all_sand_loop, range(0, 2))
 
-    room.function('arrows_init').add(WallSign(()).place(r(1, 2, 0), EAST))
+    room.function('arrows_init').add(WallSign(()).place(r(1, 2, 0), EAST), label(r(0, 2, -1), 'Fire'))
+
+    fire_arrow = room.score('fire_arrow')
 
     def arrows_loop(step):
         nbt = {'Tags': ['arrow'], 'NoGravity': True}
@@ -63,7 +65,7 @@ def room():
             yield execute().store(RESULT).entity(e().tag('arrow').limit(1),
                                                  'item.components.potion_contents.custom_color', LONG).run(
                 random().value((0, 0xffffff)))
-        yield execute().if_().score(room.score('fire_arrow')).matches((1, None)).as_(e().tag('arrow')).run(
+        yield execute().if_().score(fire_arrow).matches((1, None)).as_(e().tag('arrow')).run(
             data().modify(s(), 'HasVisualFire').set().value(True))
         yield Sign.change(r(1, 2, 0), (None, step.elem.name))
 
@@ -75,6 +77,9 @@ def room():
         Block('arrow', name='Tipped Arrow',
               nbt={'item': {'components': {'potion_contents': {'potion': 'poison'}}, 'id': 'tipped_arrow'},
                    'NoGravity': True})))
+    room.function('arrow_fire', home=False).add(
+        fire_arrow.set(Arg('on')), data().modify(e().tag('arrow').limit(1), 'HasVisualFire').set().value(Arg('on'))
+    )
 
     points = (2, 6, 16, 36, 72, 148, 306, 616, 1236, 2476, 32767)
 
