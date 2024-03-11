@@ -68,12 +68,12 @@ def room():
     room.loop('arrows', main_clock).add(
         kill(e().tag('arrow'))
     ).loop(arrows_loop, (
+        Block('arrow', name='Fire Arrow', nbt={'HasVisualFire': True}),
         Block('Arrow'),
         Block('Spectral Arrow'),
-        Block('arrow',
+        Block('arrow', name='Tipped Arrow',
               nbt={'item': {'components': {'potion_contents': {'potion': 'poison'}}, 'id': 'tipped_arrow'},
-                   'NoGravity': True},
-              name='Tipped Arrow')))
+                   'NoGravity': True})))
 
     points = (2, 6, 16, 36, 72, 148, 306, 616, 1236, 2476, 32767)
 
