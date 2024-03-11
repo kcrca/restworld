@@ -63,12 +63,13 @@ def room():
             yield execute().store(RESULT).entity(e().tag('arrow').limit(1),
                                                  'item.components.potion_contents.custom_color', LONG).run(
                 random().value((0, 0xffffff)))
+        yield execute().if_().score(room.score('fire_arrow')).matches((1, None)).as_(e().tag('arrow')).run(
+            data().modify(s(), 'HasVisualFire').set().value(True))
         yield Sign.change(r(1, 2, 0), (None, step.elem.name))
 
     room.loop('arrows', main_clock).add(
         kill(e().tag('arrow'))
     ).loop(arrows_loop, (
-        Block('arrow', name='Fire Arrow', nbt={'HasVisualFire': True}),
         Block('Arrow'),
         Block('Spectral Arrow'),
         Block('arrow', name='Tipped Arrow',
