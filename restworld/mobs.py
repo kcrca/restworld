@@ -4,8 +4,9 @@ import copy
 
 from pynecraft import commands
 from pynecraft.base import EAST, EQ, NORTH, Nbt, SOUTH, WEST, r, to_id, to_name
-from pynecraft.commands import Block, COLORS, Entity, FORCE, LONG, MOD, RESULT, Score, as_facing, clone, data, e, \
-    execute, function, item, kill, player, ride, s, scoreboard, setblock, summon, tag, tp
+from pynecraft.commands import Block, COLORS, Entity, FORCE, LONG, MOD, REPLACE, RESULT, Score, as_facing, clone, data, \
+    e, \
+    execute, function, item, kill, player, ride, s, schedule, scoreboard, setblock, summon, tag, tp
 from pynecraft.info import axolotls, colors, horses, music_discs, tropical_fish, wolves
 from pynecraft.simpler import Item, PLAINS, Sign, VILLAGER_BIOMES, VILLAGER_PROFESSIONS, Villager, WallSign
 from pynecraft.values import DUMMY
@@ -188,7 +189,11 @@ def friendlies(room):
         yield Sign.change(r(-3, 2, 0), (None, None, f'Damage: {i if i < 4 else 3 - (i - 3)}'))
 
     room.loop('iron_golem', main_clock).loop(iron_golem_loop, range(4, 0, -1), bounce=True)
-    room.function('lead_off', home=False).add(kill(e().type('leash_knot')))
+    clean_lead = room.function('clean_lead', home=False).add(kill(e().type('item').nbt({'Item': {'id': 'minecraft:lead'}})))
+    room.function('lead_off', home=False).add(
+        kill(e().type('leash_knot')),
+        schedule().function(clean_lead, 1, REPLACE)
+    )
     room.function('lead_on', home=False).add(execute().as_(e().tag('white_horses').tag('!kid')).run(
         data().merge(s(), {'leash': Nbt.TypedArray('I', (-12, 101, 35))})))
     room.loop('llamas_carpets', main_clock).loop(
