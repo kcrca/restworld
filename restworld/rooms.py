@@ -17,14 +17,14 @@ from pynecraft.values import DUMMY
 
 def named_frame_item(block: BlockDef = None, name=None, damage=None) -> Nbt:
     if not block and not name:
-        return Nbt({'display': {}})
+        return Nbt({'custom_name': {}})
     block = as_block(block)
-    tag_nbt = Nbt({'display': {'Name': str(JsonText.text(str(name if name else block.name))), }})
+    tag_nbt = Nbt({'custom_name': str(JsonText.text(str(name if name else block.name)))})
     if damage:
         tag_nbt.update(damage)
-    nbt = Nbt({'Item': {'tag': tag_nbt}})
+    nbt = Nbt({'Item': {'components': tag_nbt}})
     if block:
-        nbt = nbt.merge({'Item': {'id': block.id, 'Count': 1, }})
+        nbt = nbt.merge({'Item': {'id': block.id}})
     return nbt
 
 
