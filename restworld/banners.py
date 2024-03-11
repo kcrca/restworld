@@ -158,9 +158,9 @@ def room():
 
     def banner_ink_change():
         yield execute().as_(stands).at(stands).run(
-            execute().store(RESULT).block((d(0, 0, 1)), 'Patterns[0].Color', INT, 1).run(banner_ink.get()))
+            execute().store(RESULT).block((d(0, 0, 1)), 'banner_patterns[0].color', INT, 1).run(banner_ink.get()))
         yield execute().as_(stands).run(
-            execute().store(RESULT).entity(s(), 'HandItems[1].tag.BlockEntityTag.Patterns[0].Color', INT, 1).run(
+            execute().store(RESULT).entity(s(), 'HandItems[1].components.banner_patterns[0].color', INT, 1).run(
                 banner_ink.get()))
 
     def switch_banners(which):
@@ -214,7 +214,7 @@ def room():
         fill(r(1, 3, 12), r(11, 5, 12), 'air').replace('#banners'),
         fill(r(0, 3, 11), r(0, 5, 1), 'air').replace('#banners'),
     ).loop(banner_color_loop, COLORS).add(execute().as_(stands).run(
-        execute().store(RESULT).entity(s(), 'HandItems[1].tag.BlockEntityTag.Base', INT, 1).run(
+        execute().store(RESULT).entity(s(), 'HandItems[1].components.banner_patterns[0].color', INT, 1).run(
             banner_color.get())), function('restworld:banners/banner_ink_cur'))
 
     banner_controls = room.function('banner_controls').add(

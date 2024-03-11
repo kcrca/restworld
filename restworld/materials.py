@@ -213,18 +213,16 @@ def basic_functions(room):
 
     def enchant(on):
         if on:
-            value, cmd = 1, lambda path: data().modify(s(), path).merge().value({'Enchantments': [{'id': 'mending'}]})
+            value, cmd = 1, lambda path: data().modify(s(), path).merge().value(
+                {'enchantments': {'levels': {'mending': 1}}})
         else:
             value, cmd = 0, lambda path: data().remove(s(), path)
 
-        yield enchanter(value, 'enchantable', cmd('Item.tag'))
-        yield enchanter(value, 'armor_horse', cmd('body_armor_item.tag'))
-        yield enchanter(value, 'material_static', cmd('body_armor_item.tag'))
-
-        for a in range(0, 4):
-            yield enchanter(value, 'material_static', cmd('ArmorItems[%d].tag' % a))
-            if a < 2:
-                yield enchanter(value, 'material_static', cmd('HandItems[%d].tag' % a))
+        yield enchanter(value, 'enchantable', cmd('Item.components'))
+        yield enchanter(value, 'armor_horse', cmd('body_armor_item.components'))
+        yield enchanter(value, 'material_static', cmd('body_armor_item.components'))
+        yield enchanter(value, 'material_static', cmd('ArmorItems[].components'))
+        yield enchanter(value, 'material_static', cmd('HandItems[].components'))
 
     horse_saddle = room.score('horse_saddle')
     turtle_helmet = room.score('turtle_helmet')
@@ -783,8 +781,8 @@ def trim_functions(room):
                 item().replace().entity(s(), 'armor.feet').with_(f'{armor}_boots'),
                 item().replace().entity(s(), 'armor.chest').with_(f'{armor}_chestplate')))
     chestplate_on.add(execute().as_(e().tag(overall_tag)).run(
-        data().modify(s(), 'ArmorItems[0].tag.Trim').merge().from_(s(), 'ArmorItems[1].tag.Trim'),
-        data().modify(s(), 'ArmorItems[2].tag.Trim').merge().from_(s(), 'ArmorItems[1].tag.Trim')))
+        data().modify(s(), 'ArmorItems[0].components.trim').merge().from_(s(), 'ArmorItems[1].components.trim'),
+        data().modify(s(), 'ArmorItems[2].components.trim').merge().from_(s(), 'ArmorItems[1].components.trim')))
 
     room.function('trim_turtle_on', home=False).add(
         execute().as_(e().tag(overall_tag)).run(
