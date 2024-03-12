@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from pynecraft.base import EQ, SOUTH, d, r
+from pynecraft.base import CYAN, EQ, SOUTH, d, r
 from pynecraft.commands import Block, COLORS, Entity, INT, RESULT, WHITE, data, e, execute, fill, function, kill, s, \
     setblock, tag
 from pynecraft.simpler import Shield, TextDisplay, WallSign
@@ -22,45 +22,62 @@ adjustments = {0: (1, 0.07, 1, -1, 0.30, 0, 0, 'south', 0, +1),
 
 # noinspection SpellCheckingInspection
 authored_patterns = (
-    (Block('blue_banner', nbt={'Patterns': [
-        {'Color': 0, 'Pattern': 'bri'}, {'Color': 11, 'Pattern': 'hhb'}, {'Color': 15, 'Pattern': 'sc'},
-        {'Color': 11, 'Pattern': 'sc'}, {'Color': 15, 'Pattern': 'bo'}, {'Color': 11, 'Pattern': 'bo'}]}),
+    (Block('blue_banner', nbt={'patterns': [
+        {'color': COLORS[0], 'pattern': 'bricks'}, {'color': COLORS[11], 'pattern': 'half_horizontal_bottom'},
+        {'color': COLORS[15], 'pattern': 'straight_cross'},
+        {'color': COLORS[11], 'pattern': 'straight_cross'}, {'color': COLORS[15], 'pattern': 'bo'},
+        {'color': COLORS[11], 'pattern': 'bo'}]}),
      'Tardis', 'Pikachu'),
-    (Block('purple_banner', nbt={'Patterns': [
-        {'Color': 2, 'Pattern': 'ss'}, {'Color': 10, 'Pattern': 'bri'}, {'Color': 2, 'Pattern': 'cbo'},
-        {'Color': 15, 'Pattern': 'bo'}]}),
+    (Block('purple_banner', nbt={'patterns': [
+        {'color': COLORS[2], 'pattern': 'small_stripes'}, {'color': COLORS[10], 'pattern': 'bricks'},
+        {'color': COLORS[2], 'pattern': 'curly_border'},
+        {'color': COLORS[15], 'pattern': 'bo'}]}),
      'Portail du Nether', 'Akkta'),
-    (Block('white_banner', nbt={'Patterns': [
-        {'Color': 15, 'Pattern': 'mr'}, {'Color': 1, 'Pattern': 'cbo'}, {'Color': 1, 'Pattern': 'mc'},
-        {'Color': 1, 'Pattern': 'cre'}, {'Color': 1, 'Pattern': 'tt'}, {'Color': 1, 'Pattern': 'tts'}]}),
-     'Fox', 'mr.crafteur'),
-    (Block('white_banner', nbt={'Patterns': [
-        {'Color': 15, 'Pattern': 'mc'}, {'Color': 0, 'Pattern': 'flo'}, {'Color': 15, 'Pattern': 'tt'},
-        {'Color': 0, 'Pattern': 'cr'}, {'Color': 15, 'Pattern': 'cbo'}, {'Color': 0, 'Pattern': 'bts'}]}),
+    (Block('white_banner', nbt={'patterns': [
+        {'color': COLORS[15], 'pattern': 'rhombus'}, {'color': COLORS[1], 'pattern': 'curly_border'},
+        {'color': COLORS[1], 'pattern': 'circle'},
+        {'color': COLORS[1], 'pattern': 'creeper'}, {'color': COLORS[1], 'pattern': 'triangle_top'},
+        {'color': COLORS[1], 'pattern': 'triangles_top'}]}),
+     'Fox', 'rhombus.crafteur'),
+    (Block('white_banner', nbt={'patterns': [
+        {'color': COLORS[15], 'pattern': 'circle'}, {'color': COLORS[0], 'pattern': 'flower'},
+        {'color': COLORS[15], 'pattern': 'triangle_top'},
+        {'color': COLORS[0], 'pattern': 'cross'}, {'color': COLORS[15], 'pattern': 'curly_border'},
+        {'color': COLORS[0], 'pattern': 'triangles_bottom'}]}),
      'Rabbit', 'googolplexbyte'),
-    (Block('light_blue_banner', nbt={'Patterns': [
-        {'Color': 11, 'Pattern': 'gra'}, {'Color': 0, 'Pattern': 'cbo'}, {'Color': 0, 'Pattern': 'cr'},
-        {'Color': 0, 'Pattern': 'mc'}, {'Color': 11, 'Pattern': 'flo'}, {'Color': 0, 'Pattern': 'tt'}]}),
+    (Block('light_blue_banner', nbt={'patterns': [
+        {'color': COLORS[11], 'pattern': 'gradient'}, {'color': COLORS[0], 'pattern': 'curly_border'},
+        {'color': COLORS[0], 'pattern': 'cross'},
+        {'color': COLORS[0], 'pattern': 'circle'}, {'color': COLORS[11], 'pattern': 'flower'},
+        {'color': COLORS[0], 'pattern': 'triangle_top'}]}),
      'Angel', 'PK?'),
-    (Block('white_banner', nbt={'Patterns': [
-        {'Color': 15, 'Pattern': 'sc'}, {'Color': 0, 'Pattern': 'sc'}, {'Color': 15, 'Pattern': 'flo'},
-        {'Color': 0, 'Pattern': 'flo'}]}),
+    (Block('white_banner', nbt={'patterns': [
+        {'color': COLORS[15], 'pattern': 'straight_cross'}, {'color': COLORS[0], 'pattern': 'straight_cross'},
+        {'color': COLORS[15], 'pattern': 'flower'},
+        {'color': COLORS[0], 'pattern': 'flower'}]}),
      'Quartz sculpte', 'Pikachu'),
-    (Block('black_banner', nbt={'Patterns': [
-        {'Color': 5, 'Pattern': 'cbo'}, {'Color': 15, 'Pattern': 'rs'}, {'Color': 14, 'Pattern': 'flo'},
-        {'Color': 5, 'Pattern': 'ms'}, {'Color': 15, 'Pattern': 'tt'}, {'Color': 5, 'Pattern': 'moj'}]}),
+    (Block('black_banner', nbt={'patterns': [
+        {'color': COLORS[5], 'pattern': 'curly_border'}, {'color': COLORS[15], 'pattern': 'stripe_right'},
+        {'color': COLORS[14], 'pattern': 'flower'},
+        {'color': COLORS[5], 'pattern': 'stripe_middle'}, {'color': COLORS[15], 'pattern': 'triangle_top'},
+        {'color': COLORS[5], 'pattern': 'mojang'}]}),
      'DRAGON !', 'kraftime'),
-    (Block('white_banner', nbt={'Patterns': [
-        {'Color': 15, 'Pattern': 'ts'}, {'Color': 0, 'Pattern': 'sc'}, {'Color': 14, 'Pattern': 'hhb'},
-        {'Color': 0, 'Pattern': 'bo'}, {'Color': 0, 'Pattern': 'bs'}, {'Color': 4, 'Pattern': 'ms'}]}),
-     'Poule', 'mish80'),
-    (Block('black_banner', nbt={'Patterns': [
-        {'Color': 14, 'Pattern': 'gru'}, {'Color': 14, 'Pattern': 'bt'}, {'Color': 0, 'Pattern': 'bts'},
-        {'Color': 0, 'Pattern': 'tts'}]}),
-     'Bouche', 'entonix69'),
-    (Block('lime_banner', nbt={'Patterns': [
-        {'Color': 4, 'Pattern': 'gra'}, {'Color': 3, 'Pattern': 'gru'}, {'Color': 0, 'Pattern': 'cbo'},
-        {'Color': 0, 'Pattern': 'cr'}, {'Color': 0, 'Pattern': 'mr'}, {'Color': 5, 'Pattern': 'mc'}]}),
+    (Block('white_banner', nbt={'patterns': [
+        {'color': COLORS[15], 'pattern': 'stripe_top'}, {'color': COLORS[0], 'pattern': 'straight_cross'},
+        {'color': COLORS[14], 'pattern': 'half_horizontal_bottom'},
+        {'color': COLORS[0], 'pattern': 'bo'}, {'color': COLORS[0], 'pattern': 'stripe_bottom'},
+        {'color': COLORS[4], 'pattern': 'stripe_middle'}]}),
+     'Poule', 'mishCOLORS[80]'),
+    (Block('black_banner', nbt={'patterns': [
+        {'color': COLORS[14], 'pattern': 'gradient_up'}, {'color': COLORS[14], 'pattern': 'triangle_bottom'},
+        {'color': COLORS[0], 'pattern': 'triangles_bottom'},
+        {'color': COLORS[0], 'pattern': 'triangles_top'}]}),
+     'Bouche', 'entonixCOLORS[69]'),
+    (Block('lime_banner', nbt={'patterns': [
+        {'color': COLORS[4], 'pattern': 'gradient'}, {'color': COLORS[3], 'pattern': 'gradient_up'},
+        {'color': COLORS[0], 'pattern': 'curly_border'},
+        {'color': COLORS[0], 'pattern': 'cross'}, {'color': COLORS[0], 'pattern': 'rhombus'},
+        {'color': COLORS[5], 'pattern': 'circle'}]}),
      'Like pls ^-^', 'Harmony'),
 )
 
@@ -80,10 +97,13 @@ def room():
 
     # noinspection PyUnusedLocal
     def armor_stands(x, xn, z, zn, angle, facing, bx, bz, y_banner, y_shield, pattern, handback=None):
-        shield = Shield().add_pattern(pattern, 9)
+        shield = Shield().color(WHITE)
+        if pattern != 'base':
+            shield.add_pattern(pattern, COLORS[9])
         stand = stand_tmpl.clone()
         stand.merge_nbt({'Rotation': [angle, 0]})
         stand.nbt['HandItems'].append(shield.nbt)
+        stand.tag('banner_shield_stand', 'banners')
         yield stand.summon(r(x + xn, y_shield, z + zn))
 
         text_y = y_shield + 0.5
@@ -100,6 +120,8 @@ def room():
         yield TextDisplay(name).scale(0.5).tag('banner_name').summon(r(x + xt, text_y, z + zt), nbt)
 
     def render_banners(render, handback=None):
+        yield execute().as_(e().tag('banner_shield_stand')).run(
+                data().modify(s(), 'HandItems[1].components.base_color').set().value(handback))
         # These are in the first adjustment, but python doesn't know that, so this keeps it happy
         x = z = xd = zd = xn = zn = angle = facing = bx = bz = 0
         for i, pat in enumerate(PATTERN_GROUP):
@@ -143,13 +165,15 @@ def room():
     # noinspection PyUnusedLocal
     def render_banner_color(x, xn, z, zn, angle, facing, bx, bz, y_banner, y_shield, pattern, handback=None):
         color = handback
-        return setblock(r(x + bx, y_banner, z + bz), Block(color + '_wall_banner', {'facing': facing},
-                                                           {'Patterns': [{'Color': 9, 'Pattern': pattern}]}))
+        banner = Block(color + '_wall_banner', {'facing': facing})
+        if pattern != 'base':
+            banner.nbt['patterns'] = [{'color': CYAN, 'pattern': pattern}]
+        return setblock(r(x + bx, y_banner, z + bz), banner)
 
     # noinspection PyUnusedLocal
     def render_banner_ink(x, xn, z, zn, angle, facing, bx, bz, y_banner, y_shield, pattern, handback=None):
         return (
-            execute().store(RESULT).block(r(x + bx, y_banner, z + bz), 'Patterns[0].Color', INT, 1).run(
+            execute().store(RESULT).block(r(x + bx, y_banner, z + bz), 'patterns[0].color', INT, 1).run(
                 banner_ink.get()),
         )
 
@@ -182,11 +206,13 @@ def room():
         fill(r(-2, -2, -2), r(16, 16, 16), 'air').replace('#banners'),
         render_banners(armor_stands),
         setblock(r(-0.2, 3, 11.8), Block('white_banner', {'rotation': 10}, {
-            'Patterns': [{'Pattern': 'mr', 'Color': 9}, {'Pattern': 'bs', 'Color': 8}, {'Pattern': 'cs', 'Color': 7},
-                         {'Pattern': 'bo', 'Color': 8}, {'Pattern': 'ms', 'Color': 15}, {'Pattern': 'hh', 'Color': 8},
-                         {'Pattern': 'mc', 'Color': 8}, {'Pattern': 'bo', 'Color': 15}]})),
+            'Patterns': [{'pattern': 'rhombus', 'color': 9}, {'pattern': 'bs', 'color': 8},
+                         {'pattern': 'cs', 'color': 7},
+                         {'pattern': 'bo', 'color': 8}, {'pattern': 'ms', 'color': 15},
+                         {'pattern': 'half_horizontal', 'color': 8},
+                         {'pattern': 'circle', 'color': 8}, {'pattern': 'bo', 'color': 15}]})),
         setblock(r(11.8, 3, 0.2), Block('magenta_banner', {'rotation': 2}, {
-            'Patterns': [{'Pattern': 'bt', 'Color': 15}, {'Pattern': 'tt', 'Color': 15}]})),
+            'Patterns': [{'pattern': 'triangle_bottom', 'color': 15}, {'pattern': 'triangle_top', 'color': 15}]})),
         custom_banner(0.2, 0.2, 0.1),
         custom_banner(11.8, 11.8, -0.1),
         banner_color_init,
@@ -213,14 +239,13 @@ def room():
         fill(r(12, 3, 1), r(12, 5, 11), 'air').replace('#banners'),
         fill(r(1, 3, 12), r(11, 5, 12), 'air').replace('#banners'),
         fill(r(0, 3, 11), r(0, 5, 1), 'air').replace('#banners'),
-    ).loop(banner_color_loop, COLORS).add(execute().as_(stands).run(
-        execute().store(RESULT).entity(s(), 'HandItems[1].components.banner_patterns[0].color', INT, 1).run(
-            banner_color.get())), function('restworld:banners/banner_ink_cur'))
+        # /execute as @e[tag=banner_stand] run data modify entity @s HandItems[1].components.base_color set value blue
+    ).loop(banner_color_loop, COLORS).add()
 
     banner_controls = room.function('banner_controls').add(
         function('restworld:banners/banner_controls_remove'),
         function('restworld:global/clock_off'),
-        WallSign((None, 'Set Banner', 'Color'), (function('restworld:banners/switch_to_color', )),
+        WallSign((None, 'Set Banner', 'color'), (function('restworld:banners/switch_to_color', )),
                  wood='dark_oak').color(WHITE).place(r(4, 3, 1), SOUTH),
         WallSign((None, 'Set Banner', 'Ink'), (function('restworld:banners/switch_to_ink', )),
                  wood='dark_oak').color(WHITE).place(r(4, 2, 2), SOUTH),
@@ -264,9 +289,11 @@ def room():
     # ^Black Bordure
     room.function('ominous_banner').add(
         setblock(r(0, 0, 0), Block('white_banner', nbt={
-            'Patterns': [{'Pattern': 'mr', 'Color': 9}, {'Pattern': 'bs', 'Color': 8}, {'Pattern': 'cs', 'Color': 7},
-                         {'Pattern': 'bo', 'Color': 8}, {'Pattern': 'ms', 'Color': 15}, {'Pattern': 'hh', 'Color': 8},
-                         {'Pattern': 'mc', 'Color': 8}, {'Pattern': 'bo', 'Color': 15}]})))
+            'Patterns': [{'pattern': 'rhombus', 'color': 9}, {'pattern': 'bs', 'color': 8},
+                         {'pattern': 'cs', 'color': 7},
+                         {'pattern': 'bo', 'color': 8}, {'pattern': 'ms', 'color': 15},
+                         {'pattern': 'half_horizontal', 'color': 8},
+                         {'pattern': 'circle', 'color': 8}, {'pattern': 'bo', 'color': 15}]})))
 
     room.function('switch_to_color', home=False).add(switch_banners('color'))
     room.function('switch_to_ink', home=False).add(switch_banners('ink'))
