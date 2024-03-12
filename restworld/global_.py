@@ -4,8 +4,8 @@ import copy
 
 from pynecraft.base import Arg, EAST, EQ, GAMETIME, NORTH, OVERWORLD, Position, SOUTH, THE_END, THE_NETHER, TimeSpec, \
     WEST, r
-from pynecraft.commands import Block, FORCE, MINUS, MOD, MOVE, RAIN, REPLACE, RESULT, Score, clone, data, e, execute, \
-    fill, function, gamerule, kill, p, return_, s, schedule, scoreboard, setblock, tag, teleport, time, tp, weather
+from pynecraft.commands import Block, FORCE, MINUS, MOD, MOVE, REPLACE, RESULT, Score, clone, data, e, execute, \
+    fill, function, gamerule, kill, p, return_, s, schedule, scoreboard, setblock, tag, teleport, time, tp
 from pynecraft.function import Function
 from pynecraft.simpler import VILLAGER_PROFESSIONS, WallSign
 from pynecraft.values import DUMMY
@@ -240,9 +240,6 @@ def room():
         room.function('goto_' + place[0], home=False).add(
             execute().in_(place[1]).run(teleport(p(), place[2]).facing(place[3])))
     room.function('goto_photo').add(function('restworld:photo/photo_complete_view'))
-    room.function('goto_weather', home=False).add(
-        execute().in_(OVERWORLD).run(teleport(p(), (1009, 101, 1000)).facing((1004, 102, 1000))),
-        weather(RAIN))
     room.home_func('min')
 
     raise_mobs = room.function('raise_mobs', home=False).add(raise_mobs_func())
