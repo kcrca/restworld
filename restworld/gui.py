@@ -320,7 +320,7 @@ def room():
     saver = e().tag(saver_name).limit(1)
     room.function('pumpkin_blur_init').add(
         room.mob_placer(r(0, -2, 1), NORTH, adults=True, auto_tag=False).summon(
-            Entity('armor_stand', Nbt(NoGravity=True), saver_name).tag(saver_name)),
+            Entity('armor_stand', Nbt(NoGravity=True), name=saver_name).tag(saver_name)),
         WallSign((None, 'Pumpkin Blur', '(step on plate)')).place(r(1, 3, 0), EAST))
     room.function('pumpkin_blur_on', home=False).add(
         item().replace().entity(saver, 'armor.head').from_().entity(p(), 'armor.head'),

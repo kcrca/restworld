@@ -24,6 +24,7 @@ def formatting_book():
     book.next_page()
     for c in JSON_COLORS[8:]:
         book.add(color_text(c))
+    book.add(color_text('#cd5c5c'))
     book.next_page()
     book.add('',
              JsonText.text('Text Formatting').underlined(),
@@ -144,4 +145,4 @@ def room():
                 book += line.replace('\n', '').replace('.png', '').replace('.otf', '')
     room.function('unicode_text').add(
         str(ensure(r(0, 2, 0), ('lectern', {'facing': EAST, 'has_book': True}))) +
-        '{Book:{id:"minecraft:written_book", Count:1, tag: %s}}' % book)
+        '{Book:{id:"minecraft:written_book", components: {written_book_content: %s}}}' % book)
