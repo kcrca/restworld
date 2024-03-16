@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from pynecraft.base import CYAN, EQ, SOUTH, d, r
-from pynecraft.commands import Block, COLORS, Entity, INT, RESULT, WHITE, data, e, execute, fill, function, kill, s, \
-    setblock, tag
+from pynecraft.base import Arg, CYAN, EQ, SOUTH, r
+from pynecraft.commands import Block, COLORS, Entity, WHITE, data, e, execute, fill, function, kill, s, \
+    say, setblock
 from pynecraft.simpler import Shield, TextDisplay, WallSign
 from pynecraft.values import PATTERN_GROUP, as_pattern, patterns
 from restworld.rooms import Room, label
@@ -25,13 +25,13 @@ authored_patterns = (
     (Block('blue_banner', nbt={'patterns': [
         {'color': COLORS[0], 'pattern': 'bricks'}, {'color': COLORS[11], 'pattern': 'half_horizontal_bottom'},
         {'color': COLORS[15], 'pattern': 'straight_cross'},
-        {'color': COLORS[11], 'pattern': 'straight_cross'}, {'color': COLORS[15], 'pattern': 'bo'},
-        {'color': COLORS[11], 'pattern': 'bo'}]}),
+        {'color': COLORS[11], 'pattern': 'straight_cross'}, {'color': COLORS[15], 'pattern': 'border'},
+        {'color': COLORS[11], 'pattern': 'border'}]}),
      'Tardis', 'Pikachu'),
     (Block('purple_banner', nbt={'patterns': [
         {'color': COLORS[2], 'pattern': 'small_stripes'}, {'color': COLORS[10], 'pattern': 'bricks'},
         {'color': COLORS[2], 'pattern': 'curly_border'},
-        {'color': COLORS[15], 'pattern': 'bo'}]}),
+        {'color': COLORS[15], 'pattern': 'border'}]}),
      'Portail du Nether', 'Akkta'),
     (Block('white_banner', nbt={'patterns': [
         {'color': COLORS[15], 'pattern': 'rhombus'}, {'color': COLORS[1], 'pattern': 'curly_border'},
@@ -65,7 +65,7 @@ authored_patterns = (
     (Block('white_banner', nbt={'patterns': [
         {'color': COLORS[15], 'pattern': 'stripe_top'}, {'color': COLORS[0], 'pattern': 'straight_cross'},
         {'color': COLORS[14], 'pattern': 'half_horizontal_bottom'},
-        {'color': COLORS[0], 'pattern': 'bo'}, {'color': COLORS[0], 'pattern': 'stripe_bottom'},
+        {'color': COLORS[0], 'pattern': 'border'}, {'color': COLORS[0], 'pattern': 'stripe_bottom'},
         {'color': COLORS[4], 'pattern': 'stripe_middle'}]}),
      'Poule', 'mishCOLORS[80]'),
     (Block('black_banner', nbt={'patterns': [
@@ -88,6 +88,7 @@ def room():
 
     banner_color = room.score('banner_color')
     banner_ink = room.score('banner_ink')
+    which = room.score('which')
     stands = e().tag('banner_stand')
 
     room.function('names_on', home=False).add(execute().as_(e().tag('banner_name')).run(
@@ -96,14 +97,12 @@ def room():
         data().merge(s(), {'text_opacity': 25, 'background': 25})))
 
     # noinspection PyUnusedLocal
-    def armor_stands(x, xn, z, zn, angle, facing, bx, bz, y_banner, y_shield, pattern, handback=None):
+    def init_armor_stands(x, xn, z, zn, angle, facing, bx, bz, y_banner, y_shield, pattern, handback=None):
         shield = Shield().color(WHITE)
         if pattern != 'base':
-            shield.add_pattern(pattern, COLORS[9])
+            shield.add_pattern(pattern, CYAN)
         stand = stand_tmpl.clone()
-        stand.merge_nbt({'Rotation': [angle, 0]})
-        stand.nbt['HandItems'].append(shield.nbt)
-        stand.tag('banner_shield_stand', 'banners')
+        stand.merge_nbt({'Rotation': [angle, 0], 'HandItems': [{}, shield.nbt]}).tag('banners', 'banner_shield_stand')
         yield stand.summon(r(x + xn, y_shield, z + zn))
 
         text_y = y_shield + 0.5
@@ -116,12 +115,10 @@ def room():
         if zn < 0:
             zt = -zt
         name = patterns[as_pattern(pattern)].name
-        nbt = {'Rotation': [angle, 0], 'Tags': stand.nbt['Tags']}
+        nbt = {'Rotation': [angle, 0], 'Tags': ['banners']}
         yield TextDisplay(name).scale(0.5).tag('banner_name').summon(r(x + xt, text_y, z + zt), nbt)
 
     def render_banners(render, handback=None):
-        yield execute().as_(e().tag('banner_shield_stand')).run(
-                data().modify(s(), 'HandItems[1].components.base_color').set().value(handback))
         # These are in the first adjustment, but python doesn't know that, so this keeps it happy
         x = z = xd = zd = xn = zn = angle = facing = bx = bz = 0
         for i, pat in enumerate(PATTERN_GROUP):
@@ -135,6 +132,24 @@ def room():
                 x += xd
                 z += zd
             yield render(x, xn, z, zn, angle, facing, bx, bz, 3.65, 3.65, pattern.value, handback)
+
+    def render_updates(x, xn, z, zn, angle, facing, bx, bz, y_banner, y_shield, pattern, handback=None):
+        banner = Block('$(color)_wall_banner', {'facing': facing})
+        if pattern != 'base':
+            banner.nbt['patterns'] = [{'color': Arg('ink'), 'pattern': pattern}]
+        yield setblock(r(x + bx, y_banner, z + bz), banner)
+
+    update = room.function('update_banners').add(
+        say('update banners: $(color) / $(ink)'),
+        execute().as_(stands).run(
+            data().modify(s(), 'HandItems[1].components.minecraft:base_color').set().value(Arg('color')),
+            data().modify(s(), 'HandItems[1].components.minecraft:banner_patterns[].color').set().value(Arg('ink'))),
+        fill(r(1, 3, 0), r(11, 5, 0), 'air').replace('#banners'),
+        fill(r(12, 3, 1), r(12, 5, 11), 'air').replace('#banners'),
+        fill(r(1, 3, 12), r(11, 5, 12), 'air').replace('#banners'),
+        fill(r(0, 3, 11), r(0, 5, 1), 'air').replace('#banners'),
+        render_banners(render_updates)
+    )
 
     def custom_banner(x, z, nudge):
         stand1 = stand_tmpl.clone()
@@ -162,93 +177,83 @@ def room():
             authored_banners(authored_patterns[step.i + half], 11.8, 11.8, 6),
         )
 
-    # noinspection PyUnusedLocal
-    def render_banner_color(x, xn, z, zn, angle, facing, bx, bz, y_banner, y_shield, pattern, handback=None):
-        color = handback
-        banner = Block(color + '_wall_banner', {'facing': facing})
-        if pattern != 'base':
-            banner.nbt['patterns'] = [{'color': CYAN, 'pattern': pattern}]
-        return setblock(r(x + bx, y_banner, z + bz), banner)
+    block = Block(
+        '$(color)_wall_banner',
+        nbt={'patterns': [{'pattern': Arg('pattern'), 'color': Arg('ink')}], 'facing': Arg('facing')})
+    set_pattern = room.function('set_pattern').add(
+        setblock(r(Arg('x'), Arg('y'), Arg('z')), block),
+    )
 
-    # noinspection PyUnusedLocal
-    def render_banner_ink(x, xn, z, zn, angle, facing, bx, bz, y_banner, y_shield, pattern, handback=None):
-        return (
-            execute().store(RESULT).block(r(x + bx, y_banner, z + bz), 'patterns[0].color', INT, 1).run(
-                banner_ink.get()),
-        )
+    # init: set up all armor stands, initialize restworld:banners.color and .ink, call 'function banners with storage restworld:banners'
+    # function banners is a macro that sets the color and ink for all stands, plus setblock for each place.
+    # (In principle for ink we could be setting the data values for all of them, but the special case is probably not worth it; reexamine when done)
+    # The loops just changes banners.color or banners.ink, and then calls function banners, as above
 
     def banner_color_loop(step):
-        return render_banners(render_banner_color, handback=step.elem)
+        yield say(data().modify('restworld:banners', 'color').set().value(step.elem))
+        yield data().modify('restworld:banners', 'color').set().value(step.elem)
 
-    def banner_ink_change():
-        yield execute().as_(stands).at(stands).run(
-            execute().store(RESULT).block((d(0, 0, 1)), 'banner_patterns[0].color', INT, 1).run(banner_ink.get()))
-        yield execute().as_(stands).run(
-            execute().store(RESULT).entity(s(), 'HandItems[1].components.banner_patterns[0].color', INT, 1).run(
-                banner_ink.get()))
+    def switch_banners(to):
+        yield which.set(0 if to == 'color' else 1)
 
-    def switch_banners(which):
-        return (
-            tag(e().tag('all_banners_home')).remove('banner_color_action_home'),
-            tag(e().tag('all_banners_home')).remove('banner_color_home'),
-            tag(e().tag('all_banners_home')).remove('banner_ink_action_home'),
-            tag(e().tag('all_banners_home')).remove('banner_ink_home'),
-            tag(e().tag('all_banners_home')).add('banner_' + which + '_action_home'),
-            tag(e().tag('all_banners_home')).add('banner_' + which + '_home'),
-            tag(e().tag('all_banners_home')).add('banners_action_home'),
-        )
-
-    banner_color_init = function('restworld:banners/switch_to_color')
     room.function('all_banners_init').add(
+        # /data modify storage restworld:banners.ink
+        which.set(0),
         banner_color.set(0),
+        data().modify('restworld:banners', 'color').set().value(WHITE),
         banner_ink.set(9),
-        kill(stands),
+        data().modify('restworld:banners', 'ink').set().value(CYAN),
+        kill(e().tag('banners')),
         fill(r(-2, -2, -2), r(16, 16, 16), 'air').replace('#banners'),
-        render_banners(armor_stands),
+        render_banners(init_armor_stands),
         setblock(r(-0.2, 3, 11.8), Block('white_banner', {'rotation': 10}, {
-            'Patterns': [{'pattern': 'rhombus', 'color': 9}, {'pattern': 'bs', 'color': 8},
-                         {'pattern': 'cs', 'color': 7},
-                         {'pattern': 'bo', 'color': 8}, {'pattern': 'ms', 'color': 15},
-                         {'pattern': 'half_horizontal', 'color': 8},
-                         {'pattern': 'circle', 'color': 8}, {'pattern': 'bo', 'color': 15}]})),
+            'patterns': [
+                {'pattern': 'rhombus', 'color': COLORS[9]}, {'pattern': 'bottom_stripe', 'color': COLORS[8]},
+                {'pattern': 'stripe_center', 'color': COLORS[7]}, {'pattern': 'border', 'color': COLORS[8]},
+                {'pattern': 'stripe_middle', 'color': COLORS[15]}, {'pattern': 'half_horizontal', 'color': COLORS[8]},
+                {'pattern': 'circle', 'color': COLORS[8]}, {'pattern': 'border', 'color': COLORS[15]}]})),
         setblock(r(11.8, 3, 0.2), Block('magenta_banner', {'rotation': 2}, {
-            'Patterns': [{'pattern': 'triangle_bottom', 'color': 15}, {'pattern': 'triangle_top', 'color': 15}]})),
+            'patterns': [{'pattern': 'triangle_bottom', 'color': COLORS[15]},
+                         {'pattern': 'triangle_top', 'color': COLORS[15]}]})),
         custom_banner(0.2, 0.2, 0.1),
         custom_banner(11.8, 11.8, -0.1),
-        banner_color_init,
-        function('restworld:banners/banner_color_cur'),
         function(names_off),
     )
+
+    color_loop = room.loop('banner_color', main_clock, home=False)
+    ink_loop = room.loop('banner_ink', main_clock, home=False)
 
     if len(authored_patterns) % 2 != 0:
         die('Must have an even number of custom patterns')
     room.loop('all_banners', main_clock).add(
         setblock(r(0, 3, 0), 'air'),
         setblock(r(11, 3, 11), 'air'),
+        execute().if_().score(which).matches(0).run(say('color'), function(color_loop)),
+        execute().unless().score(which).matches(0).run(say('ink'), function(ink_loop)),
+        function(update).with_().storage('restworld:banners'),
     ).loop(render_authored_banners, range(0, half))
 
-    room.function('banner_color_init').add(banner_color_init)
+    color_loop.loop(banner_color_loop, COLORS).add(
+        # make sure the two values are different.
+        execute().if_().score(room.score('banner_ink')).is_(EQ, room.score('banner_color')).unless().score(
+            ('_to_incr', 'banners')).matches(0).run(function(color_loop))
+    )
 
-    color_loop = room.loop('banner_color', main_clock)
-    ink_loop = room.loop('banner_ink', main_clock)
+    def banner_ink_loop(step):
+        yield data().modify('restworld:banners', 'ink').set().value(step.elem)
 
-    color_loop.adjust(
-        execute().if_().score(color_loop.score).is_(EQ, ink_loop.score).run(color_loop.score.add(1))
-    ).add(
-        fill(r(1, 3, 0), r(11, 5, 0), 'air').replace('#banners'),
-        fill(r(12, 3, 1), r(12, 5, 11), 'air').replace('#banners'),
-        fill(r(1, 3, 12), r(11, 5, 12), 'air').replace('#banners'),
-        fill(r(0, 3, 11), r(0, 5, 1), 'air').replace('#banners'),
-        # /execute as @e[tag=banner_stand] run data modify entity @s HandItems[1].components.base_color set value blue
-    ).loop(banner_color_loop, COLORS).add()
+    ink_loop.loop(banner_ink_loop, COLORS).add(
+        # make sure the two values are different.
+        execute().if_().score(room.score('banner_ink')).is_(EQ, room.score('banner_color')).unless().score(
+            ('_to_incr', 'banners')).matches(0).run(function(ink_loop)))
 
     banner_controls = room.function('banner_controls').add(
         function('restworld:banners/banner_controls_remove'),
         function('restworld:global/clock_off'),
-        WallSign((None, 'Set Banner', 'color'), (function('restworld:banners/switch_to_color', )),
-                 wood='dark_oak').color(WHITE).place(r(4, 3, 1), SOUTH),
-        WallSign((None, 'Set Banner', 'Ink'), (function('restworld:banners/switch_to_ink', )),
-                 wood='dark_oak').color(WHITE).place(r(4, 2, 2), SOUTH),
+        WallSign((None, 'Set Banner', 'color'), (function('restworld:banners/switch_to_color'),),
+                 wood='dark_oak', front=None).color(WHITE).place(r(4, 3, 1), SOUTH),
+        WallSign((None, 'Set Banner', 'Ink'), (function('restworld:banners/switch_to_ink'),),
+                 wood='dark_oak', front=None).color(WHITE).place(r(4, 2, 2), SOUTH),
     )
     for i, c in enumerate(COLORS):
         x = i % 8
@@ -265,7 +270,7 @@ def room():
             if_colors.run(function('restworld:banners/banner_color_cur')),
             if_ink.run(banner_ink.set(i)),
             if_ink.run(function('restworld:banners/banner_ink_cur')),
-        )).place(r(x, y, z), SOUTH))
+        ), front=None).place(r(x, y, z), SOUTH))
     room.function('banner_controls_init').add(
         label(r(5, 2, 4), 'Banner / Ink'),
         label(r(3, 2, 4), 'Labels'),
@@ -274,10 +279,6 @@ def room():
     )
     room.function('banner_controls_remove', home=False).add(
         fill(r(0, 2, 0), r(8, 4, 4), 'air').replace('#wall_signs'))
-
-    ink_loop.adjust(
-        execute().if_().score(ink_loop.score).is_(EQ, color_loop.score).run(ink_loop.score.add(1))
-    ).loop(None, COLORS).add(*banner_ink_change())
 
     # ^Cyan Lozenge
     # ^Light Gray Base
@@ -289,11 +290,10 @@ def room():
     # ^Black Bordure
     room.function('ominous_banner').add(
         setblock(r(0, 0, 0), Block('white_banner', nbt={
-            'Patterns': [{'pattern': 'rhombus', 'color': 9}, {'pattern': 'bs', 'color': 8},
-                         {'pattern': 'cs', 'color': 7},
-                         {'pattern': 'bo', 'color': 8}, {'pattern': 'ms', 'color': 15},
-                         {'pattern': 'half_horizontal', 'color': 8},
-                         {'pattern': 'circle', 'color': 8}, {'pattern': 'bo', 'color': 15}]})))
-
+            'patterns': [
+                {'pattern': 'rhombus', 'color': COLORS[9]}, {'pattern': 'bottom_stripe', 'color': COLORS[8]},
+                {'pattern': 'stripe_center', 'color': COLORS[7]}, {'pattern': 'border', 'color': COLORS[8]},
+                {'pattern': 'stripe_middle', 'color': COLORS[15]}, {'pattern': 'half_horizontal', 'color': COLORS[8]},
+                {'pattern': 'circle', 'color': COLORS[8]}, {'pattern': 'border', 'color': COLORS[15]}]})))
     room.function('switch_to_color', home=False).add(switch_banners('color'))
     room.function('switch_to_ink', home=False).add(switch_banners('ink'))

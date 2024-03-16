@@ -150,12 +150,13 @@ def room():
     ))
     campfire_init.add(label(r(-1, 2, 0), 'Cook'))
     campfire_main.add(
-        execute().if_().score(campfire_food).matches(0).run(data().merge(r(0, 3, 0), {'Items': [{}, {}, {}, {}]})),
+        execute().if_().score(campfire_food).matches(0).run(data().remove(r(0, 3, 0), 'Items')),
+        # For some reason the Count is required here
         execute().if_().score(campfire_food).matches(1).run(data().merge(
             r(0, 3, 0),
             {'Items':
-                 [Item.nbt_for('porkchop', {'Slot': 0}), Item.nbt_for('beef', {'Slot': 1}),
-                  Item.nbt_for('chicken', {'Slot': 2}), Item.nbt_for('mutton', {'Slot': 3})],
+                 [Item.nbt_for('porkchop', {'Slot': 0, 'Count': 1}), Item.nbt_for('beef', {'Slot': 1, 'Count': 1}),
+                  Item.nbt_for('chicken', {'Slot': 2, 'Count': 1}), Item.nbt_for('mutton', {'Slot': 3, 'Count': 1})],
              'CookingTotalTimes': Nbt.TypedArray('i', (0x7fffffff, 0x7fffffff, 0x7fffffff, 0x7fffffff))}))
     )
     room.function('campfire_enter').add(function('restworld:/blocks/campfire_cur'))
@@ -784,7 +785,7 @@ def color_functions(room):
                 Item.nbt_for(w, nbt=leather_color)),
         for w in 'horse', 'dog':
             yield data().modify(e().tag(f'colorings_{w}').limit(1),
-                                'body_armor_item.components.dyed_color.rgb').set().value(color.leather)
+                                'body_armor_item.components.minecraft:dyed_color.rgb').set().value(color.leather)
         for w in 'cat', 'dog':
             yield data().merge(e().tag(f'colorings_{w}').limit(1), {'CollarColor': color.num})
         yield data().merge(e().tag('colorings_llama').limit(1), {'body_armor_item': llama_decor})

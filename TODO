@@ -3,8 +3,6 @@ llama carpet returns but vanishes when "plain" is turned off.
 coloring area: wolf armor (have wolf standing, I'm guessing)
 coloring area: Put item displays up for colored armors? I think not, but think about it. They are not in the creative menu
 
-banner patterns are not yet public. The old codes don't work, no clear pattern maps the old names to the new ones (e.g., "vertical strip (left)" and "vertical strip (right)" become...?)
-
-tipped arrows now require an actual potion. I'll pick just one. But the code isn't working, I'm guessing it's a bug because when I do a "data merge" with the same data _that_ works.
-
 maybe keep all the areas loaded so room specific tp works
+
+Old-fashioned heraldry terms on banners too?
