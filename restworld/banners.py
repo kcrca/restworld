@@ -2,9 +2,10 @@ from __future__ import annotations
 
 from pynecraft.base import Arg, CYAN, EQ, SOUTH, r
 from pynecraft.commands import Block, COLORS, Entity, WHITE, data, e, execute, fill, function, kill, s, \
-    say, setblock
+    setblock
 from pynecraft.simpler import Shield, TextDisplay, WallSign
-from pynecraft.values import PATTERN_GROUP, as_pattern, patterns
+from pynecraft.values import PATTERN_GROUP, as_pattern, \
+    patterns
 from restworld.rooms import Room, label
 from restworld.world import die, main_clock, restworld
 
@@ -89,7 +90,7 @@ def room():
     banner_color = room.score('banner_color')
     banner_ink = room.score('banner_ink')
     which = room.score('which')
-    stands = e().tag('banner_stand')
+    stands = e().tag('banner_shield_stand')
 
     room.function('names_on', home=False).add(execute().as_(e().tag('banner_name')).run(
         data().merge(s(), {'text_opacity': 255, 'background': 0x40_00_00_00})))
@@ -133,14 +134,14 @@ def room():
                 z += zd
             yield render(x, xn, z, zn, angle, facing, bx, bz, 3.65, 3.65, pattern.value, handback)
 
+    # noinspection PyUnusedLocal
     def render_updates(x, xn, z, zn, angle, facing, bx, bz, y_banner, y_shield, pattern, handback=None):
         banner = Block('$(color)_wall_banner', {'facing': facing})
         if pattern != 'base':
             banner.nbt['patterns'] = [{'color': Arg('ink'), 'pattern': pattern}]
         yield setblock(r(x + bx, y_banner, z + bz), banner)
 
-    update = room.function('update_banners').add(
-        say('update banners: $(color) / $(ink)'),
+    update = room.function('update_banners', home=False).add(
         execute().as_(stands).run(
             data().modify(s(), 'HandItems[1].components.minecraft:base_color').set().value(Arg('color')),
             data().modify(s(), 'HandItems[1].components.minecraft:banner_patterns[].color').set().value(Arg('ink'))),
@@ -177,20 +178,12 @@ def room():
             authored_banners(authored_patterns[step.i + half], 11.8, 11.8, 6),
         )
 
-    block = Block(
-        '$(color)_wall_banner',
-        nbt={'patterns': [{'pattern': Arg('pattern'), 'color': Arg('ink')}], 'facing': Arg('facing')})
-    set_pattern = room.function('set_pattern').add(
-        setblock(r(Arg('x'), Arg('y'), Arg('z')), block),
-    )
-
     # init: set up all armor stands, initialize restworld:banners.color and .ink, call 'function banners with storage restworld:banners'
     # function banners is a macro that sets the color and ink for all stands, plus setblock for each place.
     # (In principle for ink we could be setting the data values for all of them, but the special case is probably not worth it; reexamine when done)
     # The loops just changes banners.color or banners.ink, and then calls function banners, as above
 
     def banner_color_loop(step):
-        yield say(data().modify('restworld:banners', 'color').set().value(step.elem))
         yield data().modify('restworld:banners', 'color').set().value(step.elem)
 
     def switch_banners(to):
@@ -208,7 +201,7 @@ def room():
         render_banners(init_armor_stands),
         setblock(r(-0.2, 3, 11.8), Block('white_banner', {'rotation': 10}, {
             'patterns': [
-                {'pattern': 'rhombus', 'color': COLORS[9]}, {'pattern': 'bottom_stripe', 'color': COLORS[8]},
+                {'pattern': 'rhombus', 'color': COLORS[9]}, {'pattern': 'stripe_bottom', 'color': COLORS[8]},
                 {'pattern': 'stripe_center', 'color': COLORS[7]}, {'pattern': 'border', 'color': COLORS[8]},
                 {'pattern': 'stripe_middle', 'color': COLORS[15]}, {'pattern': 'half_horizontal', 'color': COLORS[8]},
                 {'pattern': 'circle', 'color': COLORS[8]}, {'pattern': 'border', 'color': COLORS[15]}]})),
@@ -228,10 +221,11 @@ def room():
     room.loop('all_banners', main_clock).add(
         setblock(r(0, 3, 0), 'air'),
         setblock(r(11, 3, 11), 'air'),
-        execute().if_().score(which).matches(0).run(say('color'), function(color_loop)),
-        execute().unless().score(which).matches(0).run(say('ink'), function(ink_loop)),
+    ).loop(render_authored_banners, range(0, half)).add(
+        execute().if_().score(which).matches(0).run(function(color_loop)),
+        execute().unless().score(which).matches(0).run(function(ink_loop)),
         function(update).with_().storage('restworld:banners'),
-    ).loop(render_authored_banners, range(0, half))
+    )
 
     color_loop.loop(banner_color_loop, COLORS).add(
         # make sure the two values are different.
@@ -246,6 +240,9 @@ def room():
         # make sure the two values are different.
         execute().if_().score(room.score('banner_ink')).is_(EQ, room.score('banner_color')).unless().score(
             ('_to_incr', 'banners')).matches(0).run(function(ink_loop)))
+
+    room.function('switch_to_color', home=False).add(switch_banners('color'))
+    room.function('switch_to_ink', home=False).add(switch_banners('ink'))
 
     banner_controls = room.function('banner_controls').add(
         function('restworld:banners/banner_controls_remove'),
@@ -279,21 +276,3 @@ def room():
     )
     room.function('banner_controls_remove', home=False).add(
         fill(r(0, 2, 0), r(8, 4, 4), 'air').replace('#wall_signs'))
-
-    # ^Cyan Lozenge
-    # ^Light Gray Base
-    # ^Gray Pale
-    # ^Light Gray Bordure
-    # ^Black Fess
-    # ^Light Gray Per Fess
-    # ^Light Gray Roundel
-    # ^Black Bordure
-    room.function('ominous_banner').add(
-        setblock(r(0, 0, 0), Block('white_banner', nbt={
-            'patterns': [
-                {'pattern': 'rhombus', 'color': COLORS[9]}, {'pattern': 'bottom_stripe', 'color': COLORS[8]},
-                {'pattern': 'stripe_center', 'color': COLORS[7]}, {'pattern': 'border', 'color': COLORS[8]},
-                {'pattern': 'stripe_middle', 'color': COLORS[15]}, {'pattern': 'half_horizontal', 'color': COLORS[8]},
-                {'pattern': 'circle', 'color': COLORS[8]}, {'pattern': 'border', 'color': COLORS[15]}]})))
-    room.function('switch_to_color', home=False).add(switch_banners('color'))
-    room.function('switch_to_ink', home=False).add(switch_banners('ink'))
