@@ -63,7 +63,7 @@ def room():
         if step.i == 2:
             # Choose a random color
             yield execute().store(RESULT).entity(e().tag('arrow').limit(1),
-                                                 'item.components.potion_contents.custom_color', LONG).run(
+                                                 'item.components.minecraft:potion_contents.custom_color', LONG).run(
                 random().value((0, 0xffffff)))
         yield execute().if_().score(fire_arrow).matches((1, None)).as_(e().tag('arrow')).run(
             data().modify(s(), 'HasVisualFire').set().value(True))
@@ -435,12 +435,12 @@ def copper_functions(room):
 
 
 def wood_functions(room):
-    wood_init = room.function('wood_init').add(summon('item_frame', r(2, 3, -3), {
-        'Tags': ['wood_boat_frame', room.name], 'Facing': 3, 'Fixed': True, 'Item': {'id': 'stone', 'Count': 1}}),
-                                               summon('item_frame', r(3, 3, -3), {
-                                                   'Tags': ['wood_sign_frame', room.name], 'Facing': 3, 'Fixed': True,
-                                                   'Item': {'id': 'stone', 'Count': 1}}),
-                                               label(r(-1, 2, 4), 'Chest Boat'))
+    wood_init = room.function('wood_init').add(
+        summon('item_frame', r(2, 3, -3), {
+            'Tags': ['wood_boat_frame', room.name], 'Facing': 3, 'Fixed': True, 'Item': {'id': 'stone', 'Count': 1}}),
+        summon('item_frame', r(3, 3, -3), {
+            'Tags': ['wood_sign_frame', room.name], 'Facing': 3, 'Fixed': True, 'Item': {'id': 'stone', 'Count': 1}}),
+        label(r(-1, 2, 4), 'Chest Boat'))
     wood_init.add(summon('item_frame', r(3, 4, -3), {
         'Tags': ['wood_hanging_sign_frame', room.name], 'Facing': 3, 'Fixed': True,
         'Item': {'id': 'stone', 'Count': 1}}))
@@ -570,7 +570,7 @@ def wood_functions(room):
                 e().tag('wood_boat_frame')).run(
                 data().merge(s(), ItemFrame(SOUTH).item(chest_boat_item).named(f'{name} Chest Boat').nbt))
         else:
-            yield data().remove(e().tag('wood_boat_frame').limit(1), 'Item.id')
+            yield data().remove(e().tag('wood_boat_frame').limit(1), 'Item')
 
     i = info.woods.index('Bamboo') + 1
     woods = info.woods[:i] + ('Bamboo Mosaic',) + info.woods[i:]
