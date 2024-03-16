@@ -598,6 +598,7 @@ def trim_functions(room):
                                   'LeftLeg': [-20, 0, 0], 'RightLeg': [20, 0, 0]}}).tag(room.name, overall_tag)
 
     places = (
+        (r(-3, 2, -5), EAST), (r(2, 2, -5), WEST),
         (r(-4, 3, -4), EAST), (r(3, 3, -4), WEST),
         (r(-3, 2, -3), EAST), (r(2, 2, -3), WEST),
         (r(-4, 3, -2), EAST), (r(3, 3, -2), WEST),
@@ -702,10 +703,10 @@ def trim_functions(room):
     categories = {
         'patterns': Trim('patterns', trim_patterns, patterns_places,
                          lambda stand, type: armor_for(stand, 'iron', {'components': {'trim': {'pattern': type}}}),
-                         'components.trim.pattern'),
+                         'components.minecraft:trim.pattern'),
         'materials': Trim('materials', trim_materials, material_places,
                           lambda stand, type: armor_for(stand, 'iron', {'components': {'trim': {'material': type}}}),
-                          'components.trim.material'),
+                          'components.minecraft:trim.material'),
         'armors': Armors('armors', info.armors, armors_places,
                          lambda stand, type: armor_for(stand, type))}
 
