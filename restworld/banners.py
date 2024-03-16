@@ -4,8 +4,10 @@ from pynecraft.base import Arg, CYAN, EQ, SOUTH, r
 from pynecraft.commands import Block, COLORS, Entity, WHITE, data, e, execute, fill, function, kill, s, \
     setblock
 from pynecraft.simpler import Shield, TextDisplay, WallSign
-from pynecraft.values import PATTERN_GROUP, as_pattern, \
-    patterns
+from pynecraft.values import BORDER, BRICKS, CIRCLE, CREEPER, CROSS, CURLY_BORDER, FLOWER, GRADIENT, GRADIENT_UP, \
+    HALF_HORIZONTAL, HALF_HORIZONTAL_BOTTOM, MOJANG, PATTERN_GROUP, RHOMBUS, SMALL_STRIPES, STRAIGHT_CROSS, \
+    STRIPE_BOTTOM, STRIPE_CENTER, STRIPE_MIDDLE, STRIPE_RIGHT, STRIPE_TOP, TRIANGLES_BOTTOM, TRIANGLES_TOP, \
+    TRIANGLE_BOTTOM, TRIANGLE_TOP, as_pattern, patterns
 from restworld.rooms import Room, label
 from restworld.world import die, main_clock, restworld
 
@@ -24,61 +26,51 @@ adjustments = {0: (1, 0.07, 1, -1, 0.30, 0, 0, 'south', 0, +1),
 # noinspection SpellCheckingInspection
 authored_patterns = (
     (Block('blue_banner', nbt={'patterns': [
-        {'color': COLORS[0], 'pattern': 'bricks'}, {'color': COLORS[11], 'pattern': 'half_horizontal_bottom'},
-        {'color': COLORS[15], 'pattern': 'straight_cross'},
-        {'color': COLORS[11], 'pattern': 'straight_cross'}, {'color': COLORS[15], 'pattern': 'border'},
-        {'color': COLORS[11], 'pattern': 'border'}]}),
+        {'color': COLORS[0], 'pattern': BRICKS}, {'color': COLORS[11], 'pattern': HALF_HORIZONTAL_BOTTOM},
+        {'color': COLORS[15], 'pattern': STRAIGHT_CROSS}, {'color': COLORS[11], 'pattern': STRAIGHT_CROSS},
+        {'color': COLORS[15], 'pattern': BORDER}, {'color': COLORS[11], 'pattern': BORDER}]}),
      'Tardis', 'Pikachu'),
     (Block('purple_banner', nbt={'patterns': [
-        {'color': COLORS[2], 'pattern': 'small_stripes'}, {'color': COLORS[10], 'pattern': 'bricks'},
-        {'color': COLORS[2], 'pattern': 'curly_border'},
-        {'color': COLORS[15], 'pattern': 'border'}]}),
+        {'color': COLORS[2], 'pattern': SMALL_STRIPES}, {'color': COLORS[10], 'pattern': BRICKS},
+        {'color': COLORS[2], 'pattern': CURLY_BORDER}, {'color': COLORS[15], 'pattern': BORDER}]}),
      'Portail du Nether', 'Akkta'),
     (Block('white_banner', nbt={'patterns': [
-        {'color': COLORS[15], 'pattern': 'rhombus'}, {'color': COLORS[1], 'pattern': 'curly_border'},
-        {'color': COLORS[1], 'pattern': 'circle'},
-        {'color': COLORS[1], 'pattern': 'creeper'}, {'color': COLORS[1], 'pattern': 'triangle_top'},
-        {'color': COLORS[1], 'pattern': 'triangles_top'}]}),
+        {'color': COLORS[15], 'pattern': RHOMBUS}, {'color': COLORS[1], 'pattern': CURLY_BORDER},
+        {'color': COLORS[1], 'pattern': CIRCLE}, {'color': COLORS[1], 'pattern': CREEPER},
+        {'color': COLORS[1], 'pattern': TRIANGLE_TOP}, {'color': COLORS[1], 'pattern': TRIANGLES_TOP}]}),
      'Fox', 'rhombus.crafteur'),
     (Block('white_banner', nbt={'patterns': [
-        {'color': COLORS[15], 'pattern': 'circle'}, {'color': COLORS[0], 'pattern': 'flower'},
-        {'color': COLORS[15], 'pattern': 'triangle_top'},
-        {'color': COLORS[0], 'pattern': 'cross'}, {'color': COLORS[15], 'pattern': 'curly_border'},
-        {'color': COLORS[0], 'pattern': 'triangles_bottom'}]}),
+        {'color': COLORS[15], 'pattern': CIRCLE}, {'color': COLORS[0], 'pattern': FLOWER},
+        {'color': COLORS[15], 'pattern': TRIANGLE_TOP}, {'color': COLORS[0], 'pattern': CROSS},
+        {'color': COLORS[15], 'pattern': CURLY_BORDER}, {'color': COLORS[0], 'pattern': TRIANGLES_BOTTOM}]}),
      'Rabbit', 'googolplexbyte'),
     (Block('light_blue_banner', nbt={'patterns': [
-        {'color': COLORS[11], 'pattern': 'gradient'}, {'color': COLORS[0], 'pattern': 'curly_border'},
-        {'color': COLORS[0], 'pattern': 'cross'},
-        {'color': COLORS[0], 'pattern': 'circle'}, {'color': COLORS[11], 'pattern': 'flower'},
-        {'color': COLORS[0], 'pattern': 'triangle_top'}]}),
+        {'color': COLORS[11], 'pattern': GRADIENT}, {'color': COLORS[0], 'pattern': CURLY_BORDER},
+        {'color': COLORS[0], 'pattern': CROSS}, {'color': COLORS[0], 'pattern': CIRCLE},
+        {'color': COLORS[11], 'pattern': FLOWER}, {'color': COLORS[0], 'pattern': TRIANGLE_TOP}]}),
      'Angel', 'PK?'),
     (Block('white_banner', nbt={'patterns': [
-        {'color': COLORS[15], 'pattern': 'straight_cross'}, {'color': COLORS[0], 'pattern': 'straight_cross'},
-        {'color': COLORS[15], 'pattern': 'flower'},
-        {'color': COLORS[0], 'pattern': 'flower'}]}),
-     'Quartz sculpte', 'Pikachu'),
+        {'color': COLORS[15], 'pattern': STRAIGHT_CROSS}, {'color': COLORS[0], 'pattern': STRAIGHT_CROSS},
+        {'color': COLORS[15], 'pattern': FLOWER}, {'color': COLORS[0], 'pattern': FLOWER}]}), 'Quartz sculpte',
+     'Pikachu'),
     (Block('black_banner', nbt={'patterns': [
-        {'color': COLORS[5], 'pattern': 'curly_border'}, {'color': COLORS[15], 'pattern': 'stripe_right'},
-        {'color': COLORS[14], 'pattern': 'flower'},
-        {'color': COLORS[5], 'pattern': 'stripe_middle'}, {'color': COLORS[15], 'pattern': 'triangle_top'},
-        {'color': COLORS[5], 'pattern': 'mojang'}]}),
+        {'color': COLORS[5], 'pattern': CURLY_BORDER}, {'color': COLORS[15], 'pattern': STRIPE_RIGHT},
+        {'color': COLORS[14], 'pattern': FLOWER}, {'color': COLORS[5], 'pattern': STRIPE_MIDDLE},
+        {'color': COLORS[15], 'pattern': TRIANGLE_TOP}, {'color': COLORS[5], 'pattern': MOJANG}]}),
      'DRAGON !', 'kraftime'),
     (Block('white_banner', nbt={'patterns': [
-        {'color': COLORS[15], 'pattern': 'stripe_top'}, {'color': COLORS[0], 'pattern': 'straight_cross'},
-        {'color': COLORS[14], 'pattern': 'half_horizontal_bottom'},
-        {'color': COLORS[0], 'pattern': 'border'}, {'color': COLORS[0], 'pattern': 'stripe_bottom'},
-        {'color': COLORS[4], 'pattern': 'stripe_middle'}]}),
+        {'color': COLORS[15], 'pattern': STRIPE_TOP}, {'color': COLORS[0], 'pattern': STRAIGHT_CROSS},
+        {'color': COLORS[14], 'pattern': HALF_HORIZONTAL_BOTTOM}, {'color': COLORS[0], 'pattern': BORDER},
+        {'color': COLORS[0], 'pattern': STRIPE_BOTTOM}, {'color': COLORS[4], 'pattern': STRIPE_MIDDLE}]}),
      'Poule', 'mishCOLORS[80]'),
     (Block('black_banner', nbt={'patterns': [
-        {'color': COLORS[14], 'pattern': 'gradient_up'}, {'color': COLORS[14], 'pattern': 'triangle_bottom'},
-        {'color': COLORS[0], 'pattern': 'triangles_bottom'},
-        {'color': COLORS[0], 'pattern': 'triangles_top'}]}),
+        {'color': COLORS[14], 'pattern': GRADIENT_UP}, {'color': COLORS[14], 'pattern': TRIANGLE_BOTTOM},
+        {'color': COLORS[0], 'pattern': TRIANGLES_BOTTOM}, {'color': COLORS[0], 'pattern': TRIANGLES_TOP}]}),
      'Bouche', 'entonixCOLORS[69]'),
     (Block('lime_banner', nbt={'patterns': [
-        {'color': COLORS[4], 'pattern': 'gradient'}, {'color': COLORS[3], 'pattern': 'gradient_up'},
-        {'color': COLORS[0], 'pattern': 'curly_border'},
-        {'color': COLORS[0], 'pattern': 'cross'}, {'color': COLORS[0], 'pattern': 'rhombus'},
-        {'color': COLORS[5], 'pattern': 'circle'}]}),
+        {'color': COLORS[4], 'pattern': GRADIENT}, {'color': COLORS[3], 'pattern': GRADIENT_UP},
+        {'color': COLORS[0], 'pattern': CURLY_BORDER}, {'color': COLORS[0], 'pattern': CROSS},
+        {'color': COLORS[0], 'pattern': RHOMBUS}, {'color': COLORS[5], 'pattern': CIRCLE}]}),
      'Like pls ^-^', 'Harmony'),
 )
 
@@ -201,13 +193,13 @@ def room():
         render_banners(init_armor_stands),
         setblock(r(-0.2, 3, 11.8), Block('white_banner', {'rotation': 10}, {
             'patterns': [
-                {'pattern': 'rhombus', 'color': COLORS[9]}, {'pattern': 'stripe_bottom', 'color': COLORS[8]},
-                {'pattern': 'stripe_center', 'color': COLORS[7]}, {'pattern': 'border', 'color': COLORS[8]},
-                {'pattern': 'stripe_middle', 'color': COLORS[15]}, {'pattern': 'half_horizontal', 'color': COLORS[8]},
-                {'pattern': 'circle', 'color': COLORS[8]}, {'pattern': 'border', 'color': COLORS[15]}]})),
+                {'pattern': RHOMBUS, 'color': COLORS[9]}, {'pattern': STRIPE_BOTTOM, 'color': COLORS[8]},
+                {'pattern': STRIPE_CENTER, 'color': COLORS[7]}, {'pattern': BORDER, 'color': COLORS[8]},
+                {'pattern': STRIPE_MIDDLE, 'color': COLORS[15]}, {'pattern': HALF_HORIZONTAL, 'color': COLORS[8]},
+                {'pattern': CIRCLE, 'color': COLORS[8]}, {'pattern': BORDER, 'color': COLORS[15]}]})),
         setblock(r(11.8, 3, 0.2), Block('magenta_banner', {'rotation': 2}, {
-            'patterns': [{'pattern': 'triangle_bottom', 'color': COLORS[15]},
-                         {'pattern': 'triangle_top', 'color': COLORS[15]}]})),
+            'patterns': [{'pattern': TRIANGLE_BOTTOM, 'color': COLORS[15]},
+                         {'pattern': TRIANGLE_TOP, 'color': COLORS[15]}]})),
         custom_banner(0.2, 0.2, 0.1),
         custom_banner(11.8, 11.8, -0.1),
         function(names_off),
