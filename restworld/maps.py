@@ -77,17 +77,17 @@ def room():
 
         setblock(r(8, 2, 2), 'cartography_table'),
 
-        execute().at(e().tag(banner_frame_tag)).run(banner_label.summon(r(-0.04, 0.17, -0.12), facing=WEST)),
+        execute().at(e().tag(banner_frame_tag)).run(banner_label.summon(r(-0.04, -0.23, -0.13), facing=WEST)),
     )
     for i, (k, v) in enumerate(decorations.items()):
         label = TextDisplay(v['name'], {'background': 0, 'shadow_radius': 0}).scale(0.1).tag('map_label',
                                                                                              f'map_label_{i}')
-        y = v['z'] / -128.0 + 0.05
+        y = v['z'] / -128.0 - 0.07
         z = v['x'] / 128.0 - 1
         room_init.add(execute().at(e().tag(icon_frame_tag)).run(label.summon(r(-0.04, y, z), facing=WEST)))
     label = TextDisplay('Frame',
                         {'background': 0, 'shadow_radius': 0}).scale(0.1).tag('map_label', f'map_label_{len(icons)}')
-    room_init.add(execute().at(e().tag(icon_frame_tag)).run(label.summon(r(-0.04, 0.035, -0.47), facing=WEST)))
+    room_init.add(execute().at(e().tag(icon_frame_tag)).run(label.summon(r(-0.04, -0.06, -0.47), facing=WEST)))
 
     map_chest_pos = r(0, -5, 1)
     room.function('map_chest_init').add(

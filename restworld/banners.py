@@ -136,7 +136,7 @@ def room():
     update = room.function('update_banners', home=False).add(
         execute().as_(stands).run(
             data().modify(s(), 'HandItems[1].components.minecraft:base_color').set().value(Arg('color')),
-            data().modify(s(), 'HandItems[1].components.minecraft:banner_patterns[].color').set().value(Arg('ink'))),
+            data().modify(s(), 'HandItems[1].minecraft:components.minecraft:banner_patterns[].color').set().value(Arg('ink'))),
         fill(r(1, 3, 0), r(11, 5, 0), 'air').replace('#banners'),
         fill(r(12, 3, 1), r(12, 5, 11), 'air').replace('#banners'),
         fill(r(1, 3, 12), r(11, 5, 12), 'air').replace('#banners'),

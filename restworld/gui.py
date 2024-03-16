@@ -272,7 +272,7 @@ def room():
         clone(r(20, -5, 30), r(-15, -5, 1), r(-15, 1, 1)).filtered('chest'))
 
     non_inventory = list(filter(lambda x: x.name not in operator_menu, must_give_items.values()))
-    non_inventory.append(Entity('elytra', name='Damaged Elytra', nbt={'components': {'damage': 450}}))
+    non_inventory.append(Entity('elytra', name='Damaged Elytra', nbt={'components': {'minecraft:damage': 450}}))
 
     def only_items_init_func():
         rows = [(1, 2)]
