@@ -221,8 +221,8 @@ def room():
 
     color_loop.loop(banner_color_loop, COLORS).add(
         # make sure the two values are different.
-        execute().if_().score(room.score('banner_ink')).is_(EQ, room.score('banner_color')).unless().score(
-            ('_to_incr', 'banners')).matches(0).run(function(color_loop))
+        execute().if_().score(banner_ink).is_(EQ, banner_color).unless().score(('_to_incr', 'banners')).matches(0).run(
+            function(color_loop))
     )
 
     def banner_ink_loop(step):
@@ -230,8 +230,8 @@ def room():
 
     ink_loop.loop(banner_ink_loop, COLORS).add(
         # make sure the two values are different.
-        execute().if_().score(room.score('banner_ink')).is_(EQ, room.score('banner_color')).unless().score(
-            ('_to_incr', 'banners')).matches(0).run(function(ink_loop)))
+        execute().if_().score(banner_ink).is_(EQ, banner_color).unless().score(('_to_incr', 'banners')).matches(0).run(
+            function(ink_loop)))
 
     room.function('switch_to_color', home=False).add(switch_banners('color'))
     room.function('switch_to_ink', home=False).add(switch_banners('ink'))
@@ -252,13 +252,10 @@ def room():
         row = int(i / 8)
         y = 3 if row == 0 else 2
         z = 1 if row == 0 else 2
-        if_colors = execute().at(e().tag('banner_color_home'))
-        if_ink = execute().at(e().tag('banner_ink_home'))
         banner_controls.add(WallSign((None, c), (
-            if_colors.run(banner_color.set(i)),
-            if_colors.run(function('restworld:banners/banner_color_cur')),
-            if_ink.run(banner_ink.set(i)),
-            if_ink.run(function('restworld:banners/banner_ink_cur')),
+            execute().if_().score(which).matches(0).run(banner_color.set(i)),
+            execute().unless().score(which).matches(0).run(banner_ink.set(i)),
+            execute().at(e().tag('all_banners_home')).run(function('restworld:banners/all_banners_cur'))
         ), front=None).place(r(x, y, z), SOUTH))
     room.function('banner_controls_init').add(
         label(r(5, 2, 4), 'Banner / Ink'),
