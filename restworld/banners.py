@@ -17,11 +17,11 @@ stand_tmpl = Entity('armor_stand', {
 
 # [xz]n: Adjustments (nudge) for shield's armor stand
 # b[xz]: Adjustments for banner position
-#                  x   xn  xd   z   zn  zd             bx  bz
+#                  x   xn  xd   z   zn  zd             bx  bz  skip middle
 adjustments = {0: (1, 0.07, 1, -1, 0.30, 0, 0, 'south', 0, +1),
                11: (13, -0.30, 0, 1, 0.07, 1, 90, 'west', -1, 0),
-               21: (11, -0.07, -1, 13, -0.30, 0, 180, 'north', 0, -1),
-               31: (-1, 0.30, 0, 11, -0.07, -1, 270, 'east', +1, 0)}
+               22: (11, -0.07, -1, 13, -0.30, 0, 180, 'north', 0, -1),
+               32: (-1, 0.30, 0, 11, -0.07, -1, 270, 'east', +1, 0)}
 
 # noinspection SpellCheckingInspection
 authored_patterns = (
@@ -111,7 +111,7 @@ def room():
         nbt = {'Rotation': [angle, 0], 'Tags': ['banners']}
         yield TextDisplay(name).scale(0.5).tag('banner_name').summon(r(x + xt, text_y, z + zt), nbt)
 
-    def render_banners(render, handback=None):
+    def render_banners(render):
         # These are in the first adjustment, but python doesn't know that, so this keeps it happy
         x = z = xd = zd = xn = zn = angle = facing = bx = bz = 0
         for i, pat in enumerate(PATTERN_GROUP):
@@ -121,13 +121,13 @@ def room():
             except KeyError:
                 x += xd
                 z += zd
-            if i > 10 and i % 10 == 6:
+            if facing == 'north' and i == 27:
                 x += xd
                 z += zd
-            yield render(x, xn, z, zn, angle, facing, bx, bz, 3.65, 3.65, pattern.value, handback)
+            yield render(x, xn, z, zn, angle, facing, bx, bz, 3.65, 3.65, pattern.value)
 
     # noinspection PyUnusedLocal
-    def render_updates(x, xn, z, zn, angle, facing, bx, bz, y_banner, y_shield, pattern, handback=None):
+    def render_updates(x, xn, z, zn, angle, facing, bx, bz, y_banner, y_shield, pattern):
         banner = Block('$(color)_wall_banner', {'facing': facing})
         if pattern != 'base':
             banner.nbt['patterns'] = [{'color': Arg('ink'), 'pattern': pattern}]
