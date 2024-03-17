@@ -375,7 +375,7 @@ def water_funcs(room):
         yield Sign.change(r(0, 2, -2), (None, step.elem))
 
     room.loop('coral', main_clock).loop(coral_loop, ('Brain', 'Bubble', 'Fire', 'Horn', 'Tube'))
-    room.function('coral_init').add(WallSign((None, None, 'Coral')).glowing(True).place(r(0, 2, -2), WEST, water=True))
+    room.function('coral_init').add(WallSign((None, None, 'Coral'), front=None).glowing(True).place(r(0, 2, -2), WEST, water=True))
 
     kelp_init = room.function('kelp_init').add(fill(r(0, 2, 0), r(2, 6, 0), 'water'))
     for x in range(0, 3):
