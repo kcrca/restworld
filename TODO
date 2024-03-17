@@ -6,3 +6,7 @@ coloring area: Put item displays up for colored armors? I think not, but think a
 maybe keep all the areas loaded so room specific tp works
 
 Old-fashioned heraldry terms on banners too?
+
+Make labels be text_display's, probably on the ground facing up, with a direction (so it faces the path). Or maybe we can make
+the text_display have a few blank lines above the label, and let it rotate to face the player around the y axis _only_, which
+might keep the text towards the outer edge of the block.

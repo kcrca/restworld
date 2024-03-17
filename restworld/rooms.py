@@ -11,7 +11,7 @@ from pynecraft.commands import Block, BlockDef, CLEAR, Command, Commands, Entity
     NEAREST, Position, RESULT, Score, SignMessages, a, as_block, as_entity, as_facing, as_score, comment, data, e, \
     execute, function, kill, p, say, schedule, scoreboard, setblock, summon, tag, tellraw, tp, weather
 from pynecraft.function import DataPack, Function, FunctionSet, LATEST_PACK_VERSION, Loop
-from pynecraft.simpler import TextDisplay, WallSign
+from pynecraft.simpler import WallSign
 from pynecraft.values import DUMMY
 
 
@@ -183,7 +183,7 @@ class Room(FunctionSet):
         x, z, rot = facing.dx, facing.dz, facing.yaw
         anchor = '%s_anchor' % self.name
         anchor_rot = rotate_facing(facing.name, ROTATION_180)
-        marker = TextDisplay(None, {'Rotation': anchor_rot.rotation, 'shadow_radius': 0}).tag(anchor, 'anchor')
+        marker = Entity('marker', {'Rotation': anchor_rot.rotation, 'shadow_radius': 0}).tag(anchor, 'anchor')
         self.add(Function('%s_room_init' % self.name).add(
             sign.place(r(x, 6, z), facing),
             kill(e().tag(anchor)),
