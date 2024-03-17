@@ -176,10 +176,6 @@ def room():
                   nbt={'sherds': [usable_sherds[i], usable_sherds[i + 1], usable_sherds[i + 2]]},
                   name=f'Decorated Pot|{sherd_names[i]}') for i in range(len(sherds))), air=True, clock=fast_clock)
 
-    # # Can't stop pot item from being generated, so ... https://bugs.mojang.com/browse/MC-260301
-    # room.function('decorated_pot_enter').add(setblock(r(1, -1, 0), 'redstone_block'))
-    # room.function('decorated_pot_exit').add(setblock(r(1, -1, 0), 'air'))
-
     blocks('dirt', SOUTH, ('Dirt', 'Coarse Dirt', 'Rooted Dirt', 'Farmland'))
     blocks('end', NORTH, ('End Stone', 'End Stone|Bricks'))
     blocks('frosted_ice', SOUTH,

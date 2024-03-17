@@ -43,15 +43,17 @@ def _to_iterable(tags):
     return tuple(tags)
 
 
-def label(pos: Position, txt: str, facing=UP, invis=True, tags=(), block=Block('stone_button')) -> Commands:
-    tags = list(tags)
-    tags.append('label')
+def label(pos: Position, txt: str, facing=UP) -> Commands:
+    # N: /summon text_display -26 101.02 8 {background:0,billboard:fixed, Tags:[foo], text:'{"text": "hi"}', text_opacity:255, transformation:{ left_rotation:[0f,1f,0f,0f],scale:[1f,1f,1f],translation:[0f,0f,-0.65f], right_rotation: [0.7f,0f,0f,-0.7f]}}
+    # S: /summon text_display -26 101.02 8 {background:0,billboard:fixed, Tags:[foo], text:'{"text": "hi"}', text_opacity:255, transformation:{ left_rotation:[0f,0f,0f,1f],scale:[1f,1f,1f],translation:[0f,0f,0.65f], right_rotation: [0.7f,0f,0f,-0.7f]}}
+    # E: /summon text_display -26 101.02 8 {background:0,billboard:fixed, Tags:[foo], text:'{"text": "hi"}', text_opacity:255, transformation:{ left_rotation:[0f,0.7f,0f,-0.7f], scale:[1f,1f,1f],translation:[-0.65f,0f,0f], right_rotation: [0.7f,0f,0f,-0.7f]}}
+    # W: /summon text_display -26 101.02 8 {background:0,billboard:fixed, Tags:[foo], text:'{"text": "hi"}', text_opacity:255, transformation:{ left_rotation:[0f,0.7f,0f,0.7f], scale:[1f,1f,1f],translation:[0.65f,0f,0f], right_rotation: [0.7f,0f,0f,-0.7f]}}
     return (
         execute().positioned(pos).run(
             kill(e().type('item_frame').tag('label').sort(NEAREST).distance((None, 1)).limit(1))),
         summon('item_frame', pos,
-               named_frame_item(block, txt).merge(
-                   {'Invisible': invis, 'Facing': as_facing(facing).number, 'Tags': tags, 'Fixed': True})),
+               named_frame_item(Block('stone_button'), txt).merge(
+                   {'Invisible': True, 'Facing': as_facing(facing).number, 'Tags': ['label'], 'Fixed': True})),
     )
 
 
