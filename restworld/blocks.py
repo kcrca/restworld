@@ -169,10 +169,11 @@ def room():
     # Have to replace it with air first, so air=True ... https://bugs.mojang.com/browse/MC-260399
     # Also, the order for sides is weird, https://bugs.mojang.com/browse/MC-260399
     sherd_names = tuple(sherd.replace('_pottery_sherd', '').title() for sherd in sherds)
+    usable_sherds = sherds + sherds
     _, pot_loop = blocks(
         'decorated_pot', NORTH, ('decorated_pot',) + tuple(
             Block('decorated_pot',
-                  nbt={'sherds': [sherds[i], sherds[(i + 1) % len(sherds)], sherds[(i + 2) % len(sherds)]]},
+                  nbt={'sherds': [usable_sherds[i], usable_sherds[i + 1], usable_sherds[i + 2]]},
                   name=f'Decorated Pot|{sherd_names[i]}') for i in range(len(sherds))), air=True, clock=fast_clock)
 
     # # Can't stop pot item from being generated, so ... https://bugs.mojang.com/browse/MC-260301
