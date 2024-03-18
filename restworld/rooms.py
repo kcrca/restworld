@@ -11,7 +11,7 @@ from pynecraft.base import BLUE, EAST, FacingDef, NORTH, Nbt, ORANGE, ROTATION_1
     rotate_facing, \
     to_name
 from pynecraft.commands import Block, BlockDef, CLEAR, Command, Commands, Entity, EntityDef, INT, JsonText, MINUS, \
-    NEAREST, Position, RESULT, Score, SignMessages, a, as_block, as_entity, as_facing, as_score, comment, data, e, \
+    Position, RESULT, Score, SignMessages, a, as_block, as_entity, as_facing, as_score, comment, data, e, \
     execute, function, kill, p, say, schedule, scoreboard, setblock, summon, tag, tellraw, tp, weather
 from pynecraft.function import DataPack, Function, FunctionSet, LATEST_PACK_VERSION, Loop
 from pynecraft.simpler import TextDisplay, WallSign
@@ -44,54 +44,6 @@ def _to_iterable(tags):
     if isinstance(tags, Iterable) and not isinstance(tags, str):
         return tags
     return tuple(tags)
-
-
-_transform = {
-    False: {
-        SOUTH: ((0, 1, 0), 1, {'left_rotation': [0.0, 1.0, 0.0, 0.0], 'translation': [0.0, 0.0, -0.65],
-                               'right_rotation': [0.7, 0.0, 0.0, -0.7]}),
-        NORTH: ((0, 1, 0), 1, {'left_rotation': [0.0, 0.0, 0.0, 1.0], 'translation': [0.0, 0.0, 0.65],
-                               'right_rotation': [0.7, 0.0, 0.0, -0.7]}),
-        EAST: ((0, 1, 0), 1, {'left_rotation': [0.0, 0.7, 0.0, -0.7], 'translation': [-0.65, 0.0, 0.0],
-                              'right_rotation': [0.7, 0.0, 0.0, -0.7]}),
-        WEST: ((0, 1, 0), 1, {'left_rotation': [0.0, 0.7, 0.0, 0.7], 'translation': [0.65, 0.0, 0.0],
-                              'right_rotation': [0.7, 0.0, 0.0, -0.7]}),
-    },
-    True: {
-        NORTH: ((0, 0, 1), 1, {'left_rotation': [0.0, 0.0, 0.0, 1.0], 'translation': [0.0, 0.0, 0.0],
-                                   'right_rotation': [0.0, 0.0, 0.0, 1.0]}),
-        SOUTH: ((0, 0, 0), -1, {'left_rotation': [0.0, 0.0, 0.0, 1.0], 'translation': [0.0, 0.0, 0.0],
-                                    'right_rotation': [0.0, 1.0, 0.0, 0.0]}),
-        WEST: ((-0.5, 0, 0), 1, {'left_rotation': [0.0, 0.0, 0.0, 1.0], 'translation': [0.0, 0.0, 0.0],
-                                 'right_rotation': [0.0, 0.7, 0.0, 0.7]}),
-        EAST: ((0.5, 0, 0), -1, {'left_rotation': [0.0, 0.0, 0.0, 1.0], 'translation': [0.0, 0.0, 0.0],
-                                 'right_rotation': [0.0, 0.7, 0.0, -0.7]}),
-    },
-}
-
-
-def label(pos: Position, txt: str, looking=EAST, *, vertical=False, bump=0.02, tags=()) -> Commands:
-    if isinstance(tags, str):
-        tags = (tags,)
-    t = ['label']
-    t.extend(tags)
-    offset_tmpl, bump_sign, xform = _transform[vertical][looking]
-    offset = []
-    for v in offset_tmpl:
-        if v == 0:
-            offset.append(0)
-        else:
-            if vertical:
-                offset.append(0 if v == 0 else v + bump * bump_sign)
-            else:
-                offset.append(bump)
-    pos = RelCoord.add(pos, offset)
-    scale = 0.6
-    return (execute().positioned(pos).run(
-        kill(e().tag('label').sort(NEAREST).distance((None, 1)).limit(1))),
-            TextDisplay(txt,
-                        nbt={'Tags': t, 'line_width': int(60 / scale),
-                             'transformation': xform}).scale(scale).summon(pos))
 
 
 class Clock:
@@ -175,7 +127,7 @@ class Room(FunctionSet):
         x = r(xz[0])
         z = r(xz[1])
         func.add(
-            label((x, r(2), z), label_text, rotate_facing(self.facing, 180).name),
+            self.label((x, r(2), z), label_text, rotate_facing(self.facing, 180).name),
             setblock((x, r(2), z), ('stone_button', {'facing': self.facing, 'face': 'floor'})),
             setblock((x, r(1), z), f'{color}_concrete'),
             setblock((x, r(0), z), 'air'),
@@ -385,10 +337,12 @@ class Room(FunctionSet):
     def _add_other_funcs(self):
         to_incr = self.score('_to_incr')
         before_commands = {
-            'init': [scoreboard().objectives().add(self.name, DUMMY),
+            'init': [kill(e().tag(self.name, 'label')),
+                     scoreboard().objectives().add(self.name, DUMMY),
                      scoreboard().objectives().add(self.name + '_max', DUMMY),
                      (x.set(0) for x in sorted(self._scores, key=lambda x: str(x))),
-                     to_incr.set(1)] + [tp(e().tag(self.name), e().tag('death').limit(1)), kill(e().tag(self.name))]}
+                     to_incr.set(1)] + [tp(e().tag(self.name), e().tag('death').limit(1)), kill(e().tag(self.name))]
+        }
         after_commands = {
             'enter': [weather(CLEAR)],
             'init': [function('%s/_cur' % self.full_name)],
@@ -428,6 +382,50 @@ class Room(FunctionSet):
     def _home_func_name(self, base):
         # noinspection PyProtectedMember
         return self.pack._home_func_name(base)
+
+    _transform = {
+        False: {
+            SOUTH: ((0, 1, 0), 1, {'right_rotation': [0.7, 0.0, 0.0, -0.7], 'left_rotation': [0.0, 1.0, 0.0, 0.0],
+                                   'translation': [0.0, 0.0, -0.45]}),
+            NORTH: ((0, 1, 0), 1, {'right_rotation': [0.7, 0.0, 0.0, -0.7], 'left_rotation': [0.0, 0.0, 0.0, 1.0],
+                                   'translation': [0.0, 0.0, 0.45]}),
+            EAST: ((0, 1, 0), 1, {'right_rotation': [0.7, 0.0, 0.0, -0.7], 'left_rotation': [0.0, 0.7, 0.0, -0.7],
+                                  'translation': [-0.45, 0.0, 0.0]}),
+            WEST: ((0, 1, 0), 1, {'right_rotation': [0.7, 0.0, 0.0, -0.7], 'left_rotation': [0.0, 0.7, 0.0, 0.7],
+                                  'translation': [0.45, 0.0, 0.0]}),
+        },
+        True: {
+            NORTH: ((0, 0, 1), 1, {'right_rotation': [0.0, 0.0, 0.0, 1.0], 'left_rotation': [0.0, 0.0, 0.0, 1.0],
+                                   'translation': [0.0, 0.0, 0.0]}),
+            SOUTH: ((0, 0, 0), -1, {'right_rotation': [0.0, 1.0, 0.0, 0.0], 'left_rotation': [0.0, 0.0, 0.0, 1.0],
+                                    'translation': [0.0, 0.0, 0.0]}),
+            WEST: ((-0.5, 0, 0), 1, {'right_rotation': [0.0, 0.7, 0.0, 0.7], 'left_rotation': [0.0, 0.0, 0.0, 1.0],
+                                     'translation': [0.0, 0.0, 0.0]}),
+            EAST: ((0.5, 0, 0), -1, {'right_rotation': [0.0, 0.7, 0.0, -0.7], 'left_rotation': [0.0, 0.0, 0.0, 1.0],
+                                     'translation': [0.0, 0.0, 0.0]}),
+        },
+    }
+
+    def label(self, pos: Position, txt: str, looking=EAST, *, vertical=False, bump=0.02, tags=()) -> str:
+        if isinstance(tags, str):
+            tags = (tags,)
+        t = ['label', self.name]
+        t.extend(tags)
+        offset_tmpl, bump_sign, xform = self._transform[vertical][looking]
+        offset = []
+        for v in offset_tmpl:
+            if v == 0:
+                offset.append(0)
+            else:
+                if vertical:
+                    offset.append(0 if v == 0 else v + bump * bump_sign)
+                else:
+                    offset.append(bump)
+        pos = RelCoord.add(pos, offset)
+        scale = 0.6
+        return execute().run(
+            TextDisplay(txt, nbt={'Tags': t, 'line_width': int(60 / scale), 'transformation': xform}).scale(
+                scale).summon(pos))
 
 
 def _name_for(mob):

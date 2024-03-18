@@ -10,7 +10,7 @@ from pynecraft.function import BLOCKS
 from pynecraft.info import colors, stems, trim_materials, trim_patterns
 from pynecraft.simpler import Item, ItemFrame, Region, SWAMP, Sign, WallSign
 from pynecraft.values import COLD_OCEAN, FROZEN_OCEAN, LUKEWARM_OCEAN, MANGROVE_SWAMP, MEADOW, OCEAN, WARM_OCEAN, biomes
-from restworld.rooms import Room, label
+from restworld.rooms import Room
 from restworld.world import fast_clock, kill_em, main_clock, restworld
 
 
@@ -53,7 +53,7 @@ def room():
 
     room.loop('all_sand', main_clock).loop(all_sand_loop, range(0, 2))
 
-    room.function('arrows_init').add(WallSign(()).place(r(1, 2, 0), EAST), label(r(0, 2, -1), 'Fire', WEST))
+    room.function('arrows_init').add(WallSign(()).place(r(1, 2, 0), EAST), room.label(r(0, 2, -1), 'Fire', WEST))
 
     fire_arrow = room.score('fire_arrow')
 
@@ -97,7 +97,7 @@ def room():
     room.function('ores_init').add(
         summon(frame, r(3, 3, 3)),
         summon(frame.merge_nbt({'Invisible': True}), r(4, 3, 3)),
-        label(r(3, 2, 7), 'Deepslate', NORTH))
+        room.label(r(3, 2, 7), 'Deepslate', NORTH))
 
     raw_frame = 'ore_raw_frame'
     volume = Region(r(7, 5, 6), r(0, 2, 0))
@@ -203,8 +203,8 @@ def basic_functions(room):
                    summon('item_frame', r(3, 2, 1), {'Facing': 2, 'Tags': ['armor_gem', 'armor_frame']}),
                    summon('item_frame', r(4, 4, 1),
                           {'Facing': 2, 'Tags': ['armor_horse_frame', 'enchantable', 'armor_frame']}),
-                   label(r(5, 2, -2), 'Saddle', SOUTH), label(r(3, 2, -2), 'Enchanted', SOUTH),
-                   label(r(1, 2, -2), 'Turtle Helmet', SOUTH), label(r(-1, 2, -2), 'Elytra', SOUTH))
+                   room.label(r(5, 2, -2), 'Saddle', SOUTH), room.label(r(3, 2, -2), 'Enchanted', SOUTH),
+                   room.label(r(1, 2, -2), 'Turtle Helmet', SOUTH), room.label(r(-1, 2, -2), 'Elytra', SOUTH))
 
     materials = (
         ('wooden', 'leather', True, Block('oak_planks'), 'oak_sign'),
@@ -328,9 +328,9 @@ def fencelike_functions(room):
     volume = Region(r(8, 3, 6), r(0, 2, 0))
 
     room.function('fencelike_init').add(
-        WallSign(()).place(r(6, 2, 0), SOUTH), label(r(6, 2, -2), 'Change Height', SOUTH),
-        label(r(4, 2, -2), 'Glass Panes', SOUTH), label(r(3, 2, -2), 'Walls', SOUTH),
-        label(r(2, 2, -2), 'Fences', SOUTH))
+        WallSign(()).place(r(6, 2, 0), SOUTH), room.label(r(6, 2, -2), 'Change Height', SOUTH),
+        room.label(r(4, 2, -2), 'Glass Panes', SOUTH), room.label(r(3, 2, -2), 'Walls', SOUTH),
+        room.label(r(2, 2, -2), 'Fences', SOUTH))
 
     def fencelike(block: BlockDef):
         block = as_block(block)
@@ -432,7 +432,7 @@ def copper_functions(room):
                                                        tag(copper_home).add('waxed_coppers_home'),
                                                        execute().at(copper_home).run(
                                                            function('restworld:materials/waxed_coppers_cur')))
-    room.function('coppers_init').add(label(r(2, 2, -2), 'Waxed', SOUTH), function(run_unwaxed))
+    room.function('coppers_init').add(room.label(r(2, 2, -2), 'Waxed', SOUTH), function(run_unwaxed))
 
 
 def wood_functions(room):
@@ -441,7 +441,7 @@ def wood_functions(room):
             'Tags': ['wood_boat_frame', room.name], 'Facing': 3, 'Fixed': True, 'Item': {'id': 'stone', 'Count': 1}}),
         summon('item_frame', r(3, 3, -3), {
             'Tags': ['wood_sign_frame', room.name], 'Facing': 3, 'Fixed': True, 'Item': {'id': 'stone', 'Count': 1}}),
-        label(r(-1, 2, 4), 'Chest Boat', NORTH))
+        room.label(r(-1, 2, 4), 'Chest Boat', NORTH))
     wood_init.add(summon('item_frame', r(3, 4, -3), {
         'Tags': ['wood_hanging_sign_frame', room.name], 'Facing': 3, 'Fixed': True,
         'Item': {'id': 'stone', 'Count': 1}}))
@@ -729,8 +729,8 @@ def trim_functions(room):
 
     # These labels have to go somewhere...
     change_init.add(
-        label(r(-1, 2, -1), 'Leggings', SOUTH), label(r(1, 2, -1), 'Turtle Helmet', SOUTH),
-        label(r(3, 2, -1), 'Labels', SOUTH))
+        room.label(r(-1, 2, -1), 'Leggings', SOUTH), room.label(r(1, 2, -1), 'Turtle Helmet', SOUTH),
+        room.label(r(3, 2, -1), 'Labels', SOUTH))
 
     show_init.add(show.set(0), run_show_cleanup)
     show_menu.add(

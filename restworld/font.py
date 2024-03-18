@@ -5,7 +5,7 @@ from pynecraft.base import EAST, JSON_COLORS, NORTH, SOUTH, WEST, r
 from pynecraft.commands import Block, JsonText, clone, data, e, execute, function, kill, s, setblock, tag
 from pynecraft.info import colors, stems
 from pynecraft.simpler import Book, TextDisplay, WallSign
-from restworld.rooms import Room, ensure, label
+from restworld.rooms import Room, ensure
 from restworld.world import restworld
 
 
@@ -47,7 +47,7 @@ def room():
     room.function('check_sign', home=False).add(
         at.run(function('restworld:font/copy_sign')))
 
-    font_run_init = room.function('font_run_init').add(label(r(-1, 2, 1), 'Glowing Text', NORTH))
+    font_run_init = room.function('font_run_init').add(room.label(r(-1, 2, 1), 'Glowing Text', NORTH))
 
     woods = info.woods
     materials = tuple(Block(m) for m in woods + stems)

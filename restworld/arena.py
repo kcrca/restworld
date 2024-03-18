@@ -7,7 +7,7 @@ from pynecraft.commands import Entity, RANDOM, REPLACE, Score, a, data, e, execu
     setblock, summon, tag
 from pynecraft.function import Function, Loop
 from pynecraft.simpler import Item, Region, Sign, WallSign
-from restworld.rooms import Room, label
+from restworld.rooms import Room
 from restworld.world import kill_em, main_clock, marker_tmpl, restworld
 
 COUNT_MIN = 1
@@ -249,7 +249,7 @@ def room():
     room.function('controls_init').add(
         arena_run_loop.score.set(0),
         function('restworld:arena/arena_run_cur'),
-        label(r(1, 3, 0), 'Go Home', EAST),
+        room.label(r(1, 3, 0), 'Go Home', EAST),
         tag(e().tag('controls_home')).add('controls_action_home')
     )
 

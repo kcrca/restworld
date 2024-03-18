@@ -4,7 +4,7 @@ from pynecraft.base import Arg, EAST, NORTH, RelCoord, SOUTH, UP, WEST, as_facin
 from pynecraft.commands import clone, data, e, execute, fill, function, kill, return_
 from pynecraft.simpler import ItemFrame, WallSign
 from pynecraft.utils import Scores, strcmp, utils_init
-from restworld.rooms import Room, label
+from restworld.rooms import Room
 from restworld.world import fast_clock, restworld
 
 
@@ -29,7 +29,7 @@ def room():
     room = Room('connect', restworld, EAST, (None, 'Connected', 'Textures', '(Optifine)'),
                 room_name='Connected Textures')
 
-    room.function('connect_room_init', exists_ok=True).add(label(r(8, 2, 0), 'Go Home', SOUTH))
+    room.function('connect_room_init', exists_ok=True).add(room.label(r(8, 2, 0), 'Go Home', SOUTH))
 
     above = ('Change a block', 'in an item frame', 'to change the', 'block used')
     below1 = ('These blocks are', 'templates for the', 'blocks above')
@@ -53,7 +53,7 @@ def room():
         WallSign(below2).place(r(2, -9, 0), EAST),
         WallSign(below2).place(r(-2, -9, 0), WEST),
 
-        label(r(0, 2, 0), 'Go Home', SOUTH),
+        room.label(r(0, 2, 0), 'Go Home', SOUTH),
     )
 
     # The pattern block for each direction.
