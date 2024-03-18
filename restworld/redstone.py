@@ -3,7 +3,7 @@ from __future__ import annotations
 import re
 
 from pynecraft import info
-from pynecraft.base import DOWN, EAST, NOON, SOUTH, UP, WEST, r
+from pynecraft.base import DOWN, EAST, NOON, NORTH, SOUTH, UP, WEST, r
 from pynecraft.commands import Block, data, e, execute, fill, function, kill, setblock, summon, time
 from pynecraft.info import instruments, stems
 from pynecraft.simpler import Item, Region, Sign, WallSign
@@ -238,8 +238,8 @@ def light_detector_funcs(room):
     room.function('daylight_detector_setup_init').add(WallSign(()).place(r(0, 2, 0), EAST),
                                                       execute().at(e().tag('daylight_detector_setup_home')).run(
                                                           function('restworld:redstone/daylight_detector_setup')),
-                                                      label(r(2, 2, 2), 'Daylight Changing'),
-                                                      label(r(2, 2, 0), 'Invert Detector'))
+                                                      label(r(2, 2, 2), 'Change Daylight', WEST),
+                                                      label(r(2, 2, 0), 'Invert', WEST))
 
 
 def note_block_funcs(room):
@@ -281,7 +281,7 @@ def note_block_funcs(room):
             (None, instr.name, f'({instr.exemplar.name})'),
             (instrument.set(i),
              execute().at(e().tag('note_block_home')).run(setblock(r(0, 2, 0), instr.exemplar)))
-        ).place(r(x, y, 1), SOUTH), label(r(1, 2, 2), 'Powered'))
+        ).place(r(x, y, 1), SOUTH), label(r(1, 2, 2), 'Powered', NORTH))
 
 
 def pressure_plate_funcs(room):
@@ -293,7 +293,7 @@ def pressure_plate_funcs(room):
     pressure_plate = room.score('pressure_plate')
     room.function('pressure_plate_add', home=False).add(one_item(), (
         execute().if_().score(plate_heavy).matches((1, None)).run(one_item()) for _ in range(0, 9)))
-    room.function('pressure_plate_init').add(label(r(2, 2, 0), 'Pressure Plate Type'))
+    room.function('pressure_plate_init').add(label(r(2, 2, 0), 'Type', WEST))
 
     room.function('pressure_plate_cur').add(kill(e().tag('plate_items')),
                                             (execute().if_().score(pressure_plate).matches((i, None)).run(function(

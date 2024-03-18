@@ -1,6 +1,6 @@
 import collections
 
-from pynecraft.base import NORTH, OVERWORLD, r, to_id
+from pynecraft.base import NORTH, OVERWORLD, SOUTH, r, to_id
 from pynecraft.commands import CLEAR, data, e, execute, fill, fillbiome, function, kill, say, setblock, weather
 from pynecraft.simpler import PLAINS, WallSign
 from pynecraft.values import BASALT_DELTAS, NETHER_WASTES, SMALL_END_ISLANDS, WARM_OCEAN, as_biome
@@ -121,10 +121,10 @@ def room():
 
     room.function('arrive_biome').add(execute().in_(OVERWORLD).run(weather(CLEAR)))
     room.function('arrive_biome_init').add(
-        label(r(0, 3, -6), 'Go Home'),
-        label(r(-1, 3, -6), 'Go Home'),
-        label(r(0, 3, -2), 'Go Home'),
-        label(r(-1, 3, -2), 'Go Home'),
+        label(r(0, 3, -6), 'Go Home', SOUTH),
+        label(r(-1, 3, -6), 'Go Home', SOUTH),
+        label(r(0, 3, -2), 'Go Home', NORTH),
+        label(r(-1, 3, -2), 'Go Home', NORTH),
     )
     room.home_func('biome_loading_action')
 

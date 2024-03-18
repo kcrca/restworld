@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from pynecraft.base import EAST, SOUTH, WEST, as_facing, d, r
+from pynecraft.base import EAST, NORTH, SOUTH, WEST, as_facing, d, r
 from pynecraft.commands import MAX_EFFECT_SECONDS, e, effect, execute, fill, function, p, setblock
 from pynecraft.simpler import WallSign
 from pynecraft.values import BAD_LUCK, EFFECT_GROUP, HERO_OF_THE_VILLAGE, effects
@@ -51,7 +51,7 @@ def room():
         execute().at(e().tag('effects_signs_home')).run(
             fill(r(0, 2, 0), r(9, 7, -9), 'smooth_quartz').replace('emerald_block')))
     room.function('effects_none_exit').add(function(effects_none.full_name))
-    room.function('effects_none_init').add(label(r(0, 2, 1), 'Effects Can Leave Room'))
+    room.function('effects_none_init').add(label(r(0, 2, 1), 'Effects Can Leave Room', NORTH))
 
     all_effects = WallSign((None, 'All Effects'), (None, function('restworld:effects/effects_all')))
     no_effects = WallSign((None, 'No Effects'), (None, function('restworld:effects/effects_none')))

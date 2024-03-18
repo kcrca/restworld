@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from pynecraft.base import DAYTIME, EAST, NOON, NORTH, WEST, as_facing, r
+from pynecraft.base import DAYTIME, EAST, NOON, NORTH, SOUTH, WEST, as_facing, r
 from pynecraft.commands import RESULT, data, e, execute, fill, function, kill, setblock, summon, tag, time, worldborder
 from pynecraft.info import moon_phases
 from pynecraft.simpler import Item, WallSign
@@ -51,9 +51,11 @@ def room():
                 {'Facing': as_facing(EAST).number, 'Item': Item.nbt_for('clock'),
                  'Tags': ['time_frame', room.name], 'Fixed': True}),
                r(-10, 8, 4)),
-        label(r(-2, 7, 4), 'Moon Phases'),
-        label(r(-1, 7, 4), 'Reset Room', facing=WEST),
-        label(r(-9, 7, 4), 'Reset Room', facing=EAST),
+        label(r(-2, 7, 4), 'Moon Phases', EAST),
+        label(r(-1, 7, 4), 'eReset Room', EAST, vertical=True),
+        label(r(-9, 7, 4), 'wReset Room', WEST, vertical=True),
+        label((22, 106, 31), 'nReset Room', NORTH, vertical=True, tags=('vn')),
+        label((22, 106, 31), 'sReset Room', SOUTH, vertical=True, tags=('vs')),
     )
 
     def moon_running_loop(step):
@@ -103,14 +105,14 @@ def room():
         setblock(r(0, 7, -1), ('lever', {'face': 'floor', 'facing': WEST})),
         data().merge(r(0, 5, 1), {'powered': 0}),
 
-        label(r(0, 7, 1), 'Time Running'),
-        label(r(0, 7, -1), 'Time Direction'),
-        label(r(0, 7, -4), 'Reset Room'),
+        label(r(0, 7, 1), 'Time Running', WEST),
+        label(r(0, 7, -1), 'Time Direction', WEST),
+        label(r(0, 7, -4), 'Reset Room', NORTH),
     )
     room.function('worldborder_hide').add(
         worldborder().center((0, 0)),
         worldborder().set(59999968))
-    room.function('worldborder_init').add(label(r(0, 7, 0), 'World Boundary'))
+    room.function('worldborder_init').add(label(r(0, 7, 0), 'World Boundary', EAST))
     room.function('worldborder_show').add(
         worldborder().center(r(0, 0)),
         worldborder().set(9))

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from pynecraft import info
-from pynecraft.base import EAST, JSON_COLORS, SOUTH, WEST, r
+from pynecraft.base import EAST, JSON_COLORS, NORTH, SOUTH, WEST, r
 from pynecraft.commands import Block, JsonText, clone, data, e, execute, function, kill, s, setblock, tag
 from pynecraft.info import colors, stems
 from pynecraft.simpler import Book, TextDisplay, WallSign
@@ -47,7 +47,7 @@ def room():
     room.function('check_sign', home=False).add(
         at.run(function('restworld:font/copy_sign')))
 
-    font_run_init = room.function('font_run_init').add(label(r(-1, 2, 1), 'Glowing Text'))
+    font_run_init = room.function('font_run_init').add(label(r(-1, 2, 1), 'Glowing Text', NORTH))
 
     woods = info.woods
     materials = tuple(Block(m) for m in woods + stems)
@@ -94,14 +94,17 @@ def room():
     )
     # noinspection SpellCheckingInspection
     init_text = ('Lorem ipsum', 'dolor sit amet,', 'consectetur', 'adipiscing elit.')
-    font_run_init.add(tag(e().tag('font_run_home')).add('font_action_home'),
-                      WallSign(init_text).wax(False).place(src_pos, SOUTH),
-                      execute().at(e().tag('font_action_home')).run(setblock(save_pos, 'air')),
-                      function('restworld:font/check_sign'),
-                      WallSign((None, 'Color Holder')).place(r(0, -3, -3), SOUTH), kill(e().tag('sign_desc')),
-                      TextDisplay('A sign here sets the text',
-                                  {'text_opacity': 255, 'background': 0, 'line_width': 80, 'shadow_radius': 0}
-                                  ).scale(0.5).tag('sign_desc').summon(r(0, 2, -0.4)))
+    font_run_init.add(
+        tag(e().tag('font_run_home')).add('font_action_home'),
+        WallSign(init_text).wax(False).place(src_pos, SOUTH),
+        execute().at(e().tag('font_action_home')).run(setblock(save_pos, 'air')),
+        function('restworld:font/check_sign'),
+        WallSign((None, 'Color Holder')).place(r(0, -3, -3), SOUTH), kill(e().tag('sign_desc')),
+        TextDisplay('This sign sets the text', {'background': 0, 'line_width': 70, 'shadow_radius': 0}).scale(0.5).tag(
+            'sign_desc').summon(r(0, 2, -0.4)),
+        # For some reason this is needed (24w11a)
+        data().modify(e().tag('sign_desc').limit(1), 'line_width').set().value(70),
+    )
 
     for i, c in enumerate(colors):
         x = int(i / 4) - 3

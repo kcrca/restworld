@@ -5,13 +5,16 @@ import re
 from copy import deepcopy
 from typing import Callable, Iterable, Tuple
 
-from pynecraft.base import BLUE, FacingDef, Nbt, ORANGE, ROTATION_180, ROTATION_270, ROTATION_90, UP, r, rotate_facing, \
+from pynecraft.base import BLUE, EAST, FacingDef, NORTH, Nbt, ORANGE, ROTATION_180, ROTATION_270, ROTATION_90, RelCoord, \
+    SOUTH, \
+    WEST, r, \
+    rotate_facing, \
     to_name
 from pynecraft.commands import Block, BlockDef, CLEAR, Command, Commands, Entity, EntityDef, INT, JsonText, MINUS, \
     NEAREST, Position, RESULT, Score, SignMessages, a, as_block, as_entity, as_facing, as_score, comment, data, e, \
     execute, function, kill, p, say, schedule, scoreboard, setblock, summon, tag, tellraw, tp, weather
 from pynecraft.function import DataPack, Function, FunctionSet, LATEST_PACK_VERSION, Loop
-from pynecraft.simpler import WallSign
+from pynecraft.simpler import TextDisplay, WallSign
 from pynecraft.values import DUMMY
 
 
@@ -43,18 +46,52 @@ def _to_iterable(tags):
     return tuple(tags)
 
 
-def label(pos: Position, txt: str, facing=UP) -> Commands:
-    # N: /summon text_display -26 101.02 8 {background:0,billboard:fixed, Tags:[foo], text:'{"text": "hi"}', text_opacity:255, transformation:{ left_rotation:[0f,1f,0f,0f],scale:[1f,1f,1f],translation:[0f,0f,-0.65f], right_rotation: [0.7f,0f,0f,-0.7f]}}
-    # S: /summon text_display -26 101.02 8 {background:0,billboard:fixed, Tags:[foo], text:'{"text": "hi"}', text_opacity:255, transformation:{ left_rotation:[0f,0f,0f,1f],scale:[1f,1f,1f],translation:[0f,0f,0.65f], right_rotation: [0.7f,0f,0f,-0.7f]}}
-    # E: /summon text_display -26 101.02 8 {background:0,billboard:fixed, Tags:[foo], text:'{"text": "hi"}', text_opacity:255, transformation:{ left_rotation:[0f,0.7f,0f,-0.7f], scale:[1f,1f,1f],translation:[-0.65f,0f,0f], right_rotation: [0.7f,0f,0f,-0.7f]}}
-    # W: /summon text_display -26 101.02 8 {background:0,billboard:fixed, Tags:[foo], text:'{"text": "hi"}', text_opacity:255, transformation:{ left_rotation:[0f,0.7f,0f,0.7f], scale:[1f,1f,1f],translation:[0.65f,0f,0f], right_rotation: [0.7f,0f,0f,-0.7f]}}
-    return (
-        execute().positioned(pos).run(
-            kill(e().type('item_frame').tag('label').sort(NEAREST).distance((None, 1)).limit(1))),
-        summon('item_frame', pos,
-               named_frame_item(Block('stone_button'), txt).merge(
-                   {'Invisible': True, 'Facing': as_facing(facing).number, 'Tags': ['label'], 'Fixed': True})),
-    )
+_transform = {
+    False: {
+        SOUTH: ((0, 1, 0), 1, {'left_rotation': [0.0, 1.0, 0.0, 0.0], 'translation': [0.0, 0.0, -0.65],
+                               'right_rotation': [0.7, 0.0, 0.0, -0.7]}),
+        NORTH: ((0, 1, 0), 1, {'left_rotation': [0.0, 0.0, 0.0, 1.0], 'translation': [0.0, 0.0, 0.65],
+                               'right_rotation': [0.7, 0.0, 0.0, -0.7]}),
+        EAST: ((0, 1, 0), 1, {'left_rotation': [0.0, 0.7, 0.0, -0.7], 'translation': [-0.65, 0.0, 0.0],
+                              'right_rotation': [0.7, 0.0, 0.0, -0.7]}),
+        WEST: ((0, 1, 0), 1, {'left_rotation': [0.0, 0.7, 0.0, 0.7], 'translation': [0.65, 0.0, 0.0],
+                              'right_rotation': [0.7, 0.0, 0.0, -0.7]}),
+    },
+    True: {
+        NORTH: ((0, 0, 1), 1, {'left_rotation': [0.0, 0.0, 0.0, 1.0], 'translation': [0.0, 0.0, 0.0],
+                                   'right_rotation': [0.0, 0.0, 0.0, 1.0]}),
+        SOUTH: ((0, 0, 0), -1, {'left_rotation': [0.0, 0.0, 0.0, 1.0], 'translation': [0.0, 0.0, 0.0],
+                                    'right_rotation': [0.0, 1.0, 0.0, 0.0]}),
+        WEST: ((-0.5, 0, 0), 1, {'left_rotation': [0.0, 0.0, 0.0, 1.0], 'translation': [0.0, 0.0, 0.0],
+                                 'right_rotation': [0.0, 0.7, 0.0, 0.7]}),
+        EAST: ((0.5, 0, 0), -1, {'left_rotation': [0.0, 0.0, 0.0, 1.0], 'translation': [0.0, 0.0, 0.0],
+                                 'right_rotation': [0.0, 0.7, 0.0, -0.7]}),
+    },
+}
+
+
+def label(pos: Position, txt: str, looking=EAST, *, vertical=False, bump=0.02, tags=()) -> Commands:
+    if isinstance(tags, str):
+        tags = (tags,)
+    t = ['label']
+    t.extend(tags)
+    offset_tmpl, bump_sign, xform = _transform[vertical][looking]
+    offset = []
+    for v in offset_tmpl:
+        if v == 0:
+            offset.append(0)
+        else:
+            if vertical:
+                offset.append(0 if v == 0 else v + bump * bump_sign)
+            else:
+                offset.append(bump)
+    pos = RelCoord.add(pos, offset)
+    scale = 0.6
+    return (execute().positioned(pos).run(
+        kill(e().tag('label').sort(NEAREST).distance((None, 1)).limit(1))),
+            TextDisplay(txt,
+                        nbt={'Tags': t, 'line_width': int(60 / scale),
+                             'transformation': xform}).scale(scale).summon(pos))
 
 
 class Clock:
@@ -138,7 +175,7 @@ class Room(FunctionSet):
         x = r(xz[0])
         z = r(xz[1])
         func.add(
-            label((x, r(2), z), label_text),
+            label((x, r(2), z), label_text, rotate_facing(self.facing, 180).name),
             setblock((x, r(2), z), ('stone_button', {'facing': self.facing, 'face': 'floor'})),
             setblock((x, r(1), z), f'{color}_concrete'),
             setblock((x, r(0), z), 'air'),

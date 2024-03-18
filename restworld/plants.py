@@ -84,7 +84,7 @@ def room():
     bamboo_funcs(room)
     three_funcs(room)
 
-    room.function('cave_vines_init').add(label(r(0, 2, -1), 'Cave Vine Age 25'))
+    room.function('cave_vines_init').add(label(r(0, 2, -1), 'Cave Vine Age 25', WEST))
     cave_vines_tops = room.score('cave_vines_tops')
 
     def cave_vines_loop(step):
@@ -152,7 +152,7 @@ def room():
     )
     farmland_init = room.function('farmland_strip_init').add(
         kill(e().tag('farmland_strip_labels')),
-        label(r(-3, 2, 0), 'Moisture Values')
+        label(r(-3, 2, 0), 'Moisture Values', WEST)
     )
 
     farmland_init.add(text_display('Moisture').tag('farmland_strip_labels').summon(r(0, 2.3, 0)))
@@ -213,7 +213,7 @@ def room():
 
     room.loop('propagule', main_clock).loop(propagule_loop, range(4))
 
-    room.function('shrooms_init').add(label(r(1, 2, 1), 'Vine Age 25'))
+    room.function('shrooms_init').add(label(r(1, 2, 1), 'Vine Age 25', WEST))
 
     def shrooms_loop(step):
         yield data().merge(r(-1, 0, -1), {'mode': 'LOAD', 'name': 'restworld:%s_shroom' % step.elem})
@@ -314,7 +314,7 @@ def three_funcs(room):
     room.loop('three_height', main_clock).loop(three_height_loop, range(3), bounce=True)
     room.loop('three_age', fast_clock).add(fill(r(0, 5, 0), r(0, 5, -3), 'air'), setblock(r(0, 3, 0), 'cactus'),
                                            setblock(r(0, 3, -3), 'sugar_cane')).loop(three_age_loop, range(16))
-    room.function('three_init').add(label(r(-1, 2, 0), 'Change Age'))
+    room.function('three_init').add(label(r(-1, 2, 0), 'Change Age', WEST))
     switch_to_func('height')
     switch_to_func('age')
     room.loop('cactus_soil', main_clock).loop(lambda step: setblock(r(0, 2, 1), step.elem), ('Sand', 'Red Sand'))

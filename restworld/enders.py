@@ -24,7 +24,7 @@ def room():
     room.loop('cage', main_clock).loop(cage_loop, range(0, 2))
 
     room.function('crystal_init', exists_ok=True).add(
-        label(r(0, 2, -4), 'Cage'),
+        label(r(0, 2, -4), 'Cage', SOUTH),
         execute().as_(e().tag('crystal_home')).run(tag(s()).add('blockers_home')))
 
     def crystal_loop(step):

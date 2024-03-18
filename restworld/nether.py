@@ -37,7 +37,7 @@ def room():
             Entity('Piglin Brute', {'HandItems': [Item.nbt_for('golden_axe')]})))
 
     hoglin_riders = room.score('hoglin_riders')
-    room.function('piglin_init').add(label(r(-1, 2, -3), 'Riders'))
+    room.function('piglin_init').add(label(r(-1, 2, -3), 'Riders', SOUTH))
 
     def add_rider(riders, num, on_tag):
         new_tag = f'hoglin_rider_{num}'
@@ -71,4 +71,4 @@ def room():
 
     room.function('strider_init').add(
         placer(r(0, 2, 0), lhs_dir, 0, 3).summon('strider'),
-        label(r(-1, 2, 0), 'Saddle'))
+        label(r(-1, 2, 0), 'Saddle', SOUTH))

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from pynecraft.base import EAST, d, r
+from pynecraft.base import EAST, WEST, d, r
 from pynecraft.commands import Block, Entity, FORCE, clone, e, execute, fill, function, say, setblock, tp
 from pynecraft.simpler import Item
 from restworld.rooms import Room, label
@@ -58,7 +58,7 @@ def room():
         stand.clone().tag('diy_displayer').summon(r(2, -1, -3))
     )
     for i in range(0, 5):
-        tick_init.add(label(r(-(3 + i), 2, -7), 'Save'), label(r(-(3 + i), 2, 1), 'Restore'))
+        tick_init.add(label(r(-(3 + i), 2, -7), 'Save', WEST), label(r(-(3 + i), 2, 1), 'Restore', WEST))
 
     custom_reset = room.score('custom_reset')
     room.loop('tick', main_clock).add(

@@ -249,7 +249,7 @@ def room():
     room.function('controls_init').add(
         arena_run_loop.score.set(0),
         function('restworld:arena/arena_run_cur'),
-        label(r(1, 3, 0), 'Go Home'),
+        label(r(1, 3, 0), 'Go Home', EAST),
         tag(e().tag('controls_home')).add('controls_action_home')
     )
 
