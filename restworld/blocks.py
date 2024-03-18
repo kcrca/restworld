@@ -758,11 +758,9 @@ def color_functions(room):
 
         if is_plain:
             leather_color = {}
-            llama_decor = Item.nbt_for('air')
             sheep_nbt = {'Sheared': True}
         else:
             leather_color = {'components': {'dyed_color': {'rgb': color.leather}}}
-            llama_decor = {'id': color.id + '_carpet'}
             sheep_nbt = {'Color': color.num, 'Sheared': False}
 
         if is_plain:
@@ -785,7 +783,11 @@ def color_functions(room):
                                 'body_armor_item.components.minecraft:dyed_color.rgb').set().value(color.leather)
         for w in 'cat', 'dog':
             yield data().merge(e().tag(f'colorings_{w}').limit(1), {'CollarColor': color.num})
-        yield data().merge(e().tag('colorings_llama').limit(1), {'body_armor_item': llama_decor})
+        if is_plain:
+            yield data().remove(e().tag('colorings_llama').limit(1), 'body_armor_item')
+        else:
+            yield data().modify(e().tag('colorings_llama').limit(1), 'body_armor_item').set().value(
+                {'id': color.id + '_carpet'})
         yield data().merge(e().tag('colorings_sheep').limit(1), sheep_nbt)
 
         yield Sign.change(r(-4, 2, 4), (None, color.name))
@@ -848,7 +850,7 @@ def color_functions(room):
         'leather_horse_armor': r(1, 5, 1),
     }
     room.function('colorings_init').add(
-        kill_em(e().tag('colorings_item')),
+        kill(e().tag('colorings_item')),
         Entity('item_frame', {
             'Facing': 3, 'Tags': ['colorings_item_frame', 'colorings_item'],
             'Fixed': True}).summon(r(-4.5, 4, 0.5)),
