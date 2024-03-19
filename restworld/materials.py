@@ -243,24 +243,20 @@ def basic_functions(room):
         yield data().merge(
             e().tag('basic_stand').limit(1), {
                 'CustomName': material.capitalize(),
-                'ArmorItems': [{'id': '%s_boots' % armor, 'Count': 1}, {'id': '%s_leggings' % armor, 'Count': 1},
-                               {'id': '%s_chestplate' % armor, 'Count': 1},
-                               {'id': '%s_helmet' % armor, 'Count': 1}]})
+                'ArmorItems': [{'id': '%s_boots' % armor}, {'id': '%s_leggings' % armor},
+                               {'id': '%s_chestplate' % armor}, {'id': '%s_helmet' % armor}]})
 
         yield fill(r(-3, 2, 2), r(-3, 5, 2), background.id)
         yield setblock(r(3, 2, 2), background.id)
         yield setblock(r(4, 4, 2), background.id)
 
-        yield data().merge(e().tag('armor_boots').limit(1), {
-            'Item': {'id': '%s_boots' % armor, 'Count': 1}, 'ItemRotation': 0})
-        yield data().merge(e().tag('armor_leggings').limit(1), {
-            'Item': {'id': '%s_leggings' % armor, 'Count': 1}, 'ItemRotation': 0})
-        yield data().merge(e().tag('armor_chestplate').limit(1), {
-            'Item': {'id': '%s_chestplate' % armor, 'Count': 1}, 'ItemRotation': 0})
-        yield data().merge(e().tag('armor_helmet').limit(1), {
-            'Item': {'id': '%s_helmet' % armor, 'Count': 1}, 'ItemRotation': 0})
-        yield data().merge(e().tag('armor_gem').limit(1), {
-            'Item': {'id': gem, 'Count': 1}, 'ItemRotation': 0})
+        yield data().merge(e().tag('armor_boots').limit(1), {'Item': {'id': '%s_boots' % armor}, 'ItemRotation': 0})
+        yield data().merge(e().tag('armor_leggings').limit(1),
+                           {'Item': {'id': '%s_leggings' % armor}, 'ItemRotation': 0})
+        yield data().merge(e().tag('armor_chestplate').limit(1),
+                           {'Item': {'id': '%s_chestplate' % armor}, 'ItemRotation': 0})
+        yield data().merge(e().tag('armor_helmet').limit(1), {'Item': {'id': '%s_helmet' % armor}, 'ItemRotation': 0})
+        yield data().merge(e().tag('armor_gem').limit(1), {'Item': {'id': gem, 'Count': 1}, 'ItemRotation': 0})
 
         if horse_armor:
             yield execute().unless().entity(e().tag('armor_horse').distance((None, 10))).run(
@@ -599,14 +595,26 @@ def trim_functions(room):
                                   'LeftLeg': [-20, 0, 0], 'RightLeg': [20, 0, 0]}}).tag(room.name, overall_tag)
 
     places = (
-        (r(-3, 2, -5), EAST), (r(2, 2, -5), WEST),
-        (r(-4, 3, -4), EAST), (r(3, 3, -4), WEST),
-        (r(-3, 2, -3), EAST), (r(2, 2, -3), WEST),
-        (r(-4, 3, -2), EAST), (r(3, 3, -2), WEST),
-        (r(-3, 2, -1), EAST), (r(2, 2, -1), WEST),
-        (r(-4, 3, 0), EAST), (r(3, 3, 0), WEST),
-        (r(-3, 2, 1), NE), (r(-1, 2, 1), NORTH), (r(0, 2, 1), NORTH), (r(2, 2, 1), NW),
-        (r(-2, 3, 2), NORTH), (r(1, 3, 2), NORTH)
+        (r(2, 2, -5), WEST),
+        (r(3, 3, -4), WEST),
+        (r(2, 2, -3), WEST),
+        (r(3, 3, -2), WEST),
+        (r(2, 2, -1), WEST),
+        (r(3, 3, 0), WEST),
+
+        (r(2, 2, 1), NW),
+        (r(1, 3, 2), NORTH),
+        (r(0, 2, 1), NORTH),
+        (r(-1, 2, 1), NORTH),
+        (r(-2, 3, 2), NORTH),
+        (r(-3, 2, 1), NE),
+
+        (r(-4, 3, 0), EAST),
+        (r(-3, 2, -1), EAST),
+        (r(-4, 3, -2), EAST),
+        (r(-3, 2, -3), EAST),
+        (r(-4, 3, -4), EAST),
+        (r(-3, 2, -5), EAST),
     )
 
     patterns_places = range(len(trim_patterns))
@@ -621,16 +629,18 @@ def trim_functions(room):
 
     frame = 'trim_frame'
     trim_nbt = {'components': {'trim': {'pattern': 'sentry', 'material': 'redstone'}}}
-    room.function('trim_init').add(kill(e().tag(frame)), ItemFrame(NORTH).item('iron_boots').merge_nbt(
-        {'Item': trim_nbt}).tag('materials', frame, f'{frame}_boots').summon(r(1, 5, 2)),
-                                   ItemFrame(NORTH).item('iron_leggings').merge_nbt(
-                                       {'Item': trim_nbt}).tag('materials', frame, f'{frame}_leggings').summon(
-                                       r(0, 5, 2)), ItemFrame(NORTH).item('iron_chestplate').merge_nbt(
+    room.function('trim_init').add(
+        kill(e().tag(frame)),
+        ItemFrame(NORTH).item('iron_boots').merge_nbt(
+            {'Item': trim_nbt}).tag('materials', frame, f'{frame}_boots').summon(r(1, 5, 2)),
+        ItemFrame(NORTH).item('iron_leggings').merge_nbt(
+            {'Item': trim_nbt}).tag('materials', frame, f'{frame}_leggings').summon(r(0, 5, 2)),
+        ItemFrame(NORTH).item('iron_chestplate').merge_nbt(
             {'Item': trim_nbt}).tag('materials', frame, f'{frame}_chestplate').summon(r(-1, 5, 2)),
-                                   ItemFrame(NORTH).item('iron_helmet').merge_nbt(
-                                       {'Item': trim_nbt}).tag('materials', frame, f'{frame}_helmet').summon(
-                                       r(-2, 5, 2)), WallSign().messages((None, 'Material:')).place(r(0, 6, 2), NORTH),
-                                   WallSign().messages((None, 'Armor:', 'Iron')).place(r(-1, 6, 2), NORTH))
+        ItemFrame(NORTH).item('iron_helmet').merge_nbt(
+            {'Item': trim_nbt}).tag('materials', frame, f'{frame}_helmet').summon(r(-2, 5, 2)),
+        WallSign().messages((None, 'Material:')).place(r(0, 6, 2), NORTH),
+        WallSign().messages((None, 'Armor:', 'Iron')).place(r(-1, 6, 2), NORTH))
 
     class Trim:
         _num = 0
@@ -793,8 +803,8 @@ def trim_functions(room):
                 item().replace().entity(s(), 'armor.feet').with_(f'{armor}_boots'),
                 item().replace().entity(s(), 'armor.chest').with_(f'{armor}_chestplate')))
     chestplate_on.add(execute().as_(e().tag(overall_tag)).run(
-        data().modify(s(), 'ArmorItems[0].components.trim').merge().from_(s(), 'ArmorItems[1].components.trim'),
-        data().modify(s(), 'ArmorItems[2].components.trim').merge().from_(s(), 'ArmorItems[1].components.trim')))
+        data().modify(s(), 'ArmorItems[0].components.minecraft:trim').merge().from_(s(), 'ArmorItems[1].components.minecraft:trim'),
+        data().modify(s(), 'ArmorItems[2].components.minecraft:trim').merge().from_(s(), 'ArmorItems[1].components.minecraft:trim')))
 
     room.function('trim_turtle_on', home=False).add(
         execute().as_(e().tag(overall_tag)).run(
