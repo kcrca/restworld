@@ -1,8 +1,7 @@
 from __future__ import annotations
 
-from pynecraft.base import Arg, CYAN, EQ, NORTH, SOUTH, r
-from pynecraft.commands import Block, COLORS, Entity, WHITE, data, e, execute, fill, function, kill, s, \
-    setblock
+from pynecraft.base import Arg, CYAN, EQ, SOUTH, r
+from pynecraft.commands import Block, COLORS, Entity, WHITE, data, e, execute, fill, function, kill, s, setblock
 from pynecraft.simpler import Shield, TextDisplay, WallSign
 from pynecraft.values import BORDER, BRICKS, CIRCLE, CREEPER, CROSS, CURLY_BORDER, FLOWER, GRADIENT, GRADIENT_UP, \
     HALF_HORIZONTAL, HALF_HORIZONTAL_BOTTOM, MOJANG, PATTERN_GROUP, RHOMBUS, SMALL_STRIPES, STRAIGHT_CROSS, \
@@ -136,7 +135,7 @@ def room():
     update = room.function('update_banners', home=False).add(
         execute().as_(stands).run(
             data().modify(s(), 'HandItems[1].components.minecraft:base_color').set().value(Arg('color')),
-            data().modify(s(), 'HandItems[1].minecraft:components.minecraft:banner_patterns[].color').set().value(Arg('ink'))),
+            data().modify(s(), 'HandItems[1].components.minecraft:banner_patterns[].color').set().value(Arg('ink'))),
         fill(r(1, 3, 0), r(11, 5, 0), 'air').replace('#banners'),
         fill(r(12, 3, 1), r(12, 5, 11), 'air').replace('#banners'),
         fill(r(1, 3, 12), r(11, 5, 12), 'air').replace('#banners'),
@@ -258,9 +257,9 @@ def room():
             execute().at(e().tag('all_banners_home')).run(function('restworld:banners/all_banners_cur'))
         ), front=None).place(r(x, y, z), SOUTH))
     room.function('banner_controls_init').add(
-        room.label(r(5, 2, 4), 'Banner / Ink', NORTH),
-        room.label(r(3, 2, 4), 'Labels', NORTH),
-        room.label(r(4, 2, 3), 'Controls', NORTH),
+        room.label(r(5, 2, 4), 'Banner / Ink'),
+        room.label(r(3, 2, 4), 'Labels'),
+        room.label(r(4, 2, 3), 'Controls'),
         function('restworld:banners/switch_to_color'),
     )
     room.function('banner_controls_remove', home=False).add(
