@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from pynecraft.base import Arg, CYAN, EQ, SOUTH, r
+from pynecraft.base import Arg, CYAN, EQ, NORTH, SOUTH, r
 from pynecraft.commands import Block, COLORS, Entity, WHITE, data, e, execute, fill, function, kill, s, setblock
-from pynecraft.simpler import Shield, TextDisplay, WallSign
+from pynecraft.simpler import Shield, Sign, TextDisplay, WallSign
 from pynecraft.values import BORDER, BRICKS, CIRCLE, CREEPER, CROSS, CURLY_BORDER, FLOWER, GRADIENT, GRADIENT_UP, \
     HALF_HORIZONTAL, HALF_HORIZONTAL_BOTTOM, MOJANG, PATTERN_GROUP, RHOMBUS, SMALL_STRIPES, STRAIGHT_CROSS, \
     STRIPE_BOTTOM, STRIPE_CENTER, STRIPE_MIDDLE, STRIPE_RIGHT, STRIPE_TOP, TRIANGLES_BOTTOM, TRIANGLES_TOP, \
@@ -176,10 +176,13 @@ def room():
 
     def banner_color_loop(step):
         yield data().modify('restworld:banners', 'color').set().value(step.elem)
+        yield Sign.change(color_sign, (None, None, step.elem))
 
     def switch_banners(to):
         yield which.set(0 if to == 'color' else 1)
 
+    color_sign = r(4, 2, 6)
+    ink_sign = r(8, 2, 6)
     room.function('all_banners_init').add(
         # /data modify storage restworld:banners.ink
         which.set(0),
@@ -201,6 +204,8 @@ def room():
                          {'pattern': TRIANGLE_TOP, 'color': COLORS[15]}]})),
         custom_banner(0.2, 0.2, 0.1),
         custom_banner(11.8, 11.8, -0.1),
+        WallSign((None, 'Color:', 'white')).place(color_sign, SOUTH),
+        WallSign((None, 'Ink:', 'cyan')).place(ink_sign, SOUTH),
         function(names_off),
     )
 
@@ -226,6 +231,7 @@ def room():
 
     def banner_ink_loop(step):
         yield data().modify('restworld:banners', 'ink').set().value(step.elem)
+        yield Sign.change(ink_sign, (None, None, step.elem))
 
     ink_loop.loop(banner_ink_loop, COLORS).add(
         # make sure the two values are different.
@@ -257,10 +263,10 @@ def room():
             execute().at(e().tag('all_banners_home')).run(function('restworld:banners/all_banners_cur'))
         ), front=None).place(r(x, y, z), SOUTH))
     room.function('banner_controls_init').add(
-        label(r(5, 2, 4), 'Banner / Ink'),
-        label(r(3, 2, 4), 'Labels'),
-        label(r(4, 2, 3), 'Controls'),
+        label(r(5, 2, 4), 'Banner / Ink', NORTH),
+        label(r(3, 2, 4), 'Labels', NORTH),
+        label(r(4, 2, 3), 'Controls', NORTH),
         function('restworld:banners/switch_to_color'),
     )
     room.function('banner_controls_remove', home=False).add(
-        fill(r(0, 2, 0), r(8, 4, 4), 'air').replace('#wall_signs'))
+        fill(r(0, 2, 0), r(8, 4, 3), 'air').replace('#wall_signs'))
