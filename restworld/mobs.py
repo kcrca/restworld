@@ -110,7 +110,7 @@ def friendlies(room):
     room.loop('chicken', main_clock).loop(
         lambda step: execute().as_(e().tag('chicken')).run(
             data().merge(s(), {'OnGround': step.elem, 'EggLayTime': 1000000000})), (True, False))
-    room.function('colored_mobs_init').add(label(r(0, 2, -1), 'Glow'), label(r(0, 2, 7), 'Change Height'))
+    room.function('colored_mobs_init').add(room.label(r(0, 2, -1), 'Glow', SOUTH))
 
     def colored_mobs_loop(step):
         yield execute().as_(e().tag('colorable')).run(
