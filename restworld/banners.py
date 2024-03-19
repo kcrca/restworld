@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 from pynecraft.base import Arg, CYAN, EQ, SOUTH, r
-from pynecraft.commands import Block, COLORS, Entity, WHITE, data, e, execute, fill, function, kill, s, \
-    setblock
+from pynecraft.commands import Block, COLORS, Entity, JsonText, WHITE, a, data, e, execute, fill, function, kill, s, \
+    say, setblock, tellraw
 from pynecraft.simpler import Shield, TextDisplay, WallSign
 from pynecraft.values import BORDER, BRICKS, CIRCLE, CREEPER, CROSS, CURLY_BORDER, FLOWER, GRADIENT, GRADIENT_UP, \
     HALF_HORIZONTAL, HALF_HORIZONTAL_BOTTOM, MOJANG, PATTERN_GROUP, RHOMBUS, SMALL_STRIPES, STRAIGHT_CROSS, \
@@ -134,9 +134,10 @@ def room():
         yield setblock(r(x + bx, y_banner, z + bz), banner)
 
     update = room.function('update_banners', home=False).add(
+        say('color: $(color), ink: $(ink)'),
         execute().as_(stands).run(
             data().modify(s(), 'HandItems[1].components.minecraft:base_color').set().value(Arg('color')),
-            data().modify(s(), 'HandItems[1].minecraft:components.minecraft:banner_patterns[].color').set().value(Arg('ink'))),
+            data().modify(s(), 'HandItems[1].components.minecraft:banner_patterns[].color').set().value(Arg('ink'))),
         fill(r(1, 3, 0), r(11, 5, 0), 'air').replace('#banners'),
         fill(r(12, 3, 1), r(12, 5, 11), 'air').replace('#banners'),
         fill(r(1, 3, 12), r(11, 5, 12), 'air').replace('#banners'),
@@ -216,6 +217,10 @@ def room():
     ).loop(render_authored_banners, range(0, half)).add(
         execute().if_().score(which).matches(0).run(function(color_loop)),
         execute().unless().score(which).matches(0).run(function(ink_loop)),
+        tellraw(a(), JsonText.text('color: '), JsonText.score(banner_color), JsonText.text("/"),
+                JsonText.nbt('restworld:banners', 'color'),
+                JsonText.text(', ink: '),
+                JsonText.score(banner_ink), JsonText.text("/"), JsonText.nbt('restworld:banners', 'ink')),
         function(update).with_().storage('restworld:banners'),
     )
 
