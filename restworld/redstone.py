@@ -3,11 +3,11 @@ from __future__ import annotations
 import re
 
 from pynecraft import info
-from pynecraft.base import DOWN, EAST, NOON, SOUTH, UP, WEST, r
+from pynecraft.base import DOWN, EAST, NOON, NORTH, SOUTH, UP, WEST, r
 from pynecraft.commands import Block, data, e, execute, fill, function, kill, setblock, summon, time
 from pynecraft.info import instruments, stems
 from pynecraft.simpler import Item, Region, Sign, WallSign
-from restworld.rooms import Room, ensure, label
+from restworld.rooms import Room, ensure
 from restworld.world import fast_clock, kill_em, main_clock, restworld
 
 
@@ -207,7 +207,7 @@ def light_detector_funcs(room):
     day_times = (
         8000, 9200, 10000, 10400, 10800, 11100, 11600, 11900, 12100, 12300, 12600, 12800, 13100, 13400, 19000, 22500,
         23000, 23100, 23400, 23600, 23800, 0, 300, 700, 1000, 1500, 2000, 2700, 3500, 4400,)
-    inv_times = [23960, 23959, 23780, 23600, 23400, 23200, 23100, 22900, 22800, 22600, 22400, 22300, 0, 1, 2, 3]
+    inv_times = [6000, 23959, 23780, 23600, 23400, 23200, 23100, 22900, 22800, 22600, 22400, 22300, 0, 1, 2, 3]
     inv_times = list(reversed(inv_times)) + inv_times[1: -1]
 
     daylight_inv = room.score('daylight_inv')
@@ -217,7 +217,7 @@ def light_detector_funcs(room):
         i = step.i
         inv = inv_times[i]
         yield execute().if_().score(daylight_inv).matches(0).run(time().set(day_times[i]))
-        if inv > .22200:
+        if inv > 1000:
             yield execute().if_().score(daylight_inv).matches(1).run(time().set(inv))
         else:
             yield execute().if_().score(daylight_inv).matches(1).run(time().set(22300))
@@ -238,8 +238,8 @@ def light_detector_funcs(room):
     room.function('daylight_detector_setup_init').add(WallSign(()).place(r(0, 2, 0), EAST),
                                                       execute().at(e().tag('daylight_detector_setup_home')).run(
                                                           function('restworld:redstone/daylight_detector_setup')),
-                                                      label(r(2, 2, 2), 'Daylight Changing'),
-                                                      label(r(2, 2, 0), 'Invert Detector'))
+                                                      room.label(r(2, 2, 2), 'Change Daylight', WEST),
+                                                      room.label(r(2, 2, 0), 'Invert', WEST))
 
 
 def note_block_funcs(room):
@@ -281,7 +281,7 @@ def note_block_funcs(room):
             (None, instr.name, f'({instr.exemplar.name})'),
             (instrument.set(i),
              execute().at(e().tag('note_block_home')).run(setblock(r(0, 2, 0), instr.exemplar)))
-        ).place(r(x, y, 1), SOUTH), label(r(1, 2, 2), 'Powered'))
+        ).place(r(x, y, 1), SOUTH), room.label(r(1, 2, 2), 'Powered', NORTH))
 
 
 def pressure_plate_funcs(room):
@@ -293,7 +293,7 @@ def pressure_plate_funcs(room):
     pressure_plate = room.score('pressure_plate')
     room.function('pressure_plate_add', home=False).add(one_item(), (
         execute().if_().score(plate_heavy).matches((1, None)).run(one_item()) for _ in range(0, 9)))
-    room.function('pressure_plate_init').add(label(r(2, 2, 0), 'Pressure Plate Type'))
+    room.function('pressure_plate_init').add(room.label(r(2, 2, 0), 'Type', WEST))
 
     room.function('pressure_plate_cur').add(kill(e().tag('plate_items')),
                                             (execute().if_().score(pressure_plate).matches((i, None)).run(function(

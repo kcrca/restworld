@@ -10,7 +10,7 @@ from pynecraft.commands import Block, Commands, Entity, MOD, MOVE, a, as_block, 
 from pynecraft.function import Loop
 from pynecraft.info import Color, colors, sherds, stems
 from pynecraft.simpler import Item, ItemFrame, Region, Sign, TextDisplay, WallSign
-from restworld.rooms import Room, label
+from restworld.rooms import Room
 from restworld.world import fast_clock, kill_em, main_clock, restworld
 
 
@@ -148,7 +148,7 @@ def room():
         Block('Soul Campfire', {'lit': True}),
         Block('soul_campfire', {'lit': False}, name='Soul Campfire|Unlit'),
     ))
-    campfire_init.add(label(r(-1, 2, 0), 'Cook'))
+    campfire_init.add(room.label(r(-1, 2, 0), 'Cook', SOUTH))
     campfire_main.add(
         execute().if_().score(campfire_food).matches(0).run(data().remove(r(0, 3, 0), 'Items')),
         # For some reason the Count is required here
@@ -254,7 +254,7 @@ def room():
         execute().at(copper_home).run(function('restworld:blocks/waxed_copper_blocks_cur')),
     )
     room.function('copper_blocks_init').add(
-        label(r(-2, 2, -1), 'Waxed'),
+        room.label(r(-2, 2, -1), 'Waxed', looking=SOUTH),
         function(run_unwaxed)
     )
 
@@ -346,7 +346,7 @@ def room():
 
     room.function('armor_stand_init').add(
         room.mob_placer(r(0, 3, 0), NORTH, adults=True).summon('armor_stand', tags=('pose_stand',)),
-        label(r(-1, 2, 0), "Get Small"))
+        room.label(r(-1, 2, 0), "Get Small", SOUTH))
     room.loop('armor_stand', main_clock).loop(
         armor_stand_loop,
         (None,
@@ -460,7 +460,7 @@ def room():
     blocks('infested', NORTH, infestables)
     two = room.score('two')
     room.function('infested_init', exists_ok=True).add(
-        label(r(-1, 2, 0), 'Infested Only'),
+        room.label(r(-1, 2, 0), 'Infested Only', SOUTH),
         two.set(2))
     i_even = room.score('infested_even')
     infested = room.score('infested')
@@ -498,7 +498,7 @@ def room():
     room.function('lantern_init').add(WallSign((None, None, 'Lantern')).place(r(0, 2, -1, ), NORTH))
     room.loop('lantern', main_clock).loop(lantern_loop, range(0, 4))
 
-    room.function('ore_blocks_init').add(label(r(-1, 2, 0), 'Deepslate'))
+    room.function('ore_blocks_init').add(room.label(r(-1, 2, 0), 'Deepslate', SOUTH))
     basic = ['Coal', 'Iron', 'Copper', 'Gold', 'Lapis', 'Redstone', 'Diamond', 'Emerald']
     odder = ['Nether Quartz', 'Nether Gold']
     ores = list(f'{t} Ore' for t in basic + odder) + ['Ancient Debris', ]
@@ -659,7 +659,7 @@ def room():
     wall_torches_score = room.score('wall_torches')
     room.function('torches_init').add(
         WallSign((None, None, 'Torch')).place(r(0, 2, -1), NORTH),
-        label(r(-1, 2, 0), 'Wall-ness'),
+        room.label(r(-1, 2, 0), 'Wall-ness', SOUTH),
         wall_torches_score.set(0)
     )
     room.loop('torches', main_clock).add(
@@ -682,9 +682,10 @@ def room():
 
 
 def room_init_functions(room, block_list_score):
-    room.functions['blocks_room_init'].add(label(r(-16, 2, 3), 'List Blocks'), label(r(-16, 2, -3), 'List Blocks'),
-                                           label(r(-43, 2, 3), 'List Blocks'), label(r(-43, 2, -3), 'List Blocks'),
-                                           kill(e().tag('block_list')))
+    room.functions['blocks_room_init'].add(
+        room.label(r(-16, 2, 3), 'List Blocks', SOUTH), room.label(r(-16, 2, -3), 'List Blocks', NORTH),
+        room.label(r(-43, 2, 3), 'List Blocks', SOUTH), room.label(r(-43, 2, -3), 'List Blocks', NORTH),
+        kill(e().tag('block_list')))
     # The 'zzz' makes sure this is run last
     room.function('zzz_blocks_sign_init').add(execute().at(e().tag('blocks_home', '!no_expansion')).run(
         Sign.change(r(0, 2, -1), ("",), ('function restworld:blocks/toggle_expand',))),
@@ -712,6 +713,7 @@ def color_functions(room):
     coloring_coords = (r(1, 4, 6), r(-13, 2, -1))
     volume = Region(*coloring_coords)
     lit_candles = room.score('lit_candles')
+    plain = room.score('plain')
 
     def colorings(is_plain, color):
         fills = (
@@ -851,6 +853,7 @@ def color_functions(room):
     }
     room.function('colorings_init').add(
         kill(e().tag('colorings_item')),
+        plain.set(0),
         Entity('item_frame', {
             'Facing': 3, 'Tags': ['colorings_item_frame', 'colorings_item'],
             'Fixed': True}).summon(r(-4.5, 4, 0.5)),
@@ -872,23 +875,27 @@ def color_functions(room):
                       lambda x, y, z, _, wood: Sign((wood.name, 'Sign With', 'Default', 'Text'), wood=wood.id).place(
                           r(x, y, z), 14)),
         WallSign([]).place(r(-4, 2, 4, ), SOUTH), kill(e().type('item')),
-        label(r(-1, 2, 7), 'Lit Candles'), label(r(-8, 2, 7), 'Plain'),
-        label(r(-11, 2, 3), 'Glowing')),
+        room.label(r(-1, 2, 7), 'Lit Candles', NORTH), room.label(r(-8, 2, 7), 'Plain', NORTH),
+        room.label(r(-11, 2, 3), 'Glowing', NORTH)),
     room.loop('colorings', main_clock).add(fill(r(-9, 2, 2), r(-9, 2, 3), 'air')).loop(colorings_loop, colors).add(
         colored_signs(None, render_signs_glow), setblock(r(-7, -1, 3), 'redstone_block'), setblock(r(-7, -1, 3), 'air'))
     room.function('colorings_plain_off', home=False).add(
-        clone((coloring_coords[0][0], coloring_coords[0][1].value - coloring_coords[1][1].value + 1,
-               coloring_coords[0][2]),
-              (coloring_coords[1][0], 0, coloring_coords[1][2]),
-              (coloring_coords[1][0], coloring_coords[1][1] - 1, coloring_coords[1][2])),
+        execute().unless().score(plain).matches(0).run(
+            clone((coloring_coords[0][0], coloring_coords[0][1].value - coloring_coords[1][1].value + 1,
+                   coloring_coords[0][2]),
+                  (coloring_coords[1][0], 0, coloring_coords[1][2]),
+                  (coloring_coords[1][0], coloring_coords[1][1] - 1, coloring_coords[1][2]))),
+        plain.set(0),
         tag(e().tag('colorings_base_home')).add('colorings_home'),
         execute().at(e().tag('colorings_home')).run(function('restworld:blocks/colorings_init')),
         execute().at(e().tag('colorings_home')).run(function('restworld:blocks/colorings_cur')),
         kill(e().type('item').distance((None, 20))))
     room.function('colorings_plain_on', home=False).add(
-        clone((coloring_coords[0][0], coloring_coords[0][1], coloring_coords[0][2]),
-              (coloring_coords[1][0], coloring_coords[1][1] - 1, coloring_coords[1][2]),
-              (coloring_coords[1][0], 0, coloring_coords[1][2])),
+        execute().if_().score(plain).matches(0).run(
+            clone((coloring_coords[0][0], coloring_coords[0][1], coloring_coords[0][2]),
+                  (coloring_coords[1][0], coloring_coords[1][1] - 1, coloring_coords[1][2]),
+                  (coloring_coords[1][0], 0, coloring_coords[1][2]))),
+        plain.set(1),
         tag(e().tag('colorings_base_home')).remove('colorings_home'),
         item().replace().entity(e().tag('colorings_item_frame'), 'container.0').with_('air'),
         colorings(True, Color('Plain', 0x0)), setblock(r(-7, -1, 3), 'redstone_torch'), setblock(r(-7, -1, 3), 'air'),

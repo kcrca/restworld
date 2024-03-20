@@ -7,7 +7,7 @@ from pynecraft.values import BORDER, BRICKS, CIRCLE, CREEPER, CROSS, CURLY_BORDE
     HALF_HORIZONTAL, HALF_HORIZONTAL_BOTTOM, MOJANG, PATTERN_GROUP, RHOMBUS, SMALL_STRIPES, STRAIGHT_CROSS, \
     STRIPE_BOTTOM, STRIPE_CENTER, STRIPE_MIDDLE, STRIPE_RIGHT, STRIPE_TOP, TRIANGLES_BOTTOM, TRIANGLES_TOP, \
     TRIANGLE_BOTTOM, TRIANGLE_TOP, as_pattern, patterns
-from restworld.rooms import Room, label
+from restworld.rooms import Room
 from restworld.world import die, main_clock, restworld
 
 stand_tmpl = Entity('armor_stand', {
@@ -263,9 +263,9 @@ def room():
             execute().at(e().tag('all_banners_home')).run(function('restworld:banners/all_banners_cur'))
         ), front=None).place(r(x, y, z), SOUTH))
     room.function('banner_controls_init').add(
-        label(r(5, 2, 4), 'Banner / Ink', NORTH),
-        label(r(3, 2, 4), 'Labels', NORTH),
-        label(r(4, 2, 3), 'Controls', NORTH),
+        room.label(r(5, 2, 4), 'Banner / Ink', NORTH),
+        room.label(r(3, 2, 4), 'Labels', NORTH),
+        room.label(r(4, 2, 3), 'Controls', NORTH),
         function('restworld:banners/switch_to_color'),
     )
     room.function('banner_controls_remove', home=False).add(

@@ -1,9 +1,10 @@
 from __future__ import annotations
 
 from pynecraft.base import EAST, NORTH, SOUTH, WEST, as_facing, r
-from pynecraft.commands import Entity, MOVE, NEAREST, clone, data, e, execute, fill, kill, s, setblock, summon, tag, tp
+from pynecraft.commands import Entity, MOVE, NEAREST, clone, data, e, execute, fill, kill, s, setblock, summon, \
+    tag, tp
 from pynecraft.simpler import WallSign
-from restworld.rooms import Room, label
+from restworld.rooms import Room
 from restworld.world import main_clock, restworld, slow_clock
 
 
@@ -24,7 +25,7 @@ def room():
     room.loop('cage', main_clock).loop(cage_loop, range(0, 2))
 
     room.function('crystal_init', exists_ok=True).add(
-        label(r(0, 2, -4), 'Cage'),
+        room.label(r(0, 2, -4), 'Cage', SOUTH),
         execute().as_(e().tag('crystal_home')).run(tag(s()).add('blockers_home')))
 
     def crystal_loop(step):

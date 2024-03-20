@@ -10,7 +10,7 @@ from pynecraft.commands import Block, COLORS, Entity, FORCE, LONG, MOD, REPLACE,
 from pynecraft.info import axolotls, colors, horses, music_discs, tropical_fish, wolves
 from pynecraft.simpler import Item, PLAINS, Sign, VILLAGER_BIOMES, VILLAGER_PROFESSIONS, Villager, WallSign
 from pynecraft.values import DUMMY
-from restworld.rooms import MobPlacer, Room, label
+from restworld.rooms import MobPlacer, Room
 from restworld.world import fast_clock, kill_em, main_clock, restworld
 
 
@@ -41,8 +41,9 @@ def friendlies(room):
 
     stinger_label_pos = r(-2, 2, 1)
     pollen_label_pos = r(-2, 2, -1)
-    room.function('bee_init').add(placer(r(0, 3, 0), WEST, 0, 2).summon('bee'), label(stinger_label_pos, 'Stinger'),
-                                  label(pollen_label_pos, 'Pollen'))
+    room.function('bee_init').add(
+        placer(r(0, 3, 0), WEST, 0, 2).summon('bee'), room.label(stinger_label_pos, 'Stinger', EAST),
+        room.label(pollen_label_pos, 'Pollen', EAST))
 
     def armadillo_loop(step):
         # /data modify entity 629100ab-859f-4627-abd2-27fafc7ab9d2 state set value scared
@@ -73,9 +74,9 @@ def friendlies(room):
     room.function('canine_init').add(
         p.summon('wolf'),
         p.summon(Entity('wolf', nbt={'Owner': 'dummy'}, name='Tamed Wolf'), tags=('collared',)),
-        label(r(1, 2, 2), 'Sit'),
-        label(r(1, 2, 0), 'Anger'),
-        label(r(3, 2, 0), 'Armor'),
+        room.label(r(1, 2, 2), 'Sit', NORTH),
+        room.label(r(1, 2, 0), 'Anger', NORTH),
+        room.label(r(3, 2, 0), 'Armor', NORTH),
     )
     room.function('canine_enter').add(
         data().modify(e().tag('wolf', 'collared').limit(1), 'Owner').set().from_(player(), 'UUID'))
@@ -86,7 +87,7 @@ def friendlies(room):
 
     room.loop('canine', main_clock).loop(wolf_loop, wolves)
     room.function('cat_init').add(placer(*south_placer, tags=('collared',)).summon('cat'),
-                                  label(r(-1, 2, 2), 'Cat Collar'))
+                                  room.label(r(-1, 2, 2), 'Cat Collar', NORTH))
     room.loop('cat', main_clock).loop(
         lambda step: execute().as_(e().tag('cat')).run(
             data().merge(s(), {'variant': step.elem.id, 'CustomName': step.elem.name})),
@@ -166,8 +167,8 @@ def friendlies(room):
     room.function('horse_init').add(
         (p.summon(Entity('horse', name=horse.name, nbt={'Variant': h}), tags=(horse.tag_name,)) for h, horse in
          enumerate(horses)), execute().at(e().tag(to_id(horses[3].tag_name), 'kid')).run(
-            WallSign((None, 'Variant:')).place(r(2, 0, 0), EAST)), label(r(1, 2, 1), 'Lead'),
-        label(r(1, 2, -7), 'Saddles'))
+            WallSign((None, 'Variant:')).place(r(2, 0, 0), EAST)), room.label(r(1, 2, 1), 'Lead', WEST),
+        room.label(r(1, 2, -7), 'Saddles', WEST))
     horse_variants = ('None', 'White', 'White Field', 'White Dots', 'Black Dots')
 
     def horse_loop(step):
@@ -179,7 +180,7 @@ def friendlies(room):
     room.loop('horse', main_clock).loop(horse_loop, horse_variants)
 
     p = placer(r(-1.2, 2, 0), EAST, -2, kid_delta=2.2, tags=('saddle', 'chests'))
-    room.function('horselike_init').add(p.summon('mule'), p.summon('donkey'), label(r(2, 2, -1), 'Chests'))
+    room.function('horselike_init').add(p.summon('mule'), p.summon('donkey'), room.label(r(2, 2, -1), 'Chests', WEST))
     room.function('iron_golem_init').add(placer(r(-0.5, 2, 0), WEST, adults=True).summon('iron_golem'),
                                          WallSign((None, 'Iron Golem')).place(r(-3, 2, 0), WEST))
 
@@ -207,7 +208,7 @@ def friendlies(room):
                                                  'Steps': 0,
                                                  'Motion': [0, 0, 0], 'NoGravity': True}).summon('llama_spit'),
                                      WallSign((None, 'Llama Spit')).place(r(1, 2, -1), WEST),
-                                     label(r(-2, 2, 1), 'Carpet'), label(r(-2, 2, -1), 'Chest'))
+                                     room.label(r(-2, 2, 1), 'Carpet', EAST), room.label(r(-2, 2, -1), 'Chest', EAST))
 
     room.loop('llamas', main_clock).loop(
         lambda step: execute().as_(e().tag('llama')).run(
@@ -286,7 +287,7 @@ def friendlies(room):
         function('restworld:mobs/llamas_carpets_home')),
         execute().at(e().tag('llamas_carpets_home')).run(function('restworld:mobs/llamas_carpets_cur')))
     room.function('switch_carpets_off').add(
-        execute().as_(e().tag('llama')).run(data().merge(s(), {'body_armor_item': {'id': 'white_carpet', 'Count': 0}})),
+        execute().as_(e().tag('llama')).run(data().remove(s(), 'body_armor_item')),
         kill(e().tag('llamas_carpets_home')))
 
     room.function('trader_llama_init').add(placer(r(0, 2, -2), WEST, adults=True).summon('wandering_trader'),
@@ -299,10 +300,10 @@ def friendlies(room):
     switch_label_pos = r(3, 2, 0)
     egg_sign_pos = r(-2, 2, 0, )
     egg_sign_dir = EAST
-    room.function('turtle_eggs_init').add(tag(e().tag('turtle_eggs_home')).add('blockers_home'),
-                                          WallSign((None, 'Turtle Eggs')).place(egg_sign_pos, egg_sign_dir),
-                                          label(switch_label_pos, 'On Sand'),
-                                          tag(s().tag('turtle_egg_home')).add('blockers_home'))
+    room.function('turtle_eggs_init').add(
+        tag(e().tag('turtle_eggs_home')).add('blockers_home'),
+        WallSign((None, 'Turtle Eggs')).place(egg_sign_pos, egg_sign_dir),
+        room.label(switch_label_pos, 'On Sand', WEST))
 
     def turtle_egg_loop(step):
         for count in range(4, 0, -1):
@@ -415,8 +416,8 @@ def villager_funcs(room):
     room.function('which_villagers_init').add(bool_max.set(2), cur_villagers_group.set(0), cur_villagers_zombies.set(0),
                                               function('restworld:mobs/switch_villagers'),
                                               WallSign((None, None, 'Villagers')).place(r(-5, 2, 1), WEST),
-                                              label(r(-3, 2, 0), 'Profession'), label(r(-3, 2, 2), 'Level'),
-                                              label(r(-3, 2, 4), 'Zombies'))
+                                              room.label(r(-3, 2, 0), 'Profession'), room.label(r(-3, 2, 2), 'Level'),
+                                              room.label(r(-3, 2, 4), 'Zombies'))
 
     # Switch functions
     room.function('switch_villagers').add(which_villagers.set(0),
@@ -552,7 +553,7 @@ def monsters(room):
 
     room.function('skeleton_horse_init').add(placer(*place).summon('Skeleton Horse'),
                                              tag(e().tag('skeleton_horse', 'adult')).add(undead_horse_tag),
-                                             label(r(2, 2, 2), 'Saddles'))
+                                             room.label(r(2, 2, 2), 'Saddles', WEST))
 
     bow = Item.nbt_for('bow')
     helmet = Item.nbt_for('iron_helmet')
@@ -570,7 +571,7 @@ def monsters(room):
         lambda step: placer(*east_placer, adults=True).summon(
             Entity(step.elem, nbt={'HandItems': [bow]}).tag('skeletal', armorable_tag)),
         ('Skeleton', 'Stray', 'Bogged'))
-    room.function('skeleton_init').add(label(r(2, 2, 0), 'Armor'))
+    room.function('skeleton_init').add(room.label(r(2, 2, 0), 'Armor', WEST))
 
     spider_dir = NORTH
     spider_facing = as_facing(spider_dir)
@@ -619,7 +620,7 @@ def monsters(room):
             yield ride(zombie_kid.limit(1)).mount(zombie_jockey_chicken)
 
     room.loop('zombie_jockey', home=False).loop(zombie_jockey_loop, range(2))
-    room.function('zombie_init').add(label(r(2, 2, 1), 'Jockey'))
+    room.function('zombie_init').add(room.label(r(2, 2, 1), 'Jockey', WEST))
 
     def zombie_loop(step):
         yield kill_em(e().tag('zombieish'))

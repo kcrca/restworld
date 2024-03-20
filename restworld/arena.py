@@ -7,7 +7,7 @@ from pynecraft.commands import Entity, RANDOM, REPLACE, Score, a, data, e, execu
     setblock, summon, tag
 from pynecraft.function import Function, Loop
 from pynecraft.simpler import Item, Region, Sign, WallSign
-from restworld.rooms import Room, label
+from restworld.rooms import Room
 from restworld.world import kill_em, main_clock, marker_tmpl, restworld
 
 COUNT_MIN = 1
@@ -218,13 +218,14 @@ def room():
         return func
 
     def toggle_peace(step):
-        return (
-            execute().at(e().tag('monitor_home')).run(fill(
-                r(2, -1, 0), r(3, -1, 0), 'redstone_block' if step.elem else 'air')),
-            setblock(r(0, 1, 0), f'{"red" if step.elem else "lime"}_concrete'),
-        )
+        yield execute().at(e().tag('monitor_home')).run(fill(
+            r(2, -1, 0), r(3, -1, 0), 'redstone_block' if step.elem else 'air')),
+        if not step.elem:
+            yield function(clean_out),
+        yield setblock(r(0, 1, 0), f'{"red" if step.elem else "lime"}_concrete'),
 
     arena_count = room.score('arena_count')
+    peace = room.score('peace')
 
     arena_count_finish = room.function('arena_count_finish', home=False).add(
         execute().if_().score(arena_count).matches((None, COUNT_MIN)).run(arena_count.set(COUNT_MIN)),
@@ -249,7 +250,7 @@ def room():
     room.function('controls_init').add(
         arena_run_loop.score.set(0),
         function('restworld:arena/arena_run_cur'),
-        label(r(1, 3, 0), 'Go Home'),
+        room.label(r(1, 3, 0), 'Go Home', EAST),
         tag(e().tag('controls_home')).add('controls_action_home')
     )
 
@@ -261,7 +262,7 @@ def room():
     h_counter = counter('hunter', h_is_splitter)
     v_counter = counter('victim', v_is_splitter)
 
-    room.function('monitor_init').add(h_is_splitter.set(0), v_is_splitter.set(0))
+    room.function('monitor_init').add(h_is_splitter.set(0), v_is_splitter.set(0), peace.set(0))
     room.function('monitor').add(
         function(h_counter),
         function(v_counter),
@@ -295,14 +296,19 @@ def room():
     kill_splitters = room.function('kill_splitters', home=False).add(
         execute().at(monitor_home).run(kill_em(e().type('#frog_food').distance((None, 100))))
     )
+    kill_splitters = schedule().function(kill_splitters, seconds(1), REPLACE)
+    clean_out = room.function('clean_out', home=False).add(
+        execute().at(monitor_home).run(tag(e().type('armor_stand').distance((None, 100))).add('arena_safe')),
+        execute().at(monitor_home).run(kill_em(e().not_tag('arena_safe').distance((None, 100)))),
+        kill_splitters,
+    )
     # Battle types: 0-normal, 1-water, 2-undead
     room.function('start_battle', home=False).add(
         was_splitters.set(h_is_splitter + v_is_splitter),
         h_is_splitter.set(Arg('hunter_is_splitter')),
         v_is_splitter.set(Arg('victim_is_splitter')),
         is_splitters.set(h_is_splitter + v_is_splitter),
-        execute().unless().score(was_splitters).matches(0).if_().score(is_splitters).matches(0).run(
-            schedule().function(kill_splitters, seconds(1), REPLACE)),
+        execute().unless().score(was_splitters).matches(0).if_().score(is_splitters).matches(0).run(kill_splitters),
         execute().unless().score(start_battle_type).matches((0, None)).run(start_battle_type.set(0)),
         execute().unless().score(start_battle_type).matches(1).at(monitor_home).run(arena.fill('air')),
         execute().if_().score(start_battle_type).matches(1).at(monitor_home).run(arena.fill('water')),
@@ -310,8 +316,7 @@ def room():
         execute().if_().score(start_battle_type).matches(2).at(monitor_home).run(sky.fill('glowstone')),
         execute().if_().score(start_battle_type).matches(3).at(monitor_home).run(ground.fill('grass_block')),
         tag(a()).add('arena_safe'),
-        execute().at(monitor_home).run(tag(e().type('armor_stand').distance((None, 100))).add('arena_safe')),
-        execute().at(monitor_home).run(kill_em(e().not_tag('arena_safe').distance((None, 100)))),
+        function(clean_out),
     )
 
     room.loop('toggle_peace', home=False).loop(toggle_peace, (True, False)).add(

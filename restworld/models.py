@@ -2,13 +2,13 @@ import re
 from collections import defaultdict
 
 from pynecraft import info
-from pynecraft.base import EAST, EQ, NORTH, as_facing, d, r, to_name
+from pynecraft.base import EAST, EQ, NORTH, WEST, as_facing, d, r, to_name
 from pynecraft.commands import REPLACE, comment, data, e, execute, fill, function, item, kill, p, schedule, setblock, \
     summon, tag
 from pynecraft.info import block_items
 from pynecraft.simpler import Item, ItemFrame, Sign, WallSign
 from restworld import global_
-from restworld.rooms import ActionDesc, SignedRoom, Wall, label, named_frame_item, span
+from restworld.rooms import ActionDesc, SignedRoom, Wall, named_frame_item, span
 from restworld.world import fast_clock, restworld
 
 # The item area...
@@ -135,7 +135,7 @@ def room():
     )
     chest_pos = r(-1, -2, 0)
     room.function('models_room_init', exists_ok=True).add(
-        label(r(-2, 2, 0), 'Keep Inventory'))
+        room.label(r(-2, 2, 0), 'Keep Inventory', WEST))
     room.function('model_init').add(
         kill(all_src),
         kill(all_ground),
@@ -154,8 +154,7 @@ def room():
         setblock(chest_pos, 'chest'),
         needs_restore.set(0),
 
-        label(r(0, 2, -1), 'On Head'),
-        label(r(-2, 3, 0), 'Compact', facing=EAST),
+        room.label(r(0, 2, -1), 'On Head', WEST),
 
         is_empty.set(1),
         schedule().function('restworld:models/model_copy', '1s', REPLACE)

@@ -1,11 +1,11 @@
 from __future__ import annotations
 
-from pynecraft.base import NORTH, Nbt, r
+from pynecraft.base import NORTH, Nbt, SOUTH, r
 from pynecraft.commands import CREATIVE, Entity, LEVELS, POINTS, SUCCESS, SURVIVAL, data, e, effect, execute, function, \
     gamemode, item, p, xp
 from pynecraft.simpler import WallSign
 from pynecraft.values import ABSORPTION, POISON, REGENERATION, WITHER
-from restworld.rooms import Room, label
+from restworld.rooms import Room
 from restworld.world import kill_em, main_clock, restworld
 
 
@@ -15,7 +15,7 @@ def room():
     # noinspection GrazieInspection
     room.function('hud_room_init').add(
         WallSign(('The HUD', '(your armor will', 'be restored when', 'you leave)')).place(r(0, 2, -1), NORTH),
-        label(r(-1, 2, 4), 'Wither')
+        room.label(r(-1, 2, 4), 'Wither', SOUTH, bump=0.1)
     )
     room.function('hud_room_enter').add(gamemode(SURVIVAL, p()))
     room.function('hud_room_exit').add(gamemode(CREATIVE, p()))

@@ -4,7 +4,7 @@ from pynecraft.base import Arg, EAST, NORTH, RelCoord, SOUTH, UP, WEST, as_facin
 from pynecraft.commands import clone, data, e, execute, fill, function, kill, return_
 from pynecraft.simpler import ItemFrame, WallSign
 from pynecraft.utils import Scores, strcmp, utils_init
-from restworld.rooms import Room, label
+from restworld.rooms import Room
 from restworld.world import fast_clock, restworld
 
 
@@ -29,7 +29,7 @@ def room():
     room = Room('connect', restworld, EAST, (None, 'Connected', 'Textures', '(Optifine)'),
                 room_name='Connected Textures')
 
-    room.function('connect_room_init', exists_ok=True).add(label(r(8, 2, 0), 'Go Home'))
+    room.function('connect_room_init', exists_ok=True).add(room.label(r(8, 2, 0), 'Go Home', SOUTH))
 
     above = ('Change a block', 'in an item frame', 'to change the', 'block used')
     below1 = ('These blocks are', 'templates for the', 'blocks above')
@@ -46,14 +46,14 @@ def room():
 
         WallSign(below1).back((None, '⇧', 'Go Up')).place(r(0, -8, 2), SOUTH),
         WallSign(below1).back((None, '⇧', 'Go Up')).place(r(0, -8, -2), NORTH),
-        WallSign(below1).place(r(2, -8, 0), EAST),
-        WallSign(below1).place(r(-2, -8, 0), WEST),
+        WallSign().messages(below1).place(r(2, -8, 0), EAST),
+        WallSign().messages(below1).place(r(-2, -8, 0), WEST),
         WallSign(below2).place(r(0, -9, 2), SOUTH),
         WallSign(below2).place(r(0, -9, -2), NORTH),
-        WallSign(below2).place(r(2, -9, 0), EAST),
-        WallSign(below2).place(r(-2, -9, 0), WEST),
+        WallSign().messages(below2).place(r(2, -9, 0), EAST),
+        WallSign().messages(below2).place(r(-2, -9, 0), WEST),
 
-        label(r(0, 2, 0), 'Go Home'),
+        room.label(r(0, 2, 0), 'Go Home', SOUTH),
     )
 
     # The pattern block for each direction.
@@ -71,15 +71,18 @@ def room():
     size = 26
     redo_one = room.function('redo_one', home=False).add(
         fill(r(size, -15, size), r(0, -19, 0), Arg('to')).replace(Arg('from')),
+        fill(r(size, 2, size), r(0, 6, 0), 'air').replace(Arg('orig')),
         clone(r(size, -15, size), r(0, -19, 0), r(0, 2, 0)).filtered(Arg('to')),
     )
 
     center = r(13, 1, 13)
 
     def redo_one_example(dir):
-        yield data().modify('redo', 'to').set().from_(e().tag(f'connect_frame_{dir}').limit(1), 'Item.id')
-        yield data().modify('redo', 'from').set().value(block_map[dir])
-        yield function(redo_one).with_().storage('redo')
+        yield data().modify('connect', 'redo.to').set().from_(e().tag(f'connect_frame_{dir}').limit(1), 'Item.id')
+        yield data().modify('connect', 'redo.from').set().value(block_map[dir])
+        yield data().modify('connect', 'redo.orig').set().from_('connect', f'redo_memory.{dir}')
+        yield function(redo_one).with_().storage('connect', 'redo')
+        yield data().modify('connect', f'redo_memory.{dir}').set().from_('connect', 'redo.to')
 
     init = room.function('redo_init').add(kill(e().tag('connect_frame')))
     for dir, v in block_map.items():

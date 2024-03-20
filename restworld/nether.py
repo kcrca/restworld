@@ -3,7 +3,7 @@ from __future__ import annotations
 from pynecraft.base import NORTH, SOUTH, WEST, r
 from pynecraft.commands import Entity, data, e, execute, function, ride, s
 from pynecraft.simpler import Item, WallSign
-from restworld.rooms import Room, label
+from restworld.rooms import Room
 from restworld.world import kill_em, main_clock, restworld
 
 
@@ -37,7 +37,7 @@ def room():
             Entity('Piglin Brute', {'HandItems': [Item.nbt_for('golden_axe')]})))
 
     hoglin_riders = room.score('hoglin_riders')
-    room.function('piglin_init').add(label(r(-1, 2, -3), 'Riders'))
+    room.function('piglin_init').add(room.label(r(-1, 2, -3), 'Riders', SOUTH))
 
     def add_rider(riders, num, on_tag):
         new_tag = f'hoglin_rider_{num}'
@@ -71,4 +71,4 @@ def room():
 
     room.function('strider_init').add(
         placer(r(0, 2, 0), lhs_dir, 0, 3).summon('strider'),
-        label(r(-1, 2, 0), 'Saddle'))
+        room.label(r(-1, 2, 0), 'Saddle', SOUTH))
