@@ -207,7 +207,7 @@ def light_detector_funcs(room):
     day_times = (
         8000, 9200, 10000, 10400, 10800, 11100, 11600, 11900, 12100, 12300, 12600, 12800, 13100, 13400, 19000, 22500,
         23000, 23100, 23400, 23600, 23800, 0, 300, 700, 1000, 1500, 2000, 2700, 3500, 4400,)
-    inv_times = [23960, 23959, 23780, 23600, 23400, 23200, 23100, 22900, 22800, 22600, 22400, 22300, 0, 1, 2, 3]
+    inv_times = [6000, 23959, 23780, 23600, 23400, 23200, 23100, 22900, 22800, 22600, 22400, 22300, 0, 1, 2, 3]
     inv_times = list(reversed(inv_times)) + inv_times[1: -1]
 
     daylight_inv = room.score('daylight_inv')
@@ -217,7 +217,7 @@ def light_detector_funcs(room):
         i = step.i
         inv = inv_times[i]
         yield execute().if_().score(daylight_inv).matches(0).run(time().set(day_times[i]))
-        if inv > .22200:
+        if inv > 1000:
             yield execute().if_().score(daylight_inv).matches(1).run(time().set(inv))
         else:
             yield execute().if_().score(daylight_inv).matches(1).run(time().set(22300))

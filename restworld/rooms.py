@@ -386,13 +386,13 @@ class Room(FunctionSet):
     _transform = {
         False: {
             SOUTH: ((0, 1, 0), 1, {'right_rotation': [0.7, 0.0, 0.0, -0.7], 'left_rotation': [0.0, 1.0, 0.0, 0.0],
-                                   'translation': [0.0, 0.0, -0.45]}),
+                                   'translation': [0.0, 0.0, -0.5]}),
             NORTH: ((0, 1, 0), 1, {'right_rotation': [0.7, 0.0, 0.0, -0.7], 'left_rotation': [0.0, 0.0, 0.0, 1.0],
-                                   'translation': [0.0, 0.0, 0.45]}),
+                                   'translation': [0.0, 0.0, 0.5]}),
             EAST: ((0, 1, 0), 1, {'right_rotation': [0.7, 0.0, 0.0, -0.7], 'left_rotation': [0.0, 0.7, 0.0, -0.7],
-                                  'translation': [-0.45, 0.0, 0.0]}),
+                                  'translation': [-0.5, 0.0, 0.0]}),
             WEST: ((0, 1, 0), 1, {'right_rotation': [0.7, 0.0, 0.0, -0.7], 'left_rotation': [0.0, 0.7, 0.0, 0.7],
-                                  'translation': [0.45, 0.0, 0.0]}),
+                                  'translation': [0.5, 0.0, 0.0]}),
         },
         True: {
             NORTH: ((0, 0, 1), 1, {'right_rotation': [0.0, 0.0, 0.0, 1.0], 'left_rotation': [0.0, 0.0, 0.0, 1.0],
@@ -424,7 +424,7 @@ class Room(FunctionSet):
         pos = RelCoord.add(pos, offset)
         scale = 0.6
         return execute().run(
-            TextDisplay(txt, nbt={'Tags': t, 'line_width': int(60 / scale), 'transformation': xform}).scale(
+            TextDisplay(txt, nbt={'Tags': t, 'line_width': int(100 * scale), 'transformation': xform}).scale(
                 scale).summon(pos))
 
 

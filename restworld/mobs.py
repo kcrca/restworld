@@ -288,7 +288,7 @@ def friendlies(room):
         function('restworld:mobs/llamas_carpets_home')),
         execute().at(e().tag('llamas_carpets_home')).run(function('restworld:mobs/llamas_carpets_cur')))
     room.function('switch_carpets_off').add(
-        execute().as_(e().tag('llama')).run(data().merge(s(), {'body_armor_item': {'id': 'white_carpet', 'Count': 0}})),
+        execute().as_(e().tag('llama')).run(data().remove(s(), 'body_armor_item')),
         kill(e().tag('llamas_carpets_home')))
 
     room.function('trader_llama_init').add(placer(r(0, 2, -2), WEST, adults=True).summon('wandering_trader'),
@@ -301,10 +301,10 @@ def friendlies(room):
     switch_label_pos = r(3, 2, 0)
     egg_sign_pos = r(-2, 2, 0, )
     egg_sign_dir = EAST
-    room.function('turtle_eggs_init').add(tag(e().tag('turtle_eggs_home')).add('blockers_home'),
-                                          WallSign((None, 'Turtle Eggs')).place(egg_sign_pos, egg_sign_dir),
-                                          room.label(switch_label_pos, 'On Sand', WEST),
-                                          tag(s().tag('turtle_egg_home')).add('blockers_home'))
+    room.function('turtle_eggs_init').add(
+        tag(e().tag('turtle_eggs_home')).add('blockers_home'),
+        WallSign((None, 'Turtle Eggs')).place(egg_sign_pos, egg_sign_dir),
+        room.label(switch_label_pos, 'On Sand', WEST))
 
     def turtle_egg_loop(step):
         for count in range(4, 0, -1):

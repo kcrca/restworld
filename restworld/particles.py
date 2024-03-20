@@ -4,7 +4,8 @@ import math
 import random
 
 from pynecraft.base import EAST, NORTH, Nbt, OVERWORLD, SOUTH, WEST, as_facing, d, r
-from pynecraft.commands import Block, CLEAR, Entity, RAIN, REPLACE, a, data, e, execute, fill, fillbiome, function, \
+from pynecraft.commands import Block, CLEAR, Entity, RAIN, REPLACE, a, data, e, execute, fill, fillbiome, \
+    function, \
     item, kill, p, particle, playsound, schedule, setblock, summon, tp, weather
 from pynecraft.simpler import PLAINS, TextDisplay, VILLAGER_BIOMES, VILLAGER_PROFESSIONS, WallSign
 from pynecraft.values import AMBIENT_ENTITY_EFFECT, ANGRY_VILLAGER, ASH, BASALT_DELTAS, BLOCK, BLOCK_MARKER, BUBBLE, \
@@ -20,7 +21,7 @@ from pynecraft.values import AMBIENT_ENTITY_EFFECT, ANGRY_VILLAGER, ASH, BASALT_
     SCULK_CHARGE, SCULK_CHARGE_POP, SCULK_SOUL, SHRIEK, SMALL_FLAME, SMOKE, SNEEZE, SNOWFLAKE, SNOWY_TAIGA, SONIC_BOOM, \
     SOUL, SOUL_FIRE_FLAME, SOUL_SAND_VALLEY, SPIT, SPLASH, SPORE_BLOSSOM_AIR, SQUID_INK, SWEEP_ATTACK, TOTEM_OF_UNDYING, \
     TRIAL_SPAWNER_DETECTION, UNDERWATER, VAULT_CONNECTION, VIBRATION, WARPED_FOREST, WARPED_SPORE, WAX_OFF, WAX_ON, \
-    WHITE_ASH, WITCH
+    WHITE_ASH, WITCH, as_particle
 from restworld.rooms import ActionDesc, SignedRoom, Wall, span
 from restworld.world import fast_clock, kill_em, main_clock, restworld, slow_clock
 
@@ -90,7 +91,7 @@ actions = [
     ActionDesc(VAULT_CONNECTION),
     ActionDesc(VIBRATION, 'Sculk Sensor', note='Vibration'),
     ActionDesc(WARPED_SPORE),
-    ActionDesc(WAX_ON, 'Wax', note='and Copper', also=(WAX_OFF, SCRAPE)),
+    ActionDesc(WAX_ON, 'Wax On / Off', also=(WAX_OFF, SCRAPE)),
     ActionDesc(WHITE_ASH),
     ActionDesc(WITCH),
 ]
@@ -162,6 +163,7 @@ def room():
 
     def particle_sign(action_desc: ActionDesc, wall):
         dx, _, dz = as_facing(wall.facing).scale(1)
+        action_desc.which = as_particle(action_desc.which)
         run_at = execute().at(e().tag('particles_action_home')).positioned(r(0, 2, 0))
         return WallSign(action_desc.sign_text(), (
             run_at.run(setblock(r(0, -4, 0), 'redstone_block')),
@@ -319,10 +321,17 @@ def room():
         fill(r(-2, 4, -2), r(2, 4, 2), 'barrier'),
         function('restworld:particles/falling_dust_change'))
     room.function('firework', home=False).add(main().run(function('restworld:particles/firework_change')))
+
+    def fireworks_loop(step):
+        color, shape = step.elem
+        ent = Entity('firework_rocket', components={"minecraft:fireworks": {
+            'explosions': [{'colors': Nbt.TypedArray('I', (color,)), 'has_trail': True, 'shape': shape}],
+            'flight_duration': 0}})
+        yield item().replace().block(r(0, 1, 0), 'container.0').with_(ent)
+
     room.loop('firework_change', home=False).loop(
-        lambda step: item().replace().block(r(0, 1, 0), 'container.0').with_(Entity('firework_rocket', nbt={
-            'Fireworks': {'Explosions': [{'Colors': Nbt.TypedArray('I', (step.elem,)), 'Trail': 1, 'Type': step.i}],
-                          'Flight': 0}})), (11743532, 6719955, 14602026, 3887386, 15790320)).add(
+        fireworks_loop, ((11743532, 'large_ball'), (6719955, 'star'), (14602026, 'creeper'), (3887386, 'burst'),
+                         (15790320, 'small_ball'))).add(
         setblock(r(0, 0, 0), 'redstone_torch'),
         setblock(r(0, 0, 0), 'air'))
     room.function('firework_init', home=False).add(setblock(r(0, 1, 0), ('dispenser', {'facing': 'up'})))
@@ -359,7 +368,7 @@ def room():
         tp(p().distance((None, 7)), r(0, 0, -3)).facing(r(0, 0, 5)))
     room.function('item_snowball', home=False).add(
         fast().run(item().replace().block(r(0, 2, -1), 'container.0').with_('snowball', 1)),
-        # fast().run(setblock(r(0, 3, -1), ('stone_button', {'powered': True, 'face': 'floor'}))),
+        fast().run(setblock(r(0, 3, -1), ('stone_button', {'powered': True, 'face': 'floor'}))),
         fast().run(setblock(r(0, 3, -1), 'air')),
     )
     room.function('item_snowball_init', home=False).add(
@@ -400,6 +409,8 @@ def room():
     room.function('portal_init', home=False).add(
         fill(r(-2, 0, -1), r(2, 4, -1), 'obsidian'),
         fill(r(-1, 1, -1), r(1, 3, -1), 'nether_portal'))
+    room.function('reverse_portal', home=False).add(
+        slow().run(fill(r(-1, 0, -1), r(1, 0, 1), ('respawn_anchor', {'charges': 1}))))
     room.function('vibration', home=False).add(main().run(function('restworld:particles/vibration_run')))
     room.function('vibration_init', home=False).add(
         setblock(r(2, 0, 2), ('piston', {'facing': 'up'})),
@@ -508,7 +519,6 @@ def room():
     room.function('warped_spore_init', home=False).add(
         floor('warped_nylium'),
         set_biome(WARPED_FOREST))
-    room.function('wax_on', home=False).add(main().run(function('restworld:particles/wax_on_run')))
     room.function('wax_on_init', home=False).add(
         setblock(r(0, 0, 0), 'cut_copper'),
         exemplar('armor_stand', 0, {'Invisible': True, 'Small': True, 'CustomNameVisible': True}))
@@ -519,14 +529,17 @@ def room():
         if step.i == 0:
             yield setblock(r(0, 0, 0), 'exposed_cut_copper')
         elif step.i == 1:
+            yield setblock(r(0, 0, 0), 'waxed_exposed_cut_copper')
             yield particle(WAX_ON, r(0, 0.5, 0), 0.5, 0.5, 0.5, 0, 10)
         elif step.i == 2:
+            yield setblock(r(0, 0, 0), 'exposed_cut_copper')
             yield particle(WAX_OFF, r(0, 0.5, 0), 0.5, 0.5, 0.5, 0, 10)
         else:
             yield setblock(r(0, 0, 0), 'cut_copper')
             yield particle(SCRAPE, r(0, 0.5, 0), 0.5, 0.5, 0.5, 0, 10)
 
-    room.loop('wax_on_run', home=False).loop(wax_on_run_loop, ('', 'Wax On', 'Wax Off', 'Scrape'))
+    wax_on_run = room.loop('wax_on_run', home=False).loop(wax_on_run_loop, ('', 'Wax On', 'Wax Off', 'Scrape'))
+    room.function('wax_on', home=False).add(main().run(function(wax_on_run)))
     room.function('white_ash_init', home=False).add(
         floor('basalt'),
         set_biome(BASALT_DELTAS))

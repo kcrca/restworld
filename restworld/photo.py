@@ -175,8 +175,8 @@ def room():
 
     room.function('quilt_init').add(
         quilt(),
-        room.label((-1057, 104, 1055), 'Quilt Photo', NORTH),
-        room.label((-1057, 104, 1054), 'Back to Platform', SOUTH))
+        room.label((-1057, 104, 1055), 'Quilt Photo', SOUTH),
+        room.label((-1057, 104, 1054), 'Back to Platform', NORTH))
 
     mob_offset = Offset(-1, 9, 7)
     room.function('photo_mobs_init').add(

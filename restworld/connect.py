@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from pynecraft.base import Arg, EAST, NORTH, RelCoord, SOUTH, UP, WEST, as_facing, r
-from pynecraft.commands import clone, data, e, execute, fill, function, kill, return_
+from pynecraft.commands import clone, data, e, execute, fill, function, kill, return_, say
 from pynecraft.simpler import ItemFrame, WallSign
 from pynecraft.utils import Scores, strcmp, utils_init
 from restworld.rooms import Room
@@ -70,6 +70,7 @@ def room():
 
     size = 26
     redo_one = room.function('redo_one', home=False).add(
+        say('redo_one: $(from)->$(to)'),
         fill(r(size, -15, size), r(0, -19, 0), Arg('to')).replace(Arg('from')),
         clone(r(size, -15, size), r(0, -19, 0), r(0, 2, 0)).filtered(Arg('to')),
     )

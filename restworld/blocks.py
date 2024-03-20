@@ -713,6 +713,7 @@ def color_functions(room):
     coloring_coords = (r(1, 4, 6), r(-13, 2, -1))
     volume = Region(*coloring_coords)
     lit_candles = room.score('lit_candles')
+    plain = room.score('plain')
 
     def colorings(is_plain, color):
         fills = (
@@ -852,6 +853,7 @@ def color_functions(room):
     }
     room.function('colorings_init').add(
         kill(e().tag('colorings_item')),
+        plain.set(0),
         Entity('item_frame', {
             'Facing': 3, 'Tags': ['colorings_item_frame', 'colorings_item'],
             'Fixed': True}).summon(r(-4.5, 4, 0.5)),
@@ -878,18 +880,22 @@ def color_functions(room):
     room.loop('colorings', main_clock).add(fill(r(-9, 2, 2), r(-9, 2, 3), 'air')).loop(colorings_loop, colors).add(
         colored_signs(None, render_signs_glow), setblock(r(-7, -1, 3), 'redstone_block'), setblock(r(-7, -1, 3), 'air'))
     room.function('colorings_plain_off', home=False).add(
-        clone((coloring_coords[0][0], coloring_coords[0][1].value - coloring_coords[1][1].value + 1,
-               coloring_coords[0][2]),
-              (coloring_coords[1][0], 0, coloring_coords[1][2]),
-              (coloring_coords[1][0], coloring_coords[1][1] - 1, coloring_coords[1][2])),
+        execute().unless().score(plain).matches(0).run(
+            clone((coloring_coords[0][0], coloring_coords[0][1].value - coloring_coords[1][1].value + 1,
+                   coloring_coords[0][2]),
+                  (coloring_coords[1][0], 0, coloring_coords[1][2]),
+                  (coloring_coords[1][0], coloring_coords[1][1] - 1, coloring_coords[1][2]))),
+        plain.set(0),
         tag(e().tag('colorings_base_home')).add('colorings_home'),
         execute().at(e().tag('colorings_home')).run(function('restworld:blocks/colorings_init')),
         execute().at(e().tag('colorings_home')).run(function('restworld:blocks/colorings_cur')),
         kill(e().type('item').distance((None, 20))))
     room.function('colorings_plain_on', home=False).add(
-        clone((coloring_coords[0][0], coloring_coords[0][1], coloring_coords[0][2]),
-              (coloring_coords[1][0], coloring_coords[1][1] - 1, coloring_coords[1][2]),
-              (coloring_coords[1][0], 0, coloring_coords[1][2])),
+        execute().if_().score(plain).matches(0).run(
+            clone((coloring_coords[0][0], coloring_coords[0][1], coloring_coords[0][2]),
+                  (coloring_coords[1][0], coloring_coords[1][1] - 1, coloring_coords[1][2]),
+                  (coloring_coords[1][0], 0, coloring_coords[1][2]))),
+        plain.set(1),
         tag(e().tag('colorings_base_home')).remove('colorings_home'),
         item().replace().entity(e().tag('colorings_item_frame'), 'container.0').with_('air'),
         colorings(True, Color('Plain', 0x0)), setblock(r(-7, -1, 3), 'redstone_torch'), setblock(r(-7, -1, 3), 'air'),

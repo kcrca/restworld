@@ -51,7 +51,7 @@ def room():
         execute().at(e().tag('effects_signs_home')).run(
             fill(r(0, 2, 0), r(9, 7, -9), 'smooth_quartz').replace('emerald_block')))
     room.function('effects_none_exit').add(function(effects_none.full_name))
-    room.function('effects_none_init').add(room.label(r(0, 2, 1), 'Effects Can Leave Room', NORTH))
+    room.function('effects_none_init').add(room.label(r(0, 2, 1), 'Effects Leave Room', NORTH))
 
     all_effects = WallSign((None, 'All Effects'), (None, function('restworld:effects/effects_all')))
     no_effects = WallSign((None, 'No Effects'), (None, function('restworld:effects/effects_none')))

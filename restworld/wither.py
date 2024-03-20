@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pynecraft.base import EAST, NORTH, as_facing, r
 from pynecraft.commands import data, e, execute, kill, s, summon
-from pynecraft.simpler import WallSign
+from pynecraft.simpler import Sign, WallSign
 from restworld.rooms import Room
 from restworld.world import kill_em, main_clock, restworld
 
@@ -40,7 +40,7 @@ def room():
         else:
             yield data().merge(e().tag('wither_mob').limit(1), {'Health': 140, 'Invul': 0})
             sign_text = 'Armored (Hurt)'
-        yield WallSign((None, sign_text)).place(wither_sign_pos, wither_dir)
+        yield Sign.change(wither_sign_pos, (None, sign_text))
 
     room.loop('wither_mob', main_clock).loop(wither_loop, range(0, 3))
     room.function('wither_skull_init').add(

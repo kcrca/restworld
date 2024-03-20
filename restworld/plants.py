@@ -213,7 +213,7 @@ def room():
 
     room.loop('propagule', main_clock).loop(propagule_loop, range(4))
 
-    room.function('shrooms_init').add(room.label(r(1, 2, 1), 'Vine Age 25', WEST))
+    room.function('shrooms_init').add(room.label(r(1, 2, 1), 'Vine Age 25', EAST))
 
     def shrooms_loop(step):
         yield data().merge(r(-1, 0, -1), {'mode': 'LOAD', 'name': 'restworld:%s_shroom' % step.elem})

@@ -324,23 +324,23 @@ def fencelike_functions(room):
     volume = Region(r(8, 3, 6), r(0, 2, 0))
 
     room.function('fencelike_init').add(
-        WallSign(()).place(r(6, 2, 0), SOUTH), room.label(r(6, 2, -2), 'Change Height', SOUTH),
-        room.label(r(4, 2, -2), 'Glass Panes', SOUTH), room.label(r(3, 2, -2), 'Walls', SOUTH),
-        room.label(r(2, 2, -2), 'Fences', SOUTH))
+        WallSign(()).place(r(6, 2, 0), NORTH),
+        room.label(r(6, 2, -2), 'Height', SOUTH), room.label(r(4, 2, -2), 'Glass Panes', SOUTH),
+        room.label(r(3, 2, -2), 'Walls', SOUTH), room.label(r(2, 2, -2), 'Fences', SOUTH))
 
     def fencelike(block: BlockDef):
         block = as_block(block)
         yield volume.replace(block, '#restworld:fencelike')
-        yield execute().at(e().tag('fencelike_home')).run(data().merge(r(6, 2, 0), block.sign_nbt()))
+        yield execute().at(e().tag('fencelike_home')).run(data().merge(r(6, 2, 0), block.sign_nbt(front=None)))
 
     def switch_to_fencelike(which):
-        room.function(f'switch_to_{which}', home=False).add(kill(e().tag('which_fencelike_home')),
-                                                            execute().at(e().tag('fencelike_home')).positioned(
-                                                                r(1, -0.5, 0)).run(
-                                                                function('restworld:materials/%s_home' % which)),
-                                                            tag(e().tag('%s_home' % which)).add('which_fencelike_home'),
-                                                            execute().at(e().tag('%s_home' % which)).run(
-                                                                function('restworld:materials/%s_cur' % which)))
+        room.function(f'switch_to_{which}', home=False).add(
+            kill(e().tag('which_fencelike_home')),
+            execute().at(e().tag('fencelike_home')).positioned(r(1, -0.5, 0)).run(
+                function('restworld:materials/%s_home' % which)),
+            tag(e().tag('%s_home' % which)).add('which_fencelike_home'),
+            execute().at(e().tag('%s_home' % which)).run(
+                function('restworld:materials/%s_cur' % which)))
 
     def fence_loop(step):
         yield from fencelike(step.elem)
@@ -803,8 +803,10 @@ def trim_functions(room):
                 item().replace().entity(s(), 'armor.feet').with_(f'{armor}_boots'),
                 item().replace().entity(s(), 'armor.chest').with_(f'{armor}_chestplate')))
     chestplate_on.add(execute().as_(e().tag(overall_tag)).run(
-        data().modify(s(), 'ArmorItems[0].components.minecraft:trim').merge().from_(s(), 'ArmorItems[1].components.minecraft:trim'),
-        data().modify(s(), 'ArmorItems[2].components.minecraft:trim').merge().from_(s(), 'ArmorItems[1].components.minecraft:trim')))
+        data().modify(s(), 'ArmorItems[0].components.minecraft:trim').merge().from_(s(),
+                                                                                    'ArmorItems[1].components.minecraft:trim'),
+        data().modify(s(), 'ArmorItems[2].components.minecraft:trim').merge().from_(s(),
+                                                                                    'ArmorItems[1].components.minecraft:trim')))
 
     room.function('trim_turtle_on', home=False).add(
         execute().as_(e().tag(overall_tag)).run(

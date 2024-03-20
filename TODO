@@ -5,3 +5,14 @@ Old-fashioned heraldry terms on banners too?
 Make labels be text_display's, probably on the ground facing up, with a direction (so it faces the path). Or maybe we can make
 the text_display have a few blank lines above the label, and let it rotate to face the player around the y axis _only_, which
 might keep the text towards the outer edge of the block.
+
+
+Dragon Fireball is wonky
+
+Something weird happened to ambient entity effect, like it disappeared? Wait until the next release to see if that's a bug
+
+Vault top seems wrong [clarity problem]
+
+connected textures not working
+
+Errors in funciton loading (not ambient stuff, mostly all_items, etc.)
