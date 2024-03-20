@@ -46,12 +46,12 @@ def room():
 
         WallSign(below1).back((None, '⇧', 'Go Up')).place(r(0, -8, 2), SOUTH),
         WallSign(below1).back((None, '⇧', 'Go Up')).place(r(0, -8, -2), NORTH),
-        WallSign(below1).place(r(2, -8, 0), EAST),
-        WallSign(below1).place(r(-2, -8, 0), WEST),
+        WallSign().messages(below1).place(r(2, -8, 0), EAST),
+        WallSign().messages(below1).place(r(-2, -8, 0), WEST),
         WallSign(below2).place(r(0, -9, 2), SOUTH),
         WallSign(below2).place(r(0, -9, -2), NORTH),
-        WallSign(below2).place(r(2, -9, 0), EAST),
-        WallSign(below2).place(r(-2, -9, 0), WEST),
+        WallSign().messages(below2).place(r(2, -9, 0), EAST),
+        WallSign().messages(below2).place(r(-2, -9, 0), WEST),
 
         room.label(r(0, 2, 0), 'Go Home', SOUTH),
     )
