@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from pynecraft.base import Arg, EAST, NORTH, RelCoord, SOUTH, UP, WEST, as_facing, r
-from pynecraft.commands import clone, data, e, execute, fill, function, kill, return_, say
+from pynecraft.commands import clone, data, e, execute, fill, function, kill, return_
 from pynecraft.simpler import ItemFrame, WallSign
 from pynecraft.utils import Scores, strcmp, utils_init
 from restworld.rooms import Room
@@ -70,17 +70,19 @@ def room():
 
     size = 26
     redo_one = room.function('redo_one', home=False).add(
-        say('redo_one: $(from)->$(to)'),
         fill(r(size, -15, size), r(0, -19, 0), Arg('to')).replace(Arg('from')),
+        fill(r(size, 2, size), r(0, 6, 0), 'air').replace(Arg('orig')),
         clone(r(size, -15, size), r(0, -19, 0), r(0, 2, 0)).filtered(Arg('to')),
     )
 
     center = r(13, 1, 13)
 
     def redo_one_example(dir):
-        yield data().modify('redo', 'to').set().from_(e().tag(f'connect_frame_{dir}').limit(1), 'Item.id')
-        yield data().modify('redo', 'from').set().value(block_map[dir])
-        yield function(redo_one).with_().storage('redo')
+        yield data().modify('connect', 'redo.to').set().from_(e().tag(f'connect_frame_{dir}').limit(1), 'Item.id')
+        yield data().modify('connect', 'redo.from').set().value(block_map[dir])
+        yield data().modify('connect', 'redo.orig').set().from_('connect', f'redo_memory.{dir}')
+        yield function(redo_one).with_().storage('connect', 'redo')
+        yield data().modify('connect', f'redo_memory.{dir}').set().from_('connect', 'redo.to')
 
     init = room.function('redo_init').add(kill(e().tag('connect_frame')))
     for dir, v in block_map.items():
