@@ -359,8 +359,8 @@ def room():
     def brewing_stand_loop(step):
         for j in range(0, 3):
             if j in step.elem:
-                yield item().replace().block(r(0, 3, 0), f'container.{j:d}').with_(
-                    Block('potion', nbt={'Potion': 'water'}), 1)
+                water_potion = Item('potion', components={'potion_contents': 'water'})
+                yield item().replace().block(r(0, 3, 0), f'container.{j:d}').with_(water_potion, 1)
             else:
                 yield item().replace().block(r(0, 3, 0), f'container.{j:d}').with_('air')
 

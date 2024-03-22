@@ -129,7 +129,7 @@ def room():
         execute().unless().score(bossbar_which).matches(2).run(function(bb_value.full_name + '_cur')),
     )
 
-    water_potion = Block('potion', nbt={'Potion': 'water'})
+    water_potion = Item('potion', components={'potion_contents': {'potion': 'water'}})
 
     def brewing_loop(step):
         for j in range(0, 3):
@@ -137,7 +137,7 @@ def room():
                 block = water_potion
             else:
                 block = 'air'
-            yield item().replace().block(r(0, 2, 0), 'container.%d' % j).with_(block, 1)
+            yield item().replace().block(r(0, 2, 0), 'container.%d' % j).with_(block)
 
     room.function('brewing_init').add(
         function('restworld:gui/switch_brewing_off'),
