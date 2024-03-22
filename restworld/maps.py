@@ -24,31 +24,37 @@ def room():
     room.function('maps_room_exit').add(fill(r(0, -1, -3), r(9, -1, 3), 'glass').replace('redstone_torch'))
     p_north = room.mob_placer(r(3, 4, -3), SOUTH, -1, adults=True)
     p_mid = room.mob_placer(r(8, 4, -1), WEST, -1, adults=True)
-    icons = {
-        'Target X': 'target_x',
-        'Target Point': 'target_point',
-        'Red X': 'red_x',
-        'Monument': 'monument',
-        'Mansion': 'mansion',
-        'Desert Village': 'village_desert',
-        'Plains Village': 'village_plains',
-        'Savanna Village': 'village_savanna',
-        'Snowy Village': 'village_snowy',
-        'Taiga Village': 'village_taiga',
-        'Jungle Temple': 'jungle_temple',
-        'Swamp Hut': 'swamp_hut'
-    }
+    icons = ( 'target_x', 'target_point', 'red_x', 'monument', 'mansion', 'village_desert', 'village_plains', 'village_savanna', 'village_snowy', 'village_taiga', 'jungle_temple', 'swamp_hut', 'trial_chambers' )
+    map_dim = 128
+    x_base = 64
+    z_base = -64
+    lengths = (3, 3, 3, 4)
+    assert len(icons) == sum(lengths)
+    z_incr = map_dim / (len(lengths) + 1)
+    z = z_base
+    x = x_incr = 0
+    row = -1
+    next_row = 0
+    count = 0
     decorations = Nbt()
-    four_per_z = 128 / 5
-    xs = (88, 128, 168)
-    col = 0
-    z = -64 + four_per_z
-    for i, (name, id) in enumerate(icons.items()):
-        decorations[id] = {'rotation': 180, 'x': xs[col], 'z': z, 'type': id, 'name': name}
-        if i % 4 == 3:
-            col += 1
-            z = -64
-        z += four_per_z
+    for i, id in enumerate(icons):
+        if count == next_row:
+            row += 1
+            z += z_incr
+            length = lengths[row]
+            next_row += length
+            x_incr = map_dim / (length + 1)
+            x = x_base + x_incr
+        else:
+            x += x_incr
+        decorations[id] = {'rotation': 180, 'x': x, 'z': z, 'type': id}
+        count += 1
+    # {components: {
+    # "minecraft:map_decorations": {_0: {rotation: 180.0f, x: 128.0d, z: -32.0d, type: "minecraft:target_x"},
+    # _1: {rotation: 180.0f, x: 88.0d, z: -16.0d, type: "minecraft:target_point"}, _2: {rotation: 180.0f, x: 128.0d,
+    # z: 0.0d, type: "minecraft:mansion"}, _3: {rotation: 180.0f, x: 88.0d, z: 16.0d, type: "minecraft:monument"},
+    # _4: {rotation: 180.0f, x: 128.0d, z: 32.0d, type: "minecraft:red_x"}}, "minecraft:map_id": 133,
+    # "minecraft:custom_name": '"Main (right)"'}, count: 1, id: "minecraft:filled_map"}
     icon_frame_tag = 'map_icon_frame'
     banner_frame_tag = 'map_banner_frame'
     banner_label = TextDisplay('Banner Icons',
@@ -68,7 +74,8 @@ def room():
         p_mid.summon(ItemFrame(WEST).item(map(133, name_nbt('Main (right)'))).tag(icon_frame_tag)),
         room.mob_placer(r(8, 3, 0), WEST, adults=True).summon(ItemFrame(WEST).item(map(20, name_nbt('Main (bot)')))),
         WallSign((None, 'Center', 'Area')).place(r(8, 3, 1), WEST),
-        data().modify(e().tag(icon_frame_tag).limit(1), 'Item.components.map_decorations').set().value(decorations),
+        data().modify(e().tag(icon_frame_tag).limit(1), 'Item.components.minecraft:map_decorations').set().value(
+            decorations),
         room.mob_placer(r(6, 4, 3), NORTH, adults=True).summon(ItemFrame(NORTH).item(map(32, name_nbt('Optifine')))),
         WallSign(('Optifine:', 'Connected', 'Textures and', 'Mob Textures'), NORTH).place(r(5, 3, 3), NORTH),
 
@@ -80,8 +87,8 @@ def room():
         execute().at(e().tag(banner_frame_tag)).run(banner_label.summon(r(-0.04, -0.23, -0.13), facing=WEST)),
     )
     for i, (k, v) in enumerate(decorations.items()):
-        label = TextDisplay(v['name'], {'background': 0, 'shadow_radius': 0}).scale(0.1).tag('map_label',
-                                                                                             f'map_label_{i}')
+        label = TextDisplay(v['type'],
+                            {'background': 0, 'shadow_radius': 0}).scale(0.1).tag('map_label', f'map_label_{i}')
         y = v['z'] / -128.0 - 0.07
         z = v['x'] / 128.0 - 1
         room_init.add(execute().at(e().tag(icon_frame_tag)).run(label.summon(r(-0.04, y, z), facing=WEST)))
