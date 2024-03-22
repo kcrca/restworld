@@ -8,11 +8,3 @@ might keep the text towards the outer edge of the block.
 
 
 Dragon Fireball is wonky
-
-Something weird happened to ambient entity effect, like it disappeared? Wait until the next release to see if that's a bug
-
-Vault top seems wrong [clarity problem]
-
-connected textures not working
-
-Errors in funciton loading (not ambient stuff, mostly all_items, etc.)
