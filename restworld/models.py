@@ -131,7 +131,7 @@ def room():
     recent_things_signs = (r(-2, 4, 1), r(-2, 4, 0), r(-2, 4, -1))[::-1]
     model_head = room.function('model_head', home=False).add(
         item().replace().entity(e().tag('model_holder_head').limit(1), 'armor.head').with_(
-            ('player_head', dict(SkullOwner='BlueMeanial'))),
+            Item('player_head', components={'profile':'BlueMeanial'})),
     )
     chest_pos = r(-1, -2, 0)
     room.function('models_room_init', exists_ok=True).add(
