@@ -3,8 +3,10 @@ from __future__ import annotations
 import math
 import random
 
-from pynecraft.base import EAST, NORTH, Nbt, OVERWORLD, SOUTH, WEST, as_facing, d, r
-from pynecraft.commands import Block, CLEAR, Entity, RAIN, REPLACE, a, data, e, execute, fill, fillbiome, \
+from pynecraft import commands
+from pynecraft.base import Arg, EAST, NORTH, Nbt, OVERWORLD, SOUTH, WEST, as_facing, d, r
+from pynecraft.commands import Block, CLEAR, Entity, FLOAT, JsonText, RAIN, REPLACE, RESULT, a, data, e, execute, fill, \
+    fillbiome, \
     function, \
     item, kill, p, particle, playsound, schedule, setblock, summon, tp, weather
 from pynecraft.simpler import PLAINS, TextDisplay, VILLAGER_BIOMES, VILLAGER_PROFESSIONS, WallSign
@@ -26,7 +28,6 @@ from restworld.rooms import ActionDesc, SignedRoom, Wall, span
 from restworld.world import fast_clock, kill_em, main_clock, restworld, slow_clock
 
 actions = [
-    ActionDesc(AMBIENT_ENTITY_EFFECT, 'Ambient|Entity|Effect'),
     ActionDesc(ANGRY_VILLAGER),
     ActionDesc(ASH),
     ActionDesc(BLOCK_MARKER),
@@ -60,6 +61,7 @@ actions = [
     ActionDesc(EXPLOSION_EMITTER),
     ActionDesc(FALLING_DUST),
     ActionDesc(FIREWORK, note='and Flash', also=FLASH),
+    ActionDesc(FISHING),
     ActionDesc(FLAME, 'Flame, Small Flame|and Smoke',
                also=(SMALL_FLAME, SOUL_FIRE_FLAME, SMOKE)),
     ActionDesc(GUST, 'Gust|Gust Emitter|Gust Dust', also=(GUST_DUST, GUST_EMITTER)),
@@ -96,7 +98,7 @@ actions = [
     ActionDesc(WITCH),
 ]
 unused_particles = {
-    FISHING,
+    AMBIENT_ENTITY_EFFECT, # Being removed at 1.21 I think
     BLOCK,  # This just happens in the game, plus I can't see how to generate it.
     CAMPFIRE_COSY_SMOKE,  # In block room
     CAMPFIRE_SIGNAL_SMOKE,  # Same as regular campfire smoke, just goes higher
@@ -184,14 +186,17 @@ def room():
     ))
     room.function('signs_init', home=False).add(function('restworld:particles/signs'))
 
-    room.function('ambient_entity_effect', home=False).add(
-        main().run(particle(AMBIENT_ENTITY_EFFECT, r(0, 0, 0), 0.5, 5, 0.5, 1, 500)))
+    room.loop('animal', home=False).loop(lambda step: exemplar(step.elem, 0, {'NoAI': True}), (
+        Entity('Cow'), Entity('Pig'), Entity('Horse', {'Variant': 257}), Entity('Llama', {'Variant': 2}),
+        Entity('Sheep', {'Color': 9}), Entity('Polar Bear'), Entity('Goat')))
+    room.loop('villager', home=False).loop(
+        lambda step: exemplar('villager', 0, {'NoAI': True, 'VillagerData': step.elem}),
+        villager_data)
+
     room.function('ambient_entity_effect_init', home=False).add(function('restworld:particles/villager'))
     room.function('angry_villager', home=False).add(
         fast().run(particle(ANGRY_VILLAGER, r(0, 1, 0), 0.5, 0.5, 0.5, 0, 5)))
     room.function('angry_villager_init', home=False).add(function('restworld:particles/villager'))
-    room.loop('animal', home=False).loop(lambda step: exemplar(step.elem, 0, {'NoAI': True}), (
-        Block('cow'), Block('Pig'), Block('Horse'), Block('Llama'), Block('Sheep'), Block('Polar Bear'), Block('Goat')))
     room.function('ash_init', home=False).add(
         floor('soul_soil'),
         set_biome(SOUL_SAND_VALLEY))
@@ -302,8 +307,14 @@ def room():
     room.function('end_rod_init', home=False).add(
         fill(r(-1, 0, 0), r(1, 0, 0), 'end_rod'),
         fill(r(-1, 2, -2), r(1, 2, -2), ('end_rod', {'facing': SOUTH})))
-    room.function('entity_effect', home=False).add(
-        main().run(particle(ENTITY_EFFECT, r(0, 1, 0), 0.25, 0.5, 0.5, 0.2, 80)))
+    entity_effect_run = room.function('entity_effect_run', home=False).add(
+        particle(ENTITY_EFFECT, Arg('r'), Arg('g'), Arg('b'), 0.8, r(0, 1, 0), 0.25, 0.5, 0.5, 0.2, 80))
+    entity_effect = room.function('entity_effect', home=False).add(
+        main().run(
+            (execute().store(RESULT).storage('restworld:particles', c, FLOAT, 1.0 / 256).run(
+                commands.random().value((0, 256))) for c in 'rgb'),
+            function(entity_effect_run).with_().storage('restworld:particles')
+        ))
     room.function('entity_effect_init', home=False).add(function('restworld:particles/animal'))
     room.function('explosion', home=False).add(
         main().run(particle(EXPLOSION, r(0, 1, 0), 0.5, 0.5, 0.5, 2, 8)))
@@ -513,19 +524,16 @@ def room():
         main().run(particle(TOTEM_OF_UNDYING, r(0, 2, 0), 0.5, 1, 0.5, 0.5, 50)))
     room.function('underwater_init', home=False).add(function('restworld:particles/ocean'))
     room.function('vault_connection_init', home=False).add(setblock(r(0, 0, 0), 'vault'))
-    room.loop('villager', home=False).loop(
-        lambda step: exemplar('villager', 0, {'NoAI': True, 'VillagerData': step.elem}),
-        villager_data)
     room.function('warped_spore_init', home=False).add(
         floor('warped_nylium'),
         set_biome(WARPED_FOREST))
     room.function('wax_on_init', home=False).add(
         setblock(r(0, 0, 0), 'cut_copper'),
-        exemplar('armor_stand', 0, {'Invisible': True, 'Small': True, 'CustomNameVisible': True}))
+        exemplar('text_display', 1.5),
+    )
 
     def wax_on_run_loop(step):
-        yield data().merge(e().tag('particler').limit(1),
-                           {'CustomName': step.elem, 'CustomNameVisible': len(step.elem) > 0})
+        yield data().modify(e().tag('particler').limit(1), 'text').set().value(JsonText.text(step.elem))
         if step.i == 0:
             yield setblock(r(0, 0, 0), 'exposed_cut_copper')
         elif step.i == 1:
