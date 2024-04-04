@@ -181,10 +181,19 @@ def room():
     villager = room.loop('villager', home=False).loop(
         lambda step: exemplar('villager', 0, {'NoAI': True, 'VillagerData': step.elem}),
         villager_data)
+    ocean = room.function('ocean', home=False).add(
+        fill(r(-3, 0, 4), r(3, 0, 4), 'structure_void'),
+        fill(r(3, 6, 3), r(-3, 6, -3), 'structure_void'),
+        fill(r(2, 6, 2), r(-2, 6, -2), 'water'),
+        fill(r(2, 0, 2), r(-2, 6, -2), 'water'),
+    )
+    small_animal = room.loop('small_animal', home=False).loop(
+        lambda step: exemplar(step.elem, 0, {'CatType': 1, 'NoAI': True}),
+        ('ocelot', 'horse', 'llama'))
 
     room.function('angry_villager', home=False).add(
         fast().run(particle(ANGRY_VILLAGER, r(0, 1, 0), 0.5, 0.5, 0.5, 0, 5)))
-    room.function('angry_villager_init', home=False).add(function('restworld:particles/villager'))
+    room.function('angry_villager_init', home=False).add(function(villager))
     room.function('ash_init', home=False).add(
         floor('soul_soil'),
         set_biome(SOUL_SAND_VALLEY))
@@ -192,13 +201,13 @@ def room():
     def block_marker_loop(step):
         yield particle(BLOCK_MARKER, step.elem, r(0, 2, 0))
 
-    room.loop('block_marker_run').loop(block_marker_loop, ('barrier', 'light'))
+    block_marker_run = room.loop('block_marker_run').loop(block_marker_loop, ('barrier', 'light'))
     room.function('block_marker', home=False).add(
-        slow().run(function('restworld:particles/block_marker_run')))
+        slow().run(function(block_marker_run)))
     room.function('bubble_init', home=False).add(
         fill(r(1, -1, 1), r(1, -1, -1), 'magma_block'),
         fill(r(-1, -1, 1), r(-1, -1, -1), 'soul_sand'),
-        function('restworld:particles/ocean'))
+        function(ocean))
     room.function('cloud', home=False).add(main().run(particle(CLOUD, r(0, 1, 0), 0.25, 0.25, 0.25, 0.05, 50)))
     room.function('composter', home=False).add(
         main().run(particle(COMPOSTER, r(0, 0.9, 0), 0.2, 0.1, 0.2, 1, 12)))
@@ -207,29 +216,29 @@ def room():
         floor('crimson_nylium'),
         set_biome(CRIMSON_FOREST))
     room.function('crit', home=False).add(fast().run(particle(CRIT, r(0, 1.5, 0), 0.5, 0.5, 0.5, 0, 10)))
-    room.function('crit_init', home=False).add(function('restworld:particles/animal'))
+    room.function('crit_init', home=False).add(function(animal))
     room.function('damage_indicator', home=False).add(
         fast().run(particle(DAMAGE_INDICATOR, r(0, 1.5, 0), 0.5, 0.5, 0.5, 0, 5)))
-    room.function('damage_indicator_init', home=False).add(function('restworld:particles/animal'))
+    room.function('damage_indicator_init', home=False).add(function(animal))
     room.function('dolphin_init', home=False).add(
         fill(r(-3, 0, 5), r(3, 6, 5), 'barrier').replace('air'),
         fill(r(0, 0, 5), r(0, 1, 5), 'air'),
         fill(r(4, 5, 4), r(-4, 5, -4), 'barrier'),
         fill(r(3, 5, 3), r(-3, 5, -3), 'air'),
         fill(r(3, 7, 3), r(-3, 7, -3), 'barrier'),
-        function('restworld:particles/ocean'),
+        function(ocean),
         exemplar('dolphin', 1.5),
     )
-    room.function('dragon_breath', home=False).add(slow().run(function('restworld:particles/dragon_breath_run')))
     room.function('dragon_breath_init', home=False).add(floor('end_stone'))
-    room.function('dragon_breath_run', home=False).add(
+    dragon_breath_finish = room.function('dragon_breath_finish', home=False).add(
+        data().merge(e().tag('particle_dragonball').limit(1), {'Motion': [0, -0.5, -0.5]}))
+    dragon_breath_run = room.function('dragon_breath_run', home=False).add(
         kill(e().tag('particle_dragonball')),
         summon('dragon_fireball', r(0, 4, 4),
                {'power': {0.0, -0.05, -0.05}, 'ExplosionPower': 0, 'Tags': ['particle_dragonball', 'particler']}),
-        schedule().function('restworld:particles/dragon_breath_finish', 1, REPLACE),
+        schedule().function(dragon_breath_finish, 1, REPLACE),
     )
-    room.function('dragon_breath_finish', home=False).add(
-        data().merge(e().tag('particle_dragonball').limit(1), {'Motion': [0, -0.5, -0.5]}))
+    room.function('dragon_breath', home=False).add(slow().run(function(dragon_breath_run)))
     cherry = room.function('cherry_leaves_init', home=False).add(
         fill(r(2, 4, 2), r(-2, 4, -2), 'cherry_leaves'), floor('grass_block'))
     for x in range(-3, 4):
@@ -266,7 +275,7 @@ def room():
     )
     room.function('enchanted_hit', home=False).add(
         fast().run(particle(ENCHANTED_HIT, r(0, 1, 0, 0.5), 0.5, 0.5, 0, 15)))
-    room.function('enchanted_hit_init', home=False).add(function('restworld:particles/animal'))
+    room.function('enchanted_hit_init', home=False).add(function(animal))
 
     def entity_effect_loop(step):
         yield effect().clear(particler.limit(1))
@@ -275,23 +284,22 @@ def room():
     entity_effect_change = room.loop('entity_effect_change', home=False).loop(
         entity_effect_loop, (WATER_BREATHING, STRENGTH, NAUSEA, LUCK, BLINDNESS))
     room.function('entity_effect', home=False).add(main().run(function(entity_effect_change)))
-    room.function('entity_effect_init', home=False).add(function('restworld:particles/animal'))
+    room.function('entity_effect_init', home=False).add(function(animal))
     room.function('explosion', home=False).add(
         main().run(particle(EXPLOSION, r(0, 1, 0), 0.5, 0.5, 0.5, 2, 8)))
     room.function('explosion_emitter', home=False).add(
         main().run(particle(EXPLOSION_EMITTER, r(0, 1, 0), 0.5, 0.5, 0.5, 0.2, 1)))
-    room.function('falling_dust', home=False).add(main().run(function('restworld:particles/falling_dust_change')))
 
     def falling_dust_loop(step):
         yield fill(r(-2, 5, -2), r(2, 5, 2), step.elem.id)
         yield particle(FALLING_DUST, step.elem.id, r(0, 4.9, 0), 1.5, 0, 1.5, 0, 50)
 
-    room.loop('falling_dust_change', home=False).loop(falling_dust_loop, (
+    falling_dust_change = room.loop('falling_dust_change', home=False).loop(falling_dust_loop, (
         Block('Dragon Egg'), Block('Sand'), Block('Red Sand'), Block('Gravel'), Block('Green Concrete Powder')))
     room.function('falling_dust_init', home=False).add(
         fill(r(-2, 4, -2), r(2, 4, 2), 'barrier'),
-        function('restworld:particles/falling_dust_change'))
-    room.function('firework', home=False).add(main().run(function('restworld:particles/firework_change')))
+        function(falling_dust_change))
+    room.function('falling_dust', home=False).add(main().run(function(falling_dust_change)))
 
     def fireworks_loop(step):
         color, shape = step.elem
@@ -300,11 +308,12 @@ def room():
             'flight_duration': 0}})
         yield item().replace().block(r(0, 1, 0), 'container.0').with_(ent)
 
-    room.loop('firework_change', home=False).loop(
+    firework_change = room.loop('firework_change', home=False).loop(
         fireworks_loop, ((11743532, 'large_ball'), (6719955, 'star'), (14602026, 'creeper'), (3887386, 'burst'),
                          (15790320, 'small_ball'))).add(
         setblock(r(0, 0, 0), 'redstone_torch'),
         setblock(r(0, 0, 0), 'air'))
+    room.function('firework', home=False).add(main().run(function(firework_change)))
     room.function('firework_init', home=False).add(setblock(r(0, 1, 0), ('dispenser', {'facing': 'up'})))
     room.function('fishing', home=False).add(fast().run(particle(FISHING, r(0, 1.5, 0), 0.2, 0, 0.2, 0, 6)))
     room.function('fishing_init', home=False).add(
@@ -321,12 +330,12 @@ def room():
     )
     room.function('happy_villager', home=False).add(
         fast().run(particle(HAPPY_VILLAGER, r(0, 1, 0), 0.5, 0.5, 0.5, 0, 5)))
-    room.function('happy_villager_init', home=False).add(function('restworld:particles/villager'))
+    room.function('happy_villager_init', home=False).add(function(villager))
     room.function('heart', home=False).add(fast().run(particle(HEART, r(0, 1.5, 0), 0.5, 0.2, 0.5, 0, 5)))
-    room.function('heart_init', home=False).add(function('restworld:particles/small_animal'))
+    room.function('heart_init', home=False).add(function(small_animal))
     room.function('instant_effect', home=False).add(
         fast().run(particle(INSTANT_EFFECT, r(0, 1.5, 0), 0.5, 1, 0.5, 0, 10)))
-    room.function('instant_effect_init', home=False).add(function('restworld:particles/animal'))
+    room.function('instant_effect_init', home=False).add(function(animal))
     room.function('item_snowball', home=False).add(
         fast().run(item().replace().block(r(0, 2, -1), 'container.0').with_('snowball', 1)),
         fast().run(setblock(r(0, 3, -1), ('stone_button', {'powered': True, 'face': 'floor'}))),
@@ -337,22 +346,16 @@ def room():
         fill(r(-1, 2, 4), r(1, 2, 4), 'glass'),
         setblock(r(0, 3, 4), 'glass'))
     room.function('mycelium_init', home=False).add(floor('mycelium'))
-    room.function('nautilus', home=False).add(slow().run(function('restworld:particles/nautilus_change')))
-    room.loop('nautilus_change', home=False).loop(
+    nautilus_change = room.loop('nautilus_change', home=False).loop(
         lambda step: fill(r(-2, 0, -2), r(2, 2, 0), 'prismarine' if step.i == 0 else 'sand'), range(0, 2)).add(
         fill(r(-1, 1, -1), r(1, 2, 0), 'water'),
         setblock(r(0, 2, 0), 'conduit'))
+    room.function('nautilus', home=False).add(slow().run(function(nautilus_change)))
     room.function('nautilus_init', home=False).add(
-        function('restworld:particles/ocean'),
+        function(ocean),
         fill(r(-2, 0, -2), r(2, 2, 0), 'prismarine'),
         fill(r(-1, 1, -1), r(1, 2, 0), 'air'),
         setblock(r(0, 2, 0), 'conduit'))
-    ocean = room.function('ocean', home=False).add(
-        fill(r(-3, 0, 4), r(3, 0, 4), 'structure_void'),
-        fill(r(3, 6, 3), r(-3, 6, -3), 'structure_void'),
-        fill(r(2, 6, 2), r(-2, 6, -2), 'water'),
-        fill(r(2, 0, 2), r(-2, 6, -2), 'water'),
-    )
     room.function('particles_clear', home=False).add(
         kill_em(particler),
         kill(e().type('area_effect_cloud').distance((None, 10))),
@@ -366,33 +369,30 @@ def room():
     room.function('sculk_soul_init', home=False).add(
         setblock(r(0, 0, 0), 'sculk_catalyst'),
     )
-    room.function('sculk_soul', home=False).add(
-        main().run(fill(r(-1, -1, -1), r(1, -1, 1), 'stone_bricks').replace('sculk')),
-        main().run(fill(r(-1, 0, -1), r(1, 0, 1), 'air').replace('sculk_vein')),
-        main().run(function('restworld:particles/sculk_soul_show')),
-        main(delay=1).run(setblock(r(0, 0, 0), ('sculk_catalyst', {'bloom': True}))),
-        main(delay=5).run(function('restworld:particles/sculk_spread')),
-        main(delay=9).run(setblock(r(0, 0, 0), ('sculk_catalyst', {'bloom': False}))),
-        main(delay=16).run(function('restworld:particles/sculk_pop')),
-    )
-    room.function('sculk_soul_show', home=False).add(
+    sculk_soul_show = room.function('sculk_soul_show', home=False).add(
         particle(SCULK_SOUL, r(0, 0.5, 2)),
         particle(SCULK_SOUL, r(-1.5, 0.5, 1)),
         particle(SCULK_SOUL, r(1, 0.5, -1)))
+    skulk_spread = room.function('sculk_spread', home=False)
     sculk_pos = (r(-1, -1, -1), r(0, -1, -1), r(-1, -1, 1), r(0, 0, -1), r(0, 0, 1), r(1, 0, 0))
-    spread = room.function('sculk_spread', home=False)
-    pop = room.function('sculk_pop', home=False)
+    sculk_pop = room.function('sculk_pop', home=False)
     for i, pos in enumerate(sculk_pos):
         block = 'sculk' if str(pos[1]) == '~-1' else ('sculk_vein', {'down': True})
         height = 1.3 if str(pos[1]) == '~-1' else 0.5
-        spread.add(particle(SCULK_CHARGE, random.uniform(-math.pi / 6, +math.pi / 6),
-                            (pos[0], pos[1] + height, pos[2])))
-        pop.add(
+        skulk_spread.add(particle(SCULK_CHARGE, random.uniform(-math.pi / 6, +math.pi / 6),
+                                  (pos[0], pos[1] + height, pos[2])))
+        sculk_pop.add(
             setblock(pos, block),
             particle(SCULK_CHARGE_POP, (pos[0], pos[1] + height, pos[2])))
-    small_animal = room.loop('small_animal', home=False).loop(
-        lambda step: exemplar(step.elem, 0, {'CatType': 1, 'NoAI': True}),
-        ('ocelot', 'horse', 'llama'))
+    room.function('sculk_soul', home=False).add(
+        main().run(fill(r(-1, -1, -1), r(1, -1, 1), 'stone_bricks').replace('sculk')),
+        main().run(fill(r(-1, 0, -1), r(1, 0, 1), 'air').replace('sculk_vein')),
+        main().run(function(sculk_soul_show)),
+        main(delay=1).run(setblock(r(0, 0, 0), ('sculk_catalyst', {'bloom': True}))),
+        main(delay=5).run(function(skulk_spread)),
+        main(delay=9).run(setblock(r(0, 0, 0), ('sculk_catalyst', {'bloom': False}))),
+        main(delay=16).run(function(sculk_pop)),
+    )
     room.function('sneeze', home=False).add(
         main().run(particle(SNEEZE, r(0, 0.25, 1.25), 0.05, 0.05, 0.5, 0.0, 2)),
         main().run(playsound('entity.panda.sneeze', 'neutral', a(), r(0, 0, 0))))
@@ -413,16 +413,16 @@ def room():
     room.function('splash_init', home=False).add(
         fill(r(-2, 0, -2), r(2, 0, 2), 'stone'),
         fill(r(-1, 0, -1), r(1, 0, 1), 'water'))
-    room.function('squid_ink', home=False).add(main().run(function('restworld:particles/squid_ink_run')))
-    room.function('squid_ink_init', home=False).add(function('restworld:particles/ocean'))
+    room.function('squid_ink_init', home=False).add(function(ocean))
 
     def squid_ink_loop(step):
         yield exemplar(step.elem, 4, {'NoAI': True})
         yield particle(step.elem + '_ink', r(0, 2.8, -0), 0.15, 0.3, 0.15, 0.01, 30)
 
-    room.loop('squid_ink_run', home=False).add(
+    squid_ink_run = room.loop('squid_ink_run', home=False).add(
         kill_em(particler)).loop(
         squid_ink_loop, ('squid', 'glow_squid'))
+    room.function('squid_ink', home=False).add(main().run(function(squid_ink_run)))
     room.function('sweep_attack', home=False).add(
         main().run(particle(SWEEP_ATTACK, r(0, 1, 0), 0.3, 0.2, 0.3, 0, 3)))
     room.function('trial_spawner_detection_init', home=False).add(setblock(r(0, 0, 0), 'trial_spawner'))
@@ -430,7 +430,7 @@ def room():
         particle(TRIAL_SPAWNER_DETECTION, r(0, 0.5, 0), 0.25, 0.25, 0.25, 0, 1))
     room.function('totem_of_undying', home=False).add(
         main().run(particle(TOTEM_OF_UNDYING, r(0, 2, 0), 0.5, 1, 0.5, 0.5, 50)))
-    # room.function('underwater_init', home=False).add(function('restworld:particles/ocean'))
+    # room.function('underwater_init', home=False).add(function(ocean))
     room.function('vault_connection_init', home=False).add(setblock(r(0, 0, 0), 'vault'))
     room.function('warped_spore_init', home=False).add(
         floor('warped_nylium'),
