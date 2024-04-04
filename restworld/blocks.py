@@ -649,7 +649,10 @@ def room():
             yield execute().unless().score(ominous).matches(0).run(
                 Sign.change(sign_pos, (None, 'Ominous Vault', f'({state})')))
 
-    room.function('spawner_init').add(setblock(r(0, 3, 0), 'spawner').nbt({'SpawnCount': 0}))
+    room.function('spawner_init').add(
+        setblock(r(0, 3, 0), 'spawner').nbt({'SpawnCount': 0}),
+        room.label(r(-1, 2, 0), 'Ominous', SOUTH),
+    )
     reset_delay = execute().if_().block(r(0, 3, 0), Block('spawner', nbt={'Delay': '0s'})).run(
         data().merge(r(0, 3, 0), {'Delay': 200}))
     spawner = room.loop('spawner', main_clock)
