@@ -8,7 +8,8 @@ from pynecraft.commands import Block, CLEAR, Entity, INFINITE, JsonText, RAIN, R
     execute, \
     fill, fillbiome, function, item, kill, particle, playsound, schedule, setblock, summon, weather
 from pynecraft.simpler import Book, PLAINS, TextDisplay, VILLAGER_BIOMES, VILLAGER_PROFESSIONS, WallSign
-from pynecraft.values import AMBIENT_ENTITY_EFFECT, ANGRY_VILLAGER, ASH, BASALT_DELTAS, BLINDNESS, BLOCK, BLOCK_MARKER, \
+from pynecraft.values import ABSORPTION, AMBIENT_ENTITY_EFFECT, ANGRY_VILLAGER, ASH, BASALT_DELTAS, BLINDNESS, BLOCK, \
+    BLOCK_MARKER, \
     BUBBLE, BUBBLE_COLUMN_UP, BUBBLE_POP, CAMPFIRE_COSY_SMOKE, CAMPFIRE_SIGNAL_SMOKE, CHERRY_LEAVES, CLOUD, COMPOSTER, \
     CRIMSON_FOREST, CRIMSON_SPORE, CRIT, CURRENT_DOWN, DAMAGE_INDICATOR, DOLPHIN, DRAGON_BREATH, \
     DRIPPING_DRIPSTONE_LAVA, DRIPPING_DRIPSTONE_WATER, DRIPPING_HONEY, DRIPPING_LAVA, DRIPPING_OBSIDIAN_TEAR, \
@@ -16,12 +17,18 @@ from pynecraft.values import AMBIENT_ENTITY_EFFECT, ANGRY_VILLAGER, ASH, BASALT_
     ENCHANTED_HIT, END_ROD, ENTITY_EFFECT, EXPLOSION, EXPLOSION_EMITTER, FALLING_DRIPSTONE_LAVA, \
     FALLING_DRIPSTONE_WATER, FALLING_DUST, FALLING_HONEY, FALLING_LAVA, FALLING_NECTAR, FALLING_OBSIDIAN_TEAR, \
     FALLING_SPORE_BLOSSOM, FALLING_WATER, FIREWORK, FISHING, FLAME, FLASH, GLOW, GLOW_SQUID_INK, GUST, GUST_DUST, \
-    GUST_EMITTER, HAPPY_VILLAGER, HEART, INSTANT_EFFECT, ITEM, ITEM_SLIME, ITEM_SNOWBALL, LANDING_HONEY, LANDING_LAVA, \
-    LANDING_OBSIDIAN_TEAR, LARGE_SMOKE, LAVA, LUCK, MYCELIUM, NAUSEA, NAUTILUS, NOTE, PARTICLE_GROUP, POOF, PORTAL, \
-    REVERSE_PORTAL, SCRAPE, SCULK_CHARGE, SCULK_CHARGE_POP, SCULK_SOUL, SHRIEK, SMALL_FLAME, SMOKE, SNEEZE, SNOWFLAKE, \
-    SNOWY_TAIGA, SONIC_BOOM, SOUL, SOUL_FIRE_FLAME, SOUL_SAND_VALLEY, SPIT, SPLASH, SPORE_BLOSSOM_AIR, SQUID_INK, \
-    STRENGTH, SWEEP_ATTACK, TOTEM_OF_UNDYING, TRIAL_SPAWNER_DETECTION, UNDERWATER, VAULT_CONNECTION, VIBRATION, \
-    WARPED_FOREST, WARPED_SPORE, WATER_BREATHING, WAX_OFF, WAX_ON, WHITE_ASH, WITCH, as_particle
+    GUST_EMITTER, HAPPY_VILLAGER, HEART, INFESTED, INSTANT_EFFECT, ITEM, ITEM_COBWEB, ITEM_SLIME, ITEM_SNOWBALL, \
+    LANDING_HONEY, \
+    LANDING_LAVA, \
+    LANDING_OBSIDIAN_TEAR, LARGE_SMOKE, LAVA, MYCELIUM, NAUTILUS, NOTE, OMINOUS_SPAWNING, PARTICLE_GROUP, POOF, PORTAL, \
+    RAID_OMEN, RESISTANCE, REVERSE_PORTAL, SCRAPE, SCULK_CHARGE, SCULK_CHARGE_POP, SCULK_SOUL, SHRIEK, SMALL_FLAME, \
+    SMALL_GUST, SMOKE, SNEEZE, \
+    SNOWFLAKE, \
+    SNOWY_TAIGA, SONIC_BOOM, SOUL, SOUL_FIRE_FLAME, SOUL_SAND_VALLEY, SPEED, SPIT, SPLASH, SPORE_BLOSSOM_AIR, SQUID_INK, \
+    STRENGTH, SWEEP_ATTACK, TOTEM_OF_UNDYING, TRIAL_OMEN, TRIAL_SPAWNER_DETECTION, TRIAL_SPAWNER_DETECTION_OMINOUS, \
+    UNDERWATER, \
+    VAULT_CONNECTION, VIBRATION, \
+    WARPED_FOREST, WARPED_SPORE, WAX_OFF, WAX_ON, WHITE_ASH, WHITE_SMOKE, WITCH, as_particle
 from restworld.rooms import ActionDesc, SignedRoom, Wall, ensure, span
 from restworld.world import fast_clock, kill_em, main_clock, restworld, slow_clock
 
@@ -29,6 +36,12 @@ from restworld.world import fast_clock, kill_em, main_clock, restworld, slow_clo
 def action(which: str, name=None, note=None, also=()):
     return ActionDesc(as_particle(which), name, note, tuple(as_particle(x) for x in also))
 
+
+# adding action: small_gust (apply wind_charging to mob or villager), item_cobweb (weaving effect), infested (infested),
+#       raid_omen, trial_omen
+#     oozing effect gives off item_slime particles, use it instead of referring to arena?
+# adding to book:
+# ignoring:
 
 actions = [
     action(ANGRY_VILLAGER),
@@ -55,13 +68,17 @@ actions = [
     action(GUST, 'Gust|Gust Emitter|Gust Dust', also=(GUST_DUST, GUST_EMITTER)),
     action(HAPPY_VILLAGER),
     action(HEART),
+    action(INFESTED),
     action(INSTANT_EFFECT),
+    action(ITEM_COBWEB, note='Weaving Effect'),
     action(ITEM_SNOWBALL),
     action(MYCELIUM),
     action(NAUTILUS, note='with Conduit'),
     action(POOF, note='Small Explosion'),
+    action(RAID_OMEN),
     action(RAIN),
     action(SCULK_SOUL, also=(SCULK_CHARGE, SCULK_CHARGE_POP)),
+    action(SMALL_GUST, note='Weaving Effect'),
     action(SNEEZE),
     action(SNOWFLAKE, 'Snow'),
     action(SONIC_BOOM),
@@ -70,7 +87,8 @@ actions = [
     action(SQUID_INK, note='and Glow Squid', also=(GLOW, GLOW_SQUID_INK)),
     action(SWEEP_ATTACK),
     action(TOTEM_OF_UNDYING),
-    action(TRIAL_SPAWNER_DETECTION),
+    action(TRIAL_OMEN),
+    action(TRIAL_SPAWNER_DETECTION, also=(TRIAL_SPAWNER_DETECTION_OMINOUS,)),
     action(VAULT_CONNECTION),
     action(WARPED_SPORE),
     action(WAX_ON, 'Wax On / Off', also=(WAX_OFF, SCRAPE)),
@@ -99,7 +117,9 @@ unused_particles = {
     DUST_COLOR_TRANSITION,  # Can the player control its look? AFAICT, it's just when the power level changes?
     ELDER_GUARDIAN,  # Just the elder guardian face in your face, and makes it hard to turn off.
     ITEM,  # Same as BLOCK
+    OMINOUS_SPAWNING,  # Appeared in 24w13a, but no obvious use
     SPIT,  # Broke at 1.19, can't get the summoned spit to move.
+    WHITE_SMOKE,  # Appeared in 24w13a, but no obvious use
 }
 # Notes:
 #    Maybe spit can be made to work with a live llama hitting a wolf, but the llama must be penned in, etc.
@@ -166,7 +186,9 @@ def room():
             setblock(d(-dx, 0, -dz), 'emerald_block')
         ))
 
-    e_wall_used = n_wall_used = w_wall_used = {4: span(1, 5), 3: span(1, 5), 2: span(1, 5)}
+    n_wall_used = {4: span(1, 5), 3: span(1, 5), 2: span(1, 5)}
+    e_wall_used = {5: span(2, 4), 4: span(1, 5), 3: span(1, 5), 2: span(1, 5)}
+    w_wall_used = {5: span(3, 4), 4: span(1, 5), 3: span(1, 5), 2: span(1, 5)}
     room = SignedRoom('particles', restworld, SOUTH, (None, 'Particles'), particle_sign, actions, (
         Wall(7, EAST, 1, -1, e_wall_used),
         Wall(7, SOUTH, 1, -7, n_wall_used),
@@ -190,6 +212,17 @@ def room():
     small_animal = room.loop('small_animal', home=False).loop(
         lambda step: exemplar(step.elem, 0, {'CatType': 1, 'NoAI': True}),
         ('ocelot', 'horse', 'llama'))
+
+    def show_effect(particle_name, effect_name):
+        room.function(f'{particle_name}_init', home=False).add(
+            exemplar('creeper', 0, {'NoAI': True}),
+            effect().give(particler, effect_name, INFINITE))
+
+    show_effect(as_particle(INFESTED), 'infested')
+    show_effect(as_particle(RAID_OMEN), 'raid_omen')
+    show_effect(as_particle(TRIAL_OMEN), 'trial_omen')
+    show_effect(as_particle(SMALL_GUST), 'wind_charged')
+    show_effect(as_particle(ITEM_COBWEB), 'weaving')
 
     room.function('angry_villager', home=False).add(
         fast().run(particle(ANGRY_VILLAGER, r(0, 1, 0), 0.5, 0.5, 0.5, 0, 5)))
@@ -282,7 +315,7 @@ def room():
         yield effect().give(particler.limit(1), step.elem, INFINITE)
 
     entity_effect_change = room.loop('entity_effect_change', home=False).loop(
-        entity_effect_loop, (WATER_BREATHING, STRENGTH, NAUSEA, LUCK, BLINDNESS))
+        entity_effect_loop, (SPEED, STRENGTH, ABSORPTION, RESISTANCE, BLINDNESS))
     room.function('entity_effect', home=False).add(main().run(function(entity_effect_change)))
     room.function('entity_effect_init', home=False).add(function(animal))
     room.function('explosion', home=False).add(

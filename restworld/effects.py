@@ -29,7 +29,7 @@ def room():
             setblock(d(-dx, 0, -dz), 'emerald_block'),
             effect().give(p(), action_desc.which, MAX_EFFECT_SECONDS)))
 
-    wall_used = {4: span(2, 4), 3: span(1, 5), 2: span(2, 4)}
+    wall_used = {4: span(2, 4), 3: span(1, 5), 2: span(1, 5)}
     room = SignedRoom('effects', restworld, SOUTH, (None, 'Mob Effects'), effect_sign, actions, (
         Wall(7, EAST, 1, -1, wall_used),
         Wall(7, SOUTH, 1, -7, wall_used),
