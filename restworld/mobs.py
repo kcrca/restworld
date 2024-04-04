@@ -303,7 +303,7 @@ def friendlies(room):
     room.function('turtle_eggs_init').add(
         tag(e().tag('turtle_eggs_home')).add('blockers_home'),
         WallSign((None, 'Turtle Eggs')).place(egg_sign_pos, egg_sign_dir),
-        room.label(switch_label_pos, 'On Sand', WEST))
+        room.label(switch_label_pos, 'Egg Crack', WEST))
 
     def turtle_egg_loop(step):
         for count in range(4, 0, -1):

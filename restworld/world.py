@@ -18,7 +18,7 @@ def kill_em(target):
 marker_tmpl = Entity('armor_stand', {'NoGravity': True, 'Small': True, })
 
 
-class Restworld(RoomPack):
+class RestWorld(RoomPack):
     def __init__(self):
         suffixes = list(RoomPack.base_suffixes)
         suffixes.extend(list(x.name for x in self.clocks()))
@@ -141,7 +141,7 @@ slow_clock = Clock('slow', 90)
 main_clock = Clock('main', 60)
 fast_clock = Clock('fast', 15)
 tick_clock = Clock('clock')
-restworld = Restworld()
+restworld = RestWorld()
 
 
 def die(*msg: str):

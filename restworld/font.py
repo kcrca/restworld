@@ -15,7 +15,7 @@ def color_text(color):
 
 def formatting_book():
     book = Book()
-    book.sign_book('Format Book', 'Restworld', 'Text Formatting')
+    book.sign_book('Format Book', 'RestWorld', 'Text Formatting')
     book.add('',
              JsonText.text('Named text colors\\n').underlined(),
              JsonText.text('    (hover for names)\\n\\n'))

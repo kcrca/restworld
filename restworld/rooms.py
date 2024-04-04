@@ -580,21 +580,20 @@ class ActionDesc:
             self.also = (also,)
 
     def __str__(self):
-        return self.name + (f' [{self.enum}]' if self.enum else '')
+        return self.name
 
     def __lt__(self, other):
         assert self.__class__ == other.__class__
-        assert self.enum.__class__ == other.enum.__class__
         return self.name < other.name
 
     def sort_key(self):
-        return str(self.enum).replace('|', ' ') if self.enum else self.name
+        return self.name
 
     def func(self):
-        return str(self.enum) if self.enum else self.which
+        return self.which
 
     def sign_text(self):
-        block = Block(self.enum.value if self.enum else self.which, name=self.name.title())
+        block = Block(self.which, name=self.name.title())
         sign_text = list(block.sign_text)
         if self.note:
             sign_text.append(self.note)

@@ -2,9 +2,28 @@ maybe keep all the areas loaded so room specific tp works
 
 Old-fashioned heraldry terms on banners too?
 
-Make labels be text_display's, probably on the ground facing up, with a direction (so it faces the path). Or maybe we can make
-the text_display have a few blank lines above the label, and let it rotate to face the player around the y axis _only_, which
-might keep the text towards the outer edge of the block.
-
-
 Dragon Fireball is wonky
+
+particles:
+    Many new particles, maybe create a book that lists where some
+    particles can be seen elsewhere to free up those slots (e.g.,
+    redstone dust particles) Find which particles re-use the same
+    textures and remove or combine into one sign? Have more particles
+    loop, e.g., the new ominious trial spanwer with the regular
+    trial spanwer? Or make the room bigger (longer, probably)?
+
+fonts:
+    italics and bold? Maybe using text display entities? Or switches
+    that turn all text bold / italic, etc.? Hm...
+
+include mace somehow in the basic materials loop? So one can see the
+enchantment texture on it, e.g.?
+
+Check for effects that can be shown as in the real world instead of manual
+"particle" command
+
+Trial spawner should have active spawner block, right?
+
+Clean up particles for no-longer-used functions
+
+Enderman needs protection from rain/snow (I think; I saw it in the wrong place once.)

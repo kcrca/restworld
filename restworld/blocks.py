@@ -616,7 +616,7 @@ def room():
                     data().modify(pos, 'server_data.rewarded_players').append().from_(s(), 'UUID'))
             else:
                 yield execute().positioned(RelCoord.add(pos, r(0, 0.5, 0))).run(
-                    kill(e().distance((None, 1)).type('item')))
+                    kill(e().distance((None, 20)).type('item')))
                 yield data().modify(pos, 'server_data.items_to_eject').set().value([])
                 state = 'Used'
             yield Sign.change(sign_pos, (None, 'Vault', f'({state})'))
