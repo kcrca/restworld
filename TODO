@@ -27,3 +27,12 @@ Trial spawner should have active spawner block, right?
 Clean up particles for no-longer-used functions
 
 Enderman needs protection from rain/snow (I think; I saw it in the wrong place once.)
+
+vault should be on its own loop, right next to the spanwer loop
+
+Ideas on new block loops:
+    pull deepslate ores into its own loop
+    tiles could be different loops
+    put end rod back into its own block
+    put honeycomb back into its own block
+    split shrieker variants to its own loop

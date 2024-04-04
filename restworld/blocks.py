@@ -576,55 +576,94 @@ def room():
 
     room.loop('snow_depth', main_clock).loop(snow_depth_loop, range(1, 9), bounce=True)
 
+    ominous = room.score('ominous')
+    keep_items = room.score('keep_items')
+    vault_ready = room.score('vault_ready')
+
+    spawner_pos = r(0, 3, 0)
+    ready_nbt = {
+        'total_ejections_needed': 6,
+        'items_to_eject': [
+            {'id': "minecraft:shield", 'Tags': 'ejected'},
+            {'id': "minecraft:diamond_chestplate",
+             'components': {'enchantments': {'levels': {'protection': 3}}}},
+            {'id': "minecraft:shield"},
+            {'id': "minecraft:iron_shovel", 'components': {'enchantments': {'levels': {'efficiency': 2}}}},
+            {'id': "minecraft:iron_helmet", 'components': {'enchantments': {'levels': {'protection': 1}}}},
+            {'id': "minecraft:enchanted_book",
+             'components': {'stored_enchantments': {'levels': {'efficiency': 4}}}},
+        ]}
+
     def spawner_loop(step):
         # As of 1.20.3+x the trial spawner only sets the visible mob after the first spawn, and we don't have one, so
         # this does nothing. I leave this here in case someday it works. (It's a no-op for the vault.)
-        pos = r(0, 3, 0)
         sign_pos = r(0, 2, -1)
         if isinstance(step.elem, str):
-            nbt = {'SpawnData': {'entity': {'id': 'minecraft:skeleton'}}} if step.elem == 'Spawner' else {
+            spawner_nbt = {'SpawnData': {'entity': {'id': 'minecraft:skeleton'}}} if step.elem == 'Spawner' else {
                 'ticks_between_spawn': 0xfffffff,
                 'spawn_potentials': [{'data': {'entity': {'id': 'minecraft:breeze'}}, 'weight': 1}],
                 'spawn_data': {'entity': {'id': 'minecraft:breeze'}},
             }
-            yield setblock(pos, Block(step.elem, {}, nbt))
-            yield Sign.change(sign_pos, (None, step.elem, ''))
+            if step.elem == 'Spawner':
+                yield setblock(spawner_pos, Block(step.elem, {}, spawner_nbt))
+                yield Sign.change(sign_pos, (None, step.elem, ''))
+            else:
+                yield execute().if_().score(ominous).matches(0).run(
+                    setblock(spawner_pos, Block(step.elem, {}, spawner_nbt)),
+                    Sign.change(sign_pos, (None, step.elem, '')))
+                yield execute().if_().score(ominous).matches(1).run(
+                    setblock(spawner_pos, Block(step.elem, {'ominous': True}, spawner_nbt)),
+                    Sign.change(sign_pos, (None, 'Ominous', step.elem)))
         else:
             if step.elem == 0:
-                yield setblock(pos, Block('vault'))
+                yield execute().if_().score(ominous).matches(0).run(setblock(spawner_pos, Block('vault')))
+                yield execute().unless().score(ominous).matches(0).run(
+                    setblock(spawner_pos, Block('vault', {'ominous': True})))
+                yield vault_ready.set(1)
                 state = 'Ready'
             elif step.elem == 1:
-                yield setblock(pos, Block('vault', {'vault_state': 'unlocking'}))
+                yield execute().if_().score(ominous).matches(0).run(
+                    setblock(spawner_pos, Block('vault', {'vault_state': 'unlocking'})))
+                yield execute().unless().score(ominous).matches(0).run(
+                    setblock(spawner_pos, Block('vault', {'vault_state': 'unlocking', 'ominous': True})))
+                yield vault_ready.set(1)
                 state = 'Unlocking'
             elif step.elem == 2:
-                state = 'Ejecting'
-                yield setblock(pos, Block('vault', {'vault_state': 'ejecting'}))
-                nbt = {
-                    'total_ejections_needed': 6,
-                    'items_to_eject': [
-                        {'id': "minecraft:shield", 'Tags': 'ejected'},
-                        {'id': "minecraft:diamond_chestplate",
-                         'components': {'enchantments': {'levels': {'protection': 3}}}},
-                        {'id': "minecraft:shield"},
-                        {'id': "minecraft:iron_shovel", 'components': {'enchantments': {'levels': {'efficiency': 2}}}},
-                        {'id': "minecraft:iron_helmet", 'components': {'enchantments': {'levels': {'protection': 1}}}},
-                        {'id': "minecraft:enchanted_book",
-                         'components': {'stored_enchantments': {'levels': {'efficiency': 4}}}},
-                    ]}
-                yield data().merge(pos, {'server_data': nbt})
+                yield keep_items.set(1)
+                yield execute().if_().score(ominous).matches(0).run(
+                    setblock(spawner_pos, Block('vault', {'vault_state': 'ejecting'})))
+                yield execute().unless().score(ominous).matches(0).run(
+                    setblock(spawner_pos, Block('vault', {'vault_state': 'ejecting', 'ominous': True})))
                 yield execute().as_(a()).run(
-                    data().modify(pos, 'server_data.rewarded_players').append().from_(s(), 'UUID'))
+                    data().modify(spawner_pos, 'server_data.rewarded_players').append().from_(s(), 'UUID'))
+                yield vault_ready.set(1)
+                state = 'Ejecting'
             else:
-                yield execute().positioned(RelCoord.add(pos, r(0, 0.5, 0))).run(
-                    kill(e().distance((None, 20)).type('item')))
-                yield data().modify(pos, 'server_data.items_to_eject').set().value([])
+                yield execute().if_().score(ominous).matches(0).run(
+                    setblock(spawner_pos, Block('vault', {'vault_state': 'inactive'})))
+                yield execute().unless().score(ominous).matches(0).run(
+                    setblock(spawner_pos, Block('vault', {'vault_state': 'inactive', 'ominous': True})))
+                yield data().modify(spawner_pos, 'server_data.items_to_eject').set().value([])
                 state = 'Used'
-            yield Sign.change(sign_pos, (None, 'Vault', f'({state})'))
+            yield execute().if_().score(ominous).matches(0).run(Sign.change(sign_pos, (None, 'Vault', f'({state})')))
+            yield execute().unless().score(ominous).matches(0).run(
+                Sign.change(sign_pos, (None, 'Ominous Vault', f'({state})')))
 
     room.function('spawner_init').add(setblock(r(0, 3, 0), 'spawner').nbt({'SpawnCount': 0}))
     reset_delay = execute().if_().block(r(0, 3, 0), Block('spawner', nbt={'Delay': '0s'})).run(
         data().merge(r(0, 3, 0), {'Delay': 200}))
-    room.loop('spawner', main_clock).add(reset_delay).loop(spawner_loop, ('Spawner', 'Trial Spawner', *range(0, 4)))
+    spawner = room.loop('spawner', main_clock)
+    spawner.add(
+        reset_delay,
+        keep_items.set(0),
+        vault_ready.set(0),
+    ).loop(
+        spawner_loop, ('Spawner', 'Trial Spawner', *range(0, 4)),
+    ).add(
+        execute().if_().score(vault_ready).matches(1).run(data().merge(spawner_pos, {'server_data': ready_nbt})),
+        execute().unless().score(keep_items).matches(1).positioned(RelCoord.add(spawner_pos, r(0, 0.5, 0))).run(
+            kill(e().distance((None, 20)).type('item'))),
+    )
 
     def structure_blocks_loop(step):
         yield Sign.change(r(0, 2, 1), (None, step.elem))
