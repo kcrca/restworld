@@ -89,8 +89,8 @@ def room():
         data().merge(s(), {'text_opacity': 25, 'background': 25})))
 
     # noinspection PyUnusedLocal
-    def init_armor_stands(x, xn, z, zn, angle, facing, bx, bz, y_banner, y_shield, pattern, handback=None):
-        shield = Shield().color(WHITE)
+    def init_a_stand(x, xn, z, zn, angle, facing, bx, bz, y_banner, y_shield, pattern, handback=None):
+        shield = Shield().color(WHITE).merge_nbt({'id': 'shield'})
         if pattern != 'base':
             shield.add_pattern(pattern, CYAN)
         stand = stand_tmpl.clone()
@@ -126,7 +126,7 @@ def room():
             yield render(x, xn, z, zn, angle, facing, bx, bz, 3.65, 3.65, pattern.value)
 
     # noinspection PyUnusedLocal
-    def render_updates(x, xn, z, zn, angle, facing, bx, bz, y_banner, y_shield, pattern):
+    def update_a_stand(x, xn, z, zn, angle, facing, bx, bz, y_banner, y_shield, pattern):
         banner = Block('$(color)_wall_banner', {'facing': facing})
         if pattern != 'base':
             banner.nbt['patterns'] = [{'color': Arg('ink'), 'pattern': pattern}]
@@ -140,7 +140,7 @@ def room():
         fill(r(12, 3, 1), r(12, 5, 11), 'air').replace('#banners'),
         fill(r(1, 3, 12), r(11, 5, 12), 'air').replace('#banners'),
         fill(r(0, 3, 11), r(0, 5, 1), 'air').replace('#banners'),
-        render_banners(render_updates)
+        render_banners(update_a_stand)
     )
 
     def custom_banner(x, z, nudge):
@@ -192,7 +192,7 @@ def room():
         data().modify('restworld:banners', 'ink').set().value(CYAN),
         kill(e().tag('banners')),
         fill(r(-2, -2, -2), r(16, 16, 16), 'air').replace('#banners'),
-        render_banners(init_armor_stands),
+        render_banners(init_a_stand),
         setblock(r(-0.2, 3, 11.8), Block('white_banner', {'rotation': 10}, {
             'patterns': [
                 {'pattern': RHOMBUS, 'color': COLORS[9]}, {'pattern': STRIPE_BOTTOM, 'color': COLORS[8]},
