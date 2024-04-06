@@ -191,7 +191,7 @@ def room():
               name='Jukebox|Playing')))
     blocks('netherrack', NORTH, ('Netherrack', 'Warped Nylium', 'Crimson Nylium'))
     blocks('obsidian', SOUTH, ('Obsidian', 'Crying Obsidian'))
-    blocks('prismarine', NORTH, ('Prismarine', 'Prismarine Bricks', 'Dark Prismarine'))
+    blocks('prismarine', SOUTH, ('Prismarine', 'Prismarine Bricks', 'Dark Prismarine'))
     blocks('pumpkin', SOUTH, (
         'Pumpkin', Block('Carved Pumpkin', {'facing': SOUTH}), Block('Jack O Lantern', {'facing': SOUTH})))
     blocks('purpur', NORTH, ('Purpur Block', 'Purpur Pillar'))
@@ -681,7 +681,7 @@ def room():
         else:
             yield setblock(r(0, 3, 0), 'air')
             yield summon(('tnt', {'fuse': 0x7fff, 'Tags': ['block_tnt']}), r(0, 3, 0))
-        yield Sign.change(r(0, 2, -1), (None, None, step.elem.title()))
+        yield Sign.change(r(0, 2, 1), (None, None, step.elem.title()))
 
     room.loop('tnt', main_clock).add(kill(e().tag('block_tnt'))).loop(tnt_loop, ('stable', 'unstable', 'primed'))
 
