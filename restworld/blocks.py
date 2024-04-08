@@ -592,13 +592,16 @@ def room():
     vault_states = {'waiting_for_players': 'inactive', 'cooldown': 'inactive',
                     'waiting_for_reward_ejection': 'unlocking', 'ejecting_reward': 'ejecting'}
     base_vault_nbt = {'state_updating_resumes_at': 0xfff_ffff_ffff_ffff}
+    no_pickup = {'PickupDelay': -1}
     items_to_eject = [
-        Item.nbt_for('emerald'), Item.nbt_for('wind_charge'), Item.nbt_for('trident'), Item.nbt_for('golden_apple'),
-        Item.nbt_for('guster_banner_pattern'), Item.nbt_for('ominous bottle'), Item.nbt_for('trial_key')]
+        Item.nbt_for('emerald', no_pickup), Item.nbt_for('wind_charge', no_pickup), Item.nbt_for('trident', no_pickup),
+        Item.nbt_for('golden_carrot', no_pickup), Item.nbt_for('guster_banner_pattern', no_pickup),
+        Item.nbt_for('ominous bottle', no_pickup), Item.nbt_for('trial_key', no_pickup)]
     ominous_items_to_eject = [
-        Item.nbt_for('emerald'), Item.nbt_for('wind_charge'), Item.nbt_for('heavy_core'), Item.nbt_for('golden_apple'),
-        Item.nbt_for('flow_banner_pattern'), Item.nbt_for('ominous bottle'), Item.nbt_for('ominous_trial_key')]
-    # Count is +1 because we insert the right key at the front
+        Item.nbt_for('emerald', no_pickup), Item.nbt_for('wind_charge', no_pickup),
+        Item.nbt_for('heavy_core', no_pickup), Item.nbt_for('golden_apple', no_pickup),
+        Item.nbt_for('flow_banner_pattern', no_pickup), Item.nbt_for('ominous bottle', no_pickup),
+        Item.nbt_for('ominous_trial_key', no_pickup)]
     active_vault_nbt = Nbt(base_vault_nbt).merge({
         'config': {'activation_range': 100, 'deactivation_range': 100, },
         'server_data': {'items_to_eject': items_to_eject, 'total_ejections_needed': len(items_to_eject)},
@@ -633,7 +636,8 @@ def room():
         'active': base_trial_spawner_nbt.merge({
             'required_player_range': 100, 'next_mob_spawns_at': 0xfff_ffff_ffff_ffff, 'total_mobs_spawned': 1}),
         'waiting_for_reward_ejection': base_trial_spawner_nbt.merge({
-            'required_player_range': 100, 'ejecting_loot_table': "minecraft:spawners/ominous/trial_chamber/consumables"}),
+            'required_player_range': 100,
+            'ejecting_loot_table': "minecraft:spawners/ominous/trial_chamber/consumables"}),
         'ejecting_reward': base_trial_spawner_nbt.merge({
             'required_player_range': 100,
             'ejecting_loot_table': "minecraft:spawners/ominous/trial_chamber/consumables"}),
