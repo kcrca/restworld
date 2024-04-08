@@ -4,12 +4,13 @@ import copy
 
 from pynecraft import commands
 from pynecraft.base import EAST, EQ, NORTH, Nbt, SOUTH, WEST, r, to_id, to_name
-from pynecraft.commands import Block, COLORS, Entity, FORCE, LONG, MOD, REPLACE, RESULT, Score, as_facing, clone, data, \
+from pynecraft.commands import Block, COLORS, Entity, FORCE, LONG, MOD, REPLACE, RESULT, Score, a, as_facing, clone, \
+    data, \
     e, \
-    execute, function, item, kill, player, ride, s, schedule, scoreboard, setblock, summon, tag, tp
+    execute, function, item, kill, particle, player, playsound, ride, s, schedule, scoreboard, setblock, summon, tag, tp
 from pynecraft.info import axolotls, colors, horses, music_discs, tropical_fish, wolves
 from pynecraft.simpler import Item, PLAINS, Sign, VILLAGER_BIOMES, VILLAGER_PROFESSIONS, Villager, WallSign
-from pynecraft.values import DUMMY
+from pynecraft.values import DUMMY, SNEEZE
 from restworld.rooms import MobPlacer, Room
 from restworld.world import fast_clock, kill_em, main_clock, restworld
 
@@ -217,12 +218,18 @@ def friendlies(room):
     room.function('outlines_on').add((execute().as_(
         e().tag(rm).tag('!homer').type('!item_frame')).run(data().merge(s(), {'Glowing': True})) for rm in
                                       ('mobs', 'monsters', 'wither', 'nether', 'enders', 'aquatic', 'ancient')))
+
+    def panda_loop(step):
+        gene = step.elem.lower()
+        yield execute().as_(e().tag('panda')).run(data().merge(s(), {'CustomName': f'{step.elem} Panda',
+                                                                     'MainGene': gene, 'HiddenGene': gene}))
+        if gene == 'weak':
+            yield (particle(SNEEZE, r(0, 2.25, 3), 0.05, 0.05, 0.1, 0.0, 2))
+            yield (playsound('entity.panda.sneeze', 'neutral', a(), r(0, 0, 0)))
+
     room.function('panda_init').add(placer(*south_placer).summon('panda'))
-    room.loop('panda', main_clock).loop(
-        lambda step: execute().as_(e().tag('panda')).run(data().merge(s(), {'CustomName': f'{step.elem} Panda',
-                                                                            'MainGene': step.elem.lower(),
-                                                                            'HiddenGene': step.elem.lower()})),
-        ('Aggressive', 'Lazy', 'Weak', 'Worried', 'Playful', 'Normal', 'Brown'))
+    room.loop('panda', main_clock).loop(panda_loop,
+                                        ('Aggressive', 'Lazy', 'Weak', 'Worried', 'Playful', 'Normal', 'Brown'))
     parrot_dir, parrot_pos = WEST, r(0, 3, 0)
     disc_chest_pos = r(-1, 1, 1)
     parrot_fence_pos = list(parrot_pos)

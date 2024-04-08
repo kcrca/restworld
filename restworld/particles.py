@@ -4,8 +4,8 @@ import math
 import random
 
 from pynecraft.base import EAST, Nbt, OVERWORLD, SOUTH, WEST, as_facing, d, r
-from pynecraft.commands import Block, CLEAR, Entity, INFINITE, JsonText, RAIN, REPLACE, a, data, e, effect, \
-    execute, fill, fillbiome, function, item, kill, particle, playsound, schedule, setblock, summon, weather
+from pynecraft.commands import Block, CLEAR, Entity, INFINITE, JsonText, RAIN, REPLACE, data, e, effect, \
+    execute, fill, fillbiome, function, item, kill, particle, schedule, setblock, summon, weather
 from pynecraft.simpler import Book, PLAINS, TextDisplay, VILLAGER_BIOMES, VILLAGER_PROFESSIONS, WallSign
 from pynecraft.values import ABSORPTION, AMBIENT_ENTITY_EFFECT, ANGRY_VILLAGER, ASH, BASALT_DELTAS, BLINDNESS, BLOCK, \
     BLOCK_MARKER, BUBBLE, BUBBLE_COLUMN_UP, BUBBLE_POP, CAMPFIRE_COSY_SMOKE, CAMPFIRE_SIGNAL_SMOKE, CHERRY_LEAVES, \
@@ -43,15 +43,16 @@ actions = [
     action(BLOCK_MARKER),
     action(BUBBLE, 'Bubbles|Currents|Whirlpools', also=(BUBBLE_POP, BUBBLE_COLUMN_UP, CURRENT_DOWN)),
     action(CLOUD, note='Evaporation'),
-    action(COMPOSTER),
+    action(COMPOSTER),  # Could be in blocks if we added particle
     action(CRIMSON_SPORE),
     action(CRIT),
     action(DAMAGE_INDICATOR),
     action(DOLPHIN),
-    action(DRAGON_BREATH),
+    action(DRAGON_BREATH),  # Could be in end if we added particle, but it's so _large_
+    action(DRIPPING_HONEY, note='Falling, Landing', also=(FALLING_HONEY, LANDING_HONEY)),
     action(DUST_PLUME),
     action(EFFECT),
-    action(ELECTRIC_SPARK),
+    action(ELECTRIC_SPARK),  # Could be in redstone if we added particle
     action(ENCHANTED_HIT),
     action(ENTITY_EFFECT),
     action(EXPLOSION),
@@ -73,17 +74,17 @@ actions = [
     action(RAIN),
     action(SCULK_SOUL, also=(SCULK_CHARGE, SCULK_CHARGE_POP)),
     action(SMALL_GUST, note='Weaving Effect'),
-    action(SNEEZE),
     action(SNOWFLAKE, 'Snow'),
-    action(SONIC_BOOM),
+    action(SONIC_BOOM),  # Could be in mobs if we added particle
     action(SOUL),
     action(SPLASH),
     action(SQUID_INK, note='and Glow Squid', also=(GLOW, GLOW_SQUID_INK)),
     action(SWEEP_ATTACK),
     action(TOTEM_OF_UNDYING),
     action(TRIAL_OMEN),
+    # Removable: Happens in blocks:
     action(TRIAL_SPAWNER_DETECTION, 'Trial Spawner|Detection|(and Ominous)', also=(TRIAL_SPAWNER_DETECTION_OMINOUS,)),
-    action(VAULT_CONNECTION),
+    action(VAULT_CONNECTION),  # Removable: Happens in blocks
     action(WARPED_SPORE),
     action(WAX_ON, 'Wax On / Off', also=(WAX_OFF, SCRAPE)),
     action(WHITE_ASH),
@@ -96,11 +97,11 @@ elsewhere = {
     'Blocks': (END_ROD, CAMPFIRE_COSY_SMOKE, CAMPFIRE_SIGNAL_SMOKE, REVERSE_PORTAL, SHRIEK, DRIPPING_OBSIDIAN_TEAR,
                FALLING_OBSIDIAN_TEAR, LANDING_OBSIDIAN_TEAR, FLAME, SMALL_FLAME, SOUL_FIRE_FLAME, SMOKE, LARGE_SMOKE),
     'Redstone': (DUST, NOTE, VIBRATION),
-    'Materials': (LAVA, PORTAL, DRIPPING_HONEY, FALLING_HONEY, LANDING_HONEY, DRIPPING_WATER, FALLING_WATER,
-                  DRIPPING_DRIPSTONE_WATER, FALLING_DRIPSTONE_WATER, DRIPPING_LAVA, FALLING_LAVA, LANDING_LAVA,
-                  DRIPPING_DRIPSTONE_LAVA, FALLING_DRIPSTONE_LAVA),
+    'Materials': (
+        LAVA, PORTAL, DRIPPING_WATER, FALLING_WATER, DRIPPING_DRIPSTONE_WATER, FALLING_DRIPSTONE_WATER, DRIPPING_LAVA,
+        FALLING_LAVA, LANDING_LAVA, DRIPPING_DRIPSTONE_LAVA, FALLING_DRIPSTONE_LAVA),
     'Plants': (SPORE_BLOSSOM_AIR, FALLING_SPORE_BLOSSOM, CHERRY_LEAVES, UNDERWATER),
-    'Mobs': (FALLING_NECTAR, EGG_CRACK),
+    'Mobs': (FALLING_NECTAR, EGG_CRACK, SNEEZE),
     'Arena': (ITEM_SLIME,),
     'GUI': (ENCHANT,),
 }
@@ -209,7 +210,7 @@ def room():
 
     def show_effect(particle_name, effect_name):
         room.function(f'{particle_name}_init', home=False).add(
-            exemplar('creeper', 0, {'NoAI': True}),
+            exemplar('rabbit', 0, {'NoAI': True}),
             effect().give(particler, effect_name, INFINITE))
 
     show_effect(as_particle(INFESTED), 'infested')
@@ -420,17 +421,13 @@ def room():
         main(delay=9).run(setblock(r(0, 0, 0), ('sculk_catalyst', {'bloom': False}))),
         main(delay=16).run(function(sculk_pop)),
     )
-    room.function('sneeze', home=False).add(
-        main().run(particle(SNEEZE, r(0, 0.25, 1.25), 0.05, 0.05, 0.5, 0.0, 2)),
-        main().run(playsound('entity.panda.sneeze', 'neutral', a(), r(0, 0, 0))))
-    room.function('sneeze_init', home=False).add(exemplar('panda', 0, {'NoAI': True, 'Age': -2147483648}))
     room.function('rain_init', home=False).add(weather(RAIN))
     room.function('rain_exit', home=False).add(weather(CLEAR))
     room.function('snowflake_init', home=False).add(set_biome(SNOWY_TAIGA), weather(RAIN))
     room.function('snowflake_exit', home=False).add(weather(CLEAR))
     room.function('sonic_boom_init', home=False).add(exemplar('warden', 0, {'NoAI': True}))
     room.function('sonic_boom', home=False).add(main().run(particle(SONIC_BOOM, r(0, 2, 0.5), 0, 0, 0, 1, 1)))
-    room.function('soul', home=False).add(main().run(particle(SOUL, r(0, 0.75, 0), 0.05, 0, 0.05, 0.05, 4)))
+    room.function('soul', home=False).add(fast().run(particle(SOUL, r(0, 0.75, 0), 0.05, 0, 0.05, 0.0, 4)))
     room.function('soul_init', home=False).add(floor('soul_soil'))
     room.function('spit', home=False).add(fast().run(summon('llama_spit', r(0, 1.6, 0.7),
                                                             {'Motion': [0.0, 0.0, 1.0], 'direction': [0.0, 0.0, 1.0],
@@ -505,7 +502,7 @@ def room():
         else:
             book.add(r'\n\n')
         book.add(JsonText.text(f'{k} Room:\\n').plain().bold())
-        joined = ', '.join(as_particle(p).capitalize().replace('_', ' ') for p in v)
+        joined = ', '.join(sorted(as_particle(p).capitalize().replace('_', ' ') for p in v))
         book.add(JsonText.text(joined + '.').plain())
     room.function('particle_book', home=False).add(
         ensure(r(1, 2, -4), Block('lectern', {'facing': SOUTH, 'has_book': True}),
