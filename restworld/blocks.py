@@ -6,7 +6,7 @@ from typing import Iterable, Union
 from pynecraft import info
 from pynecraft.base import DOWN, EAST, EQ, NORTH, Nbt, RelCoord, SOUTH, WEST, as_facing, r, to_id, to_name
 from pynecraft.commands import Block, Commands, Entity, MOD, MOVE, as_block, clone, data, e, execute, fill, function, \
-    item, kill, p, s, say, setblock, summon, tag
+    item, kill, s, say, setblock, summon, tag
 from pynecraft.function import Loop
 from pynecraft.info import Color, colors, sherds, stems
 from pynecraft.simpler import Item, ItemFrame, Region, Sign, TextDisplay, WallSign
@@ -612,28 +612,39 @@ def room():
     trials = ((r(0, 3, 0)), (r(-3, 3, 0)), (r(0, 3, 3)), (r(-3, 3, 3)))
     # As of 1.20.3+x the trial spawner only sets the visible mob after the first spawn, and we don't have one, so
     # nothing is shown. I leave stuff here for the mob definition in case someday it works.
-    trial_spawner_nbt = {
-        'required_player_range': 1,
+    spawner_config = {
+        'simultaneous_mobs': 4.0,
+        'simultaneous_mobs_added_per_player': 2.0,
         'ticks_between_spawn': 0xfff_ffff_ffff_ffff,
+        'spawn_potentials': [{'data': {'entity': {'id': "minecraft:stray"}}, 'weight': 1}],
+        'loot_tables_to_eject': [{'data': "minecraft:spawners/ominous/trial_chamber/consumables", 'weight': 1}],
+    }
+    base_trial_spawner_nbt = Nbt({
+        'required_player_range': 1,
+        'target_cooldown_length': 0xfff_ffff,
         'spawn_potentials': [{'data': {'entity': {'id': 'minecraft:stray'}}, 'weight': 1}],
-        'normal_config': {
-            'simultaneous_mobs': 4.0,
-            'simultaneous_mobs_added_per_player': 2.0,
-            'ticks_between_spawn': 160,
-            'spawn_potentials': [{'data': {'entity': {'id': "minecraft:stray"}}, 'weight': 1}]},
+        'normal_config': spawner_config,
+        'ominous_config': spawner_config,
         'spawn_data': {'entity': {'id': "minecraft:stray"}},
-        'ominous_config': {
-            'loot_tables_to_eject': [{'data': "minecraft:spawners/ominous/trial_chamber/key", 'weight': 3},
-                                     {'data': "minecraft:spawners/ominous/trial_chamber/consumables", 'weight': 7}],
-            'simultaneous_mobs': 4.0,
-            'simultaneous_mobs_added_per_player': 2.0,
-            'ticks_between_spawn': 160,
-            'spawn_potentials': [{'data': {'equipment_loot_table': "minecraft:equipment/trial_chamber",
-                                           'entity': {'id': "minecraft:stray"}}, 'weight': 1}]}
+    })
+    trial_spawner_nbts = {
+        'inactive': base_trial_spawner_nbt.merge({'required_player_range': 1}),
+        'waiting_for_players': base_trial_spawner_nbt.merge({'required_player_range': 100}),
+        'active': base_trial_spawner_nbt.merge({
+            'required_player_range': 100, 'next_mob_spawns_at': 0xfff_ffff_ffff_ffff, 'total_mobs_spawned': 1}),
+        'waiting_for_reward_ejection': base_trial_spawner_nbt.merge({
+            'required_player_range': 100, 'ejecting_loot_table': "minecraft:spawners/ominous/trial_chamber/consumables"}),
+        'ejecting_reward': base_trial_spawner_nbt.merge({
+            'required_player_range': 100,
+            'ejecting_loot_table': "minecraft:spawners/ominous/trial_chamber/consumables"}),
+        'cooldown': base_trial_spawner_nbt.merge({
+            'required_player_range': 1, 'cooldown_ends_at': 0xfff_ffff_ffff_ffff}),
     }
     trial_blocks = (
-        Block('trial_spawner', None, trial_spawner_nbt), Block('trial_spawner', {'ominous': True}, trial_spawner_nbt),
-        Block('vault', None, vault_nbts['inactive']), Block('vault', {'ominous': True}, vault_nbts['inactive']),
+        Block('trial_spawner', None, base_trial_spawner_nbt),
+        Block('trial_spawner', {'ominous': True}, base_trial_spawner_nbt),
+        Block('vault', None, vault_nbts['inactive']),
+        Block('vault', {'ominous': True}, vault_nbts['inactive']),
     )
     sign_offset = (0, -1, -1)
 
@@ -646,7 +657,7 @@ def room():
             pos = trials[i]
             block = trial_blocks[i].clone()
             if is_spawner:
-                block.merge_state({'trial_spawner_state': spawner_state})
+                block.merge_state({'trial_spawner_state': spawner_state}).merge_nbt(trial_spawner_nbts[spawner_state])
             else:
                 block.merge_state({'vault_state': vault_state})
                 block.nbt = vault_nbts[vault_state].clone()
@@ -656,8 +667,8 @@ def room():
                     server_data['total_ejections_needed'] = len(ominous_items_to_eject)
             yield setblock(pos, 'air')
             yield setblock(pos, block)
-            if is_spawner:
-                yield data().modify(pos, 'registered_players').append().from_(p(), 'UUID')
+            # if is_spawner:
+            #     yield data().modify(pos, 'registered_players').append().from_(p(), 'UUID')
             # else:
             #     yield data().modify(pos, 'server_data.rewarded_players').append().from_(p(), 'UUID')
             sign_pos = RelCoord.add(pos, sign_offset)
