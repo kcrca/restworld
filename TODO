@@ -30,9 +30,16 @@ Enderman needs protection from rain/snow (I think; I saw it in the wrong place o
 
 vault should be on its own loop, right next to the spanwer loop
 
+Get new version of trial chamber that has ominous stuff too
+
+Ominous Trial Spawner's name overruns the line on the sign, but if it's put on the to line, the "expand" stuff removes
+it because it assumes all the first lines are blank. Maybe there's a way fix that assumption, but creating json text out
+of text using commands seems really hard. Maybe we just live with this for now, I dunno.
+
 Ideas on new block loops:
     pull deepslate ores into its own loop
     tiles could be different loops
     put end rod back into its own block
     put honeycomb back into its own block
     split shrieker variants to its own loop
+    heavy block

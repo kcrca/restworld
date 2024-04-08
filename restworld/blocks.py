@@ -576,10 +576,6 @@ def room():
 
     room.loop('snow_depth', main_clock).loop(snow_depth_loop, range(1, 9), bounce=True)
 
-    ominous = room.score('ominous')
-    keep_items = room.score('keep_items')
-    vault_ready = room.score('vault_ready')
-
     def spawner_loop(step):
         # As of 1.20.3+x the trial spawner only sets the visible mob after the first spawn, and we don't have one, so
         # this does nothing. I leave this here in case someday it works. (It's a no-op for the vault.)
@@ -593,111 +589,101 @@ def room():
         {'SpawnRange': 0, 'MinSpawnDelay': 799, 'MaxSpawnDelay': 799, 'RequiredPlayerRange': 0, 'SpawnCount': 0}))
     room.loop('spawner', main_clock).loop(spawner_loop, ('Skeleton', 'Zombie', 'Cave Spider', 'Blaze'))
 
-    spawner_pos = r(0, 3, 0)
-    ready_nbt = {
-        'total_ejections_needed': 6,
-        'items_to_eject': [
-            {'id': "minecraft:shield", 'Tags': 'ejected'},
-            {'id': "minecraft:diamond_chestplate",
-             'components': {'enchantments': {'levels': {'protection': 3}}}},
-            {'id': "minecraft:shield"},
-            {'id': "minecraft:iron_shovel", 'components': {'enchantments': {'levels': {'efficiency': 2}}}},
-            {'id': "minecraft:iron_helmet", 'components': {'enchantments': {'levels': {'protection': 1}}}},
-            {'id': "minecraft:enchanted_book",
-             'components': {'stored_enchantments': {'levels': {'efficiency': 4}}}},
-        ]}
-
-    vault_states = {'waiting_for_players': 'inactive', 'waiting_for_reward_ejection': 'unlocking',
-                    'ejecting_reward': 'ejecting'}
-    spawner_nbt = {
-        'ticks_between_spawn': 0xfffffff,
-        'spawn_potentials': [{'data': {'entity': {'id': 'minecraft:breeze'}}, 'weight': 1}],
-        'spawn_data': {'entity': {'id': 'minecraft:breeze'}},
+    vault_states = {'waiting_for_players': 'inactive', 'cooldown': 'inactive',
+                    'waiting_for_reward_ejection': 'unlocking', 'ejecting_reward': 'ejecting'}
+    base_vault_nbt = {'state_updating_resumes_at': 0xfff_ffff_ffff_ffff}
+    items_to_eject = [
+        Item.nbt_for('emerald'), Item.nbt_for('wind_charge'), Item.nbt_for('trident'), Item.nbt_for('golden_apple'),
+        Item.nbt_for('guster_banner_pattern'), Item.nbt_for('ominous bottle'), Item.nbt_for('trial_key')]
+    ominous_items_to_eject = [
+        Item.nbt_for('emerald'), Item.nbt_for('wind_charge'), Item.nbt_for('heavy_core'), Item.nbt_for('golden_apple'),
+        Item.nbt_for('flow_banner_pattern'), Item.nbt_for('ominous bottle'), Item.nbt_for('ominous_trial_key')]
+    # Count is +1 because we insert the right key at the front
+    active_vault_nbt = Nbt(base_vault_nbt).merge({
+        'config': {'activation_range': 100, 'deactivation_range': 100, },
+        'server_data': {'items_to_eject': items_to_eject, 'total_ejections_needed': len(items_to_eject)},
+    })
+    vault_nbts = {
+        'inactive': Nbt(base_vault_nbt).merge({'config': {'activation_range': 0, 'deactivation_range': 0}}),
+        'active': active_vault_nbt,
+        'ejecting': active_vault_nbt,
+        'unlocking': active_vault_nbt,
     }
-    trials = ((r(0, 3, 0)), (r(-3, 3, 0)), (r(0, 3,     3)), (r(-3, 3, 3)))
+    trials = ((r(0, 3, 0)), (r(-3, 3, 0)), (r(0, 3, 3)), (r(-3, 3, 3)))
+    # As of 1.20.3+x the trial spawner only sets the visible mob after the first spawn, and we don't have one, so
+    # nothing is shown. I leave stuff here for the mob definition in case someday it works.
+    trial_spawner_nbt = {
+        'required_player_range': 1,
+        'ticks_between_spawn': 0xfff_ffff_ffff_ffff,
+        'spawn_potentials': [{'data': {'entity': {'id': 'minecraft:stray'}}, 'weight': 1}],
+        'normal_config': {
+            'simultaneous_mobs': 4.0,
+            'simultaneous_mobs_added_per_player': 2.0,
+            'ticks_between_spawn': 160,
+            'spawn_potentials': [{'data': {'entity': {'id': "minecraft:stray"}}, 'weight': 1}]},
+        'spawn_data': {'entity': {'id': "minecraft:stray"}},
+        'ominous_config': {
+            'loot_tables_to_eject': [{'data': "minecraft:spawners/ominous/trial_chamber/key", 'weight': 3},
+                                     {'data': "minecraft:spawners/ominous/trial_chamber/consumables", 'weight': 7}],
+            'simultaneous_mobs': 4.0,
+            'simultaneous_mobs_added_per_player': 2.0,
+            'ticks_between_spawn': 160,
+            'spawn_potentials': [{'data': {'equipment_loot_table': "minecraft:equipment/trial_chamber",
+                                           'entity': {'id': "minecraft:stray"}}, 'weight': 1}]}
+    }
     trial_blocks = (
-        Block('trial_spawner', None, spawner_nbt), Block('trial_spawner', {'ominous': True}, spawner_nbt),
-        Block('vault', None, ready_nbt), Block('vault', {'ominous': True}, ready_nbt),
+        Block('trial_spawner', None, trial_spawner_nbt), Block('trial_spawner', {'ominous': True}, trial_spawner_nbt),
+        Block('vault', None, vault_nbts['inactive']), Block('vault', {'ominous': True}, vault_nbts['inactive']),
     )
     sign_offset = (0, -1, -1)
 
     def trial_loop(step):
-        # As of 1.20.3+x the trial spawner only sets the visible mob after the first spawn, and we don't have one, so
-        # this does nothing. I leave this here in case someday it works. (It's a no-op for the vault.)
-        sign_pos = r(0, 2, -1)
         spawner_state = step.elem
         vault_state = vault_states[step.elem] if step.elem in vault_states else step.elem
-        trial_blocks[0].merge_state({'trial_spawner_state': spawner_state})
-        trial_blocks[1].merge_state({'trial_spawner_state': spawner_state})
-        trial_blocks[2].merge_state({'vault_state': vault_state})
-        trial_blocks[3].merge_state({'vault_state': vault_state})
         for i in range(len(trial_blocks)):
+            is_spawner = i < 2
+            is_ominous = i % 2 == 1
             pos = trials[i]
-            yield setblock(pos, trial_blocks[i])
-            if spawner_state == 'ejecting':
-                yield data().modify(pos, 'server_data.rewarded_players').append().from_(p(), 'UUID')
+            block = trial_blocks[i].clone()
+            if is_spawner:
+                block.merge_state({'trial_spawner_state': spawner_state})
+            else:
+                block.merge_state({'vault_state': vault_state})
+                block.nbt = vault_nbts[vault_state].clone()
+                server_data = block.nbt['server_data']
+                if is_ominous and 'items_to_eject' in server_data:
+                    server_data['items_to_eject'] = ominous_items_to_eject
+                    server_data['total_ejections_needed'] = len(ominous_items_to_eject)
+            yield setblock(pos, 'air')
+            yield setblock(pos, block)
+            if is_spawner:
+                yield data().modify(pos, 'registered_players').append().from_(p(), 'UUID')
+            # else:
+            #     yield data().modify(pos, 'server_data.rewarded_players').append().from_(p(), 'UUID')
             sign_pos = RelCoord.add(pos, sign_offset)
-            yield Sign.change(sign_pos, (None, None, to_name(spawner_state if i < 2 else vault_state)))
-        # if spawner_state == 'active':
-        #     yield setblock(spawner_pos, Block(step.elem, {}, spawner_nbt))
-        #     yield Sign.change(sign_pos, (None, step.elem, ''))
-        # else:
-        #     yield execute().if_().score(ominous).matches(0).run(
-        #         setblock(spawner_pos, Block(step.elem, {}, spawner_nbt)),
-        #         Sign.change(sign_pos, (None, step.elem, '')))
-        # else:
-        #     if step.elem == 0:
-        #         yield execute().if_().score(ominous).matches(0).run(setblock(spawner_pos, Block('vault')))
-        #         yield vault_ready.set(1)
-        #         state = 'Ready'
-        #     elif step.elem == 1:
-        #         yield execute().if_().score(ominous).matches(0).run(
-        #             setblock(spawner_pos, Block('vault', {'vault_state': 'unlocking'})))
-        #         yield vault_ready.set(1)
-        #         state = 'Unlocking'
-        #     elif step.elem == 2:
-        #         yield keep_items.set(1)
-        #         yield execute().if_().score(ominous).matches(0).run(
-        #             setblock(spawner_pos, Block('vault', {'vault_state': 'ejecting'})))
-        #         yield execute().as_(a()).run(
-        #             data().modify(spawner_pos, 'server_data.rewarded_players').append().from_(s(), 'UUID'))
-        #         yield vault_ready.set(1)
-        #         state = 'Ejecting'
-        #     else:
-        #         yield execute().if_().score(ominous).matches(0).run(
-        #             setblock(spawner_pos, Block('vault', {'vault_state': 'inactive'})))
-        #         yield data().modify(spawner_pos, 'server_data.items_to_eject').set().value([])
-        #         state = 'Used'
-        #     yield execute().if_().score(ominous).matches(0).run(Sign.change(sign_pos, (None, 'Vault', f'({state})')))
-        #     yield execute().unless().score(ominous).matches(0).run(
-        #         Sign.change(sign_pos, (None, 'Ominous Vault', f'({state})')))
+            text = [None, None, to_name(spawner_state if i < 2 else vault_state), '']
+            if 'Waiting' in text[2]:
+                text[3] = text[2].replace('Waiting For ', '')
+                text[2] = 'Waiting For'
+            yield Sign.change(sign_pos, text)
 
-    trial_spawner_nbt = {
-        'ticks_between_spawn': 0xfffffff,
-        'spawn_potentials': [{'data': {'entity': {'id': 'minecraft:breeze'}}, 'weight': 1}],
-        'spawn_data': {'entity': {'id': 'minecraft:breeze'}},
-    }
     def trial_init():
         for i in range(len(trial_blocks)):
             pos = trials[i]
             yield setblock(pos, trial_blocks[i])
-            sign_pos = RelCoord.add(pos, sign_offset)
-            sign = WallSign().front(trial_blocks[i].full_text)
-            place = sign.place(sign_pos, NORTH)
-            yield place
+            text = list(trial_blocks[i].full_text)
+            if i % 2 == 1:
+                text[1] = f'Ominous {text[1]}'
+            sign = WallSign().front(text)
+            yield sign.place(RelCoord.add(pos, sign_offset), NORTH)
 
     room.function('trial_init').add(trial_init())
     trial = room.loop('trial', main_clock)
     trial.add(
-        keep_items.set(0),
-        vault_ready.set(0),
+        kill(e().type('item').distance((None, 10)))
     ).loop(
-        spawner_loop,
+        trial_loop,
         ('inactive', 'waiting_for_players', 'active', 'waiting_for_reward_ejection', 'ejecting_reward', 'cooldown'),
-    ).add(
-        execute().if_().score(vault_ready).matches(1).run(data().merge(spawner_pos, {'server_data': ready_nbt})),
-        execute().unless().score(keep_items).matches(1).positioned(RelCoord.add(spawner_pos, r(0, 0.5, 0))).run(
-            kill(e().distance((None, 20)).type('item'))),
     )
 
     def structure_blocks_loop(step):
