@@ -3,9 +3,9 @@ from __future__ import annotations
 import math
 import random
 
-from pynecraft.base import EAST, Nbt, OVERWORLD, SOUTH, WEST, as_facing, d, r
-from pynecraft.commands import Block, CLEAR, Entity, INFINITE, JsonText, RAIN, REPLACE, data, e, effect, \
-    execute, fill, fillbiome, function, item, kill, particle, schedule, setblock, summon, weather
+from pynecraft.base import EAST, NORTH, Nbt, OVERWORLD, SOUTH, WEST, as_facing, d, r
+from pynecraft.commands import Block, CLEAR, Entity, INFINITE, JsonText, RAIN, REPLACE, a, data, e, effect, \
+    execute, fill, fillbiome, function, item, kill, particle, playsound, schedule, setblock, summon, weather
 from pynecraft.simpler import Book, PLAINS, TextDisplay, VILLAGER_BIOMES, VILLAGER_PROFESSIONS, WallSign
 from pynecraft.values import ABSORPTION, AMBIENT_ENTITY_EFFECT, ANGRY_VILLAGER, ASH, BASALT_DELTAS, BLINDNESS, BLOCK, \
     BLOCK_MARKER, BUBBLE, BUBBLE_COLUMN_UP, BUBBLE_POP, CAMPFIRE_COSY_SMOKE, CAMPFIRE_SIGNAL_SMOKE, CHERRY_LEAVES, \
@@ -74,6 +74,7 @@ actions = [
     action(RAIN),
     action(SCULK_SOUL, also=(SCULK_CHARGE, SCULK_CHARGE_POP)),
     action(SMALL_GUST, note='Weaving Effect'),
+    action(SNEEZE),
     action(SNOWFLAKE, 'Snow'),
     action(SONIC_BOOM),  # Could be in mobs if we added particle
     action(SOUL),
@@ -101,7 +102,7 @@ elsewhere = {
         LAVA, PORTAL, DRIPPING_WATER, FALLING_WATER, DRIPPING_DRIPSTONE_WATER, FALLING_DRIPSTONE_WATER, DRIPPING_LAVA,
         FALLING_LAVA, LANDING_LAVA, DRIPPING_DRIPSTONE_LAVA, FALLING_DRIPSTONE_LAVA),
     'Plants': (SPORE_BLOSSOM_AIR, FALLING_SPORE_BLOSSOM, CHERRY_LEAVES, UNDERWATER),
-    'Mobs': (FALLING_NECTAR, EGG_CRACK, SNEEZE),
+    'Mobs': (FALLING_NECTAR, EGG_CRACK),
     'Arena': (ITEM_SLIME,),
     'GUI': (ENCHANT,),
 }
@@ -183,7 +184,7 @@ def room():
 
     n_wall_used = {4: span(1, 5), 3: span(1, 5), 2: span(1, 5)}
     e_wall_used = {5: span(2, 4), 4: span(1, 5), 3: span(1, 5), 2: span(1, 5)}
-    w_wall_used = {5: span(3, 4), 4: span(1, 5), 3: span(1, 5), 2: span(1, 5)}
+    w_wall_used = {5: span(2, 4), 4: span(1, 5), 3: span(1, 5), 2: span(1, 5)}
     room = SignedRoom('particles', restworld, SOUTH, (None, 'Particles'), particle_sign, actions, (
         Wall(7, EAST, 1, -1, e_wall_used),
         Wall(7, SOUTH, 1, -7, n_wall_used),
@@ -267,15 +268,12 @@ def room():
         schedule().function(dragon_breath_finish, 1, REPLACE),
     )
     room.function('dragon_breath', home=False).add(slow().run(function(dragon_breath_run)))
-    cherry = room.function('cherry_leaves_init', home=False).add(
-        fill(r(2, 4, 2), r(-2, 4, -2), 'cherry_leaves'), floor('grass_block'))
-    for x in range(-3, 4):
-        for z in range(-3, 4):
-            level = random.randint(0, 4)
-            if level > 0:
-                cherry.add(setblock(r(x, 0, z), ('pink_petals',
-                                                 {'flower_amount': level,
-                                                  'facing': ('north', 'east', 'south', 'west')[random.randint(0, 3)]})))
+    room.function('dripping_honey_init', home=False).add(
+        fill(r(2, 4, 2), r(-2, 4, -2), ('beehive', {'honey_level': 5, 'facing': SOUTH})),
+        fill(r(2, 4, -2), r(-2, 4, -2), ('beehive', {'honey_level': 5, 'facing': NORTH})),
+        fill(r(2, 4, -1), r(2, 4, 1), ('beehive', {'honey_level': 5, 'facing': EAST})),
+        fill(r(-2, 4, -1), r(-2, 4, 1), ('beehive', {'honey_level': 5, 'facing': WEST})),
+    )
     room.function('dust_init', home=False).add(
         fill(r(2, 0, 2), r(-2, 0, -2), 'redstone_wire'),
         fill(r(1, 0, 1), r(-1, 0, -1), 'air'),
@@ -421,6 +419,10 @@ def room():
         main(delay=9).run(setblock(r(0, 0, 0), ('sculk_catalyst', {'bloom': False}))),
         main(delay=16).run(function(sculk_pop)),
     )
+    room.function('sneeze', home=False).add(
+        main().run(particle(SNEEZE, r(0, 0.25, 1.25), 0.05, 0.05, 0.5, 0.0, 2)),
+        main().run(playsound('entity.panda.sneeze', 'neutral', a(), r(0, 0, 0))))
+    room.function('sneeze_init', home=False).add(exemplar('panda', 0, {'NoAI': True, 'Age': -2147483648}))
     room.function('rain_init', home=False).add(weather(RAIN))
     room.function('rain_exit', home=False).add(weather(CLEAR))
     room.function('snowflake_init', home=False).add(set_biome(SNOWY_TAIGA), weather(RAIN))
