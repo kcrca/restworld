@@ -115,19 +115,23 @@ class Room(FunctionSet):
         if facing:
             self._room_setup(facing, text, room_name)
 
-    def reset_at(self, xz: Tuple[int, int]) -> None:
+    def reset_at(self, xz: Tuple[int, int], facing=None) -> None:
         self.function('_init').add(function('restworld:global/reset_raised'))
-        self._command_block(xz, 'Reset Room', ORANGE, f'restworld:{self.name}/_init')
+        self._command_block(xz, 'Reset Room', ORANGE, f'restworld:{self.name}/_init', facing=facing)
 
     def change_height_at(self, xz: Tuple[int, int]) -> None:
         self._command_block(xz, 'Change Height', BLUE, 'restworld:global/toggle_raised')
 
-    def _command_block(self, xz, label_text, color, command):
+    def _command_block(self, xz, label_text, color, command, facing=None):
         func = self.functions[f'{self.name}_room_init']
         x = r(xz[0])
         z = r(xz[1])
+        if facing:
+            facing = as_facing(facing)
+        else:
+            facing = rotate_facing(self.facing, 180)
         func.add(
-            self.label((x, r(2), z), label_text, rotate_facing(self.facing, 180).name),
+            self.label((x, r(2), z), label_text, facing.name),
             setblock((x, r(2), z), ('stone_button', {'facing': self.facing, 'face': 'floor'})),
             setblock((x, r(1), z), f'{color}_concrete'),
             setblock((x, r(0), z), 'air'),

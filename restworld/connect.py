@@ -28,6 +28,7 @@ from restworld.world import fast_clock, restworld
 def room():
     room = Room('connect', restworld, EAST, (None, 'Connected', 'Textures', '(Optifine)'),
                 room_name='Connected Textures')
+    room.reset_at((-10, 0), facing=EAST)
 
     room.function('connect_room_init', exists_ok=True).add(room.label(r(8, 2, 0), 'Go Home', SOUTH))
 
