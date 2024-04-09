@@ -593,7 +593,7 @@ class ActionDesc:
         return self.which
 
     def sign_text(self):
-        block = Block(self.which, name=self.name.title())
+        block = Block(self.which, name=self.name)
         sign_text = list(block.sign_text)
         if self.note:
             sign_text.append(self.note)

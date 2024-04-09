@@ -4,14 +4,6 @@ Old-fashioned heraldry terms on banners too?
 
 Dragon Fireball is wonky
 
-particles:
-    Many new particles, maybe create a book that lists where some
-    particles can be seen elsewhere to free up those slots (e.g.,
-    redstone dust particles) Find which particles re-use the same
-    textures and remove or combine into one sign? Have more particles
-    loop, e.g., the new ominious trial spanwer with the regular
-    trial spanwer? Or make the room bigger (longer, probably)?
-
 fonts:
     italics and bold? Maybe using text display entities? Or switches
     that turn all text bold / italic, etc.? Hm...
@@ -23,14 +15,6 @@ Check for effects that can be shown as in the real world instead of manual
 "particle" command
 
 Trial spawner should have active spawner block, right?
-
-Clean up particles for no-longer-used functions
-
-Enderman needs protection from rain/snow (I think; I saw it in the wrong place once.)
-
-vault should be on its own loop, right next to the spanwer loop
-
-Get new version of trial chamber that has ominous stuff too
 
 Ominous Trial Spawner's name overruns the line on the sign, but if it's put on the to line, the "expand" stuff removes
 it because it assumes all the first lines are blank. Maybe there's a way fix that assumption, but creating json text out

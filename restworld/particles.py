@@ -51,12 +51,10 @@ actions = [
     action(DRAGON_BREATH),  # Could be in end if we added particle, but it's so _large_
     action(DRIPPING_HONEY, note='Falling, Landing', also=(FALLING_HONEY, LANDING_HONEY)),
     action(DUST_PLUME),
-    action(EFFECT),
+    action(EFFECT, 'Effect|(and Entity|Effect)', also=(ENTITY_EFFECT,)),
     action(ELECTRIC_SPARK),  # Could be in redstone if we added particle
     action(ENCHANTED_HIT),
-    action(ENTITY_EFFECT),
-    action(EXPLOSION),
-    action(EXPLOSION_EMITTER),
+    action(EXPLOSION, also=(EXPLOSION_EMITTER,)),
     action(FALLING_DUST),
     action(FIREWORK, note='and Flash', also=(FLASH,)),
     action(FISHING),
@@ -85,7 +83,7 @@ actions = [
     action(TRIAL_OMEN),
     # Removable: Happens in blocks:
     action(TRIAL_SPAWNER_DETECTION, 'Trial Spawner|Detection|(and Ominous)', also=(TRIAL_SPAWNER_DETECTION_OMINOUS,)),
-    action(VAULT_CONNECTION),  # Removable: Happens in blocks
+    action(VAULT_CONNECTION, 'Vault Connection|(and Ominous)'),  # Removable: Happens in blocks
     action(WARPED_SPORE),
     action(WAX_ON, 'Wax On / Off', also=(WAX_OFF, SCRAPE)),
     action(WHITE_ASH),
@@ -183,8 +181,8 @@ def room():
         ))
 
     n_wall_used = {4: span(1, 5), 3: span(1, 5), 2: span(1, 5)}
-    e_wall_used = {5: span(2, 4), 4: span(1, 5), 3: span(1, 5), 2: span(1, 5)}
-    w_wall_used = {5: span(2, 4), 4: span(1, 5), 3: span(1, 5), 2: span(1, 5)}
+    e_wall_used = {5: (2, 4), 4: span(1, 5), 3: span(1, 5), 2: span(1, 5)}
+    w_wall_used = {5: (2, 4), 4: span(1, 5), 3: span(1, 5), 2: span(1, 5)}
     room = SignedRoom('particles', restworld, SOUTH, (None, 'Particles'), particle_sign, actions, (
         Wall(7, EAST, 1, -1, e_wall_used),
         Wall(7, SOUTH, 1, -7, n_wall_used),
@@ -237,7 +235,7 @@ def room():
         fill(r(1, -1, 1), r(1, -1, -1), 'magma_block'),
         fill(r(-1, -1, 1), r(-1, -1, -1), 'soul_sand'),
         function(ocean))
-    room.function('cloud', home=False).add(main().run(particle(CLOUD, r(0, 1, 0), 0.25, 0.25, 0.25, 0.05, 50)))
+    room.function('cloud', home=False).add(main().run(particle(CLOUD, r(0, 1, 0), 0.25, 0.25, 0.25, 0.05, 10)))
     room.function('composter', home=False).add(
         main().run(particle(COMPOSTER, r(0, 0.9, 0), 0.2, 0.1, 0.2, 1, 12)))
     room.function('composter_init', home=False).add(setblock(r(0, 0, 0), ('composter', {'level': 3})))
@@ -285,8 +283,6 @@ def room():
         exemplar(TextDisplay('Put Something in the Pot', {'line_width': 50, 'billboard': 'vertical'}).scale(0.5), 2),
         setblock(r(0, 0, 0), 'decorated_pot')
     )
-    room.function('effect', home=False).add(fast().run(particle(EFFECT, r(0, 1, 0), 0.25, 0.5, 0.5, 0.2, 20)))
-    room.function('effect_init', home=False).add(exemplar('evoker', 0, {'NoAI': True}))
     room.function('egg_crack_init', home=False).add(floor('moss_block'))
     room.function('egg_crack', home=False).add(main().run(
         setblock(r(0, 0, 0), 'air'),
@@ -303,14 +299,14 @@ def room():
         fast().run(particle(ENCHANTED_HIT, r(0, 1, 0, 0.5), 0.5, 0.5, 0, 15)))
     room.function('enchanted_hit_init', home=False).add(function(animal))
 
-    def entity_effect_loop(step):
+    def effect_loop(step):
         yield effect().clear(particler.limit(1))
         yield effect().give(particler.limit(1), step.elem, INFINITE)
 
-    entity_effect_change = room.loop('entity_effect_change', home=False).loop(
-        entity_effect_loop, (SPEED, STRENGTH, ABSORPTION, RESISTANCE, BLINDNESS))
-    room.function('entity_effect', home=False).add(main().run(function(entity_effect_change)))
-    room.function('entity_effect_init', home=False).add(function(animal))
+    effect_change = room.loop('effect_change', home=False).loop(
+        effect_loop, (SPEED, STRENGTH, ABSORPTION, RESISTANCE, BLINDNESS))
+    room.function('effect', home=False).add(main().run(function(effect_change)))
+    room.function('effect_init', home=False).add(function(animal))
     room.function('explosion', home=False).add(
         main().run(particle(EXPLOSION, r(0, 1, 0), 0.5, 0.5, 0.5, 2, 8)))
     room.function('explosion_emitter', home=False).add(
@@ -388,7 +384,7 @@ def room():
         fill(r(20, 0, 20), r(-20, 10, -20), 'air').replace('snow'),
         set_biome(PLAINS),
         execute().in_(OVERWORLD).run(weather(CLEAR)))
-    room.function('poof', home=False).add(main().run(particle(POOF, r(0, 1, 0), 0.25, 0.25, 0.25, 0, 30)))
+    room.function('poof', home=False).add(main().run(particle(POOF, r(0, 1, 0), 0.25, 0.25, 0.25, 0, 15)))
     room.function('portal_init', home=False).add(
         fill(r(-2, 0, -1), r(2, 4, -1), 'obsidian'),
         fill(r(-1, 1, -1), r(1, 3, -1), 'nether_portal'))
@@ -459,8 +455,11 @@ def room():
         main().run(function(trial_spawner_run)))
     room.function('totem_of_undying', home=False).add(
         main().run(particle(TOTEM_OF_UNDYING, r(0, 2, 0), 0.5, 1, 0.5, 0.5, 50)))
-    # room.function('underwater_init', home=False).add(function(ocean))
     room.function('vault_connection_init', home=False).add(setblock(r(0, 0, 0), 'vault'))
+    vault_connection_run = room.loop('vault_connection_run', home=False).loop(
+        lambda step: setblock(r(0, 0, 0), ('vault', {'ominous': step.elem})), (False, True)
+    )
+    room.function('vault_connection', home=False).add(main().run(function(vault_connection_run)))
     room.function('warped_spore_init', home=False).add(
         floor('warped_nylium'),
         set_biome(WARPED_FOREST))
