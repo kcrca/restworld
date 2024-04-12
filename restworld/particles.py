@@ -11,7 +11,8 @@ from pynecraft.values import ABSORPTION, AMBIENT_ENTITY_EFFECT, ANGRY_VILLAGER, 
     BLOCK_MARKER, BUBBLE, BUBBLE_COLUMN_UP, BUBBLE_POP, CAMPFIRE_COSY_SMOKE, CAMPFIRE_SIGNAL_SMOKE, CHERRY_LEAVES, \
     CLOUD, COMPOSTER, CRIMSON_FOREST, CRIMSON_SPORE, CRIT, CURRENT_DOWN, DAMAGE_INDICATOR, DOLPHIN, DRAGON_BREATH, \
     DRIPPING_DRIPSTONE_LAVA, DRIPPING_DRIPSTONE_WATER, DRIPPING_HONEY, DRIPPING_LAVA, DRIPPING_OBSIDIAN_TEAR, \
-    DRIPPING_WATER, DUST, DUST_COLOR_TRANSITION, DUST_PLUME, EFFECT, EGG_CRACK, ELDER_GUARDIAN, ELECTRIC_SPARK, ENCHANT, \
+    DRIPPING_WATER, DUST, DUST_COLOR_TRANSITION, DUST_PILLAR, DUST_PLUME, EFFECT, EGG_CRACK, ELDER_GUARDIAN, \
+    ELECTRIC_SPARK, ENCHANT, \
     ENCHANTED_HIT, END_ROD, ENTITY_EFFECT, EXPLOSION, EXPLOSION_EMITTER, FALLING_DRIPSTONE_LAVA, \
     FALLING_DRIPSTONE_WATER, FALLING_DUST, FALLING_HONEY, FALLING_LAVA, FALLING_NECTAR, FALLING_OBSIDIAN_TEAR, \
     FALLING_SPORE_BLOSSOM, FALLING_WATER, FIREWORK, FISHING, FLAME, FLASH, GLOW, GLOW_SQUID_INK, GUST, GUST_DUST, \
@@ -51,6 +52,7 @@ actions = [
     action(DRAGON_BREATH),  # Could be in end if we added particle, but it's so _large_
     action(DRIPPING_HONEY, note='Falling, Landing', also=(FALLING_HONEY, LANDING_HONEY)),
     action(DUST_PLUME),
+    action(DUST_PILLAR),
     action(EFFECT, 'Effect|(and Entity|Effect)', also=(ENTITY_EFFECT,)),
     action(ELECTRIC_SPARK),  # Could be in redstone if we added particle
     action(ENCHANTED_HIT),
@@ -196,9 +198,9 @@ def room():
             setblock(d(-dx, 0, -dz), 'emerald_block')
         ))
 
-    n_wall_used = {4: span(1, 5), 3: span(1, 5), 2: span(1, 5)}
-    e_wall_used = {5: (2, 4), 4: span(1, 5), 3: span(1, 5), 2: span(1, 5)}
-    w_wall_used = {5: (2, 4), 4: span(1, 5), 3: span(1, 5), 2: span(1, 5)}
+    n_wall_used = {4: span(1, 5), 3: span(1, 5), 2: (1, 2, 4, 5)}
+    e_wall_used = {5: span(2, 4), 4: span(1, 5), 3: span(1, 5), 2: span(1, 5)}
+    w_wall_used = {5: span(2, 4), 4: span(1, 5), 3: span(1, 5), 2: span(1, 5)}
     room = SignedRoom('particles', restworld, SOUTH, (None, 'Particles'), particle_sign, actions, (
         Wall(7, EAST, 1, -1, e_wall_used),
         Wall(7, SOUTH, 1, -7, n_wall_used),
@@ -299,6 +301,12 @@ def room():
         exemplar(TextDisplay('Put Something in the Pot', {'line_width': 50, 'billboard': 'vertical'}).scale(0.5), 2),
         setblock(r(0, 0, 0), 'decorated_pot')
     )
+    dust_pillar_change = room.loop('dust_pillar_change', home=False).loop(
+        lambda step:  (
+            floor(step.elem),
+            particle(Entity(DUST_PILLAR, {'block_state': step.elem}), r(0, 0, 0), 0.5, 0, 0.5, 0, 50)),
+        ('stone', 'grass_block', 'sandstone'))
+    room.function('dust_pillar', home=False).add(main().run(function(dust_pillar_change)))
     room.function('egg_crack_init', home=False).add(floor('moss_block'))
     room.function('egg_crack', home=False).add(main().run(
         setblock(r(0, 0, 0), 'air'),
@@ -464,19 +472,18 @@ def room():
     room.function('squid_ink', home=False).add(main().run(function(squid_ink_run)))
     room.function('sweep_attack', home=False).add(
         main().run(particle(SWEEP_ATTACK, r(0, 1, 0), 0.3, 0.2, 0.3, 0, 3)))
-    room.function('trial_spawner_detection_init', home=False).add(setblock(r(0, 0, 0), 'trial_spawner'))
-    trial_spawner_run = room.loop('trial_spawner_run', home=False).loop(
-        lambda step: particle(step.elem, r(0, 0.75, 0), 0.25, 0.0, 0.25, 0, 25),
-        (TRIAL_SPAWNER_DETECTION, TRIAL_SPAWNER_DETECTION_OMINOUS))
+    room.function('trial_spawner_detection_init', home=False).add(
+        setblock(r(-1, 0, 0), 'trial_spawner'),
+        setblock(r(1, 0, 0), ('trial_spawner', {'ominous': True})))
     room.function('trial_spawner_detection', home=False).add(
-        main().run(function(trial_spawner_run)))
+        main().run(
+            particle(TRIAL_SPAWNER_DETECTION, r(-1, 0.75, 0), 0.25, 0.0, 0.25, 0, 25),
+            particle(TRIAL_SPAWNER_DETECTION_OMINOUS, r(1, 0.75, 0), 0.25, 0.0, 0.25, 0, 25)))
     room.function('totem_of_undying', home=False).add(
         main().run(particle(TOTEM_OF_UNDYING, r(0, 2, 0), 0.5, 1, 0.5, 0.5, 50)))
-    room.function('vault_connection_init', home=False).add(setblock(r(0, 0, 0), 'vault'))
-    vault_connection_run = room.loop('vault_connection_run', home=False).loop(
-        lambda step: setblock(r(0, 0, 0), ('vault', {'ominous': step.elem})), (False, True)
-    )
-    room.function('vault_connection', home=False).add(main().run(function(vault_connection_run)))
+    room.function('vault_connection_init', home=False).add(
+        setblock(r(-1, 0, 0), 'vault'),
+        setblock(r(1, 0, 0), ('vault', {'ominous': True})))
     room.function('warped_spore_init', home=False).add(
         floor('warped_nylium'),
         set_biome(WARPED_FOREST))
