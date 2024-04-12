@@ -426,9 +426,9 @@ class Room(FunctionSet):
                 else:
                     offset.append(bump)
         pos = RelCoord.add(pos, offset)
-        scale = 0.6
+        scale = 0.45
         return execute().run(
-            TextDisplay(txt, nbt={'Tags': t, 'line_width': int(100 * scale), 'transformation': xform}).scale(
+            TextDisplay(txt, nbt={'Tags': t, 'line_width': int(200 * scale), 'transformation': xform, 'background': 0}).scale(
                 scale).summon(pos))
 
 
