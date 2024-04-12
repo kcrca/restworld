@@ -1,13 +1,8 @@
 maybe keep all the areas loaded so room specific tp works
 
-Old-fashioned heraldry terms on banners too?
-
 fonts:
     italics and bold? Maybe using text display entities? Or switches
     that turn all text bold / italic, etc.? Hm...
-
-include mace somehow in the basic materials loop? So one can see the
-enchantment texture on it, e.g.?
 
 Trial spawner should have active spawner block, right?
 
