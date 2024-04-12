@@ -24,7 +24,9 @@ def room():
     room.function('maps_room_exit').add(fill(r(0, -1, -3), r(9, -1, 3), 'glass').replace('redstone_torch'))
     p_north = room.mob_placer(r(3, 4, -3), SOUTH, -1, adults=True)
     p_mid = room.mob_placer(r(8, 4, -1), WEST, -1, adults=True)
-    icons = ( 'target_x', 'target_point', 'red_x', 'monument', 'mansion', 'village_desert', 'village_plains', 'village_savanna', 'village_snowy', 'village_taiga', 'jungle_temple', 'swamp_hut', 'trial_chambers' )
+    icons = (
+    'target_x', 'target_point', 'red_x', 'monument', 'mansion', 'village_desert', 'village_plains', 'village_savanna',
+    'village_snowy', 'village_taiga', 'jungle_temple', 'swamp_hut', 'trial_chambers')
     map_dim = 128
     x_base = 64
     z_base = -64
@@ -125,13 +127,13 @@ def apologia():
     book.sign_book('On Maps', 'RestWorld', 'A Map Apologia')
 
     book.add(r'       ', JsonText.text('On Maps').bold(), r'\n\n')
-    book.add(simplify("""Here you can see general map textures, and some map icons. Yet there are several icons,
-    such as for players, that can't be shown without real players. If you hold a map you can see the icon for you,
-    but to see other players' icons, you will need to"""))
+    book.add(simplify("""Here you can see general map textures, and most map icons. Yet there are some icons, 
+    such as for players, that can't be shown without real players in the actual game. If you hold a map you can see 
+    the icon for you, but to see other players'"""))
     book.next_page()
     # noinspection GrazieInspection
-    book.add(simplify("""recruit friends to join the world. Also, treasure maps show sketched versions of areas you
-    haven't visited, but there no normal looking areas in this world for that to work with, so we can't show that/."""))
+    book.add(simplify(""" icons, you will need to recruit friends to join the world. \\n\\nAlso, treasure maps show sketched versions of areas you
+    haven't visited, but there no normal looking areas in this world for that to work with, so we can't show that."""))
 
     return book
 
