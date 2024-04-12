@@ -1,7 +1,8 @@
 from __future__ import annotations
 
-from pynecraft.base import Arg, CYAN, EQ, NORTH, SOUTH, r
-from pynecraft.commands import Block, COLORS, Entity, WHITE, data, e, execute, fill, function, kill, s, setblock
+from pynecraft.base import Arg, CYAN, EQ, NORTH, SOUTH, as_facing, r
+from pynecraft.commands import Block, COLORS, Entity, JsonText, WHITE, data, e, execute, fill, function, kill, s, \
+    setblock
 from pynecraft.simpler import Shield, Sign, TextDisplay, WallSign
 from pynecraft.values import BORDER, BRICKS, CIRCLE, CREEPER, CROSS, CURLY_BORDER, FLOWER, GRADIENT, GRADIENT_UP, \
     HALF_HORIZONTAL, HALF_HORIZONTAL_BOTTOM, MOJANG, PATTERN_GROUP, RHOMBUS, SMALL_STRIPES, STRAIGHT_CROSS, \
@@ -107,8 +108,11 @@ def room():
         if zn < 0:
             zt = -zt
         name = patterns[as_pattern(pattern)].name
+        desc = patterns[as_pattern(pattern)].desc[:-1]  # Remove period at end
         nbt = {'Rotation': [angle, 0], 'Tags': ['banners']}
         yield TextDisplay(name).scale(0.5).tag('banner_name').summon(r(x + xt, text_y, z + zt), nbt)
+        if name != 'Base':
+            yield TextDisplay(desc).scale(0.5).tag('banner_name').summon(r(x + xt, text_y + 1.85, z + zt), nbt)
 
     def render_banners(render):
         # These are in the first adjustment, but python doesn't know that, so this keeps it happy
@@ -144,21 +148,19 @@ def room():
     )
 
     def custom_banner(x, z, nudge):
-        stand1 = stand_tmpl.clone()
-        stand1.nbt.get_list('Tags').extend(('banner_stand', 'banner_pattern_custom'))
-        stand2 = stand_tmpl.clone()
-        stand2.nbt.get_list('Tags').extend(('banner_stand', 'banner_pattern_custom_author'))
-        return stand1.summon(r(x + nudge, 3.1, z + nudge)), stand2.summon(r(x + nudge, 2.8, z + nudge))
+        nbt = {'Rotation': [45, 0]}
+        nt = TextDisplay(nbt=nbt).scale(0.5).tag('banner_pattern_title', 'banner_name', 'banners')
+        at = TextDisplay(nbt=nbt).scale(0.5).tag('banner_pattern_author', 'banner_name', 'banners')
+        return nt.summon(r(x + nudge, 5.1, z + nudge)), at.summon(r(x + nudge, 4.9, z + nudge))
 
     def authored_banners(pattern, x, z, rot):
         return (
             setblock(r(x, 3, z), pattern[0].merge_state({'rotation': rot})),
-            execute().positioned(r(x, 3, z)).as_(
-                e().tag('banner_pattern_custom').distance((None, 2))).run(
-                data().merge(s(), {'CustomName': pattern[1]})),
-            execute().positioned(r(x, 3, z)).as_(
-                e().tag('banner_pattern_custom_author').distance((None, 2))).run(
-                data().merge(s(), {'CustomName': pattern[2]})),
+            execute().positioned(r(x, 3, z)).as_(e().tag('banner_pattern_title').distance((None, 9))).run(
+                data().merge(s(), {'text': JsonText(f'\u201c{pattern[1]}\u201d'), 'Rotation': as_facing(rot).rotation}),
+            ),
+            execute().positioned(r(x, 3, z)).as_(e().tag('banner_pattern_author').distance((None, 9))).run(
+                data().merge(s(), {'text': JsonText('by ').italic(True).extra(JsonText(pattern[2]).italic(False)), 'Rotation': as_facing(rot).rotation})),
         )
 
     half = int(len(authored_patterns) / 2)
@@ -202,8 +204,8 @@ def room():
         setblock(r(11.8, 3, 0.2), Block('magenta_banner', {'rotation': 2}, {
             'patterns': [{'pattern': TRIANGLE_BOTTOM, 'color': COLORS[15]},
                          {'pattern': TRIANGLE_TOP, 'color': COLORS[15]}]})),
-        custom_banner(0.2, 0.2, 0.1),
-        custom_banner(11.8, 11.8, -0.1),
+        custom_banner(0.2, 0.2, -0.2),
+        custom_banner(11.8, 11.8, 0.2),
         WallSign((None, 'Color:', 'white')).place(color_sign, SOUTH),
         WallSign((None, 'Ink:', 'cyan')).place(ink_sign, SOUTH),
         function(names_off),
