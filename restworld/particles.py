@@ -105,6 +105,22 @@ elsewhere = {
     'GUI': (ENCHANT,),
 }
 
+hover = {
+    CAMPFIRE_SIGNAL_SMOKE: 'Same as regular smoke, it just goes higher',
+    REVERSE_PORTAL: 'Above respawn anchor',
+    SHRIEK: 'Sculk shrieker',
+    FLAME: 'Fire',
+    LARGE_SMOKE: 'Fire',
+    SMALL_FLAME: 'Torches',
+    NOTE: 'Power the note block',
+    VIBRATION: 'Push buttons near sculk sensor',
+    UNDERWATER: 'Go inside the water',
+    EGG_CRACK: 'Turtle eggs',
+    FALLING_NECTAR: 'Bees',
+    ITEM_SLIME: 'Slime battle, under the bouncing slimes',
+    ENCHANT: 'Enchanting table',
+}
+
 unused_particles = {
     AMBIENT_ENTITY_EFFECT,  # Being removed at 1.21 I think
     BLOCK,  # This just happens in the game, plus I can't see how to generate it.
@@ -503,8 +519,17 @@ def room():
         else:
             book.add(r'\n\n')
         book.add(JsonText.text(f'{k} Room:\\n').plain().bold())
-        joined = ', '.join(sorted(as_particle(p).capitalize().replace('_', ' ') for p in v))
-        book.add(JsonText.text(joined + '.').plain())
+        first = True
+        for p in sorted(v):
+            if not first:
+                book.add(JsonText(', ').bold(False))
+            else:
+                first=False
+            text = JsonText(as_particle(p).capitalize().replace('_', ' ')).bold(False)
+            if p in hover:
+                text = text.hover_event().show_text(hover[p])
+            book.add(text)
+        book.add(JsonText('.').bold(False))
     room.function('particle_book', home=False).add(
         ensure(r(1, 2, -4), Block('lectern', {'facing': SOUTH, 'has_book': True}),
                nbt=book.as_item())
