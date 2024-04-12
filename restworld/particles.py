@@ -3,7 +3,7 @@ from __future__ import annotations
 import math
 import random
 
-from pynecraft.base import EAST, NORTH, Nbt, OVERWORLD, SOUTH, WEST, as_facing, d, r
+from pynecraft.base import EAST, NORTH, Nbt, OVERWORLD, SOUTH, WEST, as_facing, d, r, to_id
 from pynecraft.commands import Block, CLEAR, Entity, INFINITE, JsonText, RAIN, REPLACE, a, data, e, effect, \
     execute, fill, fillbiome, function, item, kill, particle, playsound, schedule, setblock, summon, weather
 from pynecraft.simpler import Book, PLAINS, TextDisplay, VILLAGER_BIOMES, VILLAGER_PROFESSIONS, WallSign
@@ -242,9 +242,9 @@ def room():
         set_biome(SOUL_SAND_VALLEY))
 
     def block_marker_loop(step):
-        yield particle(BLOCK_MARKER, step.elem, r(0, 2, 0))
+        yield particle(Entity(BLOCK_MARKER, {'block_state': step.elem}), r(0, 2, 0))
 
-    block_marker_run = room.loop('block_marker_run').loop(block_marker_loop, ('barrier', 'light'))
+    block_marker_run = room.loop('block_marker_run', home=False).loop(block_marker_loop, ('barrier', 'light'))
     room.function('block_marker', home=False).add(
         slow().run(function(block_marker_run)))
     room.function('bubble_init', home=False).add(
@@ -329,11 +329,12 @@ def room():
         main().run(particle(EXPLOSION_EMITTER, r(0, 1, 0), 0.5, 0.5, 0.5, 0.2, 1)))
 
     def falling_dust_loop(step):
-        yield fill(r(-2, 5, -2), r(2, 5, 2), step.elem.id)
-        yield particle(FALLING_DUST, step.elem.id, r(0, 4.9, 0), 1.5, 0, 1.5, 0, 50)
+        id = to_id(step.elem)
+        yield fill(r(-2, 5, -2), r(2, 5, 2), id)
+        yield particle(Entity(FALLING_DUST, {'block_state': id}), r(0, 4.9, 0), 1.5, 0, 1.5, 0, 50)
 
     falling_dust_change = room.loop('falling_dust_change', home=False).loop(falling_dust_loop, (
-        Block('Dragon Egg'), Block('Sand'), Block('Red Sand'), Block('Gravel'), Block('Green Concrete Powder')))
+        'Dragon Egg', 'Sand', 'Red Sand', 'Gravel', 'Green Concrete Powder'))
     room.function('falling_dust_init', home=False).add(
         fill(r(-2, 4, -2), r(2, 4, 2), 'barrier'),
         function(falling_dust_change))
@@ -417,7 +418,7 @@ def room():
     for i, pos in enumerate(sculk_pos):
         block = 'sculk' if str(pos[1]) == '~-1' else ('sculk_vein', {'down': True})
         height = 1.3 if str(pos[1]) == '~-1' else 0.5
-        skulk_spread.add(particle(SCULK_CHARGE, random.uniform(-math.pi / 6, +math.pi / 6),
+        skulk_spread.add(particle(Entity(SCULK_CHARGE, {'roll': random.uniform(-math.pi / 6, +math.pi / 6)}),
                                   (pos[0], pos[1] + height, pos[2])))
         sculk_pop.add(
             setblock(pos, block),
@@ -524,7 +525,7 @@ def room():
             if not first:
                 book.add(JsonText(', ').bold(False))
             else:
-                first=False
+                first = False
             text = JsonText(as_particle(p).capitalize().replace('_', ' ')).bold(False)
             if p in hover:
                 text = text.hover_event().show_text(hover[p])
