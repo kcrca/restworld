@@ -184,7 +184,7 @@ def room():
     # The death functions
     death_home = room.home_func('death')
     room.function('death_init').add(
-        execute().positioned((0, 1.5, 0)).run(function(death_home.full_name)),
+        execute().positioned((0, 1.5, 0)).run(function(death_home)),
         tag(e().tag(death_home.name)).add('death'),
         tag(e().tag(death_home.name)).add('immortal'),
     )
