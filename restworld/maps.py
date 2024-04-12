@@ -131,7 +131,7 @@ def apologia():
     book.next_page()
     # noinspection GrazieInspection
     book.add(simplify("""recruit friends to join the world. Also, treasure maps show sketched versions of areas you
-    haven't visited, but there no normal looking areas in this world for that to work with."""))
+    haven't visited, but there no normal looking areas in this world for that to work with, so we can't show that/."""))
 
     return book
 
