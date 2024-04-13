@@ -889,13 +889,15 @@ def color_functions(room):
     def render_signs_glow(x, y, z, _, _2):
         lit_signs = room.score('lit_signs')
         yield execute().if_().score(lit_signs).matches(0).run(
-            data().merge(r(x, y, z), {'front_text': {'has_glowing_text': False}}))
+            data().merge(r(x, y, z),
+                         {'front_text': {'has_glowing_text': False}, 'back_text': {'has_glowing_text': False}}))
         yield execute().if_().score(lit_signs).matches(1).run(
-            data().merge(r(x, y, z), {'front_text': {'has_glowing_text': True}}))
+            data().merge(r(x, y, z),
+                         {'front_text': {'has_glowing_text': True}, 'back_text': {'has_glowing_text': True}}))
 
     def render_signs(x, y, z, color, _):
-        yield Sign.change(r(x, y, z), (None, None, color.name))
-        yield data().merge(r(x, y, z), {'front_text': {'color': color.id}})
+        yield Sign.change(r(x, y, z), (None, None, color.name), front=None)
+        yield data().merge(r(x, y, z), {'front_text': {'color': color.id}, 'back_text': {'color': color.id}})
 
     def colorings_loop(step):
         yield from colorings(False, step.elem)
@@ -946,9 +948,8 @@ def color_functions(room):
         WallSign((None, 'Dye')).place(r(-4, 3, 1, ), SOUTH),
         WallSign((None, 'Concrete')).place(r(-5, 3, 1), SOUTH),
         WallSign((None, 'Glass')).place(r(-7, 3, 1), SOUTH),
-        colored_signs(None,
-                      lambda x, y, z, _, wood: Sign((wood.name, 'Sign With', 'Default', 'Text'), wood=wood.id).place(
-                          r(x, y, z), 14)),
+        colored_signs(None, lambda x, y, z, _, wood: Sign((wood.name, 'Sign With', 'Default', 'Text'), wood=wood.id,
+                                                          front=None).place(r(x, y, z), 14)),
         WallSign([]).place(r(-4, 2, 4, ), SOUTH), kill(e().type('item')),
         room.label(r(-1, 2, 7), 'Lit Candles', NORTH), room.label(r(-8, 2, 7), 'Plain', NORTH),
         room.label(r(-11, 2, 3), 'Glowing', NORTH)),
