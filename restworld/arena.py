@@ -124,17 +124,21 @@ def room():
 
     monitor_home = e().tag('monitor_home')
 
+    left_arrow = '<--'
+    right_arrow = '-->'
+
     def arena_run_main(loop: Loop):
         def arena_run_loop(step):
             i = step.i
             for which_dir in (-1, 1):
                 to = (i + which_dir + num_pages) % num_pages
-                text, z = ('<--', max_z + 1) if which_dir == -1 else ('-->', min_z - 1)
+                text, z = (left_arrow, max_z + 1) if which_dir == -1 else (right_arrow, min_z - 1)
+                back_text = left_arrow if text == right_arrow else right_arrow
                 yield WallSign().messages((None, text), (
                     step.loop.score.set(to),
                     execute().at(e().tag('controls_home')).run(
                         function(f'restworld:arena/{step.loop.score.target}_cur'))
-                )).glowing(True).place(r(x, 2, z), EAST)
+                )).back((None, back_text)).glowing(True).place(r(x, 2, z), EAST)
             for s in range(0, stride_length):
                 y = 3 - int(s / row_length)
                 z = max_z - (s % row_length)

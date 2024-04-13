@@ -7,9 +7,9 @@ from pynecraft.base import EAST, EQ, NORTH, Nbt, SOUTH, WEST, r, to_id, to_name
 from pynecraft.commands import Block, COLORS, Entity, FORCE, LONG, MOD, REPLACE, RESULT, Score, as_facing, clone, data, \
     e, \
     execute, function, item, kill, player, ride, s, schedule, scoreboard, setblock, summon, tag, tp
-from pynecraft.info import axolotls, colors, horses, music_discs, tropical_fish, wolves
+from pynecraft.info import axolotls, colors, horses, tropical_fish, wolves
 from pynecraft.simpler import Item, PLAINS, Sign, VILLAGER_BIOMES, VILLAGER_PROFESSIONS, Villager, WallSign
-from pynecraft.values import DUMMY
+from pynecraft.values import DISC_GROUP, DUMMY, as_disc, discs
 from restworld.rooms import MobPlacer, Room
 from restworld.world import fast_clock, kill_em, main_clock, restworld
 
@@ -224,13 +224,15 @@ def friendlies(room):
                                                                             'HiddenGene': step.elem.lower()})),
         ('Aggressive', 'Lazy', 'Weak', 'Worried', 'Playful', 'Normal', 'Brown'))
     parrot_dir, parrot_pos = WEST, r(0, 3, 0)
-    disc_chest_pos = r(-1, 1, 1)
+    disc_chest_pos = r(1, 1, 1)
     parrot_fence_pos = list(parrot_pos)
     parrot_fence_pos[1] -= 1
-    room.function('parrot_init').add(placer(parrot_pos, parrot_dir, adults=True).summon('parrot'),
-                                     function('restworld:mobs/parrot_enter'))
-    room.function('parrot_enter').add(
-        (item().replace().block(disc_chest_pos, f'container.{i:d}').with_(d) for i, d in enumerate(music_discs)))
+    parrot_enter = room.function('parrot_enter').add(
+        (item().replace().block(disc_chest_pos, f'container.{i:d}').with_(discs[as_disc(d)].value) for i, d in
+         enumerate(DISC_GROUP)))
+    room.function('parrot_init').add(
+        placer(parrot_pos, parrot_dir, adults=True).summon('parrot'),
+        function(parrot_enter))
 
     parrots = ('Red', 'Blue', 'Green', 'Cyan', 'Gray')
     parrot_settings = []
