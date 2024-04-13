@@ -227,7 +227,7 @@ def room():
 
     def show_effect(particle_name, effect_name):
         room.function(f'{particle_name}_init', home=False).add(
-            exemplar('rabbit', 0, {'NoAI': True}),
+            exemplar('rabbit', 1, {'NoAI': True}),
             effect().give(particler, effect_name, INFINITE))
 
     show_effect(as_particle(INFESTED), 'infested')
