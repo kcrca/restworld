@@ -237,7 +237,7 @@ def room():
     show_effect(as_particle(ITEM_COBWEB), 'weaving')
 
     room.function('angry_villager', home=False).add(
-        fast().run(particle(ANGRY_VILLAGER, r(0, 1, 0), 0.5, 0.5, 0.5, 0, 5)))
+        fast().run(particle(ANGRY_VILLAGER, r(0, 1, 0), (0.5, 0.5, 0.5), 0, 5)))
     room.function('angry_villager_init', home=False).add(function(villager))
     room.function('ash_init', home=False).add(
         floor('soul_soil'),
@@ -253,17 +253,17 @@ def room():
         fill(r(1, -1, 1), r(1, -1, -1), 'magma_block'),
         fill(r(-1, -1, 1), r(-1, -1, -1), 'soul_sand'),
         function(ocean))
-    room.function('cloud', home=False).add(main().run(particle(CLOUD, r(0, 1, 0), 0.25, 0.25, 0.25, 0.05, 10)))
+    room.function('cloud', home=False).add(main().run(particle(CLOUD, r(0, 1, 0), (0.25, 0.25, 0.25), 0.05, 10)))
     room.function('composter', home=False).add(
-        main().run(particle(COMPOSTER, r(0, 0.9, 0), 0.2, 0.1, 0.2, 1, 12)))
+        main().run(particle(COMPOSTER, r(0, 0.9, 0), (0.2, 0.1, 0.2), 1, 12)))
     room.function('composter_init', home=False).add(setblock(r(0, 0, 0), ('composter', {'level': 3})))
     room.function('crimson_spore_init', home=False).add(
         floor('crimson_nylium'),
         set_biome(CRIMSON_FOREST))
-    room.function('crit', home=False).add(fast().run(particle(CRIT, r(0, 1.5, 0), 0.5, 0.5, 0.5, 0, 10)))
+    room.function('crit', home=False).add(fast().run(particle(CRIT, r(0, 1.5, 0), (0.5, 0.5, 0.5), 0, 10)))
     room.function('crit_init', home=False).add(function(animal))
     room.function('damage_indicator', home=False).add(
-        fast().run(particle(DAMAGE_INDICATOR, r(0, 1.5, 0), 0.5, 0.5, 0.5, 0, 5)))
+        fast().run(particle(DAMAGE_INDICATOR, r(0, 1.5, 0), (0.5, 0.5, 0.5), 0, 5)))
     room.function('damage_indicator_init', home=False).add(function(animal))
     room.function('dolphin_init', home=False).add(
         fill(r(-3, 0, 5), r(3, 6, 5), 'barrier').replace('air'),
@@ -304,7 +304,7 @@ def room():
     dust_pillar_change = room.loop('dust_pillar_change', home=False).loop(
         lambda step:  (
             floor(step.elem),
-            particle(Entity(DUST_PILLAR, {'block_state': step.elem}), r(0, 0, 0), 0.5, 0, 0.5, 0, 50)),
+            particle(Entity(DUST_PILLAR, {'block_state': step.elem}), r(0, 0, 0), (0.5, 0, 0.5), 0, 50)),
         ('stone', 'grass_block', 'sandstone'))
     room.function('dust_pillar', home=False).add(main().run(function(dust_pillar_change)))
     room.function('egg_crack_init', home=False).add(floor('moss_block'))
@@ -320,7 +320,7 @@ def room():
         setblock(r(0, 0, 0), 'enchanting_table'),
     )
     room.function('enchanted_hit', home=False).add(
-        fast().run(particle(ENCHANTED_HIT, r(0, 1, 0, 0.5), 0.5, 0.5, 0, 15)))
+        fast().run(particle(ENCHANTED_HIT, r(0, 1, 0, 0.5), (0.5, 0.5, 0), 15)))
     room.function('enchanted_hit_init', home=False).add(function(animal))
 
     def effect_loop(step):
@@ -332,14 +332,14 @@ def room():
     room.function('effect', home=False).add(main().run(function(effect_change)))
     room.function('effect_init', home=False).add(function(animal))
     room.function('explosion', home=False).add(
-        main().run(particle(EXPLOSION, r(0, 1, 0), 0.5, 0.5, 0.5, 2, 8)))
+        main().run(particle(EXPLOSION, r(0, 1, 0), (0.5, 0.5, 0.5), 2, 8)))
     room.function('explosion_emitter', home=False).add(
-        main().run(particle(EXPLOSION_EMITTER, r(0, 1, 0), 0.5, 0.5, 0.5, 0.2, 1)))
+        main().run(particle(EXPLOSION_EMITTER, r(0, 1, 0), (0.5, 0.5, 0.5), 0.2, 1)))
 
     def falling_dust_loop(step):
         id = to_id(step.elem)
         yield fill(r(-2, 5, -2), r(2, 5, 2), id)
-        yield particle(Entity(FALLING_DUST, {'block_state': id}), r(0, 4.9, 0), 1.5, 0, 1.5, 0, 50)
+        yield particle(Entity(FALLING_DUST, {'block_state': id}), r(0, 4.9, 0), (1.5, 0, 1.5), 0, 50)
 
     falling_dust_change = room.loop('falling_dust_change', home=False).loop(falling_dust_loop, (
         'Dragon Egg', 'Sand', 'Red Sand', 'Gravel', 'Green Concrete Powder'))
@@ -362,7 +362,7 @@ def room():
         setblock(r(0, 0, 0), 'air'))
     room.function('firework', home=False).add(main().run(function(firework_change)))
     room.function('firework_init', home=False).add(setblock(r(0, 1, 0), ('dispenser', {'facing': 'up'})))
-    room.function('fishing', home=False).add(fast().run(particle(FISHING, r(0, 1.5, 0), 0.2, 0, 0.2, 0, 6)))
+    room.function('fishing', home=False).add(fast().run(particle(FISHING, r(0, 1.5, 0), (0.2, 0, 0.2), 0, 6)))
     room.function('fishing_init', home=False).add(
         fill(r(-3, 0, 4), r(3, 0, 4), 'oak_wall_sign'),
         fill(r(3, 0, 3), r(-3, 0, -3), 'water'))
@@ -376,12 +376,12 @@ def room():
         main().run(setblock(r(0, 3, -1), 'air')),
     )
     room.function('happy_villager', home=False).add(
-        fast().run(particle(HAPPY_VILLAGER, r(0, 1, 0), 0.5, 0.5, 0.5, 0, 5)))
+        fast().run(particle(HAPPY_VILLAGER, r(0, 1, 0), (0.5, 0.5, 0.5), 0, 5)))
     room.function('happy_villager_init', home=False).add(function(villager))
-    room.function('heart', home=False).add(fast().run(particle(HEART, r(0, 1.5, 0), 0.5, 0.2, 0.5, 0, 5)))
+    room.function('heart', home=False).add(fast().run(particle(HEART, r(0, 1.5, 0), (0.5, 0.2, 0.5), 0, 5)))
     room.function('heart_init', home=False).add(function(small_animal))
     room.function('instant_effect', home=False).add(
-        fast().run(particle(INSTANT_EFFECT, r(0, 1.5, 0), 0.5, 1, 0.5, 0, 10)))
+        fast().run(particle(INSTANT_EFFECT, r(0, 1.5, 0), (0.5, 1, 0.5), 0, 10)))
     room.function('instant_effect_init', home=False).add(function(animal))
     room.function('item_snowball', home=False).add(
         fast().run(item().replace().block(r(0, 2, -1), 'container.0').with_('snowball', 1)),
@@ -409,7 +409,7 @@ def room():
         fill(r(20, 0, 20), r(-20, 10, -20), 'air').replace('snow'),
         set_biome(PLAINS),
         execute().in_(OVERWORLD).run(weather(CLEAR)))
-    room.function('poof', home=False).add(main().run(particle(POOF, r(0, 1, 0), 0.25, 0.25, 0.25, 0, 15)))
+    room.function('poof', home=False).add(main().run(particle(POOF, r(0, 1, 0), (0.25, 0.25, 0.25), 0, 15)))
     room.function('portal_init', home=False).add(
         fill(r(-2, 0, -1), r(2, 4, -1), 'obsidian'),
         fill(r(-1, 1, -1), r(1, 3, -1), 'nether_portal'))
@@ -441,7 +441,7 @@ def room():
         main(delay=16).run(function(sculk_pop)),
     )
     room.function('sneeze', home=False).add(
-        main().run(particle(SNEEZE, r(0, 0.25, 1.25), 0.05, 0.05, 0.5, 0.0, 2)),
+        main().run(particle(SNEEZE, r(0, 0.25, 1.25), (0.05, 0.05, 0.5), 0.0, 2)),
         main().run(playsound('entity.panda.sneeze', 'neutral', a(), r(0, 0, 0))))
     room.function('sneeze_init', home=False).add(exemplar('panda', 0, {'NoAI': True, 'Age': -2147483648}))
     room.function('rain_init', home=False).add(weather(RAIN))
@@ -449,14 +449,14 @@ def room():
     room.function('snowflake_init', home=False).add(set_biome(SNOWY_TAIGA), weather(RAIN))
     room.function('snowflake_exit', home=False).add(weather(CLEAR))
     room.function('sonic_boom_init', home=False).add(exemplar('warden', 0, {'NoAI': True}))
-    room.function('sonic_boom', home=False).add(main().run(particle(SONIC_BOOM, r(0, 2, 0.5), 0, 0, 0, 1, 1)))
-    room.function('soul', home=False).add(fast().run(particle(SOUL, r(0, 0.75, 0), 0.05, 0, 0.05, 0.0, 4)))
+    room.function('sonic_boom', home=False).add(main().run(particle(SONIC_BOOM, r(0, 2, 0.5), (0, 0, 0), 1, 1)))
+    room.function('soul', home=False).add(fast().run(particle(SOUL, r(0, 0.75, 0), (0.05, 0, 0.05), 0.0, 4)))
     room.function('soul_init', home=False).add(floor('soul_soil'))
     room.function('spit', home=False).add(fast().run(summon('llama_spit', r(0, 1.6, 0.7),
                                                             {'Motion': [0.0, 0.0, 1.0], 'direction': [0.0, 0.0, 1.0],
                                                              'ExplosionPower': 1})))
     room.function('spit_init', home=False).add(exemplar('llama', 0, {'NoAI': True}))
-    room.function('splash', home=False).add(fast().run(particle(SPLASH, r(0, 1, 0), 0.5, 0.1, 0.5, 1, 50)))
+    room.function('splash', home=False).add(fast().run(particle(SPLASH, r(0, 1, 0), (0.5, 0.1, 0.5), 1, 50)))
     room.function('splash_init', home=False).add(
         fill(r(-2, 0, -2), r(2, 0, 2), 'stone'),
         fill(r(-1, 0, -1), r(1, 0, 1), 'water'))
@@ -464,23 +464,23 @@ def room():
 
     def squid_ink_loop(step):
         yield exemplar(step.elem, 4, {'NoAI': True})
-        yield particle(step.elem + '_ink', r(0, 2.8, -0), 0.15, 0.3, 0.15, 0.01, 30)
+        yield particle(step.elem + '_ink', r(0, 2.8, -0), (0.15, 0.3, 0.15), 0.01, 30)
 
     squid_ink_run = room.loop('squid_ink_run', home=False).add(
         kill_em(particler)).loop(
         squid_ink_loop, ('squid', 'glow_squid'))
     room.function('squid_ink', home=False).add(main().run(function(squid_ink_run)))
     room.function('sweep_attack', home=False).add(
-        main().run(particle(SWEEP_ATTACK, r(0, 1, 0), 0.3, 0.2, 0.3, 0, 3)))
+        main().run(particle(SWEEP_ATTACK, r(0, 1, 0), (0.3, 0.2, 0.3), 0, 3)))
     room.function('trial_spawner_detection_init', home=False).add(
         setblock(r(-1, 0, 0), 'trial_spawner'),
         setblock(r(1, 0, 0), ('trial_spawner', {'ominous': True})))
     room.function('trial_spawner_detection', home=False).add(
         main().run(
-            particle(TRIAL_SPAWNER_DETECTION, r(-1, 0.75, 0), 0.25, 0.0, 0.25, 0, 25),
-            particle(TRIAL_SPAWNER_DETECTION_OMINOUS, r(1, 0.75, 0), 0.25, 0.0, 0.25, 0, 25)))
+            particle(TRIAL_SPAWNER_DETECTION, r(-1, 0.75, 0), (0.25, 0.0, 0.25), 0, 25),
+            particle(TRIAL_SPAWNER_DETECTION_OMINOUS, r(1, 0.75, 0), (0.25, 0.0, 0.25), 0, 25)))
     room.function('totem_of_undying', home=False).add(
-        main().run(particle(TOTEM_OF_UNDYING, r(0, 2, 0), 0.5, 1, 0.5, 0.5, 50)))
+        main().run(particle(TOTEM_OF_UNDYING, r(0, 2, 0), (0.5, 1, 0.5), 0.5, 50)))
     room.function('vault_connection_init', home=False).add(
         setblock(r(-1, 0, 0), 'vault'),
         setblock(r(1, 0, 0), ('vault', {'ominous': True})))
@@ -498,20 +498,20 @@ def room():
             yield setblock(r(0, 0, 0), 'exposed_cut_copper')
         elif step.i == 1:
             yield setblock(r(0, 0, 0), 'waxed_exposed_cut_copper')
-            yield particle(WAX_ON, r(0, 0.5, 0), 0.5, 0.5, 0.5, 0, 10)
+            yield particle(WAX_ON, r(0, 0.5, 0), (0.5, 0.5, 0.5), 0, 10)
         elif step.i == 2:
             yield setblock(r(0, 0, 0), 'exposed_cut_copper')
-            yield particle(WAX_OFF, r(0, 0.5, 0), 0.5, 0.5, 0.5, 0, 10)
+            yield particle(WAX_OFF, r(0, 0.5, 0), (0.5, 0.5, 0.5), 0, 10)
         else:
             yield setblock(r(0, 0, 0), 'cut_copper')
-            yield particle(SCRAPE, r(0, 0.5, 0), 0.5, 0.5, 0.5, 0, 10)
+            yield particle(SCRAPE, r(0, 0.5, 0), (0.5, 0.5, 0.5), 0, 10)
 
     wax_on_run = room.loop('wax_on_run', home=False).loop(wax_on_run_loop, ('', 'Wax On', 'Wax Off', 'Scrape'))
     room.function('wax_on', home=False).add(main().run(function(wax_on_run)))
     room.function('white_ash_init', home=False).add(
         floor('basalt'),
         set_biome(BASALT_DELTAS))
-    room.function('witch', home=False).add(fast().run(particle(WITCH, r(0, 2.3, 0), 0.3, 0.3, 0.3, 0, 6)))
+    room.function('witch', home=False).add(fast().run(particle(WITCH, r(0, 2.3, 0), (0.3, 0.3, 0.3), 0, 6)))
     room.function('witch_init', home=False).add(exemplar('witch', 0, {'NoAI': True}))
 
     book = Book()
