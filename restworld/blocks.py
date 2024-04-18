@@ -6,7 +6,7 @@ from typing import Iterable, Union
 from pynecraft import info
 from pynecraft.base import DOWN, EAST, EQ, NORTH, Nbt, RelCoord, SOUTH, WEST, as_facing, r, to_id, to_name
 from pynecraft.commands import Block, Commands, Entity, MOD, MOVE, as_block, clone, data, e, execute, fill, function, \
-    item, kill, s, say, setblock, summon, tag
+    item, kill, p, s, say, setblock, summon, tag
 from pynecraft.function import Loop
 from pynecraft.info import Color, colors, sherds, stems
 from pynecraft.simpler import Item, ItemFrame, Region, Sign, TextDisplay, WallSign
@@ -303,7 +303,9 @@ def room():
                 for offset in (NORTH, EAST, WEST, SOUTH):
                     facing = as_facing(offset)
                     yield setblock(r(facing.dx, 4, facing.dz), block.clone().merge_state({'facing': offset}))
-        yield data().merge(r(0, 2, -1), block.sign_nbt())
+        sign_nbt = block.sign_nbt()
+        sign_nbt['back_text'] = sign_nbt['front_text']
+        yield data().merge(r(0, 2, -1), sign_nbt)
 
     room.loop('amethyst', main_clock).add(
         fill(r(-1, 3, -1), r(1, 5, 1), 'air')
@@ -331,6 +333,7 @@ def room():
             yield setblock(r(0, 4, 0), 'air')
             facing = NORTH
         yield setblock(r(0, 3, 0), Block('bell', state={'attachment': step.elem, 'facing': facing}))
+        yield Sign.change(r(0, 2, -1), (None, None, to_name(step.elem)))
 
     attachments = ('ceiling', 'single_wall', 'double_wall', 'floor')
     room.loop('bell', main_clock).add(setblock(r(0, 3, 0), 'air')).loop(bell_loop, attachments)
@@ -402,7 +405,7 @@ def room():
         words = step.elem[0].split(' ')
         modifier = '' if len(words) == 2 else words[0]
         sign_nbt = Sign.lines_nbt((None, modifier, 'Command Block', '(Conditional)' if step.elem[1] else ''))
-        yield data().merge(r(0, 2, 1), {'front_text': sign_nbt})
+        yield data().merge(r(0, 2, 1), {'front_text': sign_nbt, 'back_text': sign_nbt})
 
     room.function('command_blocks_init').add(WallSign((None, None, 'Command Block', None)).place(r(0, 2, 1), SOUTH))
     room.loop('command_blocks', main_clock).loop(command_block_loop, (
@@ -472,7 +475,8 @@ def room():
 
     def item_frame_loop(step):
         yield step.elem.merge_nbt({'Tags': ['item_frame_as_block']}).summon(r(0, 3, -1)),
-        yield data().merge(r(0, 2, -1), {'front_text': Sign.lines_nbt((None, *step.elem.sign_text))})
+        lines = Sign.lines_nbt((None, *step.elem.sign_text))
+        yield data().merge(r(0, 2, -1), {'front_text': lines, 'back_text': lines})
 
     item_frame_init = kill(e().tag('item_frame_as_block'))
     room.function('item_frame_init').add(item_frame_init)
@@ -616,31 +620,32 @@ def room():
     # As of 1.20.3+x the trial spawner only sets the visible mob after the first spawn, and we don't have one, so
     # nothing is shown. I leave stuff here for the mob definition in case someday it works.
     spawner_config = {
-        'simultaneous_mobs': 4.0,
+        'simultaneous_mobs': 0.0,
         'simultaneous_mobs_added_per_player': 2.0,
         'ticks_between_spawn': 0xfff_ffff_ffff_ffff,
         'spawn_potentials': [{'data': {'entity': {'id': "minecraft:stray"}}, 'weight': 1}],
-        'loot_tables_to_eject': [{'data': "minecraft:spawners/ominous/trial_chamber/consumables", 'weight': 1}],
-    }
+        'loot_tables_to_eject': [{'data': "minecraft:spawners/ominous/trial_chamber/key", 'weight': 1}]}
     base_trial_spawner_nbt = Nbt({
-        'required_player_range': 1,
+        'required_player_range': 100,
         'target_cooldown_length': 0xfff_ffff,
-        'spawn_potentials': [{'data': {'entity': {'id': 'minecraft:stray'}}, 'weight': 1}],
+        'next_mob_spawns_at': 0xfff_ffff_ffff_ffff,
+    })
+    trial_spawner_spawns = {
         'normal_config': spawner_config,
         'ominous_config': spawner_config,
+        'spawn_potentials': [{'data': {'entity': {'id': 'minecraft:stray'}}, 'weight': 1}],
         'spawn_data': {'entity': {'id': "minecraft:stray"}},
-    })
+    }
     trial_spawner_nbts = {
         'inactive': base_trial_spawner_nbt.merge({'required_player_range': 1}),
-        'waiting_for_players': base_trial_spawner_nbt.merge({'required_player_range': 100}),
-        'active': base_trial_spawner_nbt.merge({
-            'required_player_range': 100, 'next_mob_spawns_at': 0xfff_ffff_ffff_ffff, 'total_mobs_spawned': 1}),
-        'waiting_for_reward_ejection': base_trial_spawner_nbt.merge({
-            'required_player_range': 100,
-            'ejecting_loot_table': "minecraft:spawners/ominous/trial_chamber/consumables"}),
+        'waiting_for_players': base_trial_spawner_nbt.merge(trial_spawner_spawns).merge({'required_player_range': 1}),
+        'active': base_trial_spawner_nbt.merge(trial_spawner_spawns),
+        'waiting_for_reward_ejection': base_trial_spawner_nbt.merge(trial_spawner_spawns).merge({
+            'total_ejections_needed': 6,
+            'ejecting_loot_table': "minecraft:spawners/ominous/trial_chamber/key"}),
         'ejecting_reward': base_trial_spawner_nbt.merge({
-            'required_player_range': 100,
-            'ejecting_loot_table': "minecraft:spawners/ominous/trial_chamber/consumables"}),
+            'total_ejections_needed': 6, 'total_mobs_spawned': 1000,
+            'ejecting_loot_table': "minecraft:spawners/ominous/trial_chamber/key"}),
         'cooldown': base_trial_spawner_nbt.merge({
             'required_player_range': 1, 'cooldown_ends_at': 0xfff_ffff_ffff_ffff}),
     }
@@ -671,10 +676,17 @@ def room():
                     server_data['total_ejections_needed'] = len(ominous_items_to_eject)
             yield setblock(pos, 'air')
             yield setblock(pos, block)
-            # if is_spawner:
-            #     yield data().modify(pos, 'registered_players').append().from_(p(), 'UUID')
-            # else:
-            #     yield data().modify(pos, 'server_data.rewarded_players').append().from_(p(), 'UUID')
+            # Right now active and waiting for ejection aren't showing. This is because /gamerule doMobSpawning false
+            # stops trial spawners showing these states. See https://bugs.mojang.com/browse/MC-270885?filter=26400.
+            # Turning the rule on causes spawns in the nether room (at least) so we can't do that. So we have to live
+            # with this until that bug is fixed or they do something else.
+            #
+            # Also, ejecting items doesn't seem to work right, possibly due to the same thing.
+            if step.i in range(2, 4):
+                if is_spawner:
+                    yield data().modify(pos, 'registered_players').append().from_(p(), 'UUID')
+                else:
+                    yield data().modify(pos, 'server_data.rewarded_players').append().from_(p(), 'UUID')
             sign_pos = RelCoord.add(pos, sign_offset)
             text = [None, None, to_name(spawner_state if i < 2 else vault_state), '']
             if 'Waiting' in text[2]:
@@ -689,8 +701,7 @@ def room():
             text = list(trial_blocks[i].full_text)
             if i % 2 == 1:
                 text[1] = f'Ominous {text[1]}'
-            sign = WallSign().front(text)
-            yield sign.place(RelCoord.add(pos, sign_offset), NORTH)
+            yield WallSign(text).place(RelCoord.add(pos, sign_offset), NORTH)
 
     room.function('trial_init').add(trial_init())
     trial = room.loop('trial', main_clock)
