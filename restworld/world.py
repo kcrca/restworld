@@ -95,7 +95,7 @@ class RestWorld(RoomPack):
             r'  Command Blocks\n  Software Design\n  Programming\n',
             JsonText.text(r'JUMBOshrimp277:\n').bold(),
             r'  World Design\n  Testing\n  Rubber Duck\n\n',
-            r'Minecraft Version:\n   1.20, ' + date.today().strftime('%-d %b %Y'),
+            r'Minecraft Version:\n   1.20.5, ' + date.today().strftime('%-d %b %Y'),
             JsonText.text(r'\n\nTry the ').italic(),
             JsonText.text(r'Call Out Pack!').underlined().italic().color(DARK_PURPLE).click_event().open_url(
                 'https://www.planetminecraft.com/texture-pack/call-out-texture-pack-support/')
