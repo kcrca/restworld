@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/zsh
 
 set -e
 
@@ -21,6 +21,21 @@ g/_$ver_old_re\\>/s//_$ver_cur/g
 w index.html.new
 q!
 EOF
+
+(
+    echo /-- Start downloads/+,/-- End downloads/-c
+    for f in Rest?orld*.zip; do
+	name=${f:s,RestWorld_,}
+	name=${name:s,.zip,}
+	cat <<EOF
+			<a class="download_pack" href="$f">$name</a>,
+EOF
+    done
+    echo .
+    echo w
+    echo q
+) | ed - index.html
+grep spaq index.html
 
 # If it's been changed, update the edit date
 if cmp -s index.html index.html.new; then
