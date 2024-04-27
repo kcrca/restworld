@@ -4,11 +4,11 @@
 <head>
     <meta charset="utf-8">
     <title>RestWorld: A Resource Pack Testing Worlds</title>
-    <link rel="stylesheet" type="text/css" href="../style.css">
-    <meta name="description" content="RestWorld is a testing world for minecraft resource packs"/>
+    <link href="../style.css" rel="stylesheet" type="text/css">
+    <meta content="RestWorld is a testing world for minecraft resource packs" name="description"/>
     <!--suppress GrazieInspection -->
-    <meta name="keywords"
-          content="minecraft resource pack texture pack texturepack resourcepack test testing map world blocks plants">
+    <meta content="minecraft resource pack texture pack texturepack resourcepack test testing map world blocks plants"
+          name="keywords">
 </head>
 
 <!-- version: 1.20.5+x -->
@@ -29,12 +29,12 @@
                 <td class="tablinks Downloads" onclick="openTab(event, 'Downloads')">Downloads
                 </td>
                 <td class="tablinks Details" onclick="openTab(event, 'Details')">Details</td>
-<!--                <td class="tablinks Where" onclick="openTab(event, 'Where')">Where is...?</td>-->
+                <!--                <td class="tablinks Where" onclick="openTab(event, 'Where')">Where is...?</td>-->
             </tr>
         </table>
     </div>
 
-    <div id="Overview" class="tabcontent">
+    <div class="tabcontent" id="Overview">
         <p><b>Current Version: 1.20.5+x</b>
         <p>
             As Minecraft has evolved, there are more and more blocks and mobs! There used to be a few downloadable test
@@ -96,7 +96,7 @@
         </div>
 
         <p>
-            You start out in the middle, where you can get a control book that allows you to stop and start the looping,
+            You start out in the middle, with a control book that allows you to stop and start the looping,
             as well as speeding it up or slowing it down. You can do these with buttons in the middle, but the book is a
             control you can carry with you. The book also has links to the other places in RestWorld (see below).
 
@@ -122,40 +122,58 @@
             <a id="map"></a>
         <figure class="example">
             <figcaption> Overview of RestWorld (hover over an area to see what's in it!)
-		<!--=
-		    /tp -46 174 48 facing 2 14 0
+                <!--=
+                    /tp -46 174 48 facing 2 14 0
 
-		    or mauybe
+                    or mauybe
 
-		    /tp -46 174 48 -135.5 63.6
+                    /tp -46 174 48 -135.5 63.6
 
-		    the latter seems to be "rotation" form
-		-->
+                    the latter seems to be "rotation" form
+                -->
             </figcaption>
             <center>
                 <img src="overall.png" usemap="#overview_map">
-                <!-- Map edited with FireFox plugin "Image Map Editor" -->
-                <map name="overview_map" id="overview_map">
-		    <area alt="(nothing to see here)" title="(nothing to see here)" href="#map" coords="12, 160, 38, 142, 50, 174, 31.483333110809326, 186.5" shape="poly">
-		    <area alt="Banners &amp; Shields" title="Banners &amp; Shields" href="#map" coords="157, 164, 192, 210, 259, 160, 222.48333311080933, 123.5" shape="poly">
-		    <area alt="Blocks" title="Blocks" href="#map" coords="150, 380, 97, 272, 315, 132, 384, 196" shape="poly" target="" download="">
-		    <area alt="Effects" title="Effects" href="#map" coords="213, 42, 232, 56, 251, 43, 233, 33" shape="poly">
-		    <area alt="Fonts" title="Fonts" href="#map" coords="262, 24, 279, 17, 300, 29, 278, 38" shape="poly">
-		    <area alt="Overworld Mobs" title="Overworld Mobs" href="#map" coords="381, 190, 537.4833331108093, 323.5, 596, 236, 447, 136" shape="poly">
-		    <area alt="GUI" title="GUI" href="#map" coords="511, 79, 476, 107, 541, 157, 586, 117" shape="poly">
-		    <area alt="Maps" title="Maps" href="#map" coords="484, 40, 509, 50, 493, 61, 473, 51" shape="poly">
-		    <area alt="Materiels" title="Materiels" href="#map" coords="452, 40, 377, 90, 450, 137, 521, 76" shape="poly">
-		    <area alt="Nether Mobs" title="Nether Mobs" href="#map" coords="561, 137, 520, 184, 586.4833331108093, 224.5, 617, 178" shape="poly">
-		    <area alt="Paintings" title="Paintings" href="#map" coords="260, 285, 323, 359, 383, 297, 321, 236" shape="poly">
-		    <area alt="Particles" title="Particles" href="#map" coords="237, 34, 257, 43, 273, 39, 257, 25" shape="poly">
-		    <area alt="Plants" title="Plants" href="#map" coords="229, 66, 312, 132, 383.4833331108093, 89.5, 302, 28" shape="poly">
-		    <area alt="Redstone" title="Redstone" href="#map" coords="371, 0, 332, 25, 402, 68, 443, 41" shape="poly">
-		    <area alt="Start" title="Start" href="#map" coords="309, 134, 373, 90, 452, 134, 379.4833331108093, 186.5" shape="poly">
-		    <area alt="Sun &amp; Moon" title="Sun &amp; Moon" href="#map" coords="472, 113, 447, 131, 489, 160, 513, 136" shape="poly">
-		    <area alt="The End" title="The End" href="#map" coords="543, 316, 586, 249, 702.4833331108093, 333.5, 667, 413" shape="poly">
-		    <area alt="Wither" title="Wither" href="#map" coords="438, 297, 472, 326, 494, 295, 464, 271" shape="poly">
-		    <area shape="poly" coords="45.483333110809326, 379.5, 120, 322, 144, 382, 77, 436" href="#map" title="DIY" alt="DIY">
-		    <area shape="poly" coords="97, 292, 112, 318, 72.48333311080933, 352.5, 61, 321" href="#map" title="Models" alt="Models">
+                <!-- Map edited with FireFox plugin "Image Map Editor" (is there a better one?) -->
+                <map id="overview_map" name="overview_map">
+                    <area alt="(nothing to see here)" coords="12, 160, 38, 142, 50, 174, 31.483333110809326, 186.5"
+                          href="#map" shape="poly" title="(nothing to see here)">
+                    <area alt="Banners &amp; Shields" coords="157, 164, 192, 210, 259, 160, 222.48333311080933, 123.5"
+                          href="#map" shape="poly" title="Banners &amp; Shields">
+                    <area alt="Blocks" coords="150, 380, 97, 272, 315, 132, 384, 196" download="" href="#map"
+                          shape="poly" target="" title="Blocks">
+                    <area alt="Effects" coords="213, 42, 232, 56, 251, 43, 233, 33" href="#map" shape="poly"
+                          title="Effects">
+                    <area alt="Fonts" coords="262, 24, 279, 17, 300, 29, 278, 38" href="#map" shape="poly"
+                          title="Fonts">
+                    <area alt="Overworld Mobs" coords="381, 190, 537.4833331108093, 323.5, 596, 236, 447, 136"
+                          href="#map" shape="poly" title="Overworld Mobs">
+                    <area alt="GUI" coords="511, 79, 476, 107, 541, 157, 586, 117" href="#map" shape="poly" title="GUI">
+                    <area alt="Maps" coords="484, 40, 509, 50, 493, 61, 473, 51" href="#map" shape="poly" title="Maps">
+                    <area alt="Materiels" coords="452, 40, 377, 90, 450, 137, 521, 76" href="#map" shape="poly"
+                          title="Materiels">
+                    <area alt="Nether Mobs" coords="561, 137, 520, 184, 586.4833331108093, 224.5, 617, 178" href="#map"
+                          shape="poly" title="Nether Mobs">
+                    <area alt="Paintings" coords="260, 285, 323, 359, 383, 297, 321, 236" href="#map" shape="poly"
+                          title="Paintings">
+                    <area alt="Particles" coords="237, 34, 257, 43, 273, 39, 257, 25" href="#map" shape="poly"
+                          title="Particles">
+                    <area alt="Plants" coords="229, 66, 312, 132, 383.4833331108093, 89.5, 302, 28" href="#map"
+                          shape="poly" title="Plants">
+                    <area alt="Redstone" coords="371, 0, 332, 25, 402, 68, 443, 41" href="#map" shape="poly"
+                          title="Redstone">
+                    <area alt="Start" coords="309, 134, 373, 90, 452, 134, 379.4833331108093, 186.5" href="#map"
+                          shape="poly" title="Start">
+                    <area alt="Sun &amp; Moon" coords="472, 113, 447, 131, 489, 160, 513, 136" href="#map"
+                          shape="poly" title="Sun &amp; Moon">
+                    <area alt="The End" coords="543, 316, 586, 249, 702.4833331108093, 333.5, 667, 413" href="#map"
+                          shape="poly" title="The End">
+                    <area alt="Wither" coords="438, 297, 472, 326, 494, 295, 464, 271" href="#map" shape="poly"
+                          title="Wither">
+                    <area alt="DIY" coords="45.483333110809326, 379.5, 120, 322, 144, 382, 77, 436" href="#map"
+                          shape="poly" title="DIY">
+                    <area alt="Models" coords="97, 292, 112, 318, 72.48333311080933, 352.5, 61, 321" href="#map"
+                          shape="poly" title="Models">
                 </map>
             </center>
         </figure>
@@ -172,7 +190,8 @@
                 almost all the large structures.
             <li>A battle arena where you can see many of the mobs fighting, to see what they look like in action!
             <li>A snapshot photo area for your pack. This has three views, a sampler of the blocks, a sampler of the
-                mobs and a "quilt" of (almost) all the blocks. The quilt lets you compare your pack overall with another one
+                mobs and a "quilt" of (almost) all the blocks. The quilt lets you compare your pack overall with another
+                one
                 by taking screen snapshots of the quilt with the packs, and then flipping between the snapshots.
             <li>A "DIY" room lets you set up sequences of blocks that interest you, simply by putting them down in the
                 right places. If you don't see what you want, make it yourself! (This is just off the blocks room.)
@@ -186,12 +205,12 @@
         <p>
             Mostly, no. If you want to see item textures, you can look in the creative inventory. There's
             nothing better I can do. Yes, there are a few items missing from the creative inventory, these can be found
-            in the "GUI" room. There is a frame with each such item, a chest that contains them all, and a button that
-            gives them to you.
+            in the "GUI" room. There is a frame with each such item.
 
         <p>
             The other thing about items in texture packs is how they are displayed (the <code>display</code> tag in the
-            <a href="https://minecraft.fandom.com/wiki/Model#Item_models">item model</a>). The model room (off of the blocks room) lets you
+            <a href="https://minecraft.fandom.com/wiki/Model#Item_models">item model</a>). The model room (off of the
+            blocks room) lets you
             see an item in the external display modes. Just put the item of interest in the frame by the armor stand and
             you can see how they look in external modes. The non-external modes &mdash;
             <code>firstperson_righthand</code>, <code>firstperson_lefthand</code>, and <code>gui</code> &mdash; are,
@@ -199,121 +218,127 @@
 
     </div>
 
-    <div id="Downloads" class="tabcontent">
+    <div class="tabcontent" id="Downloads">
         <p>
         <div class="menu">
             <table class="paintings" role="presentation">
                 <tr>
                     <td class="download_pack" onclick="window.location='RestWorld_1.20.5+x.zip'">
-                        <img src="download.gif" align="middle" alt="download icon"> Download RestWorld 1.20.5+x
+                        <img align="middle" alt="download icon" src="download.gif"> Download RestWorld 1.20.5+x
                     </td>
                 </tr>
                 <tr>
                     <td class="download_pack" onclick="window.location='RestWorld_1.19.2.2.zip'">
-                        <img src="download.gif" align="middle" alt="download icon"> Download RestWorld 1.19.2.2
+                        <img align="middle" alt="download icon" src="download.gif"> Download RestWorld 1.19.2.2
                     </td>
                 </tr>
                 <tr>
                     <td class="download_pack" onclick="window.location='RestWorld_1.18.1v2.zip'">
-                        <img src="download.gif" align="middle" alt="download icon"> Download RestWorld 1.18.1v2
+                        <img align="middle" alt="download icon" src="download.gif"> Download RestWorld 1.18.1v2
                     </td>
                 </tr>
                 <tr>
                     <td class="download_pack" onclick="window.location='RestWorld_1.17.1.zip'">
-                        <img src="download.gif" align="middle" alt="download icon"> Download RestWorld 1.17.1
+                        <img align="middle" alt="download icon" src="download.gif"> Download RestWorld 1.17.1
                     </td>
                 </tr>
                 <tr>
                     <td class="download_pack" onclick="window.location='RestWorld_1.16.5.zip'">
-                        <img src="download.gif" align="middle" alt="download icon"> Download RestWorld 1.16.5
+                        <img align="middle" alt="download icon" src="download.gif"> Download RestWorld 1.16.5
                     </td>
                 </tr>
             </table>
 
-	    <div>
-		<dl>
-		    <dt>All Downloads:</dt>
-		    <dd>
-			<!-- Start downloads -->
-			<a class="download_pack" href="RestWorld_1.16.5.zip">1.16.5</a>,
-			<a class="download_pack" href="RestWorld_1.17.1.zip">1.17.1</a>,
-			<a class="download_pack" href="RestWorld_1.18.1.zip">1.18.1</a>,
-			<a class="download_pack" href="RestWorld_1.18.1v2.zip">1.18.1v2</a>,
-			<a class="download_pack" href="RestWorld_1.19.2.1.beta.zip">1.19.2.1.beta</a>,
-			<a class="download_pack" href="RestWorld_1.19.2.1.zip">1.19.2.1</a>,
-			<a class="download_pack" href="RestWorld_1.19.2.2.zip">1.19.2.2</a>,
-			<a class="download_pack" href="RestWorld_1.19.2.zip">1.19.2</a>,
-			<a class="download_pack" href="RestWorld_1.19.3+x.1.zip">1.19.3+x.1</a>,
-			<a class="download_pack" href="RestWorld_1.19.3+x.zip">1.19.3+x</a>,
-			<a class="download_pack" href="RestWorld_1.19.3.zip">1.19.3</a>,
-			<a class="download_pack" href="RestWorld_1.19.4+x.zip">1.19.4+x</a>,
-			<a class="download_pack" href="RestWorld_1.19.beta.zip">1.19.beta</a>,
-			<a class="download_pack" href="RestWorld_1.19.zip">1.19</a>,
-			<a class="download_pack" href="RestWorld_1.20.2.zip">1.20.2</a>,
-			<a class="download_pack" href="RestWorld_1.20.3+x.zip">1.20.3+x</a>,
-			<a class="download_pack" href="RestWorld_1.20.4+x.zip">1.20.4+x</a>,
-			<a class="download_pack" href="RestWorld_1.20.5+x.zip">1.20.5+x</a>,
-			<a class="download_pack" href="RestWorld_1.20.zip">1.20</a>,
-			<!-- End downloads -->
-		    </dd>
-		</dl>
+            <div>
+                <dl>
+                    <dt>All Downloads:</dt>
+                    <dd>
+                        <!-- Start downloads -->
+<a class="download_pack" href="RestWorld_1.16.5.zip">1.16.5</a>,
+<a class="download_pack" href="RestWorld_1.17.1.zip">1.17.1</a>,
+<a class="download_pack" href="RestWorld_1.18.1.zip">1.18.1</a>,
+<a class="download_pack" href="RestWorld_1.18.1v2.zip">1.18.1v2</a>,
+<a class="download_pack" href="RestWorld_1.19.2.1.beta.zip">1.19.2.1.beta</a>,
+<a class="download_pack" href="RestWorld_1.19.2.1.zip">1.19.2.1</a>,
+<a class="download_pack" href="RestWorld_1.19.2.2.zip">1.19.2.2</a>,
+<a class="download_pack" href="RestWorld_1.19.2.zip">1.19.2</a>,
+<a class="download_pack" href="RestWorld_1.19.3+x.1.zip">1.19.3+x.1</a>,
+<a class="download_pack" href="RestWorld_1.19.3+x.zip">1.19.3+x</a>,
+<a class="download_pack" href="RestWorld_1.19.3.zip">1.19.3</a>,
+<a class="download_pack" href="RestWorld_1.19.4+x.zip">1.19.4+x</a>,
+<a class="download_pack" href="RestWorld_1.19.beta.zip">1.19.beta</a>,
+<a class="download_pack" href="RestWorld_1.19.zip">1.19</a>,
+<a class="download_pack" href="RestWorld_1.20.2.zip">1.20.2</a>,
+<a class="download_pack" href="RestWorld_1.20.3+x.zip">1.20.3+x</a>,
+<a class="download_pack" href="RestWorld_1.20.4+x.zip">1.20.4+x</a>,
+<a class="download_pack" href="RestWorld_1.20.5+x.zip">1.20.5+x</a>,
+<a class="download_pack" href="RestWorld_1.20.zip">1.20</a>.
+                        <!-- End downloads -->
+                    </dd>
+                </dl>
             </div>
         </div>
     </div>
 
-    <div id="Details" class="tabcontent">
+    <div class="tabcontent" id="Details">
         <p>
             RestWorld was built on a lot of commands and functions. In case you're interested, here are some details.
 
         <ul>
             <li> Version numbering will be the same as the Minecraft version they are built for (for example, version
                 1.20.5+x is ready for Minecraft 1.20.5+x).
-            <li> Each room only loops while you're in it (or not too far above it), to keep overhead down.
+            <li> Each room only loops while you're in it (or not too far above or below it), to keep overhead down.
             <li> RestWorld is built on a lot of functions driven from command blocks, using armor stands to mark
                 locations that are used to base the actions. This means that it is somewhat easy to relocate a loop by
                 moving where its armor stand is.
             <li> There is a big reset button outside the main area, but your best bet is to keep a copy of the
                 downloaded world around to use in case of major messes, or just download a new copy when you want to.
-	    <li> Here are the things I know you can't see (it's a short list, and I mean it to be):
+            <li> Here are the things I know you can't see (it's a short list, and I mean it to be):
                 <ul>
                     <li> There is no way to force chests to display in <a
                             href="https://minecraft.gamepedia.com/Chest#Christmas_chest">their Christmas mode</a>.
                         You'll have to change your computer's time to see that.
                     <li> The default player skins are used when accounts are created,
-                        but I know of no way to show other player's skins in a world, except for the player's head, but
-                        that requires well-known accounts that use these skins, and I can't find any.
+                        but there is no obvious way to display them.
+                    <li> Trial vaults have some modes that don't work when set manually, they only briefly flash.
+                        There's a reported bug...
                     <li> A frozen ("NoAI") Allay won't dance to music (though a frozen parrot will, go figure). You'll
                         have to summon one,
                         tie it down, and put a record in a juke box on your own if you want to see it. It probably won't
                         change your texture much, though.
                     <li> Multiplayer features, like chat and its various security and map icons, require multiple
-                        players.  You'll have to recruit some friends to join your server, or get multiple accounts.
-		    <li> Some plants, like kelp, have a lot of specific ages (24 for kelp), and few people will
-			texture them differently, so I haven't bothered, but let me know if you care.
-		    <li> There are lots of possible combinations of mobs and their weapons and armor.
-			In the arena I only show the ones you mostly encounter in normal game play.
-			But not all of them.
+                        players. You'll have to recruit some friends to join your server, or get multiple accounts.
+                    <li> Some plants, like kelp, have a lot of specific ages (24 for kelp), and few people will
+                        texture them differently, so I haven't bothered, but let me know if you care.
+                    <li> There are lots of possible combinations of mobs and their weapons and armor.
+                        In the arena I only show the ones you mostly encounter in normal game play.
+                        But not all of them.
                     <li> Sounds. There are hundreds of them, and no obvious way to present them.
                 </ul>
-		As far as I know, these are the only things you can't see in the world, though some are not in the
+                As far as I know, these are the only things you can't see in the world, though some are not in the
                 first place you'd look for them. If you know others, let me know, maybe I can figure out how to show
                 them. (Actually I'm sure this list is incomplete in that I've forgotten to include some things I knew
                 about at one point.)
-		<li>Some things can only be shown in moving, active mobs, so you can't look at them as long as you like, but at least you can see them:
-		<ul>
-		    <li> A vex in "charging" mode can be found in the battle arena with the Evoker.
-		    <li> Evoker fangs can't be shown frozen, only in motion, so that's how they appear in the Mob room,
-			and also in the Battle arena with the Evoker.
-		    <li> A shivering Strider can be found in the Crimson Forest in the biome sampler.
-		    <li> Only a live camel will sit; one can be found in the Desert biome sample, but you'll have to wait for
-			it to decide to sit, which it will in its own sweet time.
-		</ul>
-	</ul>
+            <li>Some things can only be shown in moving, active mobs, so you can't look at them as long as you like, but
+                at least you can see them:
+                <ul>
+                    <li> A vex in "charging" mode can be found in the battle arena with the Evoker.
+                    <li> Evoker fangs can't be shown frozen, only in motion, so that's how they appear in the Mob room,
+                        and also in the Battle arena with the Evoker.
+                    <li> A shivering Strider can be found in the Crimson Forest in the biome sampler.
+                    <li> Only a live camel will sit; one can be found in the center, and Desert biome sample, but you'll
+                        have to
+                        wait for it to decide to sit, which it will in its own sweet time.
+                </ul>
+        </ul>
 
-	<h3>Finally...</h3>
+        <h3>Finally...</h3>
         <p> I started this world because I was working on my <a href="/index.html">Clarity resourcepack family</a>.
-	    It's a simple, clear family ot texture packs that reduces noise and increases clarity.
+            It's a simple, clear family ot texture packs that reduces noise and increases clarity.
             Check it out! <a href="/index.html"> <img src="clarity.gif"/> </a>.
+
+	    <p> If you're making a complete pack, the <a href="/call_out.html">Call Out</a> texture pack
+	    will, well, call out any textures you've missed. You can check that out too.
 
         <div class="heading">
             <h1>Credits</h1>
@@ -337,10 +362,10 @@
             creates the unicode font book.
     </div>
 
-    <div id="Where" class="tabcontent">
+    <div class="tabcontent" id="Where">
         <iframe id="whereFrame"
-                style="display: block, position:fixed; top:0; left:0; bottom:0; right:0; width:100%; height:100vh; border:none; margin:0; padding:0; overflow:hidden; z-index:999999;"
-                src="https://docs.google.com/spreadsheets/d/1zGI53hcDDDzIzw2cNQCsT4L4boyIGHYYTzQyOE2xKjg/edit?usp=sharing&amp;single=true&amp;widget=true&amp;headers=false"></iframe>
+                src="https://docs.google.com/spreadsheets/d/1zGI53hcDDDzIzw2cNQCsT4L4boyIGHYYTzQyOE2xKjg/edit?usp=sharing&amp;single=true&amp;widget=true&amp;headers=false"
+                style="display: block, position:fixed; top:0; left:0; bottom:0; right:0; width:100%; height:100vh; border:none; margin:0; padding:0; overflow:hidden; z-index:999999;"></iframe>
     </div>
     <!-- src="https://docs.google.com/spreadsheets/d/1x2nLHwqThGy5ehLQpXZJIsGEfEDfgDidzod2sHBa774/edit?usp=sharing&amp;single=true&amp;widget=true&amp;headers=false"></iframe> -->
 
@@ -351,27 +376,26 @@
                 <td class="tablinks Downloads" onclick="openTab(event, 'Downloads')">Downloads
                 </td>
                 <td class="tablinks Details" onclick="openTab(event, 'Details')">Details</td>
-<!--                <td class="tablinks Where" onclick="openTab(event, 'Where')">Where is...?</td>-->
+                <!--                <td class="tablinks Where" onclick="openTab(event, 'Where')">Where is...?</td>-->
             </tr>
         </table>
     </div>
 
     <!--CopyrightBegin -->
-<p class="license"><a rel="license" href="http://creativecommons.org/licenses/by/4.0/">
-    <img align="right"
-         alt="Creative Commons License"
-         style="border-width:0"
-         src="https://i.creativecommons.org/l/by/4.0/88x31.png"/></a>
-    <span
-            xmlns:dct="http://purl.org/dc/terms/"
-            property="dct:title">Restworld world for Minecraft</span> by <a
-            xmlns:cc="http://creativecommons.org/ns#" href="claritypack.com/resetworld" property="cc:attributionName"
-            rel="cc:attributionURL">https://claritypack.com/restworld</a>
-    <br>is licensed under a <a rel="license"
-                               href="http://creativecommons.org/licenses/by/4.0/">Creative
-        Commons Attribution 4.0 International License</a>.
-    <br>© 2016-2024 by Ken Arnold. Based on a work at <a
-            xmlns:dct="http://purl.org/dc/terms/" href="https://github.com/kcrca/restworld" rel="dct:source">https://github.com/kcrca/restworld</a>.
+    <p class="license"><a href="http://creativecommons.org/licenses/by/4.0/" rel="license">
+        <img align="right"
+             alt="Creative Commons License"
+             src="https://i.creativecommons.org/l/by/4.0/88x31.png"
+             style="border-width:0"/></a>
+        <span
+                property="dct:title">Restworld world for Minecraft</span> by <a
+                href="claritypack.com/resetworld" property="cc:attributionName"
+                rel="cc:attributionURL">https://claritypack.com/resetworld</a>
+        <br>is licensed under a <a href="http://creativecommons.org/licenses/by/4.0/"
+                                   rel="license">Creative
+            Commons Attribution 4.0 International License</a>.
+        <br>© 2016&ndash;2024 by Ken Arnold. Based on a work at <a
+                href="https://github.com/kcrca/restworld" rel="dct:source">https://github.com/kcrca/restworld</a>.
         <!--CopyrightEnd-->
     <p class="timestamp">Page Last Edited: Apr 23 12:26:14 2024
 
@@ -417,6 +441,12 @@ if (!tab_name) {
 document.addEventListener("DOMContentLoaded", function(event) {
     openTab(null, tab_name);
 });
+
+
+
+
+
+
 </script>
 </body>
 
