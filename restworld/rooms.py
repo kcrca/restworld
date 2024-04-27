@@ -427,9 +427,8 @@ class Room(FunctionSet):
                     offset.append(bump)
         pos = RelCoord.add(pos, offset)
         scale = 0.45
-        return execute().run(
-            TextDisplay(txt, nbt={'Tags': t, 'line_width': int(200 * scale), 'transformation': xform, 'background': 0}).scale(
-                scale).summon(pos))
+        return TextDisplay(txt, nbt={'Tags': t, 'line_width': int(200 * scale), 'transformation': xform,
+                                     'background': 0}).scale(scale).summon(pos)
 
 
 def _name_for(mob):
