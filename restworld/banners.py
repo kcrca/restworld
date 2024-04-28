@@ -139,7 +139,10 @@ def room():
     update = room.function('update_banners', home=False).add(
         execute().as_(stands).run(
             data().modify(s(), 'HandItems[1].components.minecraft:base_color').set().value(Arg('color')),
-            data().modify(s(), 'HandItems[1].components.minecraft:banner_patterns[].color').set().value(Arg('ink'))),
+            # We get an error if we try to slap this onto the banner without a pattern, so this filters that out.
+            execute().if_().data(s(), 'HandItems[1].components.minecraft:banner_patterns').run(
+                data().modify(s(), 'HandItems[1].components.minecraft:banner_patterns[].color').set().value(
+                    Arg('ink')))),
         fill(r(1, 3, 0), r(11, 5, 0), 'air').replace('#banners'),
         fill(r(12, 3, 1), r(12, 5, 11), 'air').replace('#banners'),
         fill(r(1, 3, 12), r(11, 5, 12), 'air').replace('#banners'),
@@ -160,7 +163,8 @@ def room():
                 data().merge(s(), {'text': JsonText(f'\u201c{pattern[1]}\u201d'), 'Rotation': as_facing(rot).rotation}),
             ),
             execute().positioned(r(x, 3, z)).as_(e().tag('banner_pattern_author').distance((None, 9))).run(
-                data().merge(s(), {'text': JsonText('by ').italic(True).extra(JsonText(pattern[2]).italic(False)), 'Rotation': as_facing(rot).rotation})),
+                data().merge(s(), {'text': JsonText('by ').italic(True).extra(JsonText(pattern[2]).italic(False)),
+                                   'Rotation': as_facing(rot).rotation})),
         )
 
     half = int(len(authored_patterns) / 2)
