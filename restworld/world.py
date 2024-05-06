@@ -66,7 +66,7 @@ class RestWorld(RoomPack):
                self._action(r'\u25b6\u25b6|', 'Next', '_incr'), r'\n', r'\nClock Speed:\n      ',
                self._action(r'<<', 'Slower Clock Speed', 'center/slower_clocks'), '   ',
                self._action(r'\u27f2', 'Reset Clock Speed', 'center/reset_clocks'), '   ',
-               self._action(r'>>', 'Faster Clock Speed', 'center/faster_clocks'), r'\n', r'\nPlaces:\n   ',
+               self._action(r'>>', 'Faster Clock Speed', 'center/faster_clocks'), r'\n', r'\nPlaces (click to visit):\n   ',
                self._action('Home', 'Starting Point', 'global/goto_home'), r'\n   ',
                self._action('Photo Shoot', 'Scenic View', 'global/goto_photo'), r'\n   ',
                self._action('Arena', 'Arena', 'global/goto_arena'), r'\n   ',
