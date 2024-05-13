@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 from pynecraft.base import NORTH, ROTATION_270, SOUTH, WEST, as_facing, r
-from pynecraft.commands import JsonText, e, fill, kill, summon
-from pynecraft.simpler import TextDisplay
+from pynecraft.commands import e, fill, kill, summon
+from pynecraft.simpler import WallSign
 from pynecraft.values import PAINTING_GROUP, paintings
 from restworld.rooms import Room
 from restworld.world import restworld
@@ -39,8 +39,8 @@ def room():
             y += px
         yield summon('painting', r(x + px, y, z + pz),
                      {'variant': thing.name, 'facing': facing.painting_number, 'Tags': ['painting']})
-        yield summon(TextDisplay(nbt={'Rotation': facing.rotation}).scale(0.5).text(JsonText().text(thing.value)))
-        # yield WallSign((None, thing.value, note)).place(r(x - moving.dx, 2, z - moving.dz), facing)
+        # yield summon(TextDisplay(nbt={'Rotation': facing.rotation}).scale(0.5).text(JsonText().text(thing.value)))
+        yield WallSign((None, thing.value, note)).place(r(x - moving.dx, 2, z - moving.dz), facing)
         unused.remove(thing.value)
 
     room.function('all_paintings_init').add(
