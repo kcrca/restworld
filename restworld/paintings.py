@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from pynecraft.base import NORTH, ROTATION_270, SOUTH, WEST, as_facing, r
-from pynecraft.commands import e, fill, kill, summon
-from pynecraft.simpler import WallSign
+from pynecraft.base import NORTH, ROTATION_270, SOUTH, Transform, WEST, as_facing, r
+from pynecraft.commands import JsonText, e, fill, kill, summon
+from pynecraft.simpler import TextDisplay
 from pynecraft.values import PAINTING_GROUP, paintings
 from restworld.rooms import Room
 from restworld.world import restworld
@@ -24,32 +24,42 @@ def room():
                 x += id * moving.dx
                 z += id * moving.dz
                 continue
-            thing = paintings[id]
+            img = paintings[id]
             yield from painting(id, facing, moving, x, z)
-            x += (thing.size[0] + 1) * moving.dx
-            z += (thing.size[0] + 1) * moving.dz
+            x += (img.size[0] + 1) * moving.dx
+            z += (img.size[0] + 1) * moving.dz
 
     def painting(id, facing, moving, x, z, sx=0, sy=0, sz=0, note=''):
-        thing = paintings[id]
+        img = paintings[id]
         px, pz = (0, 0)
-        y = 2 if thing.size[1] >= 4 else 3
-        if thing.size[0] > 2 and thing.size[1] > 2:
+        y = 2 if img.size[1] >= 4 else 3
+        if img.size[0] > 2 and img.size[1] > 2:
             px += moving.dx
             pz += moving.dz
             y += px
         yield summon('painting', r(x + px, y, z + pz),
-                     {'variant': thing.name, 'facing': facing.painting_number, 'Tags': ['painting']})
-        # yield summon(TextDisplay(nbt={'Rotation': facing.rotation}).scale(0.5).text(JsonText().text(thing.value)))
-        yield WallSign((None, thing.value, note)).place(r(x - moving.dx, 2, z - moving.dz), facing)
-        unused.remove(thing.value)
+                     {'variant': img.name, 'facing': facing.painting_number, 'Tags': ['painting']})
+        text = JsonText().text(img.value + r'\n').bold().extra(
+            JsonText.text(fr'{img.artist}\n').plain(),
+            JsonText.text(fr'{img.size[0]}x{img.size[1]}').plain().italic())
+        display = TextDisplay(text, nbt={
+            'alignment': 'left', 'line_width': 80, 'background': 0}).tag(
+            'painting').transform(
+            Transform.quaternion(facing, 0.5))
+
+        def adj(v, facing_d, moving_d):
+            return v + (img.size[0] - 0) * moving_d - facing_d / 2.01
+
+        yield display.summon(r(adj(x, facing.dx, moving.dx), 3, adj(z, facing.dz, moving.dz)))
+        unused.remove(img.value)
 
     room.function('all_paintings_init').add(
         kill(e().tag('painting')),
         kill(e().type('item')),
         fill(r(-2, 2, 0), r(16, 6, 26), 'air').replace('oak_wall_sign'),
 
-        wall(('Skull On Fire', 7, 'Pointer'), SOUTH, -1, 0),
-        wall(('Skull and Roses', 'The void', 'The Stage Is Set', 'Wither', 'Bust', 'Match'), WEST, 14, 2),
+        wall(('Skull On Fire', 7, 'Pointer'), SOUTH, -2, 0),
+        wall(('Skull and Roses', 'The void', 'The Stage Is Set', 'Wither', 'Bust', 'Match'), WEST, 14, 0),
 
         # painting('Pigscene', 2, 12, 26, sx=1),
         # painting('Earth', 2, 8, 26, note='(unused)'),
