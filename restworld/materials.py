@@ -6,7 +6,7 @@ from pynecraft import info
 from pynecraft.base import Arg, EAST, EQ, NE, NORTH, NW, Nbt, NbtDef, SOUTH, WEST, as_facing, r, to_id
 from pynecraft.commands import Block, BlockDef, Entity, LONG, MOD, PLUS, RESULT, as_block, data, e, execute, fill, \
     fillbiome, function, item, kill, random, s, scoreboard, setblock, summon, tag
-from pynecraft.function import BLOCKS
+from pynecraft.function import BLOCK
 from pynecraft.info import colors, stems, trim_materials, trim_patterns
 from pynecraft.simpler import Item, ItemFrame, Region, SWAMP, Sign, WallSign
 from pynecraft.values import COLD_OCEAN, FROZEN_OCEAN, LUKEWARM_OCEAN, MANGROVE_SWAMP, MEADOW, OCEAN, WARM_OCEAN, biomes
@@ -364,7 +364,7 @@ def fencelike_functions(room):
 
 
 def copper_functions(room):
-    tags = restworld.tags(BLOCKS)
+    tags = restworld.tags(BLOCK)
 
     def copper_tags(type) -> None:
         blocks = list(re.sub('^_', '', f'{v}{type}') for v in ('', 'exposed_', 'weathered_', 'oxidized_'))

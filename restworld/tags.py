@@ -3,7 +3,7 @@ import re
 from pynecraft import info
 from pynecraft.base import to_id
 from pynecraft.commands import COLORS
-from pynecraft.function import BLOCKS
+from pynecraft.function import BLOCK
 from pynecraft.info import corals, stems
 from restworld.world import restworld
 
@@ -22,7 +22,7 @@ def tags():
         'stained_glass_pane': 'glass_pane',
         'terracotta': 'terracotta'}
 
-    blocks = restworld.tags(BLOCKS)
+    blocks = restworld.tags(BLOCK)
     for thing, added in colorable.items():
         blocks[thing] = {
             'values': ['%s_%s' % (c, thing) for c in COLORS]
