@@ -660,11 +660,10 @@ def room():
     def trial_loop(step):
         spawner_state = step.elem
         vault_state = vault_states[step.elem] if step.elem in vault_states else step.elem
-        for i in range(len(trial_blocks)):
+        for i, block in enumerate(trial_blocks):
             is_spawner = i < 2
             is_ominous = i % 2 == 1
             pos = trials[i]
-            block = trial_blocks[i].clone()
             if is_spawner:
                 block.merge_state({'trial_spawner_state': spawner_state}).merge_nbt(trial_spawner_nbts[spawner_state])
             else:
