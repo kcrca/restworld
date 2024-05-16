@@ -45,13 +45,14 @@ def room():
         title = img.value
         if note:
             title += f' {note}'
+        # commented out because in any pack taht touches the paintings, the artist will be wrong
+        # JsonText.text(fr'{img.artist}\n').plain(),
         text = JsonText().text(title + r'\n').bold().extra(
-            JsonText.text(fr'{img.artist}\n').plain(),
             JsonText.text(fr'{img.size[0]}×{img.size[1]}').plain().italic())
         display = TextDisplay(text, nbt={
-            'alignment': 'left', 'line_width': 80, 'background': 0}).tag(
+            'alignment': 'left', 'line_width': 84, 'background': 0}).tag(
             'painting').transform(
-            Transform.quaternion(facing, 0.5))
+            Transform.quaternion(facing, 0.45))
 
         def adj(v, facing_d, moving_d):
             return v + (img.size[0] - 0) * moving_d - facing_d / 2.01
