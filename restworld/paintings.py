@@ -11,7 +11,7 @@ from restworld.world import restworld
 # noinspection SpellCheckingInspection
 def room():
     room = Room('paintings', restworld, NORTH, (None, 'Paintings'))
-    room.reset_at((0, 3))
+    room.reset_at((0, 3), note="and Labels")
     unused = set(PAINTING_GROUP)
 
     def wall(ids, facing, x, z, y=3, note=None):
@@ -45,11 +45,14 @@ def room():
         title = img.value
         if note:
             title += f' {note}'
-        # commented out because in any pack taht touches the paintings, the artist will be wrong
-        # JsonText.text(fr'{img.artist}\n').plain(),
-        text = JsonText().text(title + r'\n').bold().extra(
-            JsonText.text(fr'{img.size[0]}×{img.size[1]}').plain().italic())
-        display = TextDisplay(text, nbt={
+        txt = JsonText.translate(f'painting.minecraft.{img.name}.title').bold().italic(False)
+        if note:
+            txt = txt.extra(r' (note)')
+        txt = txt.extra(r'\n')
+        txt = txt.extra(JsonText.translate(
+            f'painting.minecraft.{img.name}.author').plain(),
+                        JsonText.text(fr'\n{img.name} {img.size[0]}×{img.size[1]}\n').plain().italic())
+        display = TextDisplay(txt, nbt={
             'alignment': 'left', 'line_width': 84, 'background': 0}).tag(
             'painting').transform(
             Transform.quaternion(facing, 0.45))
