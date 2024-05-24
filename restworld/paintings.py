@@ -47,7 +47,7 @@ def room():
             title += f' {note}'
         txt = JsonText.translate(f'painting.minecraft.{img.name}.title').bold().italic(False)
         if note:
-            txt = txt.extra(r' (note)')
+            txt = txt.extra(fr' {note}')
         txt = txt.extra(r'\n')
         txt = txt.extra(JsonText.translate(
             f'painting.minecraft.{img.name}.author').plain(),
