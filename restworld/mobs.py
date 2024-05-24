@@ -122,18 +122,17 @@ def friendlies(room):
     room.loop('cow', main_clock).add(kill_em(e().tag('cowish'))).loop(
         lambda step: placer(*mid_east_placer, tags=('cowish',)).summon(step.elem),
         ('cow', 'mooshroom', Entity('mooshroom', {'Type': 'brown'})))
-    room.function('fox_init').add(placer(*mid_east_placer).summon('fox'))
+    room.function('fox_init').add(placer(*mid_east_placer).summon('fox'), room.label(r(2, 2, -1), 'Fox Type', WEST))
 
     fox_postures = ('Crouching', 'Sitting', 'Sleeping')
 
     def fox_loop(step):
-        which = 'red' if step.i < len(fox_postures) + 1 else 'snow'
-        nbt = {'Type': which, 'CustomName': f'{which.title()} Fox'}
+        nbt = {}
         for p in fox_postures:
             nbt[p] = step.elem == p
         yield execute().as_(e().tag('fox')).run(data().merge(s(), nbt))
 
-    room.loop('fox', main_clock).loop(fox_loop, (('',) + fox_postures) * 2)
+    room.loop('fox', main_clock).loop(fox_loop, (('',) + fox_postures))
     frog_pos, spawn_pos, sign_pos, frog_dir = r(0, 2, 0), r(1, 2, 0), r(1, 2, 1), EAST
     room.function('frog_init').add(placer(
         frog_pos, frog_dir, adults=True).summon('frog'))
