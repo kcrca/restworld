@@ -24,19 +24,13 @@ EOF
 
 (
     echo /-- Start downloads/+,/-- End downloads/-c
-    out=""
     for f in Rest?orld*.zip; do
 	name=${f:s,RestWorld_,}
 	name=${name:s,.zip,}
-	link="<a class=\"download_pack\" href=\"$f\">$name</a>"
-	if [[ $out == "" ]]; then
-	    out="$link"
-	else
-	    out+=",\n$link"
-	fi
+	cat <<EOF
+			<a class="download_pack" href="$f">$name</a>,
+EOF
     done
-    out+='.'
-    echo $out
     echo .
     echo w
     echo q
