@@ -5,7 +5,7 @@ from datetime import date
 
 from pynecraft.base import DARK_GREEN, DARK_PURPLE, r
 from pynecraft.commands import CREATIVE, Commands, Entity, JsonText, SIDEBAR, clear, data, e, execute, fill, function, \
-    gamemode, give, kill, p, scoreboard, tp
+    gamemode, give, kill, p, scoreboard, setblock, tp
 from pynecraft.function import Function, FunctionSet
 from pynecraft.simpler import Book, Sign, TextDisplay
 from restworld.rooms import Clock, Room, RoomPack
@@ -39,7 +39,6 @@ class RestWorld(RoomPack):
             self.function_set.add(f)
         self.function_set.add(Function('ready').add(
             clear(p()),
-            kill(e().type('item')),
             gamemode(CREATIVE, p()),
             function('restworld:global/control_book'),
             tp(p(), (0, 101, 0)).facing((0, 100, 5)),
@@ -47,7 +46,10 @@ class RestWorld(RoomPack):
             function('restworld:center/reset_clocks'),
             function('restworld:global/clock_on'),
             function("restworld:_exit"),  # Leave any room we were in by leaving them all
-            execute().at(e().tag('center_home')).run(function("restworld:center/_enter")),
+            execute().at(e().tag('particles_action_home')).run(setblock(r(0, 2, -3), 'air')),
+            execute().at(e().tag('font_run_home')).run(fill(r(-3, 2, 2), r(3, 2, 2), 'air')),
+            execute().at(e().tag('maps_room_hom')).run(setblock(r(8, 2, -2), 'air')),
+            kill(e().type('item')),
         ))
         super().save(*args, **kwargs)
 

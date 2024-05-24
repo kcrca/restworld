@@ -90,7 +90,7 @@ def room():
             room_home = mob_room + '_home'
             yield execute().as_(e().tag(room_home)).run(data().merge(s(), {'Invisible': True}))
             yield execute().as_(e().tag(room_home, '!blockers_home')).at(s()).run(tp(s(), r(0, 2, 0)))
-            yield execute().as_(e().tag(mob_room, '!passenger').type('!item_frame')).at(s()).run(
+            yield execute().as_(e().tag(mob_room, '!passenger').type('!text_display')).at(s()).run(
                 tp(s(), r(0, 2, 0)))
 
     def lower_mobs_func():
@@ -103,7 +103,7 @@ def room():
             room_home = mob_room + '_home'
             yield execute().as_(e().tag(room_home)).run(data().merge(s(), {'Invisible': False}))
             yield execute().as_(e().tag(room_home, '!blockers_home')).at(s()).run(tp(s(), r(0, -2, 0)))
-            yield execute().as_(e().tag(mob_room, '!passenger').type('!item_frame')).at(
+            yield execute().as_(e().tag(mob_room, '!passenger').type('!text_display')).at(
                 s()).run(tp(s(), r(0, -2, 0)))
 
     room.function('arena').add(

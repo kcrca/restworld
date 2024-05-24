@@ -78,11 +78,11 @@ def room():
              WEST, 24, 1),
 
         wall(('Earth', 'Wind', 6, 'Water', 'Fire'), SOUTH, 3, 21, note='(unused)'),
-        wall(('Cotán', 'Humble', 5, 'Changing', 'Albanian'), NORTH, 20, 19),
+        wall(('Cotán', 'Humble', 5, 'Albanian', 'Changing'), NORTH, 20, 19),
 
         wall(('Target Successfully Bombed', 'Baroque', 'Paradisträd', 5, 'Sunflowers',
               'sunset_dense'), SOUTH, 2, 14),
-        wall(('The Pool', 'Bust', 5, 'Finding', 'Meditative'), NORTH, 19, 12),
+        wall(('The Pool', 'Bust', 5, 'Meditative', 'Finding'), NORTH, 19, 12),
 
         wall(('Bouquet', 'Match', 6, 'Creebet', 'Seaside'), SOUTH, 2, 7),
         wall(('de_aztec', 'de_aztec 2', 'Wasteland', 6, 'Lowmist'), NORTH, 19, 5),
