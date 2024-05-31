@@ -202,6 +202,7 @@ class Room(FunctionSet):
             room_name = room_name.replace(',', '').replace(':', '')
         self.title = room_name
 
+
     def home_func(self, name, home=None):
         home_marker_comment = 'Default home function'
         marker_tag = '%s_home' % name
@@ -389,26 +390,27 @@ class Room(FunctionSet):
     def _home_func_name(self, base):
         # noinspection PyProtectedMember
         return self.pack._home_func_name(base)
+    _ADJ = 0.45
 
     _transform = {
         False: {
             SOUTH: ((0, 1, 0), 1, {'right_rotation': [0.7, 0.0, 0.0, -0.7], 'left_rotation': [0.0, 1.0, 0.0, 0.0],
-                                   'translation': [0.0, 0.0, -0.5]}),
+                                   'translation': [0.0, 0.0, -_ADJ]}),
             NORTH: ((0, 1, 0), 1, {'right_rotation': [0.7, 0.0, 0.0, -0.7], 'left_rotation': [0.0, 0.0, 0.0, 1.0],
-                                   'translation': [0.0, 0.0, 0.5]}),
+                                   'translation': [0.0, 0.0, _ADJ]}),
             EAST: ((0, 1, 0), 1, {'right_rotation': [0.7, 0.0, 0.0, -0.7], 'left_rotation': [0.0, 0.7, 0.0, -0.7],
-                                  'translation': [-0.5, 0.0, 0.0]}),
+                                  'translation': [-_ADJ, 0.0, 0.0]}),
             WEST: ((0, 1, 0), 1, {'right_rotation': [0.7, 0.0, 0.0, -0.7], 'left_rotation': [0.0, 0.7, 0.0, 0.7],
-                                  'translation': [0.5, 0.0, 0.0]}),
+                                  'translation': [_ADJ, 0.0, 0.0]}),
         },
         True: {
             NORTH: ((0, 0, 1), 1, {'right_rotation': [0.0, 0.0, 0.0, 1.0], 'left_rotation': [0.0, 0.0, 0.0, 1.0],
                                    'translation': [0.0, 0.0, 0.0]}),
             SOUTH: ((0, 0, 0), -1, {'right_rotation': [0.0, 1.0, 0.0, 0.0], 'left_rotation': [0.0, 0.0, 0.0, 1.0],
                                     'translation': [0.0, 0.0, 0.0]}),
-            WEST: ((-0.5, 0, 0), 1, {'right_rotation': [0.0, 0.7, 0.0, 0.7], 'left_rotation': [0.0, 0.0, 0.0, 1.0],
+            WEST: ((-_ADJ, 0, 0), 1, {'right_rotation': [0.0, 0.7, 0.0, 0.7], 'left_rotation': [0.0, 0.0, 0.0, 1.0],
                                      'translation': [0.0, 0.0, 0.0]}),
-            EAST: ((0.5, 0, 0), -1, {'right_rotation': [0.0, 0.7, 0.0, -0.7], 'left_rotation': [0.0, 0.0, 0.0, 1.0],
+            EAST: ((_ADJ, 0, 0), -1, {'right_rotation': [0.0, 0.7, 0.0, -0.7], 'left_rotation': [0.0, 0.0, 0.0, 1.0],
                                      'translation': [0.0, 0.0, 0.0]}),
         },
     }
