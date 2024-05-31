@@ -100,10 +100,10 @@ def room():
         execute().at(e().tag('font_action_home')).run(setblock(save_pos, 'air')),
         function('restworld:font/check_sign'),
         WallSign((None, 'Color Holder')).place(r(0, -3, -3), SOUTH), kill(e().tag('sign_desc')),
-        TextDisplay('This sign sets the text', {'background': 0, 'line_width': 70, 'shadow_radius': 0}).scale(0.5).tag(
+        TextDisplay('Change this sign to change the text', {'background': 0, 'line_width': 100, 'shadow_radius': 0}).scale(0.5).tag(
             'sign_desc').summon(r(0, 2, -0.4)),
-        # For some reason this is needed (24w11a)
-        data().modify(e().tag('sign_desc').limit(1), 'line_width').set().value(70),
+        # For some reason this is needed (1.21-pre1)
+        data().modify(e().tag('sign_desc').limit(1), 'line_width').set().value(100),
     )
 
     for i, c in enumerate(colors):
