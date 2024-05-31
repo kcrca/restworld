@@ -14,7 +14,7 @@ def room():
 
     room.function('example_painting_init').add(
         kill(e().tag('center_painting')),
-        summon(Entity('painting', {'variant': 'skeleton', 'Facing': 3, 'Tags': ['center_painting']}), r(0, 3, 0)))
+        summon(Entity('painting', {'variant': 'prairie_ride', 'facing': 3, 'Tags': ['center_painting']}), r(0, 4, 0)))
     speed_fast = Score('SPEED_FAST', 'clocks')
     speed_main = Score('SPEED_MAIN', 'clocks')
     speed_slow = Score('SPEED_SLOW', 'clocks')
@@ -68,7 +68,7 @@ def room():
 
     all = {'Tags': ['center', 'mob_display'], 'PersistenceRequired': True}
     trim_stand = Entity('armor_stand', all).tag('center_stand')
-    armor_for(trim_stand, 'iron', {'components': {'trim': {'pattern': 'dune', 'material': 'emerald'}}})
+    armor_for(trim_stand, 'iron', {'components': {'trim': {'pattern': 'flow', 'material': 'emerald'}}})
     silent = {'Silent': True}
     room.function('mobs_display_init').add(
         kill(e().tag('mob_display')),
