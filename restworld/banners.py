@@ -17,8 +17,8 @@ stand_tmpl = Entity('armor_stand', {
 
 # [xz]n: Adjustments (nudge) for shield's armor stand
 # b[xz]: Adjustments for banner position
-#                  x   xn  xd   z   zn  zd             bx  bz  skip middle
-adjustments = {0: (1, 0.07, 1, -1, 0.30, 0, 0, 'south', 0, +1),
+#                   x  xn  xd   z   zn  zd             bx  bz  skip middle
+adjustments = {00: (1, 0.07, 1, -1, 0.30, 0, 0, 'south', 0, +1),
                11: (13, -0.30, 0, 1, 0.07, 1, 90, 'west', -1, 0),
                22: (11, -0.07, -1, 13, -0.30, 0, 180, 'north', 0, -1),
                32: (-1, 0.30, 0, 11, -0.07, -1, 270, 'east', +1, 0)}
