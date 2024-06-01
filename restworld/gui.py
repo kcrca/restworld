@@ -3,7 +3,8 @@ from __future__ import annotations
 from pynecraft import commands
 from pynecraft.base import EAST, NORTH, Nbt, WEST, r
 from pynecraft.commands import BOSSBAR_COLORS, BOSSBAR_STYLES, Block, CREATIVE, Entity, LEVELS, REPLACE, SURVIVAL, a, \
-    bossbar, clone, data, e, effect, execute, fill, function, gamemode, item, kill, p, schedule, setblock, summon, tag
+    bossbar, clone, data, e, effect, execute, fill, function, gamemode, item, kill, p, return_, schedule, setblock, \
+    summon, tag
 from pynecraft.info import must_give_items, operator_menu
 from pynecraft.simpler import Item, ItemFrame, Sign, WallSign
 from restworld.rooms import Room
@@ -34,6 +35,7 @@ def room():
 
     room.loop('crafter', main_clock).loop(crafter_loop, range(0, 2))
 
+    beacon_on = room.score('beacon_on')
     def beacon_loop(step):
         depth = step.elem
         start_gold = depth - 1
@@ -49,17 +51,22 @@ def room():
         yield at(WallSign.change(r(-1, 6, 0), (None, f'Pyramid Height: {step.elem}')))
 
     # Can't use bounce because we need to show two things at full strength.
-    room.loop('beacon', slow_clock).loop(
+    room.loop('beacon', slow_clock).add(
+        execute().if_().score(beacon_on).matches(0).run(return_())
+    ).loop(
         beacon_loop, (0, 1, 2, 3, 4, 4, 3, 2, 1))
     beacon_start = room.function('beacon_start', home=False).add(
+        beacon_on.set(1),
         at(fill(r(0, 1, 0), r(0, 5, 0), 'gold_block')),
         at(clone(r(0, -5, 1), r(0, -5, 1), r(0, 6, 1))))
     beacon_stop = room.function('beacon_stop', home=False).add(
+        beacon_on.set(0),
         at(fill(r(0, 1, 0), r(0, 5, 0), 'chiseled_quartz_block')),
         effect().clear(p()))
     room.function('beacon_enter').add(function(beacon_start))
     room.function('beacon_exit').add(function(beacon_stop))
     room.function('beacon_init').add(
+        beacon_on.set(0),
         at(WallSign((None, 'Pyramid Height: 0')).place(r(-1, 6, 0), WEST)),
         room.label(r(-3, 2, -5), 'Beacon', EAST),
     )
