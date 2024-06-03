@@ -121,8 +121,6 @@ def room():
 
     room.function('arrive_biome').add(execute().in_(OVERWORLD).run(weather(CLEAR)))
     room.function('arrive_biome_init').add(
-        room.label(r(0, 3, -6), 'Go Home', SOUTH),
-        room.label(r(-1, 3, -6), 'Go Home', SOUTH),
         room.label(r(0, 3, -2), 'Go Home', NORTH),
         room.label(r(-1, 3, -2), 'Go Home', NORTH),
     )
@@ -131,7 +129,7 @@ def room():
     room.home_func('category_action')
     room.function('category_init').add(
         categories(),
-        room.label(r(5, -1, 6), 'Illuminate'),
+        room.label(r(5, -1, 6), 'Illuminate', SOUTH),
     )
     load_biome_score = room.score('load_biome')
     for g in biome_groups:
