@@ -79,7 +79,12 @@ def room():
     menu_init = room.function('mob_menu_init').add(
         function(menu_clear),
         fill(r(-9, 2, -9), r(9, 4, 9), 'air').replace('water'),
-        fill(r(-9, 2, -9), r(9, 4, 9), 'air').replace('structure_void'))
+        fill(r(-9, 2, -9), r(9, 4, 9), 'air').replace('structure_void'),
+        room.label(r(-2, 2, -2), 'This Corner\\n\u21e7', NW),
+        room.label(r(2, 2, -2), 'This Corner\\n\u21e7', NE),
+        room.label(r(2, 2, 2), 'This Corner\\n\u21e7', SE),
+        room.label(r(-2, 2, 2), 'This Corner\\n\u21e7', SW),
+    )
     my_mobs = copy.deepcopy(info.mobs)
     my_mobs['<None>'] = Entity('none', name='<None>')
     all_mobs = tuple(my_mobs.keys())
