@@ -1,13 +1,15 @@
 from __future__ import annotations
 
 import copy
+import math
 import re
 from copy import deepcopy
 from typing import Callable, Iterable, Tuple
 
-from pynecraft.base import BLUE, EAST, FacingDef, NORTH, Nbt, ORANGE, ROTATION_180, ROTATION_270, ROTATION_90, RelCoord, \
-    SOUTH, \
-    WEST, r, \
+from pynecraft.base import BLUE, EAST, FacingDef, NE, NORTH, NW, Nbt, ORANGE, ROTATION_180, ROTATION_270, ROTATION_90, \
+    RelCoord, \
+    SE, SOUTH, \
+    SW, WEST, r, \
     rotate_facing, \
     to_name
 from pynecraft.commands import Block, BlockDef, CLEAR, Command, Commands, Entity, EntityDef, INT, JsonText, MINUS, \
@@ -202,7 +204,6 @@ class Room(FunctionSet):
             room_name = room_name.replace(',', '').replace(':', '')
         self.title = room_name
 
-
     def home_func(self, name, home=None):
         home_marker_comment = 'Default home function'
         marker_tag = '%s_home' % name
@@ -390,7 +391,9 @@ class Room(FunctionSet):
     def _home_func_name(self, base):
         # noinspection PyProtectedMember
         return self.pack._home_func_name(base)
+
     _ADJ = 0.45
+    _DIAG_ADJ = _ADJ * math.sin(45)
 
     _transform = {
         False: {
@@ -402,6 +405,14 @@ class Room(FunctionSet):
                                   'translation': [-_ADJ, 0.0, 0.0]}),
             WEST: ((0, 1, 0), 1, {'right_rotation': [0.7, 0.0, 0.0, -0.7], 'left_rotation': [0.0, 0.7, 0.0, 0.7],
                                   'translation': [_ADJ, 0.0, 0.0]}),
+            NW: ((0, 1, 0), 1, {'right_rotation': [0.7, 0.0, 0.0, -0.7], 'left_rotation': [0.0, 0.39, 0.0, 1.0],
+                                'translation': [_DIAG_ADJ, 0.0, _DIAG_ADJ]}),
+            NE: ((0, 1, 0), 1, {'right_rotation': [0.7, 0.0, 0.0, -0.7], 'left_rotation': [0.0, -0.39, 0.0, 1.0],
+                                'translation': [-_DIAG_ADJ, 0.0, _DIAG_ADJ]}),
+            SE: ((0, 1, 0), 1, {'right_rotation': [0.7, 0.0, 0.0, -0.7], 'left_rotation': [0.0, 0.9, 0.0, -0.4],
+                                'translation': [-_DIAG_ADJ, 0.0, -_DIAG_ADJ]}),
+            SW: ((0, 1, 0), 1, {'right_rotation': [0.7, 0.0, 0.0, -0.7], 'left_rotation': [0.0, - 0.9, 0.0, -0.4],
+                                'translation': [_DIAG_ADJ, 0.0, -_DIAG_ADJ]}),
         },
         True: {
             NORTH: ((0, 0, 1), 1, {'right_rotation': [0.0, 0.0, 0.0, 1.0], 'left_rotation': [0.0, 0.0, 0.0, 1.0],
@@ -409,9 +420,9 @@ class Room(FunctionSet):
             SOUTH: ((0, 0, 0), -1, {'right_rotation': [0.0, 1.0, 0.0, 0.0], 'left_rotation': [0.0, 0.0, 0.0, 1.0],
                                     'translation': [0.0, 0.0, 0.0]}),
             WEST: ((-_ADJ, 0, 0), 1, {'right_rotation': [0.0, 0.7, 0.0, 0.7], 'left_rotation': [0.0, 0.0, 0.0, 1.0],
-                                     'translation': [0.0, 0.0, 0.0]}),
+                                      'translation': [0.0, 0.0, 0.0]}),
             EAST: ((_ADJ, 0, 0), -1, {'right_rotation': [0.0, 0.7, 0.0, -0.7], 'left_rotation': [0.0, 0.0, 0.0, 1.0],
-                                     'translation': [0.0, 0.0, 0.0]}),
+                                      'translation': [0.0, 0.0, 0.0]}),
         },
     }
 
