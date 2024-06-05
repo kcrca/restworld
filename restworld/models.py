@@ -3,7 +3,8 @@ from collections import defaultdict
 
 from pynecraft import info
 from pynecraft.base import EAST, EQ, NORTH, WEST, as_facing, d, r, to_name
-from pynecraft.commands import REPLACE, comment, data, e, execute, fill, function, item, kill, p, schedule, setblock, \
+from pynecraft.commands import JsonText, REPLACE, comment, data, e, execute, fill, function, item, kill, n, p, schedule, \
+    setblock, \
     summon, tag
 from pynecraft.info import block_items
 from pynecraft.simpler import Item, ItemFrame, Sign, WallSign
@@ -155,6 +156,7 @@ def room():
         needs_restore.set(0),
 
         room.label(r(0, 2, -1), 'On Head', WEST),
+        room.label(r(1, 2.5, 0), 'None', WEST, vertical=True, tags=('current_model',)),
 
         is_empty.set(1),
         schedule().function('restworld:models/model_copy', '1s', REPLACE)
@@ -217,6 +219,7 @@ def room():
             yield item().replace().entity(model_src, 'container.0').with_(step.elem)
             name = step.elem.name.replace(' [x]', '')
             yield at_home(Sign.change(signs[-1], (name,)))
+            yield data().modify(n().tag('current_model'), 'text').set().value(JsonText.text(name))
 
         all_things = things
         all_things_loop = room.loop(f'all_{which}', fast_clock).add(is_empty.set(1))
