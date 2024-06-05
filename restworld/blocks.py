@@ -140,7 +140,8 @@ def room():
         'Stone Bricks', 'Mossy|Stone Bricks', 'Cracked|Stone Bricks', 'Chiseled|Stone Bricks',
         'Polished|Blackstone Bricks', 'Cracked Polished|Blackstone Bricks', 'End Stone|Bricks'))
     blocks('chiseled', NORTH,
-           ('Chiseled|Deepslate', 'Chiseled|Polished|Blackstone', 'Chiseled|Quartz Block', 'Chiseled|Tuff'))
+           ('Chiseled|Deepslate', 'Chiseled|Polished|Blackstone', 'Gilded Blackstone', 'Chiseled|Quartz Block',
+            'Chiseled|Tuff'))
     campfire_food = room.score('campfire_food')
     campfire_init, campfire_main = blocks('campfire', NORTH, (
         Block('Campfire', {'lit': True}),
