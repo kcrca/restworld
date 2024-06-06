@@ -663,7 +663,7 @@ def trim_functions(room):
             yield kill(e().tag(overall_tag))
             stand_start = int((len(places) - len(self.types)) / 2)
             for i, t in enumerate(self.types):
-                stand = base_stand.clone().tag(self.tag).merge_nbt({'CustomName': t.title(), 'CustomNameVisible': True})
+                stand = base_stand.clone().tag(self.tag).merge_nbt({'CustomName': t.title()})
                 self.armor_gen(stand, t)
                 loc = places[stand_start + i]
                 yield stand.summon(loc[0], {'Rotation': as_facing(loc[1]).rotation})
