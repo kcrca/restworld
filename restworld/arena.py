@@ -169,7 +169,7 @@ def room():
                                 e().nbt({'CustomName': str(i)}).limit(1)).run(incr))
                         return function(f)
                     incr = summon(Entity(mob, my_nbts), r(0, y_off, z_off))
-                    incr_cmd = execute().if_().score((f'{which}_count', 'arena')).is_(LT, ('arena_count', 'arena')).at(
+                    incr_cmd = execute().if_().score((f'{which}_count', 'arena')).is_(LT, arena_count).at(
                         e().tag(f'{which}_home').sort('random').limit(1)).run(incr)
                     return incr_cmd
 
@@ -245,8 +245,9 @@ def room():
             Sign.change(r(2, 4, 0), (None, f'{step.elem:d} vs. {step.elem:d}'))), range(0, COUNT_MAX + 1))
 
     room.function('arena_run_init').add(
-        function('restworld:arena/arena_run_cur')
+        function('restworld:arena/arena_run_cur'),
     )
+
     # This is NOT intended to be run on the clock. It is only called '_main' because that gives us a
     # '_cur' function, which is useful when paging through the signs. Do not create the _home armor stand.
     arena_run_loop = arena_run_main(room.loop('arena_run', main_clock, home=False))
@@ -255,7 +256,9 @@ def room():
         arena_run_loop.score.set(0),
         function('restworld:arena/arena_run_cur'),
         room.label(r(1, 3, 0), 'Go Home', EAST),
-        tag(e().tag('controls_home')).add('controls_action_home')
+        tag(e().tag('controls_home')).add('controls_action_home'),
+        # This init func won't get run because there is no home
+        function('restworld:arena/arena_count_init'),
     )
 
     room.function('hunter_home').add(random_stand('hunter'))
@@ -266,7 +269,6 @@ def room():
     h_counter = counter('hunter', h_is_splitter)
     v_counter = counter('victim', v_is_splitter)
 
-    room.function('monitor_init').add(h_is_splitter.set(0), v_is_splitter.set(0), peace.set(0))
     room.function('monitor').add(
         function(h_counter),
         function(v_counter),
