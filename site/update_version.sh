@@ -12,7 +12,7 @@ ver_old_re=$(echo "$ver_old" | sed -e 's/[.]/\\./g')
 ts_cur=$(stat -f '%Sm' index.html)
 
 rm -f index.html.new
-ex index.html <<EOF || true
+ex - index.html <<EOF || true
 g/\\<$ver_old_re\\>/s//$ver_cur/g
 g/_$ver_old_re\\>/s//_$ver_cur/g
 /CopyrightBegin/+,/CopyrightEnd/-d
@@ -25,17 +25,16 @@ EOF
 (
     echo /-- Start downloads/+,/-- End downloads/-c
     for f in Rest?orld*.zip; do
-	name=${f:s,RestWorld_,}
-	name=${name:s,.zip,}
-	cat <<EOF
-			<a class="download_pack" href="$f">$name</a>,
+        name=${f:s,RestWorld_,}
+        name=${name:s,.zip,}
+        cat <<EOF
+                        <a class="download_pack" href="$f">$name</a>,
 EOF
     done
     echo .
     echo w
     echo q
-) | ed - index.html
-grep spaq index.html
+) | ed - index.html.new
 
 # If it's been changed, update the edit date
 if cmp -s index.html index.html.new; then
