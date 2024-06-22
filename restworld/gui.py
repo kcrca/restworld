@@ -36,6 +36,7 @@ def room():
     room.loop('crafter', main_clock).loop(crafter_loop, range(0, 2))
 
     beacon_on = room.score('beacon_on')
+
     def beacon_loop(step):
         depth = step.elem
         start_gold = depth - 1
@@ -155,9 +156,9 @@ def room():
         item().replace().block(r(0, 2, 0), 'container.4').with_('air'),
         data().merge(r(0, 2, 0), {'BrewTime': 0, 'Fuel': 0})).loop(brewing_loop, bottle_possibilities)
     room.function('brewing_run', fast_clock).add(
-        item().replace().block(r(0, 2, 0), 'container.0').with_(water_potion),
-        item().replace().block(r(0, 2, 0), 'container.1').with_('air'),
-        item().replace().block(r(0, 2, 0), 'container.2').with_(water_potion),
+        (execute().if_().items(r(0, 2, 0), f'container.{i}',
+                               str(Item('potion', components={'potion_contents': 'awkward'}))).run(
+            item().replace().block(r(0, 2, 0), f'container.{i}').with_(water_potion)) for i in range(3)),
         item().replace().block(r(0, 2, 0), 'container.3').with_('nether_wart'),
         item().replace().block(r(0, 2, 0), 'container.4').with_('blaze_powder'),
     )
@@ -169,7 +170,11 @@ def room():
     )
     room.function('switch_brewing_on', home=False).add(
         execute().at(e().tag('brewing_home')).run(
-            summon('armor_stand', r(0, 0, 0), {'Tags': ['homer', 'brewing_run_home'], 'NoGravity': True})))
+            summon('armor_stand', r(0, 0, 0), {'Tags': ['homer', 'brewing_run_home'], 'NoGravity': True}),
+            item().replace().block(r(0, 2, 0), 'container.0').with_(water_potion),
+            item().replace().block(r(0, 2, 0), 'container.1').with_('air'),
+            item().replace().block(r(0, 2, 0), 'container.2').with_(water_potion),
+        ))
 
     placer = room.mob_placer(r(0, 2, 0), NORTH, 2, 0, adults=True,
                              nbt={'ChestedHorse': True, 'Tame': True, 'Variant': 2})
