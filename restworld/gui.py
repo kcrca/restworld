@@ -3,7 +3,8 @@ from __future__ import annotations
 from pynecraft import commands
 from pynecraft.base import EAST, NORTH, Nbt, WEST, r
 from pynecraft.commands import BOSSBAR_COLORS, BOSSBAR_STYLES, Block, CREATIVE, Entity, LEVELS, REPLACE, SURVIVAL, a, \
-    bossbar, clone, data, e, effect, execute, fill, function, gamemode, item, kill, p, return_, schedule, setblock, \
+    bossbar, clone, data, e, effect, execute, fill, function, gamemode, item, kill, n, p, return_, schedule, \
+    setblock, \
     summon, tag
 from pynecraft.info import must_give_items, operator_menu
 from pynecraft.simpler import Item, ItemFrame, Sign, WallSign
@@ -305,10 +306,22 @@ def room():
                 x += dz
                 index += 1
             z += dz
-        yield WallSign((None, 'Items Not', 'in Creative', 'Inventory')).place(r(2, 3, 1), NORTH)
+        yield WallSign((None, 'Items Not', 'In Creative', 'Inventory')).place(r(2, 3, 0), NORTH)
 
     room.function('only_items_init').add(
         only_items_init_func())
+
+    def bundle_loop(step):
+        contents = [] if step.i == 0 else [Item.nbt_for('stone', count=32)]
+        name = 'Empty' if step.i == 0 else 'Not Empty'
+        yield data().modify(n().tag('bundle'), 'Item.components.minecraft:bundle_contents').set().value(contents)
+        yield Sign.change(r(0, 3, 1), (None, name))
+
+    room.function('bundle_init').add(
+        ItemFrame(NORTH, nbt={'Tags': ['gui', 'bundle']}).item('bundle').summon(r(0, 2, 0)),
+        WallSign((None, None, 'Bundle')).place(r(0, 3, 1), NORTH)
+    )
+    room.loop('bundle', main_clock).loop(bundle_loop, range(2))
 
     enchant_chest = {
         'Items': [{'Slot': 0, 'id': 'lapis_lazuli', 'Count': 64}, {'Slot': 1, 'id': 'book', 'Count': 64}]}
