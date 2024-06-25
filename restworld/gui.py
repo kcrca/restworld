@@ -339,7 +339,9 @@ def room():
 
     room.function('powder_snow_init').add(
         setblock(r(0, 2, 0), 'powder_snow'),
-        WallSign((None, 'Step', 'Inside!')).place(r(1, 2, 0), EAST))
+        WallSign((None, 'Freezing', '(step inside)')).place(r(0, 3, 0), EAST),
+        WallSign((None, 'On Fire', '(step inside)')).place(r(0, 3, -2), EAST),
+    )
     saver_name = 'blur_saver'
     saver = e().tag(saver_name).limit(1)
     room.function('pumpkin_blur_init').add(
