@@ -549,7 +549,7 @@ def wood_functions(room):
         if 'stem' not in log:
             wood_boat_chest = room.score('wood_boat_chest')
             location = r(-0.5, 1.525, 2)
-            boat_state = {'Type': id, 'Tags': ['wood_boat', room.name], 'Rotation': [90, 0], 'CustomName': name,
+            boat_state = {'Type': id, 'Tags': ['wood_boat', room.name], 'CustomName': name,
                           'CustomNameVisible': True}
             boat = Entity('boat', boat_state)
             chest_boat = Entity('chest_boat', boat_state)
