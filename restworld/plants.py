@@ -7,7 +7,7 @@ from pynecraft.base import EAST, NORTH, Nbt, SOUTH, WEST, r, to_id, to_name
 from pynecraft.commands import Block, JsonText, data, e, execute, fill, fillbiome, function, kill, setblock, tag
 from pynecraft.info import small_flowers, stems, tulips
 from pynecraft.simpler import JUNGLE, PLAINS, Region, SAVANNA, Sign, WallSign
-from pynecraft.values import BIRCH_FOREST, DARK_FOREST, MANGROVE_SWAMP, SNOWY_TAIGA
+from pynecraft.values import BIRCH_FOREST, CHERRY_GROVE, DARK_FOREST, MANGROVE_SWAMP, SNOWY_TAIGA
 from restworld.rooms import Room
 from restworld.world import fast_clock, main_clock, restworld, text_display
 
@@ -252,8 +252,8 @@ def room():
                                                    ('Grass Block', 'Dirt', 'Podzol', 'Coarse Dirt'))
 
     tree_types = {
-        'Acacia': SAVANNA, 'Birch': BIRCH_FOREST, 'Cherry': "cherry_grove", 'Jungle': JUNGLE,
-        'Mangrove': MANGROVE_SWAMP, 'Oak': PLAINS, 'Dark Oak': DARK_FOREST, 'Spruce': SNOWY_TAIGA
+        'Acacia': SAVANNA, 'Birch': BIRCH_FOREST, 'Oak': PLAINS, 'Cherry': CHERRY_GROVE, 'Jungle': JUNGLE,
+        'Mangrove': MANGROVE_SWAMP, 'Dark Oak': DARK_FOREST, 'Spruce': SNOWY_TAIGA
     }
 
     def trees_loop(step):
@@ -375,7 +375,8 @@ def water_funcs(room):
         yield Sign.change(r(0, 2, -2), (None, step.elem))
 
     room.loop('coral', main_clock).loop(coral_loop, ('Brain', 'Bubble', 'Fire', 'Horn', 'Tube'))
-    room.function('coral_init').add(WallSign((None, None, 'Coral'), front=None).glowing(True).place(r(0, 2, -2), WEST, water=True))
+    room.function('coral_init').add(
+        WallSign((None, None, 'Coral'), front=None).glowing(True).place(r(0, 2, -2), WEST, water=True))
 
     kelp_init = room.function('kelp_init').add(fill(r(0, 2, 0), r(2, 6, 0), 'water'))
     for x in range(0, 3):
