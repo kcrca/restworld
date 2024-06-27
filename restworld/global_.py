@@ -239,7 +239,7 @@ def room():
             ('arena', OVERWORLD, (1040, 106, -1026), (1036, 104, -1026))):
         room.function('goto_' + place[0], home=False).add(
             execute().in_(place[1]).run(teleport(p(), place[2]).facing(place[3])))
-    room.function('goto_photo').add(function('restworld:photo/photo_complete_view'))
+    room.function('goto_photo').add(function('restworld:photo/photo_sample_view'))
     room.home_func('min')
 
     raise_mobs = room.function('raise_mobs', home=False).add(raise_mobs_func())
