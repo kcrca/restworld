@@ -288,25 +288,25 @@ def room():
     non_inventory.append(Entity('elytra', name='Damaged Elytra', nbt={'components': {'minecraft:damage': 450}}))
 
     def only_items_init_func():
-        rows = [(1, 2)]
-        dz = 1
-        z = -1
+        rows = [(-1, 2)]
+        delta = 1
+        x = 0
         items = list(non_inventory)
         yield kill(e().tag('only_item_frame'))
         index = 0
         while len(items) > 0:
-            x, end = rows.pop(0)
+            z, end = rows.pop(0)
             for i in range(0, end):
                 t = items.pop(0)
-                frame = ItemFrame(NORTH).item(t).named(t.name)
+                frame = ItemFrame(EAST).item(t).named(t.name)
                 frame.tag('gui', 'only_item_frame', f'only_item_frame_{t.id}')
                 if t.id == 'elytra':
                     frame.merge_nbt({'Item': {'components': {'damage': 450}}})
-                yield frame.summon(r(x, 2, z), facing=NORTH)
-                x += dz
+                yield frame.summon(r(x, 2, z), facing=EAST)
+                z += delta
                 index += 1
-            z += dz
-        yield WallSign((None, 'Items Not', 'In Creative', 'Inventory')).place(r(2, 3, 0), NORTH)
+            x += delta
+        yield WallSign((None, 'Items Not', 'In Creative', 'Inventory')).place(r(0, 3, 0), EAST)
 
     room.function('only_items_init').add(
         only_items_init_func())
@@ -315,11 +315,11 @@ def room():
         contents = [] if step.i == 0 else [Item.nbt_for('stone', count=32)]
         name = 'Empty' if step.i == 0 else 'Not Empty'
         yield data().modify(n().tag('bundle'), 'Item.components.minecraft:bundle_contents').set().value(contents)
-        yield Sign.change(r(0, 3, 1), (None, name))
+        yield Sign.change(r(0, 3, 0), (None, name))
 
     room.function('bundle_init').add(
-        ItemFrame(NORTH, nbt={'Tags': ['gui', 'bundle']}).item('bundle').summon(r(0, 2, 0)),
-        WallSign((None, None, 'Bundle')).place(r(0, 3, 1), NORTH)
+        ItemFrame(EAST, nbt={'Tags': ['gui', 'bundle']}).item('bundle').summon(r(0, 2, 0)),
+        WallSign((None, None, 'Bundle')).place(r(0, 3, 0), EAST)
     )
     room.loop('bundle', main_clock).loop(bundle_loop, range(2))
 
@@ -338,16 +338,17 @@ def room():
     )
 
     room.function('powder_snow_init').add(
-        setblock(r(0, 2, 0), 'powder_snow'),
-        WallSign((None, 'Freezing', '(step inside)')).place(r(0, 3, 0), EAST),
-        WallSign((None, 'On Fire', '(step inside)')).place(r(0, 3, -2), EAST),
+        setblock(r(-1, 2, 0), 'powder_snow'),
+        WallSign((None, 'Freezing', '(step inside)')).place(r(-1, 3, 0), NORTH),
+        setblock(r(-3, 2, 0), 'fire'),
+        WallSign((None, 'On Fire', '(step inside)')).place(r(-3, 3, 0), NORTH),
     )
     saver_name = 'blur_saver'
-    saver = e().tag(saver_name).limit(1)
+    saver = n().tag(saver_name)
     room.function('pumpkin_blur_init').add(
         room.mob_placer(r(0, -2, 1), NORTH, adults=True, auto_tag=False).summon(
             Entity('armor_stand', Nbt(NoGravity=True), name=saver_name).tag(saver_name)),
-        WallSign((None, 'Pumpkin Blur', '(step on plate)')).place(r(1, 3, 0), EAST))
+        WallSign((None, 'Pumpkin Blur', '(step on plate)')).place(r(1, 3, 0), NORTH))
     room.function('pumpkin_blur_on', home=False).add(
         item().replace().entity(saver, 'armor.head').from_().entity(p(), 'armor.head'),
         item().replace().entity(p(), 'armor.head').with_(Item('carved_pumpkin')))
