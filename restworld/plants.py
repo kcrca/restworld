@@ -161,8 +161,6 @@ def room():
         farmland_init.add(td.summon(r(0, 2.1, i)))
         farmland_init.add(td.summon(r(0, 2.1, -i)))
 
-    room.function('lily_pad_init').add(WallSign((None, 'Lily Pad')).place(r(0, 2, 0), WEST))
-
     def mushroom_loop(step):
         yield data().merge(r(-1, 0, -1), {'mode': 'LOAD', 'name': 'restworld:%s_mushroom' % step.elem})
         yield setblock(r(-1, -1, -1), 'redstone_block')
@@ -270,7 +268,7 @@ def room():
 
     room.loop('trees', main_clock).loop(trees_loop, tree_types.items()).add(
         execute().at(e().tag('plants_room_beg_home')).run(fill(r(0, 1, 0), r(33, 6, 52), 'water').replace('ice')),
-        WallSign((None, 'Lilly')).place(r(4, 2, 15), WEST))
+        WallSign((None, 'Lily Pad')).place(r(3, 2, 15), WEST))
 
     def tulips_loop(step):
         yield setblock(r(0, 3, 0), f'{to_id(step.elem)}_tulip')
