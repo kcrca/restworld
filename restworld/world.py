@@ -68,7 +68,8 @@ class RestWorld(RoomPack):
                self._action(r'\u25b6\u25b6|', 'Next', '_incr'), r'\n', r'\nClock Speed:\n      ',
                self._action(r'<<', 'Slower Clock Speed', 'center/slower_clocks'), '   ',
                self._action(r'\u27f2', 'Reset Clock Speed', 'center/reset_clocks'), '   ',
-               self._action(r'>>', 'Faster Clock Speed', 'center/faster_clocks'), r'\n', r'\nPlaces (click to visit):\n   ',
+               self._action(r'>>', 'Faster Clock Speed', 'center/faster_clocks'), r'\n',
+               r'\nPlaces (click to visit):\n   ',
                self._action('Home', 'Starting Point', 'global/goto_home'), r'\n   ',
                self._action('Photo Shoot', 'Scenic View', 'global/goto_photo'), r'\n   ',
                self._action('Arena', 'Arena', 'global/goto_arena'), r'\n   ',
@@ -92,12 +93,16 @@ class RestWorld(RoomPack):
 
         cb.next_page()
         cb.add(
-            r'        -Credits-\n',
+            JsonText.text(r'Credits, ' + date.today().strftime('%-d %b %Y') + r'\n'),
+            r'    Minecraft 1.21\n\n',
             JsonText.text(r'BlueMeanial:\n').bold(),
-            r'  Command Blocks\n  Software Design\n  Programming\n',
+            r'  Software Design\n  Programming\n',
             JsonText.text(r'JUMBOshrimp277:\n').bold(),
-            r'  World Design\n  Testing\n  Rubber Duck\n\n',
-            r'Minecraft Version:\n   1.20.5, ' + date.today().strftime('%-d %b %Y'),
+            r'  Visual Design\n  Testing\n  Rubber Duck\n',
+            r'\n',
+            r'Details on ',
+            JsonText.text(r'our site').underlined().italic().color(DARK_PURPLE).click_event().open_url(
+                'https://claritypack.com/restworld/'),
             JsonText.text(r'\n\nTry the ').italic(),
             JsonText.text(r'Call Out Pack!').underlined().italic().color(DARK_PURPLE).click_event().open_url(
                 'https://www.planetminecraft.com/texture-pack/call-out-texture-pack-support/')
