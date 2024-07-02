@@ -7,7 +7,7 @@ from pynecraft.base import Arg, EAST, EQ, NE, NORTH, NW, Nbt, NbtDef, SOUTH, WES
 from pynecraft.commands import Block, BlockDef, Entity, LONG, MOD, PLUS, RESULT, as_block, data, e, execute, fill, \
     fillbiome, function, item, kill, random, s, scoreboard, setblock, summon, tag
 from pynecraft.function import BLOCK
-from pynecraft.info import colors, stems, trim_materials, trim_patterns
+from pynecraft.info import colors, must_give_items, operator_menu, stems, trim_materials, trim_patterns
 from pynecraft.simpler import Item, ItemFrame, Region, SWAMP, Sign, WallSign
 from pynecraft.values import COLD_OCEAN, FROZEN_OCEAN, LUKEWARM_OCEAN, MANGROVE_SWAMP, MEADOW, OCEAN, WARM_OCEAN, biomes
 from restworld.rooms import Room
@@ -92,6 +92,34 @@ def room():
 
     room.loop('experience_orbs', fast_clock).loop(experience_orbs_loop, points)
     room.function('experience_orbs_init').add(WallSign((None, 'Experience Orb')).place(r(1, 2, 0), EAST))
+
+    non_inventory = list(filter(lambda x: x.name not in operator_menu, must_give_items.values()))
+    non_inventory.append(Entity('elytra', name='Damaged Elytra', nbt={'components': {'minecraft:damage': 450}}))
+
+    def only_items_init_func():
+        rows = [(-1, 2)]
+        delta = 1
+        x = 1
+        items = list(non_inventory)
+        yield kill(e().tag('only_item_frame'))
+        index = 0
+        while len(items) > 0:
+            z, end = rows.pop(0)
+            for i in range(0, end):
+                t = items.pop(0)
+                frame = ItemFrame(EAST).item(t).named(t.name)
+                frame.tag('materials', 'only_item_frame', f'only_item_frame_{t.id}')
+                if t.id == 'elytra':
+                    frame.merge_nbt({'Item': {'components': {'damage': 450}}})
+                yield frame.summon(r(x, 2, z), facing=EAST)
+                z += delta
+                index += 1
+            x += delta
+        yield WallSign((None, 'Items Not', 'In Creative', 'Inventory')).place(r(0, 3, -1), EAST)
+
+    room.function('only_items_init').add(
+        only_items_init_func())
+
     ingot_frame = 'ores_ingot_frame'
     frame = ItemFrame(SOUTH, nbt={'Tags': [room.name, ingot_frame]})
     room.function('ores_init').add(

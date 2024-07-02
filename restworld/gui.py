@@ -6,7 +6,6 @@ from pynecraft.commands import BOSSBAR_COLORS, BOSSBAR_STYLES, Block, CREATIVE, 
     bossbar, clone, data, e, effect, execute, fill, function, gamemode, item, kill, n, p, return_, schedule, \
     setblock, \
     summon, tag
-from pynecraft.info import must_give_items, operator_menu
 from pynecraft.simpler import Item, ItemFrame, Sign, WallSign
 from restworld.rooms import Room
 from restworld.world import fast_clock, kill_em, main_clock, restworld, slow_clock
@@ -283,33 +282,6 @@ def room():
 
     room.function('ingredients_enter').add(
         clone(r(20, -5, 30), r(-15, -5, 1), r(-15, 1, 1)).filtered('chest'))
-
-    non_inventory = list(filter(lambda x: x.name not in operator_menu, must_give_items.values()))
-    non_inventory.append(Entity('elytra', name='Damaged Elytra', nbt={'components': {'minecraft:damage': 450}}))
-
-    def only_items_init_func():
-        rows = [(-1, 2)]
-        delta = 1
-        x = 0
-        items = list(non_inventory)
-        yield kill(e().tag('only_item_frame'))
-        index = 0
-        while len(items) > 0:
-            z, end = rows.pop(0)
-            for i in range(0, end):
-                t = items.pop(0)
-                frame = ItemFrame(EAST).item(t).named(t.name)
-                frame.tag('gui', 'only_item_frame', f'only_item_frame_{t.id}')
-                if t.id == 'elytra':
-                    frame.merge_nbt({'Item': {'components': {'damage': 450}}})
-                yield frame.summon(r(x, 2, z), facing=EAST)
-                z += delta
-                index += 1
-            x += delta
-        yield WallSign((None, 'Items Not', 'In Creative', 'Inventory')).place(r(0, 3, 0), EAST)
-
-    room.function('only_items_init').add(
-        only_items_init_func())
 
     def bundle_loop(step):
         contents = [] if step.i == 0 else [Item.nbt_for('stone', count=32)]
