@@ -18,6 +18,7 @@ def room():
     room = Room('mobs', restworld, NORTH, ('Villagers,', 'Animals,', 'Monsters,', 'Bosses'), 'Mobs')
     room.reset_at((0, 15))
     room.change_height_at((0, 19))
+    room.change_height_at((0, 43))
     friendlies(room)
     monsters(room)
     aquatic(room)
