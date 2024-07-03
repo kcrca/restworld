@@ -491,24 +491,34 @@ def monsters(room):
         lambda step: data().modify(e().tag('slime').limit(1), 'Size').set().value(step.elem),
         range(0, 3), bounce=True)
 
-    illagers = (Entity('Vindicator'), Entity('Evoker'), Entity('Pillager'),
+    # Later code assumes Evoker comes first
+    illagers = (Entity('Evoker'), Entity('Vindicator'), Entity('Pillager'),
                 Entity('Pillager', nbt={'HandItems': [Item.nbt_for('crossbow')]}),
                 Entity('illusioner', name='Illusioner (unused)'))
     tags = ('illager',)
 
+    illager_dir = EAST
+    fangs = room.function('fangs', home=False)
+    illager_loop_func = room.loop('illager', main_clock)
+
     def illager_loop(step):
         place = list(copy.deepcopy(west_placer))
-        dir = EAST
         place[0][2] -= 0.5
-        place[1] = dir
+        place[1] = illager_dir
         yield placer(*place, adults=True, tags=tags).summon(step.elem)
         if step.elem.id == 'evoker':
-            yield placer(r(1, 3.5, -1.5), dir, adults=True, tags=tags).summon(
+            yield placer(r(1, 3.5, -1.5), illager_dir, adults=True, tags=tags).summon(
                 Entity('vex', nbt={'HandItems': [Item.nbt_for('iron_sword')], 'LifeTicks': 2147483647}))
-            yield placer(r(-1 + 2 * 1, 2, 1), dir, adults=True, tags=tags).summon(
-                Entity('Evoker Fangs', nbt={'Warmup': 0}))
+            fangs.add(
+                execute().if_().score(illager_loop_func.score).matches(0).run(
+                    execute().at(e().tag('illager_home')).run(
+                        placer(r(-1 + 2 * 1, 2, 1), illager_dir, adults=True, tags=tags).summon(
+                            Entity('Evoker Fangs', nbt={'Warmup': 0}))),
+                    schedule().function(fangs, 25, REPLACE)),
+            )
+            yield function(fangs)
 
-    room.loop('illager', main_clock).add(kill_em(e().tag(*tags))).loop(illager_loop, illagers)
+    illager_loop_func.add(kill_em(e().tag(*tags))).loop(illager_loop, illagers)
 
     room.function('phantom_init').add(placer(r(-0.5, 4, 0), NORTH, adults=True).summon('phantom'))
 
