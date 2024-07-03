@@ -6,7 +6,7 @@ from pynecraft import commands
 from pynecraft.base import EAST, EQ, NORTH, Nbt, SOUTH, WEST, r, to_id, to_name
 from pynecraft.commands import Block, COLORS, Entity, FORCE, LONG, MOD, REPLACE, RESULT, Score, as_facing, clone, data, \
     e, \
-    execute, function, item, kill, player, ride, s, schedule, scoreboard, setblock, summon, tag, tp
+    execute, function, item, kill, player, return_, ride, s, schedule, scoreboard, setblock, summon, tag, tp
 from pynecraft.info import axolotls, colors, horses, tropical_fish, wolves
 from pynecraft.simpler import Item, PLAINS, Sign, VILLAGER_BIOMES, VILLAGER_PROFESSIONS, Villager, WallSign
 from pynecraft.values import DISC_GROUP, DUMMY, as_disc, discs
@@ -510,12 +510,11 @@ def monsters(room):
             yield placer(r(1, 3.5, -1.5), illager_dir, adults=True, tags=tags).summon(
                 Entity('vex', nbt={'HandItems': [Item.nbt_for('iron_sword')], 'LifeTicks': 2147483647}))
             fangs.add(
-                execute().if_().score(illager_loop_func.score).matches(0).run(
-                    execute().at(e().tag('illager_home')).run(
-                        placer(r(-1 + 2 * 1, 2, 1), illager_dir, adults=True, tags=tags).summon(
-                            Entity('Evoker Fangs', nbt={'Warmup': 0}))),
-                    schedule().function(fangs, 25, REPLACE)),
-            )
+                execute().unless().score(illager_loop_func.score).matches(0).run(return_()),
+                execute().at(e().tag('illager_home')).run(
+                    placer(r(-1 + 2 * 1, 2, 1), illager_dir, adults=True, tags=tags).summon(
+                        Entity('Evoker Fangs', nbt={'Warmup': 0}))),
+                schedule().function(fangs, 25, REPLACE)),
             yield function(fangs)
 
     illager_loop_func.add(kill_em(e().tag(*tags))).loop(illager_loop, illagers)
