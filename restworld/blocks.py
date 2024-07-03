@@ -597,7 +597,7 @@ def room():
     vault_states = {'waiting_for_players': 'inactive', 'cooldown': 'inactive',
                     'waiting_for_reward_ejection': 'unlocking', 'ejecting_reward': 'ejecting'}
     base_vault_nbt = {'state_updating_resumes_at': 0xfff_ffff_ffff_ffff}
-    no_pickup = {'PickupDelay': -1}
+    no_pickup = {'Tags': ['huh'], 'Age': -32768, 'PickupDelay': 2147483647}
     items_to_eject = [
         Item.nbt_for('emerald', no_pickup), Item.nbt_for('wind_charge', no_pickup), Item.nbt_for('trident', no_pickup),
         Item.nbt_for('golden_carrot', no_pickup), Item.nbt_for('guster_banner_pattern', no_pickup),

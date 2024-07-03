@@ -5,7 +5,7 @@ import re
 from pynecraft import info
 from pynecraft.base import Arg, EAST, EQ, NE, NORTH, NW, Nbt, NbtDef, SOUTH, WEST, as_facing, r, to_id
 from pynecraft.commands import Block, BlockDef, Entity, LONG, MOD, PLUS, RESULT, as_block, data, e, execute, fill, \
-    fillbiome, function, item, kill, random, s, scoreboard, setblock, summon, tag
+    fillbiome, function, item, kill, n, random, s, scoreboard, setblock, summon, tag
 from pynecraft.function import BLOCK
 from pynecraft.info import colors, must_give_items, operator_menu, stems, trim_materials, trim_patterns
 from pynecraft.simpler import Item, ItemFrame, Region, SWAMP, Sign, WallSign
@@ -209,9 +209,9 @@ def room():
 def basic_functions(room):
     stand = Entity('armor_stand', {'Tags': ['basic_stand', 'material_static'], 'ShowArms': True, 'NoGravity': True})
     invis_stand = stand.clone().merge_nbt({'Tags': ['material_static'], 'Invisible': True})
-    basic_init = room.function('basic_init').add(kill(e().tag('material_static')),
-                                                 stand.summon(r(0, 2.0, 0), facing=NORTH,
-                                                              nbt={'CustomNameVisible': True}))
+    basic_init = room.function('basic_init').add(
+        kill(e().tag('material_static')),
+        stand.summon(r(0, 2.0, 0), facing=NORTH, nbt={'CustomNameVisible': True}))
     for i in range(0, 5):
         basic_init.add(invis_stand.summon(r(-(0.8 + i * 0.7), 2.0, 0), facing=NORTH,
                                           nbt={'Tags': ['material_%d' % (4 + i), 'material_static']}))
@@ -245,8 +245,8 @@ def basic_functions(room):
 
     enchanted = room.score('enchanted')
 
-    def enchanter(value, tag, command):
-        return execute().if_().score(enchanted).matches(value).as_(e().tag(tag)).run(command)
+    def enchanter(value, which, command):
+        return execute().if_().score(enchanted).matches(value).as_(e().tag(which)).run(command)
 
     def enchant(on):
         if on:
@@ -327,21 +327,35 @@ def basic_functions(room):
             yield data().merge(e().tag('material_%d' % j).limit(1), {'HandItems': [{}, hands[j]]})
         yield data().merge(r(-2, 0, 1), {'name': f'restworld:material_{material}', 'mode': 'LOAD'})
 
-    room.loop('basic', main_clock).add(
+    which_elytra = room.score('which_elytra')
+    basic_init.add(which_elytra.set(0))
+    basic = room.loop('basic', main_clock)
+    basic.add(
         fill(r(2, 2, 2), r(-2, 5, 4), 'air'),
         kill_em(e().tag('material_thing'))
-    ).loop(
-        basic_loop, materials).add(enchant(True), enchant(False), execute().if_().score(turtle_helmet).matches(1).run(
-        data().modify(e().tag('basic_stand').limit(1), 'ArmorItems[3].id').set().value('turtle_helmet')),
-                                   execute().if_().score(turtle_helmet).matches(1).run(
-                                       data().modify(e().tag('armor_helmet').limit(1), 'Item.id').set().value(
-                                           'turtle_helmet')), execute().if_().score(elytra).matches(1).run(
-            data().modify(e().tag('basic_stand').limit(1), 'ArmorItems[2].id').set().value('elytra')),
-                                   execute().if_().score(elytra).matches(1).run(
-                                       data().modify(e().tag('armor_chestplate').limit(1), 'Item.id').set().value(
-                                           'elytra')), fill(r(-2, 2, 2), r(2, 4, 4), 'air'),
-                                   setblock(r(-2, 0, 0), 'redstone_block'),
-                                   execute().positioned(r(-2, 0, 2)).run(kill(e().type('item').volume((5, 3, 4)))))
+    ).loop(basic_loop, materials).add(
+        execute().if_().score(turtle_helmet).matches(1).run(
+            data().modify(n().tag('basic_stand'), 'ArmorItems[3].id').set().value('turtle_helmet'),
+            data().modify(n().tag('armor_helmet'), 'Item.id').set().value('turtle_helmet')),
+        execute().if_().score(elytra).matches(1).run(
+            data().modify(n().tag('basic_stand'), 'ArmorItems[2].id').set().value('elytra'),
+            data().modify(n().tag('armor_chestplate'), 'Item.id').set().value('elytra'),
+            which_elytra.add(1),
+            execute().if_().score(which_elytra).matches((2, None)).run(which_elytra.set(0)),
+            execute().if_().score(which_elytra).matches(1).run(
+                data().modify(n().tag('basic_stand'), 'ArmorItems[2].components.minecraft:damage').set().value(450),
+                data().modify(n().tag('armor_chestplate'), 'Item.components.minecraft:damage').set().value(450)
+            ),
+            execute().unless().score(which_elytra).matches(1).run(
+                data().modify(n().tag('basic_stand'), 'ArmorItems[2].components.minecraft:damagae').set().value(0),
+                data().modify(n().tag('armor_chestplate'), 'Item.components.minecraft:damage').set().value(0)
+            )
+        ),
+        enchant(True),
+        enchant(False),
+        fill(r(-2, 2, 2), r(2, 4, 4), 'air'),
+        setblock(r(-2, 0, 0), 'redstone_block'),
+        execute().positioned(r(-2, 0, 2)).run(kill(e().type('item').volume((5, 3, 4)))))
 
     room.function('basic_update').add(
         execute().at(e().tag('basic_home')).run(function('restworld:materials/basic_cur')),
