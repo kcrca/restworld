@@ -477,12 +477,15 @@ def wood_functions(room):
     wood_init = room.function('wood_init').add(
         summon('item_frame', r(2, 3, -3), {
             'Tags': ['wood_boat_frame', room.name], 'Facing': 3, 'Fixed': True, 'Item': {'id': 'stone', 'Count': 1}}),
+        summon('item_frame', r(2, 4, -3), {
+            'Tags': ['wood_door_frame', room.name], 'Facing': 3, 'Fixed': True, 'Item': {'id': 'stone', 'Count': 1}}),
         summon('item_frame', r(3, 3, -3), {
             'Tags': ['wood_sign_frame', room.name], 'Facing': 3, 'Fixed': True, 'Item': {'id': 'stone', 'Count': 1}}),
-        room.label(r(-1, 2, 4), 'Chest Boat', NORTH))
-    wood_init.add(summon('item_frame', r(3, 4, -3), {
-        'Tags': ['wood_hanging_sign_frame', room.name], 'Facing': 3, 'Fixed': True,
-        'Item': {'id': 'stone', 'Count': 1}}))
+        summon('item_frame', r(3, 4, -3), {
+            'Tags': ['wood_hanging_sign_frame', room.name], 'Facing': 3, 'Fixed': True,
+            'Item': {'id': 'stone', 'Count': 1}}),
+        room.label(r(-1, 2, 4), 'Chest Boat', NORTH),
+    )
 
     volume = Region(r(-5, 1, -5), r(6, 5, 3))
 
@@ -586,6 +589,8 @@ def wood_functions(room):
             data().merge(s(), ItemFrame(SOUTH).item(f'{id}_sign').named(f'{name} Sign').nbt))
         yield execute().as_(e().tag('wood_hanging_sign_frame')).run(
             data().merge(s(), ItemFrame(SOUTH).item(f'{id}_hanging_sign').named(f'{name} Hanging Sign').nbt))
+        yield execute().as_(e().tag('wood_door_frame')).run(
+            data().merge(s(), ItemFrame(SOUTH).item(f'{id}_door').named(f'{name} Door').nbt))
 
         yield kill_em(e().tag('wood_boat'))  # remove existing boat
         if 'stem' not in log:
@@ -795,11 +800,10 @@ def trim_functions(room):
                          change.operation(MOD, num_categories),
                          run_change_cleanup))
     for i, cat in enumerate(categories.values()):
-        lines = (None, 'Show All', cat.name.title())
+        lines = (None, 'Show All:', cat.name.title())
         show_menu.add(WallSign().messages(lines, commands=(show.set(i), run_show_cleanup)).place(r(0, i, 0), facing))
         show_cleanup.add(execute().if_().score(show).matches(i).run(
-            WallSign().messages(
-                (None, 'Show All', cat.name.title()), commands=(function(show_menu),)).place(r(0, 2, 0), facing),
+            WallSign().messages(lines, commands=(function(show_menu),)).place(r(0, 2, 0), facing),
             execute().at(e().tag('trim_home')).run(function(cat.init))))
 
     change_init.add(change.set(1), run_change_cleanup)
