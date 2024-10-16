@@ -6,7 +6,7 @@ from typing import Iterable, Union
 from pynecraft import info
 from pynecraft.base import DOWN, EAST, EQ, NORTH, Nbt, RelCoord, SOUTH, WEST, as_facing, r, to_id, to_name
 from pynecraft.commands import Block, Commands, Entity, MOD, MOVE, as_block, clone, data, e, execute, fill, function, \
-    item, kill, p, s, say, setblock, summon, tag
+    item, kill, n, p, s, say, setblock, summon, tag
 from pynecraft.function import Loop
 from pynecraft.info import Color, colors, sherds, stems
 from pynecraft.simpler import Item, ItemFrame, Region, Sign, TextDisplay, WallSign
@@ -919,8 +919,8 @@ def color_functions(room):
         'Variant': 5, 'Tags': ['colorings_horse', 'colorings_item', 'colorings_names'],
         'body_armor_item': Item.nbt_for('leather_horse_armor'), 'Rotation': [-25, 0]}).merge(mob_nbt)
     dog_nbt = Nbt(
-        {'Owner': 'dummy', 'Tags': ['colorings_dog', 'colorings_item'], 'body_armor_item': Item.nbt_for('wolf_armor'),
-         'Rotation': [-65, 0]}).merge(mob_nbt)
+        {'Owner': 'dummy', 'Tags': ['colorings_dog', 'colorings_item'], 'Rotation': [-65, 0]}).merge(mob_nbt)
+    wolf_armor_nbt = Nbt({'body_armor_item': Item.nbt_for('wolf_armor')})
     cat_nbt = Nbt(
         {'variant': 'persian', 'Owner': 'dummy', 'Tags': ['colorings_cat', 'colorings_item'], 'ColorColor': 3,
          'Rotation': [110, 0]}).merge(mob_nbt)
@@ -963,7 +963,14 @@ def color_functions(room):
                                                           front=None).place(r(x, y, z), 14)),
         WallSign([]).place(r(-4, 2, 4, ), SOUTH), kill(e().type('item')),
         room.label(r(-1, 2, 7), 'Lit Candles', NORTH), room.label(r(-8, 2, 7), 'Plain', NORTH),
-        room.label(r(-11, 2, 3), 'Glowing', NORTH)),
+        room.label(r(-11, 2, 3), 'Glowing', NORTH),
+        room.label(r(-8, 2, 3), 'Wolf Armor', NORTH)),
+    room.function('wolf_armor_on', home=False).add(
+        data().merge(n().tag('colorings_dog'), wolf_armor_nbt),
+        execute().at(e().tag('colorings_home')).run(function('restworld:blocks/colorings_cur')))
+    room.function('wolf_armor_off', home=False).add(
+        data().remove(n().tag('colorings_dog'), 'body_armor_item'),
+        execute().at(e().tag('colorings_home')).run(function('restworld:blocks/colorings_cur')))
     room.loop('colorings', main_clock).add(fill(r(-9, 2, 2), r(-9, 2, 3), 'air')).loop(colorings_loop, colors).add(
         colored_signs(None, render_signs_glow), setblock(r(-7, -1, 3), 'redstone_block'), setblock(r(-7, -1, 3), 'air'))
     room.function('colorings_plain_off', home=False).add(
