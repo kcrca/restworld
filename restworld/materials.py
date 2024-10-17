@@ -81,6 +81,38 @@ def room():
         fire_arrow.set(Arg('on')), data().modify(e().tag('arrow').limit(1), 'HasVisualFire').set().value(Arg('on'))
     )
 
+    def wolf_armor_color_loop(step):
+        color = step.elem
+        if color:
+            yield data().modify(n().tag('wolf_armor_damage'),
+                                'body_armor_item.components.minecraft:dyed_color.rgb').set().value(color.leather)
+            yield Sign.change(r(0, 2, 1), (None, None, f'Color: {step.elem.name}'))
+        else:
+            yield data().remove(n().tag('wolf_armor_damage'), 'body_armor_item.components.minecraft:dyed_color')
+            yield Sign.change(r(0, 2, 1), (None, None, 'Color: None'))
+
+    def wolf_armor_damage_loop(step):
+        if step.elem:
+            yield data().modify(n().tag('wolf_armor_damage'),
+                                'body_armor_item.components.minecraft:damage').set().value(step.elem)
+        else:
+            yield data().remove(n().tag('wolf_armor_damage'), 'body_armor_item.components.minecraft:damage')
+        yield Sign.change(r(0, 2, 1), (None, f'Damage: {step.elem}'))
+
+    room.loop('wolf_armor_color', main_clock, home=False).loop(wolf_armor_color_loop, colors + (None,))
+    room.loop('wolf_armor_damage', main_clock, home=False).loop(wolf_armor_damage_loop, (None, 19, 40, 60), bounce=True)
+    room.function('wolf_armor_init').add(
+        room.mob_placer(r(0, 2, 0), WEST, adults=True).summon(
+            Entity('wolf', name='Wolf Armor'), tags=('wolf_armor_damage',), nbt={'Owner': 'dummy', 'body_armor_item': Item.nbt_for('wolf_armor')}),
+        WallSign((None, 'Damage: None', 'Color: None')).place(r(0, 2, 1), WEST))
+    room.function('wolf_armor_home', exists_ok=True).add(tag(e().tag('wolf_armor_home')).add('wolf_armor_damage_home'))
+    room.function('wolf_damage', home=False).add(
+        tag(e().tag('wolf_armor_home')).remove('wolf_armor_color_home'),
+        tag(e().tag('wolf_armor_home')).add('wolf_armor_damage_home'))
+    room.function('wolf_color', home=False).add(
+        tag(e().tag('wolf_armor_home')).remove('wolf_armor_damage_home'),
+        tag(e().tag('wolf_armor_home')).add('wolf_armor_color_home'))
+
     points = (2, 6, 16, 36, 72, 148, 306, 616, 1236, 2476, 32767)
 
     def experience_orbs_loop(step):
@@ -474,7 +506,7 @@ def copper_functions(room):
 
 
 def wood_functions(room):
-    wood_init = room.function('wood_init').add(
+    room.function('wood_init').add(
         summon('item_frame', r(2, 3, -3), {
             'Tags': ['wood_boat_frame', room.name], 'Facing': 3, 'Fixed': True, 'Item': {'id': 'stone', 'Count': 1}}),
         summon('item_frame', r(2, 4, -3), {

@@ -498,7 +498,7 @@ class MobPlacer:
         return copy.deepcopy(self)
 
     def summon(self, mobs: Iterable[EntityDef] | EntityDef, *, on_stand: bool | Callable[[Entity], bool] = False,
-               tags=None, nbt=None, auto_tag=None) -> Tuple[Command, ...]:
+               tags: str | tuple[str] | list[str] = None, nbt=None, auto_tag=None) -> Tuple[Command, ...]:
         if isinstance(mobs, (Entity, str)):
             mobs = (mobs,)
         if tags and isinstance(tags, str):
