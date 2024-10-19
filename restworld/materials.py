@@ -103,8 +103,10 @@ def room():
     room.loop('wolf_armor_damage', main_clock, home=False).loop(wolf_armor_damage_loop, (None, 19, 40, 60), bounce=True)
     room.function('wolf_armor_init').add(
         room.mob_placer(r(0, 2, 0), WEST, adults=True).summon(
-            Entity('wolf', name='Wolf Armor'), tags=('wolf_armor_damage',), nbt={'Owner': 'dummy', 'body_armor_item': Item.nbt_for('wolf_armor')}),
-        WallSign((None, 'Damage: None', 'Color: None')).place(r(0, 2, 1), WEST))
+            Entity('wolf', name='Wolf Armor'), tags=('wolf_armor_damage',),
+            nbt={'Owner': 'dummy', 'body_armor_item': Item.nbt_for('wolf_armor')}),
+        WallSign((None, 'Damage: None', 'Color: None')).place(r(0, 2, 1), WEST),
+        room.label(r(-1, 2, 1), 'Color'))
     room.function('wolf_armor_home', exists_ok=True).add(tag(e().tag('wolf_armor_home')).add('wolf_armor_damage_home'))
     room.function('wolf_damage', home=False).add(
         tag(e().tag('wolf_armor_home')).remove('wolf_armor_color_home'),
