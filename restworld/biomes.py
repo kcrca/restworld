@@ -9,7 +9,8 @@ from restworld.world import restworld
 
 biome_groups = collections.OrderedDict()
 biome_groups['Temperate'] = (
-    'Plains', 'Forest', 'Flower Forest', 'Birch Forest', 'Cherry Grove', 'Dark Forest', 'Pale Garden', 'Swamp', 'Mangrove Swamp',
+    'Plains', 'Forest', 'Flower Forest', 'Birch Forest', 'Cherry Grove', 'Dark Forest', 'Pale Garden', 'Swamp',
+    'Mangrove Swamp',
     'Jungle', 'Mushroom Fields')
 biome_groups['Warm'] = ('Desert', 'Savanna', 'Badlands')
 biome_groups['Cold'] = ('Taiga', 'Stony Shore')
