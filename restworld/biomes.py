@@ -102,7 +102,8 @@ def load_biome_loop(step):
         if i > 4:
             yield setblock(r(x, y, z), 'structure_block')
         yield data().merge(r(x, y, z), {'name': f'restworld:{to_id(biome)}_{i + 1:d}', 'mode': 'LOAD'})
-        yield fillbiome(r(x, y, z), r(x + 31, y + 31, z + 31), biome_id)
+        yield say(str(fillbiome(r(x-16, y-16, z-16), r(x + 48, y + 48, z + 48), biome_id)))
+        yield fillbiome(r(x-16, y-16, z-16), r(x + 48, y + 48, z + 48), biome_id)
 
     yield say('Switching to biome', step.elem)
     yield from load_biome(setup, step.elem)
