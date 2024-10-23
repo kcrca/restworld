@@ -36,23 +36,6 @@ def room():
         walls.append('%sstone Wall' % ty)
     assert len(blocks) == 2  # allows us to use 'replace previous type' because there are only two types
 
-    volume = Region(r(0, 1, 0), r(10, 6, 7))
-
-    def all_sand_loop(step):
-        i = step.i
-        o = 1 - i
-        for j in range(0, len(blocks[i])):
-            yield from volume.replace(walls[i], walls[o])
-            yield from volume.replace(blocks[i][j], blocks[o][j])
-            if slabs[i][j]:
-                yield from volume.replace_slabs(slabs[i][j], slabs[o][j])
-            if stairs[i][j]:
-                # noinspection PyTypeChecker
-                yield from volume.replace_stairs(stairs[i][j], stairs[o][j])
-        yield Sign.change(r(0, 2, 3), (None, blocks[i][0]))
-
-    room.loop('all_sand', main_clock).loop(all_sand_loop, range(0, 2))
-
     room.function('arrows_init').add(WallSign(()).place(r(1, 2, 0), EAST), room.label(r(0, 2, -1), 'Fire', WEST))
 
     fire_arrow = room.score('fire_arrow')
@@ -632,15 +615,15 @@ def wood_functions(room):
             location = r(-0.5, 1.525, 2)
             boat_state = {'Type': id, 'Tags': ['wood_boat', room.name], 'CustomName': name,
                           'CustomNameVisible': True}
-            boat = Entity('boat', boat_state)
-            chest_boat = Entity('chest_boat', boat_state)
-            yield execute().if_().score(wood_boat_chest).matches(0).run(summon(boat, location))
-            yield execute().if_().score(wood_boat_chest).matches(1).run(summon(chest_boat, location))
             boat_item = f'{id}_boat'
             chest_boat_item = f'{id}_chest_boat'
             if 'bamboo' in log:
                 boat_item = 'bamboo_raft'
                 chest_boat_item = 'bamboo_chest_raft'
+            boat = Entity(boat_item, boat_state)
+            chest_boat = Entity(chest_boat_item, boat_state)
+            yield execute().if_().score(wood_boat_chest).matches(0).run(summon(boat, location))
+            yield execute().if_().score(wood_boat_chest).matches(1).run(summon(chest_boat, location))
             yield execute().if_().score(wood_boat_chest).matches(0).as_(
                 e().tag('wood_boat_frame')).run(
                 data().merge(s(), ItemFrame(SOUTH).item(boat_item).named(f'{name} Boat').nbt))

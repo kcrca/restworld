@@ -40,7 +40,7 @@ def formatting_book():
 def room():
     room = Room('font', restworld, SOUTH, (None, 'Fonts'))
     room.reset_at((1, -4))
-    src_pos = r(0, 2, 0)
+    src_pos = r(0, 2, 2)
     save_pos = r(0, -2, -3)
     color_pos = r(0, -3, -3)
     at = execute().at(e().tag('font_action_home'))
@@ -54,9 +54,7 @@ def room():
     copy_sign = room.function('copy_sign', home=False).add(
         execute().if_().block(src_pos, '#wall_signs').run(clone(src_pos, src_pos, save_pos))
     )
-    row_lengths = [3, 3, 2, 2]
-    if 'Cherry' in woods:
-        row_lengths[2] = 3
+    row_lengths = [3, 3, 3, 3]
     row, x, y = 0, 0, 5
     for i, thing in enumerate(materials):
         pos = r(x - 1, y, 0)
@@ -72,8 +70,6 @@ def room():
             x = 0
             y -= 1
             row += 1
-        elif x == 1 and row_lengths[row] == 2:
-            x += 1
 
     copy_sign.add(data().modify(e().tag('font').tag('nameable').limit(1), 'CustomName').set().from_(save_pos,
                                                                                                     'front_text.messages[0]'))
@@ -100,8 +96,9 @@ def room():
         execute().at(e().tag('font_action_home')).run(setblock(save_pos, 'air')),
         function('restworld:font/check_sign'),
         WallSign((None, 'Color Holder')).place(r(0, -3, -3), SOUTH), kill(e().tag('sign_desc')),
-        TextDisplay('Change this sign to change the text', {'background': 0, 'line_width': 100, 'shadow_radius': 0}).scale(0.5).tag(
-            'sign_desc').summon(r(0, 2, -0.4)),
+        TextDisplay('Change this sign to change the text',
+                    {'background': 0, 'line_width': 100, 'shadow_radius': 0}).scale(0.5).tag(
+            'sign_desc').summon(r(0, 2, 2 - 0.4)),
         # For some reason this is needed (1.21-pre1)
         data().modify(e().tag('sign_desc').limit(1), 'line_width').set().value(100),
     )
@@ -132,7 +129,7 @@ def room():
 
     room.function('nameable_init').add(
         kill(e().tag('font_mobs')),
-        room.mob_placer(r(0, 2, 0), SOUTH, adults=True).summon('rabbit', tags=('nameable',), auto_tag=False),
+        room.mob_placer(r(0, 2, 1), SOUTH, adults=True).summon('rabbit', tags=('nameable',), auto_tag=False),
         execute().as_(e().tag('font').tag('nameable').limit(1)).run(
             data().modify(s(), 'CustomNameVisible').set().value(True)),
     )

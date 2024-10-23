@@ -17,7 +17,7 @@ from pynecraft.values import ABSORPTION, AMBIENT_ENTITY_EFFECT, ANGRY_VILLAGER, 
     ELECTRIC_SPARK, ENCHANT, \
     ENCHANTED_HIT, END_ROD, ENTITY_EFFECT, EXPLOSION, EXPLOSION_EMITTER, FALLING_DRIPSTONE_LAVA, \
     FALLING_DRIPSTONE_WATER, FALLING_DUST, FALLING_HONEY, FALLING_LAVA, FALLING_NECTAR, FALLING_OBSIDIAN_TEAR, \
-    FALLING_SPORE_BLOSSOM, FALLING_WATER, FIREWORK, FISHING, FLAME, FLASH, GLOW, GLOW_SQUID_INK, GUST, GUST_DUST, \
+    FALLING_SPORE_BLOSSOM, FALLING_WATER, FIREWORK, FISHING, FLAME, FLASH, GLOW, GLOW_SQUID_INK, GUST, \
     GUST_EMITTER, HAPPY_VILLAGER, HEART, INFESTED, INSTANT_EFFECT, ITEM_COBWEB, ITEM_SLIME, ITEM_SNOWBALL, \
     LANDING_HONEY, LANDING_LAVA, LANDING_OBSIDIAN_TEAR, LARGE_SMOKE, LAVA, MYCELIUM, NAUTILUS, NOTE, OMINOUS_SPAWNING, \
     PARTICLE_GROUP, POOF, PORTAL, RAID_OMEN, RESISTANCE, REVERSE_PORTAL, SCRAPE, SCULK_CHARGE, SCULK_CHARGE_POP, \
@@ -62,7 +62,7 @@ actions = [
     action(FALLING_DUST),
     action(FIREWORK, note='and Flash', also=(FLASH,)),
     action(FISHING),
-    action(GUST, 'Gust|Gust Emitter|Gust Dust', also=(GUST_DUST, GUST_EMITTER)),
+    action(GUST, 'Gust|Gust Emitter', also=(GUST_EMITTER,)),
     action(HAPPY_VILLAGER),
     action(HEART),
     action(INFESTED),
@@ -304,7 +304,7 @@ def room():
         setblock(r(0, 0, 0), 'decorated_pot')
     )
     dust_pillar_change = room.loop('dust_pillar_change', home=False).loop(
-        lambda step:  (
+        lambda step: (
             floor(step.elem),
             particle(Entity(DUST_PILLAR, {'block_state': step.elem}), r(0, 0, 0), (0.5, 0, 0.5), 0, 50)),
         ('stone', 'grass_block', 'sandstone'))

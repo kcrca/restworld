@@ -7,7 +7,7 @@ from pynecraft.base import EAST, NORTH, Nbt, SOUTH, WEST, r, to_id, to_name
 from pynecraft.commands import Block, JsonText, data, e, execute, fill, fillbiome, function, kill, setblock, tag
 from pynecraft.info import small_flowers, stems, tulips
 from pynecraft.simpler import JUNGLE, PLAINS, Region, SAVANNA, Sign, WallSign
-from pynecraft.values import BIRCH_FOREST, CHERRY_GROVE, DARK_FOREST, MANGROVE_SWAMP, SNOWY_TAIGA
+from pynecraft.values import BIRCH_FOREST, CHERRY_GROVE, DARK_FOREST, MANGROVE_SWAMP, PALE_GARDEN, SNOWY_TAIGA
 from restworld.rooms import Room
 from restworld.world import fast_clock, main_clock, restworld, text_display
 
@@ -251,7 +251,7 @@ def room():
 
     tree_types = {
         'Acacia': SAVANNA, 'Birch': BIRCH_FOREST, 'Oak': PLAINS, 'Cherry': CHERRY_GROVE, 'Jungle': JUNGLE,
-        'Mangrove': MANGROVE_SWAMP, 'Dark Oak': DARK_FOREST, 'Spruce': SNOWY_TAIGA
+        'Mangrove': MANGROVE_SWAMP, 'Dark Oak': DARK_FOREST, 'Pale Oak': PALE_GARDEN, 'Spruce': SNOWY_TAIGA
     }
 
     def trees_loop(step):
@@ -266,7 +266,9 @@ def room():
         # Fill the tall tree area
         yield fillbiome(r(0, 8, 0), r(18, 30, 17), biome)
 
-    room.loop('trees', main_clock).loop(trees_loop, tree_types.items()).add(
+    tree_items = tree_types.items()
+    sorted(tree_items)
+    room.loop('trees', main_clock).loop(trees_loop, tree_items).add(
         execute().at(e().tag('plants_room_beg_home')).run(fill(r(0, 1, 0), r(33, 6, 52), 'water').replace('ice')),
         WallSign((None, 'Lily Pad')).place(r(3, 2, 15), WEST))
 
