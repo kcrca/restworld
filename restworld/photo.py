@@ -238,5 +238,5 @@ def room():
     room.function('sampler_init').add(
         room.mob_placer(r(-4, 2, 0), as_facing(NE), adults=True).summon('creeper'),
         room.mob_placer(r(-1, 2, 0), as_facing(NE), adults=True).summon('minecart'),
-        room.mob_placer(r(4.5, 2, 0), as_facing(SW), adults=True).summon('chest_boat'),
+        room.mob_placer(r(4.5, 2, 0), as_facing(SW), adults=True).summon('oak_chest_boat'),
     )

@@ -1129,7 +1129,7 @@ def stepable_functions(room):
         'Deepslate|Tiles',
         'Cut Copper',
         'Exposed|Cut Copper',
-        'Weathered|CutCopper',
+        'Weathered|Cut Copper',
         'Oxidized|Cut Copper',
         'Prismarine', 'Prismarine|Bricks', 'Dark|Prismarine',
         'Acacia Planks', 'Birch Planks', 'Cherry Planks', 'Jungle Planks', 'Mangrove Planks',
