@@ -4,14 +4,29 @@ import re
 
 from pynecraft import info
 from pynecraft.base import Arg, EAST, EQ, NE, NORTH, NW, Nbt, NbtDef, SOUTH, WEST, as_facing, r, to_id
-from pynecraft.commands import Block, BlockDef, Entity, LONG, MOD, PLUS, RESULT, as_block, data, e, execute, fill, \
-    fillbiome, function, item, kill, n, random, s, scoreboard, setblock, summon, tag
+from pynecraft.commands import Block, BlockDef, Entity, LONG, MOD, PLUS, RESULT, Score, as_block, data, e, execute, \
+    fill, fillbiome, function, item, kill, n, random, s, scoreboard, setblock, summon, tag
 from pynecraft.function import BLOCK
 from pynecraft.info import colors, must_give_items, operator_menu, stems, trim_materials, trim_patterns
 from pynecraft.simpler import Item, ItemFrame, Region, SWAMP, Sign, WallSign
 from pynecraft.values import COLD_OCEAN, FROZEN_OCEAN, LUKEWARM_OCEAN, MANGROVE_SWAMP, MEADOW, OCEAN, WARM_OCEAN, biomes
 from restworld.rooms import Room
 from restworld.world import fast_clock, kill_em, main_clock, restworld
+
+
+def enchant(score: Score, tag: str, on: bool):
+    def enchanter(value, which, command):
+        return execute().if_().score(score).matches(value).as_(e().tag(which)).run(command)
+
+    if on:
+        value, cmd = 1, lambda path: data().modify(s(), path).merge().value(
+            {'enchantments': {'levels': {'mending': 1}}})
+    else:
+        value, cmd = 0, lambda path: data().remove(s(), path + '.minecraft:enchantments')
+    yield enchanter(value, tag, cmd('Item.components'))
+    yield enchanter(value, tag, cmd('body_armor_item.components'))
+    yield enchanter(value, tag, cmd('ArmorItems[].components'))
+    yield enchanter(value, tag, cmd('HandItems[].components'))
 
 
 def room():
@@ -224,7 +239,8 @@ def room():
 
 
 def basic_functions(room):
-    stand = Entity('armor_stand', {'Tags': ['basic_stand', 'material_static'], 'ShowArms': True, 'NoGravity': True})
+    stand = Entity('armor_stand',
+                   {'Tags': ['basic_stand', 'material_static', 'enchantable'], 'ShowArms': True, 'NoGravity': True})
     invis_stand = stand.clone().merge_nbt({'Tags': ['material_static'], 'Invisible': True})
     basic_init = room.function('basic_init').add(
         kill(e().tag('material_static')),
@@ -262,22 +278,6 @@ def basic_functions(room):
 
     enchanted = room.score('enchanted')
 
-    def enchanter(value, which, command):
-        return execute().if_().score(enchanted).matches(value).as_(e().tag(which)).run(command)
-
-    def enchant(on):
-        if on:
-            value, cmd = 1, lambda path: data().modify(s(), path).merge().value(
-                {'enchantments': {'levels': {'mending': 1}}})
-        else:
-            value, cmd = 0, lambda path: data().remove(s(), path)
-
-        yield enchanter(value, 'enchantable', cmd('Item.components'))
-        yield enchanter(value, 'armor_horse', cmd('body_armor_item.components'))
-        yield enchanter(value, 'material_static', cmd('body_armor_item.components'))
-        yield enchanter(value, 'material_static', cmd('ArmorItems[].components'))
-        yield enchanter(value, 'material_static', cmd('HandItems[].components'))
-
     horse_saddle = room.score('horse_saddle')
     turtle_helmet = room.score('turtle_helmet')
     elytra = room.score('elytra')
@@ -306,7 +306,8 @@ def basic_functions(room):
         if horse_armor:
             yield execute().unless().entity(e().tag('armor_horse').distance((None, 10))).run(
                 room.mob_placer(r(4.5, 2, 0.5), NORTH, adults=True).summon(
-                    'horse', nbt={'Variant': 1, 'Tame': True, 'Tags': ['armor_horse', 'material_static']}))
+                    'horse',
+                    nbt={'Variant': 1, 'Tame': True, 'Tags': ['armor_horse', 'enchantable', 'material_static']}))
             yield data().merge(e().tag('armor_horse').limit(1).sort('nearest'), {
                 'body_armor_item': {'id': '%s_horse_armor' % armor, 'Count': 1}})
             yield data().merge(e().tag('armor_horse_frame').limit(1),
@@ -368,8 +369,8 @@ def basic_functions(room):
                 data().modify(n().tag('armor_chestplate'), 'Item.components.minecraft:damage').set().value(0)
             )
         ),
-        enchant(True),
-        enchant(False),
+        enchant(enchanted, 'enchantable', True),
+        enchant(enchanted, 'enchantable', False),
         fill(r(-2, 2, 2), r(2, 4, 4), 'air'),
         setblock(r(-2, 0, 0), 'redstone_block'),
         execute().positioned(r(-2, 0, 2)).run(kill(e().type('item').volume((5, 3, 4)))))

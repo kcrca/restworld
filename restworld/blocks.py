@@ -10,6 +10,7 @@ from pynecraft.commands import Block, Commands, Entity, MOD, MOVE, as_block, clo
 from pynecraft.function import Loop
 from pynecraft.info import Color, colors, sherds, stems
 from pynecraft.simpler import Item, ItemFrame, Region, Sign, TextDisplay, WallSign
+from restworld.materials import enchant
 from restworld.rooms import Room
 from restworld.world import fast_clock, kill_em, main_clock, restworld
 
@@ -791,7 +792,8 @@ def room_init_functions(room, block_list_score):
 
 def armor_frame(which, where):
     frame = Entity('item_frame',
-                   {'Facing': 3, 'Tags': ['colorings_item', f'colorings_frame_{which}'], 'Fixed': True})
+                   {'Facing': 3, 'Tags': ['colorings_item', f'colorings_frame_{which}', 'colorings_enchantable'],
+                    'Fixed': True})
     return frame.summon(where)
 
 
@@ -910,27 +912,33 @@ def color_functions(room):
         yield Sign.change(r(x, y, z), (None, None, color.name), front=None)
         yield data().merge(r(x, y, z), {'front_text': {'color': color.id}, 'back_text': {'color': color.id}})
 
+    enchanted = room.score('enchanted')
+
     def colorings_loop(step):
         yield from colorings(False, step.elem)
         yield from colored_signs(step.elem, render_signs)
+        yield from enchant(enchanted, 'colorings_enchantable', True)
+        yield from enchant(enchanted, 'colorings_enchantable', False)
 
     mob_nbt = {'Time': True, 'NoAI': True, 'Silent': True}
     horse_nbt = Nbt({
-        'Variant': 5, 'Tags': ['colorings_horse', 'colorings_item', 'colorings_names'],
+        'Variant': 5, 'Tags': ['colorings_horse', 'colorings_item', 'colorings_names', 'colorings_enchantable'],
         'body_armor_item': Item.nbt_for('leather_horse_armor'), 'Rotation': [-25, 0]}).merge(mob_nbt)
     dog_nbt = Nbt(
-        {'Owner': 'dummy', 'Tags': ['colorings_dog', 'colorings_item'], 'Rotation': [-65, 0]}).merge(mob_nbt)
+        {'Owner': 'dummy', 'Tags': ['colorings_dog', 'colorings_item', 'colorings_enchantable'],
+         'Rotation': [-65, 0]}).merge(mob_nbt)
     wolf_armor_nbt = Nbt({'body_armor_item': Item.nbt_for('wolf_armor')})
     cat_nbt = Nbt(
         {'variant': 'persian', 'Owner': 'dummy', 'Tags': ['colorings_cat', 'colorings_item'], 'ColorColor': 3,
          'Rotation': [110, 0]}).merge(mob_nbt)
     llama_nbt = Nbt(
-        {'Tags': ['colorings_llama', 'colorings_item', 'colorings_names'], 'Variant': 1, 'Rotation': [20, 0],
+        {'Tags': ['colorings_llama', 'colorings_item', 'colorings_names', 'colorings_enchantable'], 'Variant': 1,
+         'Rotation': [20, 0],
          'Leashed': True}).merge(mob_nbt)
     sheep_nbt = Nbt(
         {'Tags': ['colorings_sheep', 'colorings_item'], 'Variant': 1, 'Rotation': [-35, 0], 'Leashed': True}).merge(
         mob_nbt)
-    stand_nbt = {'Tags': ['colorings_armor_stand', 'colorings_item'], 'Rotation': [30, 0]}
+    stand_nbt = {'Tags': ['colorings_armor_stand', 'colorings_item', 'colorings_enchantable'], 'Rotation': [30, 0]}
     armor_frames = {
         'wolf_armor': r(-8, 4, 1),
         'leather_boots': r(0, 2, 1),
@@ -963,6 +971,7 @@ def color_functions(room):
                                                           front=None).place(r(x, y, z), 14)),
         WallSign([]).place(r(-4, 2, 4, ), SOUTH), kill(e().type('item')),
         room.label(r(-1, 2, 7), 'Lit Candles', NORTH), room.label(r(-8, 2, 7), 'Plain', NORTH),
+        room.label(r(-3, 2, 7), 'Enchanted', NORTH), room.label(r(-8, 2, 7), 'Plain', NORTH),
         room.label(r(-11, 2, 3), 'Glowing', NORTH),
         room.label(r(-8, 2, 3), 'Wolf Armor', NORTH)),
     room.function('wolf_armor_on', home=False).add(
