@@ -22,9 +22,11 @@ def room():
 
     list_scale = 0.6
 
-    def blocks(name: object, facing: object, block_lists: Iterable[Union[Block, str]] | Iterable[Iterable[Union[Block, str]]],
+    def blocks(name: object, facing: object,
+               block_lists: Iterable[Union[Block, str]] | Iterable[Iterable[Union[Block, str]]],
                dx: object = 0,
-               dz: object = 0, size: object = 0, labels: object = None, clock: object = main_clock, score: object = None, air: object = False) -> object:
+               dz: object = 0, size: object = 0, labels: object = None, clock: object = main_clock,
+               score: object = None, air: object = False) -> object:
         facing = as_facing(facing)
 
         if not isinstance(block_lists, list):
@@ -134,16 +136,17 @@ def room():
                'slot_3_occupied': True, 'slot_4_occupied': True, 'slot_5_occupied': True, },
               name='Full|Chiseled|Bookshelf')))
     blocks('bookshelves', SOUTH, bookshelves)
-    blocks('bricks', NORTH, (
-        'Bricks', 'Quartz Bricks', 'Mud Bricks', 'Deepslate|Bricks', 'Cracked|Deepslate|Bricks', 'Deepslate|Tiles',
-        'Cracked|Deepslate|Tiles', 'Prismarine Bricks', 'Tuff Bricks', 'Chiseled Tuff|Bricks', 'Nether Bricks',
-        'Cracked|Nether Bricks', 'Chiseled|Nether Bricks', 'Red|Nether Bricks'))
+    blocks('deepslate_bricks', NORTH, (
+        'Deepslate|Bricks', 'Cracked|Deepslate|Bricks', 'Deepslate|Tiles', 'Cracked|Deepslate|Tiles'))
+    blocks('bricks', NORTH,
+           ('Bricks', 'Quartz Bricks', 'Mud Bricks', 'Prismarine Bricks', 'Tuff Bricks', 'Chiseled Tuff|Bricks'))
+    blocks('nether_bricks', NORTH,
+           ('Nether Bricks', 'Cracked|Nether Bricks', 'Chiseled|Nether Bricks', 'Red|Nether Bricks'))
     blocks('stone_bricks', NORTH, (
         'Stone Bricks', 'Mossy|Stone Bricks', 'Cracked|Stone Bricks', 'Chiseled|Stone Bricks',
-        'Polished|Blackstone Bricks', 'Cracked Polished|Blackstone Bricks', 'End Stone|Bricks'))
+        'Polished|Blackstone Bricks', 'Cracked Polished|Blackstone Bricks'))
     blocks('chiseled', NORTH,
-           ('Chiseled|Deepslate', 'Chiseled|Polished|Blackstone', 'Gilded Blackstone', 'Chiseled|Quartz Block',
-            'Chiseled|Tuff'))
+           ('Chiseled|Deepslate', 'Chiseled|Polished|Blackstone', 'Chiseled|Quartz Block', 'Chiseled|Tuff'))
     campfire_food = room.score('campfire_food')
     campfire_init, campfire_main = blocks('campfire', NORTH, (
         Block('Campfire', {'lit': True}),
@@ -225,7 +228,7 @@ def room():
     loop.add(setblock(r(0, 4, 0), 'air'))
     blocks('soul_stuff', NORTH, ('Soul Sand', 'Soul Soil'))
     blocks('sponge', SOUTH, ('Sponge', 'Wet Sponge'))
-    blocks('sticky', SOUTH, ('Slime Block', 'Honey block', 'Honeycomb Block'))
+    blocks('sticky', SOUTH, ('Slime Block', 'Honey block'))
 
     stone_types = ('Basalt', 'Stone', 'Deepslate', 'Andesite', 'Diorite', 'Granite', 'Tuff', 'Blackstone', 'Basalt')
     polished_types = ('Smooth Basalt', 'Smooth Stone') + tuple(f'Polished|{t}' for t in stone_types[2:])
