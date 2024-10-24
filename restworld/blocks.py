@@ -890,7 +890,7 @@ def color_functions(room):
         signables = info.woods + stems
         for w in range(0, len(signables)):
             wood = signables[w]
-            row_len = 4 if w < 8 else 3
+            row_len = 4
             x = w % row_len - 13
             y = int(w / 4) + 2
             z = -(w % row_len) + 4
