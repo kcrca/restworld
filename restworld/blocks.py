@@ -22,8 +22,9 @@ def room():
 
     list_scale = 0.6
 
-    def blocks(name, facing, block_lists: Iterable[Union[Block, str]] | Iterable[Iterable[Union[Block, str]]], dx=0,
-               dz=0, size=0, labels=None, clock=main_clock, score=None, air=False):
+    def blocks(name: object, facing: object, block_lists: Iterable[Union[Block, str]] | Iterable[Iterable[Union[Block, str]]],
+               dx: object = 0,
+               dz: object = 0, size: object = 0, labels: object = None, clock: object = main_clock, score: object = None, air: object = False) -> object:
         facing = as_facing(facing)
 
         if not isinstance(block_lists, list):
@@ -191,7 +192,7 @@ def room():
         Block('Note Block'), Block('Jukebox'),
         Block('jukebox', {'has_record': True}, {'IsPlaying': True, 'RecordItem': {'id': 'music_disc_pigstep'}},
               name='Jukebox|Playing')))
-    blocks('moss', SOUTH, ((Block('Moss Block'), Block('Pale Moss Block')), (Block('Moss Carpet'), Block('Pale Moss Carpet'))), dz=3)
+    blocks('moss', SOUTH, (('Moss Block', 'Pale Moss Block'), ('Moss Carpet', 'Pale Moss Carpet')), dz=3)
     blocks('netherrack', NORTH, ('Netherrack', 'Warped Nylium', 'Crimson Nylium'))
     blocks('obsidian', SOUTH, ('Obsidian', 'Crying Obsidian'))
     blocks('prismarine', SOUTH, ('Prismarine', 'Prismarine Bricks', 'Dark Prismarine'))
