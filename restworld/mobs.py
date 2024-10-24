@@ -703,29 +703,36 @@ def aquatic(room):
     room.function('elder_guardian_init').add(
         room.mob_placer(elder_guardian_pos, elder_guardian_rot, adults=True).summon('elder_guardian'))
 
+    #     axolotl_placer = room.mob_placer(r(-0.4, 3, 0), WEST, None, 1.8)
+    #     room.function('axolotl_init').add(axolotl_placer.summon('axolotl'), execute().at(e().tag('axolotl_dry_home')).run(
+    #         room.mob_placer(r(0, 3, 0), EAST, kid_delta=2).summon('axolotl')))
     def squids_loop(step):
-        placer = room.mob_placer(r(1.8, 4, 0.2), WEST, adults=True, tags=('squidy',), nbt={'NoGravity': True})
+        placer = room.mob_placer(r(2.6, 4, 0.2), WEST, None, kid_delta=1.8, tags=('squidy',), nbt={'NoGravity': True})
         return placer.summon('squid' if step.i == 0 else 'glow_squid')
 
     room.loop('squid', main_clock).add(kill_em(e().tag('squidy'))).loop(squids_loop, range(0, 2))
 
-    dolphin_placer = room.mob_placer(r(1.35, 3, 1.1), NORTH, adults=True)
+    dolphin_placer = room.mob_placer(r(1.35, 3, 2.9), NORTH, kid_delta=2)
     fish_placer = room.mob_placer(r(0, 3, 1), NORTH, -1, adults=True)
-    room.function('fishies_init').add(kill(e().tag('pufferfish')),
-                                      dolphin_placer.summon(Entity('dolphin', nbt={'Invulnerable': True})),
-                                      fish_placer.summon(
-                                          ('salmon', 'cod', 'pufferfish',
-                                           Entity('tadpole', nbt={'Invulnerable': True, 'Age': -2147483648}).tag('kid',
-                                                                                                                 'keeper'))))
-
+    room.function('fishies_init').add(
+        kill(e().tag('pufferfish')),
+        dolphin_placer.summon(Entity('dolphin', nbt={'Invulnerable': True})),
+        fish_placer.summon(
+            ('salmon', 'cod', 'pufferfish',
+             Entity('tadpole', nbt={'Invulnerable': True, 'Age': -2147483648}).tag('kid', 'keeper'))),
+    )
     def fishies_loop(step):
-        yield data().merge(e().tag('pufferfish').limit(1), {'PuffState': step.elem})
-        # Over time, the pufferfish creeps downward, so we have to put it back
-        puffer_pos = r(-2, 3, 1)
-        puffer_facing = r(-2, 3, -5)
-        yield tp(e().tag('pufferfish'), puffer_pos).facing(puffer_facing)
+        yield data().merge(e().tag('pufferfish').limit(1), {'PuffState': step.i})
+        yield data().merge(e().tag('salmon').limit(1), {'type': step.elem})
+        # Over time, the pufferfish and salmon creep downward, so we have to put them back
+        fish_pos = r(-2, 3, 1)
+        fish_facing = r(-2, 3, -5)
+        yield tp(e().tag('pufferfish'), fish_pos).facing(fish_facing)
+        fish_pos = (fish_pos[0] + r(2),) + fish_pos[1:]
+        fish_facing = (fish_facing[0] + r(2),) + fish_facing[1:]
+        yield tp(e().tag('salmon'), fish_pos).facing(fish_facing)
 
-    room.loop('fishies', main_clock).loop(fishies_loop, range(0, 3), bounce=True)
+    room.loop('fishies', main_clock).loop(fishies_loop, ('small', 'medium', 'large'), bounce=True)
 
 
 def all_fish_funcs(room):
