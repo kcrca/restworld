@@ -191,6 +191,7 @@ def room():
         Block('Note Block'), Block('Jukebox'),
         Block('jukebox', {'has_record': True}, {'IsPlaying': True, 'RecordItem': {'id': 'music_disc_pigstep'}},
               name='Jukebox|Playing')))
+    blocks('moss', SOUTH, ((Block('Moss Block'), Block('Pale Moss Block')), (Block('Moss Carpet'), Block('Pale Moss Carpet'))), dz=3)
     blocks('netherrack', NORTH, ('Netherrack', 'Warped Nylium', 'Crimson Nylium'))
     blocks('obsidian', SOUTH, ('Obsidian', 'Crying Obsidian'))
     blocks('prismarine', SOUTH, ('Prismarine', 'Prismarine Bricks', 'Dark Prismarine'))
