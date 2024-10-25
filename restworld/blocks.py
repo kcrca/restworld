@@ -169,6 +169,14 @@ def room():
     room.function('campfire_exit').add(setblock(r(0, 3, 0), Block('campfire', {'lit': False})))
     blocks('clay', SOUTH, ('Clay', 'Mud', 'Muddy|Mangrove Roots', 'Packed Mud'))
     blocks('cobble', NORTH, ('Cobblestone', 'Mossy|Cobblestone', 'Cobbled|Deepslate'))
+
+    def creaking_heart_loop(step):
+        yield setblock(r(0, 4, 0), 'air' if step.elem == 'disabled' else 'pale_oak_log')
+        yield setblock(r(0, 3, 0), Block('creaking_heart', {'creaking': step.elem}))
+        yield Sign.change(r(0, 2, 1), (None, None, f'({step.elem.title()})'))
+
+    room.loop('creaking_heart', main_clock).loop(creaking_heart_loop, ('disabled', 'dormant', 'active'))
+    room.function('creaking_heart_init').add(WallSign((None, 'Creaking Heart')).place(r(0, 2, 1), SOUTH))
     blocks('deepslate', NORTH, (
         'Deepslate', 'Chiseled|Deepslate', 'Polished|Deepslate', 'Cracked|Deepslate|Bricks', 'Cracked|Deepslate|Tiles',
         'Deepslate|Bricks', 'Deepslate|Tiles', 'Cobbled|Deepslate', 'Reinforced|Deepslate'))
@@ -191,11 +199,11 @@ def room():
         'Glowstone', 'Sea Lantern', 'Shroomlight', 'Ochre|Froglight', 'Pearlescent|Froglight', 'Verdant|Froglight',
         'End Rod'))
     room.function('ladder_init').add(setblock(r(0, 3, 0), 'ladder'))
+    blocks('moss', SOUTH, (('Moss Block', 'Pale Moss Block'), ('Moss Carpet', 'Pale Moss Carpet')), dz=3)
     blocks('music', SOUTH, (
         Block('Note Block'), Block('Jukebox'),
         Block('jukebox', {'has_record': True}, {'IsPlaying': True, 'RecordItem': {'id': 'music_disc_pigstep'}},
               name='Jukebox|Playing')))
-    blocks('moss', SOUTH, (('Moss Block', 'Pale Moss Block'), ('Moss Carpet', 'Pale Moss Carpet')), dz=3)
     blocks('netherrack', NORTH, ('Netherrack', 'Warped Nylium', 'Crimson Nylium'))
     blocks('obsidian', SOUTH, ('Obsidian', 'Crying Obsidian'))
     blocks('prismarine', SOUTH, ('Prismarine', 'Prismarine Bricks', 'Dark Prismarine'))
@@ -208,9 +216,8 @@ def room():
     blocks('respawn_anchor', NORTH, (Block('Respawn Anchor', {'charges': x}) for x in range(0, 5)),
            labels=tuple(('Respawn Anchor', f'Charges: {x:d}') for x in range(0, 5)))
 
-    suspicious_data = {'item': {'id': 'emerald'}}
-
     def suspicious(which):
+        suspicious_data = {'item': {'id': 'emerald'}}
         return (which,) + tuple(
             Block(f'suspicious_{which}', state={'dusted': s}, nbt=suspicious_data,
                   name=f'Suspicious {which.title()}|Dusted: {s}') for s in range(4))
