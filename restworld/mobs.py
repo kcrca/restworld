@@ -479,6 +479,7 @@ def monsters(room):
 
     east_placer = list(r(-0.2, 2, 0)), EAST, 2, 2.2
     west_placer = list(r(0.2, 2, 0)), WEST, -2, 2.2
+    south_placer = list(r(0, 2, -0.2)), SOUTH, -2, 2.2
 
     room.function('creeper_init').add(placer(*west_placer, adults=True).summon('creeper'))
     room.loop('creeper', main_clock).loop(
@@ -498,22 +499,23 @@ def monsters(room):
                 Entity('illusioner', name='Illusioner (unused)'))
     tags = ('illager',)
 
-    illager_dir = EAST
+    illager_dir = SOUTH
     fangs = room.function('fangs', home=False)
     illager_loop_func = room.loop('illager', main_clock)
 
     def illager_loop(step):
         place = list(copy.deepcopy(west_placer))
         place[0][2] -= 0.5
+        place[0][0] += 0.5
         place[1] = illager_dir
         yield placer(*place, adults=True, tags=tags).summon(step.elem)
         if step.elem.id == 'evoker':
-            yield placer(r(1, 3.5, -1.5), illager_dir, adults=True, tags=tags).summon(
+            yield placer(r(1.5, 3.5, -1.5), illager_dir, adults=True, tags=tags).summon(
                 Entity('vex', nbt={'HandItems': [Item.nbt_for('iron_sword')], 'LifeTicks': 2147483647}))
             fangs.add(
                 execute().unless().score(illager_loop_func.score).matches(0).run(return_()),
                 execute().at(e().tag('illager_home')).run(
-                    placer(r(-1 + 2 * 1, 2, 1), illager_dir, adults=True, tags=tags).summon(
+                    placer(r(-1 + 2.5 * 1, 2, 1), illager_dir, adults=True, tags=tags).summon(
                         Entity('Evoker Fangs', nbt={'Warmup': 0}))),
                 schedule().function(fangs, 25, REPLACE)),
             yield function(fangs)
@@ -598,8 +600,8 @@ def monsters(room):
 
     room.loop('spiders', main_clock).add(kill_em(e().tag('spiders'))).loop(spider_loop, range(0, 2))
     room.function('spiders_init').add(function('restworld:mobs/spiders_cur'))
-    place = list(copy.deepcopy(west_placer))
-    place[0][2] -= 0.5
+    place = list(copy.deepcopy(south_placer))
+    place[0][0] += 0.5
     room.function('witch_init').add(placer(*place, adults=True).summon('witch'))
 
     room.function('zombie_horse_init').add(
@@ -657,7 +659,8 @@ def monsters(room):
     placer = room.mob_placer(r(0, 2, 0.2), NORTH, adults=True)
     room.function('endermite_init').add(placer.summon('endermite'))
 
-    room.function('warden_init').add((room.mob_placer(r(0, 2, -0.5), NORTH, adults=True).summon('warden'),))
+    room.function('warden_init').add((room.mob_placer(r(0, 2, -0.5), WEST, adults=True).summon('warden'),))
+    room.function('creaking_init').add((room.mob_placer(r(0, 2, -0.5), EAST, adults=True).summon('creaking'),))
 
 
 def method_name():
