@@ -44,7 +44,7 @@ actions = [
     action(ANGRY_VILLAGER),
     action(ASH),
     action(BLOCK_MARKER),
-    action(BUBBLE, 'Bubbles|Currents|Whirlpools', also=(BUBBLE_POP, BUBBLE_COLUMN_UP, CURRENT_DOWN)),
+    action(BUBBLE, 'Bubbles|Currents', also=(BUBBLE_POP, BUBBLE_COLUMN_UP, CURRENT_DOWN)),
     action(CLOUD, note='Evaporation'),
     action(COMPOSTER),  # Could be in blocks if we added particle
     action(CRIMSON_SPORE),

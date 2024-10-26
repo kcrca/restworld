@@ -1,11 +1,11 @@
 from __future__ import annotations
 
 from pynecraft.base import EAST, NORTH, SOUTH, WEST, as_facing, r
-from pynecraft.commands import Entity, MOVE, NEAREST, clone, data, e, execute, fill, kill, s, setblock, summon, \
-    tag, tp
+from pynecraft.commands import Entity, MOVE, clone, data, e, execute, fill, kill, s, setblock, summon, \
+    tag
 from pynecraft.simpler import WallSign
 from restworld.rooms import Room
-from restworld.world import main_clock, restworld, slow_clock
+from restworld.world import main_clock, restworld
 
 
 def room():
@@ -55,18 +55,6 @@ def room():
         WallSign((None, 'Dragon Fireball')).place(r(0, 2, -1), NORTH),
         room.mob_placer(
             fireball_pos, NORTH, adults=True).summon(dragon_fireball, tags=('dragon_thing',)))
-
-    def fireball_loop(step):
-        entity = e().tag('dragon_fireball').sort(NEAREST).limit(1)
-        dy, dz = 0.2, 0.5
-        if step.i == 0:
-            yield tp(entity, fireball_pos)
-        else:
-            yield tp(entity, (fireball_pos[0], fireball_pos[1] + dy * 20, fireball_pos[2] + dz * 20))
-        sign = 1 if step.i == 0 else -1
-        yield data().merge(entity, {'Motion': [0, sign * dy, sign * dz]})
-
-    room.loop('dragon_fireball', slow_clock).loop(fireball_loop, range(2))
 
     room.function('end_portal_init', exists_ok=True).add(
         execute().as_(e().tag('end_portal_home')).run(tag(s()).add('blockers_home')))

@@ -238,7 +238,6 @@ def room():
     loop.add(setblock(r(0, 4, 0), 'air'))
     blocks('soul_stuff', NORTH, ('Soul Sand', 'Soul Soil'))
     blocks('sponge', SOUTH, ('Sponge', 'Wet Sponge'))
-    blocks('sticky', SOUTH, ('Slime Block', 'Honey block'))
 
     stone_types = ('Basalt', 'Stone', 'Deepslate', 'Andesite', 'Diorite', 'Granite', 'Tuff', 'Blackstone', 'Basalt')
     polished_types = ('Smooth Basalt', 'Smooth Stone') + tuple(f'Polished|{t}' for t in stone_types[2:])
