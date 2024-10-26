@@ -176,7 +176,10 @@ def room():
         yield Sign.change(r(0, 2, 1), (None, None, f'({step.elem.title()})'))
 
     room.loop('creaking_heart', main_clock).loop(creaking_heart_loop, ('disabled', 'dormant', 'active'))
-    room.function('creaking_heart_init').add(WallSign((None, 'Creaking Heart')).place(r(0, 2, 1), SOUTH))
+    room.function('creaking_heart_init').add(
+        setblock(r(0, 2, 0), 'Pale Oak Log'),
+        WallSign((None, 'Creaking Heart')).place(r(0, 2, 1), SOUTH)
+    )
     blocks('deepslate', NORTH, (
         'Deepslate', 'Chiseled|Deepslate', 'Polished|Deepslate', 'Cracked|Deepslate|Bricks', 'Cracked|Deepslate|Tiles',
         'Deepslate|Bricks', 'Deepslate|Tiles', 'Cobbled|Deepslate', 'Reinforced|Deepslate'))
@@ -738,7 +741,7 @@ def room():
         else:
             yield setblock(r(0, 3, 0), 'air')
             yield summon(('tnt', {'fuse': 0x7fff, 'Tags': ['block_tnt']}), r(0, 3, 0))
-        yield Sign.change(r(0, 2, 1), (None, None, step.elem.title()))
+        yield Sign.change(r(0, 2, -1), (None, None, step.elem.title()))
 
     room.loop('tnt', main_clock).add(kill(e().tag('block_tnt'))).loop(tnt_loop, ('stable', 'unstable', 'primed'))
 
@@ -776,7 +779,7 @@ def room():
     for b in (
             'amethyst', 'anvil', 'bell', 'brewing_stand', 'cake', 'campfire', 'chest', 'colored_beam', 'colorings',
             'frosted_ice', 'grindstone', 'item_frame', 'lantern', 'armor_stand', 'torches', 'blocks_room', 'ladder',
-            'stepable', 'tnt'):
+            'stepable', 'tnt', 'creaking_heart'):
         room.function(b + '_init', exists_ok=True).add(tag(e().tag(b + '_home')).add('no_expansion'))
 
 

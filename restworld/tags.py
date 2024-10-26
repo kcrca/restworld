@@ -174,7 +174,8 @@ def tags():
             'sand',
             'suspicious_sand',
             'red_sand',
-            'gravel'
+            'gravel',
+            'suspicious_gravel',
         ]
     }
     blocks['soil'] = {

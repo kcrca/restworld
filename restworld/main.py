@@ -21,6 +21,7 @@ def main():
     cmdline.add_argument('--pynecraft_dev', action=argparse.BooleanOptionalAction)
     args = cmdline.parse_args()
     Sign.waxed = True
+    Sign.default_wood = 'pale_oak'
     if args.pynecraft_dev:
         tester.room()
     for m in (

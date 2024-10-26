@@ -55,7 +55,7 @@ def room():
     # Lower priority ones can be used as filler
     battles = [
         ('Axolotl:w', 'Drowned'),
-        ('Creaking', 'Iron Golem'),  # low priority
+        ('Creaking', None),
         ('Axolotl:w', 'Guardian'),
         ('Blaze', 'Snow Golem'),
         ('Bogged', 'Iron Golem'),

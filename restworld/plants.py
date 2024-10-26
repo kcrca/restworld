@@ -21,9 +21,8 @@ def crop(stages, which: str | Callable[[int, str], Block], x, y, z, step, name='
         else:
             block = which(stage, name)
         yield fill(r(x, y, z - s), r(x + 2, y, z - s), block)
-    if z == 0:
-        yield Sign.change(r(x + 3, 2, -1),
-                          (None, None, f'{name.title()}: {stages[(step.i + 1) % len(stages)]} of {step.count - 2}'))
+    yield Sign.change(r(x + 3, 2, z-1),
+                      (None, None, f'{name.title()}: {stages[(step.i + 1) % len(stages)]} of {step.count - 2}'))
 
 
 def room():
@@ -67,12 +66,12 @@ def room():
     room.loop('5_crops', main_clock).loop(crops_5_loop, stages_5_upper).add(
         kill(e().nbt({'Item': {'id': 'minecraft:pitcher_plant'}})))
 
+    stages_8 = list(range(0, 8)) + [7, 7]
     def crops_8_loop(step):
         yield from crop(stages_8, 'wheat', 0, 3, 0, step)
         yield from crop(stages_8, 'carrots', 0, 3, -5, step)
         yield from crop(stages_8, 'potatoes', 0, 3, -10, step)
 
-    stages_8 = list(range(0, 8)) + [7, 7]
     room.loop('8_crops', main_clock).loop(crops_8_loop, stages_8)
 
     def azalea_loop(step):

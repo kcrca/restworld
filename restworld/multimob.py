@@ -86,6 +86,9 @@ def room():
         room.label(r(-2, 2, 2), 'This Corner\\n\u21e7', SW),
     )
     my_mobs = copy.deepcopy(info.mobs)
+    if 'Creaking' not in my_mobs:
+        my_mobs['Creaking'] = Entity('Creaking')
+        my_mobs = dict(sorted(my_mobs.items()))
     my_mobs['<None>'] = Entity('none', name='<None>')
     all_mobs = tuple(my_mobs.keys())
     max_per_group = math.ceil(len(all_mobs) / NUM_GROUPS)

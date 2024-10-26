@@ -186,7 +186,7 @@ def room():
         yield setblock(r(1, 3, 0), (f'{wood.id}_button', {'facing': EAST, 'powered': powered}))
         yield setblock(r(0, 3, 0), ('redstone_lamp', {'lit': powered}))
         yield setblock(r(0, 2, -1), ('redstone_lamp', {'lit': powered}))
-        yield setblock(r(1, 2, 0), ('oak_wall_sign', {'facing': EAST}))
+        yield setblock(r(1, 2, 0), ('pale_oak_wall_sign', {'facing': EAST}))
         yield data().merge(r(1, 2, 0), wood.sign_nbt())
         if powered == 'True':
             yield Sign.change(r(1, 2, 0), (None, None, None, '(Powered)'))
