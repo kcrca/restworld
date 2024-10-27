@@ -170,15 +170,24 @@ def room():
     blocks('clay', SOUTH, ('Clay', 'Mud', 'Muddy|Mangrove Roots', 'Packed Mud'))
     blocks('cobble', NORTH, ('Cobblestone', 'Mossy|Cobblestone', 'Cobbled|Deepslate'))
 
+    natural_heart = room.score('natural_heart')
+
     def creaking_heart_loop(step):
-        yield setblock(r(0, 4, 0), 'air' if step.elem == 'disabled' else 'pale_oak_log')
-        yield setblock(r(0, 3, 0), Block('creaking_heart', {'creaking': step.elem}))
-        yield Sign.change(r(0, 2, 1), (None, None, f'({step.elem.title()})'))
+        yield execute().if_().score(natural_heart).matches(0).run(
+            setblock(r(0, 4, 0), 'air'),
+            setblock(r(0, 2, 0), 'barrier'),
+        )
+        yield execute().unless().score(natural_heart).matches(0).run(
+            setblock(r(0, 4, 0), 'air' if step.elem == 'disabled' else 'pale_oak_log'),
+            setblock(r(0, 2, 0), 'pale_oak_log'),
+        )
+        yield setblock(r(0, 3, 0), Block('creaking_heart', {'creaking': step.elem})),
+        yield Sign.change(r(0, 2, 1), (None, None, step.elem.title()))
 
     room.loop('creaking_heart', main_clock).loop(creaking_heart_loop, ('disabled', 'dormant', 'active'))
     room.function('creaking_heart_init').add(
-        setblock(r(0, 2, 0), 'Pale Oak Log'),
-        WallSign((None, 'Creaking Heart')).place(r(0, 2, 1), SOUTH)
+        WallSign((None, 'Creaking Heart')).place(r(0, 2, 1), SOUTH),
+        room.label(r(1, 2, 0), "Naturally", NORTH),
     )
     blocks('deepslate', NORTH, (
         'Deepslate', 'Chiseled|Deepslate', 'Polished|Deepslate', 'Cracked|Deepslate|Bricks', 'Cracked|Deepslate|Tiles',
