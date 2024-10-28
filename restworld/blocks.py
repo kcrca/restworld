@@ -863,11 +863,14 @@ def color_functions(room):
             yield fill(r(-9, 2, 2), r(-9, 2, 3), 'air')
             yield volume.replace('air', '#standing_signs')
             yield data().remove(e().tag('colorings_item_frame').limit(1), 'Item')
+            bundle = Item.nbt_for('bundle', {'components': {'minecraft:bundle_items': [Item.nbt_for('stone')]}})
         else:
             yield setblock(r(-9, 2, 2), Block(f'{color.id}_bed', {'facing': NORTH, 'part': 'head'}))
             yield setblock(r(-9, 2, 3), Block(f'{color.id}_bed', {'facing': NORTH, 'part': 'foot'}))
             frame_nbt = {'Item': Item.nbt_for(f'{color.id}_dye'), 'ItemRotation': 0}
             yield data().merge(e().tag('colorings_item_frame').limit(1), frame_nbt)
+            bundle = Item.nbt_for(f'{color.id}_bundle', {'components': {'minecraft:bundle_items': [Item.nbt_for('stone')]}})
+        yield data().merge(n().tag('colorings_bundle_frame'), {'Item': bundle, 'ItemRotation': 0})
 
         if is_plain:
             leather_color = {}
@@ -976,6 +979,9 @@ def color_functions(room):
         Entity('item_frame', {
             'Facing': 3, 'Tags': ['colorings_item_frame', 'colorings_item'],
             'Fixed': True}).summon(r(-4.5, 4, 0.5)),
+        Entity('item_frame', {
+            'Facing': 3, 'Tags': ['colorings_item', 'colorings_bundle_frame'],
+            'Fixed': True}).summon(r(-6.5, 4, 0.5)),
         Entity('horse', horse_nbt).summon(r(0.7, 2, 4.4)),
         Entity('wolf', dog_nbt).summon(r(-7.5, 2, 2)),
         Entity('cat', cat_nbt).summon(r(-2.7, 2, 2)),
@@ -989,6 +995,7 @@ def color_functions(room):
         WallSign((None, 'Shulker Box')).place(r(-3, 3, 1), SOUTH),
         WallSign((None, 'Dye')).place(r(-4, 3, 1, ), SOUTH),
         WallSign((None, 'Concrete')).place(r(-5, 3, 1), SOUTH),
+        WallSign((None, 'Bundle')).place(r(-6, 3, 1), SOUTH),
         WallSign((None, 'Glass')).place(r(-7, 3, 1), SOUTH),
         colored_signs(None, lambda x, y, z, _, wood: Sign((wood.name, 'Sign With', 'Default', 'Text'), wood=wood.id,
                                                           front=None).place(r(x, y, z), 14)),

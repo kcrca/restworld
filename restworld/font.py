@@ -56,10 +56,15 @@ def room():
     )
     row_lengths = [3, 3, 3, 3]
     row, x, y = 0, 0, 5
+    font_run_init.add(kill(e().tag('font_sign_label')))
     for i, thing in enumerate(materials):
         pos = r(x - 1, y, 0)
-        copy_sign.add(ensure(pos, WallSign((), state={'facing': SOUTH}, wood=thing.id)))
+        label = TextDisplay(thing.name, {'background': 0, 'line_width': 100, 'shadow_radius': 0}).tag(
+            'font_sign_label').scale(0.5)
+        font_run_init.add(label.summon(r(x - 1, y + 0.8, -0.45)))
+        font_run_init.add(label.rotate(180).summon(r(x - 1, y + 0.8, -0.45)))
 
+        copy_sign.add(ensure(pos, WallSign((), state={'facing': SOUTH}, wood=thing.id)))
         copy_sign.add(data().modify(pos, 'front_text.messages').set().from_(src_pos, 'front_text.messages'),
                       data().modify(pos, 'back_text.messages').set().from_(src_pos, 'front_text.messages'),
                       data().modify(pos, 'front_text.color').set().from_(color_pos, 'front_text.color'),

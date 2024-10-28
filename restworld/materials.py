@@ -127,9 +127,13 @@ def room():
 
     non_inventory = list(filter(lambda x: x.name not in operator_menu, must_give_items.values()))
     non_inventory.append(Entity('elytra', name='Damaged Elytra', nbt={'components': {'minecraft:damage': 450}}))
+    # entity = Entity('bundle', name='Full Bundle',
+    #                 nbt={'minecraft:bundle_contents': [{'count': 1, 'id': "stone"}],
+    #                      'components': {'minecraft:bundle_contents': [{'count': 1, 'id': "stone"}]}})
+    # non_inventory.append(entity)
 
     def only_items_init_func():
-        rows = [(-1, 2)]
+        rows = [(-1, len(non_inventory))]
         delta = 1
         x = 1
         items = list(non_inventory)
