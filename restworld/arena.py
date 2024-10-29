@@ -55,7 +55,7 @@ def room():
     # Lower priority ones can be used as filler
     battles = [
         ('Axolotl:w', 'Drowned'),
-        ('Creaking', None),
+        ('Creaking', 'You'),
         ('Axolotl:w', 'Guardian'),
         ('Blaze', 'Snow Golem'),
         ('Bogged', 'Iron Golem'),
@@ -143,7 +143,6 @@ def room():
                 y = 3 - int(s / row_length)
                 z = max_z - (s % row_length)
                 hunter, victim = step.elem[s]
-                alone = victim is None
 
                 battle_type = 0
                 if hunter[-2] == ':':
@@ -174,6 +173,7 @@ def room():
                     return incr_cmd
 
                 data_change = execute().at(monitor_home)
+                alone = victim is None or victim == 'You'
                 sign_commands = (
                     data_change.run(data().merge(r(3, 0, 0), {'Command': incr_cmd('hunter', hunter, alone)})),
                     data_change.run(
@@ -182,7 +182,7 @@ def room():
                     function('restworld:arena/start_battle', {'hunter_is_splitter': is_splitter_mob(hunter),
                                                               'victim_is_splitter': is_splitter_mob(victim)})
                 )
-                sign = WallSign().messages((None, hunter, 'vs.', 'Nobody' if alone else victim), sign_commands)
+                sign = WallSign().messages((None, hunter, 'vs.', victim if victim else 'Nobody'), sign_commands)
                 yield sign.place(r(-2, y, z), EAST)
 
                 run_type = Score('arena_run_type', 'arena')
