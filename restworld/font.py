@@ -61,8 +61,8 @@ def room():
         pos = r(x - 1, y, 0)
         label = TextDisplay(thing.name, {'background': 0, 'line_width': 100, 'shadow_radius': 0}).tag(
             'font_sign_label').scale(0.5)
-        font_run_init.add(label.summon(r(x - 1, y + 0.8, -0.45)))
-        font_run_init.add(label.rotate(180).summon(r(x - 1, y + 0.8, -0.45)))
+        font_run_init.add(room.label(r(x - 1, y + 0.8, -1.45), thing.name, NORTH, vertical=True))
+        font_run_init.add(room.label(r(x - 1, y + 0.8, -0.45), thing.name, SOUTH, vertical=True))
 
         copy_sign.add(ensure(pos, WallSign((), state={'facing': SOUTH}, wood=thing.id)))
         copy_sign.add(data().modify(pos, 'front_text.messages').set().from_(src_pos, 'front_text.messages'),
