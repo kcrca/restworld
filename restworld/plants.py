@@ -21,7 +21,7 @@ def crop(stages, which: str | Callable[[int, str], Block], x, y, z, step, name='
         else:
             block = which(stage, name)
         yield fill(r(x, y, z - s), r(x + 2, y, z - s), block)
-    yield Sign.change(r(x + 3, 2, z-1),
+    yield Sign.change(r(x + 3, 2, z - 1),
                       (None, None, f'{name.title()}: {stages[(step.i + 1) % len(stages)]} of {step.count - 2}'))
 
 
@@ -67,6 +67,7 @@ def room():
         kill(e().nbt({'Item': {'id': 'minecraft:pitcher_plant'}})))
 
     stages_8 = list(range(0, 8)) + [7, 7]
+
     def crops_8_loop(step):
         yield from crop(stages_8, 'wheat', 0, 3, 0, step)
         yield from crop(stages_8, 'carrots', 0, 3, -5, step)
@@ -253,6 +254,8 @@ def room():
         'Mangrove': MANGROVE_SWAMP, 'Dark Oak': DARK_FOREST, 'Pale Oak': PALE_GARDEN, 'Spruce': SNOWY_TAIGA
     }
 
+    switch_biome = room.score('switch_biome')
+
     def trees_loop(step):
         tree, biome = step.elem
         yield data().merge(r(-1, 0, -1), {'mode': 'LOAD', 'name': f'restworld:{to_id(tree)}_trees'})
@@ -260,16 +263,18 @@ def room():
         yield setblock(r(-1, -1, -1), 'air')
         yield WallSign((None, f'{tree} Trees', 'Biome:', to_name(str(biome)))).place(r(1, 2, 7), WEST)
         plant_room = Region(r(0, -5, -1), r(33, 10, 52))
-        yield execute().at(e().tag('plants_room_beg_home')).run(plant_room.fillbiome(biome),
-                                                                plant_room.fill('air', replace='snow'))
         # Fill the tall tree area
-        yield fillbiome(r(0, 8, 0), r(18, 30, 17), biome)
+        yield execute().unless().score(switch_biome).matches(0).run(
+            execute().at(e().tag('plants_room_beg_home')).run(plant_room.fillbiome(biome),
+                                                              plant_room.fill('air', replace='snow')),
+            fillbiome(r(0, 8, 0), r(18, 30, 17), biome))
 
     tree_items = tree_types.items()
     sorted(tree_items)
     room.loop('trees', main_clock).loop(trees_loop, tree_items).add(
         execute().at(e().tag('plants_room_beg_home')).run(fill(r(0, 1, 0), r(33, 6, 52), 'water').replace('ice')),
         WallSign((None, 'Lily Pad')).place(r(3, 2, 15), WEST))
+    room.function('trees_init').add(room.label(r(-1, 2, 16), 'Freeze Biome'))
 
     def tulips_loop(step):
         yield setblock(r(0, 3, 0), f'{to_id(step.elem)}_tulip')
