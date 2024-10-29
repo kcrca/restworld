@@ -30,7 +30,6 @@ Block of Emerald
 Block of Gold
 Block of Iron
 Block of Lapis Lazuli
-Block of Netherite
 Block of Quartz
 Block of Raw Copper
 Block of Raw Gold
@@ -74,7 +73,6 @@ Chiseled Sandstone
 Chiseled Stone Bricks
 Clay
 Coal Ore
-Coarse Dirt
 Cobbled Deepslate
 Cobblestone
 Command Block
@@ -89,7 +87,6 @@ Crimson Hyphae
 Crimson Nylium
 Crimson Planks
 Crimson Stem
-Crying Obsidian
 Cut Copper
 Cut Red Sandstone
 Cut Sandstone
@@ -103,6 +100,9 @@ Cyan Wool
 Dark Oak Log
 Dark Oak Planks
 Dark Oak Wood
+Pale Oak Log
+Pale Oak Planks
+Pale Oak Wood
 Dark Prismarine
 Deepslate
 Deepslate Bricks
@@ -131,7 +131,6 @@ Fire Coral Block
 Fletching Table
 Crafter
 Furnace
-Gilded Blackstone
 Glass
 Glowstone
 Gold Ore
@@ -273,7 +272,6 @@ Redstone Lamp
 Redstone Ore
 Reinforced Deepslate
 Repeating Command Block
-Respawn Anchor
 Rooted Dirt
 Sand
 Sandstone
@@ -311,6 +309,8 @@ Stripped Crimson Hyphae
 Stripped Crimson Stem
 Stripped Dark Oak Log
 Stripped Dark Oak Wood
+Stripped Pale Oak Log
+Stripped Pale Oak Wood
 Stripped Jungle Log
 Stripped Jungle Wood
 Stripped Oak Log

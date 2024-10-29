@@ -65,13 +65,13 @@ mobs = (
              nbt={'LeftHanded': True, 'HandItems': [{'id': 'golden_axe', 'Count': 1}, {}]}),
     PhotoMob(8.7, +26, 'witch', y=1.5),
     PhotoMob(8.7, +33.5, 'iron_golem', y=1.5),
-    PhotoMob(8.7, +41, 'enderman', y=1.5),
+    PhotoMob(8.7, +41, 'creaking', y=1.5),
 
     PhotoMob(17.0, 0, 'ghast', y=1.5),
 )
 
 
-def get_normal_blocks():
+def get_quilt_blocks():
     modifiers = tuple(c.name for c in colors) + woods + stems + materials + stepables + corals + (
         'Weathered', 'Oxidized', 'Exposed')
     modifiers = tuple(sorted(set(modifiers), key=lambda x: len(x), reverse=True))
@@ -103,7 +103,9 @@ def get_normal_blocks():
         if 'Amethyst' in name:
             name = 'Amethyst ' + name
         if 'Coral' in name:
-            name = 'E-Coral ' + name
+            # The "D" is arbitrary, it moves corals so they (a) fit in a single row, and (b) aren't seen through glass.
+            # Change it as needed.
+            name = 'D-Coral ' + name
         elif name in ('Dropper', 'Dispenser', 'Furnace', 'Observer'):
             name = 'Furnace ' + name
         elif 'Froglight' in name:
@@ -139,14 +141,14 @@ def armor(kind):
 def room():
     room = Room('photo', restworld)
 
-    # Currently it seems rally hard to figure out where to put a home stand for the quilt, so I'm just
+    # Currently it seems really hard to figure out where to put a home stand for the quilt, so I'm just
     # using absolute coordinates. I can fix this later if I get tired o fit.
     def quilt():
         coral_stage = 0
         line_length = 25
         p = Offset(-1069, 113, 1067)
         yield fill(p.p(0, -1, -2), p.p(line_length, -20, 2), 'air')
-        for i, b in enumerate(get_normal_blocks()):
+        for i, b in enumerate(get_quilt_blocks()):
             block = Block(b)
             z = i % line_length
             y = -(int(i / line_length) + 1)
@@ -173,7 +175,7 @@ def room():
                 yield setblock(p.p(z, y, 1), 'stone')
                 coral_stage += 1
 
-    room.function('quilt_init').add(
+    room.function('quilt_init', home=False).add(
         quilt(),
         room.label((-1057, 104, 1055), 'Quilt Photo', SOUTH),
         room.label((-1057, 104, 1054), 'Back to Platform', NORTH))
