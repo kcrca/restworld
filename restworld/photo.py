@@ -106,7 +106,7 @@ def get_quilt_blocks():
             # The "D" is arbitrary, it moves corals so they (a) fit in a single row, and (b) aren't seen through glass.
             # Change it as needed.
             name = 'D-Coral ' + name
-        elif name in ('Dropper', 'Dispenser', 'Furnace', 'Observer'):
+        elif name in ('Dropper', 'Dispenser', 'Observer'):
             name = 'Furnace ' + name
         elif 'Froglight' in name:
             name = f'Froglight {name}'
@@ -114,9 +114,8 @@ def get_quilt_blocks():
             name = f'Sponge {name}'
         elif 'Ore' in name:
             name = f'Ore {name}'
-        elif name in (
-                'Crafting Table', 'Crafter', 'Cartography Table', 'Smithing Table', 'Fletching Table', 'Smoker',
-                'Blast Furnace', 'Cauldron'):
+        elif name in {'Crafting Table', 'Crafter', 'Cartography Table', 'Smithing Table', 'Fletching Table', 'Smoker',
+                      'Blast Furnace', 'Cauldron', 'Barrel', 'Smoker', 'Furnace'}:
             name = 'Profession ' + name
         elif 'Glass' in name:
             # 'M' to move it away from corals so the water trough behind the coral doesn't overlap
@@ -146,7 +145,7 @@ def room():
     def quilt():
         coral_stage = 0
         line_length = 25
-        p = Offset(-1069, 113, 1067)
+        p = Offset(-1020, 118, 1018)
         yield fill(p.p(0, -1, -2), p.p(line_length, -20, 2), 'air')
         for i, b in enumerate(get_quilt_blocks()):
             block = Block(b)
@@ -157,28 +156,26 @@ def room():
                 z = line_length - z - 1
             if '_log' in b or ('basalt' in b and 'smooth' not in b) or ('stem' in b and 'mush' not in b):
                 block.merge_state({'axis': 'z'})
-            elif 'command_block' in 'b':
-                block.merge_nbt({'facing': EAST})
-            elif b == 'observer':
-                block.merge_nbt({'facing': NORTH})
+            elif 'command_block' in b:
+                block.merge_state({'facing': EAST})
+            elif b in {'furnace', 'blast_furnace', 'dispenser', 'dropper', 'observer', 'loom', 'barrel', 'smoker',
+                       'beehive', 'bee_nest'}:
+                block.merge_state({'facing': SOUTH})
 
             yield setblock(p.p(z, y, 0), block)
             if 'coral' in b and 'dead' not in b:
                 if coral_stage == 0:
-                    yield setblock(p.p(z - 1 if dir == 1 else z + 1, y, 1), 'stone')
+                    yield setblock(p.p(z - 1 if dir == 1 else z + 1, y, -1), 'stone')
                     coral_stage += 1
-                yield setblock(p.p(z, y, 1), 'water')
-                yield setblock(p.p(z, y, 2), 'stone')
-                yield setblock(p.p(z, y - 1, 1), 'stone')
-                yield setblock(p.p(z, y - 2, 1), Block('stone_slab', {'type': 'top'}))
+                yield setblock(p.p(z, y, -1), 'water')
+                yield setblock(p.p(z, y, -2), 'stone')
+                yield setblock(p.p(z, y - 1, -1), 'stone')
+                yield setblock(p.p(z, y - 2, -1), Block('stone_slab', {'type': 'top'}))
             elif coral_stage == 1:
-                yield setblock(p.p(z, y, 1), 'stone')
+                yield setblock(p.p(z, y, -1), 'stone')
                 coral_stage += 1
 
-    room.function('quilt_init', home=False).add(
-        quilt(),
-        room.label((-1057, 104, 1055), 'Quilt Photo', SOUTH),
-        room.label((-1057, 104, 1054), 'Back to Platform', NORTH))
+    room.function('quilt_init', home=False).add(quilt())
 
     mob_offset = Offset(-1, 9, 7)
     room.function('photo_mobs_init').add(
@@ -193,13 +190,6 @@ def room():
         execute().as_(p().gamemode(CREATIVE)).run(drop.set(1)),
         # Using 'as server' means that it won't report the changes to the player
         execute().if_().score(drop).matches(1).run(gamemode(SURVIVAL, p()), gamemode(CREATIVE, p())))
-    room.function('photo_complete_view', home=False).add(
-        # /execute in overworld run tp @p -1002 108 1009 facing -1019.0 93 993.0
-        execute().in_(OVERWORLD).run(tp(p(), (-1010, 109, 1036)).facing((-1027.00, 93, 1020.00))),
-        function(do_drop),
-        kill(e().type('item'))
-    )
-    # /summon armor_stand ~ ~ ~ {ShowArms:1b,Pose:{LeftArm:[297f,45f,0f]}}
     room.function('armors_init').add(
         armor('leather').summon(r(0, 3, 0), facing=SOUTH),
         armor('iron').summon(r(3, 3, 0), facing=SOUTH),
@@ -224,17 +214,15 @@ def room():
         execute().in_(OVERWORLD).run(tp(p(), (-1008.001, 109, 1043)).facing((-1008.001, 105, 1057))),
         function(do_drop))
     room.function('photo_quilt_view').add(
-        execute().in_(OVERWORLD).run(tp(p(), (-1057, 104.51, 1056.61)).facing((-1057, 104.51, 1072))),
+        execute().in_(OVERWORLD).run(tp(p(), (-1008, 109.51, 1029.61)).facing((-1008, 109.51, 1000))),
         function(do_drop))
 
-    shoot_offset = Offset(0, 4, 0)
     room.function('photo_shoot_init').add(
-        room.label(shoot_offset.r(-1, 15, 6), 'Complete Photo', NORTH),
-        room.label(shoot_offset.r(1, 15, 6), 'Mob Photo', EAST),
-        room.label(shoot_offset.r(0, 15, 7), 'Reset Room', NORTH),
-        room.label(shoot_offset.r(0, 15, 9), 'Go Home', SOUTH),
-        room.label(shoot_offset.r(0, 15, 11), 'Quilt Photo', SOUTH),
-        room.label(shoot_offset.r(0, 15, 13), 'Sample Photo', SOUTH),
+        room.label(r(1, 2, 0), 'Mob Photo', EAST),
+        room.label(r(0, 2, 2), 'Go Home', SOUTH),
+        room.label(r(0, 2, 7), 'Sample Photo', SOUTH),
+        room.label(r(0, 2, -2), 'Reset Room', NORTH),
+        room.label(r(0, 2, -6), 'Quilt Photo', NORTH),
     )
 
     room.function('sampler_init').add(
