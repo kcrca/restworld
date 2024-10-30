@@ -207,7 +207,7 @@ def room():
         armor('netherite').summon(r(3, 5, -2), facing=SOUTH),
     )
     room.function('photo_mobs_view', home=False).add(
-        execute().in_(OVERWORLD).run(tp(p(), (-1006.5, 109, 1036.5)).facing((-955.5, 88, 1034))),
+        execute().in_(OVERWORLD).run(tp(p(), (-1006.5, 109, 1036.5)).facing((-955.5, 88, 1036.5))),
         function(do_drop),
         kill(e().type('item')))
     room.function('photo_sample_view', home=False).add(
