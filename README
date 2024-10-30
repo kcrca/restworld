@@ -1,0 +1,3 @@
+The all-encompassing photo shoot was removed but saved in photo_all_[123].
+Loading photo_all_1 will load the others in the right place. This should be done
+at a y height of 80.
