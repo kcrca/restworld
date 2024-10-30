@@ -188,7 +188,7 @@ def room():
         yield setblock(r(0, 2, -1), ('redstone_lamp', {'lit': powered}))
         yield setblock(r(1, 2, 0), ('pale_oak_wall_sign', {'facing': EAST}))
         yield data().merge(r(1, 2, 0), wood.sign_nbt())
-        if powered == 'True':
+        if powered == True:
             yield Sign.change(r(1, 2, 0), (None, None, None, '(Powered)'))
 
     powerings = []
