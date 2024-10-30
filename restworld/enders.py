@@ -41,7 +41,7 @@ def room():
         lambda step: setblock(r(0, 2, 0), 'redstone_torch' if step.i == 0 else 'air'), range(0, 2))
 
     # Currently, "Rotation" does not affect the dragon, so it will always face north, so arrange things accordingly.
-    dragon_pos = r(0, 3, 0)
+    dragon_pos = r(0, 4, 0)
     room.function('dragon_init').add(
         kill(e().type('ender_dragon')),
         WallSign((None, 'Ender Dragon')).place(r(0, 2, -5), NORTH),
