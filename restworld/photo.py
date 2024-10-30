@@ -214,7 +214,7 @@ def room():
         execute().in_(OVERWORLD).run(tp(p(), (-1008.001, 109, 1043)).facing((-1008.001, 105, 1057))),
         function(do_drop))
     room.function('photo_quilt_view').add(
-        execute().in_(OVERWORLD).run(tp(p(), (-1008, 109.51, 1029.61)).facing((-1008, 109.51, 1000))),
+        execute().in_(OVERWORLD).run(tp(p(), (-1008, 109.51, 1029.39)).facing((-1008, 109.51, 1000))),
         function(do_drop))
 
     room.function('photo_shoot_init').add(
