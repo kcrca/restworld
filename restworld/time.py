@@ -29,16 +29,24 @@ def room():
         if z > 3:
             z += 1
         return WallSign((None, name, 'Moon'), (
-            moon.score.set(value),
+            moon_run.score.set(value),
             execute().at(e().tag('moon_home')).run(function('restworld:time/moon_run_cur')))).place(r(x, y, z), WEST)
 
-    moon = room.loop('moon_run', main_clock)
-    moon_running = room.loop('moon_running')
+    moon_run = room.loop('moon_run', main_clock, home=False)
     moon_init = room.function('moon_init')
 
-    moon.add(reset_moon).loop(moon_run_loop, moon_phases)
+    room.function('moon_run_on', home=False).add(
+        tag(e().tag('moon_home')).add('moon_run_home'),
+        execute().at(e().tag('moon_home')).run(function('restworld:time/moon_run_cur')),
+    )
+    moon_run_off = room.function('moon_run_off', home=False).add(
+        tag(e().tag('moon_home')).remove('moon_run_home'),
+        execute().at(e().tag('moon_home')).run(function(moon_init)),
+        time().set(NOON),
+    )
+
+    moon_run.add(reset_moon).loop(moon_run_loop, moon_phases)
     moon_init.add(
-        moon_running.score.set(0),
         tag(e().tag('moon_home')).remove('moon_run_home'),
         reset_moon,
         (moon_sign(0, 8, i, phase[1]) for i, phase in enumerate(moon_phases)),
@@ -55,17 +63,6 @@ def room():
         room.label(r(-1, 7, 4), 'Reset Room', EAST, vertical=True),
         room.label(r(-9, 7, 4), 'Reset Room', WEST, vertical=True),
     )
-
-    def moon_running_loop(step):
-        if step.i == 0:
-            yield tag(e().tag('moon_home')).remove('moon_run_home')
-            yield execute().at(e().tag('moon_home')).run(function(moon_init))
-            yield time().set(NOON)
-        else:
-            yield tag(e().tag('moon_home')).add('moon_run_home')
-            yield execute().at(e().tag('moon_home')).run(function('restworld:time/moon_run_cur'))
-
-    moon_running.loop(moon_running_loop, range(2))
 
     slow, norm = 3, 30
     morn = (21900, 24600)
