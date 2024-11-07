@@ -16,6 +16,35 @@ COUNT_MAX = 5
 battle_types = {'w': 1, 'c': 2, 'g': 3}
 
 
+#
+# I tried to use macros to simplify this, with a design like that below (kept for future reference), but it turned out
+# that the difficulties of passing values to macro functions that were nbt structures kept being very difficult to the
+# point where I decided it wasn't worth it when the existing system worked.
+#
+# Design (starting point):
+#     Storage data is used to describe the current (and previous?) arena configuration:
+#       type : of battle, numericaly (because you can't compare anything but scores (honest!))
+#       hunter:
+#           id: of monster
+#           nbt: for monster
+#           splitter: True (if False, absent)
+#       victim: (same as hunter, or absent for non-battles)
+#
+#     Each sign has a command that invokes "start_battle" with the new arena configuration.
+#
+#     start_battle stores the new arena configuration.
+#       if new type is different, set up new type
+#       set the new storage data values
+#       adds role to data ("hunter" or "victim" (maybe 0 or 1, but I think not))
+#       (misc. other stuff?)
+#
+#     monitor_tick runs every tick, and invokes do_monitor with storage data
+#
+#     do_monitor:
+#       runs check_count with arena.hunter and arena.victim
+#       cleans out any loose items sitting around
+#       (misc. other stuff?)
+
 def is_splitter_mob(mob):
     return mob in ('Slime', 'Magma Cube')
 
