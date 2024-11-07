@@ -215,12 +215,14 @@ def room():
 
     def shrooms_loop(step):
         yield data().merge(r(-1, 0, -1), {'mode': 'LOAD', 'name': 'restworld:%s_shroom' % step.elem})
+        yield fill(r(-1, 1, -2), r(13, 1, 10), f'{step.elem}_nylium').replace('#nylium')
         yield setblock(r(-1, -1, -1), 'redstone_block')
         yield setblock(r(-1, -1, -1), 'air')
         shrooms_tops = room.score('shrooms_tops')
         vines = 'weeping_vines' if step.elem == 'crimson' else 'twisting_vines'
-        yield execute().unless().score(shrooms_tops).matches(1).run(setblock(r(1, 3, 0), (vines, {'age': 0})))
-        yield execute().if_().score(shrooms_tops).matches(1).run(setblock(r(1, 3, 0), (vines, {'age': 25})))
+        y_off = 3 if step.elem == 'crimson' else 5
+        yield execute().unless().score(shrooms_tops).matches(1).run(setblock(r(1, y_off, 0), (vines, {'age': 0})))
+        yield execute().if_().score(shrooms_tops).matches(1).run(setblock(r(1, y_off, 0), (vines, {'age': 25})))
 
     room.loop('shrooms', main_clock).loop(shrooms_loop, ('crimson', 'warped'))
 
@@ -262,7 +264,7 @@ def room():
         yield setblock(r(-1, -1, -1), 'redstone_block')
         yield setblock(r(-1, -1, -1), 'air')
         yield WallSign((None, f'{tree} Trees', 'Biome:', to_name(str(biome)))).place(r(1, 2, 7), WEST)
-        plant_room = Region(r(0, -5, -1), r(33, 10, 52))
+        plant_room = Region(r(0, -5, -1), r(33, 10, 56))
         # Fill the tall tree area
         yield execute().unless().score(switch_biome).matches(0).run(
             execute().at(e().tag('plants_room_beg_home')).run(plant_room.fillbiome(biome),
@@ -281,6 +283,12 @@ def room():
         yield Sign.change(r(1, 2, 0), (None, step.elem))
 
     room.loop('tulips', main_clock).loop(tulips_loop, tulips)
+
+    def eyeblossom_loop(step):
+        yield setblock(r(0, 3, 0), f'{step.elem}_eyeblossom')
+        yield Sign.change(r(1, 2, 0), (None, step.elem.title()))
+
+    room.loop('eyeblossom', main_clock).loop(eyeblossom_loop, ('open', 'closed'))
 
 
 def three_funcs(room):
@@ -392,4 +400,4 @@ def water_funcs(room):
         yield setblock(r(0, 3, 0), ('sea_pickle', {'pickles': step.elem}))
         yield setblock(r(0, 3, -2), ('sea_pickle', {'waterlogged': False, 'pickles': step.elem}))
 
-    room.loop('sea_pickles', main_clock).loop(sea_pickles_loop, range(1, 4))
+    room.loop('sea_pickles', main_clock).loop(sea_pickles_loop, range(1, 5))

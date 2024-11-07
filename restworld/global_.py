@@ -69,7 +69,7 @@ def room():
         after = lights[1 - int(turn_on)]
         return (
             use_min_fill(100, after, before),
-            execute().at(e().tag('full_reset_home')).run(setblock((0, 105, -78), after)),
+            execute().at(e().tag('full_reset_home')).run(setblock((0, 105, -82), after)),
             execute().at(e().tag('aquatic_anchor')).run(fill(r(-7, -1, 0), r(7, 5, 20), after).replace(before)))
 
     def kill_if_time():

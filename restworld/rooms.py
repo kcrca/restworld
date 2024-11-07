@@ -155,7 +155,8 @@ class Room(FunctionSet):
         dx_beg = self.score('dx_beg')
         dz_beg = self.score('dz_beg')
         dx.set(0)
-        store = f'{self.pack.name}:{self.name}_pos'
+        self.store = f'{self.pack.name}:{self.name}'
+        store = self.pos_store = f'{self.store}_pos'
         beg_tag = e().tag(f'{self.name}_room_beg_home').limit(1)
         end_tag = e().tag(f'{self.name}_room_end_home').limit(1)
         self.function(f'{self.name}_room_beg_init').add(
