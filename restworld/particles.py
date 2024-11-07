@@ -282,7 +282,7 @@ def room():
     dragon_breath_run = room.function('dragon_breath_run', home=False).add(
         kill(e().tag('particle_dragonball')),
         summon('dragon_fireball', r(0, 4, 4),
-               {'power': {0.0, -0.05, -0.05}, 'ExplosionPower': 0, 'Tags': ['particle_dragonball', 'particler']}),
+               {'ExplosionPower': 0, 'Tags': ['particle_dragonball', 'particler']}),
         schedule().function(dragon_breath_finish, 1, REPLACE),
     )
     room.function('dragon_breath', home=False).add(slow().run(function(dragon_breath_run)))
