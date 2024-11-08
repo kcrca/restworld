@@ -195,7 +195,8 @@ def room():
     ]
     pottables = [Block('Mangrove|Propagule' if w == 'Mangrove' else '%s Sapling' % w) for w in saplings] + [
         Block('%s Tulip' % t) for t in tulips] + list(small_flowers) + misc + [Block('%s Roots' % x) for x in stems] + [
-                    Block('%s Fungus' % x) for x in stems] + [Block('Torchflower'), Block('Wither Rose')]
+                    Block('%s Fungus' % x) for x in stems] + [
+                    Block('Torchflower'), Block('Wither Rose'), Block('Closed|Eyeblossom'), Block('Open|Eyeblossom')]
     try:
         pottables[pottables.index(Block('Bamboo Sapling'))] = Block('Bamboo')
     except ValueError:
