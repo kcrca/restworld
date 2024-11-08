@@ -552,21 +552,25 @@ def room():
         tag(e().tag('ore_blocks_base')).add('deepslate_ore_blocks_home'),
         execute().at(e().tag('ore_blocks_base')).run(function('restworld:blocks/deepslate_ore_blocks_cur')))
 
-    resin_clumps_init = room.function('resin_clumps_init').add(
-        setblock(r(0, 4, 0), 'pale_oak_log'),
-    )
-    for dir in (N, E, W, S, UP, DOWN):
-        f = as_facing(dir)
-        if dir == UP:
-            o = as_facing(DOWN)
-        elif dir == DOWN:
-            o = as_facing(UP)
-        else:
-            o = rotate_facing(f, 180)
-        delta = f.block_delta
-        delta[1] += 4
-        offset = r(*delta)
-        resin_clumps_init.add(setblock(offset, ('resin_clump', {o.name: True})))
+    def resin_clumps_loop(step):
+        block = Block(step.elem)
+        yield setblock(r(0, 4, 0), block),
+        yield Sign.change(r(0, 2, -1), (None, None, *block.sign_text))
+        for dir in (N, E, W, S, UP, DOWN):
+            f = as_facing(dir)
+            if dir == UP:
+                o = as_facing(DOWN)
+            elif dir == DOWN:
+                o = as_facing(UP)
+            else:
+                o = rotate_facing(f, 180)
+            delta = f.block_delta
+            delta[1] += 4
+            offset = r(*delta)
+            yield setblock(offset, ('resin_clump', {o.name: True}))
+
+    room.loop('resin_clumps', main_clock).loop(resin_clumps_loop, (
+    'Pale Oak Log', 'Pale Oak Wood', 'Stripped|Pale Oak Log', 'Stripped|Pale Oak Wood'))
 
     def ladder_loop(step):
         yield fill(r(0, 3, 0), r(0, 5, 0), 'air')
