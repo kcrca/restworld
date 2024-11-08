@@ -4,7 +4,9 @@ import re
 from typing import Iterable, Union
 
 from pynecraft import info
-from pynecraft.base import DOWN, EAST, EQ, NORTH, Nbt, RelCoord, SOUTH, WEST, as_facing, r, to_id, to_name
+from pynecraft.base import DOWN, E, EAST, EQ, N, NORTH, Nbt, RelCoord, S, SOUTH, UP, W, WEST, as_facing, r, \
+    rotate_facing, to_id, \
+    to_name
 from pynecraft.commands import Block, Commands, Entity, MOD, MOVE, as_block, clone, data, e, execute, fill, function, \
     item, kill, n, p, s, say, setblock, summon, tag
 from pynecraft.function import Loop
@@ -550,6 +552,22 @@ def room():
         tag(e().tag('ore_blocks_base')).remove('ore_blocks_home'),
         tag(e().tag('ore_blocks_base')).add('deepslate_ore_blocks_home'),
         execute().at(e().tag('ore_blocks_base')).run(function('restworld:blocks/deepslate_ore_blocks_cur')))
+
+    resin_clumps_init = room.function('resin_clumps_init').add(
+        setblock(r(0, 4, 0), 'pale_oak_log'),
+    )
+    for dir in (N, E, W, S, UP, DOWN):
+        f = as_facing(dir)
+        if dir == UP:
+            o = as_facing(DOWN)
+        elif dir == DOWN:
+            o = as_facing(UP)
+        else:
+            o = rotate_facing(f, 180)
+        delta = f.block_delta
+        delta[1] += 4
+        offset = r(*delta)
+        resin_clumps_init.add(setblock(offset, ('resin_clump', {o.name: True})))
 
     def ladder_loop(step):
         yield fill(r(0, 3, 0), r(0, 5, 0), 'air')
