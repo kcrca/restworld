@@ -138,15 +138,16 @@ def room():
     blocks('bookshelves', SOUTH, bookshelves)
     blocks('deepslate_bricks', NORTH, (
         'Deepslate|Bricks', 'Cracked|Deepslate|Bricks', 'Deepslate|Tiles', 'Cracked|Deepslate|Tiles'))
-    blocks('bricks', NORTH,
-           ('Bricks', 'Quartz Bricks', 'Mud Bricks', 'Prismarine Bricks', 'Tuff Bricks', 'Chiseled Tuff|Bricks'))
-    blocks('nether_bricks', NORTH,
-           ('Nether Bricks', 'Cracked|Nether Bricks', 'Chiseled|Nether Bricks', 'Red|Nether Bricks'))
+    blocks('bricks', NORTH, (
+        'Bricks', 'Quartz Bricks', 'Mud Bricks', 'Prismarine Bricks', 'Tuff Bricks', 'Resin Bricks'))
+    blocks('nether_bricks', NORTH, (
+        'Nether Bricks', 'Cracked|Nether Bricks', 'Chiseled|Nether Bricks', 'Red|Nether Bricks'))
     blocks('stone_bricks', NORTH, (
         'Stone Bricks', 'Mossy|Stone Bricks', 'Cracked|Stone Bricks', 'Chiseled|Stone Bricks',
         'Polished|Blackstone Bricks', 'Cracked Polished|Blackstone Bricks'))
-    blocks('chiseled', NORTH,
-           ('Chiseled|Deepslate', 'Chiseled|Polished|Blackstone', 'Chiseled|Quartz Block', 'Chiseled|Tuff'))
+    blocks('chiseled', NORTH, (
+        'Chiseled|Deepslate', 'Chiseled|Polished|Blackstone', 'Chiseled Tuff|Bricks', 'Chiseled|Quartz Block',
+        'Chiseled|Tuff', 'Chiseled|Resin Bricks'))
     campfire_food = room.score('campfire_food')
     campfire_init, campfire_main = blocks('campfire', NORTH, (
         Block('Campfire', {'lit': True}),
@@ -225,6 +226,7 @@ def room():
     blocks('quartz', NORTH, (
         'Quartz Block', 'Smooth Quartz', 'Quartz Pillar', 'Chiseled Quartz Block', 'Quartz Bricks'))
     blocks('raw_metal', NORTH, ('Raw Iron|Block', 'Raw Copper|Block', 'Raw Gold|Block'))
+    blocks('resin', SOUTH, ('Resin Block', 'Resin Bricks', 'Chiseled|Resin Bricks'))
     blocks('respawn_anchor', NORTH, (Block('Respawn Anchor', {'charges': x}) for x in range(0, 5)),
            labels=tuple(('Respawn Anchor', f'Charges: {x:d}') for x in range(0, 5)))
 
@@ -247,6 +249,7 @@ def room():
     loop.add(setblock(r(0, 4, 0), 'air'))
     blocks('soul_stuff', NORTH, ('Soul Sand', 'Soul Soil'))
     blocks('sponge', SOUTH, ('Sponge', 'Wet Sponge'))
+    blocks('sticky', SOUTH, ('Slime Block', 'Honey block'))
 
     stone_types = ('Basalt', 'Stone', 'Deepslate', 'Andesite', 'Diorite', 'Granite', 'Tuff', 'Blackstone', 'Basalt')
     polished_types = ('Smooth Basalt', 'Smooth Stone') + tuple(f'Polished|{t}' for t in stone_types[2:])
@@ -869,7 +872,8 @@ def color_functions(room):
             yield setblock(r(-9, 2, 3), Block(f'{color.id}_bed', {'facing': NORTH, 'part': 'foot'}))
             frame_nbt = {'Item': Item.nbt_for(f'{color.id}_dye'), 'ItemRotation': 0}
             yield data().merge(e().tag('colorings_item_frame').limit(1), frame_nbt)
-            bundle = Item.nbt_for(f'{color.id}_bundle', {'components': {'minecraft:bundle_items': [Item.nbt_for('stone')]}})
+            bundle = Item.nbt_for(f'{color.id}_bundle',
+                                  {'components': {'minecraft:bundle_items': [Item.nbt_for('stone')]}})
         yield data().merge(n().tag('colorings_bundle_frame'), {'Item': bundle, 'ItemRotation': 0})
 
         if is_plain:
@@ -1170,6 +1174,7 @@ def stepable_functions(room):
         'Exposed|Cut Copper',
         'Weathered|Cut Copper',
         'Oxidized|Cut Copper',
+        'Resin Bricks',
         'Prismarine', 'Prismarine|Bricks', 'Dark|Prismarine',
         'Acacia Planks', 'Birch Planks', 'Cherry Planks', 'Jungle Planks', 'Mangrove Planks',
         'Oak Planks', 'Dark Oak Planks', 'Pale Oak Planks', 'Spruce Planks', 'Bamboo Planks', 'Bamboo Mosaic Block',

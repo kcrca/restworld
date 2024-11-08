@@ -127,6 +127,7 @@ def room():
 
     non_inventory = list(filter(lambda x: x.name not in operator_menu, must_give_items.values()))
     non_inventory.append(Entity('elytra', name='Damaged Elytra', nbt={'components': {'minecraft:damage': 450}}))
+
     # entity = Entity('bundle', name='Full Bundle',
     #                 nbt={'minecraft:bundle_contents': [{'count': 1, 'id': "stone"}],
     #                      'components': {'minecraft:bundle_contents': [{'count': 1, 'id': "stone"}]}})
@@ -420,9 +421,9 @@ def fencelike_functions(room):
     switch_to_fencelike('fences')
     room.loop('walls', main_clock).loop(lambda step: fencelike(step.elem), (x + ' Wall' for x in (
         'Cobblestone', 'Mossy|Cobblestone', 'Sandstone', 'Red|Sandstone', 'Brick', 'Mud|Brick', 'Stone|Brick',
-        'Mossy Stone|Brick', 'Nether|Brick', 'Red Nether|Brick', 'End Stone|Brick', 'Polished|Blackstone|Brick',
-        'Polished|Blackstone', 'Blackstone', 'Andesite', 'Granite', 'Diorite', 'Deepslate|Brick', 'Deepslate|Tile',
-        'Cobbled|Deepslate', 'Polished|Deepslate', 'Prismarine',
+        'Mossy Stone|Brick', 'Resin Brick', 'Nether|Brick', 'Red Nether|Brick', 'End Stone|Brick',
+        'Polished|Blackstone|Brick', 'Polished|Blackstone', 'Blackstone', 'Andesite', 'Granite', 'Diorite',
+        'Deepslate|Brick', 'Deepslate|Tile', 'Cobbled|Deepslate', 'Polished|Deepslate', 'Prismarine'
     )))
     switch_to_fencelike('walls')
 
