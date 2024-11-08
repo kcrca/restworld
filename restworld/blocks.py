@@ -464,8 +464,8 @@ def room():
     room.loop('dripstone', main_clock).loop(dripstone_loop, range(1, 5), bounce=True)
 
     def fire_loop(step):
-        dirs = ({'up': True}, {'north': True}, {})
-        surround = ((-1, 0, 'west'), (1, 0, 'east'), (0, 1, 'south'), (0, -1, 'north'),)
+        dirs = ({'up': False}, {'north': True}, {'up': True})
+        surround = ((1, 0, 'west'), (-1, 0, 'east'), (0, -1, 'south'), (0, 1, 'north'),)
         if 'soul' in step.elem:
             yield setblock(r(0, 3, 0), step.elem)
             yield setblock(r(0, 4, 0), 'soul_fire')
@@ -481,9 +481,8 @@ def room():
         yield data().merge(r(0, 2, -1), {'front_text': nbt})
 
     room.function('fire_init').add(WallSign((None, 'Fire')).place(r(0, 2, -1), NORTH))
-    room.loop('fire', main_clock).add(fill(r(0, 3, 0), r(0, 5, 0), 'air')).loop(fire_loop, (
+    fire_loop = room.loop('fire', main_clock).add(fill(r(0, 3, 0), r(0, 5, 0), 'air')).loop(fire_loop, (
         'oak_log', 'oak_log', 'oak_log', 'soul_soil'))
-    # <% types = ("Ice", "Packed Ice", "Blue Ice") %>
     blocks('ice', SOUTH, ('Ice', 'Packed Ice', 'Blue Ice'))
 
     infestables = []
