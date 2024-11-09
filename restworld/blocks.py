@@ -811,7 +811,7 @@ def room():
     for b in (
             'amethyst', 'anvil', 'bell', 'brewing_stand', 'cake', 'campfire', 'chest', 'colored_beam', 'colorings',
             'frosted_ice', 'grindstone', 'item_frame', 'lantern', 'armor_stand', 'torches', 'blocks_room', 'ladder',
-            'stepable', 'tnt', 'creaking_heart'):
+            'stepable', 'tnt', 'creaking_heart', 'resin_clumps'):
         room.function(b + '_init', exists_ok=True).add(tag(e().tag(b + '_home')).add('no_expansion'))
 
 
