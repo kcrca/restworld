@@ -555,7 +555,8 @@ def room():
     def resin_clumps_loop(step):
         block = Block(step.elem)
         yield setblock(r(0, 4, 0), block),
-        yield Sign.change(r(0, 2, -1), (None, None, *block.sign_text))
+        # Remove the final line in case the block text went from two lines to one
+        yield Sign.change(r(0, 2, -1), block.sign_text, start=2, min_len=2)
         for dir in (N, E, W, S, UP, DOWN):
             f = as_facing(dir)
             if dir == UP:
@@ -570,7 +571,7 @@ def room():
             yield setblock(offset, ('resin_clump', {o.name: True}))
 
     room.loop('resin_clumps', main_clock).loop(resin_clumps_loop, (
-    'Pale Oak Log', 'Pale Oak Wood', 'Stripped|Pale Oak Log', 'Stripped|Pale Oak Wood'))
+        'Pale Oak Log', 'Pale Oak Wood', 'Stripped|Pale Oak Log', 'Stripped|Pale Oak Wood'))
 
     def ladder_loop(step):
         yield fill(r(0, 3, 0), r(0, 5, 0), 'air')
