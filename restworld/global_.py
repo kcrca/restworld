@@ -61,7 +61,7 @@ def room():
 
     def use_min_fill(y, filler, filter):
         return execute().at(e().tag('full_reset_home')).run(
-            fill((r(0), y, r(0)), (r(166), y, r(180)), filler).replace(filter))
+            fill((r(0), y, r(0)), (69, y, 99), filler).replace(filter))
 
     def clock_blocks(turn_on):
         lights = ('red_concrete', 'lime_concrete')
@@ -69,8 +69,7 @@ def room():
         after = lights[1 - int(turn_on)]
         return (
             use_min_fill(100, after, before),
-            execute().at(e().tag('full_reset_home')).run(setblock((0, 105, -82), after)),
-            execute().at(e().tag('aquatic_anchor')).run(fill(r(-7, -1, 0), r(7, 5, 20), after).replace(before)))
+            execute().at(e().tag('particles_action_home')).run(setblock(r(0, 6, -4), after)))
 
     def kill_if_time():
         ex = execute()
