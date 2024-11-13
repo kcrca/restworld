@@ -2,7 +2,7 @@ import re
 from collections import defaultdict
 
 from pynecraft import info
-from pynecraft.base import EAST, EQ, NORTH, WEST, as_facing, d, r, to_name
+from pynecraft.base import EAST, EQ, WEST, as_facing, d, r, to_name
 from pynecraft.commands import JsonText, REPLACE, comment, data, e, execute, fill, function, item, kill, n, p, schedule, \
     setblock, \
     summon, tag
@@ -148,8 +148,7 @@ def room():
         ItemFrame(EAST).item('iron_pickaxe').tag('model_src', 'models').fixed(False).summon(r(2, 2, 2)),
         ItemFrame(EAST, nbt={'Invisible': True}, name='Invisible Frame').tag('model_invis_frame', 'models').fixed(
             False).summon(r(2, 2, -2)),
-        WallSign(
-            (None, 'Put something in', ' the frame to see', 'it in many views')).place(r(1, 3, 3), NORTH),
+        room.label(r(2, 3, 2), 'Put something in this frame to see it in many views', WEST, vertical=True),
 
         (WallSign((), wood='birch').place(pos, EAST) for pos in recent_things_signs),
         setblock(chest_pos, 'chest'),
