@@ -888,14 +888,13 @@ def color_functions(room):
             yield fill(r(-9, 2, 2), r(-9, 2, 3), 'air')
             yield volume.replace('air', '#standing_signs')
             yield data().remove(e().tag('colorings_item_frame').limit(1), 'Item')
-            bundle = Item.nbt_for('bundle', {'components': {'minecraft:bundle_items': [Item.nbt_for('stone')]}})
+            bundle = Item.nbt_for('bundle')
         else:
             yield setblock(r(-9, 2, 2), Block(f'{color.id}_bed', {'facing': NORTH, 'part': 'head'}))
             yield setblock(r(-9, 2, 3), Block(f'{color.id}_bed', {'facing': NORTH, 'part': 'foot'}))
             frame_nbt = {'Item': Item.nbt_for(f'{color.id}_dye'), 'ItemRotation': 0}
             yield data().merge(e().tag('colorings_item_frame').limit(1), frame_nbt)
-            bundle = Item.nbt_for(f'{color.id}_bundle',
-                                  {'components': {'minecraft:bundle_items': [Item.nbt_for('stone')]}})
+            bundle = Item.nbt_for(f'{color.id}_bundle')
         yield data().merge(n().tag('colorings_bundle_frame'), {'Item': bundle, 'ItemRotation': 0})
 
         if is_plain:

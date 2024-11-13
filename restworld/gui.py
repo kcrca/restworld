@@ -283,17 +283,10 @@ def room():
     room.function('ingredients_enter').add(
         clone(r(20, -5, 30), r(-15, -5, 1), r(-15, 1, 1)).filtered('chest'))
 
-    def bundle_loop(step):
-        contents = [] if step.i == 0 else [Item.nbt_for('stone', count=32)]
-        name = 'Empty' if step.i == 0 else 'Not Empty'
-        yield data().modify(n().tag('bundle'), 'Item.components.minecraft:bundle_contents').set().value(contents)
-        yield Sign.change(r(0, 3, 0), (None, name))
-
     room.function('bundle_init').add(
         ItemFrame(EAST, nbt={'Tags': ['gui', 'bundle']}).item('bundle').summon(r(0, 2, 0)),
         WallSign((None, None, 'Bundle')).place(r(0, 3, 0), EAST)
     )
-    room.loop('bundle', main_clock).loop(bundle_loop, range(2))
 
     enchant_chest = {
         'Items': [{'Slot': 0, 'id': 'lapis_lazuli', 'Count': 64}, {'Slot': 1, 'id': 'book', 'Count': 64}]}
