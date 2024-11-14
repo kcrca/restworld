@@ -94,7 +94,7 @@ class RestWorld(RoomPack):
         cb.next_page()
         cb.add(
             JsonText.text(r'Credits, ' + date.today().strftime('%-d %b %Y') + r'\n'),
-            r'    Minecraft 1.21\n\n',
+            r'    Minecraft 1.21.4\n\n',
             JsonText.text(r'BlueMeanial:\n').bold(),
             r'  Software Design\n  Programming\n',
             JsonText.text(r'JUMBOshrimp277:\n').bold(),
