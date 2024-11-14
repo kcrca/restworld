@@ -2,15 +2,18 @@ import re
 from collections import defaultdict
 
 from pynecraft import info
-from pynecraft.base import EAST, EQ, WEST, as_facing, d, r, to_name
-from pynecraft.commands import JsonText, REPLACE, comment, data, e, execute, fill, function, item, kill, n, p, schedule, \
+from pynecraft.base import Arg, EAST, EQ, WEST, as_facing, d, r, to_name
+from pynecraft.commands import Entity, JsonText, REPLACE, SUCCESS, comment, data, e, execute, fill, function, item, \
+    kill, loot, \
+    n, p, \
+    schedule, \
     setblock, \
     summon, tag
 from pynecraft.info import block_items
 from pynecraft.simpler import Item, ItemFrame, Sign, WallSign
 from restworld import global_
 from restworld.rooms import ActionDesc, SignedRoom, Wall, named_frame_item, span
-from restworld.world import fast_clock, restworld
+from restworld.world import fast_clock, main_clock, restworld
 
 # The item area...
 #
@@ -117,7 +120,7 @@ def room():
     room.function('model_signs_init').add(function('restworld:models/signs'))
 
     placer = room.mob_placer(r(0, 3, 0), EAST, auto_tag=False, adults=True, nbt={'ShowArms': True})
-    placer_head = room.mob_placer(r(0, 3.77, 0), EAST, auto_tag=False, adults=True)
+    placer_head = room.mob_placer(r(0, 3.87, 0), EAST, auto_tag=False, adults=True)
     all_src = e().tag('model_src')
     model_src = all_src.limit(1)
     all_ground = e().tag('model_ground')
@@ -129,22 +132,40 @@ def room():
     is_empty = room.score('model_is_empty')
     was_empty = room.score('model_was_empty')
     needs_restore = room.score('needs_restore')
+
+    is_other = room.score('is_other')
+
+    def model_head_loop(step):
+        if step.i == 0:
+            yield execute().unless().score(is_other).matches(0).run(data().modify(room.store, 'player').set().value('BlueMeanial'))
+            yield execute().if_().score(is_other).matches(0).run(data().modify(room.store, 'player').set().value('Sunny'))
+        else:
+            yield execute().as_(p()).run(
+                loot().replace().entity(n().tag('player_head_holder'), 'armor.head').loot('restworld:player_head'))
+            yield data().modify(room.store, 'player').set().from_(
+                n().tag('player_head_holder'), 'ArmorItems[3].components.minecraft:profile.name')
+            yield data().modify(room.store, 'cur_player').set().from_(room.store, 'player')
+            yield execute().store(SUCCESS).score(is_other).run(
+                data().modify(room.store, 'cur_player').set().value('BlueMeanial'))
+
+    model_head_set = room.function('model_head_set', home=False).add(
+        item().replace().entity(n().tag('model_holder_head'), 'armor.head').with_(
+            Item('player_head', components={'profile': Arg('player')})))
+    room.loop('model_head', main_clock, home=False).loop(model_head_loop, range(2)).add(
+        function(model_head_set).with_().storage(room.store))
+
     recent_things_signs = (r(-2, 4, 1), r(-2, 4, 0), r(-2, 4, -1))[::-1]
-    model_head = room.function('model_head', home=False).add(
-        item().replace().entity(e().tag('model_holder_head').limit(1), 'armor.head').with_(
-            Item('player_head', components={'profile': 'BlueMeanial'})),
-    )
     chest_pos = r(-1, -2, 0)
     room.function('models_room_init', exists_ok=True).add(
         room.label(r(-2, 2, 0), 'Keep Inventory', WEST))
     room.function('model_init').add(
+        tag(n().tag('model_home')).add('model_head_home'),
         kill(all_src),
         kill(all_ground),
+        Entity('armor_stand', nbt={'Small': True}).tag('player_head_holder', 'models_home').summon(r(0, 0, 1)),
         placer.summon('armor_stand', tags=('model_holder', 'model_hands')),
         placer_head.summon('armor_stand', tags=('model_holder_head',),
                            nbt=dict(Small=True, NoGravity=True, Invisible=True)),
-        # I don't know why I can't do this right away, 1 tick isn't enough, and 1 second is.
-        schedule().function(model_head, '1s', REPLACE),
         ItemFrame(EAST).item('iron_pickaxe').tag('model_src', 'models').fixed(False).summon(r(2, 2, 2)),
         ItemFrame(EAST, nbt={'Invisible': True}, name='Invisible Frame').tag('model_invis_frame', 'models').fixed(
             False).summon(r(2, 2, -2)),
