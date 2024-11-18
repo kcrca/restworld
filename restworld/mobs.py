@@ -232,7 +232,9 @@ def friendlies(room):
          enumerate(DISC_GROUP)))
     room.function('parrot_init').add(
         placer(parrot_pos, parrot_dir, adults=True).summon('parrot'),
-        function(parrot_enter))
+        function(parrot_enter),
+        room.label(r(0, 2, -1), 'Dance', EAST)
+    )
 
     parrots = ('Red', 'Blue', 'Green', 'Cyan', 'Gray')
     parrot_settings = []
