@@ -258,7 +258,6 @@ def room():
         yield setblock(r(0, 1, 0), f'{"red" if step.elem else "lime"}_concrete'),
 
     arena_count = room.score('arena_count')
-    peace = room.score('peace')
 
     arena_count_finish = room.function('arena_count_finish', home=False).add(
         execute().if_().score(arena_count).matches((None, COUNT_MIN)).run(arena_count.set(COUNT_MIN)),
@@ -268,7 +267,7 @@ def room():
     arena_count_cur = function(arena_count_finish.full_name)
     room.function('arena_count_decr', home=False).add(arena_count.remove(1), arena_count_cur)
     room.function('arena_count_incr', home=False).add(arena_count.add(1), arena_count_cur)
-    room.function('arena_count_init', home=False).add(arena_count.set(1), arena_count_cur)
+    room.function('arena_count_init', home=False).add(arena_count.set(5), arena_count_cur)
     room.loop('arena_count', main_clock, home=False).loop(
         lambda step: execute().at(e().tag('controls_home')).run(
             Sign.change(r(2, 4, 0), (None, f'{step.elem:d} vs. {step.elem:d}'))), range(0, COUNT_MAX + 1))
