@@ -470,6 +470,8 @@ def copper_functions(room):
         yield setblock(r(0, 2, 4), (type + 'copper_door', {'facing': NORTH, 'half': 'lower'}))
         yield setblock(r(0, 3, 4), (type + 'copper_door', {'facing': NORTH, 'half': 'upper'}))
 
+        yield item().replace().entity(n().tag('copper_door_frame'), 'container.0').with_(Item(type + 'copper_door'))
+
         sign_text = ['', type.replace('_', ' ').title(), 'Copper', '']
         yield Sign.change(r(2, 2, 0), sign_text)
 
@@ -488,7 +490,11 @@ def copper_functions(room):
                                                        tag(copper_home).add('waxed_coppers_home'),
                                                        execute().at(copper_home).run(
                                                            function('restworld:materials/waxed_coppers_cur')))
-    room.function('coppers_init').add(room.label(r(2, 2, -2), 'Waxed', SOUTH), function(run_unwaxed))
+    room.function('coppers_init').add(
+        room.label(r(2, 2, -2), 'Waxed', SOUTH),
+        function(run_unwaxed),
+        ItemFrame(NORTH).tag('materials', 'copper_door_frame').summon(r(0, 4, 4), )
+    )
 
 
 def wood_functions(room):
