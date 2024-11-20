@@ -74,8 +74,6 @@ def room():
         'Stray': skeleton_nbts,
         'Bogged': skeleton_nbts,
         'Vindicator': {'Johnny': 'True', 'HandItems': [Item.nbt_for('iron_axe'), {}]},
-        # Workaround for https://bugs.mojang.com/browse/MC-249393; stops warden from digging down immediately
-        'Warden': {'Brain': {'memories': {'dig_cooldown': {'value': {}, 'ttl': 1200}}}},
         'Wither Skeleton': {'HandItems': [Item.nbt_for('stone_sword'), {}]},
         'Zombie': {'ArmorItems': [{}, {}, {}, Item.nbt_for('iron_helmet')]},
         'Zombified Piglin': {'HandItems': [Item.nbt_for('golden_sword'), {}]},
@@ -103,7 +101,7 @@ def room():
         ('Magma Cube', 'Iron Golem'),
         # ('Ocelot', 'Chicken'),  # low priority
         ('Panda', 'Vindicator'),
-        ('Parrot', 'Vindicator'),
+        ('Parrot', 'Vindicator'),  # low priority
         ('Phantom:c', None),
         ('Piglin Brute', 'Vindicator'),
         ('Pillager', 'Snow Golem'),
@@ -160,14 +158,14 @@ def room():
         def arena_run_loop(step):
             i = step.i
             for which_dir in (-1, 1):
-                to = (i + which_dir + num_pages) % num_pages
+                to_front = (i + which_dir + num_pages) % num_pages
+                to_back = (i - which_dir + num_pages) % num_pages
                 text, z = (left_arrow, max_z + 1) if which_dir == -1 else (right_arrow, min_z - 1)
                 back_text = left_arrow if text == right_arrow else right_arrow
-                yield WallSign().messages((None, text), (
-                    step.loop.score.set(to),
-                    execute().at(e().tag('controls_home')).run(
-                        function(f'restworld:arena/{step.loop.score.target}_cur'))
-                )).back((None, back_text)).glowing(True).place(r(x, 2, z), EAST)
+                run_cur = execute().at(e().tag('controls_home')).run(
+                    function(f'restworld:arena/{step.loop.score.target}_cur'))
+                yield WallSign().front((None, text), (step.loop.score.set(to_front), run_cur)).back(
+                    (None, back_text), (step.loop.score.set(to_back), run_cur)).glowing(True).place(r(x, 2, z), EAST)
             for s in range(0, stride_length):
                 y = 3 - int(s / row_length)
                 z = max_z - (s % row_length)

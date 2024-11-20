@@ -63,7 +63,7 @@ actions = [
     action(FALLING_DUST),
     action(FIREWORK, note='and Flash', also=(FLASH,)),
     action(FISHING),
-    action(GUST, 'Gust|Gust Emitter', also=(GUST_EMITTER,)),
+    action(GUST, 'Gust|Gust Emitter', also=(GUST_EMITTER,)),    # Also in arena, can be removed
     action(HAPPY_VILLAGER),
     action(HEART),
     action(INFESTED),
