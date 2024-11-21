@@ -1,0 +1,30 @@
+I can create a server-side (at least) mod to help me add some featuers I can't
+without one. Here's a list of what those features might be. I don't know how
+many of these are actually possible.
+
+Part of the reason for this is to make a effort/benefit analysis.
+
+* Showing default player skins (alex, efe, ...). It maybe possible to create a 
+double-height block type uses those textures. This might be defeated by where
+those textures live -- I've tried this without a mod and the system is "smart"
+enough to not allow block textures to fetch from the entity area. NOTE: This
+is the big one, these are texturable but entirely unshowable.
+
+* Creaking being active in NoAI so that the eyes glow
+
+* Creaking heart being activated for the full clock cycle
+
+* Ghast about to fire
+
+* Fishing, watching the hook bob and the line ... be a line
+
+There are an infinite number of things this might be able to do (such as
+show a dragon fiereball in motion) which fell below any value threshold, though
+if the mod was written anyway might be worth it because why not? I'm listing them
+here just to remember them as they pop up.
+
+* Get the ally to dance to music when not in AI mode (LP)
+
+* Dragon fireball, ghast fireball, ... in motion
+
+* Strider shivering

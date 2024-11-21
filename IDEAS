@@ -1,3 +1,7 @@
+Use breeze to show the particles for blocks underneath. The block room might be
+enough, but there are serveral things shown only other places (plants, redstone, ...)
+Also, breeze can't be invisible. But it's an interesting idea.
+
 Ghast about to fire?
 
 Mob states (have a looping button, a "put all mobs permanently in this state" switch? A "do it once" button"?)
@@ -7,13 +11,9 @@ Mob states (have a looping button, a "put all mobs permanently in this state" sw
 	    {memories: {"minecraft:admiring_items": {value: True, ttl:100}, "minecraft:job_site": {value: {pos: [I; -681, 63, -239], dimension: "minecraft:overworld"}}}}
 
 
-PHoto needs rework, hacked in a few things from 1.18, but...
-
 Fishing, watching the hook bob and the line ... be a line
 
 Arrows leave traces when shot from bows. Probably already part of particles, but it looks quite different
-
-Flashing TNT about to explode -- tried that, when it's wrong, it's a pain to fix, but maybe?
 
 Sounds. That could be an entire area, but there are _so_ many of them
 
