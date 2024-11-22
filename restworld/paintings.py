@@ -50,7 +50,7 @@ def room():
             txt = txt.extra(fr' {note}')
         txt = txt.extra(r'\n')
         txt = txt.extra(JsonText.translate(
-            f'painting.minecraft.{img.name}.author').plain(),
+            f'painting.minecraft.{img.name}.author', fallback="[artist unknown]").plain(),
                         JsonText.text(fr'\n{img.name} {img.size[0]}×{img.size[1]}\n').plain().italic())
         display = TextDisplay(txt, nbt={
             'alignment': 'left', 'line_width': 84, 'background': 0}).tag(
