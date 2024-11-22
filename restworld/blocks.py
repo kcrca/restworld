@@ -4,16 +4,18 @@ import re
 from typing import Iterable, Union
 
 from pynecraft import info
-from pynecraft.base import DOWN, E, EAST, EQ, N, NORTH, Nbt, RelCoord, S, SOUTH, UP, W, WEST, as_facing, r, \
+from pynecraft.base import DOWN, E, EAST, EQ, FacingDef, N, NORTH, Nbt, RelCoord, S, SOUTH, UP, W, WEST, as_facing, r, \
     rotate_facing, to_id, \
     to_name
-from pynecraft.commands import Block, Commands, Entity, MOD, MOVE, as_block, clone, data, e, execute, fill, function, \
+from pynecraft.commands import Block, Commands, Entity, MOD, MOVE, ScoreName, as_block, as_score, clone, data, e, \
+    execute, fill, \
+    function, \
     item, kill, n, p, s, say, setblock, summon, tag
-from pynecraft.function import Loop
+from pynecraft.function import Function, Loop
 from pynecraft.info import Color, colors, sherds, stems
 from pynecraft.simpler import Item, ItemFrame, Region, Sign, TextDisplay, WallSign
 from restworld.materials import enchant
-from restworld.rooms import Room
+from restworld.rooms import Clock, Room
 from restworld.world import fast_clock, kill_em, main_clock, restworld
 
 
@@ -24,11 +26,10 @@ def room():
 
     list_scale = 0.6
 
-    def blocks(name: object, facing: object,
+    def blocks(name: str, facing: FacingDef,
                block_lists: Iterable[Union[Block, str]] | Iterable[Iterable[Union[Block, str]]],
-               dx: object = 0,
-               dz: object = 0, size: object = 0, labels: object = None, clock: object = main_clock,
-               score: object = None, air: object = False) -> object:
+               dx: float = 0, dz: float = 0, size: int = 0, labels=None, clock: Clock = main_clock,
+               score: ScoreName = None, air: bool = False) -> tuple[Function, Loop]:
         facing = as_facing(facing)
 
         if not isinstance(block_lists, list):
@@ -46,9 +47,10 @@ def room():
         # noinspection PyUnresolvedReferences
         show_list = len(set(x.id for x in block_lists[0])) > 1
 
-        block_loop = room.loop(name, clock, score=score)
+        block_loop = room.loop(name, clock, score=as_score(score))
         block_init = room.function(name + '_init', exists_ok=True).add(
-            WallSign(()).place(r(facing.dx, 2, facing.dz), facing)
+            WallSign(()).place(r(facing.dx, 2, facing.dz), facing),
+            tag(e().tag(f'{name}_home')).add('particulate')
         )
         if show_list:
             block_init.add(execute().if_().score(block_list_score).matches(0).run(kill(e().tag(f'block_list_{name}'))))
@@ -429,23 +431,21 @@ def room():
         Block('Chest'), Block('Trapped Chest'), Block('Ender Chest'), Block('Chest', state={'type': 'right'}),
         Block('Trapped Chest', state={'type': 'right'})))
 
-    def command_block_loop(step):
-        block = Block(step.elem[0], {'facing': WEST, 'conditional': str(step.elem[1]).lower()})
-        yield setblock(r(0, 3, 0), block)
-        words = step.elem[0].split(' ')
-        modifier = '' if len(words) == 2 else words[0]
-        sign_nbt = Sign.lines_nbt((None, modifier, 'Command Block', '(Conditional)' if step.elem[1] else ''))
-        yield data().merge(r(0, 2, 1), {'front_text': sign_nbt, 'back_text': sign_nbt})
+    def to_command_block(type, cond):
+        type = type.strip()
+        name = f'{type}|Block'
+        if cond:
+            name += '|(Conditional)'
+        cb = Block(id=f'{to_id(type)}_block', name=name, state={'facing': 'west'}, nbt={'conditional': cond})
+        return cb
 
-    room.function('command_blocks_init').add(WallSign((None, None, 'Command Block', None)).place(r(0, 2, 1), SOUTH))
-    room.loop('command_blocks', main_clock).loop(command_block_loop, (
-        ('Command Block', True), ('Command Block', False),
-        ('Chain Command Block', False), ('Chain Command Block', True),
-        ('Repeating Command Block', True), ('Repeating Command Block', False),
-        ('Command Block', False), ('Command Block', True),
-        ('Chain Command Block', True), ('Chain Command Block', False),
-        ('Repeating Command Block', False), ('Repeating Command Block', True),
-    ))
+    blocks('command_blocks', SOUTH, (to_command_block(*x) for x in (
+        ('Command ', True), ('Command ', False), ('Chain Command ', False),
+        ('Chain Command ', True), ('Repeating Command ', True),
+        ('Repeating Command ', False), ('Command ', False), ('Command ', True),
+        ('Chain Command ', True), ('Chain Command ', False),
+        ('Repeating Command ', False),
+        ('Repeating Command ', True))))
 
     def dripstone_loop(step):
         for j in range(0, step.elem):
@@ -761,12 +761,16 @@ def room():
         ('inactive', 'waiting_for_players', 'active', 'waiting_for_reward_ejection', 'ejecting_reward', 'cooldown'),
     )
 
-    def structure_blocks_loop(step):
-        yield Sign.change(r(0, 2, 1), (None, step.elem))
-        yield data().merge(r(0, 3, 0), {'mode': step.elem.upper()})
+    blocks('structure_blocks', SOUTH, list(
+        Block('structure_block', name=f'{x}|Structure Block', state={'mode': x.lower()}) for x in
+        ('Data', 'Save', 'Load', 'Corner')), air=True)
 
-    room.function('structure_blocks_init').add(WallSign((None, None, 'Structure Block')).place(r(0, 2, 1), SOUTH))
-    room.loop('structure_blocks', main_clock).loop(structure_blocks_loop, ('Data', 'Save', 'Load', 'Corner'))
+    # def structure_blocks_loop(step):
+    #     yield Sign.change(r(0, 2, 1), (None, step.elem))
+    #     yield data().merge(r(0, 3, 0), {'mode': step.elem.upper()})
+    #
+    # room.function('structure_blocks_init').add(WallSign((None, None, 'Structure Block')).place(r(0, 2, 1), SOUTH))
+    # room.loop('structure_blocks', main_clock).loop(structure_blocks_loop, ('Data', 'Save', 'Load', 'Corner'))
 
     def tnt_loop(step):
         if step.i < 2:
@@ -812,8 +816,12 @@ def room():
     for b in (
             'amethyst', 'anvil', 'bell', 'brewing_stand', 'cake', 'campfire', 'chest', 'colored_beam', 'colorings',
             'frosted_ice', 'grindstone', 'item_frame', 'lantern', 'armor_stand', 'torches', 'blocks_room', 'ladder',
-            'stepable', 'tnt', 'creaking_heart', 'resin_clumps'):
+            'stepable', 'tnt', 'creaking_heart', 'resin_clumps', 'dont_expand'):
         room.function(b + '_init', exists_ok=True).add(tag(e().tag(b + '_home')).add('no_expansion'))
+    for b in ('snow_depth', 'generic_home', 'just_expand', 'dont_expand', 'creaking_heart', 'tnt', 'lantern', 'bell',
+              'brewing_stand', 'amethyst', 'resin_clumps', 'ladder', 'dripstone', 'scaffolding',
+              'cake', 'decorated_pot', 'trial', 'spawner', 'armor_stand', 'stepable', 'torches'):
+        room.function(b + '_init', exists_ok=True).add(tag(e().tag(b + '_home')).add('particulate'))
 
 
 def room_init_functions(room, block_list_score):
@@ -1088,10 +1096,22 @@ def color_functions(room):
 # Each main tick, the 'expand' function is run at every 'expander' during the 'main_finish' phase. This keeps the
 # block expanded as it changes.
 def expansion_functions(room):
+    expand_all = room.function('expand_all', home=False)
+    contract_all = room.function('contract_all', home=False)
+    # This "particulate" stuff is here because it seems like it would be really useful, but currently it is defeated
+    # by a bug (imho) -- an invisible breeze is pretty visible. The idea is that a breeze churns up the particles on
+    # the block it's on top of. So we could show users the particles for a block by putting an invisible breeze on top
+    # of it. But with mostly-visible breezes, the visual noise is enormous. So I'm not going ahead with it, but I leave
+    # this with the hope that it will someday get better, or a different approach will occur to me.
+    #
+    # The particle stuff should be off in any expansion is on and vice versa.
+    particulate_on = room.function('particulate_on', home=False)
+    particulate_off = room.function('particulate_off', home=False)
     room.function('toggle_expand', home=False).add(
         execute().positioned(r(0, -2, -1)).run(function('restworld:blocks/toggle_expand_at')),
         execute().positioned(r(0, -2, 1)).run(function('restworld:blocks/toggle_expand_at')))
     room.function('toggle_expand_at', home=False).add(
+        function(particulate_off),
         execute().as_(e().tag('expander').distance((None, 1))).run(tag(s()).add('stop_expanding')),
         execute().as_(e().tag('!expander', '!no_expansion').distance((None, 1))).run(tag(s()).add('expander')),
         execute().as_(e().tag('stop_expanding').distance((None, 1))).run(tag(s()).remove('expander')),
@@ -1107,7 +1127,7 @@ def expansion_functions(room):
             function('restworld:blocks/expand_dripstone')),
         execute().unless().entity(e().tag('fire_home').distance((None, 1))).unless().entity(
             e().tag('dripstone_home').distance((None, 1))).run(function('restworld:blocks/expand_generic')))
-    room.function('expand_all', home=False).add(execute().as_(e().tag('blocks_home', '!no_expansion', '!expander')).run(
+    expand_all.add(execute().as_(e().tag('blocks_home', '!no_expansion', '!expander')).run(
         execute().at(s()).run(function('restworld:blocks/toggle_expand_at'))))
     room.function('expand', main_clock).add(
         execute().at(e().tag('expander')).run(function('restworld:blocks/expander')))
@@ -1142,7 +1162,7 @@ def expansion_functions(room):
             function('restworld:blocks/contract_dripstone')),
         execute().unless().entity(e().tag('fire_home').distance((None, 1))).unless().entity(
             e().tag('dripstone_home').distance((None, 1))).run(function('restworld:blocks/contract_generic')))
-    room.function('contract_all', home=False).add(
+    contract_all.add(
         execute().as_(e().tag('blocks_home', '!no_expansion', 'expander')).run(
             execute().at(s()).run(function('restworld:blocks/toggle_expand_at'))))
     room.function('contract_dripstone').add(fill(r(1, 12, 1), r(-1, 3, 1), 'air'),
@@ -1157,16 +1177,31 @@ def expansion_functions(room):
                                           fill(r(-1, 2, -1), r(1, 2, 1), 'air').replace('barrier'),
                                           setblock(r(0, 2, 0), 'barrier'))
 
-    room.function('generic_home', home=False).add(kill(e().tag('generic_home').distance((None, 2))),
-                                                  summon('armor_stand', r(0, 0.5, 0),
-                                                         {'Tags': ['generic_home', 'homer', 'blocks_home'],
-                                                          'NoGravity': True, 'Small': True}))
+    room.function('generic_home', home=False).add(
+        kill(e().tag('generic_home').distance((None, 2))),
+        summon('armor_stand', r(0, 0.5, 0),
+               {'Tags': ['generic_home', 'homer', 'blocks_home'], 'NoGravity': True, 'Small': True}))
     # generic_home is used for entirely static blocks. This is used for blocks that are changed, but
     # by a different command block than the one under it. These want to be expanded as they change,
-    room.function('just_expand_home', home=False).add(kill(e().tag('just_expand_home').distance((None, 2))),
-                                                      summon('armor_stand', r(0, 0.5, 0),
-                                                             {'Tags': ['just_expand_home', 'homer', 'blocks_home'],
-                                                              'NoGravity': True, 'Small': True}))
+    room.function('just_expand_home', home=False).add(
+        kill(e().tag('just_expand_home').distance((None, 2))),
+        summon('armor_stand', r(0, 0.5, 0),
+               {'Tags': ['just_expand_home', 'homer', 'blocks_home'], 'NoGravity': True, 'Small': True}))
+    # ... and this is like just_expand_home, but it doesn't expand; it is a holder for other behavior, like particulate
+    room.function('dont_expand_home', home=False).add(
+        kill(e().tag('dont_expand_home').distance((None, 2))),
+        summon('armor_stand', r(0, 0.5, 0),
+               {'Tags': ['dont_expand_home', 'homer', 'blocks_home'], 'NoGravity': True, 'Small': True}))
+
+    particulate_on.add(
+        say('on'),
+        execute().at(e().tag('particulate')).run(
+            summon(Entity('Breeze', nbt={'NoAI': True}).tag('particulator', 'blocks'), r(0, 4, 0))),
+    )
+    particulate_off.add(
+        say('off'),
+        kill_em(e().tag('particulator')),
+    )
 
 
 def stepable_functions(room):
