@@ -473,12 +473,14 @@ class Room(FunctionSet):
         return TextDisplay(txt, nbt={'Tags': t, 'line_width': int(200 * scale), 'transformation': xform,
                                      'background': 0}).scale(scale).summon(pos)
 
-    def particle(self, block: BlockDef, name: str, pos: Position, loop: Loop = None, value: int = None):
+    def particle(self, block: BlockDef, name: str, pos: Position, step: Loop.Step = None, clause=None):
         if not self.particle_func:
             self.particle_func = self.function(f'{self.name}_particles', home=False)
         cmd = execute().at(n().tag(f'{name}_home'))
-        if loop:
-            cmd = cmd.if_().score(loop.score).matches(value)
+        if clause:
+            cmd = clause(cmd)
+        if step:
+            cmd = cmd.if_().score(step.loop.score).matches(step.i)
         cmd = cmd.run(particle(Entity('block', nbt={'block_state': as_block(block).id}), pos, (0.25, 0, 0.25), 1, 1))
         self.particle_func.add(cmd)
 

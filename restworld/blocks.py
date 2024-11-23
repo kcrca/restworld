@@ -73,7 +73,7 @@ def room():
             yield setblock(pos, block)
             x, y, z = pos
             if step:
-                room.particle(block.id, name, (x, y + 1, z), step.loop, step.i)
+                room.particle(block.id, name, (x, y + 1, z), step)
             else:
                 room.particle(block.id, name, (x, y + 1, z))
             # Preserve the 'expand' response
@@ -366,7 +366,7 @@ def room():
                     facing = as_facing(offset)
                     yield setblock(r(facing.dx, 4, facing.dz), block.clone().merge_state({'facing': offset}))
                 particle_pos = r(0, 5 + step.stage / 4 - 0.25, 0)
-        room.particle(block, 'amethyst', particle_pos, step.loop, step.i)
+        room.particle(block, 'amethyst', particle_pos, step)
 
         sign_nbt = block.sign_nbt()
         sign_nbt['back_text'] = sign_nbt['front_text']
@@ -492,9 +492,9 @@ def room():
         if step.elem != 4:
             yield fill(r(0, 4 + step.elem, 0), r(0, 11 - step.elem, 0), 'air')
             if step.elem == 0:
-                room.particle('dripstone_block', 'dripstone', r(0, 4, 0), step.loop, step.i)
+                room.particle('dripstone_block', 'dripstone', r(0, 4, 0), step)
             else:
-                room.particle('pointed_dripstone', 'dripstone', r(0, 4 + step.stage, 0), step.loop, step.i)
+                room.particle('pointed_dripstone', 'dripstone', r(0, 4 + step.stage, 0), step)
 
     room.function('dripstone_init').add(
         setblock(r(0, 3, 0), 'dripstone_block'),
@@ -566,8 +566,8 @@ def room():
             yield setblock(r(0, 3, 0), lantern),
             yield setblock(r(0, 4, 0), 'chain'),
             yield Sign.change(r(0, 2, -1), (None, 'Hanging', lantern.name, 'and Chain'))
-            room.particle('chain', 'lantern', r(0, 5, 0), step.loop, step.i)
-        room.particle(lantern, 'lantern', r(0, 4, 0), step.loop, step.i)
+            room.particle('chain', 'lantern', r(0, 5, 0), step)
+        room.particle(lantern, 'lantern', r(0, 4, 0), step)
 
     room.function('lantern_init').add(WallSign((None, None, 'Lantern')).place(r(0, 2, -1, ), NORTH))
     room.loop('lantern', main_clock).loop(lantern_loop, range(0, 4))
@@ -839,7 +839,7 @@ def room():
             yield execute().if_().score(wall_torches_score).matches(1).run(setblock(r(0, 3, 1), 'redstone_block'))
         yield execute().if_().score(wall_torches_score).matches(0).run(setblock(r(0, 3, 0), step.elem))
         yield execute().if_().score(wall_torches_score).matches(1).run(setblock(r(0, 3, 0), wall_torches[step.i]))
-        room.particle(step.elem, 'torches', r(0, 4, 0), step.loop, step.i)
+        room.particle(step.elem, 'torches', r(0, 4, 0), step)
 
     wall_torches_score = room.score('wall_torches')
     room.function('torches_init').add(
@@ -1235,7 +1235,7 @@ def stepable_functions(room):
         yield volume.replace_stairs(stairs[i], '#restworld:stepable_stairs')
         sign_text = Sign.lines_nbt(Block(step.elem).full_text)
         yield data().merge(r(1, 2, -1), {'front_text': sign_text})
-        room.particle(step.elem, 'stepable', r(0, 4, 0), step.loop, step.i)
+        room.particle(step.elem, 'stepable', r(0, 4, 0), step)
 
     blocks = [
         'Stone', 'Cobblestone', 'Mossy|Cobblestone',
