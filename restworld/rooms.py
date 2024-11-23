@@ -14,7 +14,8 @@ from pynecraft.base import BLUE, EAST, FacingDef, NE, NORTH, NW, Nbt, ORANGE, RO
     to_name
 from pynecraft.commands import Block, BlockDef, CLEAR, Command, Commands, Entity, EntityDef, INT, JsonText, MINUS, \
     Position, RESULT, Score, SignMessages, a, as_block, as_entity, as_facing, as_score, comment, data, e, \
-    execute, function, kill, p, say, schedule, scoreboard, setblock, summon, tag, tellraw, tp, weather
+    execute, function, kill, n, p, particle, say, schedule, scoreboard, setblock, summon, tag, tellraw, tp, \
+    weather
 from pynecraft.function import DataPack, Function, FunctionSet, LATEST_PACK_VERSION, Loop
 from pynecraft.simpler import TextDisplay, WallSign
 from pynecraft.values import DUMMY
@@ -86,6 +87,27 @@ def _to_list(obj):
     return obj
 
 
+class ParticleFunc:
+    def __init__(self, room: Room, name: str, singleton: bool):
+        self.room = room
+        self.name = name
+        self.singleton = singleton
+        self.cmds = []
+
+    def add(self, id, pos: Position, loop: Loop, i: int = None):
+        particle_cmd = particle(Entity('block', nbt={'block_state': id}), pos, (0.25, 0, 0.25), 1, 1)
+        if not self.singleton:
+            self.cmds.append(execute().if_().score(loop.score).matches(i).run(particle_cmd))
+        else:
+            self.cmds.append(particle_cmd)
+
+    def finalize(self):
+        if self.cmds:
+            f = self.room.function(f'{self.name}_particles', home=False).add(self.cmds)
+            self.room.function('particles', home=False, exists_ok=True).add(
+                execute().at(n().tag(f'{self.name}_home')).run(function(f)))
+
+
 class RoomPack(DataPack):
     base_suffixes = ('tick', 'init', 'enter', 'incr', 'decr', 'cur', 'exit', 'finish')
     base_suffixes_re = re.compile(r'(\w+)_(' + '|'.join(base_suffixes) + ')')
@@ -114,6 +136,8 @@ class Room(FunctionSet):
         self.title = None
         self._player_in_room_setup()
         self.facing = facing
+        self.particle_func = None
+        self.show_particles = self.score('show_particles')
         if facing:
             self._room_setup(facing, text, room_name)
 
@@ -316,6 +340,8 @@ class Room(FunctionSet):
             tick_func.add(execute().if_().score(clock.time).matches(0).run(function(clock_func.full_name)))
         tick_func.add(function(x.full_name) for x in filter(
             lambda x: self._is_func_type(x, '_tick'), self.functions.values()))
+        if self.particle_func:
+            tick_func.add(execute().if_().score(self.show_particles).matches(1).run(function(self.particle_func)))
 
         finish_funcs = {}
         clock_re = str('(' + '|'.join(x.name for x in self._clocks.keys()) + ')')
@@ -446,6 +472,15 @@ class Room(FunctionSet):
         scale = 0.45
         return TextDisplay(txt, nbt={'Tags': t, 'line_width': int(200 * scale), 'transformation': xform,
                                      'background': 0}).scale(scale).summon(pos)
+
+    def particle(self, block: BlockDef, name: str, pos: Position, loop: Loop = None, value: int = None):
+        if not self.particle_func:
+            self.particle_func = self.function(f'{self.name}_particles', home=False)
+        cmd = execute().at(n().tag(f'{name}_home'))
+        if loop:
+            cmd = cmd.if_().score(loop.score).matches(value)
+        cmd = cmd.run(particle(Entity('block', nbt={'block_state': as_block(block).id}), pos, (0.25, 0, 0.25), 1, 1))
+        self.particle_func.add(cmd)
 
 
 def _name_for(mob):

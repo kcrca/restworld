@@ -47,7 +47,11 @@ def room():
         # noinspection PyUnresolvedReferences
         show_list = len(set(x.id for x in block_lists[0])) > 1
 
-        block_loop = room.loop(name, clock, score=as_score(score))
+        singleton = len(block_lists[0]) == 1
+        if not singleton:
+            block_loop = room.loop(name, clock, score=as_score(score))
+        else:
+            block_loop = None
         block_init = room.function(name + '_init', exists_ok=True).add(
             WallSign(()).place(r(facing.dx, 2, facing.dz), facing),
             tag(e().tag(f'{name}_home')).add('particulate')
@@ -57,46 +61,58 @@ def room():
             names = room.function(name + '_names', home=False)
             block_init.add(function(names.full_name))
 
-        def blocks_loop_body(step):
-            i = step.i
-            x = z = 0
-            x_size = 0
+        def one_block(block: Block, pos, step):
+            void = block.name == 'structure void'
+            signage = labels[i] if labels else block.sign_text
+            if void:
+                signage = ()
+            if len(signage) < 3:
+                signage = signage + ('',) * (3 - len(signage))
+            if air:
+                yield setblock(pos, 'air')
+            yield setblock(pos, block)
+            x, y, z = pos
+            if step:
+                room.particle(block.id, name, (x, y + 1, z), step.loop, step.i)
+            else:
+                room.particle(block.id, name, (x, y + 1, z))
+            # Preserve the 'expand' response
+            yield Sign.change(r(x + facing.dx, 2, z + facing.dz), signage, start=1)
+            return block
 
-            for block_list in block_lists:
-                block = block_list[i]
-                signage = labels[i] if labels else block.sign_text
-                if signage == ('Structure Void',):
-                    signage = ()
-                if len(signage) < 3:
-                    signage = signage + ('',) * (3 - len(signage))
+        if singleton:
+            assert len(block_lists) == 1  # Don't have code for this yet
+            block_init.add(one_block(block_lists[0][0], r(0, 3, 0), None))
+        else:
+            def blocks_loop_body(step):
+                i = step.i
+                x = z = 0
+                x_size = 0
 
-                if air:
-                    yield setblock(r(x, 3, z), 'air')
-                yield setblock(r(x, 3, z), block)
-                # Preserve the 'expand' response
-                yield Sign.change(r(x + facing.dx, 2, z + facing.dz), signage, start=1)
+                for block_list in block_lists:
+                    block = yield from one_block(block_list[i], r(x, 3, z), step)
 
-                if show_list:
-                    block_list_name = f'block_list_{name}_{x}_{z}'
-                    block_list_block_name = f'block_list_{name}_{x}_{z}_{i}'
-                    # The opacity of 25 means "invisible" so it starts out that way
-                    holder = TextDisplay(
-                        block.name,
-                        nbt={'Rotation': [180.0, 0.0], 'text_opacity': 25, 'background': 0,
-                             'billboard': 'vertical', 'shadow_radius': 0}).scale(list_scale).tag(
-                        'blocks', 'block_list', f'block_list_{name}', block_list_name, block_list_block_name)
-                    names.add(holder.summon(r(x, 4.25 + i * (list_scale / 4), z)))
+                    if show_list:
+                        block_list_name = f'block_list_{name}_{x}_{z}'
+                        block_list_block_name = f'block_list_{name}_{x}_{z}_{i}'
+                        # The opacity of 25 means "invisible" so it starts out that way
+                        holder = TextDisplay(
+                            block.name,
+                            nbt={'Rotation': [180.0, 0.0], 'text_opacity': 25, 'background': 0,
+                                 'billboard': 'vertical', 'shadow_radius': 0}).scale(list_scale).tag(
+                            'blocks', 'block_list', f'block_list_{name}', block_list_name, block_list_block_name)
+                        names.add(holder.summon(r(x, 4.25 + i * (list_scale / 4), z)))
 
-                x += dx
-                x_size += 1
-                if size == 0:
-                    z += dz
-                elif x_size >= size:
-                    x = 0
-                    z += dz
-                    x_size = 0
+                    x += dx
+                    x_size += 1
+                    if size == 0:
+                        z += dz
+                    elif x_size >= size:
+                        x = 0
+                        z += dz
+                        x_size = 0
 
-        block_loop.loop(blocks_loop_body, range(0, len(block_lists[0])))
+            block_loop.loop(blocks_loop_body, range(0, len(block_lists[0])))
 
         return block_init, block_loop
 
@@ -121,7 +137,7 @@ def room():
 
     room.function('anvil_init', exists_ok=True).add(WallSign((None, 'Anvil')).place(r(0, 2, -1), NORTH))
     blocks('anvil', NORTH, list(Block(b, state={'facing': WEST}) for b in ('Anvil', 'Chipped Anvil', 'Damaged Anvil')))
-
+    blocks('bedrock', SOUTH, ('Bedrock',))
     bee_nests = [[], []]
     for i in range(0, 6):
         state = {'facing': SOUTH, 'honey_level': i}
@@ -149,9 +165,7 @@ def room():
     blocks('stone_bricks', NORTH, (
         'Stone Bricks', 'Mossy|Stone Bricks', 'Cracked|Stone Bricks', 'Chiseled|Stone Bricks',
         'Polished|Blackstone Bricks', 'Cracked Polished|Blackstone Bricks'))
-    blocks('chiseled', NORTH, (
-        'Chiseled|Deepslate', 'Chiseled|Polished|Blackstone', 'Chiseled Tuff|Bricks', 'Chiseled|Quartz Block',
-        'Chiseled|Tuff', 'Chiseled|Resin Bricks'))
+    blocks('calcite', NORTH, ('Calcite',))
     campfire_food = room.score('campfire_food')
     campfire_init, campfire_main = blocks('campfire', NORTH, (
         Block('Campfire', {'lit': True}),
@@ -172,8 +186,12 @@ def room():
     )
     room.function('campfire_enter').add(function('restworld:/blocks/campfire_cur'))
     room.function('campfire_exit').add(setblock(r(0, 3, 0), Block('campfire', {'lit': False})))
+    blocks('chiseled', NORTH, (
+        'Chiseled|Deepslate', 'Chiseled|Polished|Blackstone', 'Chiseled Tuff|Bricks', 'Chiseled|Quartz Block',
+        'Chiseled|Tuff', 'Chiseled|Resin Bricks'))
     blocks('clay', SOUTH, ('Clay', 'Mud', 'Muddy|Mangrove Roots', 'Packed Mud'))
     blocks('cobble', NORTH, ('Cobblestone', 'Mossy|Cobblestone', 'Cobbled|Deepslate'))
+    blocks('cobweb', NORTH, ('Cobweb',))
 
     natural_heart = room.score('natural_heart')
 
@@ -190,6 +208,7 @@ def room():
         yield Sign.change(r(0, 2, 1), (None, None, f'Active: {step.elem}'))
 
     room.loop('creaking_heart', main_clock).loop(creaking_heart_loop, (True, False))
+    room.particle('creaking_heart', 'creaking_heart', r(0, 4, 0))
     room.function('creaking_heart_init').add(
         WallSign((None, 'Creaking Heart')).place(r(0, 2, 1), SOUTH),
         room.label(r(1, 2, 0), "Naturally", NORTH),
@@ -208,14 +227,23 @@ def room():
                   name=f'Decorated Pot|{sherd_names[i]}') for i in range(len(sherds))), air=True, clock=fast_clock)
 
     blocks('dirt', SOUTH, ('Dirt', 'Coarse Dirt', 'Rooted Dirt', 'Farmland'))
+    blocks('dried_kelp', SOUTH, ('Dried Kelp Block',))
     blocks('end', NORTH, ('End Stone', 'End Stone|Bricks'))
     blocks('frosted_ice', SOUTH,
            list(Block('frosted_ice', {'age': i}, name=f'Frosted Ice|Age: {i}') for i in range(0, 4)))
+    blocks('gilded_blackstone', NORTH, ('Gilded Blackstone',))
     blocks('glass', SOUTH, ('Glass', 'Tinted Glass'))
+    blocks('hay', NORTH, ('Hay Block',))
+    blocks('heavy_core', NORTH, ('Heavy Core',))
+    blocks('honeycomb', NORTH, ('Honeycomb Block',))
+    room.function('ladder_init').add(setblock(r(0, 3, 0), 'ladder'))
+    blocks('jigsaw', SOUTH, ('Jigsaw',))
     blocks('lighting', SOUTH, (
         'Glowstone', 'Sea Lantern', 'Shroomlight', 'Ochre|Froglight', 'Pearlescent|Froglight', 'Verdant|Froglight',
         'End Rod'))
-    room.function('ladder_init').add(setblock(r(0, 3, 0), 'ladder'))
+    blocks('ladder', NORTH, ('Ladder',))
+    blocks('lodestone', SOUTH, ('Lodestone',))
+    blocks('magma_block', SOUTH, ('Magma Block',))
     blocks('moss', SOUTH, (('Moss Block', 'Pale Moss Block'), ('Moss Carpet', 'Pale Moss Carpet')), dz=3)
     blocks('music', SOUTH, (
         Block('Note Block'), Block('Jukebox'),
@@ -230,6 +258,7 @@ def room():
     blocks('quartz', NORTH, (
         'Quartz Block', 'Smooth Quartz', 'Quartz Pillar', 'Chiseled Quartz Block', 'Quartz Bricks'))
     blocks('raw_metal', NORTH, ('Raw Iron|Block', 'Raw Copper|Block', 'Raw Gold|Block'))
+    blocks('red_sand', SOUTH, ('Red Sand',))
     blocks('resin', SOUTH, ('Resin Block', 'Resin Bricks', 'Chiseled|Resin Bricks'))
     blocks('respawn_anchor', NORTH, (Block('Respawn Anchor', {'charges': x}) for x in range(0, 5)),
            labels=tuple(('Respawn Anchor', f'Charges: {x:d}') for x in range(0, 5)))
@@ -325,6 +354,7 @@ def room():
 
     def amethyst_loop(step):
         block = as_block(step.elem)
+        particle_pos = r(0, 5, 0)
         if step.elem == amethyst_phases[0]:
             yield setblock(r(0, 4, 0), block.id)
         else:
@@ -335,6 +365,9 @@ def room():
                 for offset in (NORTH, EAST, WEST, SOUTH):
                     facing = as_facing(offset)
                     yield setblock(r(facing.dx, 4, facing.dz), block.clone().merge_state({'facing': offset}))
+                particle_pos = r(0, 5 + step.stage / 4 - 0.25, 0)
+        room.particle(block, 'amethyst', particle_pos, step.loop, step.i)
+
         sign_nbt = block.sign_nbt()
         sign_nbt['back_text'] = sign_nbt['front_text']
         yield data().merge(r(0, 2, -1), sign_nbt)
@@ -369,6 +402,7 @@ def room():
 
     attachments = ('ceiling', 'single_wall', 'double_wall', 'floor')
     room.loop('bell', main_clock).add(setblock(r(0, 3, 0), 'air')).loop(bell_loop, attachments)
+    room.particle('bell', 'bell', r(0, 4, 0))
 
     def armor_stand_loop(step):
         if step.elem is None:
@@ -405,6 +439,7 @@ def room():
         item().replace().block(r(0, 3, 0), 'container.4').with_('air'),
         data().merge(r(0, 3, 0), {'BrewTime': 0, 'Fuel': 0}),
     ).loop(brewing_stand_loop, ((), (0,), (1,), (2,), (2, 0), (1, 2), (0, 1), (0, 1, 2)))
+    room.particle('brewing_stand', 'brewing_stand', r(0, 4, 0))
 
     def cake_loop(step):
         yield setblock(r(0, 3, 0), Block('cake', {'bites': step.elem}))
@@ -412,6 +447,7 @@ def room():
 
     room.function('cake_init').add(WallSign((None, 'Cake')).place(r(0, 2, -1), NORTH))
     room.loop('cake', main_clock).loop(cake_loop, range(0, 7), bounce=True)
+    room.particle('cake', 'cake', r(0, 4, 0))
 
     def chest_loop(step):
         step.elem.merge_state({'facing': NORTH})
@@ -455,13 +491,17 @@ def room():
                 'thickness': 'tip_merge' if j == step.elem - 1 else 'tip', 'vertical_direction': 'down'}))
         if step.elem != 4:
             yield fill(r(0, 4 + step.elem, 0), r(0, 11 - step.elem, 0), 'air')
+            if step.elem == 0:
+                room.particle('dripstone_block', 'dripstone', r(0, 4, 0), step.loop, step.i)
+            else:
+                room.particle('pointed_dripstone', 'dripstone', r(0, 4 + step.stage, 0), step.loop, step.i)
 
     room.function('dripstone_init').add(
         setblock(r(0, 3, 0), 'dripstone_block'),
         setblock(r(0, 12, 0), 'dripstone_block'),
         WallSign((None, 'Dripstone')).place(r(0, 2, -1), NORTH),
     )
-    room.loop('dripstone', main_clock).loop(dripstone_loop, range(1, 5), bounce=True)
+    room.loop('dripstone', main_clock).loop(dripstone_loop, range(0, 5), bounce=True)
 
     def fire_loop(step):
         dirs = ({'up': False}, {'north': True}, {'up': True})
@@ -481,7 +521,7 @@ def room():
         yield data().merge(r(0, 2, -1), {'front_text': nbt})
 
     room.function('fire_init').add(WallSign((None, 'Fire')).place(r(0, 2, -1), NORTH))
-    fire_loop = room.loop('fire', main_clock).add(fill(r(0, 3, 0), r(0, 5, 0), 'air')).loop(fire_loop, (
+    room.loop('fire', main_clock).add(fill(r(0, 3, 0), r(0, 5, 0), 'air')).loop(fire_loop, (
         'oak_log', 'oak_log', 'oak_log', 'soul_soil'))
     blocks('ice', SOUTH, ('Ice', 'Packed Ice', 'Blue Ice'))
 
@@ -525,8 +565,9 @@ def room():
             lantern.merge_state({'hanging': True}),
             yield setblock(r(0, 3, 0), lantern),
             yield setblock(r(0, 4, 0), 'chain'),
-            yield setblock(r(0, 5, 0), 'smooth_stone_slab'),
             yield Sign.change(r(0, 2, -1), (None, 'Hanging', lantern.name, 'and Chain'))
+            room.particle('chain', 'lantern', r(0, 5, 0), step.loop, step.i)
+        room.particle(lantern, 'lantern', r(0, 4, 0), step.loop, step.i)
 
     room.function('lantern_init').add(WallSign((None, None, 'Lantern')).place(r(0, 2, -1, ), NORTH))
     room.loop('lantern', main_clock).loop(lantern_loop, range(0, 4))
@@ -572,6 +613,7 @@ def room():
 
     room.loop('resin_clumps', main_clock).loop(resin_clumps_loop, (
         'Pale Oak Log', 'Pale Oak Wood', 'Stripped|Pale Oak Log', 'Stripped|Pale Oak Wood'))
+    room.particle('resin_clump', 'resin_clumps', r(0, 5.1, 0))
 
     def ladder_loop(step):
         yield fill(r(0, 3, 0), r(0, 5, 0), 'air')
@@ -599,6 +641,7 @@ def room():
             yield setblock(r(0, 4, 0), 'air')
 
     room.loop('scaffolding', main_clock).loop(scaffolding_loop, range(0, 5), bounce=True)
+    room.particle('scaffolding', 'scaffolding', r(0, 4, 0))
 
     blocks('sculk_blocks', NORTH, (
         Block('Sculk Vein', {SOUTH: True, DOWN: True}),
@@ -631,8 +674,6 @@ def room():
     room.loop('snow_depth', main_clock).loop(snow_depth_loop, range(1, 9), bounce=True)
 
     def spawner_loop(step):
-        # As of 1.20.3+x the trial spawner only sets the visible mob after the first spawn, and we don't have one, so
-        # this does nothing. I leave this here in case someday it works. (It's a no-op for the vault.)
         sign_pos = r(0, 2, -1)
         if isinstance(step.elem, str):
             spawner_nbt = {'SpawnData': {'entity': {'id': f'minecraft:{to_id(step.elem)}'}}}
@@ -641,6 +682,7 @@ def room():
 
     room.function('spawner_init').add(setblock(r(0, 3, 0), 'spawner').nbt(
         {'SpawnRange': 0, 'MinSpawnDelay': 799, 'MaxSpawnDelay': 799, 'RequiredPlayerRange': 0, 'SpawnCount': 0}))
+    room.particle('spawner', 'spawner', r(0, 4, 0))
     room.loop('spawner', main_clock).loop(spawner_loop, ('Skeleton', 'Zombie', 'Cave Spider', 'Blaze'))
 
     vault_states = {'waiting_for_players': 'inactive', 'cooldown': 'inactive',
@@ -725,6 +767,8 @@ def room():
                     server_data['total_ejections_needed'] = len(ominous_items_to_eject)
             yield setblock(pos, 'air')
             yield setblock(pos, block)
+            if step.i == 0:
+                room.particle(block, 'trial', (pos[0], pos[1] + 1, pos[2]))
             # Right now active and waiting for ejection aren't showing. This is because /gamerule doMobSpawning false
             # stops trial spawners showing these states. See https://bugs.mojang.com/browse/MC-270885?filter=26400.
             # Turning the rule on causes spawns in the nether room (at least) so we can't do that. So we have to live
@@ -781,6 +825,7 @@ def room():
         yield Sign.change(r(0, 2, -1), (None, None, step.elem.title()))
 
     room.loop('tnt', main_clock).add(kill(e().tag('block_tnt'))).loop(tnt_loop, ('stable', 'unstable', 'primed'))
+    room.particle('tnt', 'tnt', r(0, 4, 0))
 
     torches = (Block('Torch'), Block('Soul Torch'), Block('Redstone Torch'), Block('Redstone Torch'))
     wall_torches = tuple(Block(x.name.replace('Torch', 'Wall Torch')) for x in torches)
@@ -794,6 +839,7 @@ def room():
             yield execute().if_().score(wall_torches_score).matches(1).run(setblock(r(0, 3, 1), 'redstone_block'))
         yield execute().if_().score(wall_torches_score).matches(0).run(setblock(r(0, 3, 0), step.elem))
         yield execute().if_().score(wall_torches_score).matches(1).run(setblock(r(0, 3, 0), wall_torches[step.i]))
+        room.particle(step.elem, 'torches', r(0, 4, 0), step.loop, step.i)
 
     wall_torches_score = room.score('wall_torches')
     room.function('torches_init').add(
@@ -818,10 +864,6 @@ def room():
             'frosted_ice', 'grindstone', 'item_frame', 'lantern', 'armor_stand', 'torches', 'blocks_room', 'ladder',
             'stepable', 'tnt', 'creaking_heart', 'resin_clumps', 'dont_expand'):
         room.function(b + '_init', exists_ok=True).add(tag(e().tag(b + '_home')).add('no_expansion'))
-    for b in ('snow_depth', 'generic_home', 'just_expand', 'dont_expand', 'creaking_heart', 'tnt', 'lantern', 'bell',
-              'brewing_stand', 'amethyst', 'resin_clumps', 'ladder', 'dripstone', 'scaffolding',
-              'cake', 'decorated_pot', 'trial', 'spawner', 'armor_stand', 'stepable', 'torches'):
-        room.function(b + '_init', exists_ok=True).add(tag(e().tag(b + '_home')).add('particulate'))
 
 
 def room_init_functions(room, block_list_score):
@@ -1098,20 +1140,10 @@ def color_functions(room):
 def expansion_functions(room):
     expand_all = room.function('expand_all', home=False)
     contract_all = room.function('contract_all', home=False)
-    # This "particulate" stuff is here because it seems like it would be really useful, but currently it is defeated
-    # by a bug (imho) -- an invisible breeze is pretty visible. The idea is that a breeze churns up the particles on
-    # the block it's on top of. So we could show users the particles for a block by putting an invisible breeze on top
-    # of it. But with mostly-visible breezes, the visual noise is enormous. So I'm not going ahead with it, but I leave
-    # this with the hope that it will someday get better, or a different approach will occur to me.
-    #
-    # The particle stuff should be off in any expansion is on and vice versa.
-    particulate_on = room.function('particulate_on', home=False)
-    particulate_off = room.function('particulate_off', home=False)
     room.function('toggle_expand', home=False).add(
         execute().positioned(r(0, -2, -1)).run(function('restworld:blocks/toggle_expand_at')),
         execute().positioned(r(0, -2, 1)).run(function('restworld:blocks/toggle_expand_at')))
     room.function('toggle_expand_at', home=False).add(
-        function(particulate_off),
         execute().as_(e().tag('expander').distance((None, 1))).run(tag(s()).add('stop_expanding')),
         execute().as_(e().tag('!expander', '!no_expansion').distance((None, 1))).run(tag(s()).add('expander')),
         execute().as_(e().tag('stop_expanding').distance((None, 1))).run(tag(s()).remove('expander')),
@@ -1193,16 +1225,6 @@ def expansion_functions(room):
         summon('armor_stand', r(0, 0.5, 0),
                {'Tags': ['dont_expand_home', 'homer', 'blocks_home'], 'NoGravity': True, 'Small': True}))
 
-    particulate_on.add(
-        say('on'),
-        execute().at(e().tag('particulate')).run(
-            summon(Entity('Breeze', nbt={'NoAI': True}).tag('particulator', 'blocks'), r(0, 4, 0))),
-    )
-    particulate_off.add(
-        say('off'),
-        kill_em(e().tag('particulator')),
-    )
-
 
 def stepable_functions(room):
     def stepable_loop(step):
@@ -1213,6 +1235,7 @@ def stepable_functions(room):
         yield volume.replace_stairs(stairs[i], '#restworld:stepable_stairs')
         sign_text = Sign.lines_nbt(Block(step.elem).full_text)
         yield data().merge(r(1, 2, -1), {'front_text': sign_text})
+        room.particle(step.elem, 'stepable', r(0, 4, 0), step.loop, step.i)
 
     blocks = [
         'Stone', 'Cobblestone', 'Mossy|Cobblestone',
