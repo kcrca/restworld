@@ -475,7 +475,7 @@ class Room(FunctionSet):
 
     def particle(self, block: BlockDef, name: str, pos: Position, step: Loop.Step = None, clause=None):
         if not self.particle_func:
-            self.particle_func = self.function(f'{self.name}_particles', home=False)
+            self.particle_func = self.function(f'_particles', home=False)
         cmd = execute().at(n().tag(f'{name}_home'))
         if clause:
             cmd = clause(cmd)
