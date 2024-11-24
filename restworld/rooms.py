@@ -485,6 +485,10 @@ class Room(FunctionSet):
         self.particle_func.add(cmd)
 
 
+def if_clause(score, value):
+    return lambda cmd: cmd.if_().score(score).matches(value)
+
+
 def _name_for(mob):
     if mob.name:
         return mob.name

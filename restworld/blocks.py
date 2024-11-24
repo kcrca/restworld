@@ -17,7 +17,7 @@ from pynecraft.function import Function, Loop
 from pynecraft.info import Color, colors, sherds, stems
 from pynecraft.simpler import Item, ItemFrame, Region, Sign, TextDisplay, WallSign
 from restworld.materials import enchant
-from restworld.rooms import Clock, Room
+from restworld.rooms import Clock, Room, if_clause
 from restworld.world import fast_clock, kill_em, main_clock, restworld
 
 
@@ -904,9 +904,6 @@ def color_functions(room):
     lit_candles = room.score('lit_candles')
     plain = room.score('plain')
 
-    def clause(score, value):
-        return lambda cmd: cmd.if_().score(score).matches(value)
-
     def colorings(is_plain, color, step=None):
         fills = {
             'stained_glass': r(-9, 3, 0), 'stained_glass_pane': r(-7, 5, 0), 'wool': r(-1, 3, 1), 'banner': r(1, 5, 2),
@@ -925,7 +922,7 @@ def color_functions(room):
             else:
                 filler = Block(f'{color.id}_{which}', state)
             if filler.id != 'air':
-                room.particle(filler, 'colorings_base', fills[which], step, clause(plain, int(is_plain)))
+                room.particle(filler, 'colorings_base', fills[which], step, if_clause(plain, int(is_plain)))
             yield volume.replace(filler, '#restworld:' + which)
 
         candle = Block('candle' if is_plain else color.name + '_candle', {'lit': True})
@@ -934,11 +931,11 @@ def color_functions(room):
                 candle.merge_state({'candles': count})
                 filter = f'#restworld:candle[candles={count:d}]'
                 if count == 1:
-                    room.particle(candle, 'colorings_base', r(-2, 2, 6), step, clause(plain, int(is_plain)))
+                    room.particle(candle, 'colorings_base', r(-2, 2, 6), step, if_clause(plain, int(is_plain)))
             else:
                 candle = Block(candle.id + '_cake', {'lit': True})
                 filter = '#restworld:candle_cake'
-                room.particle(candle, 'colorings_base', r(-2, 3, 5), step, clause(plain, int(is_plain)))
+                room.particle(candle, 'colorings_base', r(-2, 3, 5), step, if_clause(plain, int(is_plain)))
             candle.merge_state({'lit': False})
             yield execute().if_().score(lit_candles).matches(0).run(volume.replace(candle, filter))
             candle.merge_state({'lit': True})
@@ -946,7 +943,7 @@ def color_functions(room):
 
         yield data().merge(r(-7, 0, 3), {'name': f'restworld:{color.id}_terra', 'showboundingbox': False})
         if not is_plain:
-            room.particle(f'{color.id}_glazed_terracotta', 'colorings_base', r(-5.5, 2, 4.5), step, clause(plain, 0))
+            room.particle(f'{color.id}_glazed_terracotta', 'colorings_base', r(-5.5, 2, 4.5), step, if_clause(plain, 0))
 
         if is_plain:
             yield fill(r(-9, 2, 2), r(-9, 2, 3), 'air')
@@ -957,7 +954,7 @@ def color_functions(room):
             bed_head = Block(f'{color.id}_bed', {'facing': NORTH, 'part': 'head'})
             yield setblock(r(-9, 2, 2), bed_head)
             yield setblock(r(-9, 2, 3), Block(f'{color.id}_bed', {'facing': NORTH, 'part': 'foot'}))
-            room.particle(bed_head, 'colorings_base', r(-9, 2.75, 2), step, clause(plain, int(is_plain)))
+            room.particle(bed_head, 'colorings_base', r(-9, 2.75, 2), step, if_clause(plain, int(is_plain)))
             frame_nbt = {'Item': Item.nbt_for(f'{color.id}_dye'), 'ItemRotation': 0}
             yield data().merge(e().tag('colorings_item_frame').limit(1), frame_nbt)
             bundle = Item.nbt_for(f'{color.id}_bundle')
@@ -1066,7 +1063,7 @@ def color_functions(room):
 
     def colored_signs_init(x, y, z, _, wood):
         sign = Sign((wood.name, 'Sign With', 'Default', 'Text'), wood=wood.id, front=None)
-        room.particle(sign, 'colorings_base', r(x, y + 1, z), clause=clause(plain, 0))
+        room.particle(sign, 'colorings_base', r(x, y + 1, z), clause=if_clause(plain, 0))
         yield sign.place(r(x, y, z), 14)
 
     room.function('colorings_init').add(

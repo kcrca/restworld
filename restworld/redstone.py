@@ -7,7 +7,7 @@ from pynecraft.base import DOWN, EAST, NOON, NORTH, SOUTH, UP, WEST, r
 from pynecraft.commands import Block, data, e, execute, fill, function, kill, setblock, summon, time
 from pynecraft.info import instruments, stems
 from pynecraft.simpler import Item, Region, Sign, WallSign
-from restworld.rooms import Room, ensure
+from restworld.rooms import Room, ensure, if_clause
 from restworld.world import fast_clock, kill_em, main_clock, restworld
 
 
@@ -20,12 +20,20 @@ def room():
         yield setblock(r(0, 2, 0), (step.elem, {'facing': UP}))
         yield setblock(r(1, 4, 0), (step.elem, {'facing': WEST}))
         yield setblock(r(0, 6, 0), (step.elem, {'facing': DOWN}))
+        room.particle(step.elem, 'dispenser', r(1, 5, 0), step)
         yield Sign.change(r(0, 3, 0), (None, step.elem))
 
     room.loop('dispenser', main_clock).loop(dispenser_loop, ('Dispenser', 'Dropper'))
     room.function('hopper_init').add(WallSign((None, 'Which way are', 'they pointing?')).place(r(2, 3, 1), WEST))
-    room.loop('lever', main_clock).loop(
-        lambda step: setblock(r(0, 3, 0), ('lever', {'powered': step.elem, 'face': 'floor'})), (False, True))
+    room.particle('hopper', 'hopper', r(1, 3, 1))
+
+    def lever_loop(step):
+        block = ('lever', {'powered': step.elem, 'face': 'floor'})
+        yield setblock(r(0, 3, 0), block)
+        room.particle(block, 'lever', r(0, 4, 0), step)
+
+    room.loop('lever', main_clock).loop(lever_loop, (False, True))
+    room.particle('tripwire', 'lever', r(0, 3, 2))
 
     def lightning_rod_loop(step):
         yield setblock(r(0, 3, 0), step.elem)
@@ -33,6 +41,7 @@ def room():
 
     room.loop('lightning_rod', main_clock).loop(
         lightning_rod_loop, (Block('Lightning Rod'), Block('Lightning Rod', {'powered': True})))
+    room.particle('lightning_rod', 'lightning_rod', r(0, 4, 0))
 
     minecart_types = list(Block(f'{t}Minecart') for t in
                           ('', 'Chest|', 'Furnace|', 'TNT|', 'Hopper|', 'Spawner|', 'Command Block|'))
@@ -43,8 +52,17 @@ def room():
         yield data().merge(r(-1, 2, 0), step.elem.sign_nbt())
 
     room.loop('minecarts', main_clock).loop(minecart_loop, minecart_types)
-    room.loop('observer', main_clock).loop(
-        lambda step: setblock(r(0, 2, 0), ('observer', {'powered': step.elem, 'facing': EAST})), (True, False))
+
+    def observer_loop(step):
+        block = ('observer', {'powered': step.elem, 'facing': EAST})
+        yield setblock(r(0, 2, 0), block)
+        if step.elem:
+            yield setblock(r(1, 2, 0), 'stone')
+            yield setblock(r(1, 2, 0), 'air')
+        room.particle(block, 'observer', r(0, 3, 0), step)
+
+    room.loop('observer', main_clock).loop(observer_loop, (True, False))
+    room.particle('trapped_chest', 'observer', r(0, 4, 3))
     room.function('piston_init').add(WallSign(()).place(r(-1, 2, 0), WEST))
 
     def piston_loop(step):
@@ -55,6 +73,7 @@ def room():
         if step.i in (0, 3):
             yield ensure(r(0, 3, 0), f'{piston}[facing=west]')
             yield ensure(r(1, 4, 0), f'{piston}[facing=up,]')
+        room.particle(piston, 'piston', r(0, 4, 0), step)
         yield WallSign((None, piston)).place(r(-1, 2, 0), WEST)
 
     room.loop('piston', main_clock).loop(piston_loop, range(6))
@@ -65,6 +84,7 @@ def room():
         powered = (step.i + int(step.i / 4)) % 2 == 0
         lit = step.i % 4 < 2
         yield ensure(r(0, 3, 0), bulb)
+        room.particle(bulb, 'copper_bulb', r(0, 4, 0), step)
         yield setblock(r(-1, 2, 0), 'air')
         yield setblock(r(0, 2, 0), ('redstone_wall_torch', {'facing': WEST}) if powered else 'air')
         state_names = []
@@ -100,6 +120,7 @@ def room():
         # will work for all, and we can get rid of the torches.
         added = dict(powered=True) if on else None
         yield volume.replace_straight_rails(rail, '#rails', added)
+        room.particle(Block(rail, state=added), 'rail', r(1, 2, -1), step)
         if on:
             yield volume.replace('redstone_torch', 'glass')
         else:
@@ -126,6 +147,8 @@ def room():
     room.function('repeater_init').add(
         WallSign((None, 'Comparator', 'and Repeater')).place(r(0, 3, 0), WEST),
         WallSign(()).place(r(-1, 2, -2), WEST))
+    room.particle('repeater', 'repeater', r(-1, 2, 1))
+    room.particle('comparator', 'repeater', r(-1, 2, -1))
 
     def repeater_loop(step):
         mode = 'compare' if step.i < 2 else 'subtract'
@@ -145,21 +168,22 @@ def room():
     room.loop('repeater', main_clock).loop(repeater_loop, range(0, 3))
 
     def sculk_loop(step):
-        if step.i % 2 == 0:
-            if step.i == 0:
-                block = 'Sculk Sensor'
-                yield Sign.change(r(-1, 3, -0), (None, ''))
-            else:
-                # Shows up waterlogged by default; see https://bugs.mojang.com/browse/MC-261388
-                block = Block('Calibrated|Sculk Sensor', {'waterlogged': False, 'facing': WEST})
-                yield Sign.change(r(-1, 3, -0), (None, 'Calibrated'))
-            yield setblock(r(0, 2, 0), block)
+        if step.i == 0:
+            block = 'Sculk Sensor'
+            yield Sign.change(r(-1, 3, -0), (None, ''))
+        else:
+            # Shows up waterlogged by default; see https://bugs.mojang.com/browse/MC-261388
+            block = Block('Calibrated|Sculk Sensor', {'waterlogged': False, 'facing': WEST})
+            yield Sign.change(r(-1, 3, -0), (None, 'Calibrated'))
+        yield setblock(r(0, 2, 0), block)
+        room.particle(block, 'sculk', r(0, 3, 0), step)
         yield setblock(r(-4, 2, 0), 'air' if step.i < 2 else 'redstone_block')
 
     room.function('sculk_init').add(WallSign((None, None, 'Sculk Sensor')).place(r(-1, 3, 0), EAST))
     room.loop('sculk', main_clock).loop(sculk_loop, range(4))
 
     room.function('target_init').add(WallSign((None, 'Target', None, '(vanilla shows 1)')).place(r(1, 3, 0), WEST))
+    room.particle('target', 'target', r(0, 3, 0))
 
     def target_loop(step):
         yield setblock(r(0, 2, 0), ('target', {'power': step.i}))
@@ -171,7 +195,10 @@ def room():
              ('oak_wall_sign', {'facing': WEST}, {'front_text': Sign.lines_nbt((None, None, 'Powered'))})))
 
     def wire_strength_loop(step):
-        yield setblock(r(0, 2, 0), 'redstone_block' if step.i == 0 else 'air')
+        block = 'redstone_block' if step.i == 0 else 'air'
+        yield setblock(r(0, 2, 0), block)
+        if block != 'air':
+            room.particle(block, 'wire_strength', r(0, 3, 0), step)
         for i in range(0, 16):
             if step.i == 0:
                 yield Sign.change(r(1, 2, -(16 - i)), (None, f'{i}'))
@@ -182,8 +209,12 @@ def room():
 
     def wood_power_loop(step):
         wood, powered = step.elem
-        yield setblock(r(1, 2, -1), (f'{wood.id}_pressure_plate', {'powered': powered}))
-        yield setblock(r(1, 3, 0), (f'{wood.id}_button', {'facing': EAST, 'powered': powered}))
+        pressure_plate = (f'{wood.id}_pressure_plate', {'powered': powered})
+        button = (f'{wood.id}_button', {'facing': EAST, 'powered': powered})
+        room.particle(pressure_plate, 'wood_power', r(1, 2, -1), step)
+        room.particle(button, 'wood_power', r(1, 3.5, 0), step)
+        yield setblock(r(1, 2, -1), pressure_plate)
+        yield setblock(r(1, 3, 0), button)
         yield setblock(r(0, 3, 0), ('redstone_lamp', {'lit': powered}))
         yield setblock(r(0, 2, -1), ('redstone_lamp', {'lit': powered}))
         yield setblock(r(1, 2, 0), ('pale_oak_wall_sign', {'facing': EAST}))
@@ -196,6 +227,7 @@ def room():
         powerings.append((Block(t), False))
         powerings.append((Block(t), True))
     room.loop('wood_power', main_clock).loop(wood_power_loop, powerings)
+    room.function('wood_power_init').add(room.label(r(3, 2, 0), 'Show Particles', WEST))
 
     light_detector_funcs(room)
     note_block_funcs(room)
@@ -224,22 +256,28 @@ def light_detector_funcs(room):
             yield execute().if_().score(daylight_inv).matches(1).run(
                 fill(r(inv, height, inv), r(-inv, height, -inv), 'stone'))
 
-    room.loop('daylight_detector', main_clock).add(execute().at(e().tag('daylight_detector_setup_home')).run(
-        function('restworld:redstone/daylight_detector_setup')),
+    room.loop('daylight_detector', main_clock).add(
+        execute().at(e().tag('daylight_detector_setup_home')).run(
+            function('restworld:redstone/daylight_detector_setup')),
         fill(r(3, height, 3), r(-3, height, -3), 'air')).loop(daylight_detector_loop, day_times)
-    room.function('daylight_detector_reset').add(time().set(NOON), execute().at(e().tag('daylight_detector_home')).run(
-        fill(r(3, 8, 3), r(-3, 8, -3), 'air')), daylight_detector.set(0), kill(e().tag('daylight_detector_home')))
-    room.function('daylight_detector_setup').add(daylight_inv.set(0), execute().if_().block(r(0, 2, 1), (
-        'daylight_detector', {'inverted': True})).run(daylight_inv.set(1)),
-                                                 execute().if_().score(daylight_inv).matches(0).run(
-                                                     Sign.change(r(0, 2, 0), (None, 'Daylight Detector', ''))),
-                                                 execute().if_().score(daylight_inv).matches(1).run(
-                                                     Sign.change(r(0, 2, 0), (None, 'Inverted', 'Daylight Detector'))))
-    room.function('daylight_detector_setup_init').add(WallSign(()).place(r(0, 2, 0), EAST),
-                                                      execute().at(e().tag('daylight_detector_setup_home')).run(
-                                                          function('restworld:redstone/daylight_detector_setup')),
-                                                      room.label(r(2, 2, 2), 'Change Daylight', WEST),
-                                                      room.label(r(2, 2, 0), 'Invert', WEST))
+    room.function('daylight_detector_reset').add(
+        time().set(NOON), execute().at(e().tag('daylight_detector_home')).run(
+            fill(r(3, 8, 3), r(-3, 8, -3), 'air')), daylight_detector.set(0), kill(e().tag('daylight_detector_home')))
+    room.function('daylight_detector_setup').add(
+        daylight_inv.set(0),
+        execute().if_().block(r(0, 2, 1), ('daylight_detector', {'inverted': True})).run(daylight_inv.set(1)),
+        execute().if_().score(daylight_inv).matches(0).run(Sign.change(r(0, 2, 0), (None, 'Daylight Detector', ''))),
+        execute().if_().score(daylight_inv).matches(1).run(
+            Sign.change(r(0, 2, 0), (None, 'Inverted', 'Daylight Detector'))))
+    room.function('daylight_detector_setup_init').add(
+        WallSign(()).place(r(0, 2, 0), EAST),
+        execute().at(e().tag('daylight_detector_setup_home')).run(
+            function('restworld:redstone/daylight_detector_setup')),
+        room.label(r(2, 2, 2), 'Change Daylight', WEST),
+        room.label(r(2, 2, 0), 'Invert', WEST))
+    room.particle('daylight_detector', 'daylight_detector_setup', r(0, 2.75, 1), clause=if_clause(daylight_inv, 0))
+    room.particle(('daylight_detector', {'inverted': True}), 'daylight_detector_setup', r(0, 2.5, 1),
+                  clause=if_clause(daylight_inv, 1))
 
 
 def note_block_funcs(room):
@@ -264,6 +302,7 @@ def note_block_funcs(room):
             yield execute().if_().score(instrument).matches(i).run(
                 setblock(r(0, 3, 0), ('note_block', {'note': step.i, 'instrument': inst.id})))
             yield Sign.change(sign_pos, (None, *step.elem.split(' ')))
+        room.particle(('note_block', {'note': step.i}), 'note_block', r(0, 4, 0), step)
 
     room.loop('note_block', fast_clock).loop(note_block_loop, notes).add(
         execute().if_().score(note_powered).matches(1).run(setblock(r(0, 3, -1), 'redstone_torch'),
