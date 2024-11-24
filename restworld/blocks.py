@@ -1229,17 +1229,13 @@ def expansion_functions(room):
                                           fill(r(-1, 2, -1), r(1, 2, 1), 'air').replace('barrier'),
                                           setblock(r(0, 2, 0), 'barrier'))
 
-    room.function('generic_home', home=False).add(
-        kill(e().tag('generic_home').distance((None, 2))),
-        summon('armor_stand', r(0, 0.5, 0),
-               {'Tags': ['generic_home', 'homer', 'blocks_home'], 'NoGravity': True, 'Small': True}))
-    # generic_home is used for entirely static blocks. This is used for blocks that are changed, but
-    # by a different command block than the one under it. These want to be expanded as they change,
+    # This is used for blocks that are changed, but by a different command block than the one under it. These want to
+    # be expanded as they change,
     room.function('just_expand_home', home=False).add(
         kill(e().tag('just_expand_home').distance((None, 2))),
         summon('armor_stand', r(0, 0.5, 0),
                {'Tags': ['just_expand_home', 'homer', 'blocks_home'], 'NoGravity': True, 'Small': True}))
-    # ... and this is like just_expand_home, but it doesn't expand; it is a holder for other behavior, like particulate
+    # ... and this is like just_expand_home, but it doesn't expand.
     room.function('dont_expand_home', home=False).add(
         kill(e().tag('dont_expand_home').distance((None, 2))),
         summon('armor_stand', r(0, 0.5, 0),
