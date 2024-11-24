@@ -146,7 +146,9 @@ def room():
     room.loop('redstone_wire', main_clock).loop(redstone_wire_loop, range(0, 2))
     room.function('repeater_init').add(
         WallSign((None, 'Comparator', 'and Repeater')).place(r(0, 3, 0), WEST),
-        WallSign(()).place(r(-1, 2, -2), WEST))
+        WallSign(()).place(r(-1, 2, -2), WEST),
+        room.label(r(-6, 2, 0), 'Show Particles', NORTH)
+    )
     room.particle('repeater', 'repeater', r(-1, 2, 1))
     room.particle('comparator', 'repeater', r(-1, 2, -1))
 
@@ -227,7 +229,6 @@ def room():
         powerings.append((Block(t), False))
         powerings.append((Block(t), True))
     room.loop('wood_power', main_clock).loop(wood_power_loop, powerings)
-    room.function('wood_power_init').add(room.label(r(3, 2, 0), 'Show Particles', WEST))
 
     light_detector_funcs(room)
     note_block_funcs(room)

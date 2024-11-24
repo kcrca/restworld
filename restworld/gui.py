@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from pynecraft import commands
-from pynecraft.base import EAST, NORTH, Nbt, WEST, r
+from pynecraft.base import EAST, NORTH, Nbt, SOUTH, WEST, r
 from pynecraft.commands import BOSSBAR_COLORS, BOSSBAR_STYLES, Block, CREATIVE, Entity, LEVELS, REPLACE, SURVIVAL, a, \
     bossbar, clone, data, e, effect, execute, fill, function, gamemode, item, kill, n, p, return_, schedule, \
     setblock, \
@@ -71,6 +71,7 @@ def room():
         at(WallSign((None, 'Pyramid Height: 0')).place(r(-1, 6, 0), WEST)),
         room.label(r(-3, 2, -5), 'Beacon', EAST),
     )
+    room.particle('beacon', 'beacon', r(0, 3, -5))
     room.function('beacon_home', exists_ok=True).add(tag(e().tag('beacon_home')).add('beacon_homer'))
     bossbar_which = room.score('bossbar_which')
     room.function('bossbar_exit').add(bossbar().set('restworld:bossbar').visible(False))
@@ -285,8 +286,16 @@ def room():
 
     room.function('bundle_init').add(
         ItemFrame(EAST, nbt={'Tags': ['gui', 'bundle']}).item('bundle').summon(r(0, 2, 0)),
-        WallSign((None, None, 'Bundle')).place(r(0, 3, 0), EAST)
+        WallSign((None, None, 'Bundle')).place(r(0, 3, 0), EAST),
+        room.label(r(9, 2, 4), 'Show Particles', SOUTH),
     )
+    room.particle('chest', 'bundle', r(3, 3, -2))
+    room.particle('dispenser', 'bundle', r(3, 3, 0))
+    room.particle('hopper', 'bundle', r(3, 3, 2))
+    room.particle('chest', 'bundle', r(1, 3, -3))
+    room.particle('barrel', 'bundle', r(1, 3, -1))
+    room.particle('shulker_box', 'bundle', r(1, 3, 1))
+    room.particle('ender_chest', 'bundle', r(1, 3, 3))
 
     enchant_chest = {
         'Items': [{'Slot': 0, 'id': 'lapis_lazuli', 'Count': 64}, {'Slot': 1, 'id': 'book', 'Count': 64}]}
@@ -301,6 +310,7 @@ def room():
         gamemode(CREATIVE, p()),
         kill(e().tag('survival_home'))
     )
+    room.particle('enchanting_table', 'enchanting', r(2, 3, 0))
 
     room.function('powder_snow_init').add(
         setblock(r(-1, 2, 0), 'powder_snow'),

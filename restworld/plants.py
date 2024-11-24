@@ -207,7 +207,6 @@ def room():
         room.particle(elem_id, 'pottable', r(0, 4, 0), step)
         yield data().merge(r(1, 2, 0), sign_nbt)
 
-
     saplings = list(info.woods)
     misc = [
         Block('Brown Mushroom'),
@@ -227,7 +226,6 @@ def room():
     except ValueError:
         pass  # if it's not there, that's OK
     room.loop('pottable', fast_clock).loop(pottable_loop, pottables)
-    room.function('pottable_init').add(room.label(r(2, 2, 1), 'Show Particles', WEST))
     room.function('propagule_init').add(
         setblock(r(0, 5, 0), 'mangrove_leaves'),
         WallSign(('Mangrove', 'Propagule', 'Stage: N of 4', '(vanilla shows 4)')).place(r(1, 2, 0), EAST))
@@ -285,6 +283,7 @@ def room():
         room.particle(bush, 'sweet_berry', r(0, 4, 0), step)
 
     room.loop('sweet_berry', main_clock).loop(sweet_berry_loop, range(0, 4), bounce=True)
+    room.function('sweet_berry_init').add(room.label(r(5, 2, 2), 'Show Particles', NORTH))
     room.loop('sweet_berry_soil', main_clock).loop(lambda step: setblock(r(0, 2, 1), step.elem),
                                                    ('Grass Block', 'Dirt', 'Podzol', 'Coarse Dirt'))
 
