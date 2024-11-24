@@ -7,7 +7,9 @@ from pynecraft import info
 from pynecraft.base import DOWN, E, EAST, EQ, FacingDef, N, NORTH, Nbt, RelCoord, S, SOUTH, UP, W, WEST, as_facing, r, \
     rotate_facing, to_id, \
     to_name
-from pynecraft.commands import Block, Commands, Entity, MOD, MOVE, ScoreName, as_block, as_score, clone, data, e, \
+from pynecraft.commands import Block, Commands, Entity, MOD, MOVE, ScoreName, as_block, as_score, \
+    clone, \
+    data, e, \
     execute, fill, \
     function, \
     item, kill, n, p, s, say, setblock, summon, tag
@@ -870,6 +872,7 @@ def room_init_functions(room, block_list_score):
     room.functions['blocks_room_init'].add(
         room.label(r(-16, 2, 3), 'List Blocks', SOUTH), room.label(r(-16, 2, -3), 'List Blocks', NORTH),
         room.label(r(-46, 2, 3), 'List Blocks', SOUTH), room.label(r(-46, 2, -3), 'List Blocks', NORTH),
+        room.label(r(-34, 2, 0), 'Show Particles', WEST),
         kill(e().tag('block_list')))
     # The 'zzz' makes sure this is run last
     room.function('zzz_blocks_sign_init').add(execute().at(e().tag('blocks_home', '!no_expansion')).run(
@@ -901,10 +904,14 @@ def color_functions(room):
     lit_candles = room.score('lit_candles')
     plain = room.score('plain')
 
-    def colorings(is_plain, color):
-        fills = (
-            'stained_glass', 'stained_glass_pane', 'wool', 'banner', 'shulker_box', 'carpet', 'concrete',
-            'concrete_powder', 'terracotta')
+    def clause(score, value):
+        return lambda cmd: cmd.if_().score(score).matches(value)
+
+    def colorings(is_plain, color, step=None):
+        fills = {
+            'stained_glass': r(-9, 3, 0), 'stained_glass_pane': r(-7, 5, 0), 'wool': r(-1, 3, 1), 'banner': r(1, 5, 2),
+            'shulker_box': r(-3, 5, 0), 'carpet': r(-3, 2.1, 1), 'concrete': r(-5, 3, 1),
+            'concrete_powder': r(-5, 5, 0), 'terracotta': r(-1, 5, 0)}
         plain_fills = tuple(
             Block(x) for x in ('glass', 'glass_pane', 'air', 'air', 'shulker_box', 'air', 'air', 'air', 'terracotta'))
         candles = [Block('candle' if is_plain else color.name + '_candle', {'candles': x, 'lit': True}) for x in
@@ -917,6 +924,8 @@ def color_functions(room):
                 filler = plain_fills[i]
             else:
                 filler = Block(f'{color.id}_{which}', state)
+            if filler.id != 'air':
+                room.particle(filler, 'colorings', fills[which], step, clause(plain, int(is_plain)))
             yield volume.replace(filler, '#restworld:' + which)
 
         candle = Block('candle' if is_plain else color.name + '_candle', {'lit': True})
@@ -924,15 +933,20 @@ def color_functions(room):
             if count < 5:
                 candle.merge_state({'candles': count})
                 filter = f'#restworld:candle[candles={count:d}]'
+                if count == 1:
+                    room.particle(candle, 'colorings', r(-2, 2, 6), step, clause(plain, int(is_plain)))
             else:
                 candle = Block(candle.id + '_cake', {'lit': True})
                 filter = '#restworld:candle_cake'
+                room.particle(candle, 'colorings', r(-2, 3, 5), step, clause(plain, int(is_plain)))
             candle.merge_state({'lit': False})
             yield execute().if_().score(lit_candles).matches(0).run(volume.replace(candle, filter))
             candle.merge_state({'lit': True})
             yield execute().unless().score(lit_candles).matches(0).run(volume.replace(candle, filter))
 
         yield data().merge(r(-7, 0, 3), {'name': f'restworld:{color.id}_terra', 'showboundingbox': False})
+        if not is_plain:
+            room.particle(f'{color.id}_glazed_terracotta', 'colorings', r(-5.5, 2, 4.5), step, clause(plain, 0))
 
         if is_plain:
             yield fill(r(-9, 2, 2), r(-9, 2, 3), 'air')
@@ -940,8 +954,10 @@ def color_functions(room):
             yield data().remove(e().tag('colorings_item_frame').limit(1), 'Item')
             bundle = Item.nbt_for('bundle')
         else:
-            yield setblock(r(-9, 2, 2), Block(f'{color.id}_bed', {'facing': NORTH, 'part': 'head'}))
+            bed_head = Block(f'{color.id}_bed', {'facing': NORTH, 'part': 'head'})
+            yield setblock(r(-9, 2, 2), bed_head)
             yield setblock(r(-9, 2, 3), Block(f'{color.id}_bed', {'facing': NORTH, 'part': 'foot'}))
+            room.particle(bed_head, 'colorings', r(-9, 2.75, 2), step, clause(plain, int(is_plain)))
             frame_nbt = {'Item': Item.nbt_for(f'{color.id}_dye'), 'ItemRotation': 0}
             yield data().merge(e().tag('colorings_item_frame').limit(1), frame_nbt)
             bundle = Item.nbt_for(f'{color.id}_bundle')
@@ -989,8 +1005,7 @@ def color_functions(room):
 
     def colored_signs(color, render):
         signables = info.woods + stems
-        for w in range(0, len(signables)):
-            wood = signables[w]
+        for w, wood in enumerate(signables):
             row_len = 4
             x = w % row_len - 13
             y = int(w / 4) + 2
@@ -1016,7 +1031,7 @@ def color_functions(room):
     enchanted = room.score('enchanted')
 
     def colorings_loop(step):
-        yield from colorings(False, step.elem)
+        yield from colorings(False, step.elem, step)
         yield from colored_signs(step.elem, render_signs)
         yield from enchant(enchanted, 'colorings_enchantable', True)
         yield from enchant(enchanted, 'colorings_enchantable', False)
@@ -1048,6 +1063,12 @@ def color_functions(room):
         'leather_helmet': r(0, 5, 1),
         'leather_horse_armor': r(1, 5, 1),
     }
+
+    def colored_signs_init(x, y, z, _, wood):
+        sign = Sign((wood.name, 'Sign With', 'Default', 'Text'), wood=wood.id, front=None)
+        room.particle(sign, 'colorings', r(x, y + 1, z), clause=clause(plain, 0))
+        yield sign.place(r(x, y, z), 14)
+
     room.function('colorings_init').add(
         kill(e().tag('colorings_item')),
         plain.set(0),
@@ -1072,8 +1093,7 @@ def color_functions(room):
         WallSign((None, 'Concrete')).place(r(-5, 3, 1), SOUTH),
         WallSign((None, 'Bundle')).place(r(-6, 3, 1), SOUTH),
         WallSign((None, 'Glass')).place(r(-7, 3, 1), SOUTH),
-        colored_signs(None, lambda x, y, z, _, wood: Sign((wood.name, 'Sign With', 'Default', 'Text'), wood=wood.id,
-                                                          front=None).place(r(x, y, z), 14)),
+        colored_signs(None, colored_signs_init),
         WallSign([]).place(r(-4, 2, 4, ), SOUTH), kill(e().type('item')),
         room.label(r(-1, 2, 7), 'Lit Candles', NORTH), room.label(r(-8, 2, 7), 'Plain', NORTH),
         room.label(r(-3, 2, 7), 'Enchanted', NORTH), room.label(r(-8, 2, 7), 'Plain', NORTH),
