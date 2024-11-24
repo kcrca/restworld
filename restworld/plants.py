@@ -12,21 +12,21 @@ from restworld.rooms import Room
 from restworld.world import fast_clock, main_clock, restworld, text_display
 
 
-def crop(stages, which: str | Callable[[int, str], Block], x, y, z, step, name='age', extra=None):
-    base_state = Nbt.as_nbt(extra) if extra else Nbt()
-    for s in range(0, 3):
-        stage = stages[((step.i + s) % len(stages))]
-        if isinstance(which, str):
-            block = Block(which, base_state.merge({name: stage}))
-        else:
-            block = which(stage, name)
-        yield fill(r(x, y, z - s), r(x + 2, y, z - s), block)
-    yield Sign.change(r(x + 3, 2, z - 1),
-                      (None, None, f'{name.title()}: {stages[(step.i + 1) % len(stages)]} of {step.count - 2}'))
-
-
 def room():
     room = Room('plants', restworld, SOUTH, ('Plants,', 'Mob Effects,', 'Particles,', 'Fonts'))
+
+    def crop(stages, which: str | Callable[[int, str], Block], x, y, z, step, name='age', extra=None):
+        base_state = Nbt.as_nbt(extra) if extra else Nbt()
+        for s in range(0, 3):
+            stage = stages[((step.i + s) % len(stages))]
+            if isinstance(which, str):
+                block = Block(which, base_state.merge({name: stage}))
+            else:
+                block = which(stage, name)
+            yield fill(r(x, y, z - s), r(x + 2, y, z - s), block)
+            room.particle(block, step.loop.name.replace('_main', ''), r(x + 1, 4, z - s), step)
+        yield Sign.change(r(x + 3, 2, z - 1),
+                          (None, None, f'{name.title()}: {stages[(step.i + 1) % len(stages)]} of {step.count - 2}'))
 
     stages_3 = list(range(0, 3)) + [2, 2]
 
@@ -78,6 +78,7 @@ def room():
     def azalea_loop(step):
         yield setblock(r(0, 3, 0), step.elem.id)
         yield data().merge(r(1, 2, 0), step.elem.sign_nbt())
+        room.particle(step.elem.id, 'azalea', r(0, 4, 0), step)
 
     room.loop('azalea', main_clock).loop(azalea_loop, (Block('Azalea'), Block('Flowering Azalea')))
 
@@ -96,10 +97,20 @@ def room():
 
     room.loop('cave_vines', main_clock).loop(cave_vines_loop,
                                              ((True, True), (True, False), (False, False), (False, True)))
+    room.particle('cave_vines', 'cave_vines', r(0, 3, 0))
+    room.particle('glow_lichen', 'cave_vines', r(0, 3, 2))
+    room.particle('spore_blossom', 'cave_vines', r(0, 4.5, 2))
+    room.particle('hanging_roots', 'cave_vines', r(0, 3.5, 4))
+    room.particle('azalea_leaves', 'cave_vines', r(-1, 7, 0))
+    room.particle('flowering_azalea_leaves', 'cave_vines', r(-1, 7, 1))
+
     room.function('chorus_plant_init').add(WallSign((None, 'Chorus Plant')).place(r(1, 2, 0), EAST))
+    room.particle('Chorus Plant', 'chorus_plant', r(-1, 4, 1))
 
     def chorus_flower_loop(step):
-        yield setblock(r(0, 3, 0), ('chorus_flower', {'age': step.i}))
+        spec = Block('chorus_flower', {'age': step.i})
+        yield setblock(r(0, 3, 0), spec)
+        room.particle(spec, 'chorus_flower', r(0, 4, 0), step)
         yield Sign.change(r(1, 2, 0), (None, None, f'Age: {step.i} of 6'))
 
     room.function('chorus_flower_init').add(
@@ -108,10 +119,15 @@ def room():
     room.loop('chorus_flower', main_clock).loop(chorus_flower_loop, range(6))
 
     def cocoa_loop(step):
-        yield setblock(r(1, 4, 0), ('cocoa', {'age': step.elem, 'facing': WEST}))
-        yield setblock(r(-1, 4, 0), ('cocoa', {'age': step.elem, 'facing': EAST}))
-        yield setblock(r(0, 4, 1), ('cocoa', {'age': (step.elem + 1) % step.count, 'facing': NORTH}))
-        yield setblock(r(0, 4, -1), ('cocoa', {'age': (step.elem + 2) % step.count, 'facing': SOUTH}))
+        def pod(pos, dir):
+            pod_spec = Block('cocoa', {'age': step.elem, 'facing': dir})
+            yield setblock(pos, pod_spec)
+            room.particle(pod_spec, 'cocoa', (pos[0], pos[1] + 1, pos[2]), step)
+
+        yield from pod(r(1, 4, 0), WEST)
+        yield from pod(r(-1, 4, 0), EAST)
+        yield from pod(r(0, 4, 1), NORTH)
+        yield from pod(r(0, 4, -1), SOUTH)
         yield Sign.change(r(1, 2, 0), (None, None, 'Stage: %d of 3' % step.stage))
 
     room.loop('cocoa', main_clock).loop(cocoa_loop, range(0, 3), bounce=True)
@@ -119,6 +135,7 @@ def room():
     room.loop('dead_bush_soil', main_clock).loop(lambda step: setblock(r(0, 2, 1), step.elem),
                                                  ('Sand', 'Red Sand', 'Terracotta', 'Dirt', 'Podzol', 'Mud',
                                                   'Moss Block'))
+    room.particle('dead_bush', 'dead_bush_soil', r(0, 4, 1))
 
     tilts = ('none', 'unstable', 'partial', 'full')
     upper = tuple(Block('Big Dripleaf', {'tilt': x, 'facing': EAST}) for x in tilts) + (
@@ -134,6 +151,7 @@ def room():
         if i < len(tilts):
             text = text + (f'Tilt: {tilts[i].title()}',)
         yield WallSign(text).place(r(1, 2, 0), EAST)
+        room.particle(upper[1], 'dripleaf', r(0, 4, 0), step)
 
     room.loop('dripleaf', main_clock).add(
         setblock(r(1, 2, 0), 'air'),
@@ -169,6 +187,10 @@ def room():
     room.loop('mushrooms', main_clock).loop(mushroom_loop, ('red', 'brown'))
 
     def pottable_loop(step):
+        if not step.elem:
+            yield setblock(r(0, 3, 0), 'flower_pot')
+            yield Sign.change(r(1, 2, 0), ('', 'Flower Pot', '', ''))
+            return
         if isinstance(step.elem, str):
             step.elem = Block(step.elem)
         sign_nbt = step.elem.sign_nbt()
@@ -180,8 +202,11 @@ def room():
             sign_nbt['front_text']['messages'][0] = JsonText.text('Potted ' + base_text)
         if len(sign_nbt['front_text']['messages'][3]['text']) == 0:
             sign_nbt['front_text']['messages'] = (JsonText.text(''),) + tuple(sign_nbt['front_text']['messages'][:-1])
-        yield setblock(r(0, 3, 0), 'potted_%s' % step.elem.id)
+        elem_id = 'potted_%s' % step.elem.id
+        yield setblock(r(0, 3, 0), elem_id)
+        room.particle(elem_id, 'pottable', r(0, 4, 0), step)
         yield data().merge(r(1, 2, 0), sign_nbt)
+
 
     saplings = list(info.woods)
     misc = [
@@ -193,7 +218,7 @@ def room():
         Block('Azalea Bush'), Block('Flowering Azalea Bush'),
         Block('Mangrove Propagule'),
     ]
-    pottables = [Block('Mangrove|Propagule' if w == 'Mangrove' else '%s Sapling' % w) for w in saplings] + [
+    pottables = [None] + [Block('Mangrove|Propagule' if w == 'Mangrove' else '%s Sapling' % w) for w in saplings] + [
         Block('%s Tulip' % t) for t in tulips] + list(small_flowers) + misc + [Block('%s Roots' % x) for x in stems] + [
                     Block('%s Fungus' % x) for x in stems] + [
                     Block('Torchflower'), Block('Wither Rose'), Block('Closed|Eyeblossom'), Block('Open|Eyeblossom')]
@@ -202,6 +227,7 @@ def room():
     except ValueError:
         pass  # if it's not there, that's OK
     room.loop('pottable', fast_clock).loop(pottable_loop, pottables)
+    room.function('pottable_init').add(room.label(r(2, 2, 1), 'Show Particles', WEST))
     room.function('propagule_init').add(
         setblock(r(0, 5, 0), 'mangrove_leaves'),
         WallSign(('Mangrove', 'Propagule', 'Stage: N of 4', '(vanilla shows 4)')).place(r(1, 2, 0), EAST))
@@ -232,21 +258,31 @@ def room():
         yield setblock(r(2, 3, -2), 'air')
         i = step.i
         if i < 8:
-            yield setblock(r(0, 3, -1), ('pumpkin_stem', {'age': i}))
-            yield setblock(r(2, 3, -1), ('melon_stem', {'age': i}))
+            ps = Block('pumpkin_stem', {'age': i})
+            ms = Block('melon_stem', {'age': i})
+            yield setblock(r(0, 3, -1), ps)
+            yield setblock(r(2, 3, -1), ms)
+            room.particle(ps, 'stems', r(0, 4, -1), step)
+            room.particle(ms, 'stems', r(2, 4, -1), step)
             yield Sign.change(r(3, 2, -1), (None, None, f'Stage: {i} of {step.count}'))
         else:
             yield setblock(r(0, 3, -2), 'pumpkin')
             yield setblock(r(2, 3, -2), 'melon')
+            room.particle('pumpkin', 'stems', r(0, 4, -2), step)
+            room.particle('pumpkin', 'stems', r(2, 4, -2), step)
             yield setblock(r(0, 3, -1), ('attached_pumpkin_stem', {'facing': NORTH}))
             yield setblock(r(2, 3, -1), ('attached_melon_stem', {'facing': NORTH}))
+            room.particle('attached_pumpkin_stem', 'stems', r(0, 4, -1), step)
+            room.particle('attached_melon_stem', 'stems', r(2, 4, -1), step)
             yield Sign.change(r(3, 2, -1), (None, None, 'Stage:  Attached'))
 
     room.loop('stems', main_clock).loop(stems_loop, range(0, 9))
 
     def sweet_berry_loop(step):
-        yield setblock(r(0, 3, 0), ('Sweet Berry Bush', {'age': step.elem}))
+        bush = Block('Sweet Berry Bush', {'age': step.elem})
+        yield setblock(r(0, 3, 0), bush)
         yield Sign.change(r(1, 2, 0), (None, None, f'Age: {step.elem} of {step.count}'))
+        room.particle(bush, 'sweet_berry', r(0, 4, 0), step)
 
     room.loop('sweet_berry', main_clock).loop(sweet_berry_loop, range(0, 4), bounce=True)
     room.loop('sweet_berry_soil', main_clock).loop(lambda step: setblock(r(0, 2, 1), step.elem),
@@ -280,14 +316,30 @@ def room():
     room.function('trees_init').add(room.label(r(-1, 2, 16), 'Freeze Biome'))
 
     def tulips_loop(step):
-        yield setblock(r(0, 3, 0), f'{to_id(step.elem)}_tulip')
+        which = f'{to_id(step.elem)}_tulip'
+        yield setblock(r(0, 3, 0), which)
         yield Sign.change(r(1, 2, 0), (None, step.elem))
+        room.particle(which, 'tulips', r(0, 4, 0), step)
 
     room.loop('tulips', main_clock).loop(tulips_loop, tulips)
+    flowers = (
+        'blue_orchid', 'allium', 'azure_bluet', 'tulip', 'poppy', 'oxeye_daisy', 'dandelion', 'lily_of_the_valley',
+        'cornflower', 'wither_rose')
+    for i, flower in enumerate(flowers):
+        if flower != 'tulip':
+            room.particle(flower, 'tulips', r(0, 4, 3 - i))
+    high_flowers = ('sunflower', 'lilac', 'rose_bush', 'peony')
+    for i, flower in enumerate(high_flowers):
+        room.particle(flower, 'tulips', r(-3, 5, 2 - i * 2))
+    grasses = ('short_grass', 'tall_grass', 'fern', 'large_fern')
+    for i, grass in enumerate(grasses):
+        room.particle(grass, 'tulips', r(-6, 5 - (i % 2 + 1), 2 - i * 2))
 
     def eyeblossom_loop(step):
-        yield setblock(r(0, 3, 0), f'{step.elem}_eyeblossom')
+        which = f'{step.elem}_eyeblossom'
+        yield setblock(r(0, 3, 0), which)
         yield Sign.change(r(1, 2, 0), (None, step.elem.title()))
+        room.particle(which, 'eyeblossom', r(0, 4, 0), step)
 
     room.loop('eyeblossom', main_clock).loop(eyeblossom_loop, ('open', 'closed'))
 
@@ -299,6 +351,7 @@ def three_funcs(room):
             yield fill(r(0, 5, z), r(0, 5 - (1 - count), z), 'air')
             yield fill(r(0, 3, z), r(0, 3 + count, z), which)
             yield data().merge(r(1, 2, z), {'front_text': Sign.lines_nbt(('', to_name(which), '', ''))})
+            room.particle('cactus', step.loop.name.replace('_main', ''), r(0, 4 + count, z), step)
 
         yield from height(0, 'cactus')
         yield from height(-3, 'sugar_cane')
@@ -345,8 +398,10 @@ def bamboo_funcs(room):
 
     def bamboo_loop(step):
         if step.i == 0:
-            yield setblock(r(0, 3, 0), 'bamboo_sapling')
+            bamboo = 'bamboo_sapling'
+            yield setblock(r(0, 3, 0), bamboo)
             yield fill(r(0, 3 + top, 0), r(0, 4, 0), 'air')
+            height = 1
         else:
             if step.elem < max:
                 height = step.elem
@@ -356,13 +411,15 @@ def bamboo_funcs(room):
                 height = max
             age = 0 if step.i <= max else 1
             yield Sign.change(r(1, 2, 0), (None, None, 'Shoot' if step.i == 0 else f'Age: {age:d} of 2'))
-            yield fill(r(0, 3, 0), r(0, 3 + height - 1, 0), Block('bamboo', {'age': age, 'leaves': 'none'}))
+            bamboo = Block('bamboo', {'age': age, 'leaves': 'none'})
+            yield fill(r(0, 3, 0), r(0, 3 + height - 1, 0), bamboo)
             if height < max:
                 yield fill(r(0, 3 + max - 1, 0), r(0, 3 + height, 0), 'air')
             if height >= 2:
                 yield setblock(r(0, 3 + height - 1, 0), Block('bamboo', {'age': age, 'leaves': 'small'}))
             if height >= 3:
                 yield setblock(r(0, 3 + height - 2, 0), Block('bamboo', {'age': age, 'leaves': 'large'}))
+        room.particle(bamboo, 'bamboo', r(0, 3 + height, 0), step)
 
     room.loop('bamboo', main_clock).loop(bamboo_loop, range(0, 2 * max + 1))
     room.loop('bamboo_soil', main_clock).loop(lambda step: setblock(r(0, 2, 1), step.elem), (
@@ -374,17 +431,25 @@ def bamboo_funcs(room):
 
 def water_funcs(room):
     volume = Region(r(-1, 2, -5), r(1, 4, 1))
+    exemplars = {}
     watered = {'waterlogged': True}
 
     def coral_loop(step):
-        yield volume.replace(('%s Coral' % step.elem, watered), '#coral_plants', )
-        yield volume.replace('%s Coral Block' % step.elem, '#coral_blocks')
-        yield volume.replace(('%s Coral Fan' % step.elem, watered), '#restworld:coral_fans')
-        yield volume.replace_facing(('%s Coral Wall Fan' % step.elem, watered), '#wall_corals')
-        yield volume.replace(('Dead %s Coral' % step.elem, watered), '#restworld:dead_coral_plants', )
-        yield volume.replace('Dead %s Coral Block' % step.elem, '#restworld:dead_coral_blocks')
-        yield volume.replace(('Dead %s Coral Fan' % step.elem, watered), '#restworld:dead_coral_fans')
-        yield volume.replace_facing(('Dead %s Coral Wall Fan' % step.elem, watered), '#restworld:dead_wall_corals')
+        def one(pattern, replace, pos):
+            nbt = None if 'Block' in pattern else watered
+            state = {'facing': SOUTH} if 'Wall' in pattern and 'Dead' not in pattern else None
+            block = Block(pattern % step.elem, state=state, nbt=nbt)
+            yield volume.replace(block, replace)
+            room.particle(block, 'coral', pos, step)
+
+        yield from one('%s Coral', '#coral_plants', r(0, 4, -1))
+        yield from one('%s Coral Block', '#coral_blocks', r(-1, 3, -1))
+        yield from one('%s Coral Fan', '#restworld:coral_fans', r(0, 3.5, 0))
+        yield from one('%s Coral Wall Fan', '#wall_corals', r(0, 3, 1))
+        yield from one('Dead %s Coral', '#restworld:dead_coral_plants', r(0, 4, -3))
+        yield from one('Dead %s Coral Block', '#restworld:dead_coral_blocks', r(-1, 3, -3))
+        yield from one('Dead %s Coral Fan', '#restworld:dead_coral_fans', r(0, 3.5, -4))
+        yield from one('Dead %s Coral Wall Fan', '#restworld:dead_wall_corals', r(0, 3, -5))
         yield Sign.change(r(0, 2, -2), (None, step.elem))
 
     room.loop('coral', main_clock).loop(coral_loop, ('Brain', 'Bubble', 'Fire', 'Horn', 'Tube'))
@@ -393,12 +458,22 @@ def water_funcs(room):
 
     kelp_init = room.function('kelp_init').add(fill(r(0, 2, 0), r(2, 6, 0), 'water'))
     for x in range(0, 3):
-        kelp_init.add(fill(r(x, 2, 0), r(x, 5, 0), 'kelp'))
+        block = 'kelp'
+        kelp_init.add(fill(r(x, 2, 0), r(x, 5, 0), block))
         if x > 0:
-            kelp_init.add(setblock(r(x, 6, 0), ('kelp', {'age': 25})))
+            block = Block('kelp', {'age': 25})
+            kelp_init.add(setblock(r(x, 6, 0), block))
+    room.particle('kelp', 'kelp', r(0, 6, 0))
+    room.particle('tall_seagrass', 'kelp', r(0, 6, -3))
+    room.particle('seagrass', 'kelp', r(0, 5, -5))
 
     def sea_pickles_loop(step):
-        yield setblock(r(0, 3, 0), ('sea_pickle', {'pickles': step.elem}))
-        yield setblock(r(0, 3, -2), ('sea_pickle', {'waterlogged': False, 'pickles': step.elem}))
+        block = Block('sea_pickle', {'pickles': step.elem})
+        yield setblock(r(0, 3, 0), block)
+        room.particle(block, 'sea_pickles', r(0, 4, 0), step)
+        dead_block = Block('sea_pickle', {'waterlogged': False, 'pickles': step.elem})
+        yield setblock(r(0, 3, -2), dead_block)
+        room.particle(block, 'sea_pickles', r(0, 4, -2), step)
 
     room.loop('sea_pickles', main_clock).loop(sea_pickles_loop, range(1, 5))
+    room.particle('lily_pad', 'sea_pickles', r(-3, 2, -2))
