@@ -263,25 +263,31 @@ def friendlies(room):
 
     room.loop('rabbit', main_clock).loop(rabbit_loop, (
         'Brown', 'White', 'Black', 'Black & White', 'Gold', 'Salt & Pepper', 'Killer Rabbit (unused)'))
-    room.function('reset_collars').add(kill_em(e().tag('cat')),
-                                       execute().at(e().tag('cat_home')).run(function('restworld:mobs/cat_init')),
-                                       execute().at(e().tag('cat_home')).run(function('restworld:mobs/cat_cur')))
+    room.function('reset_collars').add(
+        kill_em(e().tag('cat')),
+        execute().at(e().tag('cat_home')).run(function('restworld:mobs/cat_init')),
+        execute().at(e().tag('cat_home')).run(function('restworld:mobs/cat_cur')))
     p = placer(*mid_west_placer, tags='keeper')
-    room.function('sheep_init').add(p.summon(Entity('sheep', name='Sheared Sheep', nbt={'Sheared': True})),
-                                    p.summon('Sheep', tags=('colorable',)))
-    room.function('sniffer_init').add(placer(r(0, 2, 0.5), EAST, 0, adults=True, tags='keeper').summon('sniffer'),
-                                      WallSign((None, 'Sniffer Egg', None, '(vanilla  shows 3)')).place(r(2, 2, 3),
-                                                                                                        EAST))
+    room.function('sheep_init').add(
+        p.summon(Entity('sheep', name='Sheared Sheep', nbt={'Sheared': True})),
+        p.summon('Sheep', tags=('colorable',)))
+    room.function('sniffer_init').add(
+        placer(r(0, 2, 0.5), EAST, 0, adults=True, tags='keeper').summon('sniffer'),
+        WallSign((None, 'Sniffer Egg', None, '(vanilla  shows 3)')).place(r(2, 2, 3), EAST),
+        room.label(r(3, 2, 0), 'Show Particles', WEST)
+    )
     setblock(r(-1, 2, 2), 'Sniffer Egg'),
 
     egg_pos = r(0, 2, 3)
 
     def sniffer_egg_loop(step):
-        yield setblock(egg_pos, Block('sniffer_egg', {'hatch': step.i}))
+        block = Block('sniffer_egg', {'hatch': step.i})
+        yield setblock(egg_pos, block)
         yield Sign.change(r(2, 2, 3), (None, None, f'Hatch: {step.i} of 3'))
+        room.particle(block, 'sniffer', r(0, 3, 3), step)
 
     room.loop('sniffer', main_clock).loop(sniffer_egg_loop, range(3))
-    # See https://bugs.mojang.com/browse/MC-261475 -- eventually the egg will hatch even without randomTicks, so...
+    # See https://bugs.mojang.com/browse/MC-261250 -- eventually the egg will hatch even without randomTicks, so...
     room.function('sniffer_egg_reset').add(clone(egg_pos, egg_pos, egg_pos).replace(FORCE))
     room.function('sniffer_kid_init').add(placer(r(-0.5, 2, 0), EAST, 0, kids=True, tags='keeper').summon('sniffer'))
     room.function('snow_golem_init').add(placer(r(-0.5, 2, 0), WEST, adults=True).summon('snow_golem'))
@@ -313,6 +319,7 @@ def friendlies(room):
         for count in range(4, 0, -1):
             eggs = ('turtle_egg', {'eggs': count, 'hatch': step.elem})
             yield setblock(r(3 - count, 2, 0), eggs)
+            room.particle(eggs, 'turtle_eggs', r(count - 2, 3, 0), step)
         yield Sign.change(egg_sign_pos, (None, None, f'Hatch Age: {step.elem:d}'))
 
     room.loop('turtle_eggs', main_clock).loop(turtle_egg_loop, range(0, 3), bounce=True)
@@ -726,6 +733,7 @@ def aquatic(room):
             ('salmon', 'cod', 'pufferfish',
              Entity('tadpole', nbt={'Invulnerable': True, 'Age': -2147483648}).tag('kid', 'keeper'))),
     )
+
     def fishies_loop(step):
         yield data().merge(e().tag('pufferfish').limit(1), {'PuffState': step.i})
         yield data().merge(e().tag('salmon').limit(1), {'type': step.elem})

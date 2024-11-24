@@ -213,6 +213,18 @@ def room():
         setblock(r(3, 2, 0), Block('blast_furnace', {'facing': WEST}, {'CookTime': 0})),
         setblock(r(0, 2, 3), Block('smoker', {'facing': WEST}, {'CookTime': 0})),
         room.label(r(-1, 2, 1), 'Cook', EAST))
+    room.particle('furnace', 'cookers', r(0, 3, 0))
+    room.particle('smoker', 'cookers', r(0, 3, 3))
+    room.particle('stonecutter', 'cookers', r(0, 3, 6))
+    room.particle('brewing_stand', 'cookers', r(0, 3, 9))
+    room.particle('crafting_table', 'cookers', r(0, 3, 12))
+    room.particle('crafter', 'cookers', r(0, 3, 15))
+    room.particle('blast_furnace', 'cookers', r(3, 3, 0))
+    room.particle('grindstone', 'cookers', r(3, 3, 3))
+    room.particle('anvil', 'cookers', r(3, 3, 6))
+    room.particle('loom', 'cookers', r(3, 3, 9))
+    room.particle('cartography_table', 'cookers', r(3, 3, 12))
+    room.particle('smithing_table', 'cookers', r(3, 3, 15))
     room.function('cookers_run', home=False).add(
         item().replace().block(r(0, 2, 0), 'container.1').with_('minecraft:stick', 64),
         item().replace().block(r(0, 2, 0), 'container.0').with_('minecraft:stone', 64),

@@ -21,6 +21,7 @@ def room():
             yield execute().at(e().tag('crystal_home')).run(fill(r(2, 9, 2), r(-2, 6, -2), 'iron_bars').hollow())
             yield execute().at(e().tag('crystal_home')).run(fill(r(1, 8, 1), r(-1, 6, -1), 'air'))
             yield execute().at(e().tag('crystal_home')).run(clone(r(2, 9, 2), r(-2, 6, -2), r(-2, 4, -2)).masked(MOVE))
+            room.particle('iron_bars', 'crystal', r(0, 8, -2), step)
 
     room.loop('cage', main_clock).loop(cage_loop, range(0, 2))
 
@@ -39,6 +40,7 @@ def room():
 
     room.loop('dragon_head', main_clock).loop(
         lambda step: setblock(r(0, 2, 0), 'redstone_torch' if step.i == 0 else 'air'), range(0, 2))
+    room.particle('dragon_head', 'dragon_head', r(0, 4, 0))
 
     # Currently, "Rotation" does not affect the dragon, so it will always face north, so arrange things accordingly.
     dragon_pos = r(0, 4, 0)
@@ -57,7 +59,8 @@ def room():
             fireball_pos, NORTH, adults=True).summon(dragon_fireball, tags=('dragon_thing',)))
 
     room.function('end_portal_init', exists_ok=True).add(
-        execute().as_(e().tag('end_portal_home')).run(tag(s()).add('blockers_home')))
+        execute().as_(e().tag('end_portal_home')).run(tag(s()).add('blockers_home')),
+        room.label(r(-6, 2, 5), 'Show Particles', SOUTH))
 
     def end_portal_loop(step):
         before = 'end_portal' if step.elem else 'air'
@@ -68,6 +71,9 @@ def room():
         yield fill(r(1, 2, -2), r(-1, 2, -2), ('end_portal_frame', {'facing': SOUTH, 'eye': step.elem}))
         yield fill(r(1, 2, 1), r(-1, 2, -1), after)
         yield fill(r(2, 2, -5), r(-2, 2, -9), after).replace(before)
+        room.particle('end_portal_frame', 'end_portal', r(0, 3, 2), step)
+
+    room.particle('dragon_egg', 'end_portal', r(0, 7, 11))
 
     room.loop('end_portal', main_clock).loop(end_portal_loop, (True, False))
 
