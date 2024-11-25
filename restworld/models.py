@@ -151,7 +151,7 @@ def room():
     model_head_set = room.function('model_head_set', home=False).add(
         item().replace().entity(n().tag('model_holder_head'), 'armor.head').with_(
             Item('player_head', components={'profile': Arg('player')})))
-    room.loop('model_head', main_clock, home=False).loop(model_head_loop, range(2)).add(
+    room.loop('model_player_head', main_clock).loop(model_head_loop, range(2)).add(
         function(model_head_set).with_().storage(room.store))
 
     recent_things_signs = (r(-2, 4, 1), r(-2, 4, 0), r(-2, 4, -1))[::-1]
