@@ -68,18 +68,16 @@ def room():
             signage = labels[i] if labels else block.sign_text
             if void:
                 signage = ()
-            if len(signage) < 3:
-                signage = signage + ('',) * (3 - len(signage))
             if air:
                 yield setblock(pos, 'air')
             yield setblock(pos, block)
             x, y, z = pos
             if step:
-                room.particle(block.id, name, (x, y + 1, z), step)
+                room.particle(block, name, (x, y + 1, z), step)
             else:
-                room.particle(block.id, name, (x, y + 1, z))
+                room.particle(block, name, (x, y + 1, z))
             # Preserve the 'expand' response
-            yield Sign.change(r(x + facing.dx, 2, z + facing.dz), signage, start=1)
+            yield Sign.change(r(x + facing.dx, 2, z + facing.dz), signage, min_len=3, start=1, blanks=True)
             return block
 
         if singleton:
