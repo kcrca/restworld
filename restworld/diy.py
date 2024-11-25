@@ -1,15 +1,29 @@
 from __future__ import annotations
 
 from pynecraft.base import EAST, WEST, d, r
-from pynecraft.commands import Block, Entity, FORCE, clone, e, execute, fill, function, say, setblock, tp
+from pynecraft.commands import Block, Entity, FORCE, INFINITE, clone, e, effect, execute, fill, function, n, say, \
+    setblock, tp
 from pynecraft.simpler import Item
+from pynecraft.values import INVISIBILITY
 from restworld.rooms import Room
-from restworld.world import main_clock, restworld
+from restworld.world import kill_em, main_clock, restworld
 
 
 def room():
     room = Room('diy', restworld, EAST, (None, 'DIY:', 'Build Your', 'Own Sequence'))
-    room.function('diy_init').add(fill(r(-9, 2, -3), r(-9, 2, 3), 'sand').replace('magenta_glazed_terracotta'))
+
+    no_particles = room.function('diy_particles_stop', home=False).add(kill_em(n().tag('diy_breeze')))
+    room.function('diy_particles_start', home=False).add(
+        execute().at(n().tag('diy_room_home')).run(
+            Entity('breeze', {'NoAI': True}).tag('diy', 'diy_breeze').summon(r(-6, 4, 0))),
+        effect().give(n().tag('diy_breeze'), INVISIBILITY, INFINITE, 1, True)
+    )
+
+    room.function('diy_room_init', exists_ok=True).add(
+        fill(r(-9, 2, -3), r(-9, 2, 3), 'sand').replace('magenta_glazed_terracotta'),
+        room.label(r(-3, 2, -1), 'Show Particles', WEST),
+        function(no_particles)
+    )
 
     def grow_loop(step):
         if step.i != 3:
