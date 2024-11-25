@@ -12,6 +12,8 @@ from restworld.world import kill_em, main_clock, restworld
 def room():
     room = Room('diy', restworld, EAST, (None, 'DIY:', 'Build Your', 'Own Sequence'))
 
+    # We use the ("invisible") breeze to show particles for DIY because there is no generic way to get the ID of a
+    # block (afaict). Without that, it's not possible to use the standard technique. This seems better than nothing.
     no_particles = room.function('diy_particles_stop', home=False).add(kill_em(n().tag('diy_breeze')))
     room.function('diy_particles_start', home=False).add(
         execute().at(n().tag('diy_room_home')).run(
