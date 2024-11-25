@@ -133,6 +133,7 @@ def room():
     room.loop('redstone_lamp', main_clock).loop(lambda step: setblock(r(0, 0, 0), step.elem),
                                                 ('Redstone Torch', 'Air'))
     room.function('redstone_wire_init').add(WallSign((None, 'Redstone Wire')).place(r(0, 2, 0), WEST))
+    room.particle('redstone_wire', 'redstone_wire', r(4, 3, 2))
 
     def redstone_wire_loop(step):
         volume = Region(r(0, 0, 0), r(7, 0, 7))
