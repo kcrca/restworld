@@ -60,6 +60,7 @@ def room():
             yield setblock(r(1, 2, 0), 'stone')
             yield setblock(r(1, 2, 0), 'air')
         room.particle(block, 'observer', r(0, 3, 0), step)
+        room.particle(Block('redstone_lamp', state={'lit': step.elem}), 'observer', r(-2, 4, 0), step)
 
     room.loop('observer', main_clock).loop(observer_loop, (True, False))
     room.particle('trapped_chest', 'observer', r(0, 4, 3))
@@ -120,7 +121,7 @@ def room():
         # will work for all, and we can get rid of the torches.
         added = dict(powered=True) if on else None
         yield volume.replace_straight_rails(rail, '#rails', added)
-        room.particle(Block(rail, state=added), 'rail', r(1, 2, -1), step)
+        room.particle(Block(rail, state=added), 'rail', r(0, 2, -2), step)
         if on:
             yield volume.replace('redstone_torch', 'glass')
         else:
@@ -345,15 +346,18 @@ def pressure_plate_funcs(room):
         execute().unless().score(pressure_plate).matches(0).run(
             function('restworld:redstone/pressure_plate_add'))).loop(None, range(0, 16))
 
+    plate_heavy = room.score('plate_heavy')
+
     def plate(heavy):
         which = 'Heavy' if heavy else 'Light'
-        plate_heavy = room.score('plate_heavy')
+        plate_id = f'{which.lower()}_weighted_pressure_plate'
         yield execute().at(e().tag('pressure_plate_home')).run(
-            setblock(r(0, 3, 0), f'{which.lower()}_weighted_pressure_plate'))
+            setblock(r(0, 3, 0), plate_id))
         yield execute().at(e().tag('pressure_plate_home')).run(Sign.change(r(1, 2, 0), (None, which, 'Pressure Plate')))
         yield plate_heavy.set(int(heavy))
         yield kill(e().tag('plate_items'))
         yield pressure_plate.set(0)
+        room.particle(plate_id, 'pressure_plate', r(0, 3.1, 0), clause=if_clause(plate_heavy, int(heavy)))
 
     room.function('switch_to_heavy', home=False).add(plate(True))
     room.function('switch_to_light', home=False).add(plate(False))
