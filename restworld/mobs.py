@@ -10,8 +10,8 @@ from pynecraft.commands import Block, COLORS, Entity, FORCE, LONG, MOD, REPLACE,
 from pynecraft.info import axolotls, colors, horses, tropical_fish, wolves
 from pynecraft.simpler import Item, PLAINS, Sign, VILLAGER_BIOMES, VILLAGER_PROFESSIONS, Villager, WallSign
 from pynecraft.values import DISC_GROUP, DUMMY, as_disc, discs
-from restworld.rooms import MobPlacer, Room
-from restworld.world import fast_clock, kill_em, main_clock, restworld
+from restworld.rooms import MobPlacer, Room, kill_em
+from restworld.world import fast_clock, main_clock, restworld
 
 
 def room():

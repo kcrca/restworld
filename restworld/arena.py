@@ -7,8 +7,8 @@ from pynecraft.commands import Entity, RANDOM, REPLACE, Score, a, data, e, execu
     setblock, summon, tag
 from pynecraft.function import Function, Loop
 from pynecraft.simpler import Item, Region, Sign, WallSign
-from restworld.rooms import Room
-from restworld.world import kill_em, main_clock, marker_tmpl, restworld
+from restworld.rooms import Room, kill_em
+from restworld.world import main_clock, marker_tmpl, restworld
 
 COUNT_MIN = 1
 COUNT_MAX = 5

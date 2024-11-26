@@ -17,8 +17,8 @@ from pynecraft.function import Function, Loop
 from pynecraft.info import Color, colors, sherds, stems
 from pynecraft.simpler import Item, ItemFrame, Region, Sign, TextDisplay, WallSign
 from restworld.materials import enchant
-from restworld.rooms import Clock, Room, if_clause
-from restworld.world import fast_clock, kill_em, main_clock, restworld
+from restworld.rooms import Clock, Room, if_clause, kill_em
+from restworld.world import fast_clock, main_clock, restworld
 
 
 def room():

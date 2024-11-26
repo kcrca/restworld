@@ -27,8 +27,8 @@ from pynecraft.values import ABSORPTION, AMBIENT_ENTITY_EFFECT, ANGRY_VILLAGER, 
     TOTEM_OF_UNDYING, TRIAL_OMEN, TRIAL_SPAWNER_DETECTION, TRIAL_SPAWNER_DETECTION_OMINOUS, UNDERWATER, \
     VAULT_CONNECTION, VIBRATION, WARPED_FOREST, WARPED_SPORE, WAX_OFF, WAX_ON, WHITE_ASH, WHITE_SMOKE, WITCH, \
     as_particle
-from restworld.rooms import ActionDesc, SignedRoom, Wall, ensure, span
-from restworld.world import fast_clock, kill_em, main_clock, restworld, slow_clock
+from restworld.rooms import ActionDesc, SignedRoom, Wall, ensure, kill_em, span
+from restworld.world import fast_clock, main_clock, restworld, slow_clock
 
 
 def action(which: str, name=None, note=None, also=()):

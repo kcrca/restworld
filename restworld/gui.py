@@ -7,8 +7,8 @@ from pynecraft.commands import BOSSBAR_COLORS, BOSSBAR_STYLES, Block, CREATIVE, 
     setblock, \
     summon, tag
 from pynecraft.simpler import Item, ItemFrame, Sign, WallSign
-from restworld.rooms import Room
-from restworld.world import fast_clock, kill_em, main_clock, restworld, slow_clock
+from restworld.rooms import Room, kill_em
+from restworld.world import fast_clock, main_clock, restworld, slow_clock
 
 
 def room():

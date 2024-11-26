@@ -7,8 +7,8 @@ from pynecraft.base import DOWN, EAST, NOON, NORTH, SOUTH, UP, WEST, r
 from pynecraft.commands import Block, data, e, execute, fill, function, kill, setblock, summon, time
 from pynecraft.info import instruments, stems
 from pynecraft.simpler import Item, Region, Sign, WallSign
-from restworld.rooms import Room, ensure, if_clause
-from restworld.world import fast_clock, kill_em, main_clock, restworld
+from restworld.rooms import Room, ensure, if_clause, kill_em
+from restworld.world import fast_clock, main_clock, restworld
 
 
 def room():

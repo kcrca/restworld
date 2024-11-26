@@ -7,8 +7,8 @@ from pynecraft import info
 from pynecraft.base import EAST, NE, NORTH, NW, SE, SOUTH, SW, WEST, as_facing, r, rotate_facing
 from pynecraft.commands import Entity, JsonText, comment, data, e, execute, fill, function, kill, s, setblock, tag
 from pynecraft.simpler import Item, VILLAGER_BIOMES, VILLAGER_PROFESSIONS, WallSign
-from restworld.rooms import Room
-from restworld.world import kill_em, restworld
+from restworld.rooms import Room, kill_em
+from restworld.world import restworld
 
 NUM_GROUPS = 12
 

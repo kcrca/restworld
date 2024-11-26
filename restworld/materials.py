@@ -10,8 +10,8 @@ from pynecraft.function import BLOCK
 from pynecraft.info import colors, must_give_items, operator_menu, stems, trim_materials, trim_patterns
 from pynecraft.simpler import Item, ItemFrame, Region, SWAMP, Sign, WallSign
 from pynecraft.values import COLD_OCEAN, FROZEN_OCEAN, LUKEWARM_OCEAN, MANGROVE_SWAMP, MEADOW, OCEAN, WARM_OCEAN, biomes
-from restworld.rooms import Room
-from restworld.world import fast_clock, kill_em, main_clock, restworld
+from restworld.rooms import Room, kill_em
+from restworld.world import fast_clock, main_clock, restworld
 
 
 def enchant(score: Score, tag: str, on: bool):

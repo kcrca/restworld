@@ -212,7 +212,7 @@ class Room(FunctionSet):
         marker = Entity('marker', {'Rotation': anchor_rot.rotation, 'shadow_radius': 0}).tag(anchor, 'anchor')
         self.add(Function('%s_room_init' % self.name).add(
             sign.place(r(x, 6, z), facing),
-            kill(e().tag(anchor)),
+            kill_em(e().tag(anchor)),
             summon(marker, r(0, 2, 0))
         ))
         self.function('_goto').add(
@@ -693,3 +693,7 @@ class SignedRoom(Room):
 
 def span(start, end):
     return range(start, end + 1)
+
+
+def kill_em(target):
+    return tp(target, e().tag('death').limit(1))

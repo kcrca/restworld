@@ -5,8 +5,8 @@ from pynecraft.commands import Block, Entity, FORCE, INFINITE, clone, e, effect,
     setblock, tp
 from pynecraft.simpler import Item
 from pynecraft.values import INVISIBILITY
-from restworld.rooms import Room
-from restworld.world import kill_em, main_clock, restworld
+from restworld.rooms import Room, kill_em
+from restworld.world import main_clock, restworld
 
 
 def room():

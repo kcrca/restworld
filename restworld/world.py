@@ -10,11 +10,6 @@ from pynecraft.function import Function, FunctionSet
 from pynecraft.simpler import Book, Sign, TextDisplay
 from restworld.rooms import Clock, Room, RoomPack
 
-
-def kill_em(target):
-    return tp(target, e().tag('death').limit(1))
-
-
 marker_tmpl = Entity('armor_stand', {'NoGravity': True, 'Small': True, })
 
 

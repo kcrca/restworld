@@ -5,8 +5,8 @@ from pynecraft.commands import CREATIVE, Entity, LEVELS, POINTS, SUCCESS, SURVIV
     gamemode, item, p, xp
 from pynecraft.simpler import WallSign
 from pynecraft.values import ABSORPTION, POISON, REGENERATION, WITHER
-from restworld.rooms import Room
-from restworld.world import kill_em, main_clock, restworld
+from restworld.rooms import Room, kill_em
+from restworld.world import main_clock, restworld
 
 
 def room():

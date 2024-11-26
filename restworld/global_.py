@@ -9,8 +9,8 @@ from pynecraft.commands import Block, FORCE, MINUS, MOD, MOVE, REPLACE, RESULT, 
 from pynecraft.function import Function
 from pynecraft.simpler import VILLAGER_PROFESSIONS, WallSign
 from pynecraft.values import DUMMY
-from restworld.rooms import Room
-from restworld.world import clock, kill_em, restworld, tick_clock
+from restworld.rooms import Room, kill_em
+from restworld.world import clock, restworld, tick_clock
 
 # -- Death: How it works:
 #

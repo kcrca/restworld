@@ -3,8 +3,8 @@ from __future__ import annotations
 from pynecraft.base import EAST, NORTH, as_facing, r
 from pynecraft.commands import data, e, execute, kill, s, summon
 from pynecraft.simpler import Sign, WallSign
-from restworld.rooms import Room
-from restworld.world import kill_em, main_clock, restworld
+from restworld.rooms import Room, kill_em
+from restworld.world import main_clock, restworld
 
 
 def room():
