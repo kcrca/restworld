@@ -1065,7 +1065,7 @@ def color_functions(room):
         yield sign.place(r(x, y, z), 14)
 
     room.function('colorings_init').add(
-        kill(e().tag('colorings_item')),
+        kill_em(e().tag('colorings_item')),
         plain.set(0),
         Entity('item_frame', {
             'Facing': 3, 'Tags': ['colorings_item_frame', 'colorings_item'],
