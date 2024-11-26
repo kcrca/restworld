@@ -162,8 +162,10 @@ def room():
 
     def farmland_loop(_):
         for i in range(0, 8):
-            yield setblock(r(0, 1, i), ('farmland', {'moisture': 7 - i}))
-            yield setblock(r(0, 1, -i), ('farmland', {'moisture': 7 - i}))
+            block = Block('farmland', {'moisture': 7 - i})
+            yield setblock(r(0, 1, i), block)
+            yield setblock(r(0, 1, -i), block)
+            room.particle(block, 'farmland_strip', r(0, 2, -i))
 
     room.loop('farmland_strip', main_clock).loop(farmland_loop, range(0, 1)).add(
         kill(e().type('item').nbt({'Item': {'id': 'minecraft:pitcher_pod'}}))

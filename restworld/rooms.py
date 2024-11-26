@@ -230,7 +230,7 @@ class Room(FunctionSet):
             room_name = room_name.replace(',', '').replace(':', '')
         self.title = room_name
 
-    def home_func(self, name, home=None):
+    def home_func(self, name, home=None, single_home=True):
         home_marker_comment = 'Default home function'
         marker_tag = '%s_home' % name
         if marker_tag in self.functions:
@@ -241,9 +241,10 @@ class Room(FunctionSet):
         stand = deepcopy(self._home_stand)
         stand.name = self.name
         stand.nbt.get_list('Tags').extend((marker_tag, self.name + '_home', 'homer'))
+        kill_cmd = kill(e().tag(marker_tag)) if single_home else None
         func = self.function(marker_tag, home=False, exists_ok=True).add(
             comment(home_marker_comment),
-            kill(e().tag(marker_tag)),
+            kill_cmd,
             execute().positioned(r(-0.45, 0, -0.45)).run(kill(e().type('armor_stand').volume((0.3, 2, 0.3)))),
             stand.summon(r(0, 0.5, 0)),
         )
@@ -262,7 +263,7 @@ class Room(FunctionSet):
         kwargs['tags'] = tag_list
         return MobPlacer(*args, **kwargs)
 
-    def function(self, name: str, clock: Clock = None, /, home: bool | Command | Commands = True,
+    def function(self, name: str, clock: Clock = None, /, home: bool | Command | Commands = True, single_home=True,
                  exists_ok=False) -> Function:
         """If home is more than a bool, it is commands to add to the home function."""
         base_name, name = self._base_name(name, clock)
@@ -271,7 +272,7 @@ class Room(FunctionSet):
         if home:
             if base_name[0] == '_' or base_name in self._homes or name.endswith('_home'):
                 home = False
-        return self._add_func(Function(name, base_name), name, clock, home)
+        return self._add_func(Function(name, base_name), name, clock, home, single_home)
 
     def loop(self, name: str, clock: Clock = None, /, home=True, score=None, exists_ok=False) -> Loop:
         base_name, name = self._base_name(name, clock)
@@ -289,7 +290,7 @@ class Room(FunctionSet):
         self._scores.add(loop.to_incr)
         return loop
 
-    def _add_func(self, func, name, clock, home=None):
+    def _add_func(self, func, name, clock, home=None, single_home=True):
         base_name, name = self._base_name(name, clock)
         if clock:
             self._clocks.setdefault(clock, []).append(func)
@@ -298,7 +299,7 @@ class Room(FunctionSet):
         self.add(func)
 
         if home and base_name not in self._homes:
-            self.home_func(base_name, home)
+            self.home_func(base_name, home, single_home)
         return func
 
     def add(self, function: Function) -> Function:
