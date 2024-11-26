@@ -294,7 +294,7 @@ def room():
         'Mangrove': MANGROVE_SWAMP, 'Dark Oak': DARK_FOREST, 'Pale Oak': PALE_GARDEN, 'Spruce': SNOWY_TAIGA
     }
 
-    switch_biome = room.score('switch_biome')
+    freeze_biome = room.score('freeze_biome')
 
     def trees_loop(step):
         tree, biome = step.elem
@@ -304,7 +304,7 @@ def room():
         yield WallSign((None, f'{tree} Trees', 'Biome:', to_name(str(biome)))).place(r(1, 2, 7), WEST)
         plant_room = Region(r(0, -5, -1), r(33, 10, 56))
         # Fill the tall tree area
-        yield execute().unless().score(switch_biome).matches(0).run(
+        yield execute().unless().score(freeze_biome).matches(1).run(
             execute().at(e().tag('plants_room_beg_home')).run(plant_room.fillbiome(biome),
                                                               plant_room.fill('air', replace='snow')),
             fillbiome(r(0, 8, 0), r(18, 30, 17), biome))
