@@ -4,7 +4,7 @@ import math
 import random
 
 from pynecraft.base import EAST, NORTH, Nbt, OVERWORLD, SOUTH, WEST, as_facing, d, r, to_id
-from pynecraft.commands import Block, CLEAR, Entity, INFINITE, JsonText, RAIN, REPLACE, a, data, e, effect, \
+from pynecraft.commands import Block, CLEAR, Entity, INFINITE, JsonText, Particle, RAIN, REPLACE, a, data, e, effect, \
     execute, fill, fillbiome, function, item, kill, particle, playsound, schedule, setblock, summon, weather
 from pynecraft.function import BLOCK, ITEM
 from pynecraft.simpler import Book, PLAINS, TextDisplay, VILLAGER_BIOMES, VILLAGER_PROFESSIONS, WallSign
@@ -63,7 +63,7 @@ actions = [
     action(FALLING_DUST),
     action(FIREWORK, note='and Flash', also=(FLASH,)),
     action(FISHING),
-    action(GUST, 'Gust|Gust Emitter', also=(GUST_EMITTER,)),    # Also in arena, can be removed
+    action(GUST, 'Gust|Gust Emitter', also=(GUST_EMITTER,)),  # Also in arena, can be removed
     action(HAPPY_VILLAGER),
     action(HEART),
     action(INFESTED),
@@ -247,7 +247,7 @@ def room():
         set_biome(SOUL_SAND_VALLEY))
 
     def block_marker_loop(step):
-        yield particle(Entity(BLOCK_MARKER, {'block_state': step.elem}), r(0, 2, 0))
+        yield particle(Particle.block(step.elem, BLOCK_MARKER), r(0, 2, 0))
 
     block_marker_run = room.loop('block_marker_run', home=False).loop(block_marker_loop, ('barrier', 'light'))
     room.function('block_marker', home=False).add(
@@ -307,7 +307,7 @@ def room():
     dust_pillar_change = room.loop('dust_pillar_change', home=False).loop(
         lambda step: (
             floor(step.elem),
-            particle(Entity(DUST_PILLAR, {'block_state': step.elem}), r(0, 0, 0), (0.5, 0, 0.5), 0, 50)),
+            particle(Particle.block(step.elem, DUST_PILLAR), r(0, 0, 0), (0.5, 0, 0.5), 0, 50)),
         ('stone', 'grass_block', 'sandstone'))
     room.function('dust_pillar', home=False).add(main().run(function(dust_pillar_change)))
     room.function('egg_crack_init', home=False).add(floor('moss_block'))
@@ -342,7 +342,7 @@ def room():
     def falling_dust_loop(step):
         id = to_id(step.elem)
         yield fill(r(-2, 5, -2), r(2, 5, 2), id)
-        yield particle(Entity(FALLING_DUST, {'block_state': id}), r(0, 4.9, 0), (1.5, 0, 1.5), 0, 50)
+        yield particle(Particle.block(id, FALLING_DUST), r(0, 4.9, 0), (1.5, 0, 1.5), 0, 50)
 
     falling_dust_change = room.loop('falling_dust_change', home=False).loop(falling_dust_loop, (
         'Dragon Egg', 'Sand', 'Red Sand', 'Gravel', 'Green Concrete Powder'))
@@ -429,7 +429,7 @@ def room():
     for i, pos in enumerate(sculk_pos):
         block = 'sculk' if str(pos[1]) == '~-1' else ('sculk_vein', {'down': True})
         height = 1.3 if str(pos[1]) == '~-1' else 0.5
-        skulk_spread.add(particle(Entity(SCULK_CHARGE, {'roll': random.uniform(-math.pi / 6, +math.pi / 6)}),
+        skulk_spread.add(particle(Particle.sculk_charge(random.uniform(-math.pi / 6, +math.pi / 6)),
                                   (pos[0], pos[1] + height, pos[2])))
         sculk_pop.add(
             setblock(pos, block),

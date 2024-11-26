@@ -13,7 +13,8 @@ from pynecraft.base import BLUE, EAST, FacingDef, NE, NORTH, NW, Nbt, ORANGE, RO
     rotate_facing, \
     to_name
 from pynecraft.commands import Block, BlockDef, CLEAR, Command, Commands, Entity, EntityDef, INT, JsonText, MINUS, \
-    Position, RESULT, Score, SignMessages, a, as_block, as_entity, as_facing, as_score, comment, data, e, \
+    Particle, Position, RESULT, Score, SignMessages, a, as_block, as_entity, as_facing, as_score, comment, \
+    data, e, \
     execute, function, kill, n, p, particle, say, schedule, scoreboard, setblock, summon, tag, tellraw, tp, \
     weather
 from pynecraft.function import DataPack, Function, FunctionSet, LATEST_PACK_VERSION, Loop
@@ -481,7 +482,8 @@ class Room(FunctionSet):
             cmd = clause(cmd)
         if step:
             cmd = cmd.if_().score(step.loop.score).matches(step.i)
-        cmd = cmd.run(particle(Entity('block', nbt={'block_state': as_block(block).id}), pos, (0.25, 0, 0.25), 1, 1))
+        block = as_block(block)
+        cmd = cmd.run(particle(Particle.block(block.id, state=block.state), pos, (0.25, 0, 0.25), 1, 1))
         self.particle_func.add(cmd)
 
 
