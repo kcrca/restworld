@@ -381,7 +381,7 @@ class Room(FunctionSet):
                      scoreboard().objectives().add(self.name + '_max', DUMMY),
                      (x.set(self._init_values.setdefault(str(x.target), 0)) for x in
                       sorted(self._scores, key=lambda x: str(x))),
-                     to_incr.set(1)] + [tp(e().tag(self.name), e().tag('death').limit(1)), kill(e().tag(self.name))]
+                     to_incr.set(1)] + [tp(e().tag(self.name), e().tag('death').limit(1)), kill_em(e().tag(self.name))]
         }
         after_commands = {
             'enter': [weather(CLEAR)],

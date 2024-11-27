@@ -236,8 +236,10 @@ def room():
             ('home', OVERWORLD, (0, 101, 0), (0, 101, 10)),
             ('nether', THE_NETHER, (22, 99, -13), (28, 100, -13)),
             ('arena', OVERWORLD, (1040, 106, -1026), (1036, 104, -1026))):
-        room.function('goto_' + place[0], home=False).add(
+        goto = room.function('goto_' + place[0], home=False).add(
             execute().in_(place[1]).run(teleport(p(), place[2]).facing(place[3])))
+        if place[0] == 'arena':
+            goto.add(function('restworld:arena/arena_count_cur'))
     room.function('goto_photo').add(function('restworld:photo/photo_sample_view'))
     room.home_func('min')
 
