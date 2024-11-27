@@ -255,7 +255,7 @@ def room():
             yield function(clean_out),
         yield setblock(r(0, 1, 0), f'{"red" if step.elem else "lime"}_concrete'),
 
-    arena_count = room.score('arena_count')
+    arena_count = room.score('arena_count', 5)
 
     arena_count_finish = room.function('arena_count_finish', home=False).add(
         execute().if_().score(arena_count).matches((None, COUNT_MIN)).run(arena_count.set(COUNT_MIN)),

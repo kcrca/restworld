@@ -131,6 +131,7 @@ class Room(FunctionSet):
         self.pack = dp
         self._clocks = {}
         self._scores = set()
+        self._init_values = {}
         self._homes = set()
         self._home_stand = Entity('armor_stand', {
             'Tags': ['homer', '%s_home' % self.name], 'NoGravity': True, 'Small': True})
@@ -378,7 +379,8 @@ class Room(FunctionSet):
             'init': [kill(e().tag(self.name, 'label')),
                      scoreboard().objectives().add(self.name, DUMMY),
                      scoreboard().objectives().add(self.name + '_max', DUMMY),
-                     (x.set(0) for x in sorted(self._scores, key=lambda x: str(x))),
+                     (x.set(self._init_values.setdefault(str(x.target), 0)) for x in
+                      sorted(self._scores, key=lambda x: str(x))),
                      to_incr.set(1)] + [tp(e().tag(self.name), e().tag('death').limit(1)), kill(e().tag(self.name))]
         }
         after_commands = {
@@ -408,9 +410,16 @@ class Room(FunctionSet):
     def _is_func_type(x, f_name):
         return x.name.endswith(f_name) and len(x.name) > len(f_name)
 
-    def score(self, name):
+    def score(self, name, init: int = None):
         score = Score(name, self.name)
         self._scores.add(score)
+        if init is not None:
+            try:
+                if self._init_values[name] != init:
+                    ValueError('Inconsistent initial value: {init} vs. {self._init_values[name]')
+            except KeyError:
+                pass
+            self._init_values[name] = init
         return score
 
     def score_max(self, name):
