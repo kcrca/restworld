@@ -4,7 +4,7 @@ from typing import Callable
 
 from pynecraft import info
 from pynecraft.base import EAST, NORTH, Nbt, SOUTH, WEST, r, to_id, to_name
-from pynecraft.commands import Block, JsonText, data, e, execute, fill, fillbiome, function, kill, setblock, tag
+from pynecraft.commands import Block, JsonText, data, e, execute, fill, fillbiome, function, kill, say, setblock, tag
 from pynecraft.info import small_flowers, stems, tulips
 from pynecraft.simpler import JUNGLE, PLAINS, Region, SAVANNA, Sign, WallSign
 from pynecraft.values import BIRCH_FOREST, CHERRY_GROVE, DARK_FOREST, MANGROVE_SWAMP, PALE_GARDEN, SNOWY_TAIGA
@@ -269,7 +269,7 @@ def room():
             yield setblock(r(0, 3, -2), 'pumpkin')
             yield setblock(r(2, 3, -2), 'melon')
             room.particle('pumpkin', 'stems', r(0, 4, -2), step)
-            room.particle('pumpkin', 'stems', r(2, 4, -2), step)
+            room.particle('melon', 'stems', r(2, 4, -2), step)
             yield setblock(r(0, 3, -1), ('attached_pumpkin_stem', {'facing': NORTH}))
             yield setblock(r(2, 3, -1), ('attached_melon_stem', {'facing': NORTH}))
             room.particle('attached_pumpkin_stem', 'stems', r(0, 4, -1), step)
@@ -334,7 +334,7 @@ def room():
         room.particle(flower, 'tulips', r(-3, 5, 2 - i * 2))
     grasses = ('short_grass', 'tall_grass', 'fern', 'large_fern')
     for i, grass in enumerate(grasses):
-        room.particle(grass, 'tulips', r(-6, 5 - (i % 2 + 1), 2 - i * 2))
+        room.particle(grass, 'tulips', r(-6, 4 + i % 2, 2 - i * 2))
 
     def eyeblossom_loop(step):
         which = f'{step.elem}_eyeblossom'
@@ -352,7 +352,7 @@ def three_funcs(room):
             yield fill(r(0, 5, z), r(0, 5 - (1 - count), z), 'air')
             yield fill(r(0, 3, z), r(0, 3 + count, z), which)
             yield data().merge(r(1, 2, z), {'front_text': Sign.lines_nbt(('', to_name(which), '', ''))})
-            room.particle('cactus', step.loop.name.replace('_main', ''), r(0, 4 + count, z), step)
+            room.particle(which, 'three_height', r(0, 4 + count, z), step)
 
         yield from height(0, 'cactus')
         yield from height(-3, 'sugar_cane')
@@ -360,12 +360,15 @@ def three_funcs(room):
     def three_age_loop(step):
         def age(z, which):
             age = step.elem
+            block = Block(which, state={'age': age})
             yield setblock(r(0, 5, z), 'air')
-            yield setblock(r(0, 4, z), f'{which}[age={age}]')
+            yield setblock(r(0, 4, z), block)
             yield data().merge(r(1, 2, z),
                                {'front_text': Sign.lines_nbt(
                                    (None, to_name(which), f'Top Age: {age} of 16', '(vanilla shows 1)'))})
+            room.particle(block, 'three_age', r(0, 5, z), step)
 
+        yield say(step.elem)
         yield from age(0, 'cactus')
         yield from age(-3, 'sugar_cane')
 
