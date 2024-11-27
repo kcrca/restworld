@@ -314,7 +314,7 @@ def room():
     room.loop('trees', main_clock).loop(trees_loop, tree_items).add(
         execute().at(e().tag('plants_room_beg_home')).run(fill(r(0, 1, 0), r(33, 6, 52), 'water').replace('ice')),
         WallSign((None, 'Lily Pad')).place(r(3, 2, 15), WEST))
-    room.function('trees_init').add(room.label(r(-1, 2, 16), 'Freeze Biome'))
+    room.function('trees_init').add(room.label(r(0, 2, 16), 'Freeze Biome'))
 
     def tulips_loop(step):
         which = f'{to_id(step.elem)}_tulip'
