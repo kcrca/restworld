@@ -904,7 +904,7 @@ def color_functions(room):
 
     def colorings(is_plain, color, step=None):
         fills = {
-            'stained_glass': r(-9, 3, 0), 'stained_glass_pane': r(-7, 5, 0), 'wool': r(-1, 3, 1), 'banner': r(1, 5, 2),
+            'stained_glass': r(-7, 5, 0), 'stained_glass_pane': r(-7, 3, 1), 'wool': r(-1, 3, 1), 'banner': r(1, 5, 2),
             'shulker_box': r(-3, 5, 0), 'carpet': r(-3, 2.1, 1), 'concrete': r(-5, 3, 1),
             'concrete_powder': r(-5, 5, 0), 'terracotta': r(-1, 5, 0)}
         plain_fills = tuple(
