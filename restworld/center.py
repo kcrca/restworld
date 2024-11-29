@@ -62,7 +62,8 @@ def room():
         yield fill(r(2, y, 2), r(-2, y, -2), block).replace('redstone_block')
         yield clone(r(2, y, 2), r(-2, y, -2), r(-2, 1, -2)).masked()
 
-    room.loop('fast_lights', fast_clock).loop(lambda x: lights_loop(-3, 'stone'), range(0, 1))
+    # The "kill" here is to pick up the scutes the armadillo drops occasionally; could add a loop just for this
+    room.loop('fast_lights', fast_clock).loop(lambda x: lights_loop(-3, 'stone'), range(0, 1)).add(kill(e().type('item').distance((None, 25))))
     room.loop('main_lights', main_clock).loop(lambda x: lights_loop(-4, 'diamond_block'), range(0, 1))
     room.loop('slow_lights', slow_clock).loop(lambda x: lights_loop(-5, 'emerald_block'), range(0, 1))
 
