@@ -126,7 +126,11 @@ def room():
                 yield setblock(loc, 'air')
 
     room.loop('rube', fast_clock).loop(rube_loop, rube_locs.keys())
-    room.function('rube_init').add(setblock(r(-6, 0, -8), 'redstone_block'), setblock(r(-6, 0, -8), 'air'))
+    room.function('rube_init').add(
+        kill(e().type('minecart').volume((10, 10, 10))),
+        setblock(r(-6, 0, -8), 'redstone_block'),
+        setblock(r(-6, 0, -8), 'air')
+    )
 
     def rail_loop(step):
         volume = Region(r(3, 3, -3), r(0, 0, 0))
