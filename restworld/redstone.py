@@ -4,7 +4,7 @@ import re
 
 from pynecraft import info
 from pynecraft.base import DOWN, EAST, NOON, NORTH, SOUTH, UP, WEST, r
-from pynecraft.commands import Block, data, e, execute, fill, function, kill, setblock, summon, time
+from pynecraft.commands import Block, data, e, execute, fill, function, kill, setblock, summon, tag, time
 from pynecraft.info import instruments, stems
 from pynecraft.simpler import Item, Region, Sign, WallSign
 from restworld.rooms import Room, ensure, if_clause, kill_em
@@ -305,33 +305,20 @@ def note_block_funcs(room):
     instrument = room.score('instrument')
     note_powered = room.score('note_powered')
 
+    start = room.function('start_note_blocks', home=False).add(
+        tag(e().tag('note_home')).remove('instrument_home'), tag(e().tag('note_home')).add('note_block_home'))
+    room.function('start_instruments', home=False).add(
+        tag(e().tag('note_home')).remove('note_block_home'), tag(e().tag('note_home')).add('instrument_home'))
+
     sign_pos = r(0, 2, 1)
-    note_display = WallSign((None, 'A'))
-    note_block_init = room.function('note_block_init').add(
-        instrument.set(0),
-        setblock(r(0, 2, 0), 'grass_block'),
+    note_display = WallSign((None, 'A')).glowing(True)
+    note_block_init = room.function('note_init').add(
         note_display.place(sign_pos, SOUTH),
+        function(start),
+        function('restworld:redstone/instrument_cur'),
+        function('restworld:redstone/note_block_cur'),
     )
-
-    notes = (
-        'Low F♯/G♭', 'Low G', 'Low G♯/A♭', 'Low A', 'Low A♯/B♭', 'Low B', 'Low C', 'Low C♯/D♭', 'Low D', 'Low D♯/E♭',
-        'Low E', 'Low F', 'Mid F♯/G♭', 'Mid G', 'Mid G♯/A♭', 'Mid A', 'Mid A♯/B♭', 'Mid B', 'Mid C', 'Mid C♯/D♭',
-        'Mid D', 'Mid D♯/E♭', 'Mid E', 'Mid F', 'High F♯/G♭')
-
-    def note_block_loop(step):
-        for i, inst in enumerate(instruments):
-            yield execute().if_().score(instrument).matches(i).run(
-                setblock(r(0, 3, 0), ('note_block', {'note': step.i, 'instrument': inst.id})))
-            yield Sign.change(sign_pos, (None, *step.elem.split(' ')))
-        room.particle(('note_block', {'note': step.i}), 'note_block', r(0, 4, 0), step)
-
-    room.loop('note_block', fast_clock).loop(note_block_loop, notes).add(
-        execute().if_().score(note_powered).matches(1).run(
-            setblock(r(0, 3, -1), 'air'),
-            setblock(r(0, 3, -1), ('redstone_wall_torch', {'facing': 'south'}))),
-        execute().unless().score(note_powered).matches(1).run(setblock(r(0, 3, -1), 'air')),
-    )
-
+    sign_locs = []
     for i, instr in enumerate(instruments):
         row_len = len(instruments) / 2
         x = i % row_len
@@ -340,11 +327,45 @@ def note_block_funcs(room):
         x -= row_len / 2
         x = int(x)
         y = 3 - int(i / row_len)
-        note_block_init.add(WallSign(
-            (None, instr.name, f'({instr.exemplar.name})'),
-            (instrument.set(i),
-             execute().at(e().tag('note_block_home')).run(setblock(r(0, 2, 0), instr.exemplar)))
-        ).place(r(x, y, 1), SOUTH), room.label(r(1, 2, 2), 'Powered', NORTH))
+        loc = r(x, y, 1)
+        sign_locs.append(loc)
+        note_block_init.add(
+            WallSign(
+                (None, instr.name, f'({instr.exemplar.name})'),
+                (instrument.set(i),
+                 execute().at(e().tag('note_home')).run(setblock(r(0, 2, 0), instr.exemplar)),
+                 execute().at(e().tag('note_home')).run(function('restworld:redstone/instrument_cur')))
+            ).place(loc, SOUTH),
+            room.label(r(1, 2, 2), 'Play Notes', NORTH),
+            room.label(r(-1, 2, 2), 'Instruments', NORTH))
+
+    notes = (
+        'Low F♯/G♭', 'Low G', 'Low G♯/A♭', 'Low A', 'Low A♯/B♭', 'Low B', 'Low C', 'Low C♯/D♭', 'Low D', 'Low D♯/E♭',
+        'Low E', 'Low F', 'Mid F♯/G♭', 'Mid G', 'Mid G♯/A♭', 'Mid A', 'Mid A♯/B♭', 'Mid B', 'Mid C', 'Mid C♯/D♭',
+        'Mid D', 'Mid D♯/E♭', 'Mid E', 'Mid F', 'High F♯/G♭')
+
+    def note_block_loop(step):
+        yield setblock(r(0, 3, 0), ('note_block', {'note': step.i}))
+        yield Sign.change(sign_pos, (None, *step.elem.split(' ')))
+
+    def instrument_loop(step):
+        yield setblock(r(0, 2, 0), step.elem.exemplar)
+        yield data().modify(sign_locs[step.i], 'front_text.has_glowing_text').set().value(True)
+        yield data().modify(sign_locs[step.i], 'back_text.has_glowing_text').set().value(True)
+
+    note_block_func = room.loop('note_block', home=False).loop(note_block_loop, notes)
+    instrument_func = room.loop('instrument', home=False).add(
+        (data().modify(x, 'front_text.has_glowing_text').set().value(False) for x in sign_locs),
+        (data().modify(x, 'back_text.has_glowing_text').set().value(False) for x in sign_locs),
+    ).loop(instrument_loop, instruments)
+
+    room.loop('note', fast_clock).add(
+        execute().at(e().tag('note_block_home')).run(function(note_block_func)),
+        execute().at(e().tag('instrument_home')).run(function(instrument_func)),
+        setblock(r(0, 3, -1), 'air'),
+        execute().if_().score(note_powered).matches(1).run(
+            setblock(r(0, 3, -1), ('redstone_wall_torch', {'facing': 'south'}))),
+    )
 
 
 def pressure_plate_funcs(room):
