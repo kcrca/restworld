@@ -137,8 +137,10 @@ def room():
 
     def model_head_loop(step):
         if step.i == 0:
-            yield execute().unless().score(is_other).matches(0).run(data().modify(room.store, 'player').set().value('BlueMeanial'))
-            yield execute().if_().score(is_other).matches(0).run(data().modify(room.store, 'player').set().value('Sunny'))
+            yield execute().unless().score(is_other).matches(0).run(
+                data().modify(room.store, 'player').set().value('BlueMeanial'))
+            yield execute().if_().score(is_other).matches(0).run(
+                data().modify(room.store, 'player').set().value('Sunny'))
         else:
             yield execute().as_(p()).run(
                 loot().replace().entity(n().tag('player_head_holder'), 'armor.head').loot('restworld:player_head'))
@@ -184,14 +186,20 @@ def room():
     ground_default_nbt = {'Item': Item.nbt_for('iron_pickaxe'), 'Age': -32768, 'PickupDelay': 2147483647,
                           'Tags': ['model_ground']}
     named_frame_data = named_frame_item(name='Invisible Frame').merge({'ItemRotation': 0})
+    set_if_block = room.function('set_if_block').add(execute().at(model_home).run(
+        setblock(r(0, 2, 1), 'air'), setblock(r(0, 2, 1), Arg('block'))))
     model_copy = room.function('model_copy', home=False).add(
         data().merge(model_src, {'ItemRotation': 0}),
         execute().unless().data(model_src, 'Item.id').run(kill(all_ground)),
+        execute().at(model_home).run(setblock(r(0, 2, 1), 'air')),
         execute().if_().data(model_src, 'Item.id').run(
             execute().unless().entity(model_ground).at(model_home).run(
                 summon('item', r(1, 3, -2), ground_default_nbt)),
             data().modify(model_ground, 'Item').set().from_(model_src, 'Item'),
-            data().merge(model_ground, {'Age': -32768, 'PickupDelay': 2147483647})),
+            data().merge(model_ground, {'Age': -32768, 'PickupDelay': 2147483647}),
+            data().modify(room.store, 'block').set().from_(model_src, 'Item.id'),
+            function(set_if_block).with_().storage(room.store),
+        ),
         item().replace().entity(model_holder, 'weapon.mainhand').from_().entity(model_src, 'container.0'),
         item().replace().entity(model_holder, 'weapon.offhand').from_().entity(model_src, 'container.0'),
         execute().if_().score(room.score('model_head')).matches(0).run(
@@ -236,7 +244,7 @@ def room():
 
     at_home = execute().at(model_home).run
 
-    def thing_funcs(which, things):
+    def thing_funcs(which, things, do_setblock=False):
         signs = recent_things_signs
 
         def all_loop(step):
@@ -244,6 +252,7 @@ def room():
             name = step.elem.name.replace(' [x]', '')
             yield at_home(Sign.change(signs[-1], (name,)))
             yield data().modify(n().tag('current_model'), 'text').set().value(JsonText.text(name))
+            yield setblock(r(1, 2, 1), step.elem if do_setblock else 'air')
 
         all_things = things
         all_things_loop = room.loop(f'all_{which}', fast_clock).add(is_empty.set(1))
@@ -265,8 +274,8 @@ def room():
 
     block_list = tuple(
         filter(lambda block: block.name not in block_items and 'Air' not in block.name, info.blocks.values()))
-    thing_funcs('blocks', block_list)
-    thing_funcs('sampler_blocks', sample('blocks', block_list))
+    thing_funcs('blocks', block_list, True)
+    thing_funcs('sampler_blocks', sample('blocks', block_list), True)
     item_list = tuple(filter(lambda row: 'Spawn' not in row.name, info.items.values()))
     thing_funcs('items', item_list)
     thing_funcs('sampler_items', sample('items', item_list))
