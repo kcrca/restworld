@@ -54,13 +54,13 @@ def room():
     room.loop('minecarts', main_clock).loop(minecart_loop, minecart_types)
 
     def observer_loop(step):
-        block = ('observer', {'powered': step.elem, 'facing': EAST})
+        block = ('observer', {'powered': step.elem, 'facing': WEST})
         yield setblock(r(0, 2, 0), block)
         if step.elem:
-            yield setblock(r(1, 2, 0), 'stone')
-            yield setblock(r(1, 2, 0), 'air')
+            yield setblock(r(-1, 2, 0), 'stone')
+            yield setblock(r(-1, 2, 0), 'air')
         room.particle(block, 'observer', r(0, 3, 0), step)
-        room.particle(Block('redstone_lamp', state={'lit': step.elem}), 'observer', r(-2, 4, 0), step)
+        room.particle(Block('redstone_lamp', state={'lit': step.elem}), 'observer', r(2, 4, 0), step)
 
     room.loop('observer', main_clock).loop(observer_loop, (True, False))
     room.particle('trapped_chest', 'observer', r(0, 4, 3))
@@ -113,6 +113,19 @@ def room():
         ('Activator Rail', False), ('Activator Rail', True),
     )
     room.function('rail_clean', home=False).add(kill_em(e().tag('tmp_minecart')))
+
+    rube_locs = {r(0, 5, -1): '⬆', r(0, 6, 0): '⮕'}
+
+    def rube_loop(step):
+        for r, loc in enumerate(rube_locs):
+            if r == step.i:
+                ch = rube_locs[loc]
+                yield WallSign(('', 'Start Here', f'{ch}{ch}')).place(loc, EAST)
+            else:
+                yield setblock(loc, 'air')
+
+    room.loop('rube', fast_clock).loop(rube_loop, rube_locs.keys())
+    room.function('rube_init').add(setblock(r(-6, 0, -8), 'redstone_block'), setblock(r(-6, 0, -8), 'air'))
 
     def rail_loop(step):
         volume = Region(r(3, 3, -3), r(0, 0, 0))
@@ -308,8 +321,11 @@ def note_block_funcs(room):
         room.particle(('note_block', {'note': step.i}), 'note_block', r(0, 4, 0), step)
 
     room.loop('note_block', fast_clock).loop(note_block_loop, notes).add(
-        execute().if_().score(note_powered).matches(1).run(setblock(r(0, 3, -1), 'redstone_torch'),
-                                                           setblock(r(0, 3, -1), 'air')))
+        execute().if_().score(note_powered).matches(1).run(
+            setblock(r(0, 3, -1), 'air'),
+            setblock(r(0, 3, -1), ('redstone_wall_torch', {'facing': 'south'}))),
+        execute().unless().score(note_powered).matches(1).run(setblock(r(0, 3, -1), 'air')),
+    )
 
     for i, instr in enumerate(instruments):
         row_len = len(instruments) / 2
