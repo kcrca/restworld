@@ -52,6 +52,7 @@ def room():
         yield data().merge(r(-1, 2, 0), step.elem.sign_nbt())
 
     room.loop('minecarts', main_clock).loop(minecart_loop, minecart_types)
+    room.function('minecarts_init').add(room.label(r(-5, 2, -1), 'Reset Room', NORTH))
 
     def observer_loop(step):
         block = ('observer', {'powered': step.elem, 'facing': WEST})
