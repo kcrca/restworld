@@ -366,6 +366,7 @@ def note_block_funcs(room):
         execute().if_().score(note_powered).matches(1).run(
             setblock(r(0, 3, -1), ('redstone_wall_torch', {'facing': 'south'}))),
     )
+    room.particle('note_block', 'note', r(0, 4, 0))
 
 
 def pressure_plate_funcs(room):
