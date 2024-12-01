@@ -4,7 +4,7 @@ import re
 
 from pynecraft import info
 from pynecraft.base import DOWN, EAST, NOON, NORTH, SOUTH, UP, WEST, r
-from pynecraft.commands import Block, data, e, execute, fill, function, kill, setblock, summon, tag, time
+from pynecraft.commands import Block, data, e, execute, fill, function, kill, say, setblock, summon, tag, time
 from pynecraft.info import instruments, stems
 from pynecraft.simpler import Item, Region, Sign, WallSign
 from restworld.rooms import Room, ensure, if_clause, kill_em
@@ -127,7 +127,9 @@ def room():
 
     room.loop('rube', fast_clock).loop(rube_loop, rube_locs.keys())
     room.function('rube_init').add(
-        kill(e().type('minecart').volume((10, 10, 10))),
+        say('kill'),
+        kill(e().type('minecart').volume((-10, 10, -10))),
+        kill(e().type('furnace_minecart').volume((-10, 10, -10))),
         setblock(r(-6, 0, -8), 'redstone_block'),
         setblock(r(-6, 0, -8), 'air')
     )
