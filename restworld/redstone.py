@@ -163,6 +163,7 @@ def room():
     }
     holder = room.score('holder')
     explosions_cnt = room.score('explosions_cnt')
+    val_cnt = room.score('val_cnt')
 
     ex_tmpl = {'shape': 'str'}
     for name, odds in f_odds.items():
@@ -196,6 +197,15 @@ def room():
         if score:
             yield execute().store(RESULT).score(score).run(data().get(room.store, nbt_path))
 
+    def expand(name, nbt_path, score, func):
+        singular = name[:-1]
+        for i in range(len(f_odds[name])):
+            cmds = (function(func), say(f'{singular}: {i}'),
+                    data().modify(room.store, f'{nbt_path}.{name}').append().from_(room.store, f'{singular}_val'))
+            if i > 0:
+                cmds = execute().if_().score(score).matches((i + 1, None)).run(cmds)
+            yield cmds
+
     explosion_raw = room.function('explosion_raw', home=False).add(
         say('explosion_raw'),
         execute().store(RESULT).storage(room.store, 'explosion_raw.shape', SHORT, 1).run(
@@ -204,34 +214,45 @@ def room():
         raw_odds_value('has_twinkle', 'explosion_raw'),
         raw_odds_value('colors', 'explosion_raw'),
     )
+    color_add = room.function('color_add', home=False).add(
+        data().modify(room.store, 'explosion_val.colors').append().from_(room.store, 'fireworks.colors[$(color)]')
+    )
+
+    def colors_add():
+        yield data().remove(room.store, 'color_raw')
+        yield data().modify(room.store, 'explosion_val.colors').set().value([])
+        for i in range(len(f_odds['colors'])):
+            cmds = (
+                say(f'add color {i}'),
+                execute().store(RESULT).storage(room.store, 'color_raw.color', INT, 1).run(random().value((0, len(f_colors)))),
+                function(color_add).with_().storage(room.store, 'color_raw')
+            )
+            if i > 0:
+                cmds = execute().if_().score(val_cnt).matches((i, None)).run(cmds)
+            yield cmds
+
     explosion_convert = room.function('explosion_convert', home=False).add(
         say('explosion_convert'),
         data().modify(room.store, 'explosion_val.shape').set().from_(room.store, 'fireworks.shapes[$(shape)]'),
         val_odds_value('has_trail', 'explosion'),
         val_odds_value('has_twinkle', 'explosion'),
-        val_odds_value('colors', 'explosion'),
+        val_odds_value('colors', 'explosion', 1, val_cnt),
+        colors_add(),
     )
     explosion_add = room.function('explosion_add', home=False).add(
         say('explosion_add'),
         data().remove(room.store, 'explosion_raw'),
         data().remove(room.store, 'explosion_val'),
         function(explosion_raw),
-        say('calling explosion_convert'),
         function(explosion_convert).with_().storage(room.store, 'explosion_raw'),
-        say('done: explosion_convert'),
     )
     new_firework_convert = room.function('new_firework_convert', home=False).add(
         say('new_firework_convert'),
         data().modify(room.store, 'new_firework_val.explosions').set().value([]),
+        expand('explosions', 'new_firework_val', explosions_cnt, explosion_add)
     )
-    for i in range(len(f_odds['explosions'])):
-        cmds = (function(explosion_add), say(f'explosion {i}'),
-                data().modify(room.store, 'new_firework_val.explosions').append().from_(room.store, 'explosion_val'))
-        if i > 0:
-            cmds = execute().if_().score(explosions_cnt).matches((i + 1, None)).run(cmds)
-        new_firework_convert.add(cmds)
 
-    def fireworks_loop(elem):
+    def fireworks_loop(_):
         yield say('fireworks_main')
         yield execute().if_().items(r(-1, 2, 0), 'container.*', 'firework_rocket').run(say('full'), return_())
         yield data().remove(room.store, 'new_firework_raw')
