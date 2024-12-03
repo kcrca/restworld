@@ -4,7 +4,8 @@ import re
 
 from pynecraft import info
 from pynecraft.base import DOWN, EAST, NOON, NORTH, SOUTH, UP, WEST, r
-from pynecraft.commands import Block, INT, RESULT, SHORT, data, e, execute, fill, function, kill, random, return_, \
+from pynecraft.commands import BYTE, Block, INT, RESULT, SHORT, data, e, execute, fill, function, item, kill, random, \
+    return_, \
     say, setblock, \
     summon, \
     tag, time
@@ -224,7 +225,8 @@ def room():
         for i in range(len(f_odds['colors'])):
             cmds = (
                 say(f'add color {i}'),
-                execute().store(RESULT).storage(room.store, 'color_raw.color', INT, 1).run(random().value((0, len(f_colors)))),
+                execute().store(RESULT).storage(room.store, 'color_raw.color', INT, 1).run(
+                    random().value((0, len(f_colors)))),
                 function(color_add).with_().storage(room.store, 'color_raw')
             )
             if i > 0:
@@ -249,7 +251,13 @@ def room():
     new_firework_convert = room.function('new_firework_convert', home=False).add(
         say('new_firework_convert'),
         data().modify(room.store, 'new_firework_val.explosions').set().value([]),
-        expand('explosions', 'new_firework_val', explosions_cnt, explosion_add)
+        expand('explosions', 'new_firework_val', explosions_cnt, explosion_add),
+        execute().store(RESULT).storage(room.store, 'new_firework_val.flight_duration', BYTE, 1).run(
+            random().value((1, 5))),
+    )
+
+    f_describe = room.function('f_describe', home=False).add(
+        say(f'height: $()')
     )
 
     def fireworks_loop(_):
@@ -261,6 +269,10 @@ def room():
         yield from val_odds_value('explosions', 1, explosions_cnt)
         yield function(new_firework_convert)
         yield function(new_firework_convert).with_().storage('new_firework_raw')
+        yield item().replace().block(r(0, 2, 0), 'container.0').with_(Item('firework_rocket'))
+        yield data().modify(r(0, 2, 0), 'Items[0].components.minecraft:fireworks').set().from_(room.store,
+                                                                                               'new_firework_val')
+        yield function(f_describe)
 
     room.function('fireworks_init').add(
         data().remove(room.store, 'fireworks'),
