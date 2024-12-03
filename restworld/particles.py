@@ -351,18 +351,12 @@ def room():
         function(falling_dust_change))
     room.function('falling_dust', home=False).add(main().run(function(falling_dust_change)))
 
-    def fireworks_loop(step):
-        color, shape = step.elem
-        ent = Entity('firework_rocket', components={"minecraft:fireworks": {
-            'explosions': [{'colors': Nbt.TypedArray('I', (color,)), 'has_trail': True, 'shape': shape}],
-            'flight_duration': 0}})
-        yield item().replace().block(r(0, 1, 0), 'container.0').with_(ent)
-
-    firework_change = room.loop('firework_change', home=False).loop(
-        fireworks_loop, ((11743532, 'large_ball'), (6719955, 'star'), (14602026, 'creeper'), (3887386, 'burst'),
-                         (15790320, 'small_ball'))).add(
+    firework_change = room.loop('firework_change', home=False).add(
+        execute().positioned(r(0, -1, 0)).run(function('restworld:redstone/fireworks_main')),
+        data().remove(r(0, 1, 0), 'Items[0].components.minecraft:fireworks.flight_duration'),
         setblock(r(0, 0, 0), 'redstone_torch'),
-        setblock(r(0, 0, 0), 'air'))
+        setblock(r(0, 0, 0), 'air'),
+    )
     room.function('firework', home=False).add(main().run(function(firework_change)))
     room.function('firework_init', home=False).add(setblock(r(0, 1, 0), ('dispenser', {'facing': 'up'})))
     room.function('fishing', home=False).add(fast().run(particle(FISHING, r(0, 1.5, 0), (0.2, 0, 0.2), 0, 6)))

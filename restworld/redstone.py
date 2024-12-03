@@ -4,7 +4,8 @@ import re
 
 from pynecraft import info
 from pynecraft.base import DOWN, EAST, NOON, NORTH, SOUTH, UP, WEST, r
-from pynecraft.commands import BYTE, Block, INT, RESULT, SHORT, data, e, execute, fill, function, item, kill, random, \
+from pynecraft.commands import BYTE, Block, INT, RESULT, SHORT, Score, data, e, execute, fill, function, item, kill, \
+    random, \
     return_, \
     setblock, \
     summon, \
@@ -177,11 +178,10 @@ def room():
     f_tmpl = {'explosions_cnt': 0, 'explosions': (ex_tmpl,) * len(f_odds['explosions'])}
 
     def raw_odds_value(name, store):
-        nbt_path = f'{store}.{name}'
-        yield execute().store(RESULT).storage(room.store, nbt_path, INT, 1).run(
+        yield execute().store(RESULT).storage(room.store, f'{store}.{name}', INT, 1).run(
             random().value((0, f_range)))
 
-    def val_odds_value(name, nbt_path_top, min=0, score=None):
+    def val_odds_value(name: str, nbt_path_top: str, min: int = 0, score: Score = None):
         odds = f_odds[name]
         yield execute().store(RESULT).score(holder).run(data().get(room.store, f'{nbt_path_top}_raw.{name}'))
         prev = 0
@@ -252,11 +252,12 @@ def room():
     )
 
     def fireworks_loop(_):
-        yield execute().if_().items(r(-1, 2, 0), 'container.*', 'firework_rocket').run(return_())
+        # yield setblock(r(0, 2, 0), 'stone')
+        yield execute().if_().items(r(0, 2, 0), 'container.*', 'firework_rocket').run(return_())
         yield data().remove(room.store, 'new_firework_raw')
         yield data().remove(room.store, 'new_firework_val')
         yield from raw_odds_value('explosions', 'new_firework_raw')
-        yield from val_odds_value('explosions', 1, explosions_cnt)
+        yield from val_odds_value('explosions', 'new_firework', 1, explosions_cnt)
         yield function(new_firework_convert)
         yield function(new_firework_convert).with_().storage('new_firework_raw')
         yield item().replace().block(r(0, 2, 0), 'container.0').with_(Item('firework_rocket'))
@@ -266,10 +267,19 @@ def room():
     room.function('fireworks_init').add(
         data().remove(room.store, 'fireworks'),
         data().modify(room.store, 'fireworks').set().value({'shapes': f_shapes, 'colors': f_colors}),
-        # data().modify(room.store, 'new_firework_raw').set().value(f_tmpl),
-        # data().modify(room.store, 'new_firework_val').set().value(f_tmpl)
     )
-    room.loop('fireworks', main_clock).loop(fireworks_loop, [1])
+    room.loop('fireworks', main_clock).add(
+        # setblock(r(0, 2, 0), 'stone'),
+        execute().if_().items(r(0, 2, 0), 'container.*', 'firework_rocket').run(return_()),
+        data().remove(room.store, 'new_firework_raw'),
+        data().remove(room.store, 'new_firework_val'),
+        (raw_odds_value('explosions', 'new_firework_raw')),
+        (val_odds_value('explosions', 'new_firework_val', 1, explosions_cnt)),
+        function(new_firework_convert),
+        function(new_firework_convert).with_().storage('new_firework_raw'),
+        item().replace().block(r(0, 2, 0), 'container.0').with_(Item('firework_rocket')),
+        data().modify(r(0, 2, 0), 'Items[0].components.minecraft:fireworks').set().from_(room.store, 'new_firework_val')
+    )
 
     def rail_loop(step):
         volume = Region(r(3, 3, -3), r(0, 0, 0))
