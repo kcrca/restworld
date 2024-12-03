@@ -6,7 +6,7 @@ from pynecraft import info
 from pynecraft.base import DOWN, EAST, NOON, NORTH, SOUTH, UP, WEST, r
 from pynecraft.commands import BYTE, Block, INT, RESULT, SHORT, data, e, execute, fill, function, item, kill, random, \
     return_, \
-    say, setblock, \
+    setblock, \
     summon, \
     tag, time
 from pynecraft.info import instruments, stems
@@ -201,14 +201,13 @@ def room():
     def expand(name, nbt_path, score, func):
         singular = name[:-1]
         for i in range(len(f_odds[name])):
-            cmds = (function(func), say(f'{singular}: {i}'),
+            cmds = (function(func),
                     data().modify(room.store, f'{nbt_path}.{name}').append().from_(room.store, f'{singular}_val'))
             if i > 0:
                 cmds = execute().if_().score(score).matches((i + 1, None)).run(cmds)
             yield cmds
 
     explosion_raw = room.function('explosion_raw', home=False).add(
-        say('explosion_raw'),
         execute().store(RESULT).storage(room.store, 'explosion_raw.shape', SHORT, 1).run(
             random().value((0, len(f_shapes)))),
         raw_odds_value('has_trail', 'explosion_raw'),
@@ -224,7 +223,6 @@ def room():
         yield data().modify(room.store, 'explosion_val.colors').set().value([])
         for i in range(len(f_odds['colors'])):
             cmds = (
-                say(f'add color {i}'),
                 execute().store(RESULT).storage(room.store, 'color_raw.color', INT, 1).run(
                     random().value((0, len(f_colors)))),
                 function(color_add).with_().storage(room.store, 'color_raw')
@@ -234,7 +232,6 @@ def room():
             yield cmds
 
     explosion_convert = room.function('explosion_convert', home=False).add(
-        say('explosion_convert'),
         data().modify(room.store, 'explosion_val.shape').set().from_(room.store, 'fireworks.shapes[$(shape)]'),
         val_odds_value('has_trail', 'explosion'),
         val_odds_value('has_twinkle', 'explosion'),
@@ -242,27 +239,20 @@ def room():
         colors_add(),
     )
     explosion_add = room.function('explosion_add', home=False).add(
-        say('explosion_add'),
         data().remove(room.store, 'explosion_raw'),
         data().remove(room.store, 'explosion_val'),
         function(explosion_raw),
         function(explosion_convert).with_().storage(room.store, 'explosion_raw'),
     )
     new_firework_convert = room.function('new_firework_convert', home=False).add(
-        say('new_firework_convert'),
         data().modify(room.store, 'new_firework_val.explosions').set().value([]),
         expand('explosions', 'new_firework_val', explosions_cnt, explosion_add),
         execute().store(RESULT).storage(room.store, 'new_firework_val.flight_duration', BYTE, 1).run(
             random().value((1, 5))),
     )
 
-    f_describe = room.function('f_describe', home=False).add(
-        say(f'height: $()')
-    )
-
     def fireworks_loop(_):
-        yield say('fireworks_main')
-        yield execute().if_().items(r(-1, 2, 0), 'container.*', 'firework_rocket').run(say('full'), return_())
+        yield execute().if_().items(r(-1, 2, 0), 'container.*', 'firework_rocket').run(return_())
         yield data().remove(room.store, 'new_firework_raw')
         yield data().remove(room.store, 'new_firework_val')
         yield from raw_odds_value('explosions', 'new_firework_raw')
@@ -270,9 +260,8 @@ def room():
         yield function(new_firework_convert)
         yield function(new_firework_convert).with_().storage('new_firework_raw')
         yield item().replace().block(r(0, 2, 0), 'container.0').with_(Item('firework_rocket'))
-        yield data().modify(r(0, 2, 0), 'Items[0].components.minecraft:fireworks').set().from_(room.store,
-                                                                                               'new_firework_val')
-        yield function(f_describe)
+        yield data().modify(r(0, 2, 0), 'Items[0].components.minecraft:fireworks').set().from_(
+            room.store, 'new_firework_val')
 
     room.function('fireworks_init').add(
         data().remove(room.store, 'fireworks'),
