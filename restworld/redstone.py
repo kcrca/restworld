@@ -5,11 +5,7 @@ import re
 from pynecraft import info
 from pynecraft.base import DOWN, EAST, NOON, NORTH, SOUTH, UP, WEST, r
 from pynecraft.commands import BYTE, Block, INT, RESULT, SHORT, Score, data, e, execute, fill, function, item, kill, \
-    random, \
-    return_, \
-    setblock, \
-    summon, \
-    tag, time
+    random, return_, setblock, summon, tag, time
 from pynecraft.info import instruments, stems
 from pynecraft.simpler import Item, Region, Sign, WallSign
 from restworld.rooms import Room, ensure, if_clause, kill_em

@@ -4,8 +4,8 @@ import copy
 
 from pynecraft.base import Arg, EAST, EQ, GAMETIME, NORTH, OVERWORLD, Position, SOUTH, THE_END, THE_NETHER, TimeSpec, \
     WEST, r
-from pynecraft.commands import Block, FORCE, MINUS, MOD, MOVE, REPLACE, RESULT, Score, clone, data, e, execute, \
-    fill, function, gamerule, kill, p, return_, s, schedule, scoreboard, setblock, tag, teleport, time, tp
+from pynecraft.commands import Block, FORCE, MINUS, MOD, MOVE, REPLACE, RESULT, Score, clone, data, e, execute, fill, \
+    function, gamerule, kill, p, return_, s, schedule, scoreboard, setblock, tag, teleport, time, tp
 from pynecraft.function import Function
 from pynecraft.simpler import VILLAGER_PROFESSIONS, WallSign
 from pynecraft.values import DUMMY

@@ -3,8 +3,7 @@ from __future__ import annotations
 from pynecraft import commands
 from pynecraft.base import EAST, NORTH, Nbt, SOUTH, WEST, r
 from pynecraft.commands import BOSSBAR_COLORS, BOSSBAR_STYLES, Block, CREATIVE, Entity, LEVELS, REPLACE, SURVIVAL, a, \
-    bossbar, clone, data, e, effect, execute, fill, function, gamemode, item, kill, n, p, return_, schedule, \
-    setblock, \
+    bossbar, clone, data, e, effect, execute, fill, function, gamemode, item, kill, n, p, return_, schedule, setblock, \
     summon, tag
 from pynecraft.simpler import Item, ItemFrame, Sign, WallSign
 from restworld.rooms import Room, kill_em

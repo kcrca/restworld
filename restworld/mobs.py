@@ -5,8 +5,7 @@ import copy
 from pynecraft import commands
 from pynecraft.base import EAST, EQ, NORTH, Nbt, SOUTH, WEST, r, to_id, to_name
 from pynecraft.commands import Block, COLORS, Entity, FORCE, LONG, MOD, REPLACE, RESULT, Score, as_facing, clone, data, \
-    e, \
-    execute, function, item, kill, player, return_, ride, s, schedule, scoreboard, setblock, summon, tag, tp
+    e, execute, function, item, kill, player, return_, ride, s, schedule, scoreboard, setblock, summon, tag, tp
 from pynecraft.info import axolotls, colors, horses, tropical_fish, wolves
 from pynecraft.simpler import Item, PLAINS, Sign, VILLAGER_BIOMES, VILLAGER_PROFESSIONS, Villager, WallSign
 from pynecraft.values import DISC_GROUP, DUMMY, as_disc, discs

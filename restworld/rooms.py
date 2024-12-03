@@ -7,16 +7,10 @@ from copy import deepcopy
 from typing import Callable, Iterable, Tuple
 
 from pynecraft.base import BLUE, EAST, FacingDef, NE, NORTH, NW, Nbt, ORANGE, ROTATION_180, ROTATION_270, ROTATION_90, \
-    RelCoord, \
-    SE, SOUTH, \
-    SW, WEST, r, \
-    rotate_facing, \
-    to_name
+    RelCoord, SE, SOUTH, SW, WEST, r, rotate_facing, to_name
 from pynecraft.commands import Block, BlockDef, CLEAR, Command, Commands, Entity, EntityDef, INT, JsonText, MINUS, \
-    Particle, Position, RESULT, Score, SignMessages, a, as_block, as_entity, as_facing, as_score, comment, \
-    data, e, \
-    execute, function, kill, n, p, particle, say, schedule, scoreboard, setblock, summon, tag, tellraw, tp, \
-    weather
+    Particle, Position, RESULT, Score, SignMessages, a, as_block, as_entity, as_facing, as_score, comment, data, e, \
+    execute, function, kill, n, p, particle, say, schedule, scoreboard, setblock, summon, tag, tellraw, tp, weather
 from pynecraft.function import DataPack, Function, FunctionSet, LATEST_PACK_VERSION, Loop
 from pynecraft.simpler import TextDisplay, WallSign
 from pynecraft.values import DUMMY
