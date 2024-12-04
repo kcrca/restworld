@@ -25,8 +25,8 @@ def room():
     p_north = room.mob_placer(r(3, 4, -3), SOUTH, -1, adults=True)
     p_mid = room.mob_placer(r(8, 4, -1), WEST, -1, adults=True)
     icons = (
-    'target_x', 'target_point', 'red_x', 'monument', 'mansion', 'village_desert', 'village_plains', 'village_savanna',
-    'village_snowy', 'village_taiga', 'jungle_temple', 'swamp_hut', 'trial_chambers')
+        'target_x', 'target_point', 'red_x', 'monument', 'mansion', 'village_desert', 'village_plains',
+        'village_savanna', 'village_snowy', 'village_taiga', 'jungle_temple', 'swamp_hut', 'trial_chambers')
     map_dim = 128
     x_base = 64
     z_base = -64
@@ -51,12 +51,6 @@ def room():
             x += x_incr
         decorations[id] = {'rotation': 180, 'x': x, 'z': z, 'type': id}
         count += 1
-    # {components: {
-    # "minecraft:map_decorations": {_0: {rotation: 180.0f, x: 128.0d, z: -32.0d, type: "minecraft:target_x"},
-    # _1: {rotation: 180.0f, x: 88.0d, z: -16.0d, type: "minecraft:target_point"}, _2: {rotation: 180.0f, x: 128.0d,
-    # z: 0.0d, type: "minecraft:mansion"}, _3: {rotation: 180.0f, x: 88.0d, z: 16.0d, type: "minecraft:monument"},
-    # _4: {rotation: 180.0f, x: 128.0d, z: 32.0d, type: "minecraft:red_x"}}, "minecraft:map_id": 133,
-    # "minecraft:custom_name": '"Main (right)"'}, count: 1, id: "minecraft:filled_map"}
     icon_frame_tag = 'map_icon_frame'
     banner_frame_tag = 'map_banner_frame'
     banner_label = TextDisplay('Banner Icons',

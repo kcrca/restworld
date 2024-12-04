@@ -23,7 +23,7 @@ battle_types = {'w': 1, 'c': 2, 'g': 3}
 #
 # Design (starting point):
 #     Storage data is used to describe the current (and previous?) arena configuration:
-#       type : of battle, numericaly (because you can't compare anything but scores (honest!))
+#       type : of battle, numerically (because you can't compare anything but scores (honest!))
 #       hunter:
 #           id: of monster
 #           nbt: for monster

@@ -365,7 +365,7 @@ def basic_functions(room):
                 data().modify(n().tag('armor_chestplate'), 'Item.components.minecraft:damage').set().value(450)
             ),
             execute().unless().score(which_elytra).matches(1).run(
-                data().modify(n().tag('basic_stand'), 'ArmorItems[2].components.minecraft:damagae').set().value(0),
+                data().modify(n().tag('basic_stand'), 'ArmorItems[2].components.minecraft:damage').set().value(0),
                 data().modify(n().tag('armor_chestplate'), 'Item.components.minecraft:damage').set().value(0)
             )
         ),

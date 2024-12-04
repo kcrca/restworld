@@ -83,7 +83,7 @@ def room():
 
     def copper_bulb_loop(step):
         bulb = Block(step.elem)
-        # We want "powered" to stay the same when switching oxidaztion level
+        # We want "powered" to stay the same when switching oxidation level
         powered = (step.i + int(step.i / 4)) % 2 == 0
         lit = step.i % 4 < 2
         yield ensure(r(0, 3, 0), bulb)
@@ -176,10 +176,10 @@ def room():
             end = v - 1
             if i == len(odds) - 1:
                 end = None
-            setv = data().modify(room.store, nbt_path).set().value(i + min)
+            set_value = data().modify(room.store, nbt_path).set().value(i + min)
             if i > 0:
-                setv = execute().if_().score(holder).matches((prev, end)).run(setv)
-            yield setv
+                set_value = execute().if_().score(holder).matches((prev, end)).run(set_value)
+            yield set_value
             prev = v
         if score:
             yield execute().store(RESULT).score(score).run(data().get(room.store, nbt_path))
@@ -237,19 +237,6 @@ def room():
         execute().store(RESULT).storage(room.store, 'new_firework_val.flight_duration', BYTE, 1).run(
             random().value((1, 4))),
     )
-
-    def fireworks_loop(_):
-        # yield setblock(r(0, 2, 0), 'stone')
-        yield execute().if_().items(r(0, 2, 0), 'container.*', 'firework_rocket').run(return_())
-        yield data().remove(room.store, 'new_firework_raw')
-        yield data().remove(room.store, 'new_firework_val')
-        yield from raw_odds_value('explosions', 'new_firework_raw')
-        yield from val_odds_value('explosions', 'new_firework', 1, explosions_cnt)
-        yield function(new_firework_convert)
-        yield function(new_firework_convert).with_().storage('new_firework_raw')
-        yield item().replace().block(r(0, 2, 0), 'container.0').with_(Item('firework_rocket'))
-        yield data().modify(r(0, 2, 0), 'Items[0].components.minecraft:fireworks').set().from_(
-            room.store, 'new_firework_val')
 
     room.function('fireworks_init').add(
         data().remove(room.store, 'fireworks'),
@@ -374,7 +361,7 @@ def room():
         yield setblock(r(0, 2, -1), ('redstone_lamp', {'lit': powered}))
         yield setblock(r(1, 2, 0), ('pale_oak_wall_sign', {'facing': EAST}))
         yield data().merge(r(1, 2, 0), wood.sign_nbt())
-        if powered == True:
+        if powered:
             yield Sign.change(r(1, 2, 0), (None, None, None, '(Powered)'))
 
     powerings = []
