@@ -4,8 +4,8 @@ import re
 
 from pynecraft import info
 from pynecraft.base import DOWN, EAST, NOON, NORTH, SOUTH, UP, WEST, r
-from pynecraft.commands import BYTE, Block, INT, RESULT, SHORT, Score, data, e, execute, fill, function, item, kill, \
-    random, return_, setblock, summon, tag, time
+from pynecraft.commands import BYTE, Block, INT, RESULT, Score, data, e, execute, fill, function, item, kill, \
+    random, return_, say, setblock, summon, tag, time
 from pynecraft.info import instruments, stems
 from pynecraft.simpler import Item, Region, Sign, WallSign
 from restworld.rooms import Room, ensure, if_clause, kill_em
@@ -163,19 +163,9 @@ def room():
     explosions_cnt = room.score('explosions_cnt')
     val_cnt = room.score('val_cnt')
 
-    ex_tmpl = {'shape': 'str'}
-    for name, odds in f_odds.items():
-        if name == 'explosions':
-            continue
-        if len(odds) == 2:
-            ex_tmpl.update({name: 0})
-        else:
-            ex_tmpl.update({f'{name}_cnt': 0, name: (0,) * len(odds)})
-    f_tmpl = {'explosions_cnt': 0, 'explosions': (ex_tmpl,) * len(f_odds['explosions'])}
-
     def raw_odds_value(name, store):
         yield execute().store(RESULT).storage(room.store, f'{store}.{name}', INT, 1).run(
-            random().value((0, f_range)))
+            random().value((0, f_range - 1)))
 
     def val_odds_value(name: str, nbt_path_top: str, min: int = 0, score: Score = None):
         odds = f_odds[name]
@@ -204,8 +194,8 @@ def room():
             yield cmds
 
     explosion_raw = room.function('explosion_raw', home=False).add(
-        execute().store(RESULT).storage(room.store, 'explosion_raw.shape', SHORT, 1).run(
-            random().value((0, len(f_shapes)))),
+        execute().store(RESULT).storage(room.store, 'explosion_raw.shape', BYTE, 1).run(
+            random().value((0, len(f_shapes) - 1))),
         raw_odds_value('has_trail', 'explosion_raw'),
         raw_odds_value('has_twinkle', 'explosion_raw'),
         raw_odds_value('colors', 'explosion_raw'),
@@ -220,7 +210,7 @@ def room():
         for i in range(len(f_odds['colors'])):
             cmds = (
                 execute().store(RESULT).storage(room.store, 'color_raw.color', INT, 1).run(
-                    random().value((0, len(f_colors)))),
+                    random().value((0, len(f_colors) - 1))),
                 function(color_add).with_().storage(room.store, 'color_raw')
             )
             if i > 0:
@@ -228,6 +218,7 @@ def room():
             yield cmds
 
     explosion_convert = room.function('explosion_convert', home=False).add(
+        say('shape: $(shape)'),
         data().modify(room.store, 'explosion_val.shape').set().from_(room.store, 'fireworks.shapes[$(shape)]'),
         val_odds_value('has_trail', 'explosion'),
         val_odds_value('has_twinkle', 'explosion'),
@@ -244,7 +235,7 @@ def room():
         data().modify(room.store, 'new_firework_val.explosions').set().value([]),
         expand('explosions', 'new_firework_val', explosions_cnt, explosion_add),
         execute().store(RESULT).storage(room.store, 'new_firework_val.flight_duration', BYTE, 1).run(
-            random().value((1, 5))),
+            random().value((1, 4))),
     )
 
     def fireworks_loop(_):
@@ -265,7 +256,6 @@ def room():
         data().modify(room.store, 'fireworks').set().value({'shapes': f_shapes, 'colors': f_colors}),
     )
     room.loop('fireworks', main_clock).add(
-        # setblock(r(0, 2, 0), 'stone'),
         execute().if_().items(r(0, 2, 0), 'container.*', 'firework_rocket').run(return_()),
         data().remove(room.store, 'new_firework_raw'),
         data().remove(room.store, 'new_firework_val'),
@@ -280,8 +270,6 @@ def room():
     def rail_loop(step):
         volume = Region(r(3, 3, -3), r(0, 0, 0))
         rail, on = step.elem
-        # 'powered=true' only seems to work for detector rail, but it's harmless for the others and maybe someday it
-        # will work for all, and we can get rid of the torches.
         added = dict(powered=True) if on else None
         yield volume.replace_straight_rails(rail, '#rails', added)
         room.particle(Block(rail, state=added), 'rail', r(0, 2, -2), step)
