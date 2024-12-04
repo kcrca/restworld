@@ -5,7 +5,7 @@ import re
 from pynecraft import info
 from pynecraft.base import DOWN, EAST, NOON, NORTH, SOUTH, UP, WEST, r
 from pynecraft.commands import BYTE, Block, INT, RESULT, Score, data, e, execute, fill, function, item, kill, \
-    random, return_, say, setblock, summon, tag, time
+    random, return_, setblock, summon, tag, time
 from pynecraft.info import instruments, stems
 from pynecraft.simpler import Item, Region, Sign, WallSign
 from restworld.rooms import Room, ensure, if_clause, kill_em
@@ -162,6 +162,7 @@ def room():
     holder = room.score('holder')
     explosions_cnt = room.score('explosions_cnt')
     val_cnt = room.score('val_cnt')
+    fade = room.score('fade')
 
     def raw_odds_value(name, store):
         yield execute().store(RESULT).storage(room.store, f'{store}.{name}', INT, 1).run(
@@ -199,30 +200,36 @@ def room():
         raw_odds_value('has_trail', 'explosion_raw'),
         raw_odds_value('has_twinkle', 'explosion_raw'),
         raw_odds_value('colors', 'explosion_raw'),
+        execute().store(RESULT).score(fade).run(random().value((0, 4))),
+        execute().if_().score(fade).matches(0).run(raw_odds_value('fade_colors', 'explosion_raw')),
     )
     color_add = room.function('color_add', home=False).add(
-        data().modify(room.store, 'explosion_val.colors').append().from_(room.store, 'fireworks.colors[$(color)]')
-    )
+        data().modify(room.store, 'explosion_val.$(which)').append().from_(room.store, 'fireworks.colors[$(color)]'))
 
     def colors_add():
-        yield data().remove(room.store, 'color_raw')
-        yield data().modify(room.store, 'explosion_val.colors').set().value([])
-        for i in range(len(f_odds['colors'])):
-            cmds = (
-                execute().store(RESULT).storage(room.store, 'color_raw.color', INT, 1).run(
-                    random().value((0, len(f_colors) - 1))),
-                function(color_add).with_().storage(room.store, 'color_raw')
-            )
-            if i > 0:
-                cmds = execute().if_().score(val_cnt).matches((i, None)).run(cmds)
-            yield cmds
+        for name in 'colors', 'fade_colors':
+            yield data().remove(room.store, f'{name}_raw')
+            yield data().remove(room.store, f'{name}_val')
+            yield data().modify(room.store, f'{name}_raw.which').set().value(name)
+            yield data().modify(room.store, f'explosion_val.{name}').set().value([])
+            for i in range(len(f_odds[name])):
+                cmds = (
+                    execute().store(RESULT).storage(room.store, f'{name}_raw.color', INT, 1).run(
+                        random().value((0, len(f_colors) - 1))),
+                    function(color_add).with_().storage(room.store, f'{name}_raw')
+                )
+                if i > 0:
+                    cmds = execute().if_().score(val_cnt).matches((i, None)).run(cmds)
+                if name == 'fade_colors':
+                    cmds = execute().if_().score(fade).matches(0).run(cmds)
+                yield cmds
 
     explosion_convert = room.function('explosion_convert', home=False).add(
-        say('shape: $(shape)'),
         data().modify(room.store, 'explosion_val.shape').set().from_(room.store, 'fireworks.shapes[$(shape)]'),
         val_odds_value('has_trail', 'explosion'),
         val_odds_value('has_twinkle', 'explosion'),
         val_odds_value('colors', 'explosion', 1, val_cnt),
+        execute().if_().score(fade).matches(0).run(val_odds_value('fade_colors', 'explosion', 1, val_cnt)),
         colors_add(),
     )
     explosion_add = room.function('explosion_add', home=False).add(
@@ -247,7 +254,7 @@ def room():
         data().remove(room.store, 'new_firework_raw'),
         data().remove(room.store, 'new_firework_val'),
         (raw_odds_value('explosions', 'new_firework_raw')),
-        (val_odds_value('explosions', 'new_firework_val', 1, explosions_cnt)),
+        (val_odds_value('explosions', 'new_firework', 1, explosions_cnt)),
         function(new_firework_convert),
         function(new_firework_convert).with_().storage('new_firework_raw'),
         item().replace().block(r(0, 2, 0), 'container.0').with_(Item('firework_rocket')),

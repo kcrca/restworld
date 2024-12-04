@@ -5,7 +5,7 @@ import random
 
 from pynecraft.base import EAST, NORTH, Nbt, OVERWORLD, SOUTH, WEST, as_facing, d, r, to_id
 from pynecraft.commands import Block, CLEAR, Entity, INFINITE, JsonText, Particle, RAIN, REPLACE, a, data, e, effect, \
-    execute, fill, fillbiome, function, item, kill, particle, playsound, schedule, setblock, summon, tellraw, weather
+    execute, fill, fillbiome, function, item, kill, particle, playsound, schedule, setblock, summon, weather
 from pynecraft.function import BLOCK, ITEM
 from pynecraft.simpler import Book, PLAINS, TextDisplay, VILLAGER_BIOMES, VILLAGER_PROFESSIONS, WallSign
 from pynecraft.values import ABSORPTION, AMBIENT_ENTITY_EFFECT, ANGRY_VILLAGER, ASH, BASALT_DELTAS, BLINDNESS, \
@@ -353,7 +353,6 @@ def room():
         data().remove(r(0, 1, 0), 'Items[0].components.minecraft:fireworks.flight_duration'),
         setblock(r(0, 0, 0), 'redstone_torch'),
         setblock(r(0, 0, 0), 'air'),
-        tellraw(a(), JsonText.nbt('restworld:redstone', 'new_firework_val'))
     )
     room.function('firework', home=False).add(main().run(function(firework_change)))
     room.function('firework_init', home=False).add(setblock(r(0, 1, 0), ('dispenser', {'facing': 'up'})))
