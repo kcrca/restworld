@@ -298,7 +298,6 @@ def room():
     room.function('monitor').add(
         function(h_counter),
         function(v_counter),
-        kill(e().type('item').distance((None, 50))),
         kill(e().type('experience_orb').distance((None, 50))),
     )
     # For some reason, arena_count_init doesn't always get run on _init, so we make sure that value is always in range.
@@ -336,6 +335,7 @@ def room():
     )
     # Battle types: 0-normal, 1-water, 2-undead
     room.function('start_battle', home=False).add(
+        kill(e().type('item').distance((None, 50))),
         was_splitters.set(h_is_splitter + v_is_splitter),
         h_is_splitter.set(Arg('hunter_is_splitter')),
         v_is_splitter.set(Arg('victim_is_splitter')),
