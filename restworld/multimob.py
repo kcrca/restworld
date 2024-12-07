@@ -25,6 +25,7 @@ WATER = {
     'Tropical Fish',
 }
 UNDEAD = {
+    'Bogged',
     'Drowned',
     'Phantom',
     'Skeleton',
