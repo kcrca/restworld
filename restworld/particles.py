@@ -358,8 +358,8 @@ def room():
     room.function('firework_init', home=False).add(setblock(r(0, 1, 0), ('dispenser', {'facing': 'up'})))
     room.function('fishing', home=False).add(fast().run(particle(FISHING, r(0, 1.5, 0), (0.2, 0, 0.2), 0, 6)))
     room.function('fishing_init', home=False).add(
-        fill(r(-3, 0, 4), r(3, 0, 4), 'oak_wall_sign'),
-        fill(r(3, 0, 3), r(-3, 0, -3), 'water'))
+        fill(r(1, 0, 1), r(-1, 0, -1), 'grass_block'),
+        fill(r(0, 0, 0), r(-0, 0, -0), 'water'))
     room.function('gust_init', home=False).add(
         setblock(r(0, 2, -1), ('dispenser', {'facing': SOUTH})),
         fill(r(-1, 2, 4), r(1, 2, 4), 'glass'),

@@ -4,7 +4,7 @@ from typing import Callable
 
 from pynecraft import info
 from pynecraft.base import EAST, NORTH, Nbt, SOUTH, WEST, r, to_id, to_name
-from pynecraft.commands import Block, JsonText, data, e, execute, fill, fillbiome, function, kill, say, setblock, tag
+from pynecraft.commands import Block, JsonText, data, e, execute, fill, fillbiome, function, kill, setblock, tag
 from pynecraft.info import small_flowers, stems, tulips
 from pynecraft.simpler import JUNGLE, PLAINS, Region, SAVANNA, Sign, WallSign
 from pynecraft.values import BIRCH_FOREST, CHERRY_GROVE, DARK_FOREST, MANGROVE_SWAMP, PALE_GARDEN, SNOWY_TAIGA
@@ -119,15 +119,15 @@ def room():
     room.loop('chorus_flower', main_clock).loop(chorus_flower_loop, range(6))
 
     def cocoa_loop(step):
-        def pod(pos, dir):
-            pod_spec = Block('cocoa', {'age': step.elem, 'facing': dir})
+        def pod(pos, dir, plus):
+            pod_spec = Block('cocoa', {'age': (step.elem + plus) % step.count, 'facing': dir})
             yield setblock(pos, pod_spec)
             room.particle(pod_spec, 'cocoa', (pos[0], pos[1] + 1, pos[2]), step)
 
-        yield from pod(r(1, 4, 0), WEST)
-        yield from pod(r(-1, 4, 0), EAST)
-        yield from pod(r(0, 4, 1), NORTH)
-        yield from pod(r(0, 4, -1), SOUTH)
+        yield from pod(r(1, 4, 0), WEST, 0)
+        yield from pod(r(-1, 4, 0), EAST, 0)
+        yield from pod(r(0, 4, 1), NORTH, 1)
+        yield from pod(r(0, 4, -1), SOUTH, 2)
         yield Sign.change(r(1, 2, 0), (None, None, 'Stage: %d of 3' % step.stage))
 
     room.loop('cocoa', main_clock).loop(cocoa_loop, range(0, 3), bounce=True)
@@ -182,9 +182,15 @@ def room():
         farmland_init.add(td.summon(r(0, 2.1, -i)))
 
     def mushroom_loop(step):
-        yield data().merge(r(-1, 0, -1), {'mode': 'LOAD', 'name': 'restworld:%s_mushroom' % step.elem})
+        type = f'{step.elem}_mushroom'
+        yield data().merge(r(-1, 0, -1), {'mode': 'LOAD', 'name': f'restworld:{type}'})
         yield setblock(r(-1, -1, -1), 'redstone_block')
         yield setblock(r(-1, -1, -1), 'air')
+        yield setblock(r(1, 2, 0), 'mushroom_stem')
+        yield setblock(r(1, 2, 4), f'{type}_block')
+        room.particle(type, 'mushrooms', r(1, 3.5, 2), step)
+        room.particle('mushroom_stem', 'mushrooms', r(1, 3, 0), step)
+        room.particle(f'{type}_block', 'mushrooms', r(1, 3, 4), step)
 
     room.loop('mushrooms', main_clock).loop(mushroom_loop, ('red', 'brown'))
 
@@ -368,7 +374,6 @@ def three_funcs(room):
                                    (None, to_name(which), f'Top Age: {age} of 16', '(vanilla shows 1)'))})
             room.particle(block, 'three_age', r(0, 5, z), step)
 
-        yield say(step.elem)
         yield from age(0, 'cactus')
         yield from age(-3, 'sugar_cane')
 

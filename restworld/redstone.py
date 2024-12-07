@@ -274,6 +274,7 @@ def room():
         yield Sign.change(r(1, 2, -2), (None, rail, '(Powered)' if on else ''))
 
     room.loop('rail', main_clock).loop(rail_loop, rails)
+    room.particle('rail', 'rail', r(0, 2, -1))
 
     room.function('redstone_lamp_init').add(WallSign((None, 'Redstone Lamp')).place(r(-1, 3, 0), EAST))
     room.loop('redstone_lamp', main_clock).loop(lambda step: setblock(r(0, 0, 0), step.elem),
@@ -505,8 +506,7 @@ def pressure_plate_funcs(room):
     pressure_plate = room.score('pressure_plate')
     room.function('pressure_plate_add', home=False).add(one_item(), (
         execute().if_().score(plate_heavy).matches((1, None)).run(one_item()) for _ in range(0, 9)))
-    room.function('pressure_plate_init').add(room.label(r(2, 2, 0), 'Type', WEST))
-
+    room.function('pressure_plate_init').add(room.label(r(2, 2, 0), 'Heavy', WEST))
     room.function('pressure_plate_cur').add(kill(e().tag('plate_items')),
                                             (execute().if_().score(pressure_plate).matches((i, None)).run(function(
                                                 'restworld:redstone/pressure_plate_add')) for i in range(1, 16)))

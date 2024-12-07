@@ -6,8 +6,9 @@ from typing import Iterable, Union
 from pynecraft import info
 from pynecraft.base import DOWN, E, EAST, EQ, FacingDef, N, NORTH, Nbt, RelCoord, S, SOUTH, UP, W, WEST, as_facing, r, \
     rotate_facing, to_id, to_name
-from pynecraft.commands import Block, Commands, Entity, MOD, MOVE, ScoreName, as_block, as_score, clone, data, e, \
-    execute, fill, function, item, kill, n, p, s, say, setblock, summon, tag
+from pynecraft.commands import Block, Commands, Entity, MOD, MOVE, REPLACE, ScoreName, as_block, as_score, clone, data, \
+    e, \
+    execute, fill, function, item, kill, n, p, s, say, schedule, setblock, summon, tag
 from pynecraft.function import Function, Loop
 from pynecraft.info import Color, colors, sherds, stems
 from pynecraft.simpler import Item, ItemFrame, Region, Sign, TextDisplay, WallSign
@@ -228,9 +229,9 @@ def room():
            list(Block('frosted_ice', {'age': i}, name=f'Frosted Ice|Age: {i}') for i in range(0, 4)))
     blocks('gilded_blackstone', NORTH, ('Gilded Blackstone',))
     blocks('glass', SOUTH, ('Glass', 'Tinted Glass'))
-    blocks('hay', NORTH, ('Hay Block',))
+    blocks('hay', SOUTH, ('Hay Block',))
     blocks('heavy_core', NORTH, ('Heavy Core',))
-    blocks('honeycomb', NORTH, ('Honeycomb Block',))
+    blocks('honeycomb', SOUTH, ('Honeycomb Block',))
     room.function('ladder_init').add(setblock(r(0, 3, 0), 'ladder'))
     blocks('jigsaw', SOUTH, ('Jigsaw',))
     blocks('lighting', SOUTH, (
@@ -867,16 +868,21 @@ def room_init_functions(room, block_list_score):
         room.label(r(-46, 2, 3), 'List Blocks', SOUTH), room.label(r(-46, 2, -3), 'List Blocks', NORTH),
         room.label(r(-34, 2, 0), 'Show Particles', WEST),
         kill(e().tag('block_list')))
-    # The 'zzz' makes sure this is run last
-    room.function('zzz_blocks_sign_init').add(execute().at(e().tag('blocks_home', '!no_expansion')).run(
-        Sign.change(r(0, 2, -1), ("",), ('function restworld:blocks/toggle_expand',))),
+
+    # Ensure that setting up the expansion work on signs is done after all other things
+    dbsi = room.function('do_blocks_sign_init').add(
+        say('dbsi'),
         execute().at(e().tag('blocks_home', '!no_expansion')).run(
-            Sign.change(r(0, 2, 1), ("",), ('function restworld:blocks/toggle_expand',))),
+            Sign.change(r(0, 2, -1), (), ('function restworld:blocks/toggle_expand',)),
+            Sign.change(r(0, 2, 1), (), ('function restworld:blocks/toggle_expand',))),
         execute().at(e().tag('blocks_home', 'no_expansion')).run(
-            Sign.change(r(0, 2, -1), ("",), (say('Sorry, cannot expand this block'),))),
-        execute().at(e().tag('blocks_home', 'no_expansion')).run(
-            Sign.change(r(0, 2, 1), ("",), (say('Sorry, cannot expand this block'),))),
-        tag(e().tag('block_sign_home')).add('no_expansion'))
+            Sign.change(r(0, 2, -1), (), (say('Sorry, cannot expand this block'),)),
+            Sign.change(r(0, 2, 1), (), (say('Sorry, cannot expand this block'),)))
+    )
+    room.function('blocks_sign_init').add(
+        schedule().function(dbsi, 1, REPLACE)
+    )
+
     room.loop('toggle_block_list', score=block_list_score).loop(
         lambda step: execute().as_(e().tag('block_list')).run(
             data().modify(s(), 'text_opacity').set().value(25 if step.i == 0 else 255)),
