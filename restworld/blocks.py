@@ -73,7 +73,7 @@ def room():
             else:
                 room.particle(block, name, (x, y + 1, z))
             # Preserve the 'expand' response
-            yield Sign.change(r(x + facing.dx, 2, z + facing.dz), signage, min_len=3, start=1, blanks=True)
+            yield Sign.change(r(x + facing.dx, 2, z + facing.dz), signage, start=1)
             return block
 
         if singleton:
@@ -870,8 +870,7 @@ def room_init_functions(room, block_list_score):
         kill(e().tag('block_list')))
 
     # Ensure that setting up the expansion work on signs is done after all other things
-    dbsi = room.function('do_blocks_sign_init').add(
-        say('dbsi'),
+    dbsi = room.function('do_blocks_sign_init', home=False).add(
         execute().at(e().tag('blocks_home', '!no_expansion')).run(
             Sign.change(r(0, 2, -1), (), ('function restworld:blocks/toggle_expand',)),
             Sign.change(r(0, 2, 1), (), ('function restworld:blocks/toggle_expand',))),
