@@ -2,9 +2,11 @@ from __future__ import annotations
 
 import copy
 
-from pynecraft.base import Arg, EAST, EQ, GAMETIME, NORTH, OVERWORLD, Position, SOUTH, THE_END, THE_NETHER, TimeSpec, \
+from pynecraft.base import Arg, EAST, EQ, GAMETIME, LT, NORTH, OVERWORLD, Position, SOUTH, THE_END, THE_NETHER, \
+    TimeSpec, \
     WEST, r
-from pynecraft.commands import Block, FORCE, MINUS, MOD, MOVE, REPLACE, RESULT, Score, clone, data, e, execute, fill, \
+from pynecraft.commands import Block, FORCE, MINUS, MOD, MOVE, REPLACE, RESULT, Score, clone, data, e, \
+    execute, fill, \
     function, gamerule, kill, p, return_, s, schedule, scoreboard, setblock, tag, teleport, time, tp
 from pynecraft.function import Function
 from pynecraft.simpler import VILLAGER_PROFESSIONS, WallSign
@@ -257,15 +259,17 @@ def room():
         execute().unless().score(mobs_up).matches(0).run(function(lower_mobs)),
         mobs_up.set(0))
 
-    clean_time = room.score('ensure_clean_time')
+    last_clean = room.score('last_clean_time')
+    clean_time = room.score('ensure_clean_time', 600)
     clean_time_max = room.score_max('ensure_clean_time')
-    room.function('ensure_clean_init').add(clean_time_max.set(600))
-    room.loop('ensure_clean', tick_clock).add(
-        execute().store(RESULT).score(clean_time).run(time().query(GAMETIME)),
-        clean_time.operation(MOD, clean_time_max),
-        execute().if_().score(clean_time).matches(0).run(function('restworld:global/ensure_clean_run'))
-    ).loop(None, None)
+    room.function('ensure_clean_init', home=False).add(
+        clean_time_max.set(600)
+    )
     room.function('ensure_clean_run', home=False).add(
+        execute().store(RESULT).score(clean_time).run(time().query(GAMETIME)),
+        clean_time.operation(MINUS, last_clean),
+        execute().if_().score(clean_time).is_(LT, clean_time_max).run(return_()),
+        execute().store(RESULT).score(last_clean).run(time().query(GAMETIME)),
         # Make sure kids don't grow up
         execute().as_(e().tag('kid')).run(data().merge(s(), {'Age': -2147483648, 'IsBaby': True})),
         # Keep chickens from leaving eggs around
