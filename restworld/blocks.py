@@ -226,7 +226,8 @@ def room():
     blocks('dried_kelp', SOUTH, ('Dried Kelp Block',))
     blocks('end', NORTH, ('End Stone', 'End Stone|Bricks'))
     blocks('frosted_ice', SOUTH,
-           list(Block('frosted_ice', {'age': i}, name=f'Frosted Ice|Age: {i}') for i in range(0, 4)))
+           [Block('frosted_ice', {'age': i}, name=f'Frosted Ice|Age: {i}') for i in range(0, 4)] + [
+               Block('water', name='Water|')])
     blocks('gilded_blackstone', NORTH, ('Gilded Blackstone',))
     blocks('glass', SOUTH, ('Glass', 'Tinted Glass'))
     blocks('hay', SOUTH, ('Hay Block',))
