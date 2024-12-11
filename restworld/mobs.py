@@ -610,6 +610,7 @@ def monsters(room):
     room.function('spiders_init').add(function('restworld:mobs/spiders_cur'))
     place = list(copy.deepcopy(south_placer))
     place[0][0] += 0.5
+    place[0][2] -= 0.3
     room.function('witch_init').add(placer(*place, adults=True).summon('witch'))
 
     room.function('zombie_horse_init').add(
