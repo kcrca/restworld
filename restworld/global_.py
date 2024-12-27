@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import copy
 
-from pynecraft.base import Arg, EAST, EQ, GAMETIME, LT, NORTH, OVERWORLD, Position, SOUTH, THE_END, THE_NETHER, \
+from pynecraft.base import Arg, EAST, EQ, GAMETIME, LT, NOON, NORTH, OVERWORLD, Position, SOUTH, THE_END, THE_NETHER, \
     TimeSpec, \
     WEST, r
 from pynecraft.commands import Block, FORCE, MINUS, MOD, MOVE, REPLACE, RESULT, Score, clone, data, e, \
@@ -239,7 +239,10 @@ def room():
             ('nether', THE_NETHER, (22, 99, -13), (28, 100, -13)),
             ('arena', OVERWORLD, (1040, 106, -1026), (1036, 104, -1026))):
         goto = room.function('goto_' + place[0], home=False).add(
-            execute().in_(place[1]).run(teleport(p(), place[2]).facing(place[3])))
+            time().set(NOON),
+            execute().in_(place[1]).run(teleport(p(), place[2]).facing(place[3])),
+            schedule().function(f'restworld:{place[0]}/_enter', 1, REPLACE),
+        )
         if place[0] == 'arena':
             goto.add(function('restworld:arena/arena_count_cur'))
     room.function('goto_photo').add(function('restworld:photo/photo_sample_view'))

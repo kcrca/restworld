@@ -1,7 +1,8 @@
 import collections
 
 from pynecraft.base import NORTH, OVERWORLD, SOUTH, r, to_id
-from pynecraft.commands import CLEAR, data, e, execute, fill, fillbiome, function, kill, say, setblock, weather
+from pynecraft.commands import Block, CLEAR, DESTROY, data, e, execute, fill, fillbiome, function, kill, say, setblock, \
+    weather
 from pynecraft.simpler import PLAINS, WallSign
 from pynecraft.values import BASALT_DELTAS, NETHER_WASTES, SMALL_END_ISLANDS, WARM_OCEAN, as_biome
 from restworld.rooms import Room
@@ -131,6 +132,12 @@ def room():
     room.function('category_init').add(
         categories(),
         room.label(r(5, -1, 6), 'Illuminate', SOUTH),
+        room.label(r(-2, -1, 6), 'Night', SOUTH),
+    )
+    room.function('category_enter').add(
+        setblock(r(-2, -1, 6), Block('lever', state={'face': 'floor', 'facing': SOUTH}), DESTROY),
+        say('kill'),
+        kill(e().type('item').distance((None, 15))),
     )
     load_biome_score = room.score('load_biome')
     for g in biome_groups:
