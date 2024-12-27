@@ -440,7 +440,6 @@ def bamboo_funcs(room):
 
 def water_funcs(room):
     volume = Region(r(-1, 2, -5), r(1, 4, 1))
-    exemplars = {}
     watered = {'waterlogged': True}
 
     def coral_loop(step):

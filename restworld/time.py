@@ -39,7 +39,7 @@ def room():
         tag(e().tag('moon_home')).add('moon_run_home'),
         execute().at(e().tag('moon_home')).run(function('restworld:time/moon_run_cur')),
     )
-    moon_run_off = room.function('moon_run_off', home=False).add(
+    room.function('moon_run_off', home=False).add(
         tag(e().tag('moon_home')).remove('moon_run_home'),
         execute().at(e().tag('moon_home')).run(function(moon_init)),
         time().set(NOON),
