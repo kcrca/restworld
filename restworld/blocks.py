@@ -859,7 +859,7 @@ def room():
     for b in (
             'amethyst', 'anvil', 'bell', 'brewing_stand', 'cake', 'campfire', 'chest', 'colored_beam', 'colorings',
             'frosted_ice', 'grindstone', 'item_frame', 'lantern', 'armor_stand', 'torches', 'blocks_room', 'ladder',
-            'stepable', 'tnt', 'creaking_heart', 'resin_clumps', 'dont_expand'):
+            'stepable', 'tnt', 'creaking_heart', 'resin_clumps', 'dont_expand', 'blocks_sign', 'expand'):
         room.function(b + '_init', exists_ok=True).add(tag(e().tag(b + '_home')).add('no_expansion'))
 
 
@@ -1103,7 +1103,7 @@ def color_functions(room):
         data().remove(n().tag('colorings_dog'), 'body_armor_item'),
         execute().at(e().tag('colorings_home')).run(function('restworld:blocks/colorings_cur')))
     room.loop('colorings', main_clock).add(fill(r(-9, 2, 2), r(-9, 2, 3), 'air')).loop(colorings_loop, colors).add(
-        colored_signs(None, render_signs_glow), setblock(r(-7, -1, 3), 'redstone_block'), setblock(r(-7, -1, 3), 'air'))
+        colored_signs(None, render_signs_glow), setblock(r(-6, 0, 3), 'redstone_block'), setblock(r(-6, 0, 3), 'air'))
     room.function('colorings_plain_off', home=False).add(
         execute().unless().score(plain).matches(0).run(
             clone((coloring_coords[0][0], coloring_coords[0][1].value - coloring_coords[1][1].value + 1,
