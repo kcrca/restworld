@@ -167,7 +167,8 @@ class Room(FunctionSet):
         player_home = self.home_func(f'{self.name}_player')
         player_home.add(tag(e().tag(f'{self.name}_player_home')).add('no_expansion'))
         self.function('_enter', exists_ok=True).add(
-            execute().positioned(r(1, -1, 1)).run(function(player_home.full_name)))
+            execute().if_().entity(e().tag(f'{self.name}_room_beg_home')).positioned(r(1, -1, 1)).run(
+                function(player_home.full_name)))
         self.function('_exit', exists_ok=True).add(kill(e().tag(f'{self.name}_player_home')))
         self.function(f'{self.name}_room_end')
         dx = self.score('dx')
