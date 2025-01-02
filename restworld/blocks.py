@@ -228,6 +228,8 @@ def room():
     blocks('frosted_ice', SOUTH,
            [Block('frosted_ice', {'age': i}, name=f'Frosted Ice|Age: {i}') for i in range(0, 4)] + [
                Block('water', name='Water|')])
+    room.function('frosted_ice_enter').add(setblock(r(1, 0, 0), 'redstone_block'))
+    room.function('frosted_ice_exit').add(setblock(r(1, 0, 0), 'air'))
     blocks('gilded_blackstone', NORTH, ('Gilded Blackstone',))
     blocks('glass', SOUTH, ('Glass', 'Tinted Glass'))
     blocks('hay', SOUTH, ('Hay Block',))
