@@ -4,24 +4,27 @@ import math
 import random
 
 from pynecraft.base import EAST, NORTH, Nbt, OVERWORLD, SOUTH, WEST, as_facing, d, r, to_id
-from pynecraft.commands import Block, CLEAR, Entity, INFINITE, JsonText, Particle, RAIN, REPLACE, a, data, e, effect, \
+from pynecraft.commands import BLOCK_MARKER, Block, CLEAR, DUST_PILLAR, Entity, FALLING_DUST, INFINITE, JsonText, \
+    Particle, RAIN, \
+    REPLACE, a, data, \
+    e, effect, \
     execute, fill, fillbiome, function, item, kill, particle, playsound, schedule, setblock, summon, weather
 from pynecraft.function import BLOCK, ITEM
 from pynecraft.simpler import Book, PLAINS, TextDisplay, VILLAGER_BIOMES, VILLAGER_PROFESSIONS, WallSign
 from pynecraft.values import ABSORPTION, AMBIENT_ENTITY_EFFECT, ANGRY_VILLAGER, ASH, BASALT_DELTAS, BLINDNESS, \
-    BLOCK_MARKER, BUBBLE, BUBBLE_COLUMN_UP, BUBBLE_POP, CAMPFIRE_COSY_SMOKE, CAMPFIRE_SIGNAL_SMOKE, CHERRY_LEAVES, \
+    BLOCK_CRUMBLE, BUBBLE, BUBBLE_COLUMN_UP, BUBBLE_POP, CAMPFIRE_COSY_SMOKE, CAMPFIRE_SIGNAL_SMOKE, CHERRY_LEAVES, \
     CLOUD, COMPOSTER, CRIMSON_FOREST, CRIMSON_SPORE, CRIT, CURRENT_DOWN, DAMAGE_INDICATOR, DOLPHIN, DRAGON_BREATH, \
     DRIPPING_DRIPSTONE_LAVA, DRIPPING_DRIPSTONE_WATER, DRIPPING_HONEY, DRIPPING_LAVA, DRIPPING_OBSIDIAN_TEAR, \
-    DRIPPING_WATER, DUST, DUST_COLOR_TRANSITION, DUST_PILLAR, DUST_PLUME, EFFECT, EGG_CRACK, ELDER_GUARDIAN, \
+    DRIPPING_WATER, DUST, DUST_COLOR_TRANSITION, DUST_PLUME, EFFECT, EGG_CRACK, ELDER_GUARDIAN, \
     ELECTRIC_SPARK, ENCHANT, ENCHANTED_HIT, END_ROD, ENTITY_EFFECT, EXPLOSION, EXPLOSION_EMITTER, \
-    FALLING_DRIPSTONE_LAVA, FALLING_DRIPSTONE_WATER, FALLING_DUST, FALLING_HONEY, FALLING_LAVA, FALLING_NECTAR, \
+    FALLING_DRIPSTONE_LAVA, FALLING_DRIPSTONE_WATER, FALLING_HONEY, FALLING_LAVA, FALLING_NECTAR, \
     FALLING_OBSIDIAN_TEAR, FALLING_SPORE_BLOSSOM, FALLING_WATER, FIREWORK, FISHING, FLAME, FLASH, GLOW, GLOW_SQUID_INK, \
     GUST, GUST_EMITTER, HAPPY_VILLAGER, HEART, INFESTED, INSTANT_EFFECT, ITEM_COBWEB, ITEM_SLIME, ITEM_SNOWBALL, \
     LANDING_HONEY, LANDING_LAVA, LANDING_OBSIDIAN_TEAR, LARGE_SMOKE, LAVA, MYCELIUM, NAUTILUS, NOTE, OMINOUS_SPAWNING, \
     PALE_OAK_LEAVES, PARTICLE_GROUP, POOF, PORTAL, RAID_OMEN, RESISTANCE, REVERSE_PORTAL, SCRAPE, SCULK_CHARGE, \
     SCULK_CHARGE_POP, SCULK_SOUL, SHRIEK, SMALL_FLAME, SMALL_GUST, SMOKE, SNEEZE, SNOWFLAKE, SNOWY_TAIGA, SONIC_BOOM, \
     SOUL, SOUL_FIRE_FLAME, SOUL_SAND_VALLEY, SPEED, SPIT, SPLASH, SPORE_BLOSSOM_AIR, SQUID_INK, STRENGTH, SWEEP_ATTACK, \
-    TOTEM_OF_UNDYING, TRIAL_OMEN, TRIAL_SPAWNER_DETECTION, TRIAL_SPAWNER_DETECTION_OMINOUS, UNDERWATER, \
+    TOTEM_OF_UNDYING, TRAIL, TRIAL_OMEN, TRIAL_SPAWNER_DETECTION, TRIAL_SPAWNER_DETECTION_OMINOUS, UNDERWATER, \
     VAULT_CONNECTION, VIBRATION, WARPED_FOREST, WARPED_SPORE, WAX_OFF, WAX_ON, WHITE_ASH, WHITE_SMOKE, WITCH, \
     as_particle
 from restworld.rooms import ActionDesc, SignedRoom, Wall, ensure, kill_em, span
@@ -41,6 +44,7 @@ def action(which: str, name=None, note=None, also=()):
 actions = [
     action(ANGRY_VILLAGER),
     action(ASH),
+    action(BLOCK_CRUMBLE),
     action(BLOCK_MARKER),
     action(BUBBLE, 'Bubbles|Currents', also=(BUBBLE_POP, BUBBLE_COLUMN_UP, CURRENT_DOWN)),
     action(CLOUD, note='Evaporation'),
@@ -82,6 +86,7 @@ actions = [
     action(SQUID_INK, note='and Glow Squid', also=(GLOW, GLOW_SQUID_INK)),
     action(SWEEP_ATTACK),
     action(TOTEM_OF_UNDYING),
+    action(TRAIL),
     action(TRIAL_OMEN),
     # Removable: Happens in blocks:
     action(TRIAL_SPAWNER_DETECTION, 'Trial Spawner|Detection|(and Ominous)', also=(TRIAL_SPAWNER_DETECTION_OMINOUS,)),
@@ -169,9 +174,9 @@ def slow(delay=0):
     return clock(slow_clock, delay)
 
 
-def exemplar(id, y, nbt=None, z=0):
+def exemplar(id, y, nbt=None, x=0, z=0):
     nbt = Nbt({'Tags': ['particler'], 'Silent': True, 'PersistenceRequired': True}).merge(nbt)
-    return summon(id, r(0, y, z), nbt)
+    return summon(id, r(x, y, z), nbt)
 
 
 def floor(block):
@@ -199,8 +204,8 @@ def room():
         ))
 
     n_wall_used = {4: span(1, 5), 3: span(1, 5), 2: (1, 2, 4, 5)}
-    e_wall_used = {5: span(2, 4), 4: span(1, 5), 3: span(1, 5), 2: span(1, 5)}
-    w_wall_used = {5: span(2, 4), 4: span(1, 5), 3: span(1, 5), 2: span(1, 5)}
+    e_wall_used = {5: (1, 2, 4, 5), 4: span(1, 5), 3: span(1, 5), 2: span(1, 5)}
+    w_wall_used = {5: (1, 2, 4, 5), 4: span(1, 5), 3: span(1, 5), 2: span(1, 5)}
     room = SignedRoom('particles', restworld, SOUTH, (None, 'Particles'), particle_sign, actions, (
         Wall(7, EAST, 1, -1, e_wall_used),
         Wall(7, SOUTH, 1, -7, n_wall_used),
@@ -475,6 +480,38 @@ def room():
             particle(TRIAL_SPAWNER_DETECTION_OMINOUS, r(1, 0.75, 0), (0.25, 0.0, 0.25), 0, 25)))
     room.function('totem_of_undying', home=False).add(
         main().run(particle(TOTEM_OF_UNDYING, r(0, 2, 0), (0.5, 1, 0.5), 0.5, 50)))
+    room.function('trail_init', home=False).add(
+        setblock(r(-2, 0, -2), 'pale_oak_log'),
+        setblock(r(-2, 1, -2), ('creaking_heart', {'active': True})),
+        setblock(r(-2, 2, -2), 'pale_oak_log'),
+        exemplar('creaking', 0, {'NoAI': True}, x=2, z=2),
+    )
+    room.function('trail', home=False).add(
+        fast().run(
+            particle(Particle(TRAIL, {'color': 0xf9801d, 'target': (-2, 102.5, -80), 'duration': 30}), r(2, 1.5, 2),
+                     (0.05, 0.75, 0.05), 0.5, 1),
+            particle(Particle(TRAIL, {'color': 0x9d9d97, 'target': (2, 102.5, -76), 'duration': 30}), r(-2, 1.5, -2),
+                     (0.05, 0.25, 0.05), 0.5, 1),
+        )
+    )
+    do_crumble = room.function('do_crumble', home=False).add(
+        execute().at(e().tag('particles_action_home')).run(
+            setblock(r(0, 3, 0), 'air'),
+            particle(Particle(BLOCK_CRUMBLE, {'block_state': 'creaking_heart'}), r(0, 3.5, 0), (0.25, 0.25, 0.25), 0,
+                     20),
+        )
+    )
+    crumble_init = room.function('block_crumble_init', home=False).add(
+        setblock(r(0, 0, 0), 'pale_oak_log'),
+        setblock(r(0, 1, 0), 'creaking_heart'),
+        setblock(r(0, 2, 0), 'pale_oak_log'),
+    )
+    room.function('block_crumble', home=False).add(
+        main().run(
+            function(crumble_init),
+            schedule().function(do_crumble, 15, REPLACE)
+        )
+    )
     room.function('vault_connection_init', home=False).add(
         setblock(r(-1, 0, 0), 'vault'),
         setblock(r(1, 0, 0), ('vault', {'ominous': True})))
