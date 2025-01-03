@@ -200,11 +200,12 @@ def room():
             setblock(r(0, 4, 0), 'air' if step.elem == 'disabled' else 'pale_oak_log'),
             setblock(r(0, 2, 0), 'pale_oak_log'),
         )
-        yield setblock(r(0, 3, 0), Block('creaking_heart', {'active': step.elem, 'natural': True})),
+        block = Block('creaking_heart', {'active': step.elem, 'natural': True})
+        yield setblock(r(0, 3, 0), block),
         yield Sign.change(r(0, 2, 1), (None, None, f'Active: {step.elem}'))
+        room.particle(block, 'creaking_heart', r(0, 4, 0), step)
 
     room.loop('creaking_heart', main_clock).loop(creaking_heart_loop, (True, False))
-    room.particle('creaking_heart', 'creaking_heart', r(0, 4, 0))
     room.function('creaking_heart_init').add(
         WallSign((None, 'Creaking Heart')).place(r(0, 2, 1), SOUTH),
         room.label(r(1, 2, 0), "Naturally", NORTH),

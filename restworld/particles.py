@@ -497,8 +497,9 @@ def room():
     do_crumble = room.function('do_crumble', home=False).add(
         execute().at(e().tag('particles_action_home')).run(
             setblock(r(0, 3, 0), 'air'),
-            particle(Particle(BLOCK_CRUMBLE, {'block_state': 'creaking_heart'}), r(0, 3.5, 0), (0.25, 0.25, 0.25), 0,
-                     20),
+            particle(
+                Particle(BLOCK_CRUMBLE, {'block_state': {'Name': 'creaking_heart', 'Properties': {'active': True}}}),
+                r(0, 3.5, 0), (0.25, 0.25, 0.25), 0, 20),
         )
     )
     crumble_init = room.function('block_crumble_init', home=False).add(
