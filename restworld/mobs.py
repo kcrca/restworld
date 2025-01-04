@@ -5,7 +5,7 @@ import copy
 from pynecraft import commands
 from pynecraft.base import EAST, EQ, NORTH, Nbt, SOUTH, WEST, r, to_id, to_name
 from pynecraft.commands import Block, COLORS, Entity, FORCE, LONG, MOD, REPLACE, RESULT, Score, as_facing, clone, data, \
-    e, execute, function, item, kill, player, return_, ride, s, schedule, scoreboard, setblock, summon, tag, tp
+    e, execute, function, item, kill, n, player, return_, ride, s, schedule, scoreboard, setblock, summon, tag, tp
 from pynecraft.info import axolotls, colors, horses, tropical_fish, wolves
 from pynecraft.simpler import Item, PLAINS, Sign, VILLAGER_BIOMES, VILLAGER_PROFESSIONS, Villager, WallSign
 from pynecraft.values import DISC_GROUP, DUMMY, as_disc, discs
@@ -246,7 +246,7 @@ def friendlies(room):
         yield execute().as_(e().tag('parrot')).run(
             data().merge(s(), {'CustomName': name, 'Variant': variant, 'OnGround': not flying, 'Sitting': not flying}))
         yield execute().unless().block(r(0, 1, 0), 'air').run(
-            setblock(parrot_fence_pos, 'air' if flying else 'oak_fence'))
+            setblock(parrot_fence_pos, 'air' if flying else 'iron_bars'))
 
     room.loop('parrot', main_clock).loop(parrot_loop, parrot_settings)
     room.function('pig_init').add(placer(*mid_west_placer).summon('pig'))
@@ -736,14 +736,17 @@ def aquatic(room):
 
     def fishies_loop(step):
         yield data().merge(e().tag('pufferfish').limit(1), {'PuffState': step.i})
-        yield data().merge(e().tag('salmon').limit(1), {'type': step.elem})
         # Over time, the pufferfish and salmon creep downward, so we have to put them back
         fish_pos = r(-2, 3, 1)
         fish_facing = r(-2, 3, -5)
         yield tp(e().tag('pufferfish'), fish_pos).facing(fish_facing)
         fish_pos = (fish_pos[0] + r(2),) + fish_pos[1:]
         fish_facing = (fish_facing[0] + r(2),) + fish_facing[1:]
-        yield tp(e().tag('salmon'), fish_pos).facing(fish_facing)
+        # A bug in 1.21.4 has a salmon that is being teleported isn't killed by the _init function. I don't know why
+        # or even how to report it. But I have to work around it. I teleport all the salmon to death but rescue one.
+        yield kill_em(e().tag('salmon'))
+        yield data().merge(n().tag('salmon'), {'type': step.elem})
+        yield tp(n().tag('salmon'), fish_pos).facing(fish_facing)
 
     room.loop('fishies', main_clock).loop(fishies_loop, ('small', 'medium', 'large'), bounce=True)
 
