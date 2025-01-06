@@ -709,7 +709,7 @@ def aquatic(room):
     room.loop('axolotl', main_clock).loop(
         lambda step: execute().as_(e().tag('axolotl')).run(data().merge(
             s(), {'Variant': step.i, 'CustomName': step.elem + ' Axolotl'})), axolotls)
-    guardian_pos = elder_guardian_pos = r(0, 3, 0)
+    guardian_pos = elder_guardian_pos = r(1, 3, 0)
     guardian_rot = elder_guardian_rot = SOUTH
     room.function('guardian_init').add(room.mob_placer(guardian_pos, guardian_rot, adults=True).summon('guardian'))
     room.function('elder_guardian_init').add(
