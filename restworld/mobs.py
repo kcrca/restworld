@@ -715,9 +715,6 @@ def aquatic(room):
     room.function('elder_guardian_init').add(
         room.mob_placer(elder_guardian_pos, elder_guardian_rot, adults=True).summon('elder_guardian'))
 
-    #     axolotl_placer = room.mob_placer(r(-0.4, 3, 0), WEST, None, 1.8)
-    #     room.function('axolotl_init').add(axolotl_placer.summon('axolotl'), execute().at(e().tag('axolotl_dry_home')).run(
-    #         room.mob_placer(r(0, 3, 0), EAST, kid_delta=2).summon('axolotl')))
     def squids_loop(step):
         placer = room.mob_placer(r(2.6, 4, 0.2), WEST, None, kid_delta=1.8, tags=('squidy',), nbt={'NoGravity': True})
         return placer.summon('squid' if step.i == 0 else 'glow_squid')
