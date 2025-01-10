@@ -251,8 +251,9 @@ def friendlies(room):
     room.loop('parrot', main_clock).loop(parrot_loop, parrot_settings)
     room.function('pig_init').add(placer(*mid_west_placer).summon('pig'))
     room.loop('pig', main_clock).loop(
-        lambda step: execute().as_(e().tag('pig').tag('!kid')).run(data().merge(s(), {'Saddle': step.i})),
-        (True, False))
+        lambda step: execute().as_(e().tag('pig')).run(
+            execute().as_(e().tag('pig')).run(data().merge(s(), {'variant': step.elem}))),
+        ('temperate', 'warm', 'cold'))
     room.function('polar_bear_init').add(placer(*south_placer).summon('Polar Bear'))
     room.function('rabbit_init').add(placer(*mid_east_placer).summon('rabbit'))
 

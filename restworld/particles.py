@@ -4,11 +4,9 @@ import math
 import random
 
 from pynecraft.base import EAST, NORTH, Nbt, OVERWORLD, SOUTH, WEST, as_facing, d, r, to_id
-from pynecraft.commands import BLOCK_MARKER, Block, CLEAR, DUST_PILLAR, Entity, FALLING_DUST, INFINITE, JsonText, \
-    Particle, RAIN, \
-    REPLACE, a, data, \
-    e, effect, \
-    execute, fill, fillbiome, function, item, kill, particle, playsound, schedule, setblock, summon, weather
+from pynecraft.commands import BLOCK_MARKER, Block, CLEAR, DUST_PILLAR, Entity, FALLING_DUST, INFINITE, Particle, RAIN, \
+    REPLACE, Text, a, data, e, effect, execute, fill, fillbiome, function, item, kill, particle, playsound, schedule, \
+    setblock, summon, weather
 from pynecraft.function import BLOCK, ITEM
 from pynecraft.simpler import Book, PLAINS, TextDisplay, VILLAGER_BIOMES, VILLAGER_PROFESSIONS, WallSign
 from pynecraft.values import ABSORPTION, AMBIENT_ENTITY_EFFECT, ANGRY_VILLAGER, ASH, BASALT_DELTAS, BLINDNESS, \
@@ -525,7 +523,7 @@ def room():
     )
 
     def wax_on_run_loop(step):
-        yield data().modify(particler.limit(1), 'text').set().value(JsonText.text(step.elem))
+        yield data().modify(particler.limit(1), 'text').set().value(Text.text(step.elem))
         if step.i == 0:
             yield setblock(r(0, 0, 0), 'exposed_cut_copper')
         elif step.i == 1:
@@ -548,8 +546,8 @@ def room():
 
     book = Book()
     book.sign_book('Particle Book', 'RestWorld', 'Particles in the world')
-    book.add(JsonText.text('\\n\\nParticles in the World\\n\\n').italic())
-    book.add(JsonText.text('Many particles are shown in the rest of this world. '
+    book.add(Text.text('\\n\\nParticles in the World\\n\\n').italic())
+    book.add(Text.text('Many particles are shown in the rest of this world. '
                            'This room is focused on those that aren\'t. '
                            'This book lists where those other particles are by room.').plain())
     page_break = ('Materials', 'Blocks', 'Plants', 'Arena')
@@ -558,18 +556,18 @@ def room():
             book.next_page()
         else:
             book.add(r'\n\n')
-        book.add(JsonText.text(f'{k} Room:\\n').plain().bold())
+        book.add(Text.text(f'{k} Room:\\n').plain().bold())
         first = True
         for p in sorted(v):
             if not first:
-                book.add(JsonText(', ').bold(False))
+                book.add(Text(', ').bold(False))
             else:
                 first = False
-            text = JsonText(as_particle(p).capitalize().replace('_', ' ')).bold(False)
+            text = Text(as_particle(p).capitalize().replace('_', ' ')).bold(False)
             if p in hover:
                 text = text.hover_event().show_text(hover[p])
             book.add(text)
-        book.add(JsonText('.').bold(False))
+        book.add(Text('.').bold(False))
     room.function('particle_book', home=False).add(
         ensure(r(1, 2, -4), Block('lectern', {'facing': SOUTH, 'has_book': True}),
                nbt=book.as_item())

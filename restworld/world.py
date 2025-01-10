@@ -4,7 +4,7 @@ import sys
 from datetime import date
 
 from pynecraft.base import DARK_GREEN, DARK_PURPLE, r
-from pynecraft.commands import CREATIVE, Commands, Entity, JsonText, SIDEBAR, clear, data, e, execute, fill, function, \
+from pynecraft.commands import CREATIVE, Commands, Entity, SIDEBAR, Text, clear, data, e, execute, fill, function, \
     gamemode, give, kill, p, scoreboard, setblock, tp
 from pynecraft.function import Function, FunctionSet
 from pynecraft.simpler import Book, Sign, TextDisplay
@@ -88,26 +88,26 @@ class RestWorld(RoomPack):
 
         cb.next_page()
         cb.add(
-            JsonText.text(r'Credits, ' + date.today().strftime('%-d %b %Y') + r'\n'),
+            Text.text(r'Credits, ' + date.today().strftime('%-d %b %Y') + r'\n'),
             r'    Minecraft 1.21.4\n\n',
-            JsonText.text(r'BlueMeanial:\n').bold(),
+            Text.text(r'BlueMeanial:\n').bold(),
             r'  Software Design\n  Programming\n',
-            JsonText.text(r'JUMBOshrimp277:\n').bold(),
+            Text.text(r'JUMBOshrimp277:\n').bold(),
             r'  Visual Design\n  Testing\n  Rubber Duck\n',
             r'\n',
             r'Details on ',
-            JsonText.text(r'our site').underlined().italic().color(DARK_PURPLE).click_event().open_url(
+            Text.text(r'our site').underlined().italic().color(DARK_PURPLE).click_event().open_url(
                 'https://claritypack.com/restworld/'),
-            JsonText.text(r'\n\nTry the ').italic(),
-            JsonText.text(r'Call Out Pack!').underlined().italic().color(DARK_PURPLE).click_event().open_url(
+            Text.text(r'\n\nTry the ').italic(),
+            Text.text(r'Call Out Pack!').underlined().italic().color(DARK_PURPLE).click_event().open_url(
                 'https://www.planetminecraft.com/texture-pack/call-out-texture-pack-support/')
         )
 
         return Function('control_book').add(give(p(), cb.as_entity()))
 
     @staticmethod
-    def _action(txt: str, tooltip: str, act: str) -> JsonText:
-        return JsonText.text(txt).color(DARK_GREEN).underlined().click_event().run_command(
+    def _action(txt: str, tooltip: str, act: str) -> Text:
+        return Text.text(txt).color(DARK_GREEN).underlined().click_event().run_command(
             function('restworld:' + act)).hover_event().show_text(tooltip)
 
     def _home_func_name(self, base):

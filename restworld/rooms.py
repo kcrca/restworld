@@ -8,9 +8,9 @@ from typing import Callable, Iterable, Tuple
 
 from pynecraft.base import BLUE, EAST, FacingDef, NE, NORTH, NW, Nbt, ORANGE, ROTATION_180, ROTATION_270, ROTATION_90, \
     RelCoord, SE, SOUTH, SW, WEST, r, rotate_facing, to_name
-from pynecraft.commands import Block, BlockDef, CLEAR, Command, Commands, Entity, EntityDef, INT, JsonText, MINUS, \
-    Particle, Position, RESULT, Score, SignMessages, a, as_block, as_entity, as_facing, as_score, comment, data, e, \
-    execute, function, kill, n, p, particle, say, schedule, scoreboard, setblock, summon, tag, tellraw, tp, weather
+from pynecraft.commands import Block, BlockDef, CLEAR, Command, Commands, Entity, EntityDef, INT, MINUS, Particle, \
+    Position, RESULT, Score, SignMessages, Text, a, as_block, as_entity, as_facing, as_score, comment, data, e, execute, \
+    function, kill, n, p, particle, say, schedule, scoreboard, setblock, summon, tag, tellraw, tp, weather
 from pynecraft.function import DataPack, Function, FunctionSet, LATEST_PACK_VERSION, Loop
 from pynecraft.simpler import TextDisplay, WallSign
 from pynecraft.values import DUMMY
@@ -20,7 +20,7 @@ def named_frame_item(block: BlockDef = None, name=None, damage=None) -> Nbt:
     if not block and not name:
         return Nbt({'custom_name': {}})
     block = as_block(block)
-    tag_nbt = Nbt({'custom_name': str(JsonText.text(str(name if name else block.name)))})
+    tag_nbt = Nbt({'custom_name': str(Text.text(str(name if name else block.name)))})
     if damage:
         tag_nbt.update(damage)
     nbt = Nbt({'Item': {'components': tag_nbt}})
@@ -199,7 +199,7 @@ class Room(FunctionSet):
     def _room_setup(self, facing, text, room_name):
         text = _to_list(text)
         self._record_room(text, room_name)
-        text = tuple((JsonText.text(x).bold().italic() if x else x) for x in text)
+        text = tuple((Text.text(x).bold().italic() if x else x) for x in text)
         sign = WallSign(text)
         facing = as_facing(facing)
         x, z, rot = facing.dx, facing.dz, facing.yaw
@@ -608,11 +608,11 @@ class MobPlacer:
 
 
 def say_score(*scores):
-    say = [JsonText.text('scores:')]
+    say = [Text.text('scores:')]
     for s in scores:
         s = as_score(s)
-        say.append(JsonText.text(str(s.target) + '='))
-        say.append(JsonText.score(s))
+        say.append(Text.text(str(s.target) + '='))
+        say.append(Text.score(s))
     return tellraw(a(), *say)
 
 

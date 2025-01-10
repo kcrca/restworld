@@ -3,14 +3,14 @@ from __future__ import annotations
 import re
 
 from pynecraft.base import NORTH, Nbt, NbtDef, SOUTH, WEST, r
-from pynecraft.commands import Block, JsonText, clone, data, e, execute, fill, kill, setblock
+from pynecraft.commands import Block, Text, clone, data, e, execute, fill, kill, setblock
 from pynecraft.simpler import Book, ItemFrame, TextDisplay, WallSign
 from restworld.rooms import Room, ensure
 from restworld.world import restworld
 
 
 def name_nbt(name: str) -> NbtDef:
-    return {'components': {'custom_name': JsonText.text(name)}}
+    return {'components': {'custom_name': Text.text(name)}}
 
 
 def room():
@@ -120,7 +120,7 @@ def apologia():
     book = Book()
     book.sign_book('On Maps', 'RestWorld', 'A Map Apologia')
 
-    book.add(r'       ', JsonText.text('On Maps').bold(), r'\n\n')
+    book.add(r'       ', Text.text('On Maps').bold(), r'\n\n')
     book.add(simplify("""Here you can see general map textures, and most map icons. Yet there are some icons, 
     such as for players, that can't be shown without real players in the actual game. If you hold a map you can see 
     the icon for you, but to see other players'"""))

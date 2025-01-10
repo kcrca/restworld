@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from pynecraft.base import EAST, NORTH, ROTATION_270, SOUTH, Transform, WEST, as_facing, r
-from pynecraft.commands import JsonText, e, kill, summon
+from pynecraft.commands import Text, e, kill, summon
 from pynecraft.simpler import TextDisplay
 from pynecraft.values import PAINTING_GROUP, paintings
 from restworld.rooms import Room
@@ -45,13 +45,13 @@ def room():
         title = img.value
         if note:
             title += f' {note}'
-        txt = JsonText.translate(f'painting.minecraft.{img.name}.title').bold().italic(False)
+        txt = Text.translate(f'painting.minecraft.{img.name}.title').bold().italic(False)
         if note:
             txt = txt.extra(fr' {note}')
         txt = txt.extra(r'\n')
-        txt = txt.extra(JsonText.translate(
+        txt = txt.extra(Text.translate(
             f'painting.minecraft.{img.name}.author', fallback="[artist unknown]").plain(),
-                        JsonText.text(fr'\n{img.name} {img.size[0]}×{img.size[1]}\n').plain().italic())
+                        Text.text(fr'\n{img.name} {img.size[0]}×{img.size[1]}\n').plain().italic())
         display = TextDisplay(txt, nbt={
             'alignment': 'left', 'line_width': 84, 'background': 0}).tag(
             'painting').transform(

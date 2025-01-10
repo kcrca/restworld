@@ -5,7 +5,7 @@ import math
 
 from pynecraft import info
 from pynecraft.base import EAST, NE, NORTH, NW, SE, SOUTH, SW, WEST, as_facing, r, rotate_facing
-from pynecraft.commands import Entity, JsonText, comment, data, e, execute, fill, function, kill, s, setblock, tag
+from pynecraft.commands import Entity, Text, comment, data, e, execute, fill, function, kill, s, setblock, tag
 from pynecraft.simpler import Item, VILLAGER_BIOMES, VILLAGER_PROFESSIONS, WallSign
 from restworld.rooms import Room, kill_em
 from restworld.world import restworld
@@ -173,7 +173,7 @@ def room():
 
         x += (-1 + within) * dx
         z += (-1 + within) * dz
-        menu_init.add(WallSign((None, all_mobs[start], JsonText.text('to').italic(), all_mobs[start + stride - 1]),
+        menu_init.add(WallSign((None, all_mobs[start], Text.text('to').italic(), all_mobs[start + stride - 1]),
                                (clear, at_home.run(function(popup)))).place(r(x, 2, z), sign_facing))
 
         start += stride

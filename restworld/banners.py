@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from pynecraft.base import Arg, CYAN, EQ, NORTH, SOUTH, as_facing, r
-from pynecraft.commands import Block, COLORS, Entity, JsonText, WHITE, data, e, execute, fill, function, kill, s, \
+from pynecraft.commands import Block, COLORS, Entity, Text, WHITE, data, e, execute, fill, function, kill, s, \
     setblock
 from pynecraft.simpler import Shield, Sign, TextDisplay, WallSign
 from pynecraft.values import BORDER, BRICKS, CIRCLE, CREEPER, CROSS, CURLY_BORDER, FLOWER, GRADIENT, GRADIENT_UP, \
@@ -160,10 +160,10 @@ def room():
         return (
             setblock(r(x, 3, z), pattern[0].merge_state({'rotation': rot})),
             execute().positioned(r(x, 3, z)).as_(e().tag('banner_pattern_title').distance((None, 9))).run(
-                data().merge(s(), {'text': JsonText(f'\u201c{pattern[1]}\u201d'), 'Rotation': as_facing(rot).rotation}),
+                data().merge(s(), {'text': Text(f'\u201c{pattern[1]}\u201d'), 'Rotation': as_facing(rot).rotation}),
             ),
             execute().positioned(r(x, 3, z)).as_(e().tag('banner_pattern_author').distance((None, 9))).run(
-                data().merge(s(), {'text': JsonText('by ').italic(True).extra(JsonText(pattern[2]).italic(False)),
+                data().merge(s(), {'text': Text('by ').italic(True).extra(Text(pattern[2]).italic(False)),
                                    'Rotation': as_facing(rot).rotation})),
         )
 

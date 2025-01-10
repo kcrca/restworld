@@ -4,7 +4,7 @@ from typing import Callable
 
 from pynecraft import info
 from pynecraft.base import EAST, NORTH, Nbt, SOUTH, WEST, r, to_id, to_name
-from pynecraft.commands import Block, JsonText, data, e, execute, fill, fillbiome, function, kill, setblock, tag
+from pynecraft.commands import Block, Text, data, e, execute, fill, fillbiome, function, kill, setblock, tag
 from pynecraft.info import small_flowers, stems, tulips
 from pynecraft.simpler import JUNGLE, PLAINS, Region, SAVANNA, Sign, WallSign
 from pynecraft.values import BIRCH_FOREST, CHERRY_GROVE, DARK_FOREST, MANGROVE_SWAMP, PALE_GARDEN, SNOWY_TAIGA
@@ -205,11 +205,11 @@ def room():
 
         base_text = sign_nbt['front_text']['messages'][0]['text']
         if base_text == '':
-            sign_nbt['front_text']['messages'][0] = JsonText.text('Potted')
+            sign_nbt['front_text']['messages'][0] = Text.text('Potted')
         else:
-            sign_nbt['front_text']['messages'][0] = JsonText.text('Potted ' + base_text)
+            sign_nbt['front_text']['messages'][0] = Text.text('Potted ' + base_text)
         if len(sign_nbt['front_text']['messages'][3]['text']) == 0:
-            sign_nbt['front_text']['messages'] = (JsonText.text(''),) + tuple(sign_nbt['front_text']['messages'][:-1])
+            sign_nbt['front_text']['messages'] = (Text.text(''),) + tuple(sign_nbt['front_text']['messages'][:-1])
         elem_id = 'potted_%s' % step.elem.id
         yield setblock(r(0, 3, 0), elem_id)
         room.particle(elem_id, 'pottable', r(0, 4, 0), step)

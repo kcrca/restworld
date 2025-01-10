@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 from pynecraft import info
-from pynecraft.base import EAST, JSON_COLORS, NORTH, SOUTH, WEST, r
-from pynecraft.commands import Block, JsonText, clone, data, e, execute, function, kill, s, setblock, tag
+from pynecraft.base import EAST, NORTH, SOUTH, TEXT_COLORS, WEST, r
+from pynecraft.commands import Block, Text, clone, data, e, execute, function, kill, s, setblock, tag
 from pynecraft.info import colors, stems
 from pynecraft.simpler import Book, TextDisplay, WallSign
 from restworld.rooms import Room, ensure
@@ -10,30 +10,30 @@ from restworld.world import restworld
 
 
 def color_text(color):
-    return JsonText.text('Lorem ipsum dolor\\n').color(color).hover_event().show_text(color)
+    return Text.text('Lorem ipsum dolor\\n').color(color).hover_event().show_text(color)
 
 
 def formatting_book():
     book = Book()
     book.sign_book('Format Book', 'RestWorld', 'Text Formatting')
     book.add('',
-             JsonText.text('Named text colors\\n').underlined(),
-             JsonText.text('    (hover for names)\\n\\n'))
-    for c in JSON_COLORS[:8]:
+             Text.text('Named text colors\\n').underlined(),
+             Text.text('    (hover for names)\\n\\n'))
+    for c in TEXT_COLORS[:8]:
         book.add(color_text(c))
     book.next_page()
-    for c in JSON_COLORS[8:]:
+    for c in TEXT_COLORS[8:]:
         book.add(color_text(c))
     book.add(color_text('#cd5c5c'))
     book.next_page()
     book.add('',
-             JsonText.text('Text Formatting').underlined(),
+             Text.text('Text Formatting').underlined(),
              '\\n\\n',
-             JsonText.text('Bold Text\\n').bold(),
-             JsonText.text('Italic Text\\n').italic(),
-             JsonText.text('Underline Text\\n').underlined(),
-             JsonText.text('Strikethrough Text\\n').strikethrough(),
-             JsonText.text('Obfuscated Text\\n').obfuscated().hover_event().show_text('Obfuscated'))
+             Text.text('Bold Text\\n').bold(),
+             Text.text('Italic Text\\n').italic(),
+             Text.text('Underline Text\\n').underlined(),
+             Text.text('Strikethrough Text\\n').strikethrough(),
+             Text.text('Obfuscated Text\\n').obfuscated().hover_event().show_text('Obfuscated'))
     return book
 
 

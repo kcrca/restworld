@@ -3,8 +3,8 @@ from collections import defaultdict
 
 from pynecraft import info
 from pynecraft.base import Arg, EAST, EQ, WEST, as_facing, d, r, to_name
-from pynecraft.commands import Entity, JsonText, REPLACE, SUCCESS, comment, data, e, execute, fill, function, item, \
-    kill, loot, n, p, schedule, setblock, summon, tag
+from pynecraft.commands import Entity, REPLACE, SUCCESS, Text, comment, data, e, execute, fill, function, item, kill, \
+    loot, n, p, schedule, setblock, summon, tag
 from pynecraft.info import block_items
 from pynecraft.simpler import Item, ItemFrame, Sign, WallSign
 from restworld import global_
@@ -224,7 +224,7 @@ def room():
         execute().unless().score(was_empty).is_(EQ, is_empty).run(
             function(model_copy),
             execute().if_().score(is_empty).matches(True).run(
-                data().modify(n().tag('current_model'), 'text').set().value(JsonText.text(''))),
+                data().modify(n().tag('current_model'), 'text').set().value(Text.text(''))),
         ),
     )
     redstone_block_pos = r(1, -2, 0)
@@ -247,7 +247,7 @@ def room():
             yield item().replace().entity(model_src, 'container.0').with_(step.elem)
             name = step.elem.name.replace(' [x]', '')
             yield at_home(Sign.change(signs[-1], (name,)))
-            yield data().modify(n().tag('current_model'), 'text').set().value(JsonText.text(name))
+            yield data().modify(n().tag('current_model'), 'text').set().value(Text.text(name))
             yield setblock(r(1, 2, 1), step.elem if do_setblock else 'air')
 
         all_things = things
