@@ -8,7 +8,7 @@ from pynecraft.base import DOWN, E, EAST, EQ, FacingDef, N, NORTH, Nbt, RelCoord
     rotate_facing, to_id, to_name
 from pynecraft.commands import Block, Commands, Entity, MOD, MOVE, REPLACE, ScoreName, as_block, as_score, clone, data, \
     e, \
-    execute, fill, function, item, kill, n, p, s, say, schedule, setblock, summon, tag
+    execute, fill, function, item, kill, n, p, place, s, say, schedule, setblock, summon, tag
 from pynecraft.function import Function, Loop
 from pynecraft.info import Color, colors, sherds, stems
 from pynecraft.simpler import Item, ItemFrame, Region, Sign, TextDisplay, WallSign
@@ -944,6 +944,7 @@ def color_functions(room):
             candle.merge_state({'lit': True})
             yield execute().unless().score(lit_candles).matches(0).run(volume.replace(candle, filter))
 
+        yield place().template(f'restworld:{color.id}_terra', r(-7, 1, 3))
         yield data().merge(r(-7, 0, 3), {'name': f'restworld:{color.id}_terra', 'showboundingbox': False})
         if not is_plain:
             room.particle(f'{color.id}_glazed_terracotta', 'colorings_base', r(-5.5, 2, 4.5), step, if_clause(plain, 0))
@@ -1106,7 +1107,7 @@ def color_functions(room):
         data().remove(n().tag('colorings_dog'), 'body_armor_item'),
         execute().at(e().tag('colorings_home')).run(function('restworld:blocks/colorings_cur')))
     room.loop('colorings', main_clock).add(fill(r(-9, 2, 2), r(-9, 2, 3), 'air')).loop(colorings_loop, colors).add(
-        colored_signs(None, render_signs_glow), setblock(r(-6, 0, 3), 'redstone_block'), setblock(r(-6, 0, 3), 'air'))
+        colored_signs(None, render_signs_glow))
     room.function('colorings_plain_off', home=False).add(
         execute().unless().score(plain).matches(0).run(
             clone((coloring_coords[0][0], coloring_coords[0][1].value - coloring_coords[1][1].value + 1,

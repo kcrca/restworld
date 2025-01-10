@@ -480,7 +480,7 @@ def room():
         main().run(particle(TOTEM_OF_UNDYING, r(0, 2, 0), (0.5, 1, 0.5), 0.5, 50)))
     room.function('trail_init', home=False).add(
         setblock(r(-2, 0, -2), 'pale_oak_log'),
-        setblock(r(-2, 1, -2), ('creaking_heart', {'active': True})),
+        setblock(r(-2, 1, -2), ('creaking_heart', {'creaking_heart_state': 'awake'})),
         setblock(r(-2, 2, -2), 'pale_oak_log'),
         exemplar('creaking', 0, {'NoAI': True}, x=2, z=2),
     )
@@ -496,13 +496,14 @@ def room():
         execute().at(e().tag('particles_action_home')).run(
             setblock(r(0, 3, 0), 'air'),
             particle(
-                Particle(BLOCK_CRUMBLE, {'block_state': {'Name': 'creaking_heart', 'Properties': {'active': True}}}),
+                Particle(BLOCK_CRUMBLE,
+                         {'block_state': {'Name': 'creaking_heart', 'Properties': {'creaking_heart_state': 'awake'}}}),
                 r(0, 3.5, 0), (0.25, 0.25, 0.25), 0, 20),
         )
     )
     crumble_init = room.function('block_crumble_init', home=False).add(
         setblock(r(0, 0, 0), 'pale_oak_log'),
-        setblock(r(0, 1, 0), 'creaking_heart'),
+        setblock(r(0, 1, 0), ('creaking_heart', {'creaking_heart_state': 'awake', 'natural': True})),
         setblock(r(0, 2, 0), 'pale_oak_log'),
     )
     room.function('block_crumble', home=False).add(
@@ -548,8 +549,8 @@ def room():
     book.sign_book('Particle Book', 'RestWorld', 'Particles in the world')
     book.add(Text.text('\\n\\nParticles in the World\\n\\n').italic())
     book.add(Text.text('Many particles are shown in the rest of this world. '
-                           'This room is focused on those that aren\'t. '
-                           'This book lists where those other particles are by room.').plain())
+                       'This room is focused on those that aren\'t. '
+                       'This book lists where those other particles are by room.').plain())
     page_break = ('Materials', 'Blocks', 'Plants', 'Arena')
     for k, v in elsewhere.items():
         if k in page_break:
