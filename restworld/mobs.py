@@ -249,11 +249,16 @@ def friendlies(room):
             setblock(parrot_fence_pos, 'air' if flying else 'iron_bars'))
 
     room.loop('parrot', main_clock).loop(parrot_loop, parrot_settings)
-    room.function('pig_init').add(placer(*mid_west_placer).summon('pig'))
-    room.loop('pig', main_clock).loop(
-        lambda step: execute().as_(e().tag('pig')).run(
-            execute().as_(e().tag('pig')).run(data().merge(s(), {'variant': step.elem}))),
-        ('temperate', 'warm', 'cold'))
+
+    def pig_loop(step):
+        if step.elem == 'temperate':
+            name = 'Pig'
+        else:
+            name = f'{step.elem.title()} Pig'
+        yield execute().as_(e().tag('pig')).run(data().merge(s(), {'variant': step.elem, 'CustomName': name}))
+
+    room.function('pig_init').add(placer(*mid_west_placer).summon('pig'), room.label(r(-3, 2, -1), 'Saddle'))
+    room.loop('pig', main_clock).loop(pig_loop, ('temperate', 'warm', 'cold'))
     room.function('polar_bear_init').add(placer(*south_placer).summon('Polar Bear'))
     room.function('rabbit_init').add(placer(*mid_east_placer).summon('rabbit'))
 
