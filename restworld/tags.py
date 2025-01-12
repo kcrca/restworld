@@ -32,6 +32,11 @@ def tags():
         elif added:
             blocks[thing]['values'].append(added)
 
+    # Things that need clearing out wider than usual for the particle room, so be particular to avoid damaging stuff
+    blocks['particles_clear'] = {
+        'water', 'barrier', 'structure_void'
+    }
+
     blocks['air'] = {
         'values': [
             'air',

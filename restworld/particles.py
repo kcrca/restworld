@@ -3,7 +3,7 @@ from __future__ import annotations
 import math
 import random
 
-from pynecraft.base import EAST, NORTH, Nbt, OVERWORLD, SOUTH, WEST, as_facing, d, r, to_id
+from pynecraft.base import Arg, EAST, NORTH, Nbt, OVERWORLD, SOUTH, WEST, as_facing, d, r, to_id
 from pynecraft.commands import Block, CLEAR, Entity, INFINITE, JsonText, Particle, RAIN, REPLACE, a, data, e, effect, \
     execute, fill, fillbiome, function, item, kill, particle, playsound, schedule, setblock, summon, weather
 from pynecraft.function import BLOCK, ITEM
@@ -179,22 +179,19 @@ def floor(block):
 
 
 def set_biome(biome):
-    return fillbiome(r(-3, 1, -3), r(3, 5, 3), biome)
+    return fillbiome(r(-5, 0, -4), r(4, 8, 4), biome)
 
 
 def room():
     check_for_unused()
 
+    run_at = execute().at(e().tag('particles_action_home')).positioned(r(0, 2, 0))
+
     def particle_sign(action_desc: ActionDesc, wall):
         dx, _, dz = as_facing(wall.facing).scale(1)
         action_desc.which = as_particle(action_desc.which)
-        run_at = execute().at(e().tag('particles_action_home')).positioned(r(0, 2, 0))
-        return WallSign(action_desc.sign_text(), (
-            run_at.run(setblock(r(0, -4, 0), 'redstone_block')),
-            run_at.run(data().merge(r(0, -4, -2), {
-                'Command': f'{str(run_at.run(""))} function restworld:particles/{action_desc.func()}_init'})),
-            run_at.run(data().merge(r(-1, -2, 0), {
-                'Command': f'{str(run_at.run(""))} function restworld:particles/{action_desc.func()}'})),
+        return WallSign().front(action_desc.sign_text(), (
+            function('restworld:particles/cur_init', {'current': action_desc.which}),
             setblock(d(-dx, 0, -dz), 'emerald_block')
         ))
 
@@ -207,7 +204,39 @@ def room():
         Wall(7, WEST, 7, -7, w_wall_used),
     ))
     room.function('signs_init', home=False).add(function('restworld:particles/signs'))
+    room.function('particles_signs_init').add(
+        execute().positioned(r(0, 1, 0)).run(function('restworld:particles/signs')),
+        fill(r(1, 1, 0), r(7, 1, -7), 'stone_bricks'))
     particler = e().tag('particler')
+    clear = room.function('particles_clear', home=False).add(
+        kill_em(particler),
+        kill(e().type('area_effect_cloud').distance((None, 10))),
+        fill(r(20, 0, 20), r(-20, 10, -20), 'air').replace('snow'),
+        fill(r(-2, 0, -2), r(2, 10, 4), 'air'),
+        fill(r(-4, 0, -4), r(4, 10, 6), 'air').replace('#restworld:particles_clear'),
+        execute().at(e().tag('particles_signs_home')).run(function('restworld:particles/particles_signs_init')),
+        execute().if_().block(r(0, 4, -3), 'air').run(setblock(r(0, 4, -3), ('stone_button', {'facing': SOUTH}))),
+        execute().if_().block(r(0, 5, -4), 'air').run(setblock(r(0, 5, -4), ('stone_button', {'face': 'floor'}))),
+        set_biome(PLAINS),
+        execute().in_(OVERWORLD).run(weather(CLEAR)))
+    room.function('cur_init', home=False).add(
+        data().modify('restworld:particles', 'current').set().value(Arg('current')),
+        run_at.run(
+            function(clear),
+            function('restworld:particles/$(current)_init'),
+            function('restworld:particles/$(current)'),
+            kill(e().type('item').distance((None, 10))),
+        )
+    )
+    room.function('cur', home=False).add(
+        run_at.run(function('restworld:particles/$(current)')),
+        function('restworld:particles/particle_book')
+    )
+    room.function('cur_enter', home=False).add(run_at.run(function('restworld:particles/$(current)_enter')))
+    room.function('cur_exit', home=False).add(run_at.run(function('restworld:particles/$(current)_exit')))
+
+    room.function('particles_action_enter').add(setblock(r(-1, 0, -1), 'redstone_block'))
+    room.function('particles_action_exit').add(setblock(r(-1, 0, -1), 'melon'))
 
     animal = room.loop('animal', home=False).loop(lambda step: exemplar(step.elem, 0, {'NoAI': True}), (
         Entity('Cow'), Entity('Pig'), Entity('Horse', {'Variant': 257}), Entity('Llama', {'Variant': 2}),
@@ -358,7 +387,7 @@ def room():
     room.function('firework_init', home=False).add(setblock(r(0, 1, 0), ('dispenser', {'facing': 'up'})))
     room.function('fishing', home=False).add(fast().run(particle(FISHING, r(0, 1.5, 0), (0.2, 0, 0.2), 0, 6)))
     room.function('fishing_init', home=False).add(
-        fill(r(-3, 0, 4), r(3, 0, 4), 'oak_wall_sign'),
+        fill(r(-3, 0, 4), r(3, 0, 4), 'structure_void'),
         fill(r(3, 0, 3), r(-3, 0, -3), 'water'))
     room.function('gust_init', home=False).add(
         setblock(r(0, 2, -1), ('dispenser', {'facing': SOUTH})),
@@ -397,12 +426,6 @@ def room():
         fill(r(-2, 0, -2), r(2, 2, 0), 'prismarine'),
         fill(r(-1, 1, -1), r(1, 2, 0), 'air'),
         setblock(r(0, 2, 0), 'conduit'))
-    room.function('particles_clear', home=False).add(
-        kill_em(particler),
-        kill(e().type('area_effect_cloud').distance((None, 10))),
-        fill(r(20, 0, 20), r(-20, 10, -20), 'air').replace('snow'),
-        set_biome(PLAINS),
-        execute().in_(OVERWORLD).run(weather(CLEAR)))
     room.function('poof', home=False).add(main().run(particle(POOF, r(0, 1, 0), (0.25, 0.25, 0.25), 0, 15)))
     room.function('portal_init', home=False).add(
         fill(r(-2, 0, -1), r(2, 4, -1), 'obsidian'),
@@ -444,7 +467,7 @@ def room():
     room.function('snowflake_exit', home=False).add(weather(CLEAR))
     room.function('sonic_boom_init', home=False).add(exemplar('warden', 0, {'NoAI': True}))
     room.function('sonic_boom', home=False).add(main().run(particle(SONIC_BOOM, r(0, 2, 0.5), (0, 0, 0), 1, 1)))
-    room.function('soul', home=False).add(fast().run(particle(SOUL, r(0, 0.75, 0), (0.05, 0, 0.05), 0.0, 4)))
+    room.function('soul', home=False).add(fast().run(particle(SOUL, r(0, 0.75, 0), (0.5, 0, 0.5), 0.0, 4)))
     room.function('soul_init', home=False).add(floor('soul_soil'))
     room.function('spit', home=False).add(fast().run(summon('llama_spit', r(0, 1.6, 0.7),
                                                             {'Motion': [0.0, 0.0, 1.0], 'direction': [0.0, 0.0, 1.0],
@@ -533,7 +556,7 @@ def room():
             book.add(text)
         book.add(JsonText('.').bold(False))
     room.function('particle_book', home=False).add(
-        ensure(r(1, 2, -4), Block('lectern', {'facing': SOUTH, 'has_book': True}),
+        ensure(r(1, 2, -3), Block('lectern', {'facing': SOUTH, 'has_book': True}),
                nbt=book.as_item())
     )
 
