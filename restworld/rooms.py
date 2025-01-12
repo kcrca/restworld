@@ -10,7 +10,8 @@ from pynecraft.base import BLUE, EAST, FacingDef, NE, NORTH, NW, Nbt, ORANGE, RO
     RelCoord, SE, SOUTH, SW, WEST, r, rotate_facing, to_name
 from pynecraft.commands import Block, BlockDef, CLEAR, Command, Commands, Entity, EntityDef, INT, MINUS, Particle, \
     Position, RESULT, Score, SignMessages, Text, a, as_block, as_entity, as_facing, as_score, comment, data, e, execute, \
-    function, kill, n, p, particle, say, schedule, scoreboard, setblock, summon, tag, tellraw, tp, weather
+    fill, function, function, kill, n, p, particle, say, schedule, scoreboard, setblock, summon, tag, tellraw, tp, \
+    weather
 from pynecraft.function import DataPack, Function, FunctionSet, LATEST_PACK_VERSION, Loop
 from pynecraft.simpler import TextDisplay, WallSign
 from pynecraft.values import DUMMY
@@ -625,13 +626,29 @@ class Wall:
         self.z = z
 
     def signs(self, desc_iter, get_sign):
+        all_signs = []
         dx, _, dz = rotate_facing(self.facing, ROTATION_270).scale(1)
+        bx, _, bz = self.facing.scale(-1)
+        min_x = min_y = min_z = max_x = max_y = max_z = None
         for y in self.used.keys():
+            min_y, max_y = _ranges(y, min_y, max_y)
+            backing = Block('quartz_pillar', state={'axis': ('x' if dz == 0 else 'z')}) if y == 5 else 'smooth_quartz'
             for h in self.used[y]:
                 sign = get_sign(next(desc_iter), self)
                 x = self.x + h * dx
                 z = self.z + h * dz
-                yield sign.place(r(x, y, z), self.facing)
+                min_x, max_x = _ranges(x, min_x, max_x)
+                min_z, max_z = _ranges(z, min_z, max_z)
+                yield setblock(r(x + bx, y, z + bz), backing)
+                all_signs.append(sign.place(r(x, y, z), self.facing, clear=False))
+        yield fill(r(min_x, min_y, min_z), r(max_x, max_y, max_z), 'air').replace('#wall_signs')
+        yield all_signs
+
+
+def _ranges(cur: int, mn: int, mx: int | None) -> [int, int]:
+    if mx is None:
+        return cur, cur
+    return min(cur, mn), max(cur, mx)
 
 
 class ActionDesc:
@@ -691,7 +708,7 @@ class SignedRoom(Room):
             return None
         try:
             desc = next(i)
-            raise ValueError('%s...: Remaining descriptions after all signs are placed' % desc.name)
+            raise ValueError('Remaining descriptions after all signs are placed: "%s"...' % desc.name)
         except StopIteration:
             return
 
