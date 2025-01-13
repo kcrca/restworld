@@ -515,25 +515,19 @@ def room():
                      (0.05, 0.25, 0.05), 0.5, 1),
         )
     )
-    do_crumble = room.function('do_crumble', home=False).add(
-        execute().at(e().tag('particles_action_home')).run(
-            setblock(r(0, 3, 0), 'air'),
-            particle(
-                Particle(BLOCK_CRUMBLE,
-                         {'block_state': {'Name': 'creaking_heart', 'Properties': {'creaking_heart_state': 'awake'}}}),
-                r(0, 3.5, 0), (0.25, 0.25, 0.25), 0, 20),
-        )
-    )
-    crumble_init = room.function('block_crumble_init', home=False).add(
+    room.function('block_crumble_init', home=False).add(
         setblock(r(0, 0, 0), 'pale_oak_log'),
         setblock(r(0, 1, 0), ('creaking_heart', {'creaking_heart_state': 'awake', 'natural': True})),
         setblock(r(0, 2, 0), 'pale_oak_log'),
     )
     room.function('block_crumble', home=False).add(
         main().run(
-            function(crumble_init),
-            schedule().function(do_crumble, 15, REPLACE)
-        )
+            main().run(setblock(r(0, 1, 0), ('creaking_heart', {'creaking_heart_state': 'awake', 'natural': True})))),
+        main(delay=15).run(
+            setblock(r(0, 1, 0), 'air'),
+            particle(Particle(BLOCK_CRUMBLE, {
+                'block_state': {'Name': 'creaking_heart', 'Properties': {'creaking_heart_state': 'awake'}}}),
+                     r(0, 1.75, 0), (0.25, 0.25, 0.25), 0, 20))
     )
     room.function('vault_connection_init', home=False).add(
         setblock(r(-1, 0, 0), 'vault'),
