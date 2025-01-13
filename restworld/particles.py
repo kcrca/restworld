@@ -9,7 +9,7 @@ from pynecraft.commands import BLOCK_MARKER, Block, CLEAR, DUST_PILLAR, Entity, 
     setblock, summon, weather
 from pynecraft.function import BLOCK, ITEM
 from pynecraft.simpler import Book, PLAINS, TextDisplay, VILLAGER_BIOMES, VILLAGER_PROFESSIONS, WallSign
-from pynecraft.values import ABSORPTION, AMBIENT_ENTITY_EFFECT, ANGRY_VILLAGER, ASH, BASALT_DELTAS, BLINDNESS, \
+from pynecraft.values import ABSORPTION, ANGRY_VILLAGER, ASH, BASALT_DELTAS, BLINDNESS, \
     BLOCK_CRUMBLE, BUBBLE, BUBBLE_COLUMN_UP, BUBBLE_POP, CAMPFIRE_COSY_SMOKE, CAMPFIRE_SIGNAL_SMOKE, CHERRY_LEAVES, \
     CLOUD, COMPOSTER, CRIMSON_FOREST, CRIMSON_SPORE, CRIT, CURRENT_DOWN, DAMAGE_INDICATOR, DOLPHIN, DRAGON_BREATH, \
     DRIPPING_DRIPSTONE_LAVA, DRIPPING_DRIPSTONE_WATER, DRIPPING_HONEY, DRIPPING_LAVA, DRIPPING_OBSIDIAN_TEAR, \
@@ -56,6 +56,7 @@ actions = [
     action(DUST_PLUME),
     action(DUST_PILLAR),
     action(EFFECT, 'Effect|(and Entity|Effect)', also=(ENTITY_EFFECT,)),
+    action(ELDER_GUARDIAN),
     action(ELECTRIC_SPARK),  # Could be in redstone if we added particle
     action(ENCHANTED_HIT),
     action(EXPLOSION, also=(EXPLOSION_EMITTER,)),
@@ -80,6 +81,7 @@ actions = [
     action(SNOWFLAKE, 'Snow'),
     action(SONIC_BOOM),  # Could be in mobs if we added particle
     action(SOUL),
+    action(SPIT),
     action(SPLASH),
     action(SQUID_INK, note='and Glow Squid', also=(GLOW, GLOW_SQUID_INK)),
     action(SWEEP_ATTACK),
@@ -127,13 +129,10 @@ hover = {
 }
 
 unused_particles = {
-    AMBIENT_ENTITY_EFFECT,  # Being removed at 1.21 I think
+    OMINOUS_SPAWNING,
     BLOCK,  # This just happens in the game, plus I can't see how to generate it.
     DUST_COLOR_TRANSITION,  # Can the player control its look? AFAICT, it's just when the power level changes?
-    ELDER_GUARDIAN,  # Just the elder guardian face in your face, and makes it hard to turn off.
     ITEM,  # Same as BLOCK
-    OMINOUS_SPAWNING,  # Appeared in 24w13a, but no obvious use
-    SPIT,  # Broke at 1.19, can't get the summoned spit to move.
     WHITE_SMOKE,  # Appeared in 24w13a, but no obvious use
 }
 # Notes:
@@ -199,8 +198,8 @@ def room():
         ))
 
     n_wall_used = {4: span(1, 5), 3: span(1, 5), 2: (1, 2, 4, 5)}
-    e_wall_used = {5: (1, 2, 4, 5), 4: span(1, 5), 3: span(1, 5), 2: span(1, 5)}
-    w_wall_used = {5: (1, 2, 4, 5), 4: span(1, 5), 3: span(1, 5), 2: span(1, 5)}
+    e_wall_used = {5: span(1, 5), 4: span(1, 5), 3: span(1, 5), 2: span(1, 5)}
+    w_wall_used = {5: span(1, 5), 4: span(1, 5), 3: span(1, 5), 2: span(1, 5)}
     room = SignedRoom('particles', restworld, SOUTH, (None, 'Particles'), particle_sign, actions, (
         Wall(7, EAST, 1, -1, e_wall_used),
         Wall(7, SOUTH, 1, -7, n_wall_used),
@@ -232,9 +231,7 @@ def room():
         )
     )
     room.function('cur', home=False).add(
-        run_at.run(function('restworld:particles/$(current)')),
-        function('restworld:particles/particle_book')
-    )
+        run_at.run(function('restworld:particles/$(current)'), function('restworld:particles/particle_book')))
     room.function('cur_enter', home=False).add(run_at.run(function('restworld:particles/$(current)_enter')))
     room.function('cur_exit', home=False).add(run_at.run(function('restworld:particles/$(current)_exit')))
 
@@ -285,7 +282,10 @@ def room():
         fill(r(1, -1, 1), r(1, -1, -1), 'magma_block'),
         fill(r(-1, -1, 1), r(-1, -1, -1), 'soul_sand'),
         function(ocean))
-    room.function('cloud', home=False).add(main().run(particle(CLOUD, r(0, 1, 0), (0.25, 0.25, 0.25), 0.05, 10)))
+    room.function('cloud_init', home=False).add(floor('netherrack'))
+    room.function('cloud', home=False).add(
+        main().run(setblock(r(0, 0, 0), 'wet_sponge'), particle(CLOUD, r(0, 1.25, 0), (0.25, 0, 0.25), 0, 8)),
+        main(delay=3).run(setblock(r(0, 0, 0), 'sponge')))
     room.function('composter', home=False).add(
         main().run(particle(COMPOSTER, r(0, 0.9, 0), (0.2, 0.1, 0.2), 1, 12)))
     room.function('composter_init', home=False).add(setblock(r(0, 0, 0), ('composter', {'level': 3})))
@@ -343,6 +343,7 @@ def room():
     room.function('egg_crack', home=False).add(main().run(
         setblock(r(0, 0, 0), 'air'),
         setblock(r(0, 0, 0), 'sniffer_egg')))
+    room.function('elder_guardian', home=False).add(main().run(particle(ELDER_GUARDIAN, r(0, 0, 0), (0, 0, 0), 0, 1)))
     room.function('electric_spark', home=False).add(main().run(summon('lightning_bolt', r(0, 1, 0))))
     room.function('electric_spark_init', home=False).add(setblock(r(0, 0, 0), 'lightning_rod'))
     room.function('enchant_init', home=False).add(
@@ -429,7 +430,10 @@ def room():
         fill(r(-2, 0, -2), r(2, 2, 0), 'prismarine'),
         fill(r(-1, 1, -1), r(1, 2, 0), 'air'),
         setblock(r(0, 2, 0), 'conduit'))
-    room.function('poof', home=False).add(main().run(particle(POOF, r(0, 1, 0), (0.25, 0.25, 0.25), 0, 15)))
+    room.function('poof', home=False).add(
+        main().run(function(animal), kill(particler), kill(e().type('item').distance((None, 10)))),
+    )
+    # room.function('poof', home=False).add(main().run(particle(POOF, r(0, 1, 0), (0.25, 0.25, 0.25), 0, 15)))
     room.function('portal_init', home=False).add(
         fill(r(-2, 0, -1), r(2, 4, -1), 'obsidian'),
         fill(r(-1, 1, -1), r(1, 3, -1), 'nether_portal'))
@@ -460,10 +464,10 @@ def room():
         main(delay=9).run(setblock(r(0, 0, 0), ('sculk_catalyst', {'bloom': False}))),
         main(delay=16).run(function(sculk_pop)),
     )
-    room.function('sneeze', home=False).add(
-        main().run(particle(SNEEZE, r(0, 0.25, 1.25), (0.05, 0.05, 0.5), 0.0, 2)),
-        main().run(playsound('entity.panda.sneeze', 'neutral', a(), r(0, 0, 0))))
     room.function('sneeze_init', home=False).add(exemplar('panda', 0, {'NoAI': True, 'Age': -2147483648}))
+    room.function('sneeze', home=False).add(
+        main().run(particle(SNEEZE, r(0, 0.25, 1), (0.05, 0.05, 0.5), 0.0, 2)),
+        main().run(playsound('entity.panda.sneeze', 'neutral', a(), r(0, 0, 0))))
     room.function('rain_init', home=False).add(weather(RAIN))
     room.function('rain_exit', home=False).add(weather(CLEAR))
     room.function('snowflake_init', home=False).add(set_biome(SNOWY_TAIGA), weather(RAIN))
