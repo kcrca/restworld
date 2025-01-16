@@ -257,7 +257,7 @@ def friendlies(room):
             name = f'{step.elem.title()} Pig'
         yield execute().as_(e().tag('pig')).run(data().merge(s(), {'variant': step.elem, 'CustomName': name}))
 
-    room.function('pig_init').add(placer(*mid_west_placer).summon('pig'), room.label(r(-3, 2, -1), 'Saddle'))
+    room.function('pig_init').add(placer(*mid_west_placer, tags=('saddle',)).summon('pig'))
     room.loop('pig', main_clock).loop(pig_loop, ('temperate', 'warm', 'cold'))
     room.function('polar_bear_init').add(placer(*south_placer).summon('Polar Bear'))
     room.function('rabbit_init').add(placer(*mid_east_placer).summon('rabbit'))
@@ -589,7 +589,7 @@ def monsters(room):
 
     def undead_saddle_loop(step):
         item = 'air' if step.i == 0 else 'saddle'
-        yield commands.item().replace().entity(e().tag(undead_horse_tag), 'horse.saddle').with_(item)
+        yield commands.item().replace().entity(e().tag(undead_horse_tag), 'saddle').with_(item)
 
     room.loop('undead_saddle').loop(undead_saddle_loop, range(2))
 

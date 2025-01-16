@@ -313,9 +313,9 @@ def basic_functions(room):
             yield data().merge(e().tag('armor_horse_frame').limit(1),
                                {'Item': {'id': '%s_horse_armor' % armor, 'Count': 1}, 'ItemRotation': 0})
             yield execute().if_().score(horse_saddle).matches(1).run(
-                item().replace().entity(e().tag('armor_horse'), 'horse.saddle').with_('saddle'))
+                item().replace().entity(e().tag('armor_horse'), 'saddle').with_('saddle'))
             yield execute().if_().score(horse_saddle).matches(0).run(
-                item().replace().entity(e().tag('armor_horse'), 'horse.saddle').with_('air'))
+                item().replace().entity(e().tag('armor_horse'), 'saddle').with_('air'))
         else:
             yield data().remove(e().tag('armor_horse_frame').limit(1), 'Item')
             yield execute().if_().entity(e().tag('armor_horse').distance((None, 10))).run(
