@@ -896,8 +896,8 @@ def room_init_functions(room, block_list_score):
 
 def armor_frame(which, where):
     frame = Entity('item_frame',
-                   {'Facing': 3, 'Tags': ['colorings_item', f'colorings_frame_{which}', 'colorings_enchantable'],
-                    'Fixed': True})
+                   {'Facing': 3, 'Fixed': True,
+                    'Tags': ['colorings_item', 'colorings_frame', f'colorings_frame_{which}', 'colorings_enchantable']})
     return frame.summon(where)
 
 
@@ -1040,18 +1040,17 @@ def color_functions(room):
     mob_nbt = {'Time': True, 'NoAI': True, 'Silent': True}
     horse_nbt = Nbt({
         'Variant': 5, 'Tags': ['colorings_horse', 'colorings_item', 'colorings_names', 'colorings_enchantable'],
-        'equipment': {'body':Item.nbt_for('leather_horse_armor')}, 'Rotation': [-25, 0]}).merge(mob_nbt)
+        'equipment': {'body': Item.nbt_for('leather_horse_armor')}, 'Rotation': [-25, 0]}).merge(mob_nbt)
     dog_nbt = Nbt(
         {'Owner': 'dummy', 'Tags': ['colorings_dog', 'colorings_item', 'colorings_enchantable'],
          'Rotation': [-65, 0]}).merge(mob_nbt)
-    wolf_armor_nbt = Nbt({'equipment':{'body': Item.nbt_for('wolf_armor')}})
+    wolf_armor_nbt = Nbt({'equipment': {'body': Item.nbt_for('wolf_armor')}})
     cat_nbt = Nbt(
         {'variant': 'persian', 'Owner': 'dummy', 'Tags': ['colorings_cat', 'colorings_item'], 'ColorColor': 3,
          'Rotation': [110, 0]}).merge(mob_nbt)
     llama_nbt = Nbt(
         {'Tags': ['colorings_llama', 'colorings_item', 'colorings_names', 'colorings_enchantable'], 'Variant': 1,
-         'Rotation': [20, 0],
-         'Leashed': True}).merge(mob_nbt)
+         'Rotation': [20, 0], 'Leashed': True}).merge(mob_nbt)
     sheep_nbt = Nbt(
         {'Tags': ['colorings_sheep', 'colorings_item'], 'Variant': 1, 'Rotation': [-35, 0], 'Leashed': True}).merge(
         mob_nbt)
