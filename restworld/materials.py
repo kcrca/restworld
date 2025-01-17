@@ -5,9 +5,9 @@ import re
 from pynecraft import info
 from pynecraft.base import Arg, EAST, EQ, NE, NORTH, NW, Nbt, NbtDef, SOUTH, WEST, as_facing, r, to_id
 from pynecraft.commands import Block, BlockDef, Entity, LONG, MOD, PLUS, RESULT, Score, as_block, data, e, execute, \
-    fill, fillbiome, function, item, kill, n, random, s, scoreboard, setblock, summon, tag
+    fill, fillbiome, function, item, kill, n, random, s, say, scoreboard, setblock, summon, tag
 from pynecraft.function import BLOCK
-from pynecraft.info import colors, must_give_items, operator_menu, stems, trim_materials, trim_patterns
+from pynecraft.info import armor_equipment, colors, must_give_items, operator_menu, stems, trim_materials, trim_patterns
 from pynecraft.simpler import Item, ItemFrame, Region, SWAMP, Sign, WallSign
 from pynecraft.values import COLD_OCEAN, FROZEN_OCEAN, LUKEWARM_OCEAN, MANGROVE_SWAMP, MEADOW, OCEAN, WARM_OCEAN, biomes
 from restworld.rooms import Room, kill_em
@@ -15,18 +15,19 @@ from restworld.world import fast_clock, main_clock, restworld
 
 
 def enchant(score: Score, tag: str, on: bool):
-    def enchanter(value, which, command):
-        return execute().if_().score(score).matches(value).as_(e().tag(which)).run(command)
-
+    places = tuple(armor_equipment.keys()) + ('saddle', 'mainhand', 'offhand', 'body')
     if on:
-        value, cmd = 1, lambda path: data().modify(s(), path).merge().value(
-            {'enchantments': {'levels': {'mending': 1}}})
+        equipment = {}
+        for place in places:
+            equipment[place] = {'components': {'minecraft:enchantments': {'levels': {'mending': 1}}}}
+        commands = [data().merge(s(), {'equipment': equipment})]
     else:
-        value, cmd = 0, lambda path: data().remove(s(), path + '.minecraft:enchantments')
-    yield enchanter(value, tag, cmd('Item.components'))
-    yield enchanter(value, tag, cmd('body_armor_item.components'))
-    yield enchanter(value, tag, cmd('ArmorItems[].components'))
-    yield enchanter(value, tag, cmd('HandItems[].components'))
+        commands = [data().remove(s(), 'Item.components')]
+        for place in places:
+            commands.append(data().remove(s(), f'equipment.{place}.components'))
+    value = int(on)
+    say('hi')
+    yield execute().if_().score(score).matches(value).as_(e().tag(tag)).run(say(str(on)), commands)
 
 
 def room():
@@ -83,18 +84,18 @@ def room():
         color = step.elem
         if color:
             yield data().modify(n().tag('wolf_armor_damage'),
-                                'body_armor_item.components.minecraft:dyed_color.rgb').set().value(color.leather)
+                                'equipment.body.components.minecraft:dyed_color.rgb').set().value(color.leather)
             yield Sign.change(r(0, 2, 1), (None, None, f'Color: {step.elem.name}'))
         else:
-            yield data().remove(n().tag('wolf_armor_damage'), 'body_armor_item.components.minecraft:dyed_color')
+            yield data().remove(n().tag('wolf_armor_damage'), 'equipment.body.components.minecraft:dyed_color')
             yield Sign.change(r(0, 2, 1), (None, None, 'Color: None'))
 
     def wolf_armor_damage_loop(step):
         if step.elem:
             yield data().modify(n().tag('wolf_armor_damage'),
-                                'body_armor_item.components.minecraft:damage').set().value(step.elem)
+                                'equipment.body.components.minecraft:damage').set().value(step.elem)
         else:
-            yield data().remove(n().tag('wolf_armor_damage'), 'body_armor_item.components.minecraft:damage')
+            yield data().remove(n().tag('wolf_armor_damage'), 'equipment.body.components.minecraft:damage')
         yield Sign.change(r(0, 2, 1), (None, f'Damage: {step.elem}'))
 
     room.loop('wolf_armor_color', main_clock, home=False).loop(wolf_armor_color_loop, colors + (None,))
@@ -102,7 +103,7 @@ def room():
     room.function('wolf_armor_init').add(
         room.mob_placer(r(0, 2, 0), WEST, adults=True).summon(
             Entity('wolf', name='Wolf Armor'), tags=('wolf_armor_damage',),
-            nbt={'Owner': 'dummy', 'body_armor_item': Item.nbt_for('wolf_armor')}),
+            nbt={'Owner': 'dummy', 'equipment': {'body': Item.nbt_for('wolf_armor')}}),
         WallSign((None, 'Damage: None', 'Color: None')).place(r(0, 2, 1), WEST),
         room.label(r(-1, 2, 1), 'Color'))
     room.function('wolf_armor_home', exists_ok=True).add(tag(e().tag('wolf_armor_home')).add('wolf_armor_damage_home'))
@@ -247,10 +248,12 @@ def basic_functions(room):
         stand.summon(r(0, 2.0, 0), facing=NORTH, nbt={'CustomNameVisible': True}))
     for i in range(0, 5):
         basic_init.add(invis_stand.summon(r(-(0.8 + i * 0.7), 2.0, 0), facing=NORTH,
-                                          nbt={'Tags': ['material_%d' % (4 + i), 'material_static']}))
+                                          nbt={'Tags': ['enchantable', 'material_%d' % (4 + i), 'material_static']}))
         if i < 4:
             basic_init.add(invis_stand.summon(r(+(0.6 + i * 0.7), 2.0, 0), facing=NORTH,
-                                              nbt={'Tags': ['material_%d' % (3 - i), 'material_static']}))
+                                              nbt={
+                                                  'LeftHanded': True,
+                                                  'Tags': ['enchantable', 'material_%d' % (3 - i), 'material_static']}))
 
     basic_init.add(fill(r(-3, 2, 2), r(-3, 5, 2), 'stone'), kill(e().tag('armor_frame')),
                    summon('item_frame', r(-3, 2, 1),
@@ -288,8 +291,9 @@ def basic_functions(room):
         yield data().merge(
             e().tag('basic_stand').limit(1), {
                 'CustomName': material.capitalize(),
-                'ArmorItems': [{'id': '%s_boots' % armor}, {'id': '%s_leggings' % armor},
-                               {'id': '%s_chestplate' % armor}, {'id': '%s_helmet' % armor}]})
+                'equipment': {
+                    'feet': Item.nbt_for('%s_boots' % armor), 'legs': Item.nbt_for('%s_leggings' % armor),
+                    'chest': Item.nbt_for('%s_chestplate' % armor), 'head': Item.nbt_for('%s_helmet' % armor)}})
 
         yield fill(r(-3, 2, 2), r(-3, 5, 2), background.id)
         yield setblock(r(3, 2, 2), background.id)
@@ -308,10 +312,10 @@ def basic_functions(room):
                 room.mob_placer(r(4.5, 2, 0.5), NORTH, adults=True).summon(
                     'horse',
                     nbt={'Variant': 1, 'Tame': True, 'Tags': ['armor_horse', 'enchantable', 'material_static']}))
-            yield data().merge(e().tag('armor_horse').limit(1).sort('nearest'), {
-                'body_armor_item': {'id': '%s_horse_armor' % armor, 'Count': 1}})
+            yield data().merge(n().tag('armor_horse').limit(1),
+                               {'equipment': {'body': Item.nbt_for('%s_horse_armor' % armor)}})
             yield data().merge(e().tag('armor_horse_frame').limit(1),
-                               {'Item': {'id': '%s_horse_armor' % armor, 'Count': 1}, 'ItemRotation': 0})
+                               {'Item': Item.nbt_for('%s_horse_armor' % armor), 'ItemRotation': 0})
             yield execute().if_().score(horse_saddle).matches(1).run(
                 item().replace().entity(e().tag('armor_horse'), 'saddle').with_('saddle'))
             yield execute().if_().score(horse_saddle).matches(0).run(
@@ -321,8 +325,9 @@ def basic_functions(room):
             yield execute().if_().entity(e().tag('armor_horse').distance((None, 10))).run(
                 kill_em(e().tag('armor_horse')))
 
-        yield data().merge(e().tag('basic_stand').limit(1), {
-            'HandItems': [{'id': '%s_sword' % material, 'Count': 1}, {'id': 'shield', 'Count': 1}]})
+        yield data().merge(e().tag('basic_stand').limit(1),
+                           {'equipment': {'mainhand': Item.nbt_for('%s_sword' % material),
+                                          'offhand': Item.nbt_for('shield')}})
 
         hands_row = [None, None, '%s_shovel' % material, '%s_pickaxe' % material, '%s_hoe' % material,
                      '%s_axe' % material, None, None]
@@ -337,12 +342,10 @@ def basic_functions(room):
             hands_row[7] = 'compass'
         elif material == 'golden':
             hands_row[6] = 'clock'
-        hands = list({'id': h} if h else {} for h in hands_row)
+        hands = list({'mainhand': Item.nbt_for(h)} if h else {} for h in hands_row)
 
-        for j in range(0, 4):
-            yield data().merge(e().tag('material_%d' % j).limit(1), {'HandItems': [hands[j], {}]})
-        for j in range(4, 8):
-            yield data().merge(e().tag('material_%d' % j).limit(1), {'HandItems': [{}, hands[j]]})
+        for j in range(0, 8):
+            yield data().merge(e().tag('material_%d' % j).limit(1), {'equipment': hands[j]})
         yield data().merge(r(-2, 0, 1), {'name': f'restworld:material_{material}', 'mode': 'LOAD'})
 
     which_elytra = room.score('which_elytra')
@@ -353,19 +356,19 @@ def basic_functions(room):
         kill_em(e().tag('material_thing'))
     ).loop(basic_loop, materials).add(
         execute().if_().score(turtle_helmet).matches(1).run(
-            data().modify(n().tag('basic_stand'), 'ArmorItems[3].id').set().value('turtle_helmet'),
+            data().modify(n().tag('basic_stand'), 'equipment.head.id').set().value('turtle_helmet'),
             data().modify(n().tag('armor_helmet'), 'Item.id').set().value('turtle_helmet')),
         execute().if_().score(elytra).matches(1).run(
-            data().modify(n().tag('basic_stand'), 'ArmorItems[2].id').set().value('elytra'),
+            data().modify(n().tag('basic_stand'), 'equipment.chest.id').set().value('elytra'),
             data().modify(n().tag('armor_chestplate'), 'Item.id').set().value('elytra'),
             which_elytra.add(1),
             execute().if_().score(which_elytra).matches((2, None)).run(which_elytra.set(0)),
             execute().if_().score(which_elytra).matches(1).run(
-                data().modify(n().tag('basic_stand'), 'ArmorItems[2].components.minecraft:damage').set().value(450),
+                data().modify(n().tag('basic_stand'), 'equipment.chest.components.minecraft:damage').set().value(450),
                 data().modify(n().tag('armor_chestplate'), 'Item.components.minecraft:damage').set().value(450)
             ),
             execute().unless().score(which_elytra).matches(1).run(
-                data().modify(n().tag('basic_stand'), 'ArmorItems[2].components.minecraft:damage').set().value(0),
+                data().modify(n().tag('basic_stand'), 'equipment.chest.components.minecraft:damage').set().value(0),
                 data().modify(n().tag('armor_chestplate'), 'Item.components.minecraft:damage').set().value(0)
             )
         ),
