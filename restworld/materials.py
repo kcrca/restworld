@@ -5,7 +5,7 @@ import re
 from pynecraft import info
 from pynecraft.base import Arg, EAST, EQ, NE, NORTH, NW, Nbt, NbtDef, SOUTH, WEST, as_facing, r, to_id
 from pynecraft.commands import Block, BlockDef, Entity, LONG, MOD, PLUS, RESULT, Score, as_block, data, e, execute, \
-    fill, fillbiome, function, item, kill, n, random, s, say, scoreboard, setblock, summon, tag
+    fill, fillbiome, function, item, kill, n, random, s, scoreboard, setblock, summon, tag
 from pynecraft.function import BLOCK
 from pynecraft.info import armor_equipment, colors, must_give_items, operator_menu, stems, trim_materials, trim_patterns
 from pynecraft.simpler import Item, ItemFrame, Region, SWAMP, Sign, WallSign
@@ -26,8 +26,7 @@ def enchant(score: Score, tag: str, on: bool):
         for place in places:
             commands.append(data().remove(s(), f'equipment.{place}.components'))
     value = int(on)
-    say('hi')
-    yield execute().if_().score(score).matches(value).as_(e().tag(tag)).run(say(str(on)), commands)
+    yield execute().if_().score(score).matches(value).as_(e().tag(tag)).run(commands)
 
 
 def room():
@@ -329,8 +328,8 @@ def basic_functions(room):
                            {'equipment': {'mainhand': Item.nbt_for('%s_sword' % material),
                                           'offhand': Item.nbt_for('shield')}})
 
-        hands_row = [None, None, '%s_shovel' % material, '%s_pickaxe' % material, '%s_hoe' % material,
-                     '%s_axe' % material, None, None]
+        hands_row = ['air', 'air', '%s_shovel' % material, '%s_pickaxe' % material, '%s_hoe' % material,
+                     '%s_axe' % material, 'air', 'air']
         if material == 'wooden':
             hands_row[0] = 'stick'
             hands_row[1] = 'bow'
@@ -342,7 +341,7 @@ def basic_functions(room):
             hands_row[7] = 'compass'
         elif material == 'golden':
             hands_row[6] = 'clock'
-        hands = list({'mainhand': Item.nbt_for(h)} if h else {} for h in hands_row)
+        hands = list({'mainhand': Item.nbt_for(h)} for h in hands_row)
 
         for j in range(0, 8):
             yield data().merge(e().tag('material_%d' % j).limit(1), {'equipment': hands[j]})
@@ -665,7 +664,7 @@ def trim_functions(room):
     overall_tag = 'trim_stand'
     base_stand = Entity('armor_stand',
                         {'ShowArms': True,
-                         'Pose': {'LeftArm': [-20, 0, -120], 'RightArm': [-20, 0, 20],
+                         'Pose': {'LeftArm': [-20, 0, -170], 'RightArm': [-20, 0, 20],
                                   'LeftLeg': [-20, 0, 0], 'RightLeg': [20, 0, 0]}}).tag(room.name, overall_tag)
 
     places = (
