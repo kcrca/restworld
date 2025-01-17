@@ -5,7 +5,7 @@ import re
 from pynecraft import info
 from pynecraft.base import Arg, EAST, EQ, NE, NORTH, NW, Nbt, NbtDef, SOUTH, WEST, as_facing, r, to_id
 from pynecraft.commands import Block, BlockDef, Entity, LONG, MOD, PLUS, RESULT, Score, as_block, data, e, execute, \
-    fill, fillbiome, function, item, kill, n, random, s, say, scoreboard, setblock, summon, tag
+    fill, fillbiome, function, item, kill, n, random, s, scoreboard, setblock, summon, tag
 from pynecraft.function import BLOCK
 from pynecraft.info import armor_equipment, colors, must_give_items, operator_menu, stems, trim_materials, trim_patterns
 from pynecraft.simpler import Item, ItemFrame, Region, SWAMP, Sign, WallSign
@@ -165,7 +165,6 @@ def room():
 
     def ore_loop(step):
         ore, block, item, raw = (Block(x) if x else None for x in step.elem)
-        yield say(ore.name),
         yield from volume.replace(block.id, '#restworld:ore_blocks')
         yield Sign.change(r(3, 2, 6), (None, ore.name.replace(' Ore', '')))
         if 'Nether' in ore.name or 'Ancient' in ore.name:
@@ -656,9 +655,10 @@ def armor_for(stand: Entity, kind: str, nbt: NbtDef = None) -> None:
         nbt = {}
     base_nbt = Nbt({'components': {'trim': {'material': 'redstone', 'pattern': 'coast'}}})
     base_nbt = base_nbt.merge(nbt)
-    items = [Item.nbt_for(f'{kind}_{x}', base_nbt)
-             for x in armor_pieces]
-    stand.merge_nbt({'ArmorItems': items})
+    items = {}
+    for place, piece in armor_equipment.items():
+        items[place] = Item.nbt_for(f'{kind}_{piece}', base_nbt)
+    stand.merge_nbt({'equipment': items})
 
 
 def trim_functions(room):
@@ -744,8 +744,9 @@ def trim_functions(room):
             yield show.set(self.num)
 
         def _loop_func(self, step):
-            yield execute().as_(e().tag(overall_tag)).run(
-                data().modify(s(), f'ArmorItems[].{self.nbt_path}').set().value(step.elem))
+            for place in armor_equipment.keys():
+                yield execute().as_(e().tag(overall_tag)).run(
+                    data().modify(s(), f'equipment.{place}.{self.nbt_path}').set().value(step.elem))
             yield execute().as_(e().tag(frame)).run(data().modify(s(), f'Item.{self.nbt_path}').set().value(step.elem))
             yield execute().at(e().tag('trim_change_home')).run(
                 Sign.change(r(0, 2, 0), (None, None, None, step.elem.title())))
@@ -763,20 +764,21 @@ def trim_functions(room):
                 # The path is a.b.c, but we need the last element to be a.b{c:value}, and there is no replace, so...
                 path = self._to_path(t)
                 sign = WallSign().messages((None, 'Keep', f'{self.name.title().replace("s", "")}:', t.title()))
-                yield execute().if_().data(e().tag(overall_tag).limit(1), path).run(sign.place(r(-1, 2, 0), facing))
+                yield execute().if_().data(e().tag(overall_tag).limit(1), path).run(
+                    sign.place(r(-1, 2, 0), facing, clear=False))
 
         def _to_path(self, t):
-            return ('ArmorItems[0].' + self.nbt_path)[::-1].replace('.', '{', 1)[::-1] + ':' + t + '}'
+            return ('equipment.feet.' + self.nbt_path)[::-1].replace('.', '{', 1)[::-1] + ':' + t + '}'
 
     class Armors(Trim):
         def __init__(self, name: str, types, pos, armor_gen):
             super().__init__(name, types, pos, armor_gen, 'id')
 
         def _loop_func(self, step):
-            for i, piece in enumerate(armor_pieces):
+            for place, piece in armor_equipment.items():
                 which = f'{step.elem}_{piece}'
                 yield execute().as_(e().tag(overall_tag)).run(
-                    data().modify(s(), f'ArmorItems[{i}].{self.nbt_path}').set().value(which))
+                    data().modify(s(), f'equipment.{place}.{self.nbt_path}').set().value(which))
                 yield execute().as_(e().tag(f'{frame}_{piece}')).run(
                     data().modify(s(), f'Item.{self.nbt_path}').set().value(which))
             yield execute().at(e().tag('trim_change_home')).run(
@@ -784,7 +786,7 @@ def trim_functions(room):
             yield from self._trim_frame_sign(step)
 
         def _to_path(self, t):
-            return f'ArmorItems[{{id:"minecraft:{t}_boots"}}]'
+            return 'equipment.feet'
 
     categories = {
         'patterns': Trim('patterns', trim_patterns, patterns_places,
@@ -873,20 +875,20 @@ def trim_functions(room):
     chestplate_on = room.function('trim_chestplate_on', home=False)
     for armor in info.armors:
         chestplate_on.add(
-            execute().as_(e().tag(overall_tag).nbt({'ArmorItems': [{'id': f'minecraft:{armor}_leggings'}]})).run(
+            execute().as_(e().tag(overall_tag).nbt({'equipment': {'legs': {'id': f'minecraft:{armor}_leggings'}}})).run(
                 item().replace().entity(s(), 'armor.feet').with_(f'{armor}_boots'),
                 item().replace().entity(s(), 'armor.chest').with_(f'{armor}_chestplate')))
     chestplate_on.add(execute().as_(e().tag(overall_tag)).run(
-        data().modify(s(), 'ArmorItems[0].components.minecraft:trim').merge().from_(s(),
-                                                                                    'ArmorItems[1].components.minecraft:trim'),
-        data().modify(s(), 'ArmorItems[2].components.minecraft:trim').merge().from_(s(),
-                                                                                    'ArmorItems[1].components.minecraft:trim')))
+        data().modify(s(), 'equipment.feet.components.minecraft:trim').merge().from_(s(),
+                                                                                     'equipment.legs.components.minecraft:trim'),
+        data().modify(s(), 'equipment.chest.components.minecraft:trim').merge().from_(s(),
+                                                                                      'equipment.legs.components.minecraft:trim')))
 
     room.function('trim_turtle_on', home=False).add(
         execute().as_(e().tag(overall_tag)).run(
-            data().modify(s(), 'ArmorItems[3].id').set().value('turtle_helmet')))
+            data().modify(s(), 'equipment.head.id').set().value('turtle_helmet')))
     turtle_off = room.function('trim_turtle_off', home=False)
     for armor in info.armors:
         turtle_off.add(
-            execute().as_(e().tag(overall_tag).nbt({'ArmorItems': [{'id': f'minecraft:{armor}_leggings'}]})).run(
-                data().modify(s(), 'ArmorItems[3].id').set().value(f'{armor}_helmet')))
+            execute().as_(e().tag(overall_tag).nbt({'equipment': {'legs': {'id': f'minecraft:{armor}_leggings'}}})).run(
+                data().modify(s(), 'equipment.head.id').set().value(f'{armor}_helmet')))
