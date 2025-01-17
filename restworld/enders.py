@@ -34,6 +34,7 @@ def room():
             yield setblock(r(0, 5, 0), 'fire')
         else:
             yield kill(e().tag('crystal'))
+            yield setblock(r(0, 5, 0), 'air')
 
     room.loop('crystal', main_clock).add(kill(e().tag('crystal'))).loop(crystal_loop, range(0, 2))
 
