@@ -249,11 +249,11 @@ def basic_functions(room):
     for i in range(0, 5):
         basic_init.add(invis_stand.summon(
             r(-(0.8 + i * 0.7), 2.0, 0), facing=NORTH,
-            nbt={'Tags': ['enchantable', 'material_%d' % (4 + i), 'material_static']}))
+            nbt={'LeftHanded': True, 'Tags': ['enchantable', 'material_%d' % (4 + i), 'material_static']}))
         if i < 4:
             basic_init.add(invis_stand.summon(
                 r(+(0.6 + i * 0.7), 2.0, 0), facing=NORTH,
-                nbt={'LeftHanded': True, 'Tags': ['enchantable', 'material_%d' % (3 - i), 'material_static']}))
+                nbt={'Tags': ['enchantable', 'material_%d' % (3 - i), 'material_static']}))
 
     basic_init.add(fill(r(-3, 2, 2), r(-3, 5, 2), 'stone'), kill(e().tag('armor_frame')),
                    summon('item_frame', r(-3, 2, 1),
@@ -342,10 +342,12 @@ def basic_functions(room):
             hands_row[7] = 'compass'
         elif material == 'golden':
             hands_row[6] = 'clock'
-        hands = list({'mainhand': Item.nbt_for(h)} for h in hands_row)
-
-        for j in range(0, 8):
-            yield data().merge(e().tag('material_%d' % j).limit(1), {'equipment': hands[j]})
+        for j in range(0, 4):
+            yield data().merge(e().tag('material_%d' % j).limit(1),
+                               {'equipment': {'mainhand': Item.nbt_for(hands_row[j])}})
+        for j in range(4, 8):
+            yield data().merge(e().tag('material_%d' % j).limit(1),
+                               {'equipment': {'offhand': Item.nbt_for(hands_row[j])}})
         yield data().merge(r(-2, 0, 1), {'name': f'restworld:material_{material}', 'mode': 'LOAD'})
 
     which_elytra = room.score('which_elytra')
