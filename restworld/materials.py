@@ -23,9 +23,9 @@ def enchant(score: Score, tag: str, on: bool):
             equipment[place] = enchantment
         commands = [data().merge(s(), {'equipment': equipment, 'Item': enchantment})]
     else:
-        commands = [data().remove(s(), 'Item.components')]
+        commands = [data().remove(s(), 'Item.components.minecraft:enchantments')]
         for place in places:
-            commands.append(data().remove(s(), f'equipment.{place}.components'))
+            commands.append(data().remove(s(), f'equipment.{place}.components.minecraft:enchantments'))
     value = int(on)
     yield execute().if_().score(score).matches(value).as_(e().tag(tag)).run(commands)
 
