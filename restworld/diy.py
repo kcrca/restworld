@@ -65,8 +65,7 @@ def room():
         setblock(r(0, -4, 0), 'redstone_torch'),
         setblock(r(0, -4, 0), 'air'))
     stand = Entity('armor_stand').tag('customizer', 'diy').merge_nbt(
-        {'NoGravity': True, 'Small': True, 'ArmorItems': [{}, {}, {}, Item.nbt_for('turtle_helmet')],
-         'Rotation': [180, 0]})
+        {'NoGravity': True, 'Small': True, 'equipment': {'head': Item.nbt_for('turtle_helmet')}, 'Rotation': [180, 0]})
     tick_init = room.function('tick_init').add(
         stand.clone().tag('diy_starter').summon(r(-1, -3, 0, )),
         stand.clone().tag('diy_ender').summon(r(-1, -3, -6, )),

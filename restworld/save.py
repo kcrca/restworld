@@ -85,7 +85,7 @@ def room():
     helmet = Item.nbt_for('turtle_helmet')
     detector_stand = Entity('armor_stand',
                             dict(Rotation=as_facing(EAST).rotation, Small=True, NoGravity=True,
-                                 ArmorItems=[{}, {}, {}, helmet])).tag('save_detector')
+                                 equipment={'head': helmet})).tag('save_detector')
     block_nbt = Nbt(sizeY=SAVE_HEIGHT, posX=0, posY=1, posZ=-1, ignoreEntities=False)
 
     all_detectors = e().tag('save_detector')

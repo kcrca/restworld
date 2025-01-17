@@ -204,7 +204,7 @@ def summon_mob_commands(room, mob):
         mob_facing = rotate_facing(sector, 180)
         mob.merge_nbt({'IsImmuneToZombification': True, 'Invulnerable': True})
         if mob.name in UNDEAD:
-            mob.merge_nbt({'ArmorItems': [{}, {}, {}, Item.nbt_for('chainmail_helmet')]})
+            mob.merge_nbt({'equipment': {'head': Item.nbt_for('chainmail_helmet')}})
         big_places = ((0, 4), (4, 0)) if sector in (NW, SE) else ((0, 0), (4, 4))
         for mx in range(0, 6, 2):
             for mz in range(0, 6, 2):

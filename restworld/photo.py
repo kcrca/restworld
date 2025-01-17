@@ -7,7 +7,7 @@ import re
 from pynecraft.base import EAST, NE, NORTH, OVERWORLD, SOUTH, SW, as_facing, r, to_id
 from pynecraft.commands import Block, CREATIVE, Entity, SURVIVAL, e, execute, fill, function, gamemode, kill, p, \
     setblock, tp
-from pynecraft.info import colors, corals, stems, woods
+from pynecraft.info import armor_equipment, colors, corals, stems, woods
 from pynecraft.simpler import Item, Offset
 from restworld.rooms import MobPlacer, Room
 from restworld.world import restworld
@@ -62,7 +62,7 @@ mobs = (
     PhotoMob(8.7, +5, 'creeper', y=1.5),
     PhotoMob(8.7, +12, 'villager', y=1.5, nbt={'VillagerData': {'profession': 'weaponsmith'}}),
     PhotoMob(8.7, +19, 'piglin_brute', y=1.5,
-             nbt={'LeftHanded': True, 'HandItems': [{'id': 'golden_axe', 'Count': 1}, {}]}),
+             nbt={'LeftHanded': True, 'equipment': {'mainhand': {'id': 'golden_axe', 'Count': 1}}}),
     PhotoMob(8.7, +26, 'witch', y=1.5),
     PhotoMob(8.7, +33.5, 'iron_golem', y=1.5),
     PhotoMob(8.7, +41, 'creaking', y=1.5),
@@ -132,9 +132,10 @@ def get_quilt_blocks():
 
 
 def armor(kind):
-    return Entity('armor_stand', nbt={
-        'ArmorItems': list(Item.nbt_for(f'{kind}_{a}') for a in ('boots', 'leggings', 'chestplate', 'helmet'))}).tag(
-        'photo')
+    armors =  {}
+    for place, which in armor_equipment.items():
+        armors[place] = Item.nbt_for(f'{kind}_{which}')
+    return Entity('armor_stand', nbt={'equipmenet': armors}).tag('photo')
 
 
 def room():
@@ -177,7 +178,7 @@ def room():
 
     room.function('quilt_init', home=False).add(quilt())
 
-    mob_offset = Offset(-1, 9, 7)
+    mob_offset = Offset(-6, -6, 0)
     room.function('photo_mobs_init').add(
         kill(e().tag('photo_mob')),
         kill(e().type('item')),
@@ -190,22 +191,6 @@ def room():
         execute().as_(p().gamemode(CREATIVE)).run(drop.set(1)),
         # Using 'as server' means that it won't report the changes to the player
         execute().if_().score(drop).matches(1).run(gamemode(SURVIVAL, p()), gamemode(CREATIVE, p())))
-    room.function('armors_init').add(
-        armor('leather').summon(r(0, 3, 0), facing=SOUTH),
-        armor('iron').summon(r(3, 3, 0), facing=SOUTH),
-        armor('chainmail').summon(r(0, 4, -1), facing=SOUTH),
-
-        Entity('armor_stand', nbt={
-            'ShowArms': True,
-            'HandItems': [Item.nbt_for('trident'), Item.nbt_for('shield')],
-            'Pose': {'LeftArm': [330, 45, 0]},
-            'ArmorItems': [{}, {}, {}, Item.nbt_for('turtle_helmet')]}).tag(
-            'photo').summon(r(1.5, 4, -1), facing=SOUTH),
-
-        armor('golden').summon(r(3, 4, -1), facing=SOUTH),
-        armor('diamond').summon(r(0, 5, -2), facing=SOUTH),
-        armor('netherite').summon(r(3, 5, -2), facing=SOUTH),
-    )
     room.function('photo_mobs_view', home=False).add(
         execute().in_(OVERWORLD).run(tp(p(), (-1006.5, 109, 1036.5)).facing((-955.5, 88, 1036.5))),
         function(do_drop),

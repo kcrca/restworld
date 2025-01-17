@@ -199,7 +199,7 @@ def friendlies(room):
         data().merge(s(), {'leash': Nbt.TypedArray('I', (-12, 101, 35))})))
     room.loop('llamas_carpets', main_clock).loop(
         lambda step: execute().as_(e().tag('llama').tag('!kid')).run(
-            data().merge(s(), {'body_armor_item': {'id': step.elem.id + '_carpet', 'Count': 1}})), colors)
+            data().merge(s(), {'equipment': {'body': {'id': step.elem.id + '_carpet', 'Count': 1}}})), colors)
 
     room.function('llamas_init').add(placer(r(0, 2, 0), WEST, 0, 2).summon('llama'),
                                      placer(r(1, 3.5, -1), WEST, adults=True,
@@ -302,7 +302,7 @@ def friendlies(room):
         function('restworld:mobs/llamas_carpets_home')),
         execute().at(e().tag('llamas_carpets_home')).run(function('restworld:mobs/llamas_carpets_cur')))
     room.function('switch_carpets_off').add(
-        execute().as_(e().tag('llama')).run(data().remove(s(), 'body_armor_item')),
+        execute().as_(e().tag('llama')).run(data().remove(s(), 'equipment.body')),
         kill(e().tag('llamas_carpets_home')))
 
     room.function('trader_llama_init').add(placer(r(0, 2, -2), WEST, adults=True).summon('wandering_trader'),
@@ -509,7 +509,7 @@ def monsters(room):
 
     # Later code assumes Evoker comes first
     illagers = (Entity('Evoker'), Entity('Vindicator'), Entity('Pillager'),
-                Entity('Pillager', nbt={'HandItems': [Item.nbt_for('crossbow')]}),
+                Entity('Pillager', nbt={'equipment': {'mainhand': Item.nbt_for('crossbow')}}),
                 Entity('illusioner', name='Illusioner (unused)'))
     tags = ('illager',)
 
@@ -525,7 +525,7 @@ def monsters(room):
         yield placer(*place, adults=True, tags=tags).summon(step.elem)
         if step.elem.id == 'evoker':
             yield placer(r(1.5, 3.5, -1.5), illager_dir, adults=True, tags=tags).summon(
-                Entity('vex', nbt={'HandItems': [Item.nbt_for('iron_sword')], 'LifeTicks': 2147483647}))
+                    Entity('vex', nbt={'equipment': {'mainhand': Item.nbt_for('iron_sword')}, 'LifeTicks': 2147483647}))
             fangs.add(
                 execute().unless().score(illager_loop_func.score).matches(0).run(return_()),
                 execute().at(e().tag('illager_home')).run(
@@ -566,7 +566,7 @@ def monsters(room):
                       'components': {'repair_cost': 1, 'enchantments': {"levels": {'unbreaking': 3}}}}
             bow = {'id': 'bow', 'Count': 1,
                    'components': {'repair_cost': 1, 'enchantments': {"levels": {'unbreaking': 3}}}}
-            skel = Entity('Skeleton', nbt={'ArmorItems': [{}, {}, {}, helmet], 'HandItems': [bow, {}]})
+            skel = Entity('Skeleton', nbt={'equipment': {'head': helmet, 'mainhand': bow}})
             skel.merge_nbt(MobPlacer.base_nbt).merge_nbt(east_rot)
             skel.tag('mobs', skeleton_horse_rider)
             yield skel.summon(r(-0.2, 2.42, 0.5))
@@ -584,7 +584,7 @@ def monsters(room):
 
     bow = Item.nbt_for('bow')
     helmet = Item.nbt_for('iron_helmet')
-    rider = Entity('Skeleton', nbt={'ArmorItems': [{}, {}, {}, helmet], 'HandItems': [bow, {}]}).merge_nbt(
+    rider = Entity('Skeleton', nbt={'equipment': {'head': helmet, 'mainhand': bow}}).merge_nbt(
         MobPlacer.base_nbt)
 
     def undead_saddle_loop(step):
@@ -596,7 +596,7 @@ def monsters(room):
     armorable_tag = 'armorable'
     room.loop('skeleton', main_clock).add(kill_em(e().tag('skeletal'))).loop(
         lambda step: placer(*east_placer, adults=True).summon(
-            Entity(step.elem, nbt={'HandItems': [bow]}).tag('skeletal', armorable_tag)),
+            Entity(step.elem, nbt={'equipment': {'mainhand': bow}}).tag('skeletal', armorable_tag)),
         ('Skeleton', 'Stray', 'Bogged'))
     room.function('skeleton_init').add(room.label(r(2, 2, 0), 'Armor', WEST))
 
@@ -624,9 +624,9 @@ def monsters(room):
         tag(e().tag('zombie_horse', 'adult')).add(undead_horse_tag))
 
     def armorable_loop(step):
-        items = ([], [Item.nbt_for('iron_boots'), Item.nbt_for('iron_leggings'),
-                      Item.nbt_for('iron_chestplate'), Item.nbt_for('iron_helmet')])[step.i]
-        yield execute().as_(e().tag(armorable_tag)).run(data().merge(s(), {'ArmorItems': items}))
+        items = ({}, {'feet': Item.nbt_for('iron_boots')}, {'legs': Item.nbt_for('iron_leggings')},
+                 {'chest': Item.nbt_for('iron_chestplate')}, {'head': Item.nbt_for('iron_helmet')})[step.i]
+        yield execute().as_(e().tag(armorable_tag)).run(data().merge(s(), {'equipment': items}))
 
     room.loop('mob_armor').loop(armorable_loop, range(2))
 
@@ -658,7 +658,7 @@ def monsters(room):
         hand_item = {'Drowned': 'trident', 'Husk': 'iron_sword', 'Zombie': 'iron_shovel'}[step.elem]
         yield execute().as_(e().tag('zombieish').tag('adult')).run(
             tag(s()).add(armorable_tag),
-            data().merge(s(), {'LeftHanded': step.elem == 'Zombie', 'HandItems': [Item.nbt_for(hand_item)]}))
+            data().merge(s(), {'LeftHanded': step.elem == 'Zombie', 'equipment': {'mainhand': Item.nbt_for(hand_item)}}))
 
     room.loop('zombie', main_clock).add(kill_em(e().tag('zombieish'))).loop(
         zombie_loop, ('Zombie', 'Husk', 'Drowned')).add(function('restworld:mobs/mob_armor_cur'),

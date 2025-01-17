@@ -56,10 +56,10 @@ def room():
         return {'id': armor, 'components': {'repair_cost': 1, 'enchantments': {'levels': {'protection': 5}}}}
 
     start_battle_type = Score('battle_type', 'arena')
-    skeleton_nbts = {'HandItems': [Item.nbt_for('bow')],
-                     'ArmorItems': [protected('iron_boots'), {}, {}, protected('iron_helmet')]}
+    skeleton_nbts = {'equipment': {'mainhand': Item.nbt_for('bow'), 'feet': protected('iron_boots'),
+                                   'head': protected('iron_helmet')}}
     fighter_nbts = {
-        'Drowned': {'HandItems': [Item.nbt_for('trident')], 'ArmorItems': [{}, {}, {}, Item.nbt_for('iron_helmet')]},
+        'Drowned': {'equipment': {'mainhand': Item.nbt_for('trident')}},
         'Goat': {'IsScreamingGoat': True, 'HasLeftHorn': True, 'HasRightHorn': True},
         'Hoglin': {'IsImmuneToZombification': True},
         'Llama': {'Strength': 5},
@@ -67,16 +67,16 @@ def room():
         'Slime': {'Size': 3},
         'Panda': {'MainGene': 'aggressive'},
         'Phantom': {'AX': 1000, 'AY': 110, 'AZ': -1000},
-        'Piglin Brute': {'HandItems': [Item.nbt_for('golden_axe')], 'IsImmuneToZombification': 'True'},
-        'Piglin': {'IsImmuneToZombification': 'True', 'HandItems': [Item.nbt_for('golden_sword'), {}]},
-        'Pillager': {'HandItems': [Item.nbt_for('crossbow'), {}]},
+        'Piglin Brute': {'equipment': {'mainhand': Item.nbt_for('golden_axe')}, 'IsImmuneToZombification': 'True'},
+        'Piglin': {'IsImmuneToZombification': 'True', 'equipment': {'mainhand': Item.nbt_for('golden_sword')}},
+        'Pillager': {'equipment': {'mainhand': Item.nbt_for('crossbow')}},
         'Skeleton': skeleton_nbts,
         'Stray': skeleton_nbts,
         'Bogged': skeleton_nbts,
-        'Vindicator': {'Johnny': 'True', 'HandItems': [Item.nbt_for('iron_axe'), {}]},
-        'Wither Skeleton': {'HandItems': [Item.nbt_for('stone_sword'), {}]},
-        'Zombie': {'ArmorItems': [{}, {}, {}, Item.nbt_for('iron_helmet')]},
-        'Zombified Piglin': {'HandItems': [Item.nbt_for('golden_sword'), {}]},
+        'Vindicator': {'Johnny': 'True', 'equipment': {'mainhnad': Item.nbt_for('iron_axe')}},
+        'Wither Skeleton': {'equipment': {'mainhand': Item.nbt_for('stone_sword')}},
+        'Zombie': {'equipment': {'head': Item.nbt_for('iron_helmet')}},
+        'Zombified Piglin': {'equipment': {'mainhand': Item.nbt_for('golden_sword')}},
     }
 
     # Lower priority ones can be used as filler

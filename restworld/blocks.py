@@ -975,26 +975,26 @@ def color_functions(room):
             yield kill_em(e().tag('colorings_horse'))
             yield kill_em(e().tag('colorings_dog'))
             yield kill_em(e().tag('colorings_cat'))
-            horse = Entity('horse', nbt=horse_nbt.merge({'body_armor_item': {'id': 'leather_horse_armor'}}))
+            horse = Entity('horse', nbt=horse_nbt.merge({'equipment': {'body': 'leather_horse_armor'}}))
             yield horse.summon(r(0.7, 2, 4.4))
 
         yield data().merge(e().tag('colorings_armor_stand').limit(1), {
-            'ArmorItems': [Item.nbt_for('leather_boots', nbt=leather_color),
-                           Item.nbt_for('leather_leggings', nbt=leather_color),
-                           Item.nbt_for('leather_chestplate', nbt=leather_color),
-                           Item.nbt_for('leather_helmet', nbt=leather_color)]})
+            'equipment': {'feet': Item.nbt_for('leather_boots', nbt=leather_color),
+                          'legs': Item.nbt_for('leather_leggings', nbt=leather_color),
+                          'chest': Item.nbt_for('leather_chestplate', nbt=leather_color),
+                          'head': Item.nbt_for('leather_helmet', nbt=leather_color)}})
         for w in armor_frames:
             yield data().modify(e().tag(f'colorings_frame_{w}').limit(1), 'Item').set().value(
                 Item.nbt_for(w, nbt=leather_color)),
         for w in 'horse', 'dog':
             yield data().modify(e().tag(f'colorings_{w}').limit(1),
-                                'body_armor_item.components.minecraft:dyed_color.rgb').set().value(color.leather)
+                                'equipment.body.components.minecraft:dyed_color.rgb').set().value(color.leather)
         for w in 'cat', 'dog':
             yield data().merge(e().tag(f'colorings_{w}').limit(1), {'CollarColor': color.num})
         if is_plain:
-            yield data().remove(e().tag('colorings_llama').limit(1), 'body_armor_item')
+            yield data().remove(e().tag('colorings_llama').limit(1), 'equipment.body')
         else:
-            yield data().modify(e().tag('colorings_llama').limit(1), 'body_armor_item').set().value(
+            yield data().modify(e().tag('colorings_llama').limit(1), 'equipment.body').set().value(
                 {'id': color.id + '_carpet'})
         yield data().merge(e().tag('colorings_sheep').limit(1), sheep_nbt)
 
@@ -1040,11 +1040,11 @@ def color_functions(room):
     mob_nbt = {'Time': True, 'NoAI': True, 'Silent': True}
     horse_nbt = Nbt({
         'Variant': 5, 'Tags': ['colorings_horse', 'colorings_item', 'colorings_names', 'colorings_enchantable'],
-        'body_armor_item': Item.nbt_for('leather_horse_armor'), 'Rotation': [-25, 0]}).merge(mob_nbt)
+        'equipment': {'body':Item.nbt_for('leather_horse_armor')}, 'Rotation': [-25, 0]}).merge(mob_nbt)
     dog_nbt = Nbt(
         {'Owner': 'dummy', 'Tags': ['colorings_dog', 'colorings_item', 'colorings_enchantable'],
          'Rotation': [-65, 0]}).merge(mob_nbt)
-    wolf_armor_nbt = Nbt({'body_armor_item': Item.nbt_for('wolf_armor')})
+    wolf_armor_nbt = Nbt({'equipment':{'body': Item.nbt_for('wolf_armor')}})
     cat_nbt = Nbt(
         {'variant': 'persian', 'Owner': 'dummy', 'Tags': ['colorings_cat', 'colorings_item'], 'ColorColor': 3,
          'Rotation': [110, 0]}).merge(mob_nbt)
@@ -1104,7 +1104,7 @@ def color_functions(room):
         data().merge(n().tag('colorings_dog'), wolf_armor_nbt),
         execute().at(e().tag('colorings_home')).run(function('restworld:blocks/colorings_cur')))
     room.function('wolf_armor_off', home=False).add(
-        data().remove(n().tag('colorings_dog'), 'body_armor_item'),
+        data().remove(n().tag('colorings_dog'), 'equipment.body'),
         execute().at(e().tag('colorings_home')).run(function('restworld:blocks/colorings_cur')))
     room.loop('colorings', main_clock).add(fill(r(-9, 2, 2), r(-9, 2, 3), 'air')).loop(colorings_loop, colors).add(
         colored_signs(None, render_signs_glow))

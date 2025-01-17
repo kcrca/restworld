@@ -20,7 +20,7 @@ def room():
 
     room.function('blaze_init').add(placer(r(-0.2, 2, 0), rhs_dir, adults=True).summon('blaze'))
     room.function('wither_skeleton_init').add(placer(r(-0.2, 2, 0), rhs_dir, adults=True).summon(
-        'wither_skeleton', nbt={'HandItems': [Item.nbt_for('stone_sword')]}))
+        'wither_skeleton', nbt={'equipment': {'mainhand': Item.nbt_for('stone_sword')}}))
     fireball = Entity('Fireball', {'direction': [0, 0, 0], 'ExplosionPower': 0})
     ghast_height, ghast_dir = 6, WEST
     room.function('fireball_init').add(
@@ -34,7 +34,7 @@ def room():
         range(0, 3), bounce=True)
     room.function('piglin_brute_init').add(
         placer(r(0, 2, 0), lhs_dir, adults=True).summon(
-            Entity('Piglin Brute', {'HandItems': [Item.nbt_for('golden_axe')]})))
+            Entity('Piglin Brute', {'equipment': {'mainhand': Item.nbt_for('golden_axe')}})))
 
     hoglin_riders = room.score('hoglin_riders')
     room.function('piglin_init').add(room.label(r(-1, 2, -3), 'Riders', SOUTH))
@@ -57,7 +57,7 @@ def room():
         execute().as_(e().tag('hoglin_rider')).run(ride(s()).dismount()),
         kill_em(e().tag('hoglin_rider')))
 
-    piglins = (Entity('Piglin', nbt={'HandItems': [Item.nbt_for('golden_sword')]}), 'Zombified Piglin')
+    piglins = (Entity('Piglin', nbt={'equipment': {'mainhand': Item.nbt_for('golden_sword')}}), 'Zombified Piglin')
     hoglins = ('Hoglin', 'Zoglin')
 
     def piglin_loop(step):
