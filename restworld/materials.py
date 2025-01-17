@@ -5,7 +5,7 @@ import re
 from pynecraft import info
 from pynecraft.base import Arg, EAST, EQ, NE, NORTH, NW, Nbt, NbtDef, SOUTH, WEST, as_facing, r, to_id
 from pynecraft.commands import Block, BlockDef, Entity, LONG, MOD, PLUS, RESULT, Score, as_block, data, e, execute, \
-    fill, fillbiome, function, item, kill, n, random, s, scoreboard, setblock, summon, tag
+    fill, fillbiome, function, item, kill, n, random, s, say, scoreboard, setblock, summon, tag
 from pynecraft.function import BLOCK
 from pynecraft.info import armor_equipment, colors, must_give_items, operator_menu, stems, trim_materials, trim_patterns
 from pynecraft.simpler import Item, ItemFrame, Region, SWAMP, Sign, WallSign
@@ -165,6 +165,7 @@ def room():
 
     def ore_loop(step):
         ore, block, item, raw = (Block(x) if x else None for x in step.elem)
+        yield say(ore.name),
         yield from volume.replace(block.id, '#restworld:ore_blocks')
         yield Sign.change(r(3, 2, 6), (None, ore.name.replace(' Ore', '')))
         if 'Nether' in ore.name or 'Ancient' in ore.name:
@@ -246,13 +247,13 @@ def basic_functions(room):
         kill(e().tag('material_static')),
         stand.summon(r(0, 2.0, 0), facing=NORTH, nbt={'CustomNameVisible': True}))
     for i in range(0, 5):
-        basic_init.add(invis_stand.summon(r(-(0.8 + i * 0.7), 2.0, 0), facing=NORTH,
-                                          nbt={'Tags': ['enchantable', 'material_%d' % (4 + i), 'material_static']}))
+        basic_init.add(invis_stand.summon(
+            r(-(0.8 + i * 0.7), 2.0, 0), facing=NORTH,
+            nbt={'Tags': ['enchantable', 'material_%d' % (4 + i), 'material_static']}))
         if i < 4:
-            basic_init.add(invis_stand.summon(r(+(0.6 + i * 0.7), 2.0, 0), facing=NORTH,
-                                              nbt={
-                                                  'LeftHanded': True,
-                                                  'Tags': ['enchantable', 'material_%d' % (3 - i), 'material_static']}))
+            basic_init.add(invis_stand.summon(
+                r(+(0.6 + i * 0.7), 2.0, 0), facing=NORTH,
+                nbt={'LeftHanded': True, 'Tags': ['enchantable', 'material_%d' % (3 - i), 'material_static']}))
 
     basic_init.add(fill(r(-3, 2, 2), r(-3, 5, 2), 'stone'), kill(e().tag('armor_frame')),
                    summon('item_frame', r(-3, 2, 1),
@@ -664,7 +665,7 @@ def trim_functions(room):
     overall_tag = 'trim_stand'
     base_stand = Entity('armor_stand',
                         {'ShowArms': True,
-                         'Pose': {'LeftArm': [-20, 0, -170], 'RightArm': [-20, 0, 20],
+                         'Pose': {'LeftArm': [-30, 0, -170], 'RightArm': [-20, 0, 20],
                                   'LeftLeg': [-20, 0, 0], 'RightLeg': [20, 0, 0]}}).tag(room.name, overall_tag)
 
     places = (
