@@ -3,14 +3,14 @@ from __future__ import annotations
 import re
 from typing import Iterable, Union
 
-from pynecraft import info
+from pynecraft import commands, info
 from pynecraft.base import DOWN, E, EAST, EQ, FacingDef, N, NORTH, Nbt, RelCoord, S, SOUTH, UP, W, WEST, as_facing, r, \
     rotate_facing, to_id, to_name
 from pynecraft.commands import Block, Commands, Entity, MOD, MOVE, REPLACE, ScoreName, as_block, as_score, clone, data, \
     e, \
-    execute, fill, function, item, kill, n, p, place, s, say, schedule, setblock, summon, tag
+    execute, fill, function, item, kill, n, p, s, say, schedule, setblock, summon, tag
 from pynecraft.function import Function, Loop
-from pynecraft.info import Color, colors, sherds, stems
+from pynecraft.info import Color, armor_equipment, colors, sherds, stems
 from pynecraft.simpler import Item, ItemFrame, Region, Sign, TextDisplay, WallSign
 from restworld.materials import enchant
 from restworld.rooms import Clock, Room, if_clause, kill_em
@@ -896,7 +896,7 @@ def room_init_functions(room, block_list_score):
 
 def armor_frame(which, where):
     frame = Entity('item_frame',
-                   {'Facing': 3, 'Fixed': True,
+                   {'Facing': 3, 'Fixed': True, 'Item': Item.nbt_for(f'{which}'),
                     'Tags': ['colorings_item', 'colorings_frame', f'colorings_frame_{which}', 'colorings_enchantable']})
     return frame.summon(where)
 
@@ -944,17 +944,33 @@ def color_functions(room):
             candle.merge_state({'lit': True})
             yield execute().unless().score(lit_candles).matches(0).run(volume.replace(candle, filter))
 
-        yield place().template(f'restworld:{color.id}_terra', r(-7, 1, 3))
+        yield commands.place().template(f'restworld:{color.id}_terra', r(-7, 1, 3))
         yield data().merge(r(-7, 0, 3), {'name': f'restworld:{color.id}_terra', 'showboundingbox': False})
         if not is_plain:
             room.particle(f'{color.id}_glazed_terracotta', 'colorings_base', r(-5.5, 2, 4.5), step, if_clause(plain, 0))
 
         if is_plain:
+            color_name = 'Plain'
+            sheep_nbt = {'Sheared': True}
+            bundle = Item.nbt_for('bundle')
             yield fill(r(-9, 2, 2), r(-9, 2, 3), 'air')
             yield volume.replace('air', '#standing_signs')
-            yield data().remove(e().tag('colorings_item_frame').limit(1), 'Item')
-            bundle = Item.nbt_for('bundle')
+            yield data().remove(e().tag('colorings_item_frame').limit(1), 'Item.components.minecraft:dyed_color')
+            yield kill_em(e().tag('colorings_dog'))
+            yield kill_em(e().tag('colorings_cat'))
+            yield data().remove(e().tag('colorings_llama').limit(1), 'equipment.body')
+            for f in armor_equipment.keys():
+                yield data().remove(e().tag('colorings_armor_stand').limit(1),
+                                    f'equipment.{f}.components.minecraft:dyed_color')
+            yield execute().as_(e().tag('colorings_frame')).run(
+                data().remove(s(), 'Item.components.minecraft:dyed_color'))
+            yield execute().as_(e().tag('colorings_horse')).run(
+                data().remove(s(), 'equipment.body.components.minecraft:dyed_color'))
+            yield data().remove(e().tag('colorings_llama').limit(1), 'equipment.body')
         else:
+            color_name = color.name
+            leather_color = {'components': {'minecraft:dyed_color': {'rgb': color.leather}}}
+            sheep_nbt = {'Color': color.num, 'Sheared': False}
             bed_head = Block(f'{color.id}_bed', {'facing': NORTH, 'part': 'head'})
             yield setblock(r(-9, 2, 2), bed_head)
             yield setblock(r(-9, 2, 3), Block(f'{color.id}_bed', {'facing': NORTH, 'part': 'foot'}))
@@ -962,47 +978,24 @@ def color_functions(room):
             frame_nbt = {'Item': Item.nbt_for(f'{color.id}_dye'), 'ItemRotation': 0}
             yield data().merge(e().tag('colorings_item_frame').limit(1), frame_nbt)
             bundle = Item.nbt_for(f'{color.id}_bundle')
-        yield data().merge(n().tag('colorings_bundle_frame'), {'Item': bundle, 'ItemRotation': 0})
-
-        if is_plain:
-            leather_color = {}
-            sheep_nbt = {'Sheared': True}
-        else:
-            leather_color = {'components': {'dyed_color': {'rgb': color.leather}}}
-            sheep_nbt = {'Color': color.num, 'Sheared': False}
-
-        if is_plain:
-            yield kill_em(e().tag('colorings_horse'))
-            yield kill_em(e().tag('colorings_dog'))
-            yield kill_em(e().tag('colorings_cat'))
-            horse = Entity('horse', nbt=horse_nbt.merge({'equipment': {'body': 'leather_horse_armor'}}))
-            yield horse.summon(r(0.7, 2, 4.4))
-
-        yield data().merge(e().tag('colorings_armor_stand').limit(1), {
-            'equipment': {'feet': Item.nbt_for('leather_boots', nbt=leather_color),
-                          'legs': Item.nbt_for('leather_leggings', nbt=leather_color),
-                          'chest': Item.nbt_for('leather_chestplate', nbt=leather_color),
-                          'head': Item.nbt_for('leather_helmet', nbt=leather_color)}})
-        for w in armor_frames:
-            yield data().modify(e().tag(f'colorings_frame_{w}').limit(1), 'Item').set().value(
-                Item.nbt_for(w, nbt=leather_color)),
-        for w in 'horse', 'dog':
-            yield data().modify(e().tag(f'colorings_{w}').limit(1),
-                                'equipment.body.components.minecraft:dyed_color.rgb').set().value(color.leather)
-        for w in 'cat', 'dog':
-            yield data().merge(e().tag(f'colorings_{w}').limit(1), {'CollarColor': color.num})
-        if is_plain:
-            yield data().remove(e().tag('colorings_llama').limit(1), 'equipment.body')
-        else:
+            yield data().merge(e().tag('colorings_armor_stand').limit(1), {
+                'equipment': {'feet': leather_color, 'legs': leather_color, 'chest': leather_color,
+                              'head': leather_color}})
+            yield execute().as_(e().tag('colorings_frame')).run(data().merge(s(), {'Item': leather_color}))
+            for w in 'horse', 'dog':
+                yield data().merge(e().tag(f'colorings_{w}').limit(1), {'equipment': {'body': leather_color}})
+            for w in 'cat', 'dog':
+                yield data().merge(e().tag(f'colorings_{w}').limit(1), {'CollarColor': color.num})
             yield data().modify(e().tag('colorings_llama').limit(1), 'equipment.body').set().value(
                 {'id': color.id + '_carpet'})
+
+        yield data().merge(n().tag('colorings_bundle_frame'), {'Item': bundle, 'ItemRotation': 0})
         yield data().merge(e().tag('colorings_sheep').limit(1), sheep_nbt)
 
-        yield Sign.change(r(-4, 2, 4), (None, color.name))
-        yield execute().as_(e().tag('colorings_names')).run(data().merge(s(), {'CustomName': color.name}))
-
+        yield Sign.change(r(-4, 2, 4), (None, color_name))
+        yield Sign.change(r(1, 2, -0), (color_name,))
+        yield execute().as_(e().tag('colorings_names')).run(data().merge(s(), {'CustomName': color_name}))
         yield data().merge(r(0, 0, -1), {'name': f'restworld:{"plain" if is_plain else color.id}_terra'})
-        yield Sign.change(r(1, 2, -0), (color.name,))
 
     def colored_signs(color, render):
         signables = info.woods + stems
@@ -1054,7 +1047,10 @@ def color_functions(room):
     sheep_nbt = Nbt(
         {'Tags': ['colorings_sheep', 'colorings_item'], 'Variant': 1, 'Rotation': [-35, 0], 'Leashed': True}).merge(
         mob_nbt)
-    stand_nbt = {'Tags': ['colorings_armor_stand', 'colorings_item', 'colorings_enchantable'], 'Rotation': [30, 0]}
+    stand_nbt = {'Tags': ['colorings_armor_stand', 'colorings_item', 'colorings_enchantable'], 'Rotation': [30, 0],
+                 'equipment': {}}
+    for place, piece in armor_equipment.items():
+        stand_nbt['equipment'][place] = Item.nbt_for(f'leather_{piece}')
     armor_frames = {
         'wolf_armor': r(-8, 4, 1),
         'leather_boots': r(0, 2, 1),
