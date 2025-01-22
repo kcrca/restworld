@@ -563,9 +563,9 @@ def monsters(room):
     def skeleton_horse_loop(step):
         if step.i == 1:
             helmet = {'id': 'iron_helmet', 'Count': 1,
-                      'components': {'repair_cost': 1, 'enchantments': {"levels": {'unbreaking': 3}}}}
+                      'components': {'repair_cost': 1, 'enchantments':  {'unbreaking': 3}}}
             bow = {'id': 'bow', 'Count': 1,
-                   'components': {'repair_cost': 1, 'enchantments': {"levels": {'unbreaking': 3}}}}
+                   'components': {'repair_cost': 1, 'enchantments':  {'unbreaking': 3}}}
             skel = Entity('Skeleton', nbt={'equipment': {'head': helmet, 'mainhand': bow}})
             skel.merge_nbt(MobPlacer.base_nbt).merge_nbt(east_rot)
             skel.tag('mobs', skeleton_horse_rider)

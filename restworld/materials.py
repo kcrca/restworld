@@ -18,7 +18,7 @@ def enchant(score: Score, tag: str, on: bool):
     places = tuple(armor_equipment.keys()) + ('saddle', 'mainhand', 'offhand', 'body')
     if on:
         equipment = {}
-        enchantment = {'components': {'minecraft:enchantments': {'levels': {'mending': 1}}}}
+        enchantment = {'components': {'minecraft:enchantments': {'mending': 1}}}
         for place in places:
             equipment[place] = enchantment
         commands = [data().merge(s(), {'equipment': equipment, 'Item': enchantment})]

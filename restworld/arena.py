@@ -53,7 +53,7 @@ def room():
     room = Room('arena', restworld)
 
     def protected(armor):
-        return {'id': armor, 'components': {'repair_cost': 1, 'enchantments': {'levels': {'protection': 5}}}}
+        return {'id': armor, 'components': {'repair_cost': 1, 'enchantments': {'protection': 5}}}
 
     start_battle_type = Score('battle_type', 'arena')
     skeleton_nbts = {'equipment': {'mainhand': Item.nbt_for('bow'), 'feet': protected('iron_boots'),
