@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from pynecraft.base import NORTH, SOUTH, WEST, r
-from pynecraft.commands import Entity, data, e, execute, function, ride, s
+from pynecraft.commands import Entity, data, e, execute, function, ride, s, setblock
 from pynecraft.simpler import Item, WallSign
 from restworld.rooms import Room, kill_em
 from restworld.world import main_clock, restworld
@@ -72,3 +72,7 @@ def room():
     room.function('strider_init').add(
         placer(r(0, 2, 0), lhs_dir, 0, 3).summon('strider'),
         room.label(r(-1, 2, 0), 'Saddle', SOUTH))
+
+    room.function('piglin_head_init').add(setblock(r(0, 2, 0), 'nether_bricks'), setblock(r(0, 3, 0), 'piglin_head'))
+    room.loop('piglin_head', main_clock).loop(
+        lambda step: setblock(r(0, 2, 0), 'redstone_block' if step.elem else 'nether_bricks'), (True, False))
