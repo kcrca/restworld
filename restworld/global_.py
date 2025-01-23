@@ -184,10 +184,16 @@ def room():
 
     # The death functions
     death_home = room.home_func('death')
+    home_sign = WallSign((None, 'Go Home'), (None, function('restworld:global/goto_home')))
     room.function('death_init').add(
         execute().positioned((0, 1.5, 0)).run(function(death_home)),
         tag(e().tag(death_home.name)).add('death'),
         tag(e().tag(death_home.name)).add('immortal'),
+        fill((-3, 0, -3), (3, 4, 3), 'air').replace('#all_signs'),
+        home_sign.place((0, 3, 2), NORTH),
+        home_sign.place((0, 3, -2), SOUTH),
+        home_sign.place((2, 3, 0), WEST),
+        home_sign.place((-2, 3, 0), EAST),
     )
     killables = e().not_type('player').not_tag('death').distance((None, 30))
     room.function('kill_em').add(
@@ -230,7 +236,6 @@ def room():
             ('spawnRadius', 0),
         ))
     )
-    # ('arena', OVERWORLD, (1014, 106, -1000), (1000, 100, -1000))
     for place in (
             ('biomes', OVERWORLD, (-1024, 101, -937), (-1024, 80, -907)),
             ('optifine', OVERWORLD, (1023, 101, 1024), (1023, 101, 114)),
@@ -243,9 +248,8 @@ def room():
             execute().in_(place[1]).run(teleport(p(), place[2]).facing(place[3])),
             schedule().function(f'restworld:{place[0]}/_enter', 1, REPLACE),
         )
-        if place[0] == 'arena':
-            goto.add(function('restworld:arena/arena_count_cur'))
     room.function('goto_photo').add(function('restworld:photo/photo_sample_view'))
+    room.function('goto_arena', exists_ok=True).add(function('restworld:arena/arena_count_cur'))
     room.home_func('min')
 
     raise_mobs = room.function('raise_mobs', home=False).add(raise_mobs_func())
