@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pynecraft import info
 from pynecraft.base import EAST, NORTH, SOUTH, TEXT_COLORS, WEST, r
-from pynecraft.commands import Block, Text, clone, data, e, execute, function, kill, s, setblock, tag
+from pynecraft.commands import Block, Text, clone, data, e, execute, fill, function, kill, s, setblock, tag
 from pynecraft.info import colors, stems
 from pynecraft.simpler import Book, TextDisplay, WallSign
 from restworld.rooms import Room, ensure
@@ -44,16 +44,14 @@ def room():
     save_pos = r(0, -2, -3)
     color_pos = r(0, -3, -3)
     at = execute().at(e().tag('font_action_home'))
-    room.function('check_sign', home=False).add(
-        at.run(function('restworld:font/copy_sign')))
+    room.function('check_sign', home=False).add(at.run(function('restworld:font/copy_sign')))
 
     font_run_init = room.function('font_run_init').add(room.label(r(-1, 2, 1), 'Glowing Text', NORTH))
 
     woods = info.woods
     materials = tuple(Block(m) for m in woods + stems)
     copy_sign = room.function('copy_sign', home=False).add(
-        execute().if_().block(src_pos, '#wall_signs').run(clone(src_pos, src_pos, save_pos))
-    )
+        execute().if_().block(src_pos, '#wall_signs').run(clone(src_pos, src_pos, save_pos)))
     row_lengths = [3, 3, 3, 3]
     row, x, y = 0, 0, 5
     font_run_init.add(kill(e().tag('font_sign_label')))
@@ -83,16 +81,8 @@ def room():
         ensure(r(0, 2, 0), Block('lectern', {'facing': WEST, 'has_book': True}),
                nbt=formatting_book().as_item()))
 
-    room.function('font_run_enter').add(
-        setblock(r(0, -2, -2), 'redstone_torch'),
-        setblock(r(-3, -2, 2), 'redstone_torch'),
-        setblock(r(3, -2, 2), 'redstone_torch'),
-    )
-    room.function('font_run_exit').add(
-        setblock(r(0, -2, -2), 'air'),
-        setblock(r(-3, -2, 2), 'air'),
-        setblock(r(3, -2, 2), 'air'),
-    )
+    room.function('font_run_enter').add(fill(r(-3, -1, -3), r(3, -1, 3), 'redstone_block').replace('green_concrete'))
+    room.function('font_run_exit').add(fill(r(-3, -1, -3), r(3, -1, 3), 'green_concrete ').replace('redstone_block'))
     # noinspection SpellCheckingInspection
     init_text = ('Lorem ipsum', 'dolor sit amet,', 'consectetur', 'adipiscing elit.')
     font_run_init.add(
