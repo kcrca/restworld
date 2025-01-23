@@ -342,8 +342,6 @@ def basic_functions(room):
             hands_row[7] = 'compass'
         elif material == 'golden':
             hands_row[6] = 'clock'
-        elif material == 'stone':
-            hands_row[6] = 'mace'
         for j in range(0, 4):
             yield data().merge(e().tag('material_%d' % j).limit(1),
                                {'equipment': {'mainhand': Item.nbt_for(hands_row[j])}})
