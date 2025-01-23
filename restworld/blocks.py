@@ -969,7 +969,7 @@ def color_functions(room):
             yield data().remove(e().tag('colorings_llama').limit(1), 'equipment.body')
         else:
             color_name = color.name
-            leather_color = {'components': {'minecraft:dyed_color': {'rgb': color.leather}}}
+            leather_color = {'components': {'minecraft:dyed_color': color.leather}}
             sheep_nbt = {'Color': color.num, 'Sheared': False}
             bed_head = Block(f'{color.id}_bed', {'facing': NORTH, 'part': 'head'})
             yield setblock(r(-9, 2, 2), bed_head)

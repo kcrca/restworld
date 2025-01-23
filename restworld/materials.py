@@ -84,7 +84,7 @@ def room():
         color = step.elem
         if color:
             yield data().modify(n().tag('wolf_armor_damage'),
-                                'equipment.body.components.minecraft:dyed_color.rgb').set().value(color.leather)
+                                'equipment.body.components.minecraft:dyed_color').set().value(color.leather)
             yield Sign.change(r(0, 2, 1), (None, None, f'Color: {step.elem.name}'))
         else:
             yield data().remove(n().tag('wolf_armor_damage'), 'equipment.body.components.minecraft:dyed_color')
