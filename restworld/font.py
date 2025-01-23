@@ -43,8 +43,6 @@ def room():
     src_pos = r(0, 2, 2)
     save_pos = r(0, -2, -3)
     color_pos = r(0, -3, -3)
-    at = execute().at(e().tag('font_action_home'))
-    room.function('check_sign', home=False).add(at.run(function('restworld:font/copy_sign')))
 
     font_run_init = room.function('font_run_init').add(room.label(r(-1, 2, 1), 'Glowing Text', NORTH))
 
@@ -52,6 +50,8 @@ def room():
     materials = tuple(Block(m) for m in woods + stems)
     copy_sign = room.function('copy_sign', home=False).add(
         execute().if_().block(src_pos, '#wall_signs').run(clone(src_pos, src_pos, save_pos)))
+    at = execute().at(e().tag('font_action_home'))
+    room.function('check_sign', home=False).add(at.run(function(copy_sign)))
     row_lengths = [3, 3, 3, 3]
     row, x, y = 0, 0, 5
     font_run_init.add(kill(e().tag('font_sign_label')))
