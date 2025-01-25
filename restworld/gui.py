@@ -298,7 +298,7 @@ def room():
     room.function('bundle_init').add(
         ItemFrame(EAST, nbt={'Tags': ['gui', 'bundle']}).item('bundle').summon(r(0, 2, 0)),
         WallSign((None, None, 'Bundle')).place(r(0, 3, 0), EAST),
-        room.label(r(9, 2, 4), 'Show Particles', SOUTH),
+        room.label(r(9, 2, 3), 'Show Particles', SOUTH),
     )
     room.particle('chest', 'bundle', r(3, 3, -2))
     room.particle('dispenser', 'bundle', r(3, 3, 0))
