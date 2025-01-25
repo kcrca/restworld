@@ -907,6 +907,8 @@ def color_functions(room):
     lit_candles = room.score('lit_candles')
     plain = room.score('plain')
 
+    armor_stand = e().tag('colorings_armor_stand').limit(1)
+
     def colorings(is_plain, color, step=None):
         fills = {
             'stained_glass': r(-7, 5, 0), 'stained_glass_pane': r(-7, 3, 1), 'wool': r(-1, 3, 1), 'banner': r(1, 5, 2),
@@ -960,7 +962,7 @@ def color_functions(room):
             yield kill_em(e().tag('colorings_cat'))
             yield data().remove(e().tag('colorings_llama').limit(1), 'equipment.body')
             for f in armor_equipment.keys():
-                yield data().remove(e().tag('colorings_armor_stand').limit(1),
+                yield data().remove(armor_stand,
                                     f'equipment.{f}.components.minecraft:dyed_color')
             yield execute().as_(e().tag('colorings_frame')).run(
                 data().remove(s(), 'Item.components.minecraft:dyed_color'))
@@ -978,7 +980,7 @@ def color_functions(room):
             frame_nbt = {'Item': Item.nbt_for(f'{color.id}_dye'), 'ItemRotation': 0}
             yield data().merge(e().tag('colorings_item_frame').limit(1), frame_nbt)
             bundle = Item.nbt_for(f'{color.id}_bundle')
-            yield data().merge(e().tag('colorings_armor_stand').limit(1), {
+            yield data().merge(armor_stand, {
                 'equipment': {'feet': leather_color, 'legs': leather_color, 'chest': leather_color,
                               'head': leather_color}})
             yield execute().as_(e().tag('colorings_frame')).run(data().merge(s(), {'Item': leather_color}))
@@ -1094,7 +1096,9 @@ def color_functions(room):
         room.label(r(-1, 2, 7), 'Lit Candles', NORTH), room.label(r(-8, 2, 7), 'Plain', NORTH),
         room.label(r(-3, 2, 7), 'Enchanted', NORTH), room.label(r(-8, 2, 7), 'Plain', NORTH),
         room.label(r(-11, 2, 3), 'Glowing', NORTH),
-        room.label(r(-8, 2, 3), 'Wolf Armor', NORTH)),
+        room.label(r(-8, 2, 3), 'Wolf Armor', NORTH),
+        room.label(r(0, 2, 3), 'Leggings', NORTH),
+    )
     room.function('wolf_armor_on', home=False).add(
         data().merge(n().tag('colorings_dog'), wolf_armor_nbt),
         execute().at(e().tag('colorings_home')).run(function('restworld:blocks/colorings_cur')))
@@ -1131,6 +1135,15 @@ def color_functions(room):
         execute().as_(e().tag('colorings_names')).run(data().merge(s(), {'CustomNameVisible': False})))
     room.function('colored_beam_enter').add(setblock(r(0, 1, 0), 'iron_block'))
     room.function('colored_beam_exit').add(setblock(r(0, 1, 0), 'white_concrete'))
+    room.function('colored_leggings_start', home=False).add(
+        say('start'), data().remove(armor_stand, 'equipment.chest'))
+    room.function('colored_leggings_stop', home=False).add(
+        say('stop'),
+        data().modify(armor_stand, 'equipment.chest').set().value(
+            Item.nbt_for('leather_chestplate')),
+        data().modify(armor_stand, 'equipment.chest.components').set().from_(
+            e().tag('colorings_armor_stand').limit(1), 'equipment.legs.components')
+    )
 
 
 # Expansion is complex.
