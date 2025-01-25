@@ -73,7 +73,7 @@ def room():
         data().modify(e().tag(icon_frame_tag).limit(1), 'Item.components.minecraft:map_decorations').set().value(
             decorations),
         room.mob_placer(r(6, 4, 3), NORTH, adults=True).summon(ItemFrame(NORTH).item(map(32, name_nbt('Optifine')))),
-        WallSign(('Optifine:', 'Connected', 'Textures and', 'Mob Textures'), NORTH).place(r(5, 3, 3), NORTH),
+        WallSign(('Optifine:', 'Connected and', 'Random Mob', 'Textures'), NORTH).place(r(5, 3, 3), NORTH),
 
         room.mob_placer(r(3, 4, 3), NORTH, adults=True).summon(ItemFrame(NORTH).item(map(22, name_nbt('Photo')))),
         WallSign((None, 'Photo', 'Area'), NORTH).place(r(2, 3, 3), NORTH),
