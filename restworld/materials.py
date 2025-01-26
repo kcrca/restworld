@@ -4,13 +4,14 @@ import re
 
 from pynecraft import info
 from pynecraft.base import Arg, EAST, EQ, NE, NORTH, NW, Nbt, NbtDef, SOUTH, WEST, as_facing, r, to_id
-from pynecraft.commands import Block, BlockDef, Entity, LONG, MOD, PLUS, RESULT, Score, as_block, data, e, execute, \
+from pynecraft.commands import Block, BlockDef, Entity, LONG, MOD, PLUS, RESULT, Score, as_block, data, e, \
+    execute, \
     fill, fillbiome, function, item, kill, n, random, s, scoreboard, setblock, summon, tag
 from pynecraft.function import BLOCK
 from pynecraft.info import armor_equipment, colors, must_give_items, operator_menu, stems, trim_materials, trim_patterns
 from pynecraft.simpler import Item, ItemFrame, Region, SWAMP, Sign, WallSign
 from pynecraft.values import COLD_OCEAN, FROZEN_OCEAN, LUKEWARM_OCEAN, MANGROVE_SWAMP, MEADOW, OCEAN, WARM_OCEAN, biomes
-from restworld.rooms import Room, kill_em
+from restworld.rooms import Room, erase, kill_em
 from restworld.world import fast_clock, main_clock, restworld
 
 
@@ -268,7 +269,8 @@ def basic_functions(room):
                    summon('item_frame', r(4, 4, 1),
                           {'Facing': 2, 'Tags': ['armor_horse_frame', 'enchantable', 'armor_frame']}),
                    room.label(r(5, 2, -2), 'Saddle', SOUTH), room.label(r(3, 2, -2), 'Enchanted', SOUTH),
-                   room.label(r(1, 2, -2), 'Turtle Helmet', SOUTH), room.label(r(-1, 2, -2), 'Elytra', SOUTH))
+                   room.label(r(1, 2, -2), 'Turtle Helmet', SOUTH),
+                   room.label(r(-1, 2, -2), 'Elytra & Leggings', SOUTH))
 
     materials = (
         ('wooden', 'leather', True, Block('oak_planks'), 'oak_sign'),
@@ -354,7 +356,7 @@ def basic_functions(room):
     basic_init.add(which_elytra.set(0))
     basic = room.loop('basic', main_clock)
     basic.add(
-        fill(r(2, 2, 2), r(-2, 5, 4), 'air'),
+        erase(r(2, 2, 2), r(-2, 5, 4)),
         kill_em(e().tag('material_thing'))
     ).loop(basic_loop, materials).add(
         execute().if_().score(turtle_helmet).matches(1).run(
@@ -471,7 +473,7 @@ def copper_functions(room):
         yield from volume.replace_trapdoors(type + 'copper_trapdoor', '#restworld:copper_trapdoors')
 
         # The door won't be set unless we manually remove previous one.
-        yield fill(r(0, 2, 4), r(0, 3, 4), 'air')
+        yield erase(r(0, 2, 4), r(0, 3, 4))
         yield setblock(r(0, 2, 4), (type + 'copper_door', {'facing': NORTH, 'half': 'lower'}))
         yield setblock(r(0, 3, 4), (type + 'copper_door', {'facing': NORTH, 'half': 'upper'}))
 
@@ -605,8 +607,8 @@ def wood_functions(room):
         yield setblock(r(4, 2, 0), workplace)
 
         # The doors won't be set unless we manually remove previous ones.
-        yield fill(r(4, 2, -1), r(4, 3, -1), 'air')
-        yield fill(r(4, 2, 1), r(4, 3, 2), 'air')
+        yield erase(r(4, 2, -1), r(4, 3, -1))
+        yield erase(r(4, 2, 1), r(4, 3, 2))
         yield setblock(r(4, 2, -1), (f'{id}_door', {'facing': WEST, 'half': 'lower'}))
         yield setblock(r(4, 3, -1), (f'{id}_door', {'facing': WEST, 'half': 'upper'}))
         yield setblock(r(4, 2, 1), (f'{id}_door', {'facing': WEST, 'half': 'lower', 'hinge': 'right'}))

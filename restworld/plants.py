@@ -8,7 +8,7 @@ from pynecraft.commands import Block, Text, data, e, execute, fill, fillbiome, f
 from pynecraft.info import small_flowers, stems, tulips
 from pynecraft.simpler import JUNGLE, PLAINS, Region, SAVANNA, Sign, WallSign
 from pynecraft.values import BIRCH_FOREST, CHERRY_GROVE, DARK_FOREST, MANGROVE_SWAMP, PALE_GARDEN, SNOWY_TAIGA
-from restworld.rooms import Room
+from restworld.rooms import Room, erase
 from restworld.world import fast_clock, main_clock, restworld, text_display
 
 
@@ -23,6 +23,8 @@ def room():
                 block = Block(which, base_state.merge({name: stage}))
             else:
                 block = which(stage, name)
+                if block is None:
+                    continue
             yield fill(r(x, y, z - s), r(x + 2, y, z - s), block)
             room.particle(block, step.loop.name.replace('_main', ''), r(x + 1, 4, z - s), step)
         yield Sign.change(r(x + 3, 2, z - 1),
@@ -49,9 +51,9 @@ def room():
 
     room.loop('4_crops', main_clock).loop(crops_4_loop, stages_4)
 
-    def pitcher_crop(stage: int, name: str) -> Block:
+    def pitcher_crop(stage: int, name: str) -> Block | None:
         if stage < 3:
-            return Block('air')
+            return None
         else:
             return Block('pitcher_crop', {name: stage, 'half': 'upper'})
 
@@ -59,11 +61,11 @@ def room():
     stages_5_lower = list(range(0, 5)) + [4, 4]
 
     def crops_5_loop(step):
-        yield from crop(stages_5_upper, pitcher_crop, 0, 4, 0, step, name='age', extra={'half': 'upper'})
         yield from crop(stages_5_lower, 'pitcher_crop', 0, 3, 0, step, name='age', extra={'half': 'lower'})
+        yield from crop(stages_5_upper, pitcher_crop, 0, 4, 0, step, name='age', extra={'half': 'upper'})
 
     # setting the top block to air drops a pitcher plant, the kill removes them.
-    room.loop('5_crops', main_clock).loop(crops_5_loop, stages_5_upper).add(
+    room.loop('5_crops', main_clock).add(erase(r(0, 3, 0), r(2, 4, -2))).loop(crops_5_loop, stages_5_upper).add(
         kill(e().nbt({'Item': {'id': 'minecraft:pitcher_plant'}})))
 
     stages_8 = list(range(0, 8)) + [7, 7]

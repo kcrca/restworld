@@ -13,7 +13,7 @@ from pynecraft.function import Function, Loop
 from pynecraft.info import Color, armor_equipment, colors, sherds, stems
 from pynecraft.simpler import Item, ItemFrame, Region, Sign, TextDisplay, WallSign
 from restworld.materials import enchant
-from restworld.rooms import Clock, Room, if_clause, kill_em
+from restworld.rooms import Clock, Room, erase, if_clause, kill_em
 from restworld.world import fast_clock, main_clock, restworld
 
 
@@ -1105,7 +1105,7 @@ def color_functions(room):
     room.function('wolf_armor_off', home=False).add(
         data().remove(n().tag('colorings_dog'), 'equipment.body'),
         execute().at(e().tag('colorings_home')).run(function('restworld:blocks/colorings_cur')))
-    room.loop('colorings', main_clock).add(fill(r(-9, 2, 2), r(-9, 2, 3), 'air')).loop(colorings_loop, colors).add(
+    room.loop('colorings', main_clock).add(erase(r(-9, 2, 2), r(-9, 2, 3))).loop(colorings_loop, colors).add(
         colored_signs(None, render_signs_glow))
     room.function('colorings_plain_off', home=False).add(
         execute().unless().score(plain).matches(0).run(

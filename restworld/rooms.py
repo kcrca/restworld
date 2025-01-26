@@ -8,8 +8,9 @@ from typing import Callable, Iterable, Tuple
 
 from pynecraft.base import BLUE, EAST, FacingDef, NE, NORTH, NW, Nbt, ORANGE, ROTATION_180, ROTATION_270, ROTATION_90, \
     RelCoord, SE, SOUTH, SW, WEST, r, rotate_facing, to_name
-from pynecraft.commands import Block, BlockDef, CLEAR, Command, Commands, Entity, EntityDef, INT, MINUS, Particle, \
-    Position, RESULT, Score, SignMessages, Text, a, as_block, as_entity, as_facing, as_score, comment, data, e, execute, \
+from pynecraft.commands import Block, BlockDef, CLEAR, Command, Commands, Entity, EntityDef, INT, MINUS, MOVE, Particle, \
+    Position, RESULT, Score, SignMessages, Text, a, as_block, as_entity, as_facing, as_score, clone, comment, data, e, \
+    execute, \
     fill, function, function, kill, n, p, particle, say, schedule, scoreboard, setblock, summon, tag, tellraw, tp, \
     weather
 from pynecraft.function import DataPack, Function, FunctionSet, LATEST_PACK_VERSION, Loop
@@ -30,11 +31,15 @@ def named_frame_item(block: BlockDef = None, name=None, damage=None) -> Nbt:
     return nbt
 
 
-def ensure(pos: Position, block: BlockDef, nbt=None):
+def ensure(pos: Position, block: BlockDef, nbt=None) -> str:
     block = as_block(block)
     to_place = block.clone()
     to_place.merge_nbt(nbt)
     return execute().unless().block(pos, block).run(setblock(pos, to_place))
+
+
+def erase(start: Position, end: Position) -> str:
+    return clone(start, end, (15, 5, 15)).replace(MOVE)
 
 
 def _to_iterable(tags):
