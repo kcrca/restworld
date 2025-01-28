@@ -714,7 +714,7 @@ def room():
     spawner_config = {
         'simultaneous_mobs': 0.0,
         'simultaneous_mobs_added_per_player': 2.0,
-        'ticks_between_spawn': 0xfff_ffff_ffff_ffff,
+        'ticks_between_spawn': 0x7fff_ffff,
         'spawn_potentials': [{'data': {'entity': {'id': "minecraft:stray"}}, 'weight': 1}],
         'loot_tables_to_eject': [{'data': "minecraft:spawners/ominous/trial_chamber/key", 'weight': 1}]}
     base_trial_spawner_nbt = Nbt({
