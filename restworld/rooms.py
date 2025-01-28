@@ -22,7 +22,7 @@ def named_frame_item(block: BlockDef = None, name=None, damage=None) -> Nbt:
     if not block and not name:
         return Nbt({'custom_name': {}})
     block = as_block(block)
-    tag_nbt = Nbt({'custom_name': str(Text.text(str(name if name else block.name)))})
+    tag_nbt = Nbt({'custom_name': Text.text(str(name if name else block.name))})
     if damage:
         tag_nbt.update(damage)
     nbt = Nbt({'Item': {'components': tag_nbt}})
@@ -39,9 +39,9 @@ def ensure(pos: Position, block: BlockDef, nbt=None) -> str:
 
 
 def erase(start: Position, end: Position) -> str:
-    s = (min(start[0], end[0]), min(start[1], end[1]), min(start[2], end[2]))
-    e = (max(start[0], end[0]), max(start[1], end[1]), max(start[2], end[2]))
-    return clone(s, e, (15, 5, 15)).replace(MOVE)
+    mn = (min(start[0], end[0]), min(start[1], end[1]), min(start[2], end[2]))
+    mx = (max(start[0], end[0]), max(start[1], end[1]), max(start[2], end[2]))
+    return clone(mx, mn, (15, 5, 15)).replace(MOVE)
 
 
 def _to_iterable(tags):
