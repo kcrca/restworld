@@ -19,14 +19,14 @@ def enchant(score: Score, tag: str, on: bool):
     places = tuple(armor_equipment.keys()) + ('saddle', 'mainhand', 'offhand', 'body')
     if on:
         equipment = {}
-        enchantment = {'components': {'minecraft:enchantments': {'mending': 1}}}
+        enchantment = {'components': {'enchantments': {'mending': 1}}}
         for place in places:
             equipment[place] = enchantment
         commands = [data().merge(s(), {'equipment': equipment, 'Item': enchantment})]
     else:
-        commands = [data().remove(s(), 'Item.components.minecraft:enchantments')]
+        commands = [data().remove(s(), 'Item.components.enchantments')]
         for place in places:
-            commands.append(data().remove(s(), f'equipment.{place}.components.minecraft:enchantments'))
+            commands.append(data().remove(s(), f'equipment.{place}.components.enchantments'))
     value = int(on)
     yield execute().if_().score(score).matches(value).as_(e().tag(tag)).run(commands)
 
@@ -63,7 +63,7 @@ def room():
         if step.i == 2:
             # Choose a random color
             yield execute().store(RESULT).entity(e().tag('arrow').limit(1),
-                                                 'item.components.minecraft:potion_contents.custom_color', LONG).run(
+                                                 'item.components.potion_contents.custom_color', LONG).run(
                 random().value((0, 0xffffff)))
         yield execute().if_().score(fire_arrow).matches((1, None)).as_(e().tag('arrow')).run(
             data().modify(s(), 'HasVisualFire').set().value(True))
@@ -85,18 +85,18 @@ def room():
         color = step.elem
         if color:
             yield data().modify(n().tag('wolf_armor_damage'),
-                                'equipment.body.components.minecraft:dyed_color').set().value(color.leather)
+                                'equipment.body.components.dyed_color').set().value(color.leather)
             yield Sign.change(r(0, 2, 1), (None, None, f'Color: {step.elem.name}'))
         else:
-            yield data().remove(n().tag('wolf_armor_damage'), 'equipment.body.components.minecraft:dyed_color')
+            yield data().remove(n().tag('wolf_armor_damage'), 'equipment.body.components.dyed_color')
             yield Sign.change(r(0, 2, 1), (None, None, 'Color: None'))
 
     def wolf_armor_damage_loop(step):
         if step.elem:
             yield data().modify(n().tag('wolf_armor_damage'),
-                                'equipment.body.components.minecraft:damage').set().value(step.elem)
+                                'equipment.body.components.damage').set().value(step.elem)
         else:
-            yield data().remove(n().tag('wolf_armor_damage'), 'equipment.body.components.minecraft:damage')
+            yield data().remove(n().tag('wolf_armor_damage'), 'equipment.body.components.damage')
         yield Sign.change(r(0, 2, 1), (None, f'Damage: {step.elem}'))
 
     room.loop('wolf_armor_color', main_clock, home=False).loop(wolf_armor_color_loop, colors + (None,))
@@ -128,7 +128,7 @@ def room():
     room.function('experience_orbs_init').add(WallSign((None, 'Experience Orb')).place(r(1, 2, 0), EAST))
 
     non_inventory = list(filter(lambda x: x.name not in operator_menu, must_give_items.values()))
-    non_inventory.append(Entity('elytra', name='Damaged Elytra', nbt={'components': {'minecraft:damage': 450}}))
+    non_inventory.append(Entity('elytra', name='Damaged Elytra', nbt={'components': {'damage': 450}}))
 
     def only_items_init_func():
         rows = [(-1, len(non_inventory))]
@@ -368,12 +368,12 @@ def basic_functions(room):
             which_elytra.add(1),
             execute().if_().score(which_elytra).matches((2, None)).run(which_elytra.set(0)),
             execute().if_().score(which_elytra).matches(1).run(
-                data().modify(n().tag('basic_stand'), 'equipment.chest.components.minecraft:damage').set().value(450),
-                data().modify(n().tag('armor_chestplate'), 'Item.components.minecraft:damage').set().value(450)
+                data().modify(n().tag('basic_stand'), 'equipment.chest.components.damage').set().value(450),
+                data().modify(n().tag('armor_chestplate'), 'Item.components.damage').set().value(450)
             ),
             execute().unless().score(which_elytra).matches(1).run(
-                data().modify(n().tag('basic_stand'), 'equipment.chest.components.minecraft:damage').set().value(0),
-                data().modify(n().tag('armor_chestplate'), 'Item.components.minecraft:damage').set().value(0)
+                data().modify(n().tag('basic_stand'), 'equipment.chest.components.damage').set().value(0),
+                data().modify(n().tag('armor_chestplate'), 'Item.components.damage').set().value(0)
             )
         ),
         enchant(enchanted, 'enchantable', True),
@@ -796,10 +796,10 @@ def trim_functions(room):
     categories = {
         'patterns': Trim('patterns', trim_patterns, patterns_places,
                          lambda stand, type: armor_for(stand, 'iron', {'components': {'trim': {'pattern': type}}}),
-                         'components.minecraft:trim.pattern'),
+                         'components.trim.pattern'),
         'materials': Trim('materials', trim_materials, material_places,
                           lambda stand, type: armor_for(stand, 'iron', {'components': {'trim': {'material': type}}}),
-                          'components.minecraft:trim.material'),
+                          'components.trim.material'),
         'armors': Armors('armors', info.armors, armors_places,
                          lambda stand, type: armor_for(stand, type))}
 
@@ -884,10 +884,10 @@ def trim_functions(room):
                 item().replace().entity(s(), 'armor.feet').with_(f'{armor}_boots'),
                 item().replace().entity(s(), 'armor.chest').with_(f'{armor}_chestplate')))
     chestplate_on.add(execute().as_(e().tag(overall_tag)).run(
-        data().modify(s(), 'equipment.feet.components.minecraft:trim').merge().from_(s(),
-                                                                                     'equipment.legs.components.minecraft:trim'),
-        data().modify(s(), 'equipment.chest.components.minecraft:trim').merge().from_(s(),
-                                                                                      'equipment.legs.components.minecraft:trim')))
+        data().modify(s(), 'equipment.feet.components.trim').merge().from_(s(),
+                                                                           'equipment.legs.components.trim'),
+        data().modify(s(), 'equipment.chest.components.trim').merge().from_(s(),
+                                                                            'equipment.legs.components.trim')))
 
     room.function('trim_turtle_on', home=False).add(
         execute().as_(e().tag(overall_tag)).run(

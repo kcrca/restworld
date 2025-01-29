@@ -225,14 +225,14 @@ def room():
     room.particle('cartography_table', 'cookers', r(3, 3, 12))
     room.particle('smithing_table', 'cookers', r(3, 3, 15))
     room.function('cookers_run', home=False).add(
-        item().replace().block(r(0, 2, 0), 'container.1').with_('minecraft:stick', 64),
-        item().replace().block(r(0, 2, 0), 'container.0').with_('minecraft:stone', 64),
+        item().replace().block(r(0, 2, 0), 'container.1').with_('stick', 64),
+        item().replace().block(r(0, 2, 0), 'container.0').with_('stone', 64),
         item().replace().block(r(0, 2, 0), 'container.2').with_('air', 1),
-        item().replace().block(r(3, 2, 0), 'container.1').with_('minecraft:stick', 64),
-        item().replace().block(r(3, 2, 0), 'container.0').with_('minecraft:gold_ore', 64),
+        item().replace().block(r(3, 2, 0), 'container.1').with_('stick', 64),
+        item().replace().block(r(3, 2, 0), 'container.0').with_('gold_ore', 64),
         item().replace().block(r(3, 2, 0), 'container.2').with_('air', 1),
-        item().replace().block(r(0, 2, 3), 'container.1').with_('minecraft:stick', 64),
-        item().replace().block(r(0, 2, 3), 'container.0').with_('minecraft:beef', 64),
+        item().replace().block(r(0, 2, 3), 'container.1').with_('stick', 64),
+        item().replace().block(r(0, 2, 3), 'container.0').with_('beef', 64),
         item().replace().block(r(0, 2, 3), 'container.2').with_('air', 1),
     )
 

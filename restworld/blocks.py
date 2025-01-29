@@ -957,21 +957,21 @@ def color_functions(room):
             bundle = Item.nbt_for('bundle')
             yield fill(r(-9, 2, 2), r(-9, 2, 3), 'air')
             yield volume.replace('air', '#standing_signs')
-            yield data().remove(e().tag('colorings_item_frame').limit(1), 'Item.components.minecraft:dyed_color')
+            yield data().remove(e().tag('colorings_item_frame').limit(1), 'Item.components.dyed_color')
             yield kill_em(e().tag('colorings_dog'))
             yield kill_em(e().tag('colorings_cat'))
             yield data().remove(e().tag('colorings_llama').limit(1), 'equipment.body')
             for f in armor_equipment.keys():
                 yield data().remove(armor_stand,
-                                    f'equipment.{f}.components.minecraft:dyed_color')
+                                    f'equipment.{f}.components.dyed_color')
             yield execute().as_(e().tag('colorings_frame')).run(
-                data().remove(s(), 'Item.components.minecraft:dyed_color'))
+                data().remove(s(), 'Item.components.dyed_color'))
             yield execute().as_(e().tag('colorings_horse')).run(
-                data().remove(s(), 'equipment.body.components.minecraft:dyed_color'))
+                data().remove(s(), 'equipment.body.components.dyed_color'))
             yield data().remove(e().tag('colorings_llama').limit(1), 'equipment.body')
         else:
             color_name = color.name
-            leather_color = {'components': {'minecraft:dyed_color': color.leather}}
+            leather_color = {'components': {'dyed_color': color.leather}}
             sheep_nbt = {'Color': color.num, 'Sheared': False}
             bed_head = Block(f'{color.id}_bed', {'facing': NORTH, 'part': 'head'})
             yield setblock(r(-9, 2, 2), bed_head)

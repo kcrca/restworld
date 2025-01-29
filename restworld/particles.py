@@ -383,7 +383,7 @@ def room():
 
     firework_change = room.loop('firework_change', home=False).add(
         execute().positioned(r(0, -1, 0)).run(function('restworld:redstone/fireworks_main')),
-        data().remove(r(0, 1, 0), 'Items[0].components.minecraft:fireworks.flight_duration'),
+        data().remove(r(0, 1, 0), 'Items[0].components.fireworks.flight_duration'),
         setblock(r(0, 0, 0), 'redstone_torch'),
         setblock(r(0, 0, 0), 'air'),
     )

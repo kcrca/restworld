@@ -138,10 +138,10 @@ def room():
 
     update = room.function('update_banners', home=False).add(
         execute().as_(stands).run(
-            data().modify(s(), 'equipment.offhand.components.minecraft:base_color').set().value(Arg('color')),
+            data().modify(s(), 'equipment.offhand.components.base_color').set().value(Arg('color')),
             # We get an error if we try to slap this onto the banner without a pattern, so this filters that out.
-            execute().if_().data(s(), 'equipment.offhand.components.minecraft:banner_patterns').run(
-                data().modify(s(), 'equipment.offhand.components.minecraft:banner_patterns[].color').set().value(
+            execute().if_().data(s(), 'equipment.offhand.components.banner_patterns').run(
+                data().modify(s(), 'equipment.offhand.components.banner_patterns[].color').set().value(
                     Arg('ink')))),
         fill(r(1, 3, 0), r(11, 5, 0), 'air').replace('#banners'),
         fill(r(12, 3, 1), r(12, 5, 11), 'air').replace('#banners'),

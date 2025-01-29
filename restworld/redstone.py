@@ -258,7 +258,7 @@ def room():
         function(new_firework_convert),
         function(new_firework_convert).with_().storage('new_firework_raw'),
         item().replace().block(r(0, 2, 0), 'container.0').with_(Item('firework_rocket')),
-        data().modify(r(0, 2, 0), 'Items[0].components.minecraft:fireworks').set().from_(room.store, 'new_firework_val')
+        data().modify(r(0, 2, 0), 'Items[0].components.fireworks').set().from_(room.store, 'new_firework_val')
     )
 
     def rail_loop(step):

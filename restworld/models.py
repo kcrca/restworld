@@ -141,7 +141,7 @@ def room():
             yield execute().as_(p()).run(
                 loot().replace().entity(n().tag('player_head_holder'), 'armor.head').loot('restworld:player_head'))
             yield data().modify(room.store, 'player').set().from_(
-                n().tag('player_head_holder'), 'equipment.head.components.minecraft:profile.name')
+                n().tag('player_head_holder'), 'equipment.head.components.profile.name')
             yield data().modify(room.store, 'cur_player').set().from_(room.store, 'player')
             yield execute().store(SUCCESS).score(is_other).run(
                 data().modify(room.store, 'cur_player').set().value('BlueMeanial'))
