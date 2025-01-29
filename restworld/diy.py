@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from pynecraft.base import EAST, WEST, d, r
-from pynecraft.commands import Block, Entity, FORCE, INFINITE, clone, e, effect, execute, fill, function, n, say, \
+from pynecraft.commands import Entity, FORCE, INFINITE, MOVE, clone, e, effect, execute, fill, function, n, say, \
     setblock, tp
 from pynecraft.simpler import Item
 from pynecraft.values import INVISIBILITY
@@ -41,29 +41,13 @@ def room():
         execute().at(e().tag('diy_starter')).run(fill(r(0, 5, 0), r(0, 5, -6), 'sand')),
         execute().at(e().tag('diy_ender')).run(tp(e().tag('diy_cloner'), r(0, 2, 0))),
         function('restworld:diy/_tick'))
-    room.function('restore').add(
-        setblock(r(0, -2, 0), Block(
-            'structure_block',
-            nbt={'ignoreEntities': True, 'name': 'restworld:sequence', 'mode': 'SAVE', 'posX': 0, 'posY': 4, 'posZ': -6,
-                 'sizeX': 1, 'sizeY': 1, 'sizeZ': 7, 'showboundingbox': False})),
-        setblock(r(0, -4, 0), 'redstone_torch'),
-        setblock(r(0, -4, 0), 'air'),
-        setblock(r(0, -2, 0), 'stone'),
-        execute().at(e().tag('diy_starter')).run(setblock(r(0, -2, 0), 'redstone_torch')),
-        execute().at(e().tag('diy_starter')).run(setblock(r(0, -2, 0), 'air')))
-    room.function('save').add(
-        execute().at(e().tag('diy_ender')).run(setblock(r(0, -1, 0), Block(r'structure_block',
-                                                                           nbt={'ignoreEntities': True,
-                                                                                'name': 'restworld:sequence',
-                                                                                'mode': 'SAVE', 'posX': 0, 'posY': 7,
-                                                                                'posZ': 0, 'sizeX': 1, 'sizeY': 1,
-                                                                                'sizeZ': 7,
-                                                                                'showboundingbox': False}))),
-        execute().at(e().tag('diy_ender')).run(setblock(r(0, -2, 0), 'redstone_torch')),
-        execute().at(e().tag('diy_ender')).run(setblock(r(0, -2, 0), 'air')),
-        execute().at(e().tag('diy_ender')).run(setblock(r(0, -1, 0), 'stone')),
-        setblock(r(0, -4, 0), 'redstone_torch'),
-        setblock(r(0, -4, 0), 'air'))
+    room.function('restore', home=False).add(
+        say('restore'),
+        clone(r(0, 2, 0), r(0, 2, -6), (-100, 3, 0)),
+        execute().at(e().tag('diy_ender')).run(clone((-100, 3, 6), (-100, 3, 0), r(0, 6, 0)).replace(MOVE)))
+    room.function('save', home=False).add(
+        execute().at(e().tag('diy_ender')).run(clone(r(0, 6, 6), r(0, 6, 0), (-100, 3, 0))),
+        clone((-100, 3, 6), (-100, 3, 0), r(0, 2, 0)).replace(MOVE))
     stand = Entity('armor_stand').tag('customizer', 'diy').merge_nbt(
         {'NoGravity': True, 'Small': True, 'equipment': {'head': Item.nbt_for('turtle_helmet')}, 'Rotation': [180, 0]})
     tick_init = room.function('tick_init').add(
@@ -87,14 +71,6 @@ def room():
             e().tag('diy_cloner')).run(tp(e().tag('diy_cloner'), d(0, 0, 1))),
         execute().at(e().tag('diy_cloner')).unless().block(r(0, 4, 0), 'air').run(
             setblock(r(0, 3, 0), 'magenta_glazed_terracotta')),
-        execute().at(e().tag('diy_cloner')).run(
-            setblock(r(0, -1, 0), Block('structure_block',
-                                        nbt={'ignoreEntities': True, 'name': 'restworld:singleton', 'mode': 'SAVE',
-                                             'posX': 0, 'posY': 5, 'posZ': 0, 'sizeX': 1, 'sizeY': 1, 'sizeZ': 1,
-                                             'showboundingbox': False}))),
-        execute().at(e().tag('diy_cloner')).run(setblock(r(0, -2, 0), 'redstone_torch')),
-        execute().at(e().tag('diy_cloner')).run(setblock(r(0, -2, 0), 'air')),
-        execute().at(e().tag('diy_cloner')).run(setblock(r(0, -1, 0), 'stone')),
-        execute().at(e().tag('diy_displayer')).run(setblock(r(0, -2, 0), 'redstone_torch')),
-        execute().at(e().tag('diy_displayer')).run(setblock(r(0, -2, 0), 'air'))
+        execute().at(e().tag('diy_cloner')).run(clone(r(0, 4, 0), r(0, 4, 0), (0, 90, 0))),
+        execute().at(e().tag('diy_displayer')).run(clone((0, 90, 0), (0, 90, 0), r(0, 4, 0))),
     )
