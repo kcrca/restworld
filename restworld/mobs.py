@@ -119,9 +119,17 @@ def friendlies(room):
         yield execute().as_(e().tag('collared')).run(data().merge(s(), {'CollarColor': step.i}))
 
     room.loop('colored_mobs', main_clock).loop(colored_mobs_loop, colors)
-    room.loop('cow', main_clock).add(kill_em(e().tag('cowish'))).loop(
-        lambda step: placer(*mid_east_placer, tags=('cowish',)).summon(step.elem),
-        ('cow', 'mooshroom', Entity('mooshroom', {'Type': 'brown'})))
+
+    def cow_loop(step):
+        if isinstance(step.elem, Entity) and 'mooshroom' in step.elem.id:
+            step.elem.name = 'Brown Mooshroom' if 'Type' in step.elem.nbt else 'Red Mooshroom'
+        else:
+            step.elem.name = f'{step.elem.nbt["variant"].title()} Cow'
+        yield placer(*mid_east_placer, tags=('cowish',)).summon(step.elem)
+
+    room.loop('cow', main_clock).add(kill_em(e().tag('cowish'))).loop(cow_loop, (
+        Entity('cow', {'variant': 'temperate'}), Entity('cow', {'variant': 'warm'}), Entity('cow', {'variant': 'cold'}),
+        Entity('mooshroom'), Entity('mooshroom', {'Type': 'brown'})))
     room.function('fox_init').add(placer(*mid_east_placer).summon('fox'), room.label(r(2, 2, -1), 'Fox Type', WEST))
 
     fox_postures = ('Crouching', 'Sitting', 'Sleeping')
@@ -563,9 +571,9 @@ def monsters(room):
     def skeleton_horse_loop(step):
         if step.i == 1:
             helmet = {'id': 'iron_helmet', 'Count': 1,
-                      'components': {'repair_cost': 1, 'enchantments':  {'unbreaking': 3}}}
+                      'components': {'repair_cost': 1, 'enchantments': {'unbreaking': 3}}}
             bow = {'id': 'bow', 'Count': 1,
-                   'components': {'repair_cost': 1, 'enchantments':  {'unbreaking': 3}}}
+                   'components': {'repair_cost': 1, 'enchantments': {'unbreaking': 3}}}
             skel = Entity('Skeleton', nbt={'equipment': {'head': helmet, 'mainhand': bow}})
             skel.merge_nbt(MobPlacer.base_nbt).merge_nbt(east_rot)
             skel.tag('mobs', skeleton_horse_rider)
