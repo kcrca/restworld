@@ -31,6 +31,12 @@ def friendlies(room):
     def placer(*args, **kwargs):
         return room.mob_placer(*args, **kwargs)
 
+    climates = ('temperate', 'warm', 'cold')
+
+    def climate_loop(step, which):
+        name = f'{step.elem} {which}'.title()
+        yield execute().as_(e().tag(which)).run(data().merge(s(), {'variant': step.elem, 'CustomName': name}))
+
     allay_dir = WEST
     allay_pos = r(0, 3, 0)
     room.function('allay_init').add(placer(allay_pos, allay_dir, adults=True).summon('Allay'))
@@ -104,13 +110,9 @@ def friendlies(room):
             Entity('jellie', name='Jellie'),
             Entity('all_black', name='Black'),
         ))
-    room.function('chicken_exit').add(
-        execute().as_(e().type('chicken')).run(data().merge(s(), {'EggLayTime': 1000000000})))
+    room.loop('chicken', main_clock).loop(lambda step: climate_loop(step, 'chicken'), climates)
     room.function('chicken_init').add(placer(*mid_east_placer).summon('chicken'), execute().as_(e().tag('chicken')).run(
         data().merge(s(), {'EggLayTime': 1000000000})))
-    room.loop('chicken', main_clock).loop(
-        lambda step: execute().as_(e().tag('chicken')).run(
-            data().merge(s(), {'OnGround': step.elem, 'EggLayTime': 1000000000})), (True, False))
     room.function('colored_mobs_init').add(room.label(r(0, 2, -1), 'Glow', SOUTH))
 
     def colored_mobs_loop(step):
@@ -145,10 +147,7 @@ def friendlies(room):
     room.function('frog_init').add(placer(
         frog_pos, frog_dir, adults=True).summon('frog'))
 
-    room.loop('frog', main_clock).loop(
-        lambda step: execute().as_(e().tag('frog')).run(
-            data().merge(s(), {'variant': step.elem.lower(), 'CustomName': f'{step.elem} Frog'})),
-        ('Temperate', 'Warm', 'Cold'))
+    room.loop('frog', main_clock).loop(lambda step: climate_loop(step, 'frog'), climates)
 
     def frogspawn_loop(step):
         if step.i == 0:
@@ -258,15 +257,8 @@ def friendlies(room):
 
     room.loop('parrot', main_clock).loop(parrot_loop, parrot_settings)
 
-    def pig_loop(step):
-        if step.elem == 'temperate':
-            name = 'Pig'
-        else:
-            name = f'{step.elem.title()} Pig'
-        yield execute().as_(e().tag('pig')).run(data().merge(s(), {'variant': step.elem, 'CustomName': name}))
-
     room.function('pig_init').add(placer(*mid_west_placer, tags=('saddle',)).summon('pig'))
-    room.loop('pig', main_clock).loop(pig_loop, ('temperate', 'warm', 'cold'))
+    room.loop('pig', main_clock).loop(lambda step: climate_loop(step, 'pig'), climates)
     room.function('polar_bear_init').add(placer(*south_placer).summon('Polar Bear'))
     room.function('rabbit_init').add(placer(*mid_east_placer).summon('rabbit'))
 
