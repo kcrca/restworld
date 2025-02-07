@@ -242,6 +242,7 @@ def room():
 
     def propagule_loop(step):
         yield setblock(r(0, 4, 0), ('mangrove_propagule', {'hanging': True, 'age': step.stage}))
+        yield setblock(r(0, 3, 0), ('mangrove_propagule', {'hanging': False, 'age': step.stage}))
         yield Sign.change(r(1, 2, 0), (None, None, 'Stage: %d of 4' % step.stage))
 
     room.loop('propagule', main_clock).loop(propagule_loop, range(4))
