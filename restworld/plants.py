@@ -355,13 +355,16 @@ def room():
 
 
 def three_funcs(room):
+    flower = room.score('cactus_flower')
+
     def three_height_loop(step):
         def height(z, which):
             count = step.elem
-            yield fill(r(0, 5, z), r(0, 5 - (1 - count), z), 'air')
             yield fill(r(0, 3, z), r(0, 3 + count, z), which)
             yield data().merge(r(1, 2, z), {'front_text': Sign.lines_nbt(('', to_name(which), '', ''))})
             room.particle(which, 'three_height', r(0, 4 + count, z), step)
+            if which == 'cactus':
+                yield execute().unless().score(flower).matches(0).run(setblock(r(0, 4 + count, z), 'cactus_flower'))
 
         yield from height(0, 'cactus')
         yield from height(-3, 'sugar_cane')
@@ -370,7 +373,6 @@ def three_funcs(room):
         def age(z, which):
             age = step.elem
             block = Block(which, state={'age': age})
-            yield setblock(r(0, 5, z), 'air')
             yield setblock(r(0, 4, z), block)
             yield data().merge(r(1, 2, z),
                                {'front_text': Sign.lines_nbt(
@@ -389,9 +391,13 @@ def three_funcs(room):
                                                                execute().at(e().tag(f'three_{which}_home')).run(
                                                                    function(f'restworld:plants/three_{which}_cur')))
 
-    room.loop('three_height', main_clock).loop(three_height_loop, range(3), bounce=True)
-    room.loop('three_age', fast_clock).add(fill(r(0, 5, 0), r(0, 5, -3), 'air'), setblock(r(0, 3, 0), 'cactus'),
-                                           setblock(r(0, 3, -3), 'sugar_cane')).loop(three_age_loop, range(16))
+    room.loop('three_height', main_clock).add(erase(r(0, 3, 0), r(0, 6, -3))).loop(
+        three_height_loop, range(3), bounce=True)
+    room.loop('three_age', fast_clock).add(
+        fill(r(0, 5, 0), r(0, 5, -3), 'air'),
+        setblock(r(0, 3, 0), 'cactus'),
+        setblock(r(0, 3, -3), 'sugar_cane'),
+    ).loop(three_age_loop, range(16)).add(execute().unless().score(flower).matches(0).run(setblock(r(0, 5, 0), 'cactus_flower')))
     room.function('three_init').add(room.label(r(-1, 2, 0), 'Change Age', WEST))
     switch_to_func('height')
     switch_to_func('age')
