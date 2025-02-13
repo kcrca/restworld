@@ -397,8 +397,11 @@ def three_funcs(room):
         fill(r(0, 5, 0), r(0, 5, -3), 'air'),
         setblock(r(0, 3, 0), 'cactus'),
         setblock(r(0, 3, -3), 'sugar_cane'),
-    ).loop(three_age_loop, range(16)).add(execute().unless().score(flower).matches(0).run(setblock(r(0, 5, 0), 'cactus_flower')))
-    room.function('three_init').add(room.label(r(-1, 2, 0), 'Change Age', WEST))
+    ).loop(three_age_loop, range(16)).add(
+        execute().unless().score(flower).matches(0).run(setblock(r(0, 5, 0), 'cactus_flower')))
+    room.function('three_init').add(
+        room.label(r(-1, 2, 0), 'Change Age', WEST),
+        room.label(r(-1, 2, 3), 'Cactus Flower', WEST))
     switch_to_func('height')
     switch_to_func('age')
     room.loop('cactus_soil', main_clock).loop(lambda step: setblock(r(0, 2, 1), step.elem), ('Sand', 'Red Sand'))
