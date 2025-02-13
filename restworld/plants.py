@@ -183,6 +183,28 @@ def room():
         farmland_init.add(td.summon(r(0, 2.1, i)))
         farmland_init.add(td.summon(r(0, 2.1, -i)))
 
+    def grass_loop(step):
+        grass = ' '.join(('short',) + step.elem + ('grass',))
+        yield setblock(r(0, 3, 2), grass)
+        yield Sign.change(r(1, 2, 2), (None, grass.title()))
+        grass = grass.replace('short', 'tall')
+        if 'dry' in grass:
+            yield erase(r(0, 3, 0), r(0, 4, 0))
+            yield setblock(r(0, 3, 0), grass)
+        else:
+            yield setblock(r(0, 3, 0), (grass, {'half': 'lower'}))
+            yield setblock(r(0, 4, 0), (grass, {'half': 'upper'}))
+        yield Sign.change(r(1, 2, 0), (None, grass.title()))
+
+    room.loop('grass', main_clock).loop(grass_loop, ((), ('dry',)))
+
+    def bushes_loop(step):
+        bush = ' '.join(step.elem + ('bush',))
+        yield setblock(r(0, 3, 0), bush)
+        yield Sign.change(r(1, 2, 0), (None, bush.title()))
+
+    room.loop('bushes', main_clock).loop(bushes_loop, ((), ('firefly',), ('dead',)))
+
     def mushroom_loop(step):
         type = f'{step.elem}_mushroom'
         yield data().merge(r(-1, 0, -1), {'mode': 'LOAD', 'name': f'restworld:{type}'})
