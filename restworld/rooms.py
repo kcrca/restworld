@@ -41,7 +41,7 @@ def ensure(pos: Position, block: BlockDef, nbt=None) -> str:
 def erase(start: Position, end: Position) -> str:
     mn = (min(start[0], end[0]), min(start[1], end[1]), min(start[2], end[2]))
     mx = (max(start[0], end[0]), max(start[1], end[1]), max(start[2], end[2]))
-    return clone(mx, mn, (15, 5, 15)).replace(MOVE)
+    return clone(mx, mn, (15, 80, 15)).replace(MOVE)
 
 
 def _to_iterable(tags):
