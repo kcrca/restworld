@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import Callable
 
 from pynecraft import info
-from pynecraft.base import EAST, NORTH, Nbt, SOUTH, WEST, r, to_id, to_name
+from pynecraft.base import DIRECTIONS, EAST, NORTH, Nbt, SOUTH, WEST, r, to_id, to_name
 from pynecraft.commands import Block, Text, data, e, execute, fill, fillbiome, function, kill, setblock, tag
 from pynecraft.info import small_flowers, stems, tulips
 from pynecraft.simpler import JUNGLE, PLAINS, Region, SAVANNA, Sign, WallSign
@@ -305,22 +305,38 @@ def room():
 
     freeze_biome = room.score('freeze_biome')
 
+    floor = {
+        CHERRY_GROVE: ('pink_petals', 'flower_amount'), BIRCH_FOREST: ('wildflowers', 'flower_amount'),
+        PLAINS: ('leaf_litter', 'segment_amount')
+    }
+    floor_tag = 'floor_block'
+
     def trees_loop(step):
         tree, biome = step.elem
         yield data().merge(r(-1, 0, -1), {'mode': 'LOAD', 'name': f'restworld:{to_id(tree)}_trees'})
         yield setblock(r(-1, -1, -1), 'redstone_block')
         yield setblock(r(-1, -1, -1), 'air')
         yield WallSign((None, f'{tree} Trees', 'Biome:', to_name(str(biome)))).place(r(1, 2, 7), WEST)
+        if biome in floor:
+            block, property = floor[biome]
+            yield room.label(r(1, 2, 2.5), to_name(block), tags=floor_tag, bump=0.15)
+            yield room.label(r(1, 2, 11.5), to_name(block), tags=floor_tag, bump=0.15)
+            for i in range(4):
+                yield setblock(r(0, 2, 1 + i), Block(block, {property: i + 1}))
+                yield room.label(r(-0.3, 2, 1 + i), f'Count: {i + 1}', tags=floor_tag)
+                dir = DIRECTIONS[i]
+                yield setblock(r(0, 2, 10 + i), Block(block, {'facing': dir, property: 4}))
+                yield room.label(r(-0.3, 2, 10 + i), dir.title(), tags=floor_tag)
         plant_room = Region(r(0, -5, -1), r(33, 10, 56))
-        # Fill the tall tree area
         yield execute().unless().score(freeze_biome).matches(1).run(
-            execute().at(e().tag('plants_room_beg_home')).run(plant_room.fillbiome(biome),
-                                                              plant_room.fill('air', replace='snow')),
+            execute().at(e().tag('plants_room_beg_home')).run(
+                plant_room.fillbiome(biome),
+                plant_room.fill('air', replace='snow')),
             fillbiome(r(0, 8, 0), r(18, 30, 17), biome))
 
     tree_items = tree_types.items()
     sorted(tree_items)
-    room.loop('trees', main_clock).loop(trees_loop, tree_items).add(
+    room.loop('trees', main_clock).add(kill(e().tag(floor_tag))).loop(trees_loop, tree_items).add(
         execute().at(e().tag('plants_room_beg_home')).run(fill(r(0, 1, 0), r(33, 6, 52), 'water').replace('ice')),
         WallSign((None, 'Lily Pad')).place(r(3, 2, 15), WEST))
     room.function('trees_init').add(room.label(r(0, 2, 16), 'Freeze Biome'))
