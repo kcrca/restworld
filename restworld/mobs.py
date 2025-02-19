@@ -3,7 +3,7 @@ from __future__ import annotations
 import copy
 
 from pynecraft import commands
-from pynecraft.base import EAST, EQ, NORTH, Nbt, SOUTH, WEST, r, to_id, to_name
+from pynecraft.base import EAST, EQ, NORTH, Nbt, SOUTH, WEST, delta_from, r, to_id, to_name
 from pynecraft.commands import Block, COLORS, Entity, FORCE, LONG, MOD, REPLACE, RESULT, Score, as_facing, clone, data, \
     e, execute, function, item, kill, n, player, return_, ride, s, schedule, scoreboard, setblock, summon, tag, tp
 from pynecraft.info import axolotls, colors, horses, tropical_fish, wolves
@@ -274,8 +274,12 @@ def friendlies(room):
         execute().at(e().tag('cat_home')).run(function('restworld:mobs/cat_cur')))
     p = placer(*mid_west_placer, tags='keeper')
     room.function('sheep_init').add(
-        p.summon(Entity('sheep', name='Sheared Sheep', nbt={'Sheared': True})),
-        p.summon('Sheep', tags=('colorable',)))
+        p.summon(Entity('sheep', name='Sheared Sheep', nbt={'Sheared': True}), tags=('sheared', 'colorable',)),
+        kill(e().tag('kid', 'sheep')),
+        p.summon('Sheep', tags=('colorable',)),
+        execute().at(e().tag('kid', 'sheep')).run(tp(e().tag('kid', 'sheep'), delta_from(-1, 0, 0))),
+        room.label(r(0, 2, 0), 'Sheared', EAST)
+    )
     room.function('sniffer_init').add(
         placer(r(0, 2, 0.5), EAST, 0, adults=True, tags='keeper').summon('sniffer'),
         WallSign((None, 'Sniffer Egg', None, '(vanilla  shows 3)')).place(r(2, 2, 3), EAST),
