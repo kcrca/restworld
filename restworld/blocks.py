@@ -27,7 +27,7 @@ def room():
     def blocks(name: str, facing: FacingDef,
                block_lists: Iterable[Union[Block, str]] | Iterable[Iterable[Union[Block, str]]],
                dx: float = 0, dz: float = 0, size: int = 0, labels=None, clock: Clock = main_clock,
-               score: ScoreName = None, air: bool = False) -> tuple[Function, Loop]:
+               score: ScoreName = None, air: bool = False, expandable=True) -> tuple[Function, Loop]:
         facing = as_facing(facing)
 
         if not isinstance(block_lists, list):
@@ -54,6 +54,8 @@ def room():
             WallSign(()).place(r(facing.dx, 2, facing.dz), facing),
             tag(e().tag(f'{name}_home')).add('particulate')
         )
+        if expandable:
+            block_init.add(tag(e().tag(f'{name}_home')).add('expansion'))
         if show_list:
             block_init.add(execute().if_().score(block_list_score).matches(0).run(kill(e().tag(f'block_list_{name}'))))
             names = room.function(name + '_names', home=False)
@@ -72,7 +74,7 @@ def room():
                 room.particle(block, name, (x, y + 1, z), step)
             else:
                 room.particle(block, name, (x, y + 1, z))
-            # Preserve the 'expand' response
+            # Preserve the 'expansion' response
             yield Sign.change(r(x + facing.dx, 2, z + facing.dz), signage, start=1)
             return block
 
@@ -112,7 +114,7 @@ def room():
 
         return block_init, block_loop
 
-    def job_sites(name, facing, sites, stages=None):
+    def job_sites(name, facing, sites, stages=None, expandable=True):
         if stages is None:
             stages = {}
         all = []
@@ -127,12 +129,13 @@ def room():
                     all.append(Block(id, s, name=n))
             else:
                 all.append(Block(b))
-        blocks(name, facing, all)
+        blocks(name, facing, all, expandable=expandable)
 
     room_init_functions(room, block_list_score)
 
     room.function('anvil_init', exists_ok=True).add(WallSign((None, 'Anvil')).place(r(0, 2, -1), NORTH))
-    blocks('anvil', NORTH, list(Block(b, state={'facing': WEST}) for b in ('Anvil', 'Chipped Anvil', 'Damaged Anvil')))
+    blocks('anvil', NORTH, list(Block(b, state={'facing': WEST}) for b in ('Anvil', 'Chipped Anvil', 'Damaged Anvil')),
+           expandable=False)
     blocks('bedrock', SOUTH, ('Bedrock',))
     bee_nests = [[], []]
     for i in range(0, 6):
@@ -168,7 +171,7 @@ def room():
         Block('campfire', {'lit': False}, name='Campfire|Unlit'),
         Block('Soul Campfire', {'lit': True}),
         Block('soul_campfire', {'lit': False}, name='Soul Campfire|Unlit'),
-    ))
+    ), expandable=False)
     campfire_init.add(room.label(r(-1, 2, 0), 'Cook', SOUTH))
     campfire_main.add(
         execute().if_().score(campfire_food).matches(0).run(data().remove(r(0, 3, 0), 'Items')),
@@ -228,7 +231,7 @@ def room():
     blocks('end', NORTH, ('End Stone', 'End Stone|Bricks'))
     blocks('frosted_ice', SOUTH,
            [Block('frosted_ice', {'age': i}, name=f'Frosted Ice|Age: {i}') for i in range(0, 4)] + [
-               Block('water', name='Water|')])
+               Block('water', name='Water|')], expandable=False)
     room.function('frosted_ice_enter').add(setblock(r(1, 0, 0), 'redstone_block'))
     room.function('frosted_ice_exit').add(setblock(r(1, 0, 0), 'air'))
     blocks('gilded_blackstone', NORTH, ('Gilded Blackstone',))
@@ -237,11 +240,11 @@ def room():
     blocks('heavy_core', NORTH, ('Heavy Core',))
     blocks('honeycomb', SOUTH, ('Honeycomb Block',))
     room.function('ladder_init').add(setblock(r(0, 3, 0), 'ladder'))
-    blocks('jigsaw', SOUTH, ('Jigsaw',))
+    blocks('jigsaw', SOUTH, (Block('Jigsaw', {'orientation': 'up_south'}),))
     blocks('lighting', SOUTH, (
         'Glowstone', 'Sea Lantern', 'Shroomlight', 'Ochre|Froglight', 'Pearlescent|Froglight', 'Verdant|Froglight',
         'End Rod'))
-    blocks('ladder', NORTH, ('Ladder',))
+    blocks('ladder', NORTH, ('Ladder',), expandable=False)
     blocks('lodestone', SOUTH, ('Lodestone',))
     blocks('magma_block', SOUTH, ('Magma Block',))
     blocks('moss', SOUTH, (('Moss Block', 'Pale Moss Block'), ('Moss Carpet', 'Pale Moss Carpet')), dz=3)
@@ -338,7 +341,7 @@ def room():
     job_sites('cauldron', NORTH, sites, stages)
     job_sites('composter', NORTH, ('Composter',), {'Composter': tuple({'level': t} for t in range(0, 9))})
     job_sites('grindstone', NORTH, ('Grindstone',),
-              {'Grindstone': list({'face': f} for f in ('floor', 'wall', 'ceiling'))})
+              {'Grindstone': list({'face': f} for f in ('floor', 'wall', 'ceiling'))}, expandable=False)
     job_sites('job_sites_1', NORTH,
               ('Crafting Table', 'Crafter', 'Cartography Table', 'Fletching Table', 'Smithing Table', 'Loom',
                'Stonecutter'))
@@ -859,12 +862,6 @@ def room():
     expansion_functions(room)
     stepable_functions(room)
 
-    for b in (
-            'amethyst', 'anvil', 'bell', 'brewing_stand', 'cake', 'campfire', 'chest', 'colored_beam', 'colorings',
-            'frosted_ice', 'grindstone', 'item_frame', 'lantern', 'armor_stand', 'torches', 'blocks_room', 'ladder',
-            'stepable', 'tnt', 'creaking_heart', 'resin_clumps', 'dont_expand', 'blocks_sign', 'expand'):
-        room.function(b + '_init', exists_ok=True).add(tag(e().tag(b + '_home')).add('no_expansion'))
-
 
 def room_init_functions(room, block_list_score):
     room.functions['blocks_room_init'].add(
@@ -876,10 +873,10 @@ def room_init_functions(room, block_list_score):
 
     # Ensure that setting up the expansion work on signs is done after all other things
     dbsi = room.function('do_blocks_sign_init', home=False).add(
-        execute().at(e().tag('blocks_home', '!no_expansion')).run(
+        execute().at(e().tag('blocks_home', 'expansion')).run(
             Sign.change(r(0, 2, -1), (), ('function restworld:blocks/toggle_expand',)),
             Sign.change(r(0, 2, 1), (), ('function restworld:blocks/toggle_expand',))),
-        execute().at(e().tag('blocks_home', 'no_expansion')).run(
+        execute().at(e().tag('blocks_home', '!expansion')).run(
             Sign.change(r(0, 2, -1), (), (say('Sorry, cannot expand this block'),)),
             Sign.change(r(0, 2, 1), (), (say('Sorry, cannot expand this block'),)))
     )
@@ -1148,8 +1145,8 @@ def color_functions(room):
 
 # Expansion is complex.
 #
-# Each 'homer' armor stand is assumed to be an expander for its block or blocks. Though it can be tagged 'no_expansion'
-# if the block is not to be expanded, typically in its _init file.
+# Most blocks are expandable, so the blocks() function marks their 'homer' armor stand with 'expansion' by default in its
+# _init function.
 #
 # During the _init phase, every expanding homer modifies its sign to toggle expansion when tapped. Non-expanding
 # homers modify the sign to say 'Sorry' when tapped.
@@ -1157,14 +1154,14 @@ def color_functions(room):
 # Toggling actual expansion for a single target is in toggle_expand_at. It places or removes the 'expander' tag on
 # the homer, and runs either the expander or contracter function as itself as appropriate to give the immediate effect.
 #
-# Expanding or contracting all simply runs this script on all expanding homers. Which means, frankly, that it
+# Expanding or contracting "all"" simply runs this script on all expanding homers. Which means, frankly, that it
 # doesn't 'expand all' it 'toggles all'.
 #
 # Homers that handle multiple blocks are helped by 'just_expand' armor stands under the blocks it manages. These
 # are expander homers that do nothing but the expansion work for the blocks above them. So if homer X puts up
 # blocks X and Y, a regular homer will be under X and a 'just_expand' homer will be under Y.
 #
-# Each main tick, the 'expand' function is run at every 'expander' during the 'main_finish' phase. This keeps the
+# On each main tick, the 'expansion' function is run at every 'expander' during the 'main_finish' phase. This keeps the
 # block expanded as it changes.
 def expansion_functions(room):
     expand_all = room.function('expand_all', home=False)
@@ -1174,23 +1171,23 @@ def expansion_functions(room):
         execute().positioned(r(0, -2, 1)).run(function('restworld:blocks/toggle_expand_at')))
     room.function('toggle_expand_at', home=False).add(
         execute().as_(e().tag('expander').distance((None, 1))).run(tag(s()).add('stop_expanding')),
-        execute().as_(e().tag('!expander', '!no_expansion').distance((None, 1))).run(tag(s()).add('expander')),
+        execute().as_(e().tag('!expander', 'expansion').distance((None, 1))).run(tag(s()).add('expander')),
         execute().as_(e().tag('stop_expanding').distance((None, 1))).run(tag(s()).remove('expander')),
         execute().as_(e().tag('stop_expanding').distance((None, 1))).run(tag(s()).remove('stop_expanding')),
         execute().at(e().tag('expander').distance((None, 1))).run(function('restworld:blocks/expander')),
-        execute().at(e().tag('!expander', '!no_expansion').distance((None, 1))).run(
+        execute().at(e().tag('!expander', 'expansion').distance((None, 1))).run(
             function('restworld:blocks/contracter')),
-        execute().at(e().tag('no_expansion').distance((None, 1))).run(say('Sorry, cannot expand this.')),
-        execute().at(e().tag('no_expansion', 'fire_home').distance((None, 1))).run(say('Sorry, cannot expand this.')))
+        execute().at(e().tag('!expansion').distance((None, 1))).run(say('Sorry, cannot expand this.')),
+        execute().at(e().tag('!expansion', 'fire_home').distance((None, 1))).run(say('Sorry, cannot expand this.')))
     room.function('expander').add(
         execute().if_().entity(e().tag('fire_home').distance((None, 1))).run(function('restworld:blocks/expand_fire')),
         execute().if_().entity(e().tag('dripstone_home').distance((None, 1))).run(
             function('restworld:blocks/expand_dripstone')),
         execute().unless().entity(e().tag('fire_home').distance((None, 1))).unless().entity(
             e().tag('dripstone_home').distance((None, 1))).run(function('restworld:blocks/expand_generic')))
-    expand_all.add(execute().as_(e().tag('blocks_home', '!no_expansion', '!expander')).run(
+    expand_all.add(execute().as_(e().tag('blocks_home', 'expansion', '!expander')).run(
         execute().at(s()).run(function('restworld:blocks/toggle_expand_at'))))
-    room.function('expand', main_clock).add(
+    room.function('expansion', main_clock).add(
         execute().at(e().tag('expander')).run(function('restworld:blocks/expander')))
     room.function('expand_dripstone', home=False).add(clone(r(0, 12, 0), r(0, 3, 0), r(-1, 3, 0)),
                                                       clone(r(0, 12, 0), r(0, 3, 0), r(1, 3, 0)),
@@ -1224,7 +1221,7 @@ def expansion_functions(room):
         execute().unless().entity(e().tag('fire_home').distance((None, 1))).unless().entity(
             e().tag('dripstone_home').distance((None, 1))).run(function('restworld:blocks/contract_generic')))
     contract_all.add(
-        execute().as_(e().tag('blocks_home', '!no_expansion', 'expander')).run(
+        execute().as_(e().tag('blocks_home', 'expansion', 'expander')).run(
             execute().at(s()).run(function('restworld:blocks/toggle_expand_at'))))
     room.function('contract_dripstone').add(fill(r(1, 12, 1), r(-1, 3, 1), 'air'),
                                             fill(r(1, 12, -1), r(-1, 3, -1), 'air'),
@@ -1243,7 +1240,7 @@ def expansion_functions(room):
     room.function('just_expand_home', home=False).add(
         kill(e().tag('just_expand_home').distance((None, 2))),
         summon('armor_stand', r(0, 0.5, 0),
-               {'Tags': ['just_expand_home', 'homer', 'blocks_home'], 'NoGravity': True, 'Small': True}))
+               {'Tags': ['just_expand_home', 'homer', 'blocks_home', 'expansion'], 'NoGravity': True, 'Small': True}))
     # ... and this is like just_expand_home, but it doesn't expand.
     room.function('dont_expand_home', home=False).add(
         kill(e().tag('dont_expand_home').distance((None, 2))),
