@@ -2,7 +2,8 @@ from __future__ import annotations
 
 import copy
 
-from pynecraft.base import Arg, EAST, EQ, GAMETIME, LT, NOON, NORTH, OVERWORLD, Position, SOUTH, THE_END, THE_NETHER, \
+from pynecraft.base import Arg, EAST, EQ, GAMETIME, LT, NOON, NORTH, Nbt, OVERWORLD, Position, SOUTH, THE_END, \
+    THE_NETHER, \
     TimeSpec, \
     WEST, r
 from pynecraft.commands import Block, FORCE, MINUS, MOD, MOVE, REPLACE, RESULT, Score, clone, data, e, \
@@ -63,7 +64,7 @@ def room():
 
     def use_min_fill(y, filler, filter):
         return execute().at(e().tag('full_reset_home')).run(
-            fill((r(0), y, r(0)), (69, y, 99), filler).replace(filter))
+            fill((r(0), y, r(0)), (73, y, 99), filler).replace(filter))
 
     def clock_blocks(turn_on):
         lights = ('red_concrete', 'lime_concrete')
@@ -160,14 +161,14 @@ def room():
         yield setblock(pos, Block(block, {'facing': dir},
                                   {'Command': f'function restworld:{Arg("room")}/{which}'}))
 
+    range_cmd = str(
+        execute().positioned(r(0, -2, 0)).as_(p().volume((Arg('dx'), 15, Arg('dz'))).limit(1)).run(return_(0)))
     room.function('room_bounds', home=False).add(
         func(r(-1, 0, 0), '_init', EAST),
         setblock(r(-1, -1, 0), 'pumpkin'),
         setblock(r(-1, -2, -1), 'glowstone'),
         setblock(r(-1, 0, -1), 'air'),
-        setblock(r(-1, 0, -1), ('repeating_command_block', {'facing': EAST}, {'auto': True, 'Command': str(
-            execute().positioned(r(0, -2, 0)).as_(p().volume((Arg('dx'), 15, Arg('dz'))).limit(1)).run(return_(0)))[1:]}
-                                )),
+        setblock(r(-1, 0, -1), Block('repeating_command_block', {'facing': EAST}, Nbt({'auto': True, 'Command': range_cmd[1:]}))),
         setblock(r(0, -1, -1), ('red_sandstone_slab', {'type': 'top'})),
         setblock(r(0, 0, -1), ('comparator', {'facing': WEST})),
         func(r(1, 0, -1), '_enter', SOUTH),
