@@ -198,8 +198,7 @@ def room():
         ),
         item().replace().entity(model_holder, 'weapon.mainhand').from_().entity(model_src, 'container.0'),
         item().replace().entity(model_holder, 'weapon.offhand').from_().entity(model_src, 'container.0'),
-        execute().if_().score(room.score('model_head')).matches(0).run(
-            item().replace().entity(model_holder, 'armor.head').with_('air')),
+        execute().if_().score(room.score('model_head')).matches(0).run(data().remove(model_holder, 'equipment.head')),
         execute().if_().score(room.score('model_head')).matches(1).run(
             item().replace().entity(model_holder, 'armor.head').from_().entity(model_src, 'container.0')),
         item().replace().entity(invis_frame, 'container.0').from_().entity(model_src, 'container.0'),

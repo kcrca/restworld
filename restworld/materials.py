@@ -321,7 +321,7 @@ def basic_functions(room):
             yield execute().if_().score(horse_saddle).matches(1).run(
                 item().replace().entity(e().tag('armor_horse'), 'saddle').with_('saddle'))
             yield execute().if_().score(horse_saddle).matches(0).run(
-                item().replace().entity(e().tag('armor_horse'), 'saddle').with_('air'))
+                data().remove(e().tag('armor_horse').limit(1), 'equipment.saddle'))
         else:
             yield data().remove(e().tag('armor_horse_frame').limit(1), 'Item')
             yield execute().if_().entity(e().tag('armor_horse').distance((None, 10))).run(
@@ -331,8 +331,8 @@ def basic_functions(room):
                            {'equipment': {'mainhand': Item.nbt_for('%s_sword' % material),
                                           'offhand': Item.nbt_for('shield')}})
 
-        hands_row = ['air', 'air', '%s_shovel' % material, '%s_pickaxe' % material, '%s_hoe' % material,
-                     '%s_axe' % material, 'air', 'air']
+        hands_row = [None, None, '%s_shovel' % material, '%s_pickaxe' % material, '%s_hoe' % material,
+                     '%s_axe' % material, None, None]
         if material == 'wooden':
             hands_row[0] = 'stick'
             hands_row[1] = 'bow'
@@ -344,12 +344,14 @@ def basic_functions(room):
             hands_row[7] = 'compass'
         elif material == 'golden':
             hands_row[6] = 'clock'
-        for j in range(0, 4):
-            yield data().merge(e().tag('material_%d' % j).limit(1),
-                               {'equipment': {'mainhand': Item.nbt_for(hands_row[j])}})
-        for j in range(4, 8):
-            yield data().merge(e().tag('material_%d' % j).limit(1),
-                               {'equipment': {'offhand': Item.nbt_for(hands_row[j])}})
+        for j in range(0, 8):
+            hand = 'mainhand' if j < 4 else 'offhand'
+            which = e().tag('material_%d' % j).limit(1)
+            thing = hands_row[j]
+            if thing:
+                yield data().merge(which, {'equipment': {hand: Item.nbt_for(thing)}})
+            else:
+                yield data().remove(which, f'equipment.{hand}')
         yield data().merge(r(-2, 0, 1), {'name': f'restworld:material_{material}', 'mode': 'LOAD'})
 
     which_elytra = room.score('which_elytra')
@@ -873,9 +875,9 @@ def trim_functions(room):
     show_cleanup.add(function(keep_detect))
     change_cleanup.add(function(keep_detect))
 
-    room.function('trim_chestplate_off', home=False).add(execute().as_(e().tag(overall_tag)).run(
-        item().replace().entity(s(), 'armor.feet').with_('air'),
-        item().replace().entity(s(), 'armor.chest').with_('air')))
+    room.function('trim_chestplate_off', home=False).add(
+        execute().as_(e().tag(overall_tag)).run(data().remove(s(), 'equipment.feet'),
+                                                data().remove(s(), 'equipment.chest')))
 
     chestplate_on = room.function('trim_chestplate_on', home=False)
     for armor in info.armors:

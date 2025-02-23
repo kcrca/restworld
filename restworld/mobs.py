@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import copy
 
-from pynecraft import commands
 from pynecraft.base import EAST, EQ, NORTH, Nbt, SOUTH, WEST, delta_from, r, to_id, to_name
 from pynecraft.commands import Block, COLORS, Entity, FORCE, LONG, MOD, REPLACE, RESULT, Score, as_facing, clone, data, \
     e, execute, function, item, kill, n, player, return_, ride, s, schedule, scoreboard, setblock, summon, tag, tp
@@ -174,7 +173,7 @@ def friendlies(room):
         (p.summon(Entity('horse', name=horse.name, nbt={'Variant': h}), tags=(horse.tag_name,)) for h, horse in
          enumerate(horses)), execute().at(e().tag(to_id(horses[3].tag_name), 'kid')).run(
             WallSign((None, 'Variant:')).place(r(2, 0, 0), EAST)), room.label(r(1, 2, 1), 'Lead', WEST),
-        room.label(r(1, 2, -7), 'Saddles', WEST))
+    )
     horse_variants = ('None', 'White', 'White Field', 'White Dots', 'Black Dots')
 
     def horse_loop(step):
@@ -590,12 +589,6 @@ def monsters(room):
     helmet = Item.nbt_for('iron_helmet')
     rider = Entity('Skeleton', nbt={'equipment': {'head': helmet, 'mainhand': bow}}).merge_nbt(
         MobPlacer.base_nbt)
-
-    def undead_saddle_loop(step):
-        item = 'air' if step.i == 0 else 'saddle'
-        yield commands.item().replace().entity(e().tag(undead_horse_tag), 'saddle').with_(item)
-
-    room.loop('undead_saddle').loop(undead_saddle_loop, range(2))
 
     armorable_tag = 'armorable'
     room.loop('skeleton', main_clock).add(kill_em(e().tag('skeletal'))).loop(
