@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import copy
 
-from pynecraft.base import Arg, EAST, EQ, GAMETIME, LT, NOON, NORTH, OVERWORLD, Position, SOUTH, THE_END, \
+from pynecraft.base import Arg, DIRECTIONS, EAST, EQ, GAMETIME, LT, NOON, NORTH, OVERWORLD, Position, SOUTH, THE_END, \
     THE_NETHER, \
     TimeSpec, \
     WEST, r
@@ -62,16 +62,18 @@ if_clock_running = execute().at(e().tag('clock_home')).if_().block(r(0, -2, 1), 
 def room():
     room = Room('global', restworld)
 
-    def use_min_fill(y, filler, filter):
-        return execute().at(e().tag('full_reset_home')).run(
-            fill((r(0), y, r(0)), (73, y, 99), filler).replace(filter))
+    def all_fill(y, filler, filter, destroy=False):
+        cmd = fill((r(0), y, r(0)), (73, y, 99), filler).replace(filter)
+        if destroy:
+            cmd = cmd.destroy()
+        return execute().at(e().tag('full_reset_home')).run(cmd)
 
     def clock_blocks(turn_on):
         lights = ('red_concrete', 'lime_concrete')
         before = lights[int(turn_on)]
         after = lights[1 - int(turn_on)]
         return (
-            use_min_fill(100, after, before),
+            all_fill(100, after, before),
             execute().at(e().tag('particles_action_home')).run(setblock(r(0, 6, -4), after)))
 
     def kill_if_time():
@@ -79,6 +81,11 @@ def room():
         for c in restworld.clocks():
             ex = ex.unless().score(c.time).matches((0, 1))
         return ex.run(function('restworld:global/kill_em'))
+
+    room.function('power_off').add(
+        (all_fill(101, Block('lever', {'face': 'floor', 'facing': dir, 'powered': False}),
+                  Block('lever', {'face': 'floor', 'facing': dir, 'powered': True})) for dir in DIRECTIONS)
+    )
 
     mob_rooms = ('mobs', 'wither', 'nether', 'enders')
 
@@ -214,10 +221,10 @@ def room():
         kill(e().tag('home', '!full_reset_home')),
         # Death must be ready before any other initialization
         function('restworld:global/death_init'),
-        use_min_fill(97, 'redstone_block', 'dried_kelp_block'),
-        use_min_fill(97, 'dried_kelp_block', 'redstone_block'),
-        use_min_fill(97, 'redstone_block', 'pumpkin'),
-        use_min_fill(97, 'pumpkin', 'redstone_block'),
+        all_fill(97, 'redstone_block', 'dried_kelp_block'),
+        all_fill(97, 'dried_kelp_block', 'redstone_block'),
+        all_fill(97, 'redstone_block', 'pumpkin'),
+        all_fill(97, 'pumpkin', 'redstone_block'),
     )
     room.function('gamerules').add(
         (gamerule(*args) for args in (
