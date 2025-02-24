@@ -311,7 +311,7 @@ def basic_functions(room):
 
         if horse_armor:
             yield execute().unless().entity(e().tag('armor_horse').distance((None, 10))).run(
-                room.mob_placer(r(4.5, 2, 0.5), NORTH, adults=True).summon(
+                room.mob_placer(r(5, 2, 0.5), NORTH, adults=True).summon(
                     'horse',
                     nbt={'Variant': 1, 'Tame': True, 'Tags': ['armor_horse', 'enchantable', 'material_static']}))
             yield data().merge(n().tag('armor_horse').limit(1),
