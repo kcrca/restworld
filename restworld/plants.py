@@ -208,20 +208,22 @@ def room():
 
     room.loop('bushes', main_clock).loop(bushes_loop, ((), ('firefly',), ('dead',)))
 
-    groundcovers = {'leaf_litter': 'segment_amount', 'wildflowers': 'flower_amount', 'pink_petals': 'flower_amount'}
+    ground_covers = {'leaf_litter': 'segment_amount', 'wildflowers': 'flower_amount', 'pink_petals': 'flower_amount'}
 
-    def groundcover_loop(step):
-        for i, (cover, count) in enumerate(groundcovers.items()):
+    def ground_cover_loop(step):
+        for i, (cover, count) in enumerate(ground_covers.items()):
             yield setblock(r(i * 2, 3, 0), Block(cover, {count: step.elem}))
             yield Sign.change(r(i * 2, 2, 1), (None, None, f'{count}: {step.elem}'))
+            yield Sign.change(r(i * 2, 2, -1), (None, None, f'{count}: {step.elem}'))
 
-    room.loop('groundcover', main_clock).loop(groundcover_loop, range(1, 5))
-    gc_init = room.function('groundcover_init')
-    for i, cover in enumerate(groundcovers):
+    room.loop('ground_cover', main_clock).loop(ground_cover_loop, range(1, 5))
+    gc_init = room.function('ground_cover_init')
+    for i, cover in enumerate(ground_covers):
         gc_init.add(WallSign((None, to_name(cover))).place(r(i * 2, 2, 1), SOUTH))
-    room.particle('leaf_litter', 'groundcover', r(0, 3.5, 0))
-    room.particle('wildflowers', 'groundcover', r(2, 3.5, 0))
-    room.particle('pink_petals', 'groundcover', r(4, 3.5, 0))
+        gc_init.add(WallSign((None, to_name(cover))).place(r(i * 2, 2, -1), NORTH))
+    room.particle('leaf_litter', 'ground_cover', r(0, 3.5, 0))
+    room.particle('wildflowers', 'ground_cover', r(2, 3.5, 0))
+    room.particle('pink_petals', 'ground_cover', r(4, 3.5, 0))
 
     def mushroom_loop(step):
         type = f'{step.elem}_mushroom'
