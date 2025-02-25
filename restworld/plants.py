@@ -83,6 +83,7 @@ def room():
         room.particle(step.elem.id, 'azalea', r(0, 4, 0), step)
 
     room.loop('azalea', main_clock).loop(azalea_loop, (Block('Azalea'), Block('Flowering Azalea')))
+    room.particle('moss_block', 'azalea', r(0, 4, 2))
 
     bamboo_funcs(room)
     three_funcs(room)
@@ -102,6 +103,7 @@ def room():
     room.particle('cave_vines', 'cave_vines', r(0, 3, 0))
     room.particle('glow_lichen', 'cave_vines', r(0, 3, 2))
     room.particle('spore_blossom', 'cave_vines', r(0, 4.5, 2))
+    room.particle('rooted_dirt', 'cave_vines', r(0, 5, 4))
     room.particle('hanging_roots', 'cave_vines', r(0, 3.5, 4))
     room.particle('azalea_leaves', 'cave_vines', r(-1, 7, 0))
     room.particle('flowering_azalea_leaves', 'cave_vines', r(-1, 7, 1))
@@ -133,11 +135,6 @@ def room():
         yield Sign.change(r(1, 2, 0), (None, None, 'Stage: %d of 3' % step.stage))
 
     room.loop('cocoa', main_clock).loop(cocoa_loop, range(0, 3), bounce=True)
-
-    room.loop('dead_bush_soil', main_clock).loop(lambda step: setblock(r(0, 2, 1), step.elem),
-                                                 ('Sand', 'Red Sand', 'Terracotta', 'Dirt', 'Podzol', 'Mud',
-                                                  'Moss Block'))
-    room.particle('dead_bush', 'dead_bush_soil', r(0, 4, 1))
 
     tilts = ('none', 'unstable', 'partial', 'full')
     upper = tuple(Block('Big Dripleaf', {'tilt': x, 'facing': EAST}) for x in tilts) + (
@@ -187,21 +184,27 @@ def room():
         grass = ' '.join(('short',) + step.elem + ('grass',))
         yield setblock(r(0, 3, 2), grass)
         yield Sign.change(r(1, 2, 2), (None, grass.title()))
+        room.particle(grass, 'grass', r(0, 3.5, 2), step)
         grass = grass.replace('short', 'tall')
         if 'dry' in grass:
             yield erase(r(0, 3, 0), r(0, 4, 0))
             yield setblock(r(0, 3, 0), grass)
+            room.particle(grass, 'grass', r(0, 4, 0), step)
         else:
             yield setblock(r(0, 3, 0), (grass, {'half': 'lower'}))
             yield setblock(r(0, 4, 0), (grass, {'half': 'upper'}))
+            room.particle(grass, 'grass', r(0, 4.5, 0), step)
         yield Sign.change(r(1, 2, 0), (None, grass.title()))
 
     room.loop('grass', main_clock).loop(grass_loop, ((), ('dry',)))
+    room.particle('large_fern', 'grass', r(0, 4.5, 4))
+    room.particle('fern', 'grass', r(0, 3.5, 6))
 
     def bushes_loop(step):
         bush = ' '.join(step.elem + ('bush',))
         yield setblock(r(0, 3, 0), bush)
         yield Sign.change(r(1, 2, 0), (None, bush.title()))
+        room.particle(bush, 'bushes', r(0, 4, 0), step)
 
     room.loop('bushes', main_clock).loop(bushes_loop, ((), ('firefly',), ('dead',)))
 
@@ -281,8 +284,12 @@ def room():
         y_off = 3 if step.elem == 'crimson' else 5
         yield execute().unless().score(shrooms_tops).matches(1).run(setblock(r(1, y_off, 0), (vines, {'age': 0})))
         yield execute().if_().score(shrooms_tops).matches(1).run(setblock(r(1, y_off, 0), (vines, {'age': 25})))
+        room.particle(f'{step.elem} roots', 'shrooms', r(1, 4, 2), step)
+        room.particle(f'{step.elem} fungus', 'shrooms', r(1, 4, 4), step)
+        room.particle(vines, 'shrooms', r(1, y_off, 0), step)
 
     room.loop('shrooms', main_clock).loop(shrooms_loop, ('crimson', 'warped'))
+    room.particle('nether_sprouts', 'shrooms', r(1, 3.5, 6))
 
     def stems_loop(step):
         yield setblock(r(0, 3, -2), 'air')
@@ -379,9 +386,6 @@ def room():
     high_flowers = ('sunflower', 'lilac', 'rose_bush', 'peony')
     for i, flower in enumerate(high_flowers):
         room.particle(flower, 'tulips', r(-3, 5, 2 - i * 2))
-    grasses = ('short_grass', 'tall_grass', 'fern', 'large_fern')
-    for i, grass in enumerate(grasses):
-        room.particle(grass, 'tulips', r(-6, 4 + i % 2, 2 - i * 2))
 
     def eyeblossom_loop(step):
         which = f'{step.elem}_eyeblossom'
@@ -390,6 +394,7 @@ def room():
         room.particle(which, 'eyeblossom', r(0, 4, 0), step)
 
     room.loop('eyeblossom', main_clock).loop(eyeblossom_loop, ('open', 'closed'))
+    room.particle('pale_moss_block', 'eyeblossom', r(-3, 4, 1))
 
 
 def three_funcs(room):
