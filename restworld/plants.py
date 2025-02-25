@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import Callable
 
 from pynecraft import info
-from pynecraft.base import DIRECTIONS, EAST, NORTH, Nbt, SOUTH, WEST, r, to_id, to_name
+from pynecraft.base import EAST, NORTH, Nbt, SOUTH, WEST, r, to_id, to_name
 from pynecraft.commands import Block, Text, data, e, execute, fill, fillbiome, function, kill, setblock, tag
 from pynecraft.info import small_flowers, stems, tulips
 from pynecraft.simpler import JUNGLE, PLAINS, Region, SAVANNA, Sign, WallSign
@@ -208,6 +208,21 @@ def room():
 
     room.loop('bushes', main_clock).loop(bushes_loop, ((), ('firefly',), ('dead',)))
 
+    groundcovers = {'leaf_litter': 'segment_amount', 'wildflowers': 'flower_amount', 'pink_petals': 'flower_amount'}
+
+    def groundcover_loop(step):
+        for i, (cover, count) in enumerate(groundcovers.items()):
+            yield setblock(r(i * 2, 3, 0), Block(cover, {count: step.elem}))
+            yield Sign.change(r(i * 2, 2, 1), (None, None, f'{count}: {step.elem}'))
+
+    room.loop('groundcover', main_clock).loop(groundcover_loop, range(1, 5))
+    gc_init = room.function('groundcover_init')
+    for i, cover in enumerate(groundcovers):
+        gc_init.add(WallSign((None, to_name(cover))).place(r(i * 2, 2, 1), SOUTH))
+    room.particle('leaf_litter', 'groundcover', r(0, 3.5, 0))
+    room.particle('wildflowers', 'groundcover', r(2, 3.5, 0))
+    room.particle('pink_petals', 'groundcover', r(4, 3.5, 0))
+
     def mushroom_loop(step):
         type = f'{step.elem}_mushroom'
         yield data().merge(r(-1, 0, -1), {'mode': 'LOAD', 'name': f'restworld:{type}'})
@@ -334,10 +349,6 @@ def room():
 
     freeze_biome = room.score('freeze_biome')
 
-    floor = {
-        CHERRY_GROVE: ('pink_petals', 'flower_amount'), BIRCH_FOREST: ('wildflowers', 'flower_amount'),
-        PLAINS: ('leaf_litter', 'segment_amount')
-    }
     floor_tag = 'floor_block'
 
     def trees_loop(step):
@@ -346,16 +357,6 @@ def room():
         yield setblock(r(-1, -1, -1), 'redstone_block')
         yield setblock(r(-1, -1, -1), 'air')
         yield WallSign((None, f'{tree} Trees', 'Biome:', to_name(str(biome)))).place(r(1, 2, 7), WEST)
-        if biome in floor:
-            block, property = floor[biome]
-            yield room.label(r(1, 2, 2.5), to_name(block), tags=floor_tag, bump=0.15)
-            yield room.label(r(1, 2, 11.5), to_name(block), tags=floor_tag, bump=0.15)
-            for i in range(4):
-                yield setblock(r(0, 2, 1 + i), Block(block, {property: i + 1}))
-                yield room.label(r(-0.3, 2, 1 + i), f'Count: {i + 1}', tags=floor_tag)
-                dir = DIRECTIONS[i]
-                yield setblock(r(0, 2, 10 + i), Block(block, {'facing': dir, property: 4}))
-                yield room.label(r(-0.3, 2, 10 + i), dir.title(), tags=floor_tag)
         plant_room = Region(r(0, -5, -1), r(33, 10, 56))
         yield execute().unless().score(freeze_biome).matches(1).run(
             execute().at(e().tag('plants_room_beg_home')).run(
