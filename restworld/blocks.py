@@ -63,7 +63,7 @@ def room():
 
         def one_block(block: Block, pos, step):
             void = block.name == 'structure void'
-            signage = labels[i] if labels else block.sign_text
+            signage = labels[step.i] if labels else block.sign_text
             if void:
                 signage = ()
             if air:
@@ -205,7 +205,7 @@ def room():
         )
         block = Block('creaking_heart', {'creaking_heart_state': step.elem, 'natural': True})
         yield setblock(r(0, 3, 0), block),
-        yield Sign.change(r(0, 2, 1), (None, None, f'Active: {step.elem}'))
+        yield Sign.change(r(0, 2, 1), (None, None, step.elem.title()))
         room.particle(block, 'creaking_heart', r(0, 4, 0), step)
 
     room.loop('creaking_heart', main_clock).loop(creaking_heart_loop, ('awake', 'dormant', 'uprooted'))
@@ -290,6 +290,10 @@ def room():
     stone_types = ('Basalt', 'Stone', 'Deepslate', 'Andesite', 'Diorite', 'Granite', 'Tuff', 'Blackstone', 'Basalt')
     polished_types = ('Smooth Basalt', 'Smooth Stone') + tuple(f'Polished|{t}' for t in stone_types[2:])
     blocks('stone', NORTH, (stone_types, polished_types), dz=3)
+
+    test_block_modes = ('start', 'log', 'fail', 'accept')
+    blocks('test', SOUTH, tuple(Block('test_block', {'mode': mode}) for mode in test_block_modes),
+           labels=(tuple(('Test Block', f'Mode: {mode.title()}') for mode in test_block_modes)))
 
     copper_blocks = (
         'Copper Block', 'Cut Copper', 'Chiseled Copper', 'Copper Grate', 'Copper Bulb', 'Copper Trapdoor')
@@ -1073,8 +1077,8 @@ def color_functions(room):
         Entity('item_frame', {
             'Facing': 3, 'Tags': ['colorings_item', 'colorings_bundle_frame'],
             'Fixed': True}).summon(r(-6.5, 4, 0.5)),
-        Entity('horse', horse_nbt).summon(r(0.7, 2, 4.4)),
-        Entity('wolf', dog_nbt).summon(r(-7.5, 2, 2)),
+        Entity('horse', horse_nbt).summon(r(0.7, 2, 5.1)),
+        Entity('wolf', dog_nbt).summon(r(-7.4, 2, 2)),
         Entity('cat', cat_nbt).summon(r(-2.7, 2, 2)),
         Entity('armor_stand', stand_nbt).summon(r(-1.1, 2, 3)),
         Entity('llama', llama_nbt).summon(r(-11, 2, 5.8)),
