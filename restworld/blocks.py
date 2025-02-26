@@ -192,6 +192,10 @@ def room():
     blocks('cobble', NORTH, ('Cobblestone', 'Mossy|Cobblestone', 'Cobbled|Deepslate'))
     blocks('cobweb', NORTH, ('Cobweb',))
 
+    crafter_states = ({}, {'triggered': True}, {'crafting': True})
+    blocks('crafter', NORTH, (Block('crafter', state) for state in crafter_states),
+           labels=tuple(('Crafter', x) for x in ('', 'Triggered', 'Crafting')))
+
     natural_heart = room.score('natural_heart')
 
     def creaking_heart_loop(step):
@@ -347,8 +351,7 @@ def room():
     job_sites('grindstone', NORTH, ('Grindstone',),
               {'Grindstone': list({'face': f} for f in ('floor', 'wall', 'ceiling'))}, expandable=False)
     job_sites('job_sites_1', NORTH,
-              ('Crafting Table', 'Crafter', 'Cartography Table', 'Fletching Table', 'Smithing Table', 'Loom',
-               'Stonecutter'))
+              ('Crafting Table', 'Cartography Table', 'Fletching Table', 'Smithing Table', 'Loom', 'Stonecutter'))
     job_sites('job_sites_2', NORTH, ('Blast Furnace', 'Smoker', 'Barrel', 'Lectern'),
               {'Blast Furnace': ({'lit': False}, {'lit': True}),
                'Smoker': ({'lit': False}, {'lit': True}),
