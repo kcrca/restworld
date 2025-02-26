@@ -730,7 +730,7 @@ def room():
     base_trial_spawner_nbt = Nbt({
         'required_player_range': 100,
         'target_cooldown_length': 0xfff_ffff,
-        'next_mob_spawns_at': 0xfff_ffff_ffff_ffff,
+        'next_mob_spawns_at': 0x7fff_ffff_ffff_ffff,
     })
     trial_spawner_spawns = {
         'normal_config': spawner_config,
@@ -749,7 +749,7 @@ def room():
             'total_ejections_needed': 6, 'total_mobs_spawned': 1000,
             'ejecting_loot_table': "minecraft:spawners/ominous/trial_chamber/key"}),
         'cooldown': base_trial_spawner_nbt.merge({
-            'required_player_range': 1, 'cooldown_ends_at': 0xfff_ffff_ffff_ffff}),
+            'required_player_range': 1, 'cooldown_ends_at': 0x7fff_ffff_ffff_ffff}),
     }
     trial_blocks = (
         Block('trial_spawner', None, base_trial_spawner_nbt),
