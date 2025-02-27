@@ -3,10 +3,10 @@ from __future__ import annotations
 import math
 import random
 
-from pynecraft.base import Arg, EAST, NORTH, Nbt, OVERWORLD, SOUTH, WEST, as_facing, d, r, to_id
+from pynecraft.base import Arg, EAST, MIDNIGHT, NOON, NORTH, Nbt, OVERWORLD, SOUTH, WEST, as_facing, d, r, to_id
 from pynecraft.commands import BLOCK_MARKER, Block, CLEAR, DUST_PILLAR, Entity, FALLING_DUST, INFINITE, Particle, RAIN, \
     REPLACE, Text, a, data, e, effect, execute, fill, fillbiome, function, item, kill, particle, playsound, schedule, \
-    setblock, summon, weather
+    setblock, summon, time, weather
 from pynecraft.function import BLOCK, ITEM
 from pynecraft.simpler import Book, PLAINS, TextDisplay, VILLAGER_BIOMES, VILLAGER_PROFESSIONS, WallSign
 from pynecraft.values import ABSORPTION, ANGRY_VILLAGER, ASH, BASALT_DELTAS, BLINDNESS, \
@@ -16,7 +16,8 @@ from pynecraft.values import ABSORPTION, ANGRY_VILLAGER, ASH, BASALT_DELTAS, BLI
     DRIPPING_WATER, DUST, DUST_COLOR_TRANSITION, DUST_PLUME, EFFECT, EGG_CRACK, ELDER_GUARDIAN, \
     ELECTRIC_SPARK, ENCHANT, ENCHANTED_HIT, END_ROD, ENTITY_EFFECT, EXPLOSION, EXPLOSION_EMITTER, \
     FALLING_DRIPSTONE_LAVA, FALLING_DRIPSTONE_WATER, FALLING_HONEY, FALLING_LAVA, FALLING_NECTAR, \
-    FALLING_OBSIDIAN_TEAR, FALLING_SPORE_BLOSSOM, FALLING_WATER, FIREWORK, FISHING, FLAME, FLASH, GLOW, GLOW_SQUID_INK, \
+    FALLING_OBSIDIAN_TEAR, FALLING_SPORE_BLOSSOM, FALLING_WATER, FIREFLY, FIREWORK, FISHING, FLAME, FLASH, GLOW, \
+    GLOW_SQUID_INK, \
     GUST, GUST_EMITTER, HAPPY_VILLAGER, HEART, INFESTED, INSTANT_EFFECT, ITEM_COBWEB, ITEM_SLIME, ITEM_SNOWBALL, \
     LANDING_HONEY, LANDING_LAVA, LANDING_OBSIDIAN_TEAR, LARGE_SMOKE, LAVA, MYCELIUM, NAUTILUS, NOTE, OMINOUS_SPAWNING, \
     PALE_OAK_LEAVES, PARTICLE_GROUP, POOF, PORTAL, RAID_OMEN, RESISTANCE, REVERSE_PORTAL, SCRAPE, SCULK_CHARGE, \
@@ -61,6 +62,7 @@ actions = [
     action(ENCHANTED_HIT),
     action(EXPLOSION, also=(EXPLOSION_EMITTER,)),
     action(FALLING_DUST),
+    action(FIREFLY),
     action(FIREWORK, note='and Flash', also=(FLASH,)),
     action(FISHING),
     action(GUST, 'Gust|Gust Emitter', also=(GUST_EMITTER,)),  # Also in arena, can be removed
@@ -197,7 +199,7 @@ def room():
             setblock(d(-dx, 0, -dz), 'emerald_block')
         ))
 
-    n_wall_used = {4: span(1, 5), 3: span(1, 5), 2: (1, 2, 4, 5)}
+    n_wall_used = {4: span(1, 5), 3: span(1, 5), 2: span(1, 5)}
     e_wall_used = {5: span(1, 5), 4: span(1, 5), 3: span(1, 5), 2: span(1, 5)}
     w_wall_used = {5: span(1, 5), 4: span(1, 5), 3: span(1, 5), 2: span(1, 5)}
     room = SignedRoom('particles', restworld, SOUTH, (None, 'Particles'), particle_sign, actions, (
@@ -219,6 +221,7 @@ def room():
         execute().at(e().tag('particles_signs_home')).run(function('restworld:particles/particles_signs_init')),
         execute().if_().block(r(0, 4, -3), 'air').run(setblock(r(0, 4, -3), ('stone_button', {'facing': SOUTH}))),
         execute().if_().block(r(0, 5, -4), 'air').run(setblock(r(0, 5, -4), ('stone_button', {'face': 'floor'}))),
+        time().set(NOON),
         set_biome(PLAINS),
         execute().in_(OVERWORLD).run(weather(CLEAR)))
     room.function('cur_init', home=False).add(
@@ -247,6 +250,8 @@ def room():
     ocean = room.function('ocean', home=False).add(
         fill(r(-3, 0, 4), r(3, 0, 4), 'structure_void'),
         fill(r(3, 6, 3), r(-3, 6, -3), 'structure_void'),
+        fill(r(-4, 5, 3), r(-4, 5, -3), 'structure_void').replace('air'),
+        fill(r(4, 5, 3), r(4, 5, -3), 'structure_void').replace('air'),
         fill(r(2, 6, 2), r(-2, 6, -2), 'water'),
         fill(r(2, 0, 2), r(-2, 6, -2), 'water'),
     )
@@ -380,6 +385,12 @@ def room():
         fill(r(-2, 4, -2), r(2, 4, 2), 'barrier'),
         function(falling_dust_change))
     room.function('falling_dust', home=False).add(main().run(function(falling_dust_change)))
+    room.function('firefly_init', home=False).add(
+        setblock(r(0, -1, 0), 'grass_block'),
+        setblock(r(0, 0, 0), 'firefly_bush'),
+        time().set(MIDNIGHT))
+    room.function('firefly_exit', home=False).add(time().set(NOON))
+    room.function('firefly_enter', home=False).add(time().set(MIDNIGHT))
 
     firework_change = room.loop('firework_change', home=False).add(
         execute().positioned(r(0, -1, 0)).run(function('restworld:redstone/fireworks_main')),
@@ -470,8 +481,10 @@ def room():
         main().run(playsound('entity.panda.sneeze', 'neutral', a(), r(0, 0, 0))))
     room.function('rain_init', home=False).add(weather(RAIN))
     room.function('rain_exit', home=False).add(weather(CLEAR))
+    room.function('rain_enter', home=False).add(weather(RAIN))
     room.function('snowflake_init', home=False).add(set_biome(SNOWY_TAIGA), weather(RAIN))
     room.function('snowflake_exit', home=False).add(weather(CLEAR))
+    room.function('snowflake_enter', home=False).add(weather(RAIN))
     room.function('sonic_boom_init', home=False).add(exemplar('warden', 0, {'NoAI': True}))
     room.function('sonic_boom', home=False).add(main().run(particle(SONIC_BOOM, r(0, 2, 0.5), (0, 0, 0), 1, 1)))
     room.function('soul', home=False).add(fast().run(particle(SOUL, r(0, 0.75, 0), (0.5, 0, 0.5), 0.0, 4)))
