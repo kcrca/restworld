@@ -53,7 +53,7 @@ def room():
         yield data().merge(r(-1, 2, 0), step.elem.sign_nbt())
 
     room.loop('minecarts', main_clock).loop(minecart_loop, minecart_types)
-    room.function('minecarts_init').add(room.label(r(-5, 2, -1), 'Reset Room', NORTH))
+    room.function('minecarts_init').add(room.label(r(-5, 2, 2), 'Reset Room', NORTH))
 
     def observer_loop(step):
         block = ('observer', {'powered': step.elem, 'facing': WEST})
@@ -292,12 +292,12 @@ def room():
             yield Sign.change(r(0, 2, 0), (None, None, ''))
 
     room.loop('redstone_wire', main_clock).loop(redstone_wire_loop, range(0, 2))
-    room.particle('repeater', 'repeater', r(-1, 2, 1))
-    room.particle('comparator', 'repeater', r(-1, 2, -1))
 
     def repeater_loop(step):
         on, locked, ticks = step.elem
-        yield setblock(r(0, 2, 0), ('repeater', {'facing': EAST, 'powered': on, 'locked': locked, 'delay': ticks}))
+        repeater = Block('repeater', {'facing': EAST, 'powered': on, 'locked': locked, 'delay': ticks})
+        yield setblock(r(0, 2, 0), repeater)
+        room.particle(repeater, 'repeater', r(0, 2.5, 0), step)
         yield setblock(r(1, 2, 0), 'redstone_block' if on else 'air')
         if locked:
             yield setblock(r(0, 2, 1), ('repeater', {'powered': True, 'facing': SOUTH}))
@@ -320,13 +320,16 @@ def room():
     )
     room.function('repeater_init').add(
         WallSign((None, 'Repeater')).place(r(1, 3, 0), EAST),
-        room.label(r(-5, 1, 0), 'Show Particles', NORTH),
+        room.label(r(-5, 2, 1), 'Show Particles', NORTH),
+        # room.label(r(2, 2, 2), 'Change Daylight', WEST),
     )
 
     def comparator_loop(step):
         on, cmp = step.elem
         mode = 'compare' if cmp == 0 else 'subtract'
-        yield setblock(r(0, 2, 0), ('comparator', {'facing': EAST, 'powered': on, 'mode': mode}))
+        comparator = Block('comparator', {'facing': EAST, 'powered': on, 'mode': mode})
+        yield setblock(r(0, 2, 0), comparator)
+        room.particle(comparator, 'comparator', r(0, 2.5, 0), step)
         yield setblock(r(1, 2, 0), 'redstone_block' if on else 'air')
         yield Sign.change(r(1, 3, 0), (None, None, f'Mode: {mode.title()}'))
 
