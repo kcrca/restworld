@@ -1159,10 +1159,9 @@ def color_functions(room):
 # homers modify the sign to say 'Sorry' when tapped.
 #
 # Toggling actual expansion for a single target is in toggle_expand_at. It places or removes the 'expander' tag on
-# the homer, and runs either the expander or contracter function as itself as appropriate to give the immediate effect.
+# the homer, and runs either the expander or contracter function as itself to give the immediate effect.
 #
-# Expanding or contracting "all"" simply runs this script on all expanding homers. Which means, frankly, that it
-# doesn't 'expand all' it 'toggles all'.
+# Expanding or contracting "all"" simply runs this script on all expanding homers.
 #
 # Homers that handle multiple blocks are helped by 'just_expand' armor stands under the blocks it manages. These
 # are expander homers that do nothing but the expansion work for the blocks above them. So if homer X puts up
@@ -1194,7 +1193,7 @@ def expansion_functions(room):
             e().tag('dripstone_home').distance((None, 1))).run(function('restworld:blocks/expand_generic')))
     expand_all.add(execute().as_(e().tag('blocks_home', 'expansion', '!expander')).run(
         execute().at(s()).run(function('restworld:blocks/toggle_expand_at'))))
-    room.function('expansion', main_clock).add(
+    room.function('expand', main_clock).add(
         execute().at(e().tag('expander')).run(function('restworld:blocks/expander')))
     room.function('expand_dripstone', home=False).add(clone(r(0, 12, 0), r(0, 3, 0), r(-1, 3, 0)),
                                                       clone(r(0, 12, 0), r(0, 3, 0), r(1, 3, 0)),
@@ -1212,8 +1211,9 @@ def expansion_functions(room):
         execute().if_().score(fire_score).matches(1).run(fill(r(2, 4, 1), r(2, 4, -1), 'fire[east=true]')),
         execute().if_().score(fire_score).matches(1).run(fill(r(1, 4, -2), r(-1, 4, -2), 'fire[north=true]')),
         execute().if_().score(fire_score).matches(1).run(fill(r(1, 4, 2), r(-1, 4, 2), 'fire[south=true]')))
-    room.function('expand_generic', home=False).add(execute().if_().block(r(0, 3, 0), '#restworld:falling').run(
-        fill(r(-1, 2, -1), r(1, 2, 1), 'barrier').replace('air')),
+    room.function('expand_generic', home=False).add(
+        execute().if_().block(r(0, 3, 0), '#restworld:falling').run(
+            fill(r(-1, 2, -1), r(1, 2, 1), 'barrier').replace('air')),
         execute().unless().block(r(0, 4, 0), 'snow').run(fill(r(-1, 4, -1), r(1, 4, 1), 'air')),
         clone(r(0, 4, 0), r(0, 3, 0), r(-1, 3, 0)), clone(r(0, 4, 0), r(0, 3, 0), r(1, 3, 0)),
         clone(r(1, 4, 0), r(-1, 3, 0), r(-1, 3, -1)), clone(r(1, 4, 0), r(-1, 3, 0), r(-1, 3, 1)),
