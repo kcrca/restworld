@@ -591,7 +591,7 @@ def room():
             book.add(text)
         book.add(Text('.').bold(False))
     room.function('particle_book', home=False).add(
-        ensure(r(1, 2, -3), Block('lectern', {'facing': SOUTH, 'has_book': True}),
+        ensure(r(0, 0, -3), Block('lectern', {'facing': SOUTH, 'has_book': True}),
                nbt=book.as_item())
     )
 
