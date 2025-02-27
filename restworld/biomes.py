@@ -1,9 +1,10 @@
 import collections
 
 from pynecraft.base import NORTH, OVERWORLD, SOUTH, r, to_id
-from pynecraft.commands import Block, CLEAR, DESTROY, data, e, execute, fill, fillbiome, function, kill, say, setblock, \
+from pynecraft.commands import Block, CLEAR, DESTROY, data, e, execute, fill, fillbiome, function, kill, say, \
+    setblock, \
     weather
-from pynecraft.simpler import PLAINS, WallSign
+from pynecraft.simpler import PLAINS, Sign, WallSign
 from pynecraft.values import BASALT_DELTAS, NETHER_WASTES, SMALL_END_ISLANDS, WARM_OCEAN, as_biome
 from restworld.rooms import Room
 from restworld.world import restworld
@@ -64,23 +65,6 @@ def load_biome(renderer, biome, handback=None):
                             i, 32 * int(i / 2), 1, 32 * int(i % 2), handback)
 
 
-def group_signs(group, score):
-    yield from categories()
-
-    x = list(biome_groups.keys()).index(group)
-    at_biome_loading = execute().at(e().tag('biome_loading_action_home'))
-    for i, biome in enumerate(list(biome_groups[group])):
-        yield WallSign().messages((None, biome), (
-            at_biome_loading.run(function('restworld:biomes/clear_biome')),
-            score.set(biomes.index(biome)),
-            at_biome_loading.run(function('restworld:biomes/load_biome_cur')),
-            at_biome_loading.run(function('restworld:biomes/cleanup_biome')),
-        )).place(r(6 - i - x, 0, 6), NORTH)
-    yield WallSign(wood='birch').messages((None, group, type_text(group)),
-                                          (execute().at(e().tag('category_home')).run(
-                                              function('restworld:biomes/category')))).place(r(6 - x, 1, 6), NORTH)
-
-
 # noinspection PyUnusedLocal
 def clear(biome, prefix, i, x, y, z, handback):
     yield data().merge(r(x, 1, z), {'name': 'restworld:air', 'mode': 'LOAD'})
@@ -90,23 +74,6 @@ def clear(biome, prefix, i, x, y, z, handback):
 def trigger(biome, prefix, i, x, y, z, handback):
     yield setblock(r(x, y - 1, z), 'redstone_torch')
     yield setblock(r(x, y - 1, z), 'air')
-
-
-def load_biome_loop(step):
-    try:
-        biome_id = as_biome(to_id(step.elem))
-    except ValueError:
-        biome_id = biome_ids.get(step.elem, PLAINS)
-
-    # noinspection PyUnusedLocal
-    def setup(biome, prefix, i, x, y, z, handback):
-        if i > 4:
-            yield setblock(r(x, y, z), 'structure_block')
-        yield data().merge(r(x, y, z), {'name': f'restworld:{to_id(biome)}_{i + 1:d}', 'mode': 'LOAD'})
-        yield fillbiome(r(x-16, y-16, z-16), r(x + 48, y + 48, z + 48), biome_id)
-
-    yield say('Switching to biome', step.elem)
-    yield from load_biome(setup, step.elem)
 
 
 # noinspection PyUnusedLocal
@@ -121,6 +88,25 @@ def save_biome(biome, prefix, i, x, z, handback, raised=False):
 def room():
     room = Room('biomes', restworld)
 
+    do_biome_load = room.function('do_biome_load', home=False).add(
+        function('restworld:biomes/clear_biome'),
+        function('restworld:biomes/load_biome_cur'),
+        function('restworld:biomes/cleanup_biome'),
+    )
+
+    def group_signs(group, score):
+        yield from categories()
+
+        x = list(biome_groups.keys()).index(group)
+        for i, biome in enumerate(list(biome_groups[group])):
+            yield WallSign().messages((None, biome), (
+                score.set(biomes.index(biome)),
+                execute().at(e().tag('biome_loading_action_home')).run(function(do_biome_load, {'biome': biome}))
+            )).place(r(6 - i - x, 0, 6), NORTH)
+        yield WallSign(wood='birch').messages((None, group, type_text(group)),
+                                              (execute().at(e().tag('category_home')).run(
+                                                  function('restworld:biomes/category')))).place(r(6 - x, 1, 6), NORTH)
+
     room.function('arrive_biome').add(execute().in_(OVERWORLD).run(weather(CLEAR)))
     room.function('arrive_biome_init').add(
         room.label(r(0, 3, -2), 'Go Home', NORTH),
@@ -129,14 +115,15 @@ def room():
     room.home_func('biome_loading_action')
 
     room.home_func('category_action')
+    cur_sign_pos = r(1, -1, 6)
     room.function('category_init').add(
         categories(),
         room.label(r(5, -1, 6), 'Illuminate', SOUTH),
         room.label(r(-2, -1, 6), 'Night', SOUTH),
-    )
+        WallSign((None, 'Current Biome:')).place(r(2, -1, 6), NORTH),
+        WallSign().place(cur_sign_pos, NORTH))
     room.function('category_enter').add(
         setblock(r(-2, -1, 6), Block('lever', state={'face': 'floor', 'facing': SOUTH}), DESTROY),
-        say('kill'),
         kill(e().type('item').distance((None, 15))),
     )
     load_biome_score = room.score('load_biome')
@@ -167,8 +154,26 @@ def room():
 
         kill(e().type('item')))
     illuminate_score = room.score('illuminate')
+
+    def load_biome_loop(step):
+        try:
+            biome_id = as_biome(to_id(step.elem))
+        except ValueError:
+            biome_id = biome_ids.get(step.elem, PLAINS)
+
+        # noinspection PyUnusedLocal
+        def setup(biome, prefix, i, x, y, z, handback):
+            if i > 4:
+                yield setblock(r(x, y, z), 'structure_block')
+            yield data().merge(r(x, y, z), {'name': f'restworld:{to_id(biome)}_{i + 1:d}', 'mode': 'LOAD'})
+            yield fillbiome(r(x - 16, y - 16, z - 16), r(x + 48, y + 48, z + 48), biome_id)
+
+        yield say('Switching to biome', step.elem)
+        yield execute().at(e().tag('category_home')).run(Sign.change(cur_sign_pos, (None, step.elem)))
+        yield from load_biome(setup, step.elem)
+
     room.function('illuminate_biome').add(load_biome(illuminate, 'illuminate', handback=illuminate_score))
-    room.loop('load_biome').loop(load_biome_loop, biomes).add(
+    room.loop('load_biome', home=False).loop(load_biome_loop, biomes).add(
         load_biome(trigger, 'trigger'),
         load_biome(illuminate, 'illuminate', handback=room.score('illuminate'))
     )
