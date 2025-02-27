@@ -111,8 +111,6 @@ def room():
         desc = patterns[as_pattern(pattern)].desc[:-1]  # Remove period at end
         nbt = {'Rotation': [angle, 0], 'Tags': ['banners']}
         yield TextDisplay(name).scale(0.5).tag('banner_name').summon(r(x + xt, text_y, z + zt), nbt)
-        if name != 'Base':
-            yield TextDisplay(desc).scale(0.5).tag('banner_name').summon(r(x + xt, text_y + 1.85, z + zt), nbt)
 
     def render_banners(render):
         # These are in the first adjustment, but python doesn't know that, so this keeps it happy
