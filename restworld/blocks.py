@@ -1080,7 +1080,7 @@ def color_functions(room):
         Entity('item_frame', {
             'Facing': 3, 'Tags': ['colorings_item', 'colorings_bundle_frame'],
             'Fixed': True}).summon(r(-6.5, 4, 0.5)),
-        Entity('horse', horse_nbt).summon(r(0.7, 2, 5.1)),
+        Entity('horse', horse_nbt).summon(r(0.9, 2, 5.3)),
         Entity('wolf', dog_nbt).summon(r(-7.4, 2, 2)),
         Entity('cat', cat_nbt).summon(r(-2.7, 2, 2)),
         Entity('armor_stand', stand_nbt).summon(r(-1.1, 2, 3)),
