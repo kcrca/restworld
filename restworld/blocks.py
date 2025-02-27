@@ -463,6 +463,7 @@ def room():
     def chest_loop(step):
         step.elem.merge_state({'facing': NORTH})
         yield setblock(r(0, 3, 0), step.elem)
+        room.particle(step.elem, 'chest', r(0, 4, 0), step)
         txt = [None, 'Trapped' if 'T' in step.elem.name else '',
                'Double Chest' if 'type' in step.elem.state else 'Chest']
         if 'Ender' in step.elem.name:

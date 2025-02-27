@@ -582,9 +582,7 @@ def monsters(room):
         function('restworld:mobs/undead_saddle_cur'))
 
     room.function('skeleton_horse_init').add(placer(*place).summon('Skeleton Horse'),
-                                             tag(e().tag('skeleton_horse', 'adult')).add(undead_horse_tag),
-                                             room.label(r(2, 2, 2), 'Saddles', WEST))
-
+                                             tag(e().tag('skeleton_horse', 'adult')).add(undead_horse_tag))
     bow = Item.nbt_for('bow')
     helmet = Item.nbt_for('iron_helmet')
     rider = Entity('Skeleton', nbt={'equipment': {'head': helmet, 'mainhand': bow}}).merge_nbt(
