@@ -394,7 +394,7 @@ def villager_funcs(room):
     def villager_professions_loop(step):
         yield execute().as_(e().tag('villager')).run(
             data().modify(s(), 'VillagerData.type').set().value(step.elem.lower()))
-        yield Sign.change(r(-5, 2, 0), (None, step.elem))
+        yield Sign.change(r(-5, 2, 0), (None, step.elem.title()))
 
     room.loop('villager_professions', main_clock).loop(villager_professions_loop, VILLAGER_BIOMES)
 
@@ -419,7 +419,7 @@ def villager_funcs(room):
             data().modify(s(), 'VillagerData.profession').set().value(step.elem.lower()))
         yield execute().as_(e().tag('villager')).run(
             data().modify(s(), 'Age').set().value(-2147483648 if step.elem == 'Child' else 0))
-        yield Sign.change(r(-5, 2, 0), (None, step.elem))
+        yield Sign.change(r(-5, 2, 0), (None, step.elem.title()))
 
     roles = VILLAGER_PROFESSIONS + ('Child',)
     room.loop('villager_types', main_clock).loop(villager_types_loop, roles).add(
