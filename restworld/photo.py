@@ -64,8 +64,8 @@ mobs = (
     PhotoMob(8.7, +19, 'piglin_brute', y=1.5,
              nbt={'LeftHanded': True, 'equipment': {'mainhand': {'id': 'golden_axe', 'Count': 1}}}),
     PhotoMob(8.7, +26, 'witch', y=1.5),
-    PhotoMob(8.7, +33.5, 'iron_golem', y=1.5),
-    PhotoMob(8.7, +41, 'creaking', y=1.5),
+    PhotoMob(8.7, +33.5, 'creaking', y=1.5),
+    PhotoMob(8.7, +41, 'iron_golem', y=1.5),
 
     PhotoMob(17.0, 0, 'ghast', y=1.5),
 )
