@@ -298,6 +298,7 @@ def room():
     test_block_modes = ('start', 'log', 'fail', 'accept')
     blocks('test', SOUTH, tuple(Block('test_block', {'mode': mode}) for mode in test_block_modes),
            labels=(tuple(('Test Block', f'Mode: {mode.title()}') for mode in test_block_modes)))
+    blocks('test_instance', SOUTH, ('Test Instance Block',), expandable=True)
 
     copper_blocks = (
         'Copper Block', 'Cut Copper', 'Chiseled Copper', 'Copper Grate', 'Copper Bulb', 'Copper Trapdoor')
