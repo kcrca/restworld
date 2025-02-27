@@ -292,30 +292,47 @@ def room():
             yield Sign.change(r(0, 2, 0), (None, None, ''))
 
     room.loop('redstone_wire', main_clock).loop(redstone_wire_loop, range(0, 2))
-    room.function('repeater_init').add(
-        WallSign((None, 'Comparator', 'and Repeater')).place(r(0, 3, 0), WEST),
-        WallSign(()).place(r(-1, 2, -2), WEST),
-        room.label(r(-6, 2, 0), 'Show Particles', NORTH)
-    )
     room.particle('repeater', 'repeater', r(-1, 2, 1))
     room.particle('comparator', 'repeater', r(-1, 2, -1))
 
     def repeater_loop(step):
-        mode = 'compare' if step.i < 2 else 'subtract'
-        yield setblock(r(-1, 2, -1),
-                       ('comparator', {'facing': 'east', 'mode': mode}))
-        yield Sign.change(r(-1, 2, -2), (None, 'Comparator Mode:', mode.title()))
-        if step.i > 0:
-            yield fill(r(0, 2, -1), r(0, 2, 1), 'redstone_block').replace('air')
+        on, locked, ticks = step.elem
+        yield setblock(r(0, 2, 0), ('repeater', {'facing': EAST, 'powered': on, 'locked': locked, 'delay': ticks}))
+        yield setblock(r(1, 2, 0), 'redstone_block' if on else 'air')
+        if locked:
+            yield setblock(r(0, 2, 1), ('repeater', {'powered': True, 'facing': SOUTH}))
+            yield setblock(r(0, 2, 2), ('redstone_block'))
         else:
-            yield fill(r(0, 2, -1), r(0, 2, 1), 'air').replace('redstone_block')
-        if step.i == 2:
-            yield fill(r(0, 2, 2), r(-1, 2, 3), 'redstone_wire')
-            yield setblock(r(-1, 2, 2), ('repeater', {'facing': 'south'}))
-        else:
-            yield fill(r(0, 2, 2), r(-1, 2, 3), 'air')
+            yield fill(r(0, 2, 1), r(0, 2, 2), 'air')
+        desc = 'Powered' if on else ''
+        if locked:
+            if desc:
+                desc += ', '
+            desc += 'Locked'
+        yield WallSign.change(r(1, 3, 0), (None, None, desc, f'Delay: {ticks}'))
 
-    room.loop('repeater', main_clock).loop(repeater_loop, range(0, 3))
+    room.loop('repeater', fast_clock).loop(
+        repeater_loop,
+        tuple((True, True, t) for t in range(1, 5)) +
+        tuple((True, False, t) for t in range(4, 0, -1)) +
+        tuple((False, False, t) for t in range(1, 5)) +
+        tuple((False, True, t) for t in range(4, 0, -1))
+    )
+    room.function('repeater_init').add(
+        WallSign((None, 'Repeater')).place(r(1, 3, 0), EAST),
+        room.label(r(-5, 1, 0), 'Show Particles', NORTH),
+    )
+
+    def comparator_loop(step):
+        on, cmp = step.elem
+        mode = 'compare' if cmp == 0 else 'subtract'
+        yield setblock(r(0, 2, 0), ('comparator', {'facing': EAST, 'powered': on, 'mode': mode}))
+        yield setblock(r(1, 2, 0), 'redstone_block' if on else 'air')
+        yield Sign.change(r(1, 3, 0), (None, None, f'Mode: {mode.title()}'))
+
+    room.loop('comparator', main_clock).loop(comparator_loop,
+                                             ((True, False), (True, True), (False, True), (False, False)))
+    room.function('comparator_init').add(WallSign((None, 'Comparator')).place(r(1, 3, 0), EAST))
 
     def sculk_loop(step):
         if step.i == 0:
