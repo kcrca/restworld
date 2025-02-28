@@ -647,7 +647,7 @@ class Wall:
                 min_x, max_x = _ranges(x, min_x, max_x)
                 min_z, max_z = _ranges(z, min_z, max_z)
                 yield setblock(r(x + bx, y, z + bz), backing)
-                all_signs.append(sign.place(r(x, y, z), self.facing, clear=False))
+                all_signs.append(sign.place(r(x, y, z), self.facing))
         yield fill(r(min_x, min_y, min_z), r(max_x, max_y, max_z), 'air').replace('#wall_signs')
         yield all_signs
 

@@ -155,8 +155,8 @@ def room():
         name = f'clock_toggle_sign_{dir}_init'
         room.function(name, home=tag(s()).add('clock_sign'), single_home=False).add(
             WallSign(state={'waterlogged': True}).messages(
-                (None, 'Toggle Clocks'), (function('restworld:global/clock_toggle'),)).glowing(True).place(
-                r(0, 2, 0), dir),
+                (None, 'Toggle Clocks'), (function('restworld:global/clock_toggle'),)).glowing(True).place(r(0, 2, 0),
+                                                                                                           dir),
             setblock(r(0, 1, 0), 'lime_concrete'))
 
     for dir in (NORTH, SOUTH, EAST, WEST):

@@ -122,15 +122,12 @@ def friendlies(room):
     room.loop('colored_mobs', main_clock).loop(colored_mobs_loop, colors)
 
     def cow_loop(step):
-        if isinstance(step.elem, Entity) and 'mooshroom' in step.elem.id:
-            step.elem.name = 'Brown Mooshroom' if 'Type' in step.elem.nbt else 'Red Mooshroom'
-        else:
-            step.elem.name = f'{step.elem.nbt["variant"].title()} Cow'
-        yield placer(*mid_east_placer, tags=('cowish',)).summon(step.elem)
+        step.elem.name = f'{step.elem.nbt["variant"].title()} Cow'
+        yield placer(*mid_west_placer, tags=('cow',)).summon(step.elem)
 
-    room.loop('cow', main_clock).add(kill_em(e().tag('cowish'))).loop(cow_loop, (
-        Entity('cow', {'variant': 'temperate'}), Entity('cow', {'variant': 'warm'}), Entity('cow', {'variant': 'cold'}),
-        Entity('mooshroom'), Entity('mooshroom', {'Type': 'brown'})))
+    room.loop('cow', main_clock).add(kill_em(e().tag('cow'))).loop(cow_loop, (
+        Entity('cow', {'variant': 'temperate'}), Entity('cow', {'variant': 'warm'}),
+        Entity('cow', {'variant': 'cold'})))
     room.function('fox_init').add(placer(*mid_east_placer).summon('fox'), room.label(r(2, 2, -1), 'Fox Type', WEST))
 
     fox_postures = ('Crouching', 'Sitting', 'Sleeping')
@@ -766,8 +763,9 @@ def all_fish_funcs(room):
     kinds = tuple(tropical_fish.keys())
 
     def all_fish_init():
-        yield WallSign().messages((None, 'All Possible', 'Tropical Fish', '← ← ←')).glowing(True).place(
-            r(0, 2, 0), EAST, water=True)
+        yield WallSign().messages((None, 'All Possible', 'Tropical Fish', '← ← ←')).glowing(True).place(r(0, 2, 0),
+                                                                                                        EAST,
+                                                                                                        water=True)
         start, facing, delta = r(0, 3.2, 0), EAST, 1
         placer = room.mob_placer(start, facing, delta, adults=True)
         for i in range(0, 12):

@@ -772,7 +772,7 @@ def trim_functions(room):
                 path = self._to_path(t)
                 sign = WallSign().messages((None, 'Keep', f'{self.name.title().replace("s", "")}:', t.title()))
                 yield execute().if_().data(e().tag(overall_tag).limit(1), path).run(
-                    sign.place(r(-1, 2, 0), facing, clear=False))
+                    sign.place(r(-1, 2, 0), facing))
 
         def _to_path(self, t):
             return ('equipment.feet.' + self.nbt_path)[::-1].replace('.', '{', 1)[::-1] + ':' + t + '}'
@@ -855,8 +855,8 @@ def trim_functions(room):
                 continue
             lines = (None, 'Change', jcat.name.title())
             change_menu.add(execute().if_().score(show).matches(i).run(
-                WallSign().messages(lines, commands=(change.set(j), run_change_cleanup)).place(
-                    r(0, sign_num, 0), facing)))
+                WallSign().messages(lines, commands=(change.set(j), run_change_cleanup)).place(r(0, sign_num, 0),
+                                                                                               facing)))
             sign_num += 1
         change_cleanup.add(execute().if_().score(change).matches(i).at(e().tag('trim_change_home')).run(
             WallSign().messages((None, 'Change', f'{cat.name.title()}:'),

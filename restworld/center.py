@@ -35,18 +35,17 @@ def room():
         WallSign(('Almost everything', 'is here: blocks', 'mobs, particles,', 'UI, moon phases ...')).place(
             (r(-1), 101, r(4)), NORTH),
 
-        WallSign(('Clocks switch', 'between variants,', 'which takes', 'less space.')).place(
-            (r(-4), 101, r(1)), EAST),
-        WallSign(('You can also', 'compare things', 'that you may want', 'to make similar.')).place(
-            (r(-4), 101, r(-1)), EAST),
+        WallSign(('Clocks switch', 'between variants,', 'which takes', 'less space.')).place((r(-4), 101, r(1)), EAST),
+        WallSign(('You can also', 'compare things', 'that you may want', 'to make similar.')).place((r(-4), 101, r(-1)),
+                                                                                                    EAST),
 
         WallSign(('Floor levers and', 'buttons control', 'modes, like floor', 'vs. wall torches.')).place(
             (r(-1), 101, r(-4)), SOUTH),
-        WallSign(('Red or green', 'blocks below', 'buttons show if', 'clocks are on.')).place(
-            (r(1), 101, r(-4)), SOUTH),
+        WallSign(('Red or green', 'blocks below', 'buttons show if', 'clocks are on.')).place((r(1), 101, r(-4)),
+                                                                                              SOUTH),
 
-        WallSign(('The control book', 'lets you change', 'clock speeds', 'and step along.')).place(
-            (r(4), 101, r(-1)), WEST),
+        WallSign(('The control book', 'lets you change', 'clock speeds', 'and step along.')).place((r(4), 101, r(-1)),
+                                                                                                   WEST),
         WallSign(('Also, you might', 'like my "Clarity"', 'pack; a link is in', 'the control book!'),
                  (lambda txt: Text.text(txt).click_event().open_url('https://claritypack.com'),)).place(
             (r(4), 101, r(1)), WEST),

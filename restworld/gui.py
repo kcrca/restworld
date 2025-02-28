@@ -114,8 +114,8 @@ def room():
     bb_value = room.loop('bossbar_value', home=False).loop(bossbar_value_loop, (50, 75, 100, 0, 25))
 
     room.function('bossbar_init').add(
-        WallSign((f'Color: {BOSSBAR_COLORS[0].title()}', 'Style:', BOSSBAR_STYLES[0], 'Value: 50')).place(
-            r(2, 2, 0), EAST),
+        WallSign((f'Color: {BOSSBAR_COLORS[0].title()}', 'Style:', BOSSBAR_STYLES[0], 'Value: 50')).place(r(2, 2, 0),
+                                                                                                          EAST),
         bossbar().add('restworld:bossbar', 'Ornamental Stud'),
         bossbar().set('restworld:bossbar').players(a()),
         function(bb_on),
