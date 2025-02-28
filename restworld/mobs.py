@@ -139,7 +139,7 @@ def friendlies(room):
         yield execute().as_(e().tag('fox')).run(data().merge(s(), nbt))
 
     room.loop('fox', main_clock).loop(fox_loop, (('',) + fox_postures))
-    frog_pos, spawn_pos, sign_pos, frog_dir = r(0, 2, 0), r(1, 2, 0), r(1, 2, 1), EAST
+    frog_pos, spawn_pos, frog_dir = r(0, 2, 0), r(1, 2, 0), EAST
     room.function('frog_init').add(placer(
         frog_pos, frog_dir, adults=True).summon('frog'))
 
@@ -151,12 +151,12 @@ def friendlies(room):
             # The 'air' check is for if we're levitated
             yield execute().unless().block(r(0, 1, 0), 'air').at(e().tag('frogspawn_home')).run(
                 setblock(spawn_pos, 'frogspawn'),
-                WallSign((None, 'Frogspawn')).place(sign_pos, frog_dir))
+                room.label(r(1, 2, 0), 'Frogspawn', WEST, tags=('frogspawn_label',)))
         else:
             yield placer(spawn_pos, frog_dir, kids=True).summon(Entity('tadpole', {'Invulnerable': True}),
                                                                 tags=('keeper',))
             yield setblock(spawn_pos, 'air')
-            yield setblock(sign_pos, 'air')
+            yield kill(e().tag('frogspawn_label'))
         yield kill_em(e().type('tadpole').not_tag('keeper'))
 
     room.loop('frogspawn', main_clock).loop(frogspawn_loop, range(0, 2))
