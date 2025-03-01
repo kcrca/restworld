@@ -25,8 +25,8 @@ def room():
     p_north = room.mob_placer(r(3, 4, -3), SOUTH, -1, adults=True)
     p_mid = room.mob_placer(r(8, 4, -1), WEST, -1, adults=True)
     icons = (
-        'target_x', 'target_point', 'red_x', 'monument', 'mansion', 'village_desert', 'village_plains',
-        'village_savanna', 'village_snowy', 'village_taiga', 'jungle_temple', 'swamp_hut', 'trial_chambers')
+        'target_x', 'target_point', 'red_x', 'monument', 'mansion', 'jungle_temple', 'swamp_hut', 'trial_chambers',
+        'village_desert', 'village_plains', 'village_savanna', 'village_snowy', 'village_taiga')
     map_dim = 128
     x_base = 64
     z_base = -64
