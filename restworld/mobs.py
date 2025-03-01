@@ -143,6 +143,7 @@ def friendlies(room):
         yield execute().as_(e().tag('fox')).run(data().merge(s(), nbt))
 
     room.loop('fox', main_clock).loop(fox_loop, (('',) + fox_postures))
+    room.function('fox_init').add(placer(*mid_east_placer).summon('fox'), room.label(r(2, 2, -1), 'Fox Type', WEST))
     frog_pos, spawn_pos, frog_dir = r(0, 2, 0), r(1, 2, 0), EAST
     room.function('frog_init').add(placer(
         frog_pos, frog_dir, adults=True).summon('frog'))
