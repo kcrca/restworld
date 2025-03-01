@@ -9,10 +9,12 @@ from pynecraft.commands import Block, BlockDef, Entity, LONG, MOD, PLUS, RESULT,
     fill, fillbiome, function, item, kill, n, random, s, scoreboard, setblock, summon, tag
 from pynecraft.function import BLOCK
 from pynecraft.info import armor_equipment, colors, must_give_items, operator_menu, stems, trim_materials, trim_patterns
-from pynecraft.simpler import Item, ItemFrame, Region, SWAMP, Sign, WallSign
-from pynecraft.values import COLD_OCEAN, FROZEN_OCEAN, LUKEWARM_OCEAN, MANGROVE_SWAMP, MEADOW, OCEAN, WARM_OCEAN, biomes
+from pynecraft.simpler import Item, ItemFrame, PLAINS, Region, SWAMP, Sign, WallSign
+from pynecraft.values import COLD_OCEAN, FROZEN_OCEAN, LUKEWARM_OCEAN, MANGROVE_SWAMP, OCEAN, WARM_OCEAN, biomes
 from restworld.rooms import Room, erase, kill_em
 from restworld.world import fast_clock, main_clock, restworld
+
+water_biomes = (PLAINS, FROZEN_OCEAN, COLD_OCEAN, OCEAN, LUKEWARM_OCEAN, WARM_OCEAN, SWAMP, MANGROVE_SWAMP)
 
 
 def enchant(score: Score, tag: str, on: bool):
@@ -226,7 +228,6 @@ def room():
         yield fill(r(-1, 0, -5), r(9, 6, 1), 'air').replace('snow')
         yield Sign.change(r(0, 2, 0), (None, None, None, biomes[step.elem].name))
 
-    water_biomes = (MEADOW, FROZEN_OCEAN, COLD_OCEAN, OCEAN, LUKEWARM_OCEAN, WARM_OCEAN, SWAMP, MANGROVE_SWAMP)
     room.function('water_init').add(
         WallSign((None, 'Flowing Water', 'Biome:')).place(r(0, 2, 0), WEST),
         WallSign((None, 'Flowing Lava')).place(r(0, 2, 6), WEST),

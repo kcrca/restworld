@@ -4,10 +4,12 @@ import copy
 
 from pynecraft.base import EAST, EQ, NORTH, Nbt, SOUTH, WEST, delta_from, r, to_id, to_name
 from pynecraft.commands import Block, COLORS, Entity, FORCE, LONG, MOD, REPLACE, RESULT, Score, as_facing, clone, data, \
-    e, execute, function, item, kill, n, player, return_, ride, s, schedule, scoreboard, setblock, summon, tag, tp
+    e, execute, fillbiome, function, item, kill, n, player, return_, ride, s, schedule, scoreboard, setblock, summon, \
+    tag, tp
 from pynecraft.info import axolotls, colors, horses, tropical_fish, wolves
 from pynecraft.simpler import Item, PLAINS, Sign, VILLAGER_BIOMES, VILLAGER_PROFESSIONS, Villager, WallSign
 from pynecraft.values import DISC_GROUP, DUMMY, as_disc, discs
+from restworld.materials import water_biomes
 from restworld.rooms import MobPlacer, Room, kill_em
 from restworld.world import fast_clock, main_clock, restworld
 
@@ -684,6 +686,17 @@ def method_name():
 
 
 def aquatic(room):
+    def fish_water_loop(step):
+        yield fillbiome(r(0, 1, 0), r(12, 10, 16), step.elem)
+        yield Sign.change(r(6, 2, 1), (None, None, to_name(step.elem).title()))
+
+    room.function('fish_water_base')
+    room.function('fish_water_base_init').add(
+        room.label(r(6, 2, -1), 'Water Biomes', SOUTH),
+        WallSign((None, 'Water Biome:', 'Plains')).place(r(6, 2, 1), SOUTH, water=True)
+    )
+    room.loop('fish_water', main_clock, home=False).loop(fish_water_loop, water_biomes)
+
     def n_fish_loop(count: int):
         def fish_loop(step):
             for kind, breeds in tropical_fish.items():
