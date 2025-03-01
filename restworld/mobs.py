@@ -122,13 +122,15 @@ def friendlies(room):
     room.loop('colored_mobs', main_clock).loop(colored_mobs_loop, colors)
 
     def cow_loop(step):
-        step.elem.name = f'{step.elem.nbt["variant"].title()} Cow'
-        yield placer(*mid_west_placer, tags=('cow',)).summon(step.elem)
+        if isinstance(step.elem, Entity) and 'mooshroom' in step.elem.id:
+            step.elem.name = 'Brown Mooshroom' if 'Type' in step.elem.nbt else 'Red Mooshroom'
+        else:
+            step.elem.name = f'{step.elem.nbt["variant"].title()} Cow'
+        yield placer(*mid_east_placer, tags=('cowish',)).summon(step.elem)
 
-    room.loop('cow', main_clock).add(kill_em(e().tag('cow'))).loop(cow_loop, (
-        Entity('cow', {'variant': 'temperate'}), Entity('cow', {'variant': 'warm'}),
-        Entity('cow', {'variant': 'cold'})))
-    room.function('fox_init').add(placer(*mid_east_placer).summon('fox'), room.label(r(2, 2, -1), 'Fox Type', WEST))
+    room.loop('cow', main_clock).add(kill_em(e().tag('cowish'))).loop(cow_loop, (
+        Entity('cow', {'variant': 'temperate'}), Entity('cow', {'variant': 'warm'}), Entity('cow', {'variant': 'cold'}),
+        Entity('mooshroom'), Entity('mooshroom', {'Type': 'brown'})))
 
     fox_postures = ('Crouching', 'Sitting', 'Sleeping')
 
