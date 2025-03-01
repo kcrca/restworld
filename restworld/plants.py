@@ -216,7 +216,7 @@ def room():
             yield Sign.change(r(i * 2, 2, 1), (None, None, f'{count}: {step.elem}'))
             yield Sign.change(r(i * 2, 2, -1), (None, None, f'{count}: {step.elem}'))
 
-    room.loop('ground_cover', main_clock).loop(ground_cover_loop, range(1, 5))
+    room.loop('ground_cover', main_clock).loop(ground_cover_loop, range(1, 5), bounce=True)
     gc_init = room.function('ground_cover_init')
     for i, cover in enumerate(ground_covers):
         gc_init.add(WallSign((None, to_name(cover))).place(r(i * 2, 2, 1), SOUTH))
