@@ -104,8 +104,6 @@ def friendlies(room):
             Entity('jellie', name='Jellie'),
             Entity('all_black', name='Black'),
         ))
-    room.function('chicken_init').add(placer(*mid_east_placer).summon('chicken'), execute().as_(e().tag('chicken')).run(
-        data().merge(s(), {'EggLayTime': 1000000000})))
     room.function('colored_mobs_init').add(room.label(r(0, 2, -1), 'Glow', SOUTH))
 
     def colored_mobs_loop(step):
@@ -136,7 +134,9 @@ def friendlies(room):
     room.function('climate_init').add(
         p.summon(Entity(x, {'variant': 'temperate'}) for x in climate_mobs),
         kill(e().tag('frog', 'kid')),
-        execute().as_(e().tag('chicken')).run(data().merge(s(), {'EggLayTime': 1000000000}))
+        execute().as_(e().tag('chicken')).run(data().merge(s(), {'EggLayTime': 1000000000, 'OnGround': True})),
+        room.label(r(-3, 2, 1), 'Flying'),
+        room.label(r(-3, 2, 5), 'Saddle'),
     )
     room.loop('climate', main_clock).loop(climate_loop, climates)
 
@@ -176,7 +176,9 @@ def friendlies(room):
     room.function('horse_init').add(
         (p.summon(Entity('horse', name=horse.name, nbt={'Variant': h}), tags=(horse.tag_name,)) for h, horse in
          enumerate(horses)), execute().at(e().tag(to_id(horses[3].tag_name), 'kid')).run(
-            WallSign((None, 'Variant:')).place(r(2, 0, 0), EAST)), room.label(r(1, 2, 1), 'Lead', WEST),
+            WallSign((None, 'Variant:')).place(r(2, 0, 0), EAST)),
+        room.label(r(1, 2, 1), 'Lead', WEST),
+        room.label(r(1, 2, -7), 'Saddles', WEST),
     )
     horse_variants = ('None', 'White', 'White Field', 'White Dots', 'Black Dots')
 
