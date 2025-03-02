@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import copy
 
-from pynecraft.base import EAST, EQ, NORTH, Nbt, SOUTH, WEST, delta_from, r, to_id, to_name
+from pynecraft.base import EAST, EQ, NORTH, Nbt, SOUTH, WEST, r, to_id, to_name
 from pynecraft.commands import Block, COLORS, Entity, FORCE, LONG, MOD, REPLACE, RESULT, Score, as_facing, clone, data, \
     e, execute, fillbiome, function, item, kill, n, player, return_, ride, s, schedule, scoreboard, setblock, summon, \
     tag, tp
@@ -32,12 +32,6 @@ def friendlies(room):
     def placer(*args, **kwargs):
         return room.mob_placer(*args, **kwargs)
 
-    climates = ('temperate', 'warm', 'cold')
-
-    def climate_loop(step, which):
-        name = f'{step.elem} {which}'.title()
-        yield execute().as_(e().tag(which)).run(data().merge(s(), {'variant': step.elem, 'CustomName': name}))
-
     allay_dir = WEST
     allay_pos = r(0, 3, 0)
     room.function('allay_init').add(placer(allay_pos, allay_dir, adults=True).summon('Allay'))
@@ -53,10 +47,9 @@ def friendlies(room):
         room.label(pollen_label_pos, 'Pollen', EAST))
 
     def armadillo_loop(step):
-        # /data modify entity 629100ab-859f-4627-abd2-27fafc7ab9d2 state set value scared
         yield execute().as_(e().tag('armadillo')).run(data().modify(s(), 'state').set().value(step.elem))
 
-    p = placer(*mid_west_placer, tags='keeper')
+    p = placer(*mid_east_placer, tags='keeper')
     room.function('armadillo_init').add(p.summon('Armadillo'))
     room.loop('armadillo', main_clock).loop(armadillo_loop, ('idle', 'scared'))
 
@@ -111,7 +104,6 @@ def friendlies(room):
             Entity('jellie', name='Jellie'),
             Entity('all_black', name='Black'),
         ))
-    room.loop('chicken', main_clock).loop(lambda step: climate_loop(step, 'chicken'), climates)
     room.function('chicken_init').add(placer(*mid_east_placer).summon('chicken'), execute().as_(e().tag('chicken')).run(
         data().merge(s(), {'EggLayTime': 1000000000})))
     room.function('colored_mobs_init').add(room.label(r(0, 2, -1), 'Glow', SOUTH))
@@ -123,16 +115,30 @@ def friendlies(room):
 
     room.loop('colored_mobs', main_clock).loop(colored_mobs_loop, colors)
 
-    def cow_loop(step):
-        if isinstance(step.elem, Entity) and 'mooshroom' in step.elem.id:
-            step.elem.name = 'Brown Mooshroom' if 'Type' in step.elem.nbt else 'Red Mooshroom'
-        else:
-            step.elem.name = f'{step.elem.nbt["variant"].title()} Cow'
-        yield placer(*mid_east_placer, tags=('cowish',)).summon(step.elem)
+    def mooshroom_loop(step):
+        step.elem.name = 'Brown Mooshroom' if 'Type' in step.elem.nbt else 'Red Mooshroom'
+        yield placer(*mid_east_placer, tags=('mooshroom',)).summon(step.elem)
 
-    room.loop('cow', main_clock).add(kill_em(e().tag('cowish'))).loop(cow_loop, (
-        Entity('cow', {'variant': 'temperate'}), Entity('cow', {'variant': 'warm'}), Entity('cow', {'variant': 'cold'}),
+    room.loop('mooshroom', main_clock).add(kill_em(e().tag('mooshroom'))).loop(mooshroom_loop, (
         Entity('mooshroom'), Entity('mooshroom', {'Type': 'brown'})))
+
+    climate_mobs = ('frog', 'chicken', 'pig', 'cow')
+    climates = ('temperate', 'warm', 'cold')
+
+    def climate_loop(step):
+        for mob in climate_mobs:
+            name = f'{step.elem} {mob}'.title()
+            yield execute().as_(e().tag('climate_mob').type(mob)).run(
+                data().merge(s(), {'variant': step.elem, 'CustomName': name}))
+        execute().as_(e().tag('chicken')).run(data().merge(s(), {'EggLayTime': 1000000000}))
+
+    p = placer(*mid_west_placer, tags=('climate_mob',))
+    room.function('climate_init').add(
+        p.summon(Entity(x, {'variant': 'temperate'}) for x in climate_mobs),
+        kill(e().tag('frog', 'kid')),
+        execute().as_(e().tag('chicken')).run(data().merge(s(), {'EggLayTime': 1000000000}))
+    )
+    room.loop('climate', main_clock).loop(climate_loop, climates)
 
     fox_postures = ('Crouching', 'Sitting', 'Sleeping')
 
@@ -144,11 +150,7 @@ def friendlies(room):
 
     room.loop('fox', main_clock).loop(fox_loop, (('',) + fox_postures))
     room.function('fox_init').add(placer(*mid_east_placer).summon('fox'), room.label(r(2, 2, -1), 'Fox Type', WEST))
-    frog_pos, spawn_pos, frog_dir = r(0, 2, 0), r(1, 2, 0), EAST
-    room.function('frog_init').add(placer(
-        frog_pos, frog_dir, adults=True).summon('frog'))
-
-    room.loop('frog', main_clock).loop(lambda step: climate_loop(step, 'frog'), climates)
+    spawn_pos = r(-1, 2, 0)
 
     def frogspawn_loop(step):
         if step.i == 0:
@@ -156,10 +158,10 @@ def friendlies(room):
             # The 'air' check is for if we're levitated
             yield execute().unless().block(r(0, 1, 0), 'air').at(e().tag('frogspawn_home')).run(
                 setblock(spawn_pos, 'frogspawn'),
-                room.label(r(1, 2, 0), 'Frogspawn', WEST, tags=('frogspawn_label',)))
+                room.label(spawn_pos, 'Frogspawn', EAST, tags=('frogspawn_label',)))
         else:
-            yield placer(spawn_pos, frog_dir, kids=True).summon(Entity('tadpole', {'Invulnerable': True}),
-                                                                tags=('keeper',))
+            yield placer(spawn_pos, WEST, kids=True).summon(Entity('tadpole', {'Invulnerable': True}),
+                                                            tags=('keeper',))
             yield setblock(spawn_pos, 'air')
             yield kill(e().tag('frogspawn_label'))
         yield kill_em(e().type('tadpole').not_tag('keeper'))
@@ -258,8 +260,6 @@ def friendlies(room):
 
     room.loop('parrot', main_clock).loop(parrot_loop, parrot_settings)
 
-    room.function('pig_init').add(placer(*mid_west_placer, tags=('saddle',)).summon('pig'))
-    room.loop('pig', main_clock).loop(lambda step: climate_loop(step, 'pig'), climates)
     room.function('polar_bear_init').add(placer(*south_placer).summon('Polar Bear'))
     room.function('rabbit_init').add(placer(*mid_east_placer).summon('rabbit'))
 
@@ -273,14 +273,9 @@ def friendlies(room):
         kill_em(e().tag('cat')),
         execute().at(e().tag('cat_home')).run(function('restworld:mobs/cat_init')),
         execute().at(e().tag('cat_home')).run(function('restworld:mobs/cat_cur')))
-    p = placer(*mid_west_placer, tags='keeper')
     room.function('sheep_init').add(
-        p.summon(Entity('sheep', name='Sheared Sheep', nbt={'Sheared': True}), tags=('sheared', 'colorable',)),
-        kill(e().tag('kid', 'sheep')),
-        p.summon('Sheep', tags=('colorable',)),
-        execute().at(e().tag('kid', 'sheep')).run(tp(e().tag('kid', 'sheep'), delta_from(-1, 0, 0))),
-        room.label(r(0, 2, 0), 'Sheared', EAST)
-    )
+        placer(*mid_east_placer, tags='keeper').summon(Entity('sheep'), tags=('sheared', 'colorable',)),
+        room.label(r(2, 2, 1), 'Shear Sheep', WEST))
     room.function('sniffer_init').add(
         placer(r(0, 2, 0.5), EAST, 0, adults=True, tags='keeper').summon('sniffer'),
         WallSign((None, 'Sniffer Egg', None, '(vanilla  shows 3)')).place(r(2, 2, 3), EAST),
