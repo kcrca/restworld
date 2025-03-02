@@ -691,7 +691,7 @@ def aquatic(room):
     room.function('fish_water_base')
     room.function('fish_water_base_init').add(
         room.label(r(6, 2, -1), 'Water Biomes', SOUTH),
-        WallSign((None, 'Water Biome:', 'Plains')).place(r(6, 2, 1), SOUTH, water=True)
+        WallSign((None, 'Water Biome:', 'Plains')).glowing(True).place(r(6, 2, 1), SOUTH, water=True)
     )
     room.loop('fish_water', main_clock, home=False).loop(fish_water_loop, water_biomes)
 

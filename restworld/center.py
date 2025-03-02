@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-from pynecraft.base import EAST, NORTH, SOUTH, WEST, r
+from pynecraft.base import EAST, NORTH, Nbt, SOUTH, WEST, r
 from pynecraft.commands import Entity, Score, Text, clone, e, execute, fill, kill, scoreboard, summon, tag
 from pynecraft.info import Horse
-from pynecraft.simpler import WallSign
+from pynecraft.simpler import ItemFrame, WallSign
 from restworld.materials import armor_for
 from restworld.rooms import Room
 from restworld.world import fast_clock, main_clock, restworld, slow_clock
@@ -62,14 +62,15 @@ def room():
         yield clone(r(2, y, 2), r(-2, y, -2), r(-2, 1, -2)).masked()
 
     # The "kill" here is to pick up the scutes the armadillo drops occasionally; could add a loop just for this
-    room.loop('fast_lights', fast_clock).loop(lambda x: lights_loop(-3, 'stone'), range(0, 1)).add(kill(e().type('item').distance((None, 25))))
+    room.loop('fast_lights', fast_clock).loop(lambda x: lights_loop(-3, 'stone'), range(0, 1)).add(
+        kill(e().type('item').distance((None, 25))))
     room.loop('main_lights', main_clock).loop(lambda x: lights_loop(-4, 'diamond_block'), range(0, 1))
     room.loop('slow_lights', slow_clock).loop(lambda x: lights_loop(-5, 'emerald_block'), range(0, 1))
 
     all = {'Tags': ['center', 'mob_display'], 'PersistenceRequired': True}
     trim_stand = Entity('armor_stand', all).tag('center_stand')
     armor_for(trim_stand, 'iron', {'components': {'trim': {'pattern': 'flow', 'material': 'resin'}}})
-    silent = {'Silent': True}
+    silent = Nbt({'Silent': True})
     room.function('mobs_display_init').add(
         summon(Entity('cow', silent).tag('mob_display'), r(-6, 2.5, 0), all),
         summon(Entity('panda', {'MainGene': 'playful', 'Silent': True}).tag('mob_display'), r(-6, 2.5, 0), all),
@@ -77,13 +78,18 @@ def room():
                all),
         summon(Entity('camel', silent).tag('mob_display'), r(-6, 2.5, 0), all),
 
-        summon(Entity('polar_bear', silent).tag('mob_display', 'keeper'), r(6, 2.5, 0), all),
         summon(Entity('llama', silent).tag('mob_display'), r(6, 2.5, 0), all),
-        summon(Entity('mooshroom', silent).tag('mob_display'), r(6, 2.5, 0), all),
-        summon(Entity('pig', silent).tag('mob_display'), r(6, 2.5, 0), all),
+        summon(Entity('cow', silent.merge({'variant': 'warm'})).tag('mob_display'), r(6, 2.5, 0), all),
+        summon(Entity('pig', silent.merge({'variant': 'cold'})).tag('mob_display'), r(6, 2.5, 0), all),
+        summon(Entity('piglin_brute', silent.merge({'IsImmuneToZombification': True})).tag('mob_display'), r(6, 2.5, 0),
+               all),
         summon(Entity('armadillo', silent).tag('mob_display'), r(6, 2.5, 0), all),
 
         trim_stand.summon(r(10.51, 2, 0), facing=NORTH),
 
         kill(e().type('item')),
     )
+    messages = (None, Text.text('F u cn rd ths').obfuscated(True),
+                Text.text('u cd b hm by nw').obfuscated(True).extra(Text.text('‽').obfuscated(False)))
+    room.function('plants_display_init').add(WallSign(messages).place(r(5, 3, -4), SOUTH))
+    room.function('materials_display_init').add(ItemFrame(WEST).item('clock').tag('mob_display').summon(r(4, 4, 5)))

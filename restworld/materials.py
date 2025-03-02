@@ -83,15 +83,17 @@ def room():
         fire_arrow.set(Arg('on')), data().modify(e().tag('arrow').limit(1), 'HasVisualFire').set().value(Arg('on'))
     )
 
+    wolf_sign_pos = r(1, 2, 0)
+
     def wolf_armor_color_loop(step):
         color = step.elem
         if color:
             yield data().modify(n().tag('wolf_armor_damage'),
                                 'equipment.body.components.dyed_color').set().value(color.leather)
-            yield Sign.change(r(0, 2, 1), (None, None, f'Color: {step.elem.name}'))
+            yield Sign.change(wolf_sign_pos, (None, None, f'Color: {step.elem.name}'))
         else:
             yield data().remove(n().tag('wolf_armor_damage'), 'equipment.body.components.dyed_color')
-            yield Sign.change(r(0, 2, 1), (None, None, 'Color: None'))
+            yield Sign.change(wolf_sign_pos, (None, None, 'Color: None'))
 
     def wolf_armor_damage_loop(step):
         if step.elem:
@@ -99,16 +101,17 @@ def room():
                                 'equipment.body.components.damage').set().value(step.elem)
         else:
             yield data().remove(n().tag('wolf_armor_damage'), 'equipment.body.components.damage')
-        yield Sign.change(r(0, 2, 1), (None, f'Damage: {step.elem}'))
+        yield Sign.change(
+            wolf_sign_pos, (None, f'Damage: {step.elem}'))
 
     room.loop('wolf_armor_color', main_clock, home=False).loop(wolf_armor_color_loop, colors + (None,))
     room.loop('wolf_armor_damage', main_clock, home=False).loop(wolf_armor_damage_loop, (None, 19, 40, 60), bounce=True)
     room.function('wolf_armor_init').add(
-        room.mob_placer(r(0, 2, 0), WEST, adults=True).summon(
+        room.mob_placer(r(0, 2, 0), NORTH, adults=True).summon(
             Entity('wolf', name='Wolf Armor'), tags=('wolf_armor_damage',),
             nbt={'Owner': 'dummy', 'equipment': {'body': Item.nbt_for('wolf_armor')}}),
-        WallSign((None, 'Damage: None', 'Color: None')).place(r(0, 2, 1), WEST),
-        room.label(r(-1, 2, 1), 'Color'))
+        WallSign((None, 'Damage: None', 'Color: None')).place(wolf_sign_pos, SOUTH),
+        room.label(r(0, 2, -2), 'Color', SOUTH))
     room.function('wolf_armor_home', exists_ok=True).add(tag(e().tag('wolf_armor_home')).add('wolf_armor_damage_home'))
     room.function('wolf_damage', home=False).add(
         tag(e().tag('wolf_armor_home')).remove('wolf_armor_color_home'),
