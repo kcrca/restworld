@@ -72,7 +72,7 @@ def room():
     armor_for(trim_stand, 'iron', {'components': {'trim': {'pattern': 'flow', 'material': 'resin'}}})
     silent = Nbt({'Silent': True})
     room.function('mobs_display_init').add(
-        summon(Entity('cow', silent).tag('mob_display'), r(-6, 2.5, 0), all),
+        summon(Entity('mooshroom', silent).tag('mob_display'), r(-6, 2.5, 0), all),
         summon(Entity('panda', {'MainGene': 'playful', 'Silent': True}).tag('mob_display'), r(-6, 2.5, 0), all),
         summon(Horse('horse', Horse.Color.CHESTNUT, Horse.Markings.WHITE, silent).tag('mob_display'), r(-6, 2.5, 0),
                all),
