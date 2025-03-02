@@ -159,6 +159,26 @@ def room():
     room.function('only_items_init').add(
         only_items_init_func())
 
+    volume = Region(r(0, 1, 0), r(4, 5, 8))
+    sign_pos = r(4, 2, 7)
+    room.function('sand_init').add(
+        WallSign((None, 'Sand &', 'Sandstone')).place(sign_pos, NORTH))
+
+    def sand_loop(step):
+        next, prev = [('sand', 'red_sand'), ('red_sand', 'sand')][step.i]
+        name = f'{step.elem} Sand &'.strip().title()
+        yield Sign.change(
+            sign_pos, (None, name))
+        for x in ('sand', 'sandstone', 'smooth_sandstone', 'cut_sandstone', 'sandstone_wall', 'chiseled_sandstone'):
+            yield volume.replace(x.replace('sand', next), x.replace('sand', prev))
+        for x in ('sandstone', 'smooth_sandstone', 'cut_sandstone'):
+            yield volume.replace_slabs(x.replace('sand', next) + '_slab', x.replace('sand', prev) + '_slab')
+        for x in ('sandstone', 'smooth_sandstone'):
+            yield volume.replace_stairs(x.replace('sand', next) + '_stairs', x.replace('sand', prev) + '_stairs')
+        yield setblock(r(2, 2, 3), 'suspicious_sand' if next == 'sand' else 'air')
+
+    room.loop('sand', main_clock).loop(sand_loop, ('', 'red'))
+
     ingot_frame = 'ores_ingot_frame'
     frame = ItemFrame(SOUTH, nbt={'Tags': [room.name, ingot_frame]})
     room.function('ores_init').add(
@@ -167,7 +187,7 @@ def room():
         room.label(r(3, 2, 7), 'Deepslate', NORTH))
 
     raw_frame = 'ore_raw_frame'
-    volume = Region(r(7, 5, 6), r(0, 2, 0))
+    volume = Region(r(8, 5, 6), r(0, 2, -1))
     deepslate_materials = room.score('deepslate_materials')
 
     def ore_loop(step):
@@ -524,7 +544,7 @@ def wood_functions(room):
         room.label(r(-1, 2, 4), 'Chest Boat', NORTH),
     )
 
-    volume = Region(r(-5, 1, -5), r(6, 5, 3))
+    volume = Region(r(-5, 1, -4), r(4, 5, 3))
 
     def wood_loop(step):
         name = step.elem
