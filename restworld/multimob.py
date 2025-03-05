@@ -177,13 +177,13 @@ def room():
 
     def set_profession(pro):
         age = -2147483648 if pro == 'Child' else 0
-        nbt = {'mob': {'nbt': {'VillagerData': {'profession': pro.lower()}}, 'Age': age}}
+        nbt = {'mob': {'nbt': {'VillagerData': {'profession': pro}}, 'Age': age}}
         return (data().merge(room.store, nbt),
                 function(update_mob).with_().storage(room.store, 'mob'),
                 at_home.run(function('restworld:multimob/type')))
 
     def set_type(type):
-        return (data().modify(room.store, 'mob.type').set().value(type.lower()),
+        return (data().modify(room.store, 'mob.type').set().value(type),
                 function(update_type).with_().storage(room.store, 'mob'))
 
     init_mobs = ((NW, -2, -2, 'Allay'), (NE, 2, -2, 'Guardian'), (SE, -2, -2, 'Piglin Brute'), (SW, -2, 2, 'Villager'))
@@ -256,7 +256,8 @@ def room():
             for i, value in enumerate(values):
                 sx, sy, sz = sign_pos(i, x, top_y, z, matrix_row_len)
                 popup.add(
-                    WallSign((None, value), (clear_menus, *func_gen(value)), wood='birch').place(r(sx, sy, sz), sign_facing))
+                    WallSign((None, value.title()), (clear_menus, *func_gen(value)), wood='birch').place(
+                        r(sx, sy, sz), sign_facing))
             return popup
 
         def summoner(mob_id):
@@ -278,7 +279,7 @@ def room():
             menu_matrix('type', VILLAGER_BIOMES, row_len, set_type)
             professions = list(VILLAGER_PROFESSIONS)
             if mob.name == 'Villager':
-                professions.append('Child')
+                professions.append('child')
             pro_popup = menu_matrix('profession', professions, 4, set_profession)
             return at_home.run(function(pro_popup))
 

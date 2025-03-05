@@ -307,17 +307,17 @@ def room():
     middle = e().tag('census_taker')
     prof_scores = {}
     base_selector = e().type('villager').distance((None, 50))
-    for profession in ('All', 'Kid') + VILLAGER_PROFESSIONS:
+    for profession in ('all', 'kid') + VILLAGER_PROFESSIONS:
         score = Score(profession.lower(), 'census')
         prof_scores[profession] = score
         selector = copy.deepcopy(base_selector)
-        if profession == 'Kid':
+        if profession == 'kid':
             selector = selector.not_nbt({'Age': 0})
-        elif profession != 'All':
-            selector = selector.nbt({'VillagerData': {'profession': f'minecraft:{profession.lower()}'}})
+        elif profession != 'all':
+            selector = selector.nbt({'VillagerData': {'profession': f'minecraft:{profession}'}})
         census.add(score.set(0), execute().at(middle).as_(selector).run(score.add(1)),
-                   tag(selector).add(profession.lower()))
+                   tag(selector).add(profession))
     employed = Score('employed', 'census')
-    census.add(employed.operation(EQ, prof_scores['All']), employed.operation(MINUS, prof_scores['None']),
-               prof_scores['None'].operation(MINUS, prof_scores['Kid']), tag(e().tag('kid')).remove('none'),
+    census.add(employed.operation(EQ, prof_scores['all']), employed.operation(MINUS, prof_scores['none']),
+               prof_scores['none'].operation(MINUS, prof_scores['kid']), tag(e().tag('kid')).remove('none'),
                schedule().function("minecraft:census", TimeSpec('15s'), REPLACE))
