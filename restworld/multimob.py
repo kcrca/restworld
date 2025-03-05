@@ -5,7 +5,7 @@ import math
 
 from pynecraft import info
 from pynecraft.base import Arg, EAST, NE, NORTH, NW, SE, SOUTH, SW, WEST, as_facing, r, rotate_facing
-from pynecraft.commands import Entity, Text, comment, data, e, execute, fill, function, return_, s, \
+from pynecraft.commands import Entity, Text, comment, data, e, execute, fill, function, n, return_, s, \
     say, setblock, \
     summon, \
     tag
@@ -102,7 +102,7 @@ def room():
     row_len = 3
     menu_clear = room.function('mob_menu_clear', home=False).add(
         fill(r(-2, 3, -2), r(2, 6, 2), 'air').replace('#wall_signs'))
-    clear = at_home.run(function(menu_clear))
+    clear_menus = at_home.run(function(menu_clear))
     menu_init = room.function('mob_menu_init').add(
         function(menu_clear),
         fill(r(-9, 2, -9), r(9, 4, 9), 'air').replace('water'),
@@ -112,6 +112,8 @@ def room():
         room.label(r(2, 2, 2), 'This Corner\\n\u21e7', SE),
         room.label(r(-2, 2, 2), 'This Corner\\n\u21e7', SW),
     )
+    room.function('mob_menu_home', exists_ok=True).add(
+        tag(n().tag('mob_menu_home')).add('summon_mobs_home'))
     my_mobs = copy.deepcopy(info.mobs)
     if 'Creaking' not in my_mobs:
         my_mobs['Creaking'] = Entity('Creaking')
@@ -163,6 +165,41 @@ def room():
         yield function(summon_mobs)
         return
 
+    update_mob = room.function('update_mob', home=False).add(
+        say('update_mob'),
+        say('$(sector_tag)'),
+        execute().as_(e().tag(Arg('sector_tag'))).run(data().merge(s(), Arg('nbt'))))
+    update_type = room.function('update_type', home=False).add(
+        say('update_type'),
+        say('$(type) $(sector_tag)'),
+        execute().as_(e().tag(Arg('sector_tag'))).run(data().modify(s(), 'VillagerData.type').set().value(Arg('type')))
+    )
+
+    def set_profession(pro):
+        age = -2147483648 if pro == 'Child' else 0
+        nbt = {'mob': {'nbt': {'VillagerData': {'profession': pro.lower()}}, 'Age': age}}
+        return (data().merge(room.store, nbt),
+                function(update_mob).with_().storage(room.store, 'mob'),
+                at_home.run(function('restworld:multimob/type')))
+
+    def set_type(type):
+        return (data().modify(room.store, 'mob.type').set().value(type.lower()),
+                function(update_type).with_().storage(room.store, 'mob'))
+
+    init_mobs = ((NW, -2, -2, 'Allay'), (NE, 2, -2, 'Guardian'), (SE, -2, -2, 'Piglin Brute'), (SW, -2, 2, 'Villager'))
+    room.function('summon_mobs_init').add(
+        ((
+            execute().as_(e().tag('summon_cur')).run(tag(s()).remove('summon_cur')),
+            tag(n().tag(f'summon_{sector}_home')).add('summon_cur'),
+            execute().as_(n().tag(f'summon_{sector}_home')).run(say('foo')),
+            summon_mob_commands(my_mobs[mob_id])
+        )
+            for sector, x, y, mob_id in init_mobs),
+        set_profession('mason'),
+        clear_menus,
+        setblock(r(-2, 1, -2), 'redstone_block')
+    )
+
     water_score = room.score('water')
     is_none_score = room.score('is_none')
     big_score = room.score('big')
@@ -199,16 +236,6 @@ def room():
             execute().if_().score(undead_score).matches(1).at(e().tag(sector_tag)).run(
                 setblock(r(0, 200, 0), 'smooth_quartz')))
 
-    update_mob = room.function('update_mob', home=False).add(
-        say('update_mob'),
-        say('$(sector_tag)'),
-        execute().as_(e().tag(Arg('sector_tag'))).run(data().merge(s(), Arg('nbt'))))
-    ut = room.function('update_type', home=False).add(
-        say('update_type'),
-        say('$(type) $(sector_tag)'),
-        execute().as_(e().tag(Arg('sector_tag'))).run(data().modify(s(), 'VillagerData.type').set().value(Arg('type')))
-    )
-
     for i in range(NUM_GROUPS):
         if i == full_groups and full_groups != NUM_GROUPS:
             stride -= 1
@@ -229,34 +256,11 @@ def room():
             for i, value in enumerate(values):
                 sx, sy, sz = sign_pos(i, x, top_y, z, matrix_row_len)
                 popup.add(
-                    WallSign((None, value), (clear, *func_gen(value)), wood='birch').place(r(sx, sy, sz), sign_facing))
+                    WallSign((None, value), (clear_menus, *func_gen(value)), wood='birch').place(r(sx, sy, sz), sign_facing))
             return popup
 
-        def set_villager(key, which, nbt=None):
-            func = room.function(f'{key.lower()}_{which.lower()}', home=False)
-            if nbt is None:
-                nbt = {'mob': {'nbt': {'VillagerData': {key: which.lower()}}}}
-            for sector in sectors:
-                func.add(
-                    execute().at(e().tag(f'{sector}_home')).as_(e().tag(tag_for(sector))).run(
-                        data().merge(s(), nbt)))
-            func.add(clear)
-            return func
-
-        def set_profession(pro):
-            age = -2147483648 if pro == 'Child' else 0
-            nbt = {'mob': {'nbt': {'VillagerData': {'profession': pro.lower()}}, 'Age': age}}
-            return (data().merge(room.store, nbt),
-                    function(update_mob).with_().storage(room.store, 'mob'),
-                    at_home.run(function('restworld:multimob/type')))
-
-        def set_type(type):
-            nbt = {'mob': {'nbt': {'VillagerData': {'type': type.lower()}}}}
-            return (data().modify(room.store, 'mob.type').set().value(type.lower()),
-                    function(ut).with_().storage(room.store, 'mob'))
-
-        def summoner(mob_key):
-            mob = my_mobs[mob_key]
+        def summoner(mob_id):
+            mob = my_mobs[mob_id]
             summon_mob = tuple(str(x) for x in summon_mob_commands(mob))
             setup = execute().if_().block(r(0, 1, 0), 'air').run(summon_mob)
             return *setup, follow_on(mob)
@@ -283,12 +287,12 @@ def room():
         x += (-1 + within) * dx
         z += (-1 + within) * dz
         menu_init.add(WallSign((None, all_mobs[start], Text.text('to').italic(), all_mobs[start + stride - 1]),
-                               (clear, at_home.run(function(popup)))).place(r(x, 2, z), sign_facing))
+                               (clear_menus, at_home.run(function(popup)))).place(r(x, 2, z), sign_facing))
 
         start += stride
         within = (within + 1) % row_len
 
     room.function('sector_setup', home=False).add(
         execute().as_(e().tag('summon_cur')).run(tag(s()).remove('summon_cur')),
-        fill(r(-5, 2, -5), r(5, 2, 5), 'redstone_lamp').replace('shroomlight'),
-        setblock(r(0, 2, 0), 'shroomlight'))
+        fill(r(-5, 1, -5), r(5, 1, 5), 'redstone_lamp').replace('shroomlight'),
+        setblock(r(0, 1, 0), 'shroomlight'))
