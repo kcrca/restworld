@@ -26,8 +26,8 @@ def main():
         tester.room()
     test_blocks.tests()
     for m in (
-            redstone, connect,
-            photo, blocks, save, multimob, models, global_, arena, banners, biomes, center, gui, diy, effects,
+            multimob, redstone, connect,
+            photo, blocks, save, models, global_, arena, banners, biomes, center, gui, diy, effects,
             particles, enders, font, mobs, hud, materials, nether, paintings, plants, the_end, time,
             wither, maps):
         m.room()
