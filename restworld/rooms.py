@@ -725,4 +725,4 @@ def span(start, end):
 
 
 def kill_em(target):
-    return tp(target, e().tag('death').limit(1))
+    return tp(target, n().tag('death'))

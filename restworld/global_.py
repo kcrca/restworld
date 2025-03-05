@@ -194,14 +194,14 @@ def room():
     death_home = room.home_func('death')
     home_sign = WallSign((None, 'Go Home'), (None, function('restworld:global/goto_home')))
     room.function('death_init').add(
-        execute().positioned((0, 1.5, 0)).run(function(death_home)),
+        execute().positioned((r(0, 1.5, -1))).run(function(death_home)),
         tag(e().tag(death_home.name)).add('death'),
         tag(e().tag(death_home.name)).add('immortal'),
-        fill((-3, 0, -3), (3, 4, 3), 'air').replace('#all_signs'),
-        home_sign.place((0, 3, 2), NORTH),
-        home_sign.place((0, 3, -2), SOUTH),
-        home_sign.place((2, 3, 0), WEST),
-        home_sign.place((-2, 3, 0), EAST),
+        fill(r(-3, 0, -3), r(3, 4, 3), 'air').replace('#all_signs'),
+        home_sign.place(r(0, 3, 2), NORTH),
+        home_sign.place(r(0, 3, -2), SOUTH),
+        home_sign.place(r(2, 3, 0), WEST),
+        home_sign.place(r(-2, 3, 0), EAST),
     )
     killables = e().not_type('player').not_tag('death').distance((None, 30))
     room.function('kill_em').add(
