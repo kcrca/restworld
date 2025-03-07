@@ -1073,6 +1073,12 @@ def color_functions(room):
         room.particle(sign, 'colorings_base', r(x, y + 1, z), clause=if_clause(plain, 0))
         yield sign.place(r(x, y, z), 14)
 
+    wolf_armor_on = room.function('wolf_armor_on', home=False).add(
+        data().merge(n().tag('colorings_dog'), wolf_armor_nbt),
+        execute().at(e().tag('colorings_home')).run(function('restworld:blocks/colorings_cur')))
+    room.function('wolf_armor_off', home=False).add(
+        data().remove(n().tag('colorings_dog'), 'equipment.body'),
+        execute().at(e().tag('colorings_home')).run(function('restworld:blocks/colorings_cur')))
     room.function('colorings_init').add(
         kill_em(e().tag('colorings_item')),
         plain.set(0),
@@ -1084,6 +1090,7 @@ def color_functions(room):
             'Fixed': True}).summon(r(-6.5, 4, 0.5)),
         Entity('horse', horse_nbt).summon(r(0.9, 2, 5.3)),
         Entity('wolf', dog_nbt).summon(r(-7.4, 2, 2)),
+        function(wolf_armor_on),
         Entity('cat', cat_nbt).summon(r(-2.7, 2, 2)),
         Entity('armor_stand', stand_nbt).summon(r(-1.1, 2, 3)),
         Entity('llama', llama_nbt).summon(r(-11, 2, 5.8)),
@@ -1102,15 +1109,9 @@ def color_functions(room):
         room.label(r(-1, 2, 7), 'Lit Candles', NORTH), room.label(r(-8, 2, 7), 'Plain', NORTH),
         room.label(r(-3, 2, 7), 'Enchanted', NORTH), room.label(r(-8, 2, 7), 'Plain', NORTH),
         room.label(r(-11, 2, 3), 'Glowing', NORTH),
-        room.label(r(-8, 2, 3), 'Wolf Armor', NORTH),
+        room.label(r(-8, 2, 3), 'Collar', NORTH),
         room.label(r(0, 2, 3), 'Leggings', NORTH),
     )
-    room.function('wolf_armor_on', home=False).add(
-        data().merge(n().tag('colorings_dog'), wolf_armor_nbt),
-        execute().at(e().tag('colorings_home')).run(function('restworld:blocks/colorings_cur')))
-    room.function('wolf_armor_off', home=False).add(
-        data().remove(n().tag('colorings_dog'), 'equipment.body'),
-        execute().at(e().tag('colorings_home')).run(function('restworld:blocks/colorings_cur')))
     room.loop('colorings', main_clock).add(erase(r(-9, 2, 2), r(-9, 2, 3))).loop(colorings_loop, colors).add(
         colored_signs(None, render_signs_glow))
     room.function('colorings_plain_off', home=False).add(
