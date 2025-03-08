@@ -16,7 +16,7 @@ biome_groups['Temperate'] = (
     'Jungle', 'Mushroom Fields')
 biome_groups['Warm'] = ('Desert', 'Savanna', 'Badlands')
 biome_groups['Cold'] = ('Taiga', 'Stony Shore')
-biome_groups['Snowy'] = ('Snowy Taiga', 'Ice Spikes', 'Snowy Taiga')
+biome_groups['Snowy'] = ('Snowy Taiga', 'Snowy Plains', 'Ice Spikes')
 biome_groups['Ocean'] = ('Warm Ocean', 'Ocean', 'Frozen Ocean')
 biome_groups['Cave'] = ('Lush Caves', 'Dripstone Caves', 'Deep Dark')
 biome_groups['Nether'] = ('Nether Wastes', 'Soul Sand Valley', 'Crimson Forest', 'Warped Forest', 'Basalt Deltas')

@@ -1,9 +1,38 @@
-from pynecraft.base import EAST, Nbt, SOUTH, as_facing, d, r
-from pynecraft.commands import Entity, FURTHEST, INT, RESULT, data, e, execute, function, kill, s, say, setblock, \
-    summon, tag, tp
-from pynecraft.simpler import Item, Offset
+from pynecraft.base import Arg, r
+from pynecraft.commands import Block, Entity, e, execute, fill, function, kill, n, p, say, setblock, \
+    tp
 from restworld.rooms import Room
 from restworld.world import restworld
+
+"""
+Functions for helping capture biome samples from a real world, not used in Restworld iteself. But this is a convient
+place to put them.
+
+How to use:
+
+First, find an exmaple of a biome you want to use. Find the corner of the sample area that has the lowest value (x,z)
+coordinates. Go underground and place a command block with "function restworld:save/prep {name: plains}".
+Trigger that block with a button. This will place four armor stands at the corners of the four segments of the biome
+sample with structure blocks above them with the right names in them (e.g., "plains_2").
+
+Go up and make sure the sample is the one you want. You can move that command block around. When you re-run the function,
+it will first clean up the existing armor stands and structure blocks.
+
+When you have the sample positioned correctly, run the function "/function restworld:save/next". This will take you to
+each structure block in turn. "SAVE" each one. (Currently there is no way to automate a save command, you have to do it
+manually, hence the function that moves you to each in turn.) When you've done the final one, the .nbt files will be
+in your world's "generated/minecraft/structures" directory. They need to be coped to the restworld structure folder.
+
+Some samples require a two-high space, for a total of eight structure blocks. To get this, set the score "tall save" 
+to 1. Then it will create the eight structure blocks, and "next" will take you to all eight, strating with the 
+uppermost layer. Saving the lower blocks requires removing the upper ones, so if you need to start over, you'll need 
+to re-"prep" the sample. WHich is probably a good idea anyway.
+
+The function restworld:save/start resets the loop to the beginning, and restworld:save/remove removes the armor stands
+and structure blocks. Both these funcitons are run during "prep", so if you move the command block, you only need to
+invoke it again.
+ 
+"""
 
 """
 Setup:
@@ -76,86 +105,61 @@ SAVE_HEIGHT = 25
 def room():
     room = Room('save', restworld)
 
-    x = room.score('x')
-    z = room.score('z')
-    step_num = room.score('step')
-    found = room.score('found')
-    saved = room.score('saved')
+    tall = room.score('tall')
+    segments = (r(0, 0.5, 0), r(0, 0.5, 32), r(32, 0.5, 0), r(32, 0.5, 32))
+    count = len(segments)
 
-    helmet = Item.nbt_for('turtle_helmet')
-    detector_stand = Entity('armor_stand',
-                            dict(Rotation=as_facing(EAST).rotation, Small=True, NoGravity=True,
-                                 equipment={'head': helmet})).tag('save_detector')
-    block_nbt = Nbt(sizeY=SAVE_HEIGHT, posX=0, posY=1, posZ=-1, ignoreEntities=False)
-
-    all_detectors = e().tag('save_detector')
-    detector = all_detectors.limit(1)
-    savers = e().tag('save_home')
-    active = e().tag('save_active').limit(1)
-
-    block_pos = r(0, -1, 1)
-    redstone_pos = Offset(0, -1, 0).r(*block_pos)
-    prep = room.function('prep', home=False).add(
-        execute().store(RESULT).storage('save_start', f'sizeX', INT, 1).run(x.get()),
-        execute().store(RESULT).storage('save_start', f'sizeZ', INT, 1).run(z.get()),
-        data().modify(block_pos, 'sizeX').set().from_('save_start', 'sizeX'),
-        data().modify(block_pos, 'sizeZ').set().from_('save_start', 'sizeZ'),
-        data().merge(block_pos, block_nbt.merge({'mode': 'SAVE', 'showboundingbox': True})),
+    remove = room.function('remove', home=False).add(
+        execute().at(e().tag(Arg('name'))).run(
+            fill(r(0, 2, 0), r(0, 2, 0), 'air').destroy(),
+            setblock(r(0, 34, 0), 'air')),
+        kill(e().tag(Arg('name'))),
     )
 
-    as_detector = execute().as_(detector).at(detector)
-    step = room.function('step', home=False)
-    step.add(
-        as_detector.run(tp(s(), d(0, 0, 1))),
-        step_num.add(1),
-        execute().if_().score(found).matches(0).run(x.add(1)),
-        execute().if_().score(found).matches(1).run(z.add(1)),
-        as_detector.if_().block(r(0, 0, 0), MARKER).run(
-            data().merge(s(), {'Rotation': as_facing(SOUTH).rotation}),
-            found.add(1),
-        ),
-        execute().if_().score(step_num).matches((MAX_STEPS, None)).run(say("NO END FOUND")),
-        execute().unless().score(step_num).matches((MAX_STEPS, None)).if_().score(found).matches(2).as_(
-            active).at(active).run(function(prep)),
-        execute().unless().score(step_num).matches((MAX_STEPS, None)).unless().score(found).matches(2).run(
-            function(step)),
-    )
-    setup = room.function('setup', home=False).add(
-        execute().unless().block(block_pos, 'structure_block').run(say("NO STRUCTURE BLOCK")),
-        saved.add(1),
-        kill(all_detectors),
-        tag(e().tag('save_active')).remove('save_active'),
-        tag(s()).add('save_active'),
-        summon(detector_stand, r(0, 7, 0)),
-        step_num.set(0),
-        x.set(1),
-        z.set(1),
-        found.set(0),
-        function(step),
-        tag(s()).remove('save_active'),
+    def next_loop(step):
+        if step.i < count:
+            yield say(step.i + 5)
+            yield execute().as_(e().tag(f'saver_{step.i + 1}')).at(n().tag(f'saver_{step.i + 1}')).run(
+                tp(p(), r(1, 32, 0)).facing(r(-2, 34, 0)))
+        else:
+            yield say(step.i - 3)
+            yield execute().as_(e().tag(f'saver_{step.i - 3}')).at(n().tag(f'saver_{step.i - 3}')).run(
+                setblock(r(0, 34, 0), 'air'),
+                tp(p(), r(1, 0, 0)).facing(r(-2, 2, 0)))
+
+    next = room.loop('next', home=False)
+    next.add(execute().if_().score(tall).matches(0).if_().score(next.score).matches((0, count - 1)).run(
+        function(next))).loop(next_loop, range(count * 2))
+
+    prep_each = room.function('prep_each', home=False).add(
+        fill(r(0, 0, 0), r(1, 1, 0), 'air'),
+        setblock(r(0, 0, 0), 'torch'),
+        setblock(r(0, 2, 0), Block('structure_block',
+                                   nbt={'mode': 'SAVE', 'ignoreEntities': False, 'name': '$(name)_$(num)', 'sizeX': 32,
+                                        'sizeY': 32, 'sizeZ': 32})),
+        execute().if_().score(tall).matches(1).run(
+            setblock(r(0, 34, 0), Block('structure_block',
+                                        nbt={'mode': 'SAVE', 'ignoreEntities': False, 'name': '$(name)_$(tall_num)',
+                                             'sizeX': 32,
+                                             'sizeY': 32, 'sizeZ': 32}))
+        )
     )
 
-    setup_all = room.function('setup_all', home=False).add(
-        kill(all_detectors),
-        tag(e().tag('save_active')).remove('save_active'),
-        saved.set(0),
-        execute().as_(savers.sort(FURTHEST)).run(execute().as_(s()).at(s()).run(function(setup))),
+    room.function('prep', home=False).add(
+        function(remove, {'name': Arg('name')}),
+        ((say(i + 1),
+          Entity('armor_stand',
+                 {'NoGravity': 1, 'AbsorptionAmount': i, 'CustomName': Arg('name')}).tag('saver',
+                                                                                         f'saver_{i + 1}', '$(name)',
+                                                                                         f'$(name)_{i + 1}').summon(
+              pos), say('summon', i + 1)) for i, pos in enumerate(segments)),
+        (execute().as_(e().tag(f'saver_{i + 1}')).at(e().tag(f'saver_{i + 1}')).run(
+            function(prep_each, {'y': 0, 'num': i + 1, 'tall_num': i + 5, 'name': Arg('name')})) for i in
+            range(count)),
+        next.score.set(-1),
     )
 
-    save = room.function('save').add(
-        setblock(redstone_pos, 'redstone_block'),
-        setblock(redstone_pos, 'shroomlight'),
+    room.function('start', home=False).add(
+        next.score.set(count - 1),
+        function(next)
     )
-
-    room.function('save_all', home=False).add(
-        function(setup_all),
-        execute().as_(savers.sort(FURTHEST)).run(execute().as_(s()).at(s()).run(function(setup))),
-        execute().as_(savers.sort(FURTHEST)).run(execute().as_(s()).at(s()).run(function(save))),
-    )
-
-    home = room.function('save_home', exists_ok=True)
-    commands = home.commands()
-    for i in range(len(commands)):
-        if commands[i].startswith('kill'):
-            del commands[i]
-            break
