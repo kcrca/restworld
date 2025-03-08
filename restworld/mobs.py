@@ -270,7 +270,7 @@ def friendlies(room):
         yield execute().as_(e().tag('rabbit')).run(data().merge(s(), {'RabbitType': i, 'CustomName': step.elem}))
 
     room.loop('rabbit', main_clock).loop(rabbit_loop, (
-        'Brown', 'White', 'Black', 'Black & White', 'Gold', 'Salt & Pepper', 'Killer Rabbit (unused)'))
+        'Brown', 'White', 'Black', 'Black & White', 'Gold', 'Salt & Pepper', 'Killer Rabbit (unused)', 'Toast'))
     room.function('reset_collars').add(
         kill_em(e().tag('cat')),
         execute().at(e().tag('cat_home')).run(function('restworld:mobs/cat_init')),
