@@ -72,17 +72,8 @@ def clear(biome, prefix, i, x, y, z, handback):
 
 # noinspection PyUnusedLocal
 def trigger(biome, prefix, i, x, y, z, handback):
-    yield setblock(r(x, y - 1, z), 'redstone_torch')
+    yield setblock(r(x, y - 1, z), 'redstone_block')
     yield setblock(r(x, y - 1, z), 'air')
-
-
-# noinspection PyUnusedLocal
-def save_biome(biome, prefix, i, x, z, handback, raised=False):
-    return [
-        prefix.run(data().merge(r(x, 1, z), {'mode': 'SAVE'})),
-        prefix.run(setblock(r(x, 0, z), 'redstone_torch')),
-        prefix.run(setblock(r(x, 0, z), 'air')),
-    ]
 
 
 def room():
@@ -163,7 +154,7 @@ def room():
 
         # noinspection PyUnusedLocal
         def setup(biome, prefix, i, x, y, z, handback):
-            if i > 4:
+            if i >= 4:
                 yield setblock(r(x, y, z), 'structure_block')
             yield data().merge(r(x, y, z), {'name': f'restworld:{to_id(biome)}_{i + 1:d}', 'mode': 'LOAD'})
             yield fillbiome(r(x - 16, y - 16, z - 16), r(x + 48, y + 48, z + 48), biome_id)
