@@ -191,7 +191,7 @@ def room():
     )
 
     # The death functions
-    death_home = room.home_func('death')
+    death_home = room.home_func('death', single_home=False)
     home_sign = WallSign((None, 'Go Home'), (None, function('restworld:global/goto_home')))
     room.function('death_init').add(
         execute().positioned((r(0, 1.5, -1))).run(function(death_home)),
