@@ -538,7 +538,7 @@ def monsters(room):
 
     illager_loop_func.add(kill_em(e().tag(*tags))).loop(illager_loop, illagers)
 
-    room.function('phantom_init').add(placer(r(-0.5, 4, 0), NORTH, adults=True).summon('phantom'))
+    room.function('phantom_init').add(placer(r(-0.2, 4, 0), NORTH, adults=True).summon('phantom'))
 
     def ravager_loop(step):
         ravager = Entity('ravager')
