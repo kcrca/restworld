@@ -548,6 +548,7 @@ def wood_functions(room):
 
     def wood_loop(step):
         name = step.elem
+        root_name = name.replace(' Mosaic', '')
         id = to_id(name)
         planks = f'{id}_planks'
         slab = f'{id}_slab'
@@ -593,21 +594,21 @@ def wood_functions(room):
         # doors can't be generically replaced, see below for the manual placement
         yield from volume.replace_trapdoors(f'{id}_trapdoor', '#trapdoors')
         yield from volume.replace_facing(
-            WallSign((), wood=id).messages((None, f'{name}', 'Wall Sign')).wax(False), '#wall_signs')
-        yield from volume.replace_rotation(Sign((), wood=id).messages((None, f'{name} Sign')).wax(False), '#signs')
+            WallSign((), wood=id).messages((None, f'{root_name}', 'Wall Sign')).wax(False), '#wall_signs')
+        yield from volume.replace_rotation(Sign((), wood=id).messages((None, f'{root_name} Sign')).wax(False), '#signs')
         yield from volume.replace_facing(
-            WallSign((), wood=id, hanging=True).messages((None, f'{name}', 'Hanging', 'Wall Sign')).wax(False),
+            Sign((), wood=id, hanging=True).messages((None, f'{root_name}', 'Wall', 'Hanging', 'Sign')).wax(False),
             '#wall_hanging_signs')
         yield from volume.replace_rotation(
-            Sign((), wood=id, hanging=True).messages((None, f'{name}', 'Hanging', 'Sign')).wax(False),
+            Sign((), wood=id, hanging=True).messages((None, f'{root_name}', 'Ceiling', 'Hanging', 'Sign')).wax(False),
             '#ceiling_hanging_signs')
 
         yield from volume.replace_facing(
-            Block(f'{id}_wall_hanging_sign', nbt=Sign.lines_nbt((name, 'Wall', 'Hanging', 'Sign'))),
+            Block(f'{id}_wall_hanging_sign', nbt=Sign.lines_nbt((root_name, 'Wall', 'Hanging', 'Sign'))),
             '#wall_hanging_signs')
         for attached in True, False:
-            sign_text = Sign.lines_nbt((name, 'Attached', 'Hanging', 'Sign')) if attached else Sign.lines_nbt(
-                (name, 'Hanging', 'Sign'))
+            sign_text = Sign.lines_nbt((root_name, 'Attached', 'Hanging', 'Sign')) if attached else Sign.lines_nbt(
+                (root_name, 'Hanging', 'Sign'))
             yield from volume.replace_rotation(
                 Block(f'{id}_hanging_sign', nbt=sign_text),
                 '#all_hanging_signs',
@@ -615,7 +616,7 @@ def wood_functions(room):
 
         # Add special cases
         yield from volume.fill('air', 'vine')  # remove any existing vine
-        if name == ('Jungle', 'Mangrove'):
+        if name in ('Jungle', 'Mangrove'):
             yield fill(r(-4, 2, -2), r(-4, 4, -2), ('vine', {'north': True}))
 
         yield setblock(r(-2, 2, -1), saplings[0])
@@ -643,11 +644,11 @@ def wood_functions(room):
         yield setblock(r(4, 3, 2), (f'{id}_door', {'facing': WEST, 'half': 'upper'}))
 
         yield execute().as_(e().tag('wood_sign_frame')).run(
-            data().merge(s(), ItemFrame(SOUTH).item(f'{id}_sign').named(f'{name} Sign').nbt))
+            data().merge(s(), ItemFrame(SOUTH).item(f'{id}_sign').named(f'{root_name} Sign').nbt))
         yield execute().as_(e().tag('wood_hanging_sign_frame')).run(
-            data().merge(s(), ItemFrame(SOUTH).item(f'{id}_hanging_sign').named(f'{name} Hanging Sign').nbt))
+            data().merge(s(), ItemFrame(SOUTH).item(f'{id}_hanging_sign').named(f'{root_name} Hanging Sign').nbt))
         yield execute().as_(e().tag('wood_door_frame')).run(
-            data().merge(s(), ItemFrame(SOUTH).item(f'{id}_door').named(f'{name} Door').nbt))
+            data().merge(s(), ItemFrame(SOUTH).item(f'{id}_door').named(f'{root_name} Door').nbt))
 
         yield kill_em(e().tag('wood_boat'))  # remove existing boat
         if 'stem' not in log:
@@ -666,10 +667,10 @@ def wood_functions(room):
             yield execute().if_().score(wood_boat_chest).matches(1).run(summon(chest_boat, location))
             yield execute().if_().score(wood_boat_chest).matches(0).as_(
                 e().tag('wood_boat_frame')).run(
-                data().merge(s(), ItemFrame(SOUTH).item(boat_item).named(f'{name} Boat').nbt))
+                data().merge(s(), ItemFrame(SOUTH).item(boat_item).named(f'{root_name} Boat').nbt))
             yield execute().if_().score(wood_boat_chest).matches(1).as_(
                 e().tag('wood_boat_frame')).run(
-                data().merge(s(), ItemFrame(SOUTH).item(chest_boat_item).named(f'{name} Chest Boat').nbt))
+                data().merge(s(), ItemFrame(SOUTH).item(chest_boat_item).named(f'{root_name} Chest Boat').nbt))
         else:
             yield data().remove(e().tag('wood_boat_frame').limit(1), 'Item')
 

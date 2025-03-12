@@ -30,26 +30,27 @@ def room():
                score: ScoreName = None, air: bool = False, expandable=True) -> tuple[Function, Loop]:
         facing = as_facing(facing)
 
+        # Ensure we have a list (so we can modify it)
         if not isinstance(block_lists, list):
             block_lists = list(block_lists)
+        # Convert a single list into a list of that one list
         if not isinstance(block_lists[0], Iterable) or isinstance(block_lists[0], str):
             block_lists = [block_lists, ]
+        # Convert all to Block objects, handling '' as a nameless structure_void
         for i, sublist in enumerate(block_lists):
-            nsublist = []
-            for block in sublist:
-                # noinspection PyTypeChecker
-                if block == '':
-                    block = Block(id='structure_void', name='')
-                nsublist.append(as_block(block))
-            block_lists[i] = nsublist
+            block_lists[i] = list(
+                map(lambda x: Block(id='structure_void', name='') if x == '' else as_block(x), sublist))
+        # If there are names to show, set bool that will show them
         # noinspection PyUnresolvedReferences
         show_list = len(set(x.id for x in block_lists[0])) > 1
 
+        # A one-element list doesn't require a loop
         singleton = len(block_lists[0]) == 1
         if not singleton:
             block_loop = room.loop(name, clock, score=as_score(score))
         else:
             block_loop = None
+
         block_init = room.function(name + '_init', exists_ok=True).add(
             WallSign(()).place(r(facing.dx, 2, facing.dz), facing),
             tag(e().tag(f'{name}_home')).add('particulate')
@@ -61,25 +62,36 @@ def room():
             names = room.function(name + '_names', home=False)
             block_init.add(function(names.full_name))
 
+        def signage_for(block, i):
+            if block.name == 'structure void':
+                return ()
+            return labels[i] if labels else block.sign_text
+
+        # Find the max length of a sign change so we blank out all lines when a given block has fewer.
+        max_lines = 0
+        for j, _ in enumerate(block_lists):
+            max_lines = max(max_lines, *(len(signage_for(block, i)) for i, block in enumerate(block_lists[j])))
+
+        # show a single block from the list. "step" will be present if in a loop (i.e., not a singleton)
         def one_block(block: Block, pos, step):
-            void = block.name == 'structure void'
-            signage = labels[step.i] if labels else block.sign_text
-            if void:
-                signage = ()
+            signage = signage_for(block, step.i if step else 0)
             if air:
                 yield setblock(pos, 'air')
             yield setblock(pos, block)
+            # Pad out shorter signs to max length
+            signage += ("",) * (max_lines - len(signage))
+
             x, y, z = pos
             if step:
                 room.particle(block, name, (x, y + 1, z), step)
             else:
                 room.particle(block, name, (x, y + 1, z))
-            # Preserve the 'expansion' response
-            yield Sign.change(r(x + facing.dx, 2, z + facing.dz), signage, start=1)
+            # start=1: Preserve the 'expansion' response; blanks=True: Erase longer answers from other blocks
+            yield Sign.change(r(x + facing.dx, 2, z + facing.dz), signage, start=1, blanks=True)
             return block
 
         if singleton:
-            assert len(block_lists) == 1  # Don't have code for this yet
+            assert len(block_lists) == 1  # Don't have code for a list of singletons
             block_init.add(one_block(block_lists[0][0], r(0, 3, 0), None))
         else:
             def blocks_loop_body(step):
