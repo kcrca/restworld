@@ -547,6 +547,9 @@ def wood_functions(room):
     volume = Region(r(-5, 1, -4), r(4, 5, 3))
 
     def wood_loop(step):
+        def sign_messages(nbt):
+            return {'front_text': nbt, 'back_text': nbt}
+
         name = step.elem
         root_name = name.replace(' Mosaic', '')
         id = to_id(name)
@@ -594,23 +597,17 @@ def wood_functions(room):
         # doors can't be generically replaced, see below for the manual placement
         yield from volume.replace_trapdoors(f'{id}_trapdoor', '#trapdoors')
         yield from volume.replace_facing(
-            WallSign((), wood=id).messages((None, f'{root_name}', 'Wall Sign')).wax(False), '#wall_signs')
+            WallSign((), wood=id).messages((None, root_name, 'Wall Sign')).wax(False), '#wall_signs')
         yield from volume.replace_rotation(Sign((), wood=id).messages((None, f'{root_name} Sign')).wax(False), '#signs')
-        yield from volume.replace_facing(
-            WallSign((), wood=id, hanging=True).messages((None, f'{root_name}', 'Wall', 'Hanging Sign')).wax(False),
-            '#wall_hanging_signs')
-        yield from volume.replace_rotation(
-            Sign((), wood=id, hanging=True).messages((None, f'{root_name}', 'Ceiling', 'Hanging Sign')).wax(False),
-            '#ceiling_hanging_signs')
 
         yield from volume.replace_facing(
-            Block(f'{id}_wall_hanging_sign', nbt=Sign.lines_nbt((root_name, 'Wall', 'Hanging', 'Sign'))),
+            Block(f'{id}_wall_hanging_sign', nbt=sign_messages(Sign.lines_nbt((root_name, 'Wall', 'Hanging', 'Sign')))),
             '#wall_hanging_signs')
         for attached in True, False:
             sign_text = Sign.lines_nbt((root_name, 'Attached', 'Hanging', 'Sign')) if attached else Sign.lines_nbt(
                 (root_name, 'Hanging', 'Sign'))
             yield from volume.replace_rotation(
-                Block(f'{id}_hanging_sign', nbt=sign_text),
+                Block(f'{id}_hanging_sign', nbt=sign_messages(sign_text)),
                 '#all_hanging_signs',
                 shared_states={'attached': attached})
 
