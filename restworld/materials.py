@@ -597,10 +597,10 @@ def wood_functions(room):
             WallSign((), wood=id).messages((None, f'{root_name}', 'Wall Sign')).wax(False), '#wall_signs')
         yield from volume.replace_rotation(Sign((), wood=id).messages((None, f'{root_name} Sign')).wax(False), '#signs')
         yield from volume.replace_facing(
-            Sign((), wood=id, hanging=True).messages((None, f'{root_name}', 'Wall', 'Hanging', 'Sign')).wax(False),
+            WallSign((), wood=id, hanging=True).messages((None, f'{root_name}', 'Wall', 'Hanging Sign')).wax(False),
             '#wall_hanging_signs')
         yield from volume.replace_rotation(
-            Sign((), wood=id, hanging=True).messages((None, f'{root_name}', 'Ceiling', 'Hanging', 'Sign')).wax(False),
+            Sign((), wood=id, hanging=True).messages((None, f'{root_name}', 'Ceiling', 'Hanging Sign')).wax(False),
             '#ceiling_hanging_signs')
 
         yield from volume.replace_facing(
