@@ -256,7 +256,7 @@ def room():
     blocks('heavy_core', NORTH, ('Heavy Core',))
     blocks('honeycomb', SOUTH, ('Honeycomb Block',))
     room.function('ladder_init').add(setblock(r(0, 3, 0), 'ladder'))
-    blocks('jigsaw', SOUTH, (Block('Jigsaw', {'orientation': 'up_south'}),))
+    blocks('jigsaw', SOUTH, (Block('Jigsaw', {'orientation': 'up_east'}),))
     blocks('lighting', SOUTH, (
         'Glowstone', 'Sea Lantern', 'Shroomlight', 'Ochre|Froglight', 'Pearlescent|Froglight', 'Verdant|Froglight',
         'End Rod'))
@@ -307,7 +307,7 @@ def room():
     polished_types = ('Smooth Basalt', 'Smooth Stone') + tuple(f'Polished|{t}' for t in stone_types[2:])
     blocks('stone', NORTH, (stone_types, polished_types), dz=3)
 
-    test_block_modes = ('start', 'log', 'fail', 'accept')
+    test_block_modes = ('start', 'log', 'accept', 'fail')
     blocks('test', SOUTH, tuple(Block('test_block', {'mode': mode}) for mode in test_block_modes),
            labels=(tuple(('Test Block', f'Mode: {mode.title()}') for mode in test_block_modes)))
     blocks('test_instance', SOUTH, ('Test Instance Block',), expandable=True)
