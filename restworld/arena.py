@@ -1,10 +1,13 @@
 from __future__ import annotations
 
 import sys
+from typing import Tuple
 
-from pynecraft.base import Arg, EAST, GT, LT, Nbt, r, seconds, to_id
-from pynecraft.commands import Entity, RANDOM, REPLACE, Score, a, data, e, execute, fill, function, kill, schedule, \
-    setblock, summon, tag
+from pynecraft.base import Arg, EAST, GT, LT, Nbt, r, seconds, to_id, to_name
+from pynecraft.commands import Entity, INT, RANDOM, REPLACE, RESULT, Score, Text, a, data, e, execute, fill, function, \
+    kill, \
+    random, return_, s, say, schedule, \
+    setblock, summon, tag, tellraw
 from pynecraft.function import Function, Loop
 from pynecraft.simpler import Item, Region, Sign, WallSign
 from restworld.rooms import Room, kill_em
@@ -13,7 +16,7 @@ from restworld.world import main_clock, marker_tmpl, restworld
 COUNT_MIN = 1
 COUNT_MAX = 5
 
-battle_types = {'w': 1, 'c': 2, 'g': 3}
+NO_VARIANT = 1000
 
 
 #
@@ -46,82 +49,113 @@ battle_types = {'w': 1, 'c': 2, 'g': 3}
 #       (misc. other stuff?)
 
 def is_splitter_mob(mob):
-    return mob in ('Slime', 'Magma Cube')
+    return mob in ('slime', 'magma_cube')
 
 
+#
+# Change figher_nbts to use id's as keys.
+#
+# put fighter_nbts into data as "nbts"
+#
+# create sets for "needs water", "undead", etc.
+#
+# Sign cmds will be:
+#       set hunter command block command to be "if hunter needed, then summon {actor: hunter, id: axolotl, y: <y value>}"
+#       set hunter command block command to be "if victim needed, then summon {actor: victim, id: axolotl, y: <y value>}"
+#       set the battle type
+#       start the battle
+#
+# summon:
+#       data merge storage room.store mob {id: $(id), actor: $(actor), y: <y value>}
+#       function do_summon with storage room.store mob
+#
+# do_summon:
+#       data modify storage room.store mob.nbt $(nbts)[$(id)]
+#       Add $(actor) to end of tags
+#       if there is is a specs[$(id)] then
+#           pick a random number in 0..specs[$(id)].max and store it in mob.i
+#           data modify room.store mob.nbt.specs[$(id)].key set from specs[$(id)].values
+#       execute at @e[tag=$(actor)_home,sort=random,limit=1] run summon $(id) ~0 ~$(y) ~0 $(nbt)
+#
+# In setup, set all the values for mob.nbts (including setting {<base nbt, including Tags>} for mobs that need no extra
+# nbt), mob specs, and arrays for each set of possible values.
+#
+# For specs, {'key': <name of variant key (e.g., Color), 'values': name of possible values array, 'max': largest useful
+# index in values array}.
 def room():
     room = Room('arena', restworld)
+
+    start_battle_type = Score('battle_type', 'arena')
 
     def protected(armor):
         return {'id': armor, 'components': {'repair_cost': 1, 'enchantments': {'protection': 5}}}
 
-    start_battle_type = Score('battle_type', 'arena')
     skeleton_nbts = {'equipment': {'mainhand': Item.nbt_for('bow'), 'feet': protected('iron_boots'),
                                    'head': protected('iron_helmet')}}
     fighter_nbts = {
-        'Drowned': {'equipment': {'mainhand': Item.nbt_for('trident')}},
-        'Goat': {'IsScreamingGoat': True, 'HasLeftHorn': True, 'HasRightHorn': True},
-        'Hoglin': {'IsImmuneToZombification': True},
-        'Llama': {'Strength': 5},
-        'Magma Cube': {'Size': 3},
-        'Slime': {'Size': 3},
-        'Panda': {'MainGene': 'aggressive'},
-        'Phantom': {'AX': 1000, 'AY': 110, 'AZ': -1000},
-        'Piglin Brute': {'equipment': {'mainhand': Item.nbt_for('golden_axe')}, 'IsImmuneToZombification': 'True'},
-        'Piglin': {'IsImmuneToZombification': 'True', 'equipment': {'mainhand': Item.nbt_for('golden_sword')}},
-        'Pillager': {'equipment': {'mainhand': Item.nbt_for('crossbow')}},
-        'Skeleton': skeleton_nbts,
-        'Stray': skeleton_nbts,
-        'Bogged': skeleton_nbts,
-        'Vindicator': {'Johnny': 'True', 'equipment': {'mainhnad': Item.nbt_for('iron_axe')}},
-        'Wither Skeleton': {'equipment': {'mainhand': Item.nbt_for('stone_sword')}},
-        'Zombie': {'equipment': {'head': Item.nbt_for('iron_helmet')}},
-        'Zombified Piglin': {'equipment': {'mainhand': Item.nbt_for('golden_sword')}},
+        'drowned': {'equipment': {'mainhand': Item.nbt_for('trident')}},
+        'goat': {'IsScreamingGoat': True, 'HasLeftHorn': True, 'HasRightHorn': True},
+        'hoglin': {'IsImmuneToZombification': True},
+        'llama': {'Strength': 5},
+        'magma_cube': {'Size': 3},
+        'slime': {'Size': 3},
+        'panda': {'MainGene': 'aggressive'},
+        'phantom': {'AX': 1000, 'AY': 110, 'AZ': -1000},
+        'piglin_brute': {'equipment': {'mainhand': Item.nbt_for('golden_axe')}, 'IsImmuneToZombification': 'True'},
+        'piglin': {'IsImmuneToZombification': 'True', 'equipment': {'mainhand': Item.nbt_for('golden_sword')}},
+        'pillager': {'equipment': {'mainhand': Item.nbt_for('crossbow')}},
+        'skeleton': skeleton_nbts,
+        'stray': skeleton_nbts,
+        'bogged': skeleton_nbts,
+        'vindicator': {'Johnny': 'True', 'equipment': {'mainhnad': Item.nbt_for('iron_axe')}},
+        'wither_skeleton': {'equipment': {'mainhand': Item.nbt_for('stone_sword')}},
+        'zombie': {'equipment': {'head': Item.nbt_for('iron_helmet')}},
+        'zombified_piglin': {'equipment': {'mainhand': Item.nbt_for('golden_sword')}},
     }
 
     # Lower priority ones can be used as filler
     battles = [
-        ('Axolotl:w', 'Drowned'),
-        ('Creaking', 'You'),
-        ('Axolotl:w', 'Guardian'),
-        ('Blaze', 'Snow Golem'),
-        ('Bogged', 'Iron Golem'),
-        ('Breeze', 'Iron Golem'),
-        ('Cat', 'Rabbit'),
-        # ('Cave Spider', 'Snow Golem'), # low priority
-        # ('Drowned', 'Snow Golem'), # lwo priority
-        ('Ender Dragon', None),
-        ('Evoker', 'Iron Golem'),
-        ('Fox', 'Chicken'),
-        # ('Frog', 'Slime'),  # low priority
-        ('Goat', 'Sheep'),  # medium priority (slow, but charging goat)
-        ('Hoglin', 'Vindicator'),
-        # ('Illusioner', 'Snow Golem'), # low priority, Illusioner isn't used
-        ('Llama', 'Vindicator'),
-        ('Magma Cube', 'Iron Golem'),
-        # ('Ocelot', 'Chicken'),  # low priority
-        ('Panda', 'Vindicator'),
-        ('Parrot', 'Vindicator'),  # low priority
-        ('Phantom:c', None),
-        ('Piglin Brute', 'Vindicator'),
-        ('Pillager', 'Snow Golem'),
-        ('Polar Bear', 'Vindicator'),
-        ('Ravager', 'Iron Golem'),
-        ('Shulker', 'Vindicator'),
-        ('Skeleton', 'Iron Golem'),
-        ('Slime', 'Iron Golem'),
-        ('Sniffer:g', None),
-        ('Spider', 'Snow Golem'),
-        ('Stray', 'Iron Golem'),
-        ('Vindicator', 'Iron Golem'),
-        ('Warden', 'Iron Golem'),
-        ('Witch', 'Snow Golem'),
-        ('Wither Skeleton', 'Piglin'),
-        ('Wither', 'Pillager'),
-        ('Wolf', 'Sheep'),
-        ('Zoglin', 'Vindicator'),
-        ('Zombie', 'Iron Golem'),
-        ('Zombified Piglin', 'Vindicator'),
+        ('axolotl', 'drowned'),
+        ('creaking', 'you'),
+        ('axolotl', 'guardian'),
+        ('blaze', 'snow_golem'),
+        ('bogged', 'iron_golem'),
+        ('breeze', 'iron_golem'),
+        ('cat', 'rabbit'),
+        # ('cave_spider', 'snow_golem'), # low priority
+        # ('drowned', 'snow_golem'), # lwo priority
+        ('ender_dragon', None),
+        ('evoker', 'iron_golem'),
+        ('fox', 'chicken'),
+        # ('frog', 'slime'),  # low priority
+        ('goat', 'sheep'),  # medium priority (slow, but charging goat)
+        ('hoglin', 'vindicator'),
+        # ('illusioner', 'snow_golem'), # low priority, illusioner isn't used
+        ('llama', 'vindicator'),
+        ('magma_cube', 'iron_golem'),
+        # ('ocelot', 'chicken'),  # low priority
+        ('panda', 'vindicator'),
+        ('parrot', 'vindicator'),  # low priority
+        ('phantom', None),
+        ('piglin_brute', 'vindicator'),
+        ('pillager', 'snow_golem'),
+        ('polar_bear', 'vindicator'),
+        ('ravager', 'iron_golem'),
+        ('shulker', 'vindicator'),
+        ('skeleton', 'iron_golem'),
+        ('slime', 'iron_golem'),
+        ('sniffer', None),
+        ('spider', 'snow_golem'),
+        ('stray', 'iron_golem'),
+        ('vindicator', 'iron_golem'),
+        ('warden', 'iron_golem'),
+        ('witch', 'snow_golem'),
+        ('wither_skeleton', 'piglin'),
+        ('wither', 'pillager'),
+        ('wolf', 'sheep'),
+        ('zoglin', 'vindicator'),
+        ('zombie', 'iron_golem'),
+        ('zombified_piglin', 'vindicator'),
     ]
     # With Slime and Magma Cube it _mostly_ works, but not perfectly. These are handled by giving a custom name to
     # the summoned mob, which is inherited by its descendants. We then see, if the count is at least 3, whether there
@@ -131,6 +165,9 @@ def room():
     # slimes and magma cubes is off a bit. If I figure out a way to fix this, I'll fix it. For now it seems mildly
     # annoying, but better than the previous alternative where only the smallest slimes and cubes could be summoned,
     # since that could be handled by the general algorithm.
+
+    # 0: water, 1: covered (e.g., undead), 2: ground (sniffer needs this)
+    hunter_battle_types = {'axolotl': 1, 'phantom': 2, 'sniffer': 3}
 
     stride_length = 6
     num_rows = 2
@@ -150,6 +187,86 @@ def room():
     battles.sort()
 
     monitor_home = e().tag('monitor_home')
+
+    ids = set()
+    for b in battles:
+        ids.add(b[0])
+        ids.add(b[1])
+
+    cats = ['white', 'black', 'red', 'siamese', 'british_shorthair', 'calico', 'persian', 'ragdoll', 'tabby',
+            'all_black', 'jellie']
+    wolves = ['pale', 'ashen', 'black', 'chestnut', 'rusty', 'snowy', 'spotted', 'striped', 'woods']
+
+    fighters_specs = {
+        'sheep': {'values': 'nums', 'variant': 'Color', 'max': 15},
+        'cat': {'values': 'cats', 'variant': 'variant', 'max': len(cats)},
+        'wolf': {'values': 'wolves', 'variant': 'variant', 'max': len(wolves)}
+    }
+
+    for id in ids:
+        if id in fighters_specs:
+            fighters_specs[id]['id'] = id
+        if id not in fighter_nbts:
+            fighter_nbts[id] = {}
+        merge = Nbt(fighter_nbts[id]).merge({'id': id, 'Tags': ['battler']})
+        fighter_nbts[id] = merge
+
+    fighters = [v for v in fighter_nbts.values()]
+    specs = [v for v in fighters_specs.values()]
+    room.function('monitor_init', home=False).add(
+        say('monitor_init'),
+        data().remove(room.store, 'mobs'),
+        data().modify(room.store, 'mobs').set().value({
+            'nums': list(range(16)),
+            'cats': cats,
+            'wolves': wolves,
+            'nbts': fighters,
+            'specs': specs,
+            'splitters': [{'id': 'slime'}, {'id': 'magma_cube'}]
+        }),
+    )
+
+    actor_is_splitter = room.score('$(actor)_is_splitter')
+    is_empty = room.score('is_empty')
+    # Function invoked to configure one of the participants
+    configure_actor = room.function('configure_actor', home=False).add(
+        say('configure $(actor)'),
+        data().remove(room.store, '$(actor)'),
+        is_empty.set('$(is_empty)'),
+        execute().unless().score(is_empty).matches(0).run(return_()),
+        data().merge(room.store, {
+            '$(actor)': {'id': '$(id)', 'actor': '$(actor)', 'i': 0, 'y': 2, 'z': '$(z)', 'max': NO_VARIANT,
+                         'variant': '', 'values': ''}}),
+        data().modify(room.store, '$(actor).nbt').set().from_(room.store, 'mobs.nbts[{id:$(id)}]'),
+        data().modify(room.store, '$(actor).nbt.Tags').append().value('$(actor)'),
+        data().modify(room.store, '$(actor).nbt.Rotation').set().value('$(rot)'),
+        execute().if_().data(room.store, 'mobs.specs[{id:$(id)}]').run(
+            data().modify(room.store, '$(actor)').merge().from_(room.store, 'mobs.specs[{id:$(id)}]')),
+        actor_is_splitter.set(0),
+        execute().if_().data(room.store, 'mobs.splitters[{id:$(id)}]').run(actor_is_splitter.set(1)),
+    )
+
+    # Function invoked by the sign to configure the battle
+    configure = room.function('configure', home=False).add(
+        say('configure', '$(hunter_id)', '$(victim_id)'),
+        function(configure_actor,
+                 {'actor': 'hunter', 'id': '$(hunter_id)', 'rot': [180.0, 0.0], 'is_empty': False, 'z': '$(z)'}),
+        function(configure_actor,
+                 {'actor': 'victim', 'id': '$(victim_id)', 'rot': [0.0, 0.0], 'is_empty': False, 'z': 0}),
+        start_battle_type.set('$(battle_type)')
+    )
+
+    # function sommon with restworld.arena actor
+    max_variant = room.score('max_variant')
+    do_summon = room.function('summon', home=False).add(
+        max_variant.set('$(max)'),
+        execute().unless().score(max_variant).matches(NO_VARIANT).run(
+            execute().store(RESULT).storage(room.store, '$(actor).i', INT).run(random().value((0, '$(max)'))),
+            say('$(i), $(variant), $(values), mobs.$(values)[$(i)]'),
+            data().modify(room.store, '$(actor).nbt.$(variant)').set().from_(room.store, 'mobs.$(values)[$(i)]')),
+        execute().at(e().tag(f'$(actor)_home').sort('random').limit(1)).run(
+            summon('$(id)', r(0, '$(y)', '$(z)'), '$(nbt)'))
+    )
 
     left_arrow = '<--'
     right_arrow = '-->'
@@ -171,10 +288,7 @@ def room():
                 z = max_z - (s % row_length)
                 hunter, victim = step.elem[s]
 
-                battle_type = 0
-                if hunter[-2] == ':':
-                    battle_type = battle_types[hunter[-1]]
-                    hunter = hunter[0:-2]
+                battle_type = hunter_battle_types.get(hunter, 0)
 
                 def incr_cmd(which, mob, center=False):
                     my_nbts = Nbt({'Tags': ['battler', which]})
@@ -185,7 +299,7 @@ def room():
                         my_nbts = my_nbts.merge({'Rotation': [180, 0]})
                     splitter_mob = is_splitter_mob(mob)
                     y_off = 3 if battle_type == 3 else 2
-                    z_off = -4 if center else 0
+                    z_off = -6 if center else 0
                     if splitter_mob:
                         f = room.function(f'incr_{to_id(mob)}_{which}', home=False)
                         for i in range(COUNT_MIN, COUNT_MAX + 1):
@@ -202,14 +316,13 @@ def room():
                 data_change = execute().at(monitor_home)
                 alone = victim is None or victim == 'You'
                 sign_commands = (
-                    data_change.run(data().merge(r(3, 0, 0), {'Command': incr_cmd('hunter', hunter, alone)})),
-                    data_change.run(
-                        data().merge(r(2, 0, 0), {'Command': incr_cmd('victim', 'marker' if alone else victim)})),
-                    start_battle_type.set(battle_type),
+                    function(configure, {'hunter_id': hunter, 'victim_id': victim,
+                                         'battle_type': hunter_battle_types.get(hunter, 0), 'z': -4 if alone else 0}),
                     function('restworld:arena/start_battle', {'hunter_is_splitter': is_splitter_mob(hunter),
                                                               'victim_is_splitter': is_splitter_mob(victim)})
                 )
-                sign = WallSign().messages((None, hunter, 'vs.', victim if victim else 'Nobody'), sign_commands)
+                sign = WallSign().messages((None, to_name(hunter), 'vs.', to_name(victim) if victim else 'Nobody'),
+                                           sign_commands)
                 yield sign.place(r(-2, y, z), EAST)
 
                 run_type = Score('arena_run_type', 'arena')
@@ -236,17 +349,6 @@ def room():
         for x in range(-1, 2):
             for z in range(-1, 2):
                 yield stand.summon(r(x, 0.5, z))
-
-    def counter(battler: str, splitter: Score) -> Function:
-        count = room.score(f'{battler}_count')
-        func = room.function(f'count_{battler}', home=False).add(
-            count.set(0),
-            execute().if_().score(splitter).matches(0).as_(e().tag(battler)).run(count.add(1))
-        )
-        for i in range(COUNT_MIN, COUNT_MAX + 1):
-            func.add(execute().unless().score(splitter).matches(0).if_().entity(
-                e().nbt({'CustomName': str(i)}).limit(1)).run(count.add(1)))
-        return func
 
     def toggle_peace(step):
         yield execute().at(e().tag('monitor_home')).run(fill(
@@ -283,25 +385,38 @@ def room():
         function('restworld:arena/arena_run_cur'),
         room.label(r(1, 3, 0), 'Go Home', EAST),
         tag(e().tag('controls_home')).add('controls_action_home'),
-        # This init func won't get run because there is no home
+        # These init funcs won't get run otherwise because there is no home
         function('restworld:arena/arena_count_init'),
     )
 
     room.function('hunter_home').add(random_stand('hunter'))
     room.function('victim_home').add(random_stand('victim'))
 
+    def count_func(battler: str, splitter: Score) -> Tuple[Function, Score]:
+        count = room.score(f'{battler}_count')
+        func = room.function(f'count_{battler}', home=False).add(
+            count.set(0),
+            execute().if_().score(splitter).matches(0).as_(e().tag(battler)).run(count.add(1))
+        )
+        for i in range(COUNT_MIN, COUNT_MAX + 1):
+            func.add(execute().unless().score(splitter).matches(0).if_().entity(
+                e().nbt({'CustomName': str(i)}).limit(1)).run(count.add(1)))
+        tellraw(a(), Text.text(battler).score(count))
+        return func, count
+
     h_is_splitter = room.score('hunter_is_splitter')
     v_is_splitter = room.score('victim_is_splitter')
-    h_counter = counter('hunter', h_is_splitter)
-    v_counter = counter('victim', v_is_splitter)
+    h_counter, hunter_count = count_func('hunter', h_is_splitter)
+    v_counter, victim_count = count_func('victim', v_is_splitter)
 
     room.function('monitor').add(
         function(h_counter),
         function(v_counter),
         kill(e().type('experience_orb').distance((None, 50))),
-    )
-    # For some reason, arena_count_init doesn't always get run on _init, so we make sure that value is always in range.
-    room.function('monitor_cleanup', home=False).add(
+        execute().if_().score(hunter_count).is_(LT, arena_count).run(
+            function(do_summon).with_().storage(room.store, 'hunter')),
+        execute().if_().score(victim_count).is_(LT, arena_count).run(
+            function(do_summon).with_().storage(room.store, 'victim')),
         execute().unless().score(arena_count).matches((COUNT_MIN, COUNT_MAX)).run(arena_count.set(1)),
         (execute().if_().score(room.score(f'{who}_count')).is_(GT, arena_count).run(kill(
             e().tag(who).sort(RANDOM).limit(1).distance((None, 100))))
@@ -310,6 +425,10 @@ def room():
             execute().at(e().tag(f'{who}_home')).run(setblock(r(-3, -1, 0), 'redstone_block'),
                                                      setblock(r(-3, -1, 0), 'air')))
             for who in ('hunter', 'victim')),
+        execute().as_(e().type('item').tag('!limited')).run(
+            data().modify(s(), 'Age').set().value(6000 - 150),
+            tag(s()).add('limited')
+        )
     )
 
     # The splitters create a problem -- if a splitter was killed but, before its kids are spawned, a new battle is
@@ -340,6 +459,7 @@ def room():
         h_is_splitter.set(Arg('hunter_is_splitter')),
         v_is_splitter.set(Arg('victim_is_splitter')),
         is_splitters.set(h_is_splitter + v_is_splitter),
+        tellraw(a(), Text.text('type: ').score(start_battle_type)),
         execute().unless().score(was_splitters).matches(0).if_().score(is_splitters).matches(0).run(kill_splitters),
         execute().unless().score(start_battle_type).matches((0, None)).run(start_battle_type.set(0)),
         execute().unless().score(start_battle_type).matches(1).at(monitor_home).run(arena.fill('air')),
