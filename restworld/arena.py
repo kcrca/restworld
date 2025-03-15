@@ -187,6 +187,7 @@ def room():
     battles.sort()
 
     monitor_home = e().tag('monitor_home')
+    peace = room.score('peace')
 
     ids = set()
     for b in battles:
@@ -214,6 +215,7 @@ def room():
     fighters = [v for v in fighter_nbts.values()]
     specs = [v for v in fighters_specs.values()]
     room.function('monitor_init', home=False).add(
+        peace.set(0),
         say('monitor_init'),
         data().remove(room.store, 'mobs'),
         data().modify(room.store, 'mobs').set().value({
@@ -259,11 +261,15 @@ def room():
     # function sommon with restworld.arena actor
     max_variant = room.score('max_variant')
     do_summon = room.function('summon', home=False).add(
+        execute().if_().score(peace).matches(0).run(return_()),
         max_variant.set('$(max)'),
         execute().unless().score(max_variant).matches(NO_VARIANT).run(
             execute().store(RESULT).storage(room.store, '$(actor).i', INT).run(random().value((0, '$(max)'))),
             say('$(i), $(variant), $(values), mobs.$(values)[$(i)]'),
             data().modify(room.store, '$(actor).nbt.$(variant)').set().from_(room.store, 'mobs.$(values)[$(i)]')),
+        execute().if_().score(actor_is_splitter).matches(1).run(
+            execute().unless().entity(e().type('$(id)').nbt({'CustomName': str(i)})).run(
+                data().modify(s(), 'CustomName').set().value(str(i))) for i in range(COUNT_MIN, COUNT_MAX + 1)),
         execute().at(e().tag(f'$(actor)_home').sort('random').limit(1)).run(
             summon('$(id)', r(0, '$(y)', '$(z)'), '$(nbt)'))
     )
@@ -351,8 +357,9 @@ def room():
                 yield stand.summon(r(x, 0.5, z))
 
     def toggle_peace(step):
-        yield execute().at(e().tag('monitor_home')).run(fill(
-            r(2, -1, 0), r(3, -1, 0), 'redstone_block' if step.elem else 'air')),
+        block = 'redstone_torch' if step.elem else 'air'
+        yield execute().at(e().tag('monitor_home')).run(setblock(r(1, -1, 1), block))
+        yield peace.set(int(step.elem))
         if not step.elem:
             yield function(clean_out),
         yield setblock(r(0, 1, 0), f'{"red" if step.elem else "lime"}_concrete'),
@@ -448,11 +455,8 @@ def room():
     )
     kill_splitters = schedule().function(kill_splitters, seconds(1), REPLACE)
     clean_out = room.function('clean_out', home=False).add(
-        execute().at(monitor_home).run(tag(e().type('armor_stand').distance((None, 100))).add('arena_safe')),
-        execute().at(monitor_home).run(kill_em(e().not_tag('arena_safe').distance((None, 100)))),
-        kill_splitters,
-    )
-    # Battle types: 0-normal, 1-water, 2-undead
+        execute().at(monitor_home).run(tag(e().type('armor_stand').distance((None, 100))).add('immortal')),
+        kill_em(e().not_tag('immortal').distance((None, 100))))
     room.function('start_battle', home=False).add(
         kill(e().type('item').distance((None, 50))),
         was_splitters.set(h_is_splitter + v_is_splitter),
