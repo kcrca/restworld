@@ -3,8 +3,8 @@ from __future__ import annotations
 import sys
 from typing import Tuple
 
-from pynecraft.base import Arg, EAST, GT, LT, Nbt, r, seconds, to_id, to_name
-from pynecraft.commands import Entity, INT, RANDOM, REPLACE, RESULT, Score, Text, a, data, e, execute, fill, function, \
+from pynecraft.base import Arg, EAST, GT, LT, Nbt, r, seconds, to_name
+from pynecraft.commands import INT, RANDOM, REPLACE, RESULT, Score, Text, a, data, e, execute, fill, function, \
     kill, \
     random, return_, s, say, schedule, \
     setblock, summon, tag, tellraw
@@ -53,7 +53,7 @@ def is_splitter_mob(mob):
 
 
 #
-# Change figher_nbts to use id's as keys.
+# Change fighter_nbts to use id's as keys.
 #
 # put fighter_nbts into data as "nbts"
 #
@@ -107,7 +107,7 @@ def room():
         'skeleton': skeleton_nbts,
         'stray': skeleton_nbts,
         'bogged': skeleton_nbts,
-        'vindicator': {'Johnny': 'True', 'equipment': {'mainhnad': Item.nbt_for('iron_axe')}},
+        'vindicator': {'Johnny': 'True', 'equipment': {'mainhand': Item.nbt_for('iron_axe')}},
         'wither_skeleton': {'equipment': {'mainhand': Item.nbt_for('stone_sword')}},
         'zombie': {'equipment': {'head': Item.nbt_for('iron_helmet')}},
         'zombified_piglin': {'equipment': {'mainhand': Item.nbt_for('golden_sword')}},
@@ -258,14 +258,13 @@ def room():
         start_battle_type.set('$(battle_type)')
     )
 
-    # function sommon with restworld.arena actor
+    # function summon with restworld.arena actor
     max_variant = room.score('max_variant')
     do_summon = room.function('summon', home=False).add(
         execute().if_().score(peace).matches(0).run(return_()),
         max_variant.set('$(max)'),
         execute().unless().score(max_variant).matches(NO_VARIANT).run(
             execute().store(RESULT).storage(room.store, '$(actor).i', INT).run(random().value((0, '$(max)'))),
-            say('$(i), $(variant), $(values), mobs.$(values)[$(i)]'),
             data().modify(room.store, '$(actor).nbt.$(variant)').set().from_(room.store, 'mobs.$(values)[$(i)]')),
         execute().if_().score(actor_is_splitter).matches(1).run(
             execute().unless().entity(e().type('$(id)').nbt({'CustomName': str(i)})).run(
@@ -294,32 +293,6 @@ def room():
                 z = max_z - (s % row_length)
                 hunter, victim = step.elem[s]
 
-                battle_type = hunter_battle_types.get(hunter, 0)
-
-                def incr_cmd(which, mob, center=False):
-                    my_nbts = Nbt({'Tags': ['battler', which]})
-                    added_nbt = fighter_nbts.get(mob, None)
-                    if added_nbt:
-                        my_nbts = my_nbts.merge(added_nbt)
-                    if which == 'hunter':
-                        my_nbts = my_nbts.merge({'Rotation': [180, 0]})
-                    splitter_mob = is_splitter_mob(mob)
-                    y_off = 3 if battle_type == 3 else 2
-                    z_off = -6 if center else 0
-                    if splitter_mob:
-                        f = room.function(f'incr_{to_id(mob)}_{which}', home=False)
-                        for i in range(COUNT_MIN, COUNT_MAX + 1):
-                            incr = summon(Entity(mob, my_nbts).merge_nbt(
-                                {'CustomName': str(i), 'CustomNameVisible': False}), r(0, y_off, z_off))
-                            f.add(execute().if_().score(arena_count).matches((i, COUNT_MAX)).unless().entity(
-                                e().nbt({'CustomName': str(i)}).limit(1)).run(incr))
-                        return function(f)
-                    incr = summon(Entity(mob, my_nbts), r(0, y_off, z_off))
-                    incr_cmd = execute().if_().score((f'{which}_count', 'arena')).is_(LT, arena_count).at(
-                        e().tag(f'{which}_home').sort('random').limit(1)).run(incr)
-                    return incr_cmd
-
-                data_change = execute().at(monitor_home)
                 alone = victim is None or victim == 'You'
                 sign_commands = (
                     function(configure, {'hunter_id': hunter, 'victim_id': victim,
