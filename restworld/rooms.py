@@ -7,7 +7,7 @@ from copy import deepcopy
 from typing import Callable, Iterable, Tuple
 
 from pynecraft.base import BLUE, EAST, FacingDef, NE, NORTH, NW, Nbt, ORANGE, ROTATION_180, ROTATION_270, ROTATION_90, \
-    RelCoord, SE, SOUTH, SW, WEST, r, rotate_facing, to_name
+    RelCoord, SE, SOUTH, SW, WEST, is_arg, r, rotate_facing, to_name
 from pynecraft.commands import Block, BlockDef, CLEAR, Command, Commands, Entity, EntityDef, INT, MINUS, MOVE, Particle, \
     Position, RESULT, Score, SignMessages, Text, a, as_block, as_entity, as_facing, as_score, clone, comment, data, e, \
     execute, \
@@ -415,14 +415,15 @@ class Room(FunctionSet):
 
     def score(self, name, init: int = None):
         score = Score(name, self.name)
-        self._scores.add(score)
-        if init is not None:
-            try:
-                if self._init_values[name] != init:
-                    ValueError('Inconsistent initial value: {init} vs. {self._init_values[name]')
-            except KeyError:
-                pass
-            self._init_values[name] = init
+        if not is_arg(name):
+            self._scores.add(score)
+            if init is not None:
+                try:
+                    if self._init_values[name] != init:
+                        ValueError('Inconsistent initial value: {init} vs. {self._init_values[name]')
+                except KeyError:
+                    pass
+                self._init_values[name] = init
         return score
 
     def score_max(self, name):
