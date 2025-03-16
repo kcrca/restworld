@@ -127,7 +127,7 @@ def room():
     battles.sort()
 
     monitor_home = e().tag('monitor_home')
-    peace = room.score('peace')
+    peace = room.score('peace', None)
 
     ids = set()
     for b in battles:

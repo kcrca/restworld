@@ -382,8 +382,8 @@ class Room(FunctionSet):
             'init': [kill(e().tag(self.name, 'label')),
                      scoreboard().objectives().add(self.name, DUMMY),
                      scoreboard().objectives().add(self.name + '_max', DUMMY),
-                     (x.set(self._init_values.setdefault(str(x.target), 0)) for x in
-                      sorted(self._scores, key=lambda x: str(x))),
+                     (x.set(self._init_values.get(str(x.target), 0)) for x in
+                      sorted(self._init_values, key=lambda x: str(x))),
                      to_incr.set(1)] + [tp(e().tag(self.name), e().tag('death').limit(1)), kill_em(e().tag(self.name))]
         }
         after_commands = {
@@ -413,17 +413,17 @@ class Room(FunctionSet):
     def _is_func_type(x, f_name):
         return x.name.endswith(f_name) and len(x.name) > len(f_name)
 
-    def score(self, name, init: int = None):
+    def score(self, name, init: int | None = 0)->Score:
         score = Score(name, self.name)
         if not is_arg(name):
             self._scores.add(score)
             if init is not None:
                 try:
-                    if self._init_values[name] != init:
+                    if self._init_values[score] != init:
                         ValueError('Inconsistent initial value: {init} vs. {self._init_values[name]')
                 except KeyError:
                     pass
-                self._init_values[name] = init
+                self._init_values[score] = init
         return score
 
     def score_max(self, name):
