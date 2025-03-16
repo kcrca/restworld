@@ -19,69 +19,10 @@ COUNT_MAX = 5
 NO_VARIANT = 1000
 
 
-#
-# I tried to use macros to simplify this, with a design like that below (kept for future reference), but it turned out
-# that the difficulties of passing values to macro functions that were nbt structures kept being very difficult to the
-# point where I decided it wasn't worth it when the existing system worked.
-#
-# Design (starting point):
-#     Storage data is used to describe the current (and previous?) arena configuration:
-#       type : of battle, numerically (because you can't compare anything but scores (honest!))
-#       hunter:
-#           id: of monster
-#           nbt: for monster
-#           splitter: True (if False, absent)
-#       victim: (same as hunter, or absent for non-battles)
-#
-#     Each sign has a command that invokes "start_battle" with the new arena configuration.
-#
-#     start_battle stores the new arena configuration.
-#       if new type is different, set up new type
-#       set the new storage data values
-#       adds role to data ("hunter" or "victim" (maybe 0 or 1, but I think not))
-#       (misc. other stuff?)
-#
-#     monitor_tick runs every tick, and invokes do_monitor with storage data
-#
-#     do_monitor:
-#       runs check_count with arena.hunter and arena.victim
-#       cleans out any loose items sitting around
-#       (misc. other stuff?)
-
 def is_splitter_mob(mob):
     return mob in ('slime', 'magma_cube')
 
 
-#
-# Change fighter_nbts to use id's as keys.
-#
-# put fighter_nbts into data as "nbts"
-#
-# create sets for "needs water", "undead", etc.
-#
-# Sign cmds will be:
-#       set hunter command block command to be "if hunter needed, then summon {actor: hunter, id: axolotl, y: <y value>}"
-#       set hunter command block command to be "if victim needed, then summon {actor: victim, id: axolotl, y: <y value>}"
-#       set the battle type
-#       start the battle
-#
-# summon:
-#       data merge storage room.store mob {id: $(id), actor: $(actor), y: <y value>}
-#       function do_summon with storage room.store mob
-#
-# do_summon:
-#       data modify storage room.store mob.nbt $(nbts)[$(id)]
-#       Add $(actor) to end of tags
-#       if there is is a specs[$(id)] then
-#           pick a random number in 0..specs[$(id)].max and store it in mob.i
-#           data modify room.store mob.nbt.specs[$(id)].key set from specs[$(id)].values
-#       execute at @e[tag=$(actor)_home,sort=random,limit=1] run summon $(id) ~0 ~$(y) ~0 $(nbt)
-#
-# In setup, set all the values for mob.nbts (including setting {<base nbt, including Tags>} for mobs that need no extra
-# nbt), mob specs, and arrays for each set of possible values.
-#
-# For specs, {'key': <name of variant key (e.g., Color), 'values': name of possible values array, 'max': largest useful
-# index in values array}.
 def room():
     room = Room('arena', restworld)
 
@@ -99,7 +40,6 @@ def room():
         'llama': {'Strength': 5},
         'magma_cube': {'Size': 3},
         'slime': {'Size': 3},
-        'panda': {'MainGene': 'aggressive'},
         'phantom': {'AX': 1000, 'AY': 110, 'AZ': -1000},
         'piglin_brute': {'equipment': {'mainhand': Item.nbt_for('golden_axe')}, 'IsImmuneToZombification': 'True'},
         'piglin': {'IsImmuneToZombification': 'True', 'equipment': {'mainhand': Item.nbt_for('golden_sword')}},
@@ -213,7 +153,7 @@ def room():
         'pig': {'values': 'temps', 'variant': 'variant', 'max': len(temps) - 1},
         'frog': {'values': 'temps', 'variant': 'variant', 'max': len(temps) - 1},
         'llama': {'values': 'nums', 'variant': 'Variant', 'max': 3},
-        'panda': {'values': 'pands', 'variant': 'MainGene', 'max': len(pandas) - 1},
+        'panda': {'values': 'pandas', 'variant': 'MainGene', 'max': len(pandas) - 1},
         'parrot': {'values': 'nums', 'variant': 'Variant', 'max': 4},
     }
 
@@ -278,7 +218,9 @@ def room():
         max_variant.set('$(max)'),
         execute().unless().score(max_variant).matches(NO_VARIANT).run(
             execute().store(RESULT).storage(room.store, '$(actor).i', INT).run(random().value((0, '$(max)'))),
-            data().modify(room.store, '$(actor).nbt.$(variant)').set().from_(room.store, 'mobs.$(values)[$(i)]')),
+            data().modify(room.store, '$(actor).nbt.$(variant)').set().from_(room.store, 'mobs.$(values)[$(i)]'),
+            # This is required for pandas, a no-op for everything else
+            data().modify(room.store, '$(actor).nbt.HiddenGene').set().from_(room.store, '$(actor).nbt.MainGene')),
         execute().if_().score(actor_is_splitter).matches(1).run(
             execute().unless().entity(e().type('$(id)').nbt({'CustomName': str(i)})).run(
                 data().modify(s(), 'CustomName').set().value(str(i))) for i in range(COUNT_MIN, COUNT_MAX + 1)),
