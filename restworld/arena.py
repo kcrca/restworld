@@ -168,7 +168,6 @@ def room():
     fighters = [v for v in fighter_nbts.values()]
     specs = [v for v in fighters_specs.values()]
     room.function('monitor_init', home=False).add(
-        peace.set(0),
         data().remove(room.store, 'mobs'),
         data().modify(room.store, 'mobs').set().value({
             'nums': list(range(16)),
@@ -289,7 +288,8 @@ def room():
         yield peace.set(int(step.elem))
         if not step.elem:
             yield function(clean_out),
-        yield setblock(r(0, 1, 0), f'{"red" if step.elem else "lime"}_concrete'),
+        yield execute().at(e().tag('controls_home')).run(
+            setblock(r(-1, 2, 0), f'{"red" if step.elem else "lime"}_concrete'))
 
     arena_count = room.score('arena_count', 5)
 
