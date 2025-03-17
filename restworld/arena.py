@@ -53,6 +53,8 @@ def room():
         'zombified_piglin': {'equipment': {'mainhand': Item.nbt_for('golden_sword')}},
     }
 
+    init_battle = ('breeze', 'iron_golem')
+
     # Lower priority ones can be used as filler
     battles = [
         ('axolotl', 'drowned'),
@@ -256,6 +258,8 @@ def room():
                     function('restworld:arena/start_battle', {'hunter_is_splitter': is_splitter_mob(hunter),
                                                               'victim_is_splitter': is_splitter_mob(victim)})
                 )
+                if (hunter, victim) == init_battle:
+                    room.function('monitor_init', exists_ok=True).add(sign_commands)
                 sign = WallSign().messages((None, to_name(hunter), 'vs.', to_name(victim) if victim else 'Nobody'),
                                            sign_commands)
                 yield sign.place(r(-2, y, z), EAST)
