@@ -4,10 +4,10 @@ import sys
 from typing import Tuple
 
 from pynecraft.base import Arg, EAST, GT, LT, Nbt, r, seconds, to_name
-from pynecraft.commands import INT, RANDOM, REPLACE, RESULT, Score, Text, a, data, e, execute, fill, function, \
+from pynecraft.commands import INT, RANDOM, REPLACE, RESULT, Score, a, data, e, execute, fill, function, \
     kill, \
     random, return_, s, schedule, \
-    setblock, summon, tag, tellraw
+    setblock, summon, tag
 from pynecraft.function import Function, Loop
 from pynecraft.simpler import Item, Region, Sign, WallSign
 from restworld.rooms import Room, kill_em
@@ -178,7 +178,9 @@ def room():
             'pandas': pandas,
             'nbts': fighters,
             'specs': specs,
-            'splitters': [{'id': 'slime'}, {'id': 'magma_cube'}]
+            'splitters': [{'id': 'slime'}, {'id': 'magma_cube'}],
+            'hunter_names': [f'hunter_{i}' for i in range(COUNT_MIN, COUNT_MAX + 1)],
+            'victim_names': [f'victim_{i}' for i in range(COUNT_MIN, COUNT_MAX + 1)],
         }),
     )
 
@@ -198,7 +200,6 @@ def room():
         execute().if_().data(room.store, 'mobs.specs[{id:$(id)}]').run(
             data().modify(room.store, '$(actor)').merge().from_(room.store, 'mobs.specs[{id:$(id)}]')),
         actor_is_splitter.set(0),
-        execute().if_().data(room.store, 'mobs.splitters[{id:$(id)}]').run(actor_is_splitter.set(1)),
     )
 
     # Function invoked by the sign to configure the battle
@@ -212,8 +213,11 @@ def room():
 
     # function summon with restworld.arena actor
     max_variant = room.score('max_variant')
+    actual_summon = room.function('actual_summon', home=False).add(
+        execute().at(e().tag(f'$(actor)_home').sort('random').limit(1)).run(
+            summon('$(id)', r(0, '$(y)', '$(z)'), '$(nbt)'))
+    )
     do_summon = room.function('summon', home=False).add(
-        execute().if_().score(peace).matches(0).run(return_()),
         max_variant.set('$(max)'),
         execute().unless().score(max_variant).matches(NO_VARIANT).run(
             execute().store(RESULT).storage(room.store, '$(actor).i', INT).run(random().value((0, '$(max)'))),
@@ -221,10 +225,10 @@ def room():
             # This is required for pandas, a no-op for everything else
             data().modify(room.store, '$(actor).nbt.HiddenGene').set().from_(room.store, '$(actor).nbt.MainGene')),
         execute().if_().score(actor_is_splitter).matches(1).run(
-            execute().unless().entity(e().type('$(id)').nbt({'CustomName': str(i)})).run(
-                data().modify(s(), 'CustomName').set().value(str(i))) for i in range(COUNT_MIN, COUNT_MAX + 1)),
-        execute().at(e().tag(f'$(actor)_home').sort('random').limit(1)).run(
-            summon('$(id)', r(0, '$(y)', '$(z)'), '$(nbt)'))
+            data().modify(room.store, '$(actor).nbt.CustomName').set().from_(room.store, '$(actor).avail[0]'),
+            data().modify(room.store, '$(actor).nbt.CustomNameVisible').set().value(1),
+        ),
+        function(actual_summon).with_().storage(room.store, '$(actor)')
     )
 
     left_arrow = '<--'
@@ -326,16 +330,23 @@ def room():
     room.function('hunter_home').add(random_stand('hunter'))
     room.function('victim_home').add(random_stand('victim'))
 
-    def count_func(battler: str, splitter: Score) -> Tuple[Function, Score]:
-        count = room.score(f'{battler}_count')
-        func = room.function(f'count_{battler}', home=False).add(
+    def count_func(actor: str, splitter: Score) -> Tuple[Function, Score]:
+        count = room.score(f'{actor}_count')
+        func = room.function(f'count_{actor}', home=False).add(
             count.set(0),
-            execute().if_().score(splitter).matches(0).as_(e().tag(battler)).run(count.add(1))
+            execute().if_().score(splitter).matches(0).as_(e().tag(actor)).run(count.add(1)),
+            data().remove(room.store, f'{actor}.avail'),
         )
         for i in range(COUNT_MIN, COUNT_MAX + 1):
-            func.add(execute().unless().score(splitter).matches(0).if_().entity(
-                e().nbt({'CustomName': str(i)}).limit(1)).run(count.add(1)))
-        tellraw(a(), Text.text(battler).score(count))
+            func.add(
+                execute().unless().score(splitter).matches(0).if_().entity(
+                    e().nbt({'CustomName': f'{actor}_{i}'}).limit(1)).run(count.add(1)),
+                execute().unless().score(splitter).matches(0).unless().entity(
+                    e().nbt({'CustomName': f'{actor}_{i}'}).limit(1)).run(
+                    data().modify(room.store, f'{actor}.avail').append().from_(room.store,
+                                                                               f'mobs.{actor}_names[{i - 1}]'),
+                ),
+            )
         return func, count
 
     h_is_splitter = room.score('hunter_is_splitter')
@@ -344,6 +355,7 @@ def room():
     v_counter, victim_count = count_func('victim', v_is_splitter)
 
     room.function('monitor').add(
+        execute().unless().score(arena_count).matches((COUNT_MIN, COUNT_MAX)).run(arena_count.set(1)),
         function(h_counter),
         function(v_counter),
         kill(e().type('experience_orb').distance((None, 50))),
@@ -351,10 +363,10 @@ def room():
             function(do_summon).with_().storage(room.store, 'hunter')),
         execute().if_().score(victim_count).is_(LT, arena_count).run(
             function(do_summon).with_().storage(room.store, 'victim')),
-        execute().unless().score(arena_count).matches((COUNT_MIN, COUNT_MAX)).run(arena_count.set(1)),
-        (execute().if_().score(room.score(f'{who}_count')).is_(GT, arena_count).run(kill(
-            e().tag(who).sort(RANDOM).limit(1).distance((None, 100))))
-            for who in ('hunter', 'victim')),
+        (execute().if_().score(room.score(f'{actor}_count')).is_(GT, arena_count).run(
+            kill_em(
+                e().tag(actor).sort(RANDOM).limit(1).distance((None, 100))))
+            for actor in ('hunter', 'victim')),
         (execute().if_().score(room.score(f'{who}_count')).is_(LT, arena_count).run(
             execute().at(e().tag(f'{who}_home')).run(setblock(r(-3, -1, 0), 'redstone_block'),
                                                      setblock(r(-3, -1, 0), 'air')))
@@ -390,7 +402,6 @@ def room():
         h_is_splitter.set(Arg('hunter_is_splitter')),
         v_is_splitter.set(Arg('victim_is_splitter')),
         is_splitters.set(h_is_splitter + v_is_splitter),
-        tellraw(a(), Text.text('type: ').score(start_battle_type)),
         execute().unless().score(was_splitters).matches(0).if_().score(is_splitters).matches(0).run(kill_splitters),
         execute().unless().score(start_battle_type).matches((0, None)).run(start_battle_type.set(0)),
         execute().unless().score(start_battle_type).matches(1).at(monitor_home).run(arena.fill('air')),
