@@ -6,7 +6,7 @@ from pynecraft.base import Arg, DIRECTIONS, EAST, EQ, GAMETIME, LT, NOON, NORTH,
     THE_NETHER, \
     TimeSpec, \
     WEST, r
-from pynecraft.commands import Block, FORCE, MINUS, MOD, MOVE, REPLACE, RESULT, Score, clone, data, e, \
+from pynecraft.commands import Block, Entity, FORCE, MINUS, MOD, MOVE, REPLACE, RESULT, Score, clone, data, e, \
     execute, fill, \
     function, gamerule, kill, p, return_, s, schedule, scoreboard, setblock, tag, teleport, time, tp
 from pynecraft.function import Function
@@ -191,22 +191,25 @@ def room():
     )
 
     # The death functions
-    death_home = room.home_func('death', single_home=False)
     home_sign = WallSign((None, 'Go Home'), (None, function('restworld:global/goto_home')))
-    room.function('death_init').add(
-        execute().positioned((r(0, 1.5, -1))).run(function(death_home)),
-        tag(e().tag(death_home.name)).add('death'),
-        tag(e().tag(death_home.name)).add('immortal'),
-        fill(r(-3, 0, -3), r(3, 4, 3), 'air').replace('#all_signs'),
-        home_sign.place(r(0, 3, 2), NORTH),
-        home_sign.place(r(0, 3, -2), SOUTH),
-        home_sign.place(r(2, 3, 0), WEST),
-        home_sign.place(r(-2, 3, 0), EAST),
-    )
     killables = e().not_type('player').not_tag('death').distance((None, 30))
-    room.function('kill_em').add(
+    killer = room.function('killer').add(
         execute().at(e().tag('death')).run(kill(killables)),
         execute().at(e().tag('death')).as_(killables).run(data().merge(s(), {'DeathTime': -1200})),
+    )
+    room.function('death_init', home=False).add(
+        kill(e().tag('death').distance((None, 10))),
+        kill(e().type('armor_stand').distance((None, 10))),
+        Entity('armor_stand', nbt={'NoGravity': True}).tag('death', 'immortal').summon(r(0, 0.5, 0)),
+        fill(r(-5, -5, -5), r(5, 5, 5), 'air').replace('#all_signs'),
+        fill(r(-5, -5, -5), r(5, 5, 5), 'air').replace('repeating_command_block'),
+        setblock(r(1, 0, 0), Block('repeating_command_block', nbt={'Command': str(function(killer)), 'auto': True})),
+        setblock(r(-1, 0, 0), Block('glowstone')),
+        setblock(r(0, 0, -1), Block('stone_button')),
+        home_sign.place(r(0, 2, 2), NORTH),
+        home_sign.place(r(0, 2, -2), SOUTH),
+        home_sign.place(r(2, 2, 0), WEST),
+        home_sign.place(r(-2, 2, 0), EAST),
     )
 
     room.function('full_finish').add(
@@ -215,17 +218,20 @@ def room():
         # Some of these functions leave dropped items behind, this cleans that up
         kill(e().type('item')),
     )
+    
     room.function('full_reset').add(
         function('restworld:global/clock_off'),
         execute().positioned(r(0, -3, 0)).run(function('restworld:global/full_reset_home')),
         kill(e().tag('home', '!full_reset_home')),
         # Death must be ready before any other initialization
-        function('restworld:global/death_init'),
+        execute().positioned((0, 5, 0)).run(function('restworld:global/death_init')),
         all_fill(97, 'redstone_block', 'dried_kelp_block'),
         all_fill(97, 'dried_kelp_block', 'redstone_block'),
         all_fill(97, 'redstone_block', 'pumpkin'),
         all_fill(97, 'pumpkin', 'redstone_block'),
+        function('restworld:/_init'),
     )
+
     room.function('gamerules').add(
         (gamerule(*args) for args in (
             ('announceAdvancements', False),
