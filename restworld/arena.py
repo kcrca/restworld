@@ -226,7 +226,6 @@ def room():
             data().modify(room.store, '$(actor).nbt.HiddenGene').set().from_(room.store, '$(actor).nbt.MainGene')),
         execute().if_().score(actor_is_splitter).matches(1).run(
             data().modify(room.store, '$(actor).nbt.CustomName').set().from_(room.store, '$(actor).avail[0]'),
-            data().modify(room.store, '$(actor).nbt.CustomNameVisible').set().value(1),
         ),
         function(actual_summon).with_().storage(room.store, '$(actor)')
     )
@@ -398,7 +397,7 @@ def room():
         kill_em(e().not_tag('immortal').distance((None, 100))))
     room.function('start_battle', home=False).add(
         kill(e().type('item').distance((None, 50))),
-        was_splitters.set(h_is_splitter + v_is_splitter),
+        was_splitters.set(is_splitters),
         h_is_splitter.set(Arg('hunter_is_splitter')),
         v_is_splitter.set(Arg('victim_is_splitter')),
         is_splitters.set(h_is_splitter + v_is_splitter),
