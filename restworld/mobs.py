@@ -87,7 +87,7 @@ def friendlies(room):
 
     room.loop('canine', main_clock).loop(wolf_loop, wolves)
     room.function('cat_init').add(placer(*south_placer, tags=('collared',)).summon('cat'),
-                                  room.label(r(-1, 2, 2), 'Cat Collar', NORTH))
+                                  room.label(r(-1, 2, 0), 'Cat Collar', NORTH))
     room.loop('cat', main_clock).loop(
         lambda step: execute().as_(e().tag('cat')).run(
             data().merge(s(), {'variant': step.elem.id, 'CustomName': step.elem.name})),

@@ -6,9 +6,8 @@ from typing import Iterable, Union
 from pynecraft import commands, info
 from pynecraft.base import DOWN, E, EAST, EQ, FacingDef, N, NORTH, Nbt, RelCoord, S, SOUTH, UP, W, WEST, as_facing, r, \
     rotate_facing, to_id, to_name
-from pynecraft.commands import Block, Commands, Entity, MOD, MOVE, REPLACE, ScoreName, as_block, as_score, clone, data, \
-    e, \
-    execute, fill, function, item, kill, n, p, s, say, schedule, setblock, summon, tag
+from pynecraft.commands import Block, Commands, Entity, MOD, MOVE, REPLACE, ScoreName, as_block, as_score, \
+    clone, data, e, execute, fill, function, item, kill, n, p, s, say, schedule, setblock, summon, tag
 from pynecraft.function import Function, Loop
 from pynecraft.info import Color, armor_equipment, colors, sherds, stems
 from pynecraft.simpler import Item, ItemFrame, Region, Sign, TextDisplay, WallSign
@@ -73,7 +72,7 @@ def room():
             max_lines = max(max_lines, *(len(signage_for(block, i)) for i, block in enumerate(block_lists[j])))
 
         # show a single block from the list. "step" will be present if in a loop (i.e., not a singleton)
-        def one_block(block: Block, pos, step):
+        def one_block(block: Block, pos, step: Loop.Step | None):
             signage = signage_for(block, step.i if step else 0)
             if air:
                 yield setblock(pos, 'air')
@@ -493,10 +492,12 @@ def room():
 
     def to_command_block(type, cond):
         type = type.strip()
+        state = {'facing': 'west'}
         name = f'{type}|Block'
         if cond:
             name += '|(Conditional)'
-        cb = Block(id=f'{to_id(type)}_block', name=name, state={'facing': 'west'}, nbt={'conditional': cond})
+            state['conditional'] = True
+        cb = Block(id=f'{to_id(type)}_block', name=name, state=state)
         return cb
 
     blocks('command_blocks', SOUTH, (to_command_block(*x) for x in (
@@ -971,7 +972,7 @@ def color_functions(room):
 
         if is_plain:
             color_name = 'Plain'
-            sheep_nbt = {'Sheared': True}
+            sheep_nbt = {'Sheared': True, 'Color': 0}
             bundle = Item.nbt_for('bundle')
             yield fill(r(-9, 2, 2), r(-9, 2, 3), 'air')
             yield volume.replace('air', '#standing_signs')
@@ -1135,7 +1136,6 @@ def color_functions(room):
         plain.set(0),
         tag(e().tag('colorings_base_home')).add('colorings_home'),
         execute().at(e().tag('colorings_home')).run(function('restworld:blocks/colorings_init')),
-        execute().at(e().tag('colorings_home')).run(function('restworld:blocks/colorings_cur')),
         kill(e().type('item').distance((None, 20))))
     room.function('colorings_plain_on', home=False).add(
         execute().if_().score(plain).matches(0).run(
@@ -1154,10 +1154,8 @@ def color_functions(room):
         execute().as_(e().tag('colorings_names')).run(data().merge(s(), {'CustomNameVisible': False})))
     room.function('colored_beam_enter').add(setblock(r(0, 1, 0), 'iron_block'))
     room.function('colored_beam_exit').add(setblock(r(0, 1, 0), 'white_concrete'))
-    room.function('colored_leggings_start', home=False).add(
-        say('start'), data().remove(armor_stand, 'equipment.chest'))
+    room.function('colored_leggings_start', home=False).add(data().remove(armor_stand, 'equipment.chest'))
     room.function('colored_leggings_stop', home=False).add(
-        say('stop'),
         data().modify(armor_stand, 'equipment.chest').set().value(
             Item.nbt_for('leather_chestplate')),
         data().modify(armor_stand, 'equipment.chest.components').set().from_(
