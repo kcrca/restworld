@@ -6,7 +6,7 @@ from typing import Tuple
 from pynecraft.base import Arg, EAST, GT, LT, Nbt, r, seconds, to_name
 from pynecraft.commands import INT, RANDOM, REPLACE, RESULT, Score, a, data, e, execute, fill, function, \
     kill, \
-    random, return_, s, say, schedule, \
+    random, return_, s, schedule, \
     setblock, summon, tag
 from pynecraft.function import Function, Loop
 from pynecraft.simpler import Item, Region, Sign, WallSign
@@ -290,13 +290,13 @@ def room():
                 yield stand.summon(r(x, 0.5, z))
 
     def toggle_peace(step):
-        block = 'redstone_torch' if step.elem else 'air'
+        block = 'air' if step.elem else 'redstone_torch'
         yield execute().at(e().tag('monitor_home')).run(setblock(r(1, -1, 1), block))
         yield peace.set(int(step.elem))
-        if not step.elem:
+        if step.elem:
             yield function(clean_out),
         yield execute().at(e().tag('controls_home')).run(
-            setblock(r(-1, 2, 0), f'{"red" if step.elem else "lime"}_concrete'))
+            setblock(r(-1, 2, 0), f'{"lime" if step.elem else "red"}_concrete'))
 
     arena_count = room.score('arena_count', 5)
 
@@ -358,8 +358,7 @@ def room():
     v_counter, victim_count = count_func('victim', v_is_splitter)
 
     room.function('monitor').add(
-        execute().if_().score(peace).matches(0).run(return_()),
-        say('monitor'),
+        execute().unless().score(peace).matches(0).run(return_()),
         execute().unless().score(arena_count).matches((COUNT_MIN, COUNT_MAX)).run(arena_count.set(1)),
         function(h_counter),
         function(v_counter),
@@ -399,11 +398,9 @@ def room():
     )
     kill_splitters = schedule().function(kill_splitters, seconds(1), REPLACE)
     clean_out = room.function('clean_out', home=False).add(
-        say('clean'),
         execute().at(monitor_home).run(tag(e().type('armor_stand').distance((None, 100))).add('immortal')),
         kill_em(e().not_tag('immortal').distance((None, 100))))
     start_battle = room.function('start_battle', home=False).add(
-        say('start'),
         kill(e().type('item').distance((None, 50))),
         was_splitters.set(is_splitters),
         h_is_splitter.set(Arg('hunter_is_splitter')),
@@ -421,5 +418,4 @@ def room():
     )
 
     room.loop('toggle_peace', home=False).loop(toggle_peace, (True, False)).add(
-        say('toggled'),
-        execute().unless().score(peace).matches(0).run(say('starting'), function(start_battle)))
+        execute().if_().score(peace).matches(0).run(function(start_battle)))
