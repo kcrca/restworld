@@ -648,11 +648,11 @@ def wood_functions(room):
             data().merge(s(), ItemFrame(SOUTH).item(f'{id}_door').named(f'{root_name} Door').nbt))
 
         yield kill_em(e().tag('wood_boat'))  # remove existing boat
+        boat_state = Nbt({'Type': id, 'Tags': ['wood_boat', room.name], 'CustomName': name,
+                      'CustomNameVisible': True})
+        location = r(-0.5, 1.525, 2)
         if 'stem' not in log:
             wood_boat_chest = room.score('wood_boat_chest')
-            location = r(-0.5, 1.525, 2)
-            boat_state = {'Type': id, 'Tags': ['wood_boat', room.name], 'CustomName': name,
-                          'CustomNameVisible': True}
             boat_item = f'{id}_boat'
             chest_boat_item = f'{id}_chest_boat'
             if 'bamboo' in log:
@@ -669,6 +669,10 @@ def wood_functions(room):
                 e().tag('wood_boat_frame')).run(
                 data().merge(s(), ItemFrame(SOUTH).item(chest_boat_item).named(f'{root_name} Chest Boat').nbt))
         else:
+            location = list(location)
+            location[1] -= 0.45
+            boat_state = boat_state.merge({'Small': True, 'NoGravity': True, 'Invisible': True})
+            yield summon(Entity('armor_stand', boat_state), location)
             yield data().remove(e().tag('wood_boat_frame').limit(1), 'Item')
 
     i = info.woods.index('Bamboo') + 1
