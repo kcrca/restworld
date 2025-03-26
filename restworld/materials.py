@@ -17,25 +17,28 @@ from restworld.world import fast_clock, main_clock, restworld
 water_biomes = (PLAINS, FROZEN_OCEAN, COLD_OCEAN, OCEAN, LUKEWARM_OCEAN, WARM_OCEAN, SWAMP, MANGROVE_SWAMP)
 
 
-def enchant(score: Score, tag: str, on: bool):
-    places = tuple(armor_equipment.keys()) + ('saddle', 'mainhand', 'offhand', 'body')
-    if on:
-        equipment = {}
-        enchantment = {'components': {'enchantments': {'mending': 1}}}
-        for place in places:
-            equipment[place] = enchantment
-        commands = [data().merge(s(), {'equipment': equipment, 'Item': enchantment})]
-    else:
-        commands = [data().remove(s(), 'Item.components.enchantments')]
-        for place in places:
-            commands.append(data().remove(s(), f'equipment.{place}.components.enchantments'))
-    value = int(on)
-    yield execute().if_().score(score).matches(value).as_(e().tag(tag)).run(commands)
+def enchant(score: Score, tag: str):
+    for on in (True, False):
+        places = tuple(armor_equipment.keys()) + ('saddle', 'mainhand', 'offhand', 'body')
+        if on:
+            equipment = {}
+            enchantment = {'components': {'enchantments': {'mending': 1}}}
+            for place in places:
+                equipment[place] = enchantment
+            commands = [data().merge(s(), {'equipment': equipment, 'Item': enchantment})]
+        else:
+            commands = [data().remove(s(), 'Item.components.enchantments')]
+            for place in places:
+                commands.append(data().remove(s(), f'equipment.{place}.components.enchantments'))
+        value = int(on)
+        yield execute().if_().score(score).matches(value).as_(e().tag(tag)).run(commands)
 
 
 def room():
     room = Room('materials', restworld, WEST, ('Materials', '& Tools,', 'Time, GUI,', 'Redstone, Maps'))
     room.reset_at((3, 0))
+
+    enchanted = room.score('enchanted')
 
     room.function('all_sand_init').add(WallSign((None, None, 'and Sandstone')).place(r(0, 2, 3), WEST))
 
@@ -83,17 +86,18 @@ def room():
         fire_arrow.set(Arg('on')), data().modify(e().tag('arrow').limit(1), 'HasVisualFire').set().value(Arg('on'))
     )
 
-    wolf_sign_pos = r(1, 2, 0)
+    wolf_sign_pos = r(0, 2, -1)
 
     def wolf_armor_color_loop(step):
         color = step.elem
         if color:
             yield data().modify(n().tag('wolf_armor_damage'),
                                 'equipment.body.components.dyed_color').set().value(color.leather)
-            yield Sign.change(wolf_sign_pos, (None, None, f'Color: {step.elem.name}'))
+            yield Sign.change(wolf_sign_pos, (None, None, None, f'Color: {step.elem.name}'))
         else:
             yield data().remove(n().tag('wolf_armor_damage'), 'equipment.body.components.dyed_color')
-            yield Sign.change(wolf_sign_pos, (None, None, 'Color: None'))
+            yield Sign.change(wolf_sign_pos, (None, None, None, 'Color: None'))
+        yield enchant(enchanted, 'wolf_armor_damage')
 
     def wolf_armor_damage_loop(step):
         if step.elem:
@@ -101,16 +105,17 @@ def room():
                                 'equipment.body.components.damage').set().value(step.elem)
         else:
             yield data().remove(n().tag('wolf_armor_damage'), 'equipment.body.components.damage')
+        yield enchant(enchanted, 'wolf_armor_damage')
         yield Sign.change(
-            wolf_sign_pos, (None, f'Damage: {step.elem}'))
+            wolf_sign_pos, (None, None, f'Damage: {step.elem}'))
 
     room.loop('wolf_armor_color', main_clock, home=False).loop(wolf_armor_color_loop, colors + (None,))
     room.loop('wolf_armor_damage', main_clock, home=False).loop(wolf_armor_damage_loop, (None, 19, 40, 60), bounce=True)
     room.function('wolf_armor_init').add(
-        room.mob_placer(r(0, 2, 0), NORTH, adults=True).summon(
+        room.mob_placer(r(0, 3, 0), NORTH, adults=True).summon(
             Entity('wolf', name='Wolf Armor'), tags=('wolf_armor_damage',),
             nbt={'Owner': 'dummy', 'equipment': {'body': Item.nbt_for('wolf_armor')}}),
-        WallSign((None, 'Damage: None', 'Color: None')).place(wolf_sign_pos, SOUTH),
+        WallSign((None, 'Wolf Armor', 'Damage: None', 'Color: None')).place(wolf_sign_pos, NORTH),
         room.label(r(0, 2, -2), 'Color', SOUTH))
     room.function('wolf_armor_home', exists_ok=True).add(tag(e().tag('wolf_armor_home')).add('wolf_armor_damage_home'))
     room.function('wolf_damage', home=False).add(
@@ -257,14 +262,25 @@ def room():
     )
     room.loop('water', main_clock).loop(water_loop, water_biomes)
 
-    basic_functions(room)
+    def saddles_loop(step):
+        yield kill_em(e().tag('saddlable'))
+        yield Entity(step.elem, nbt={'NoAI': True, 'equipment': {'saddle': Item.nbt_for('saddle')}}).tag(
+            'materials', 'saddlable').summon(r(0, 2, 0), facing=NORTH)
+        yield enchant(enchanted, 'saddlable')
+
+    room.loop('saddles', main_clock).loop(saddles_loop,
+                                          ('horse', 'skeleton_horse', 'mule', 'donkey', 'pig', 'strider', 'camel'))
+    room.function('saddles_init').add(
+        WallSign((None, 'Saddles')).place(r(0, 2, -2), NORTH))
+
+    basic_functions(room, enchanted)
     fencelike_functions(room)
     wood_functions(room)
     copper_functions(room)
     trim_functions(room)
 
 
-def basic_functions(room):
+def basic_functions(room, enchanted):
     stand = Entity('armor_stand',
                    {'Tags': ['basic_stand', 'material_static', 'enchantable'], 'ShowArms': True, 'NoGravity': True})
     invis_stand = stand.clone().merge_nbt({'Tags': ['material_static'], 'Invisible': True})
@@ -304,8 +320,6 @@ def basic_functions(room):
         ('diamond', 'diamond', True, Block('diamond_block'), 'diamond'),
         ('netherite', 'netherite', False, Block('netherite_block'), 'netherite_ingot'),
     )
-
-    enchanted = room.score('enchanted')
 
     horse_saddle = room.score('horse_saddle')
     turtle_helmet = room.score('turtle_helmet')
@@ -402,15 +416,17 @@ def basic_functions(room):
                 data().modify(n().tag('armor_chestplate'), 'Item.components.damage').set().value(0)
             )
         ),
-        enchant(enchanted, 'enchantable', True),
-        enchant(enchanted, 'enchantable', False),
+        enchant(enchanted, 'enchantable'),
         fill(r(-2, 2, 2), r(2, 4, 4), 'air'),
         setblock(r(-2, 0, 0), 'redstone_block'),
         execute().positioned(r(-2, 0, 2)).run(kill(e().type('item').volume((5, 3, 4)))))
 
     room.function('basic_update').add(
         execute().at(e().tag('basic_home')).run(function('restworld:materials/basic_cur')),
-        execute().at(e().tag('basic_home')).run(function('restworld:materials/basic_finish_main')))
+        execute().at(e().tag('basic_home')).run(function('restworld:materials/basic_finish_main')),
+        execute().at(e().tag('wolf_armor_home')).run(function('restworld:materials/wolf_armor_cur')),
+        execute().at(e().tag('saddles_home')).run(function('restworld:materials/saddles_cur')),
+    )
 
 
 def fencelike_functions(room):
@@ -649,7 +665,7 @@ def wood_functions(room):
 
         yield kill_em(e().tag('wood_boat'))  # remove existing boat
         boat_state = Nbt({'Type': id, 'Tags': ['wood_boat', room.name], 'CustomName': name,
-                      'CustomNameVisible': True})
+                          'CustomNameVisible': True})
         location = r(-0.5, 1.525, 2)
         if 'stem' not in log:
             wood_boat_chest = room.score('wood_boat_chest')

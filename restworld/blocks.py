@@ -1048,8 +1048,7 @@ def color_functions(room):
     def colorings_loop(step):
         yield from colorings(False, step.elem, step)
         yield from colored_signs(step.elem, render_signs)
-        yield from enchant(enchanted, 'colorings_enchantable', True)
-        yield from enchant(enchanted, 'colorings_enchantable', False)
+        yield from enchant(enchanted, 'colorings_enchantable')
 
     mob_nbt = {'Time': True, 'NoAI': True, 'Silent': True}
     horse_nbt = Nbt({
