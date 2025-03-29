@@ -42,7 +42,6 @@ def room():
         execute().at(e().tag('diy_ender')).run(tp(e().tag('diy_cloner'), r(0, 2, 0))),
         function('restworld:diy/_tick'))
     room.function('restore', home=False).add(
-        say('restore'),
         clone(r(0, 2, 0), r(0, 2, -6), (-100, 3, 0)),
         execute().at(e().tag('diy_ender')).run(clone((-100, 3, 6), (-100, 3, 0), r(0, 6, 0)).replace(MOVE)))
     room.function('save', home=False).add(
