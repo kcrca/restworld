@@ -6,7 +6,7 @@ import math
 from pynecraft import info
 from pynecraft.base import Arg, EAST, NE, NORTH, NW, SE, SOUTH, SW, WEST, as_facing, r, rotate_facing
 from pynecraft.commands import Entity, Text, comment, data, e, execute, fill, function, n, return_, s, \
-    say, setblock, \
+    setblock, \
     summon, \
     tag
 from pynecraft.simpler import VILLAGER_BIOMES, VILLAGER_PROFESSIONS, WallSign
@@ -118,6 +118,9 @@ def room():
     if 'Creaking' not in my_mobs:
         my_mobs['Creaking'] = Entity('Creaking')
         my_mobs = dict(sorted(my_mobs.items()))
+    if 'Illusioner' not in my_mobs:
+        my_mobs['Illusioner'] = Entity('Illusioner')
+        my_mobs = dict(sorted(my_mobs.items()))
     my_mobs['<None>'] = Entity('none', name='<None>')
     all_mobs = tuple(my_mobs.keys())
     max_per_group = math.ceil(len(all_mobs) / NUM_GROUPS)
@@ -166,12 +169,8 @@ def room():
         return
 
     update_mob = room.function('update_mob', home=False).add(
-        say('update_mob'),
-        say('$(sector_tag)'),
         execute().as_(e().tag(Arg('sector_tag'))).run(data().merge(s(), Arg('nbt'))))
     update_type = room.function('update_type', home=False).add(
-        say('update_type'),
-        say('$(type) $(sector_tag)'),
         execute().as_(e().tag(Arg('sector_tag'))).run(data().modify(s(), 'VillagerData.type').set().value(Arg('type')))
     )
 
@@ -191,7 +190,6 @@ def room():
         ((
             execute().as_(e().tag('summon_cur')).run(tag(s()).remove('summon_cur')),
             tag(n().tag(f'summon_{sector}_home')).add('summon_cur'),
-            execute().as_(n().tag(f'summon_{sector}_home')).run(say('foo')),
             summon_mob_commands(my_mobs[mob_id])
         )
             for sector, x, y, mob_id in init_mobs),
@@ -207,8 +205,6 @@ def room():
     for sector in sectors:
         sector_tag = tag_for(sector)
         f = room.function(f'summon_{sector}').add(
-            say(sector_tag),
-            say(Arg('id')),
             data().modify(room.store, 'mob.sector_tag').set().value(sector_tag),
             kill_em(e().tag(sector_tag)),
             water_score.set(Arg('water')),
