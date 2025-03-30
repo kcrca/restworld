@@ -74,7 +74,7 @@ def room():
         ('goat', 'sheep'),  # medium priority (slow, but charging goat)
         ('hoglin', 'vindicator'),
         ('illusioner', 'snow_golem'), # medium priority, illusioner isn't used in vanilla, but some folks use it
-        ('llama', 'vindicator'),
+        ('llama', 'vindicator'), # Wolves don't work, they just run away, only rarely getting involved
         ('magma_cube', 'iron_golem'),
         # ('ocelot', 'chicken'),  # low priority
         ('panda', 'vindicator'),
@@ -379,7 +379,7 @@ def room():
             data().modify(s(), 'Age').set().value(6000 - 150),
             tag(s()).add('limited')
         ),
-        effect().give(e().type('llama').tag('battler'), REGENERATION, INFINITE, hide_particles=True)
+        effect().give(e().type('llama').tag('battler'), REGENERATION, INFINITE, 100, True)
     )
 
     # The splitters create a problem -- if a splitter was killed but, before its kids are spawned, a new battle is
