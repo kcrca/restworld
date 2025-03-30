@@ -3,8 +3,9 @@ from __future__ import annotations
 import copy
 
 from pynecraft.base import EAST, EQ, NORTH, Nbt, SOUTH, WEST, r, to_id, to_name
-from pynecraft.commands import Block, COLORS, Entity, FORCE, LONG, MOD, REPLACE, RESULT, Score, as_facing, clone, data, \
-    e, execute, fillbiome, function, item, kill, n, player, return_, ride, s, schedule, scoreboard, setblock, summon, \
+from pynecraft.commands import Block, COLORS, Entity, FORCE, LONG, MOD, REPLACE, RESULT, Score, as_facing, clone, \
+    data, \
+    e, execute, fillbiome, function, item, kill, n, p, player, return_, ride, s, schedule, scoreboard, setblock, summon, \
     tag, tp
 from pynecraft.info import axolotls, colors, horses, tropical_fish, wolves
 from pynecraft.simpler import Item, PLAINS, Sign, VILLAGER_BIOMES, VILLAGER_PROFESSIONS, Villager, WallSign
@@ -664,9 +665,20 @@ def monsters(room):
         zombie_loop, ('Zombie', 'Husk', 'Drowned')).add(function('restworld:mobs/mob_armor_cur'),
                                                         function('restworld:mobs/zombie_jockey_cur'))
 
+
+    def enderman_loop(step):
+        placer = room.mob_placer(r(0, 2, 0), NORTH, adults=True)
+        if step.elem:
+            yield data().modify(n().tag('enderman'), 'AngryAt').set().from_(p(), 'UUID')
+            yield data().modify(n().tag('enderman'), 'CustomName').set().value('Angry Enderman')
+        else:
+            yield kill_em(e().tag('enderman'))
+            yield list(placer.summon('enderman'))[0]
+
     placer = room.mob_placer(r(0, 2, 0), NORTH, adults=True)
     room.function('enderman_init').add(
         execute().unless().entity(e().type('enderman').distance((None, 5))).run(list(placer.summon('enderman'))[0]))
+    room.loop('enderman', main_clock).loop(enderman_loop, (True, False))
 
     placer = room.mob_placer(r(0, 3, 0.2), NORTH, adults=True)
     room.function('breeze_init').add(placer.summon('breeze'))
