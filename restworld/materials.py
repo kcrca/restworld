@@ -6,7 +6,7 @@ from pynecraft import info
 from pynecraft.base import Arg, EAST, EQ, NE, NORTH, NW, Nbt, NbtDef, SOUTH, WEST, as_facing, r, to_id
 from pynecraft.commands import Block, BlockDef, Entity, LONG, MOD, PLUS, RESULT, Score, as_block, data, e, \
     execute, \
-    fill, fillbiome, function, item, kill, n, random, s, say, scoreboard, setblock, summon, tag
+    fill, fillbiome, function, item, kill, n, random, s, scoreboard, setblock, summon, tag
 from pynecraft.function import BLOCK
 from pynecraft.info import armor_equipment, colors, must_give_items, operator_menu, stems, trim_materials, trim_patterns
 from pynecraft.simpler import Item, ItemFrame, PLAINS, Region, SWAMP, Sign, WallSign
@@ -265,7 +265,6 @@ def room():
     def saddles_loop(step):
         mob, y = step.elem
         yield kill_em(e().tag('saddlable'))
-        yield say(mob, y)
         yield Entity(mob, nbt={'NoAI': True, 'equipment': {'saddle': Item.nbt_for('saddle')}}).tag(
             'materials', 'saddlable').summon(r(0, 2 + y, 0), facing=NORTH)
         yield enchant(enchanted, 'saddlable')
@@ -689,7 +688,7 @@ def wood_functions(room):
                 data().merge(s(), ItemFrame(SOUTH).item(chest_boat_item).named(f'{root_name} Chest Boat').nbt))
         else:
             location = list(location)
-            location[1] -= 0.45
+            location[1] -= 0.43
             boat_state = boat_state.merge({'Small': True, 'NoGravity': True, 'Invisible': True})
             yield summon(Entity('armor_stand', boat_state), location)
             yield data().remove(e().tag('wood_boat_frame').limit(1), 'Item')
