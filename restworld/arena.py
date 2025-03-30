@@ -4,12 +4,14 @@ import sys
 from typing import Tuple
 
 from pynecraft.base import Arg, EAST, GT, LT, Nbt, r, seconds, to_name
-from pynecraft.commands import INT, RANDOM, REPLACE, RESULT, Score, a, data, e, execute, fill, function, \
+from pynecraft.commands import INFINITE, INT, RANDOM, REPLACE, RESULT, Score, a, data, e, effect, execute, fill, \
+    function, \
     kill, \
     random, return_, s, schedule, \
     setblock, summon, tag
 from pynecraft.function import Function, Loop
 from pynecraft.simpler import Item, Region, Sign, WallSign
+from pynecraft.values import REGENERATION
 from restworld.rooms import Room, kill_em
 from restworld.world import main_clock, marker_tmpl, restworld
 
@@ -37,7 +39,7 @@ def room():
         'drowned': {'equipment': {'mainhand': Item.nbt_for('trident')}},
         'goat': {'IsScreamingGoat': True, 'HasLeftHorn': True, 'HasRightHorn': True},
         'hoglin': {'IsImmuneToZombification': True},
-        'llama': {'Strength': 5},
+        'llama': {'Strength': 1, 'Health': 1000},
         'magma_cube': {'Size': 3},
         'slime': {'Size': 3},
         'phantom': {'AX': 1000, 'AY': 110, 'AZ': -1000},
@@ -64,20 +66,18 @@ def room():
         ('bogged', 'iron_golem'),
         ('breeze', 'iron_golem'),
         ('cat', 'rabbit'),
-        # ('cave_spider', 'snow_golem'), # low priority
-        # ('drowned', 'snow_golem'), # lwo priority
+        # ('cave_spider', 'snow_golem'), # medium priority
         ('ender_dragon', None),
         ('evoker', 'iron_golem'),
         ('fox', 'chicken'),
         # ('frog', 'slime'),  # low priority
         ('goat', 'sheep'),  # medium priority (slow, but charging goat)
         ('hoglin', 'vindicator'),
-        # ('illusioner', 'snow_golem'), # low priority, illusioner isn't used
+        ('illusioner', 'snow_golem'), # medium priority, illusioner isn't used in vanilla, but some folks use it
         ('llama', 'vindicator'),
         ('magma_cube', 'iron_golem'),
         # ('ocelot', 'chicken'),  # low priority
         ('panda', 'vindicator'),
-        ('parrot', 'vindicator'),  # low priority
         ('phantom', None),
         ('piglin_brute', 'vindicator'),
         ('pillager', 'snow_golem'),
@@ -123,7 +123,7 @@ def room():
         sys.exit(1)
     if len(battles) % stride_length != 0:
         sys.stderr.write(
-            f'Stride length ({stride_length:d}) is not a multiple of battle count ({len(battles):d})\n')
+            f'Battle count ({len(battles):d}) is not a multiple of stride length ({stride_length:d}))\n')
         sys.exit(1)
 
     battles.sort()
@@ -378,7 +378,8 @@ def room():
         execute().as_(e().type('item').tag('!limited')).run(
             data().modify(s(), 'Age').set().value(6000 - 150),
             tag(s()).add('limited')
-        )
+        ),
+        effect().give(e().type('llama').tag('battler'), REGENERATION, INFINITE, hide_particles=True)
     )
 
     # The splitters create a problem -- if a splitter was killed but, before its kids are spawned, a new battle is
