@@ -157,9 +157,11 @@ def friendlies(room):
         if step.i == 0:
             yield kill_em(e().tag('tadpole', room.name))
             # The 'air' check is for if we're levitated
+            label_pos = list(spawn_pos)
+            label_pos[0] -= 0.25
             yield execute().unless().block(r(0, 1, 0), 'air').at(e().tag('frogspawn_home')).run(
                 setblock(spawn_pos, 'frogspawn'),
-                room.label(spawn_pos, 'Frogspawn', EAST, tags=('frogspawn_label',)))
+                room.label(label_pos, 'Frogspawn', EAST, tags=('frogspawn_label',)))
         else:
             yield placer(spawn_pos, WEST, kids=True).summon(Entity('tadpole', {'Invulnerable': True}),
                                                             tags=('keeper',))
