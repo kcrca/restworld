@@ -36,7 +36,7 @@ def enchant(score: Score, tag: str):
 
 def room():
     room = Room('materials', restworld, WEST, ('Materials', '& Tools,', 'Time, GUI,', 'Redstone, Maps'))
-    room.reset_at((3, 0))
+    room.reset_at((6, 0))
 
     enchanted = room.score('enchanted')
 
@@ -567,7 +567,7 @@ def wood_functions(room):
 
     def wood_loop(step):
         def sign_messages(nbt):
-            return {'front_text': nbt, 'back_text': nbt}
+            return Nbt({'front_text': nbt, 'back_text': nbt})
 
         name = step.elem
         root_name = name.replace(' Mosaic', '')
@@ -615,16 +615,20 @@ def wood_functions(room):
         yield from volume.replace_axes(f'stripped_{wood}', '#restworld:stripped_woodlike')
         # doors can't be generically replaced, see below for the manual placement
         yield from volume.replace_trapdoors(f'{id}_trapdoor', '#trapdoors')
+        text_color = 'white' if id == 'dark_oak' else 'black'
         yield from volume.replace_facing(
-            WallSign((), wood=id).messages((None, root_name, 'Wall Sign')).wax(False), '#wall_signs')
-        yield from volume.replace_rotation(Sign((), wood=id).messages((None, f'{root_name} Sign')).wax(False), '#signs')
+            WallSign((), wood=id).messages((None, root_name, 'Wall Sign')).wax(False).color(text_color), '#wall_signs')
+        yield from volume.replace_rotation(
+            Sign((), wood=id).messages((None, f'{root_name} Sign')).wax(False).color(text_color), '#signs')
 
+        text_color_nbt = {'front_text': {'color': text_color}, 'back_text': {'color': text_color}}
         yield from volume.replace_facing(
-            Block(f'{id}_wall_hanging_sign', nbt=sign_messages(Sign.lines_nbt((root_name, 'Wall', 'Hanging', 'Sign')))),
+            Block(f'{id}_wall_hanging_sign', nbt=sign_messages(
+                Sign.lines_nbt((root_name, 'Wall', 'Hanging', 'Sign')).merge({'color': text_color}))),
             '#wall_hanging_signs')
         for attached in True, False:
-            sign_text = Sign.lines_nbt((root_name, 'Attached', 'Hanging', 'Sign')) if attached else Sign.lines_nbt(
-                (root_name, 'Hanging', 'Sign'))
+            sign_text = (Sign.lines_nbt((root_name, 'Attached', 'Hanging', 'Sign')) if attached else Sign.lines_nbt(
+                (root_name, 'Hanging', 'Sign'))).merge({'color': text_color})
             yield from volume.replace_rotation(
                 Block(f'{id}_hanging_sign', nbt=sign_messages(sign_text)),
                 '#all_hanging_signs',
