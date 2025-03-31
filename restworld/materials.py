@@ -426,7 +426,8 @@ def basic_functions(room, enchanted):
     room.function('basic_update').add(
         execute().at(e().tag('basic_home')).run(function('restworld:materials/basic_cur')),
         execute().at(e().tag('basic_home')).run(function('restworld:materials/basic_finish_main')),
-        execute().at(e().tag('wolf_armor_home')).run(function('restworld:materials/wolf_armor_cur')),
+        execute().at(e().tag('wolf_armor_home')).run(function('restworld:materials/wolf_armor_color_cur')),
+        execute().at(e().tag('wolf_armor_home')).run(function('restworld:materials/wolf_armor_damage_cur')),
         execute().at(e().tag('saddles_home')).run(function('restworld:materials/saddles_cur')),
     )
 
