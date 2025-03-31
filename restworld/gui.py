@@ -13,7 +13,7 @@ from restworld.world import fast_clock, main_clock, restworld, slow_clock
 
 def room():
     room = Room('gui', restworld, NORTH, ('GUI,', 'HUD,', 'Items'))
-    room.reset_at((0, 12))
+    room.reset_at((0, 13))
 
     room.function('anvil_container_enter').add(setblock(r(0, 2, 0), 'anvil'))
 
