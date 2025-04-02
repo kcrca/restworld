@@ -60,13 +60,14 @@ def room():
     # Lower priority ones can be used as filler
     battles = [
         ('axolotl', 'drowned'),
-        ('creaking', 'you'),
         ('axolotl', 'guardian'),
+        # ('axolotl', 'elder_guardian'), # medium prioirty: attack for elder guardian is same as guardian
         ('blaze', 'snow_golem'),
         ('bogged', 'iron_golem'),
         ('breeze', 'iron_golem'),
         ('cat', 'rabbit'),
         ('cave_spider', 'snow_golem'), # medium priority
+        ('creaking', 'you'),
         ('ender_dragon', None),
         ('evoker', 'iron_golem'),
         ('fox', 'chicken'),
