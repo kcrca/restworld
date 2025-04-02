@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from pynecraft.base import EAST, NE, NORTH, NW, Nbt, SE, SOUTH, SW, WEST, r
-from pynecraft.commands import Entity, Score, Text, clone, e, execute, fill, kill, scoreboard, summon, tag
+from pynecraft.commands import Entity, Score, Text, clone, e, execute, fill, function, kill, scoreboard, summon, tag
 from pynecraft.info import Horse
 from pynecraft.simpler import ItemFrame, Sign, WallSign
 from restworld.materials import armor_for
@@ -30,7 +30,7 @@ def room():
         list(c.speed.set(c.init_speed) for c in restworld.clocks()))
 
     # noinspection GrazieInspection
-    step_sign = Sign(('Step on', 'the', 'Pressure', 'Plate'), hanging=True, state={'attached': True})
+    step_sign = Sign(('Touch', 'the', 'Sign', 'Blow'), hanging=True, state={'attached': True})
     room.function('lights_init').add(
         WallSign(('This world lets', 'you test how', 'your resource', 'pack looks.')).place((r(1), 101, r(4)), NORTH),
         WallSign(('Almost everything', 'is here: blocks', 'mobs, particles,', 'UI, moon phases ...')).place(
@@ -52,13 +52,13 @@ def room():
             (r(4), 101, r(1)), WEST),
 
         step_sign.place(r(6, 5, 6), NW),
-        Sign(('Go to', 'the', 'Optifine', 'Rooms'), hanging=True).place(r(6, 4, 6), NW),
+        Sign(('Go to', 'the', 'Optifine', 'Rooms'), (function('restworld:global/goto_optifine'),), hanging=True).place(r(6, 4, 6), NW),
         step_sign.place(r(6, 5, -6), SW),
-        Sign(('Go to', 'the', 'Battle', 'Arena'), hanging=True).place(r(6, 4, -6), SW),
+        Sign(('Go to', 'the', 'Battle', 'Arena'), (function('restworld:global/goto_arena'),), hanging=True).place(r(6, 4, -6), SW),
         step_sign.place(r(-6, 5, -6), SE),
-        Sign(('Go to', 'the', 'Biome', 'Sampler'), hanging=True).place(r(-6, 4, -6), SE),
+        Sign(('Go to', 'the', 'Biome', 'Sampler'), (function('restworld:global/goto_biomes'),), hanging=True).place(r(-6, 4, -6), SE),
         step_sign.place(r(-6, 5, 6), NE),
-        Sign(('Go to', 'the', 'Photo', 'Area'), hanging=True).place(r(-6, 4, 6), NE),
+        Sign(('Go to', 'the', 'Photo', 'Area'), (function('restworld:global/goto_photo'),), hanging=True).place(r(-6, 4, 6), NE),
 
         tag(e().tag('lights_home')).add('fast_lights_home'),
         tag(e().tag('lights_home')).add('main_lights_home'),
