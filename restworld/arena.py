@@ -66,7 +66,7 @@ def room():
         ('bogged', 'iron_golem'),
         ('breeze', 'iron_golem'),
         ('cat', 'rabbit'),
-        # ('cave_spider', 'snow_golem'), # medium priority
+        ('cave_spider', 'snow_golem'), # medium priority
         ('ender_dragon', None),
         ('evoker', 'iron_golem'),
         ('fox', 'chicken'),
@@ -81,7 +81,7 @@ def room():
         ('phantom', None),
         ('piglin_brute', 'vindicator'),
         ('pillager', 'snow_golem'),
-        ('polar_bear', 'vindicator'),
+        # ('polar_bear', 'vindicator'), # low priority, polar bears hardly agro, don't to anything special when they are
         ('ravager', 'iron_golem'),
         ('shulker', 'vindicator'),
         ('skeleton', 'iron_golem'),
