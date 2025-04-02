@@ -205,6 +205,7 @@ def room():
     room.function('photo_shoot_init').add(
         room.label(r(1, 2, 0), 'Mob Photo', EAST),
         room.label(r(0, 2, 2), 'Go Home', SOUTH),
+        room.label(r(0, 2, 2), 'Go Home', NORTH),
         room.label(r(0, 2, 7), 'Sample Photo', SOUTH),
         room.label(r(0, 2, -2), 'Reset Room', NORTH),
         room.label(r(0, 2, -6), 'Quilt Photo', NORTH),

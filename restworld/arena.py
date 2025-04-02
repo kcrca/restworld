@@ -400,6 +400,7 @@ def room():
     kill_splitters = schedule().function(kill_splitters, seconds(1), REPLACE)
     clean_out = room.function('clean_out', home=False).add(
         execute().at(monitor_home).run(tag(e().type('armor_stand').distance((None, 100))).add('immortal')),
+        execute().at(monitor_home).run(tag(e().type('text_display').distance((None, 100))).add('immortal')),
         kill_em(e().not_tag('immortal').distance((None, 100))))
     start_battle = room.function('start_battle', home=False).add(
         kill(e().type('item').distance((None, 50))),
