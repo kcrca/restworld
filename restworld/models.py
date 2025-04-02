@@ -129,6 +129,8 @@ def room():
     was_empty = room.score('model_was_empty')
     needs_restore = room.score('needs_restore')
 
+    # This is just so I get to see the player head change. Others see it alternate between themselves and BlueMeanial,
+    # but for me that would be no alteration at all, so I picked a random other player to use if the real player is me.
     is_other = room.score('is_other')
 
     def model_head_loop(step):
