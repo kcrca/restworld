@@ -403,7 +403,7 @@ def room():
         ones.operation(MOD, ten),
         tens.set(kills),
         tens.operation(DIV, ten),
-        cents.set(tens),
+        cents.set(tens), # to avoid recalculating this value for cents separately
         tens.operation(MOD, ten),
         cents.operation(DIV, ten),
         execute().store(RESULT).storage(room.store, 'digits.ones', INT).run(ones.get()),
