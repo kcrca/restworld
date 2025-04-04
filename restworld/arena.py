@@ -228,10 +228,11 @@ def room():
 
     # function summon with restworld.arena actor
     max_variant = room.score('max_variant')
+    actors_kills = Score('$(actor)s', kills_objective)
     actual_summon = room.function('actual_summon', home=False).add(
         execute().at(e().tag(f'$(actor)_home').sort('random').limit(1)).run(
             summon('$(id)', r(0, '$(y)', '$(z)'), '$(nbt)')),
-        scoreboard().players().add((f'$(actor)s', kills_objective), 1),
+        scoreboard().players().add(actors_kills, 1),
     )
     do_summon = room.function('summon', home=False).add(
         max_variant.set('$(max)'),
@@ -378,6 +379,7 @@ def room():
 
     ones = room.score('$(actor)s_1')
     tens = room.score('$(actor)s_10')
+    cents = room.score('$(actor)s_100')
     room.function('hunter_show_score')
     room.function('victim_show_score')
     show_digits = room.function('show_digits', home=False).add(
@@ -387,24 +389,28 @@ def room():
         data().modify(r(0, 10, 4), 'name').set().value('restworld:num_$(tens)'),
         setblock(r(-1, 10, 4), 'redstone_block'),
         setblock(r(-1, 10, 4), 'air'),
+        data().modify(r(0, 10, 8), 'name').set().value('restworld:num_$(cents)'),
+        setblock(r(-1, 10, 8), 'redstone_block'),
+        setblock(r(-1, 10, 8), 'air'),
     )
-    actors_kills = Score('$(actor)s', kills_objective)
     prev_actors_kills = room.score('prev_$(actor)s_kills')
+    kills = room.score('kills')
     show_score = room.function('show_score').add(
-        execute().if_().score(actors_kills).matches((100, None)).run(
-            data().modify(room.store, 'digit.ones').set().value(9),
-            data().modify(room.store, 'digit.tens').set().value(9),
-        ),
-        execute().unless().score(actors_kills).matches((100, None)).run(
-            ones.operation(EQ, actors_kills),
-            ones.operation(MOD, ten),
-            tens.operation(EQ, actors_kills),
-            tens.operation(DIV, ten),
-            execute().store(RESULT).storage(room.store, 'digit.ones', INT).run(ones.get()),
-            execute().store(RESULT).storage(room.store, 'digit.tens', INT).run(tens.get()),
-        ),
+        kills.set(actors_kills),
+        execute().if_().score(actors_kills).matches((100, None)).run(kills.set(999)),
+        execute().if_().score(actors_kills).is_(EQ, prev_actors_kills).run(return_()), # can happen for 999
+        ones.set(kills),
+        ones.operation(MOD, ten),
+        tens.set(kills),
+        tens.operation(DIV, ten),
+        cents.set(tens),
+        tens.operation(MOD, ten),
+        cents.operation(DIV, ten),
+        execute().store(RESULT).storage(room.store, 'digits.ones', INT).run(ones.get()),
+        execute().store(RESULT).storage(room.store, 'digits.tens', INT).run(tens.get()),
+        execute().store(RESULT).storage(room.store, 'digits.cents', INT).run(cents.get()),
         execute().at(e().tag('$(actor)_show_score_home')).run(
-            function(show_digits).with_().storage(room.store, 'digit'),
+            function(show_digits).with_().storage(room.store, 'digits'),
         ),
         prev_actors_kills.set(actors_kills)
     )
