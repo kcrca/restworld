@@ -3,8 +3,9 @@ from __future__ import annotations
 import sys
 from typing import Tuple
 
-from pynecraft.base import Arg, EAST, GT, LT, Nbt, r, seconds, to_name
-from pynecraft.commands import INFINITE, INT, MINUS, RANDOM, REPLACE, RESULT, Score, a, data, e, effect, execute, \
+from pynecraft.base import Arg, EAST, EQ, GT, LT, Nbt, r, seconds, to_name
+from pynecraft.commands import DIV, INFINITE, INT, MINUS, MOD, RANDOM, REPLACE, RESULT, Score, a, data, e, effect, \
+    execute, \
     fill, \
     function, \
     kill, \
@@ -174,6 +175,9 @@ def room():
     kills_objective = 'arena_killed'
     hunters_killed = Score('hunters', kills_objective)
     victims_killed = Score('victims', kills_objective)
+    ten = Score('ten', 'arena_max')
+    prev_hunters_killed = room.score('prev_hunters_killed')
+    prev_victims_killed = room.score('prev_victims_killed')
     room.function('monitor_init', home=False).add(
         data().remove(room.store, 'mobs'),
         data().modify(room.store, 'mobs').set().value({
@@ -189,9 +193,10 @@ def room():
             'hunter_names': [f'hunter_{i}' for i in range(COUNT_MIN, COUNT_MAX + 1)],
             'victim_names': [f'victim_{i}' for i in range(COUNT_MIN, COUNT_MAX + 1)],
         }),
+        ten.set(10),
         scoreboard().objectives().add(kills_objective, DUMMY, "Killed"),
-        scoreboard().players().set(hunters_killed, 0),
-        scoreboard().players().set(victims_killed, 0),
+        hunters_killed.set(0),
+        victims_killed.set(0),
     )
 
     actor_is_splitter = room.score('$(actor)_is_splitter')
@@ -318,6 +323,7 @@ def room():
     room.function('arena_count_decr', home=False).add(arena_count.remove(1), arena_count_cur)
     room.function('arena_count_incr', home=False).add(
         arena_count.add(1), arena_count_cur,
+        # These counteract the "add" that happens when a mob is summoned because that won't be in response to a kill
         scoreboard().players().remove(hunters_killed, 1),
         scoreboard().players().remove(victims_killed, 1),
     )
@@ -370,6 +376,39 @@ def room():
     h_counter, hunter_count = count_func('hunter', h_is_splitter)
     v_counter, victim_count = count_func('victim', v_is_splitter)
 
+    ones = room.score('$(actor)s_1')
+    tens = room.score('$(actor)s_10')
+    room.function('hunter_show_score')
+    room.function('victim_show_score')
+    show_digits = room.function('show_digits', home=False).add(
+        data().modify(r(0, 10, 0), 'name').set().value('restworld:num_$(ones)'),
+        setblock(r(-1, 10, 0), 'redstone_block'),
+        setblock(r(-1, 10, 0), 'air'),
+        data().modify(r(0, 10, 4), 'name').set().value('restworld:num_$(tens)'),
+        setblock(r(-1, 10, 4), 'redstone_block'),
+        setblock(r(-1, 10, 4), 'air'),
+    )
+    actors_kills = Score('$(actor)s', kills_objective)
+    prev_actors_kills = room.score('prev_$(actor)s_kills')
+    show_score = room.function('show_score').add(
+        execute().if_().score(actors_kills).matches((100, None)).run(
+            data().modify(room.store, 'digit.ones').set().value(9),
+            data().modify(room.store, 'digit.tens').set().value(9),
+        ),
+        execute().unless().score(actors_kills).matches((100, None)).run(
+            ones.operation(EQ, actors_kills),
+            ones.operation(MOD, ten),
+            tens.operation(EQ, actors_kills),
+            tens.operation(DIV, ten),
+            execute().store(RESULT).storage(room.store, 'digit.ones', INT).run(ones.get()),
+            execute().store(RESULT).storage(room.store, 'digit.tens', INT).run(tens.get()),
+        ),
+        execute().at(e().tag('$(actor)_show_score_home')).run(
+            function(show_digits).with_().storage(room.store, 'digit'),
+        ),
+        prev_actors_kills.set(actors_kills)
+    )
+
     room.function('monitor').add(
         execute().unless().score(peace).matches(0).run(return_()),
         execute().unless().score(arena_count).matches((COUNT_MIN, COUNT_MAX)).run(arena_count.set(1)),
@@ -380,14 +419,19 @@ def room():
             function(do_summon).with_().storage(room.store, 'hunter')),
         execute().if_().score(victim_count).is_(LT, arena_count).run(
             function(do_summon).with_().storage(room.store, 'victim')),
-        (execute().if_().score(room.score(f'{actor}_count')).is_(GT, arena_count).run(
-            kill_em(
-                e().tag(actor).sort(RANDOM).limit(1).distance((None, 100))))
+        ((
+            execute().if_().score(room.score(f'{actor}_count')).is_(GT, arena_count).run(
+                kill_em(
+                    e().tag(actor).sort(RANDOM).limit(1).distance((None, 100)))),
+            execute().if_().score(room.score(f'{actor}_count')).is_(LT, arena_count).run(
+                execute().at(e().tag(f'{actor}_home')).run(
+                    setblock(r(-3, -1, 0), 'redstone_block'),
+                    setblock(r(-3, -1, 0), 'air'))))
             for actor in ('hunter', 'victim')),
-        (execute().if_().score(room.score(f'{who}_count')).is_(LT, arena_count).run(
-            execute().at(e().tag(f'{who}_home')).run(setblock(r(-3, -1, 0), 'redstone_block'),
-                                                     setblock(r(-3, -1, 0), 'air')))
-            for who in ('hunter', 'victim')),
+        execute().unless().score(hunters_killed).is_(EQ, prev_hunters_killed).run(
+            function(show_score, {'actor': 'hunter'})),
+        execute().unless().score(victims_killed).is_(EQ, prev_victims_killed).run(
+            function(show_score, {'actor': 'victim'})),
         execute().as_(e().type('item').tag('!limited')).run(
             data().modify(s(), 'Age').set().value(6000 - 150),
             tag(s()).add('limited')
@@ -429,10 +473,13 @@ def room():
         execute().if_().score(start_battle_type).matches(2).at(monitor_home).run(sky.fill('glowstone')),
         execute().if_().score(start_battle_type).matches(3).at(monitor_home).run(ground.fill('grass_block')),
         tag(a()).add('arena_safe'),
+        # These counteract the "add" that happens when a mob is summoned because that won't be in response to a kill
         scoreboard().players().set(hunters_killed, 0),
+        scoreboard().players().set(prev_hunters_killed, -1),
         scoreboard().players().operation(hunters_killed, MINUS, arena_count),
         scoreboard().players().set(victims_killed, 0),
         scoreboard().players().operation(victims_killed, MINUS, arena_count),
+        scoreboard().players().set(prev_victims_killed, -1),
         function(clean_out),
     )
 
