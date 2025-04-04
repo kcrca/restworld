@@ -4,14 +4,15 @@ import sys
 from typing import Tuple
 
 from pynecraft.base import Arg, EAST, GT, LT, Nbt, r, seconds, to_name
-from pynecraft.commands import INFINITE, INT, RANDOM, REPLACE, RESULT, Score, a, data, e, effect, execute, fill, \
+from pynecraft.commands import INFINITE, INT, MINUS, RANDOM, REPLACE, RESULT, Score, a, data, e, effect, execute, \
+    fill, \
     function, \
     kill, \
     random, return_, s, schedule, \
-    setblock, summon, tag
+    scoreboard, setblock, summon, tag
 from pynecraft.function import Function, Loop
 from pynecraft.simpler import Item, Region, Sign, WallSign
-from pynecraft.values import REGENERATION
+from pynecraft.values import DUMMY, REGENERATION
 from restworld.rooms import Room, kill_em
 from restworld.world import main_clock, marker_tmpl, restworld
 
@@ -66,7 +67,7 @@ def room():
         ('bogged', 'iron_golem'),
         ('breeze', 'iron_golem'),
         ('cat', 'rabbit'),
-        ('cave_spider', 'snow_golem'), # medium priority
+        ('cave_spider', 'snow_golem'),  # medium priority
         ('creaking', 'you'),
         ('ender_dragon', None),
         ('evoker', 'iron_golem'),
@@ -74,8 +75,8 @@ def room():
         # ('frog', 'slime'),  # low priority
         ('goat', 'sheep'),  # medium priority (slow, but charging goat)
         ('hoglin', 'vindicator'),
-        ('illusioner', 'snow_golem'), # medium priority, illusioner isn't used in vanilla, but some folks use it
-        ('llama', 'vindicator'), # Wolves don't work, they just run away, only rarely getting involved
+        ('illusioner', 'snow_golem'),  # medium priority, illusioner isn't used in vanilla, but some folks use it
+        ('llama', 'vindicator'),  # Wolves don't work, they just run away, only rarely getting involved
         ('magma_cube', 'iron_golem'),
         # ('ocelot', 'chicken'),  # low priority
         ('panda', 'vindicator'),
@@ -170,6 +171,9 @@ def room():
 
     fighters = [v for v in fighter_nbts.values()]
     specs = [v for v in fighters_specs.values()]
+    kills_objective = 'arena_killed'
+    hunters_killed = Score('hunters', kills_objective)
+    victims_killed = Score('victims', kills_objective)
     room.function('monitor_init', home=False).add(
         data().remove(room.store, 'mobs'),
         data().modify(room.store, 'mobs').set().value({
@@ -185,6 +189,9 @@ def room():
             'hunter_names': [f'hunter_{i}' for i in range(COUNT_MIN, COUNT_MAX + 1)],
             'victim_names': [f'victim_{i}' for i in range(COUNT_MIN, COUNT_MAX + 1)],
         }),
+        scoreboard().objectives().add(kills_objective, DUMMY, "Killed"),
+        scoreboard().players().set(hunters_killed, 0),
+        scoreboard().players().set(victims_killed, 0),
     )
 
     actor_is_splitter = room.score('$(actor)_is_splitter')
@@ -218,7 +225,8 @@ def room():
     max_variant = room.score('max_variant')
     actual_summon = room.function('actual_summon', home=False).add(
         execute().at(e().tag(f'$(actor)_home').sort('random').limit(1)).run(
-            summon('$(id)', r(0, '$(y)', '$(z)'), '$(nbt)'))
+            summon('$(id)', r(0, '$(y)', '$(z)'), '$(nbt)')),
+        scoreboard().players().add((f'$(actor)s', kills_objective), 1),
     )
     do_summon = room.function('summon', home=False).add(
         max_variant.set('$(max)'),
@@ -308,7 +316,11 @@ def room():
     )
     arena_count_cur = function(arena_count_finish.full_name)
     room.function('arena_count_decr', home=False).add(arena_count.remove(1), arena_count_cur)
-    room.function('arena_count_incr', home=False).add(arena_count.add(1), arena_count_cur)
+    room.function('arena_count_incr', home=False).add(
+        arena_count.add(1), arena_count_cur,
+        scoreboard().players().remove(hunters_killed, 1),
+        scoreboard().players().remove(victims_killed, 1),
+    )
     room.function('arena_count_init', home=False).add(arena_count.set(5), arena_count_cur)
     room.loop('arena_count', main_clock, home=False).loop(
         lambda step: execute().at(e().tag('controls_home')).run(
@@ -417,6 +429,10 @@ def room():
         execute().if_().score(start_battle_type).matches(2).at(monitor_home).run(sky.fill('glowstone')),
         execute().if_().score(start_battle_type).matches(3).at(monitor_home).run(ground.fill('grass_block')),
         tag(a()).add('arena_safe'),
+        scoreboard().players().set(hunters_killed, 0),
+        scoreboard().players().operation(hunters_killed, MINUS, arena_count),
+        scoreboard().players().set(victims_killed, 0),
+        scoreboard().players().operation(victims_killed, MINUS, arena_count),
         function(clean_out),
     )
 
