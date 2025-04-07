@@ -397,7 +397,7 @@ def room():
     kills = room.score('kills')
     show_score = room.function('show_score').add(
         kills.set(actors_kills),
-        execute().if_().score(actors_kills).matches((100, None)).run(kills.set(999)),
+        execute().if_().score(actors_kills).matches((1000, None)).run(kills.set(999)),
         execute().if_().score(actors_kills).is_(EQ, prev_actors_kills).run(return_()), # can happen for 999
         ones.set(kills),
         ones.operation(MOD, ten),
