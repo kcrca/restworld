@@ -30,7 +30,7 @@ def room():
         list(c.speed.set(c.init_speed) for c in restworld.clocks()))
 
     # noinspection GrazieInspection
-    step_sign = Sign(('Touch', 'the', 'Sign', 'Blow'), hanging=True, state={'attached': True})
+    top_sign = Sign((None, 'Touch the', 'sign below', 'to go to …'), hanging=True, state={'attached': True})
     room.function('lights_init').add(
         WallSign(('This world lets', 'you test how', 'your resource', 'pack looks.')).place((r(1), 101, r(4)), NORTH),
         WallSign(('Almost everything', 'is here: blocks', 'mobs, particles,', 'UI, moon phases ...')).place(
@@ -51,14 +51,17 @@ def room():
                  (lambda txt: Text.text(txt).click_event().open_url('https://claritypack.com'),)).place(
             (r(4), 101, r(1)), WEST),
 
-        step_sign.place(r(6, 5, 6), NW),
-        Sign(('Go to', 'the', 'Optifine', 'Rooms'), (function('restworld:global/goto_optifine'),), hanging=True).place(r(6, 4, 6), NW),
-        step_sign.place(r(6, 5, -6), SW),
-        Sign(('Go to', 'the', 'Battle', 'Arena'), (function('restworld:global/goto_arena'),), hanging=True).place(r(6, 4, -6), SW),
-        step_sign.place(r(-6, 5, -6), SE),
-        Sign(('Go to', 'the', 'Biome', 'Sampler'), (function('restworld:global/goto_biomes'),), hanging=True).place(r(-6, 4, -6), SE),
-        step_sign.place(r(-6, 5, 6), NE),
-        Sign(('Go to', 'the', 'Photo', 'Area'), (function('restworld:global/goto_photo'),), hanging=True).place(r(-6, 4, 6), NE),
+        top_sign.place(r(6, 5, 6), NW),
+        Sign(('the', 'Optifine', 'Rooms'), (function('restworld:global/goto_optifine'),), hanging=True).place(
+            r(6, 4, 6), NW),
+        top_sign.place(r(6, 5, -6), SW),
+        Sign(('the', 'Battle', 'Arena'), (function('restworld:global/goto_arena'),), hanging=True).place(r(6, 4, -6),
+                                                                                                         SW),
+        top_sign.place(r(-6, 5, -6), SE),
+        Sign(('the', 'Biome', 'Sampler'), (function('restworld:global/goto_biomes'),), hanging=True).place(r(-6, 4, -6),
+                                                                                                           SE),
+        top_sign.place(r(-6, 5, 6), NE),
+        Sign(('the', 'Photo', 'Area'), (function('restworld:global/goto_photo'),), hanging=True).place(r(-6, 4, 6), NE),
 
         tag(e().tag('lights_home')).add('fast_lights_home'),
         tag(e().tag('lights_home')).add('main_lights_home'),
