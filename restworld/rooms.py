@@ -413,7 +413,7 @@ class Room(FunctionSet):
     def _is_func_type(x, f_name):
         return x.name.endswith(f_name) and len(x.name) > len(f_name)
 
-    def score(self, name, init: int | None = 0)->Score:
+    def score(self, name, init: int | None = 0) -> Score:
         score = Score(name, self.name)
         if not is_arg(name):
             self._scores.add(score)
