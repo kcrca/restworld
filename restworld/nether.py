@@ -22,12 +22,17 @@ def room():
     room.function('wither_skeleton_init').add(placer(r(-0.2, 2, 0), rhs_dir, adults=True).summon(
         'wither_skeleton', nbt={'equipment': {'mainhand': Item.nbt_for('stone_sword')}}))
     fireball = Entity('Fireball', {'direction': [0, 0, 0], 'ExplosionPower': 0})
-    ghast_height, ghast_dir = 6, WEST
     room.function('fireball_init').add(
         placer(r(1, 3, 0), rhs_dir, adults=True).summon(fireball),
         WallSign((None, 'Fireball')).place(r(0, 2, 0), WEST))
-    room.function('ghast_init', exists_ok=True).add(
-        placer(r(-0.5, ghast_height, 0), ghast_dir, adults=True).summon('Ghast'))
+    ghast_height, ghast_dir = 6, WEST
+
+    def ghast_loop(step):
+        yield from room.mob_placer(r(1.5, ghast_height, 0), ghast_dir, adults=True, tags='ghastly').summon(step.elem)
+        if step.elem.startswith('Happy'):
+            yield from room.mob_placer(r(0.5, ghast_height, 4), ghast_dir, kids=True, tags='ghastly').summon(step.elem)
+
+    room.loop('ghast', main_clock).add(kill_em(e().tag('ghastly'))).loop(ghast_loop, ('Ghast', 'Happy Ghast'))
     room.function('magma_cube_init').add(placer(r(0, 3, 0), SOUTH, adults=True).summon('magma_cube'))
     room.loop('magma_cube', main_clock).loop(
         lambda step: data().modify(e().tag('magma_cube').limit(1), 'Size').set().value(step.elem),

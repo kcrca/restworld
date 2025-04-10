@@ -4,10 +4,11 @@ import re
 from typing import Iterable, Union
 
 from pynecraft import commands, info
-from pynecraft.base import DOWN, E, EAST, EQ, FacingDef, N, NORTH, Nbt, RelCoord, S, SOUTH, UP, W, WEST, as_facing, r, \
+from pynecraft.base import DOWN, E, EAST, EQ, FacingDef, N, NORTH, Nbt, RelCoord, S, SOUTH, UP, W, WEST, as_facing, \
+    r, \
     rotate_facing, to_id, to_name
-from pynecraft.commands import Block, Commands, Entity, MOD, MOVE, REPLACE, ScoreName, as_block, as_score, \
-    clone, data, e, execute, fill, function, item, kill, n, p, s, say, schedule, setblock, summon, tag
+from pynecraft.commands import Block, Commands, Entity, MOD, MOVE, REPLACE, SUCCESS, ScoreName, as_block, as_score, \
+    clone, data, e, execute, fill, function, item, kill, n, p, ride, s, say, schedule, setblock, summon, tag
 from pynecraft.function import Function, Loop
 from pynecraft.info import Color, armor_equipment, colors, sherds, stems
 from pynecraft.simpler import Item, ItemFrame, Region, Sign, TextDisplay, WallSign
@@ -996,8 +997,10 @@ def color_functions(room):
             yield setblock(r(-9, 2, 2), bed_head)
             yield setblock(r(-9, 2, 3), Block(f'{color.id}_bed', {'facing': NORTH, 'part': 'foot'}))
             room.particle(bed_head, 'colorings_base', r(-9, 2.75, 2), step, if_clause(plain, int(is_plain)))
-            frame_nbt = {'Item': Item.nbt_for(f'{color.id}_dye'), 'ItemRotation': 0}
-            yield data().merge(e().tag('colorings_item_frame').limit(1), frame_nbt)
+            yield data().merge(e().tag('colorings_item_frame').limit(1),
+                               {'Item': Item.nbt_for(f'{color.id}_dye'), 'ItemRotation': 0})
+            yield data().merge(e().tag('colorings_frame_harness').limit(1),
+                               {'Item': Item.nbt_for(f'{color.id}_harness'), 'ItemRotation': 0})
             bundle = Item.nbt_for(f'{color.id}_bundle')
             yield data().merge(armor_stand, {
                 'equipment': {'feet': leather_color, 'legs': leather_color, 'chest': leather_color,
@@ -1009,6 +1012,8 @@ def color_functions(room):
                 yield data().merge(e().tag(f'colorings_{w}').limit(1), {'CollarColor': color.num})
             yield data().modify(e().tag('colorings_llama').limit(1), 'equipment.body').set().value(
                 {'id': color.id + '_carpet'})
+            yield data().modify(e().tag('colorings_ghast').limit(1), 'equipment.body').set().value(
+                {'id': color.id + '_harness'})
 
         yield data().merge(n().tag('colorings_bundle_frame'), {'Item': bundle, 'ItemRotation': 0})
         yield data().merge(e().tag('colorings_sheep').limit(1), sheep_nbt)
@@ -1067,11 +1072,16 @@ def color_functions(room):
     sheep_nbt = Nbt(
         {'Tags': ['colorings_sheep', 'colorings_item'], 'Variant': 1, 'Rotation': [-35, 0], 'Leashed': True}).merge(
         mob_nbt)
+    ghast_nbt = Nbt(
+        {'Tags': ['colorings_ghast', 'colorings_item', 'colorings_enchantable'], 'Rotation': [55, 0],
+         'equipment': {'body': Item.nbt_for('white_harness')}}).merge(
+        mob_nbt)
     stand_nbt = {'Tags': ['colorings_armor_stand', 'colorings_item', 'colorings_enchantable'], 'Rotation': [30, 0],
                  'equipment': {}}
     for place, piece in armor_equipment.items():
         stand_nbt['equipment'][place] = Item.nbt_for(f'leather_{piece}')
     armor_frames = {
+        'harness': r(-2.5, 4, 0.5),
         'wolf_armor': r(-8, 4, 1),
         'leather_boots': r(0, 2, 1),
         'leather_leggings': r(0, 3, 1),
@@ -1107,6 +1117,7 @@ def color_functions(room):
         Entity('armor_stand', stand_nbt).summon(r(-1.1, 2, 3)),
         Entity('llama', llama_nbt).summon(r(-11, 2, 5.8)),
         Entity('sheep', sheep_nbt).summon(r(-9.0, 2, 5.0)),
+        Entity('happy_ghast', ghast_nbt).summon(r(-5.5, 5.3, -2.0)),
         (armor_frame(k, v) for k, v in armor_frames.items()),
         execute().as_(e().tag('colorings_names')).run(
             data().merge(s(), {'CustomNameVisible': True})),
@@ -1118,14 +1129,41 @@ def color_functions(room):
         WallSign((None, 'Glass')).place(r(-7, 3, 1), SOUTH),
         colored_signs(None, colored_signs_init),
         WallSign([]).place(r(-4, 2, 4, ), SOUTH), kill(e().type('item')),
-        room.label(r(-1, 2, 7), 'Lit Candles', NORTH), room.label(r(-8, 2, 7), 'Plain', NORTH),
-        room.label(r(-3, 2, 7), 'Enchanted', NORTH), room.label(r(-8, 2, 7), 'Plain', NORTH),
+        room.label(r(-1, 2, 7), 'Lit Candles', NORTH),
+        room.label(r(-3, 2, 7), 'Enchanted', NORTH),
+        room.label(r(-7, 2, 7), 'Plain', NORTH),
+        room.label(r(-9, 2, 7), 'Ghast Riders', NORTH),
+        room.label(r(-9, 2, 6.85), '0', NORTH, tags='rider_count'),
         room.label(r(-11, 2, 3), 'Glowing', NORTH),
         room.label(r(-8, 2, 3), 'Collar', NORTH),
         room.label(r(0, 2, 3), 'Leggings', NORTH),
     )
     room.loop('colorings', main_clock).add(erase(r(-9, 2, 2), r(-9, 2, 3))).loop(colorings_loop, colors).add(
         colored_signs(None, render_signs_glow))
+    rider_on = room.function('colorings_ghasts_rider_on', home=False).add(
+        Entity('husk', nbt={'NoAI': True}).tag('ghast_rider').summon(r(0, -5, -10)),
+        ride(n().tag('ghast_rider')).mount(n().tag('colorings_ghast'))
+    )
+    rider_clear = room.function('colorings_ghasts_rider_clear', home=False).add(
+        execute().as_(e().tag('ghast_rider')).run(ride(s()).dismount()),
+        kill_em(e().tag('ghast_rider')),
+    )
+    ghast = n().tag('colorings_ghast')
+
+    def show_rider_count(count):
+        return data().modify(n().tag('rider_count'), 'text').set().value(f'{count}')
+
+    ghast_full = room.score('ghast_full')
+    room.function('colorings_ghasts_riders', home=False).add(
+        execute().store(SUCCESS).score(ghast_full).run(data().get(n().tag('colorings_ghast'), 'Passengers[3]')),
+        execute().if_().score(ghast_full).matches(0).run(function(rider_on)),
+        execute().unless().score(ghast_full).matches(0).run(function(rider_clear)),
+        show_rider_count(0),
+        execute().if_().data(ghast, 'Passengers[0]').run(show_rider_count(1)),
+        execute().if_().data(ghast, 'Passengers[1]').run(show_rider_count(2)),
+        execute().if_().data(ghast, 'Passengers[2]').run(show_rider_count(3)),
+        execute().if_().data(ghast, 'Passengers[3]').run(show_rider_count(4)),
+    )
     room.function('colorings_plain_off', home=False).add(
         execute().unless().score(plain).matches(0).run(
             clone((coloring_coords[0][0], coloring_coords[0][1].value - coloring_coords[1][1].value + 1,
