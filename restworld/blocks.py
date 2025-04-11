@@ -261,7 +261,7 @@ def room():
         setblock(r(0, 3, -1), 'structure_void'),
         setblock(r(1, 3, 0), 'structure_void'),
         setblock(r(-1, 3, 0), 'structure_void'),
-        room.label(r(-1, 2, 0), 'Waterlogged', SOUTH),
+        room.label(r(-1, 2, 0), 'Waterlogged', NORTH),
         room.label(r(1, 2, 0), 'Ghastling', NORTH),
     )
     room.loop('dried_ghast', main_clock).loop(dried_ghast_loop, range(4))
