@@ -107,10 +107,10 @@ def room():
         function(menu_clear),
         fill(r(-9, 2, -9), r(9, 4, 9), 'air').replace('water'),
         fill(r(-9, 2, -9), r(9, 4, 9), 'air').replace('structure_void'),
-        room.label(r(-2, 2, -2), 'This Corner\\n\u21e7', NW),
-        room.label(r(2, 2, -2), 'This Corner\\n\u21e7', NE),
-        room.label(r(2, 2, 2), 'This Corner\\n\u21e7', SE),
-        room.label(r(-2, 2, 2), 'This Corner\\n\u21e7', SW),
+        room.label(r(-2, 2, -2), 'This Corner\\n\u21e7', SE),
+        room.label(r(2, 2, -2), 'This Corner\\n\u21e7', SW),
+        room.label(r(2, 2, 2), 'This Corner\\n\u21e7', NW),
+        room.label(r(-2, 2, 2), 'This Corner\\n\u21e7', NE),
     )
     room.function('mob_menu_home', exists_ok=True).add(
         tag(n().tag('mob_menu_home')).add('summon_mobs_home'))

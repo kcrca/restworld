@@ -58,7 +58,7 @@ def room():
         walls.append('%sstone Wall' % ty)
     assert len(blocks) == 2  # allows us to use 'replace previous type' because there are only two types
 
-    room.function('arrows_init').add(WallSign(()).place(r(1, 2, 0), EAST), room.label(r(0, 2, -1), 'Fire', WEST))
+    room.function('arrows_init').add(WallSign(()).place(r(1, 2, 0), WEST), room.label(r(0, 2, -1), 'Fire', EAST))
 
     fire_arrow = room.score('fire_arrow')
 
@@ -116,7 +116,7 @@ def room():
             Entity('wolf', name='Wolf Armor'), tags=('wolf_armor_damage',),
             nbt={'Owner': 'dummy', 'equipment': {'body': Item.nbt_for('wolf_armor')}}),
         WallSign((None, 'Wolf Armor', 'Damage: None', 'Color: None')).place(wolf_sign_pos, NORTH),
-        room.label(r(0, 2, -2), 'Color', SOUTH))
+        room.label(r(0, 2, -2), 'Color', NORTH))
     room.function('wolf_armor_home', exists_ok=True).add(tag(e().tag('wolf_armor_home')).add('wolf_armor_damage_home'))
     room.function('wolf_damage', home=False).add(
         tag(e().tag('wolf_armor_home')).remove('wolf_armor_color_home'),
@@ -189,7 +189,7 @@ def room():
     room.function('ores_init').add(
         summon(frame, r(3, 3, 3)),
         summon(frame.merge_nbt({'Invisible': True}), r(4, 3, 3)),
-        room.label(r(3, 2, 7), 'Deepslate', NORTH))
+        room.label(r(3, 2, 7), 'Deepslate', SOUTH))
 
     raw_frame = 'ore_raw_frame'
     volume = Region(r(8, 5, 6), r(0, 2, -1))
@@ -310,9 +310,10 @@ def basic_functions(room, enchanted):
                    summon('item_frame', r(3, 2, 1), {'Facing': 2, 'Tags': ['armor_gem', 'armor_frame']}),
                    summon('item_frame', r(4, 4, 1),
                           {'Facing': 2, 'Tags': ['armor_horse_frame', 'enchantable', 'armor_frame']}),
-                   room.label(r(5, 2, -2), 'Saddle', SOUTH), room.label(r(3, 2, -2), 'Enchanted', SOUTH),
-                   room.label(r(1, 2, -2), 'Turtle Helmet', SOUTH),
-                   room.label(r(-1, 2, -2), 'Elytra & Leggings', SOUTH))
+                   room.label(r(5, 2, -2), 'Saddle', NORTH),
+                   room.label(r(3, 2, -2), 'Enchanted', NORTH),
+                   room.label(r(1, 2, -2), 'Turtle Helmet', NORTH),
+                   room.label(r(-1, 2, -2), 'Elytra & Leggings', NORTH))
 
     materials = (
         ('wooden', 'leather', True, Block('oak_planks'), 'oak_sign'),
@@ -437,8 +438,8 @@ def fencelike_functions(room):
 
     room.function('fencelike_init').add(
         WallSign(()).place(r(6, 2, 0), NORTH),
-        room.label(r(6, 2, -2), 'Height', SOUTH), room.label(r(4, 2, -2), 'Glass Panes', SOUTH),
-        room.label(r(3, 2, -2), 'Walls', SOUTH), room.label(r(2, 2, -2), 'Fences', SOUTH))
+        room.label(r(6, 2, -2), 'Height', NORTH), room.label(r(4, 2, -2), 'Glass Panes', NORTH),
+        room.label(r(3, 2, -2), 'Walls', NORTH), room.label(r(2, 2, -2), 'Fences', NORTH))
 
     def fencelike(block: BlockDef):
         block = as_block(block)
@@ -543,7 +544,7 @@ def copper_functions(room):
                                                        execute().at(copper_home).run(
                                                            function('restworld:materials/waxed_coppers_cur')))
     room.function('coppers_init').add(
-        room.label(r(2, 2, -2), 'Waxed', SOUTH),
+        room.label(r(2, 2, -2), 'Waxed', NORTH),
         function(run_unwaxed),
         ItemFrame(NORTH).tag('materials', 'copper_door_frame').summon(r(0, 4, 4), )
     )
@@ -560,7 +561,7 @@ def wood_functions(room):
         summon('item_frame', r(3, 4, -3), {
             'Tags': ['wood_hanging_sign_frame', room.name], 'Facing': 3, 'Fixed': True,
             'Item': {'id': 'stone', 'Count': 1}}),
-        room.label(r(-1, 2, 4), 'Chest Boat', NORTH),
+        room.label(r(-1, 2, 4), 'Chest Boat', SOUTH),
     )
 
     volume = Region(r(-5, 1, -4), r(4, 5, 3))
@@ -872,8 +873,8 @@ def trim_functions(room):
 
     # These labels have to go somewhere...
     change_init.add(
-        room.label(r(-1, 2, -1), 'Leggings', SOUTH), room.label(r(1, 2, -1), 'Turtle Helmet', SOUTH),
-        room.label(r(3, 2, -1), 'Labels', SOUTH))
+        room.label(r(-1, 2, -1), 'Leggings', NORTH), room.label(r(1, 2, -1), 'Turtle Helmet', NORTH),
+        room.label(r(3, 2, -1), 'Labels', NORTH))
 
     show_init.add(show.set(0), run_show_cleanup)
     show_menu.add(

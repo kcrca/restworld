@@ -4,7 +4,7 @@ import math
 import os
 import re
 
-from pynecraft.base import EAST, NE, NORTH, OVERWORLD, SOUTH, SW, as_facing, r, to_id
+from pynecraft.base import EAST, NE, NORTH, OVERWORLD, SOUTH, SW, WEST, as_facing, r, to_id
 from pynecraft.commands import Block, CREATIVE, Entity, SURVIVAL, e, execute, fill, function, gamemode, kill, p, \
     setblock, tp
 from pynecraft.info import armor_equipment, colors, corals, stems, woods
@@ -203,12 +203,12 @@ def room():
         function(do_drop))
 
     room.function('photo_shoot_init').add(
-        room.label(r(1, 2, 0), 'Mob Photo', EAST),
-        room.label(r(0, 2, 3), 'Go Home', SOUTH),
+        room.label(r(1, 2, 0), 'Mob Photo', WEST),
         room.label(r(0, 2, 3), 'Go Home', NORTH),
-        room.label(r(0, 2, 7), 'Sample Photo', SOUTH),
-        room.label(r(0, 2, -2), 'Reset Room', NORTH),
-        room.label(r(0, 2, -6), 'Quilt Photo', NORTH),
+        room.label(r(0, 2, 3), 'Go Home', SOUTH),
+        room.label(r(0, 2, 7), 'Sample Photo', NORTH),
+        room.label(r(0, 2, -2), 'Reset Room', SOUTH),
+        room.label(r(0, 2, -6), 'Quilt Photo', SOUTH),
     )
 
     room.function('sampler_init').add(

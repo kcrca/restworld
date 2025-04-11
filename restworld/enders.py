@@ -25,7 +25,7 @@ def room():
     room.loop('cage', main_clock).loop(cage_loop, range(0, 2))
 
     room.function('crystal_init', exists_ok=True).add(
-        room.label(r(0, 2, -4), 'Cage', SOUTH),
+        room.label(r(0, 2, -4), 'Cage', NORTH),
         execute().as_(e().tag('crystal_home')).run(tag(s()).add('blockers_home')))
 
     def crystal_loop(step):
@@ -60,7 +60,7 @@ def room():
 
     room.function('end_portal_init', exists_ok=True).add(
         execute().as_(e().tag('end_portal_home')).run(tag(s()).add('blockers_home')),
-        room.label(r(-6, 2, 5), 'Show Particles', SOUTH))
+        room.label(r(-6, 2, 5), 'Show Particles', NORTH))
 
     def end_portal_loop(step):
         before = 'end_portal' if step.elem else 'air'

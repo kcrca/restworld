@@ -88,7 +88,7 @@ def room():
     bamboo_funcs(room)
     three_funcs(room)
 
-    room.function('cave_vines_init').add(room.label(r(0, 2, -1), 'Cave Vine Age 25', WEST))
+    room.function('cave_vines_init').add(room.label(r(0, 2, -1), 'Cave Vine Age 25', EAST))
     cave_vines_tops = room.score('cave_vines_tops')
 
     def cave_vines_loop(step):
@@ -171,7 +171,7 @@ def room():
     )
     farmland_init = room.function('farmland_strip_init').add(
         kill(e().tag('farmland_strip_labels')),
-        room.label(r(-3, 2, 0), 'Moisture Values', WEST)
+        room.label(r(-3, 2, 0), 'Moisture Values', EAST)
     )
 
     farmland_init.add(text_display('Moisture').tag('farmland_strip_labels').summon(r(0, 2.3, 0)))
@@ -289,7 +289,7 @@ def room():
 
     room.loop('propagule', main_clock).loop(propagule_loop, range(4))
 
-    room.function('shrooms_init').add(room.label(r(1, 2, 1), 'Vine Age 25', EAST))
+    room.function('shrooms_init').add(room.label(r(1, 2, 1), 'Vine Age 25', WEST))
 
     def shrooms_loop(step):
         yield data().merge(r(-1, 0, -1), {'mode': 'LOAD', 'name': 'restworld:%s_shroom' % step.elem})
@@ -340,7 +340,7 @@ def room():
         room.particle(bush, 'sweet_berry', r(0, 4, 0), step)
 
     room.loop('sweet_berry', main_clock).loop(sweet_berry_loop, range(0, 4), bounce=True)
-    room.function('sweet_berry_init').add(room.label(r(5, 2, 2), 'Show Particles', NORTH))
+    room.function('sweet_berry_init').add(room.label(r(5, 2, 2), 'Show Particles', SOUTH))
     room.loop('sweet_berry_soil', main_clock).loop(lambda step: setblock(r(0, 2, 1), step.elem),
                                                    ('Grass Block', 'Dirt', 'Podzol', 'Coarse Dirt'))
 
@@ -371,7 +371,7 @@ def room():
     room.loop('trees', main_clock).add(kill(e().tag(floor_tag))).loop(trees_loop, tree_items).add(
         execute().at(e().tag('plants_room_beg_home')).run(fill(r(0, 1, 0), r(33, 6, 52), 'water').replace('ice')),
         WallSign((None, 'Lily Pad')).place(r(3, 2, 15), WEST))
-    room.function('trees_init').add(room.label(r(0, 2, 16), 'Freeze Biome'))
+    room.function('trees_init').add(room.label(r(0, 2, 16), 'Freeze Biome', WEST))
 
     def tulips_loop(step):
         which = f'{to_id(step.elem)}_tulip'
@@ -446,8 +446,8 @@ def three_funcs(room):
     ).loop(three_age_loop, range(16)).add(
         execute().unless().score(flower).matches(0).run(setblock(r(0, 5, 0), 'cactus_flower')))
     room.function('three_init').add(
-        room.label(r(-1, 2, 0), 'Change Age', WEST),
-        room.label(r(-1, 2, 3), 'Cactus Flower', WEST))
+        room.label(r(-1, 2, 0), 'Change Age', EAST),
+        room.label(r(-1, 2, 3), 'Cactus Flower', EAST))
     switch_to_func('height')
     switch_to_func('age')
     room.loop('cactus_soil', main_clock).loop(lambda step: setblock(r(0, 2, 1), step.elem), ('Sand', 'Red Sand'))

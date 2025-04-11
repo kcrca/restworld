@@ -30,7 +30,7 @@ def room():
                 room_name='Connected Textures')
     room.reset_at((-10, 0), facing=EAST)
 
-    room.function('connect_room_init', exists_ok=True).add(room.label(r(8, 2, 0), 'Go Home', SOUTH))
+    room.function('connect_room_init', exists_ok=True).add(room.label(r(8, 2, 0), 'Go Home', NORTH))
 
     above = ('Change a block', 'in an item frame', 'to change the', 'block used')
     below1 = ('These blocks are', 'templates for the', 'blocks above')
@@ -54,7 +54,7 @@ def room():
         WallSign().messages(below2).place(r(2, -9, 0), EAST),
         WallSign().messages(below2).place(r(-2, -9, 0), WEST),
 
-        room.label(r(0, 2, 0), 'Go Home', SOUTH),
+        room.label(r(0, 2, 0), 'Go Home', NORTH),
     )
 
     # The pattern block for each direction.

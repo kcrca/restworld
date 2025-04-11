@@ -69,7 +69,7 @@ def room():
     room.function('beacon_init').add(
         beacon_on.set(0),
         at(WallSign((None, 'Pyramid Height: 0')).place(r(-1, 6, 0), WEST)),
-        room.label(r(-3, 2, -5), 'Beacon', EAST),
+        room.label(r(-3, 2, -5), 'Beacon', WEST),
     )
     room.function('beacon_home', exists_ok=True).add(tag(e().tag('beacon_home')).add('beacon_homer'))
     bossbar_which = room.score('bossbar_which')
@@ -94,9 +94,9 @@ def room():
         execute().if_().score(toggle_bossbar).matches(0).run(function(bb_off)),
     )
 
-    bb_color_init = room.function('bossbar_color_init', home=False).add(room.label(r(1, 2, 1), 'Color', WEST))
-    bb_style_init = room.function('bossbar_style_init', home=False).add(room.label(r(1, 2, 0), 'Style', WEST))
-    bb_value_init = room.function('bossbar_value_init', home=False).add(room.label(r(1, 2, -1), 'Value', WEST))
+    bb_color_init = room.function('bossbar_color_init', home=False).add(room.label(r(1, 2, 1), 'Color', EAST))
+    bb_style_init = room.function('bossbar_style_init', home=False).add(room.label(r(1, 2, 0), 'Style', EAST))
+    bb_value_init = room.function('bossbar_value_init', home=False).add(room.label(r(1, 2, -1), 'Value', EAST))
 
     def bossbar_color_loop(step):
         yield bossbar().set('restworld:bossbar').color(step.elem.lower())
@@ -125,7 +125,7 @@ def room():
         execute().at(e().tag('bossbar_run_home')).run(function(bb_value_init)),
         function(bb_off),
         WallSign((None, 'Boss Bar')).place(r(0, 3, 0, ), EAST),
-        room.label(r(1, 3, 0), 'Bossbar', WEST),
+        room.label(r(1, 3, 0), 'Bossbar', EAST),
     )
 
     room.loop('bossbar_run', main_clock).loop(None, range(0, 1)).add(
@@ -149,7 +149,7 @@ def room():
 
     room.function('brewing_init').add(
         function('restworld:gui/switch_brewing_off'),
-        room.label(r(-1, 2, -1), 'Brew', EAST))
+        room.label(r(-1, 2, -1), 'Brew', WEST))
     bottle_possibilities = ((), (0,), (1,), (2,), (2, 0), (1, 2), (0, 1), (0, 1, 2))
     room.loop('brewing_rotate', main_clock).add(
         item().replace().block(r(0, 2, 0), 'container.3').with_('air'),
@@ -211,7 +211,7 @@ def room():
         setblock(r(0, 2, 0), Block('furnace', {'facing': WEST}, {'CookTime': 0})),
         setblock(r(3, 2, 0), Block('blast_furnace', {'facing': WEST}, {'CookTime': 0})),
         setblock(r(0, 2, 3), Block('smoker', {'facing': WEST}, {'CookTime': 0})),
-        room.label(r(-1, 2, 1), 'Cook', EAST))
+        room.label(r(-1, 2, 1), 'Cook', WEST))
 
     room.function('cookers_run', home=False).add(
         item().replace().block(r(0, 2, 0), 'container.1').with_('stick', 64),

@@ -2,7 +2,7 @@ import re
 from collections import defaultdict
 
 from pynecraft import info
-from pynecraft.base import Arg, EAST, EQ, WEST, as_facing, d, r, to_name
+from pynecraft.base import Arg, EAST, EQ, as_facing, d, r, to_name
 from pynecraft.commands import Entity, REPLACE, SUCCESS, Text, comment, data, e, execute, fill, function, item, kill, \
     loot, n, p, schedule, setblock, summon, tag
 from pynecraft.info import block_items
@@ -157,7 +157,7 @@ def room():
     recent_things_signs = (r(-2, 4, 1), r(-2, 4, 0), r(-2, 4, -1))[::-1]
     chest_pos = r(-1, -2, 0)
     room.function('models_room_init', exists_ok=True).add(
-        room.label(r(-2, 2, 0), 'Keep Inventory', WEST))
+        room.label(r(-2, 2, 0), 'Keep Inventory', EAST))
     room.function('model_init').add(
         tag(n().tag('model_home')).add('model_head_home'),
         kill(all_src),
@@ -169,14 +169,14 @@ def room():
         ItemFrame(EAST).item('iron_pickaxe').tag('model_src', 'models').fixed(False).summon(r(2, 2, 2)),
         ItemFrame(EAST, nbt={'Invisible': True}, name='Invisible Frame').tag('model_invis_frame', 'models').fixed(
             False).summon(r(2, 2, -2)),
-        room.label(r(2, 3, 2), 'Put something in this frame to see it in many views', WEST, vertical=True),
+        room.label(r(2, 3, 2), 'Put something in this frame to see it in many views', EAST, vertical=True),
 
         (WallSign((), wood='birch').place(pos, EAST) for pos in recent_things_signs),
         setblock(chest_pos, 'chest'),
         needs_restore.set(0),
 
-        room.label(r(0, 2, -1), 'On Head', WEST),
-        room.label(r(1, 2.5, 0), 'None', WEST, vertical=True, tags=('current_model',)),
+        room.label(r(0, 2, -1), 'On Head', EAST),
+        room.label(r(1, 2.5, 0), 'None', EAST, vertical=True, tags=('current_model',)),
 
         is_empty.set(1),
         schedule().function('restworld:models/model_copy', '1s', REPLACE)

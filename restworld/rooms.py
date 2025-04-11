@@ -159,10 +159,9 @@ class Room(FunctionSet):
         func = self.functions[f'{self.name}_room_init']
         x = r(xz[0])
         z = r(xz[1])
-        if facing:
-            facing = as_facing(facing)
-        else:
-            facing = rotate_facing(self.facing, 180)
+        if not facing:
+            facing = self.facing
+        facing = as_facing(facing)
         func.add(
             self.label((x, r(2), z), label_text, facing.name),
             setblock((x, r(2), z), ('stone_button', {'facing': self.facing, 'face': 'floor'})),
@@ -439,21 +438,21 @@ class Room(FunctionSet):
 
     _transform = {
         False: {
-            SOUTH: ((0, 1, 0), 1, {'right_rotation': [0.7, 0.0, 0.0, -0.7], 'left_rotation': [0.0, 1.0, 0.0, 0.0],
+            NORTH: ((0, 1, 0), 1, {'right_rotation': [0.7, 0.0, 0.0, -0.7], 'left_rotation': [0.0, 1.0, 0.0, 0.0],
                                    'translation': [0.0, 0.0, -_ADJ]}),
-            NORTH: ((0, 1, 0), 1, {'right_rotation': [0.7, 0.0, 0.0, -0.7], 'left_rotation': [0.0, 0.0, 0.0, 1.0],
+            SOUTH: ((0, 1, 0), 1, {'right_rotation': [0.7, 0.0, 0.0, -0.7], 'left_rotation': [0.0, 0.0, 0.0, 1.0],
                                    'translation': [0.0, 0.0, _ADJ]}),
-            EAST: ((0, 1, 0), 1, {'right_rotation': [0.7, 0.0, 0.0, -0.7], 'left_rotation': [0.0, 0.7, 0.0, -0.7],
+            WEST: ((0, 1, 0), 1, {'right_rotation': [0.7, 0.0, 0.0, -0.7], 'left_rotation': [0.0, 0.7, 0.0, -0.7],
                                   'translation': [-_ADJ, 0.0, 0.0]}),
-            WEST: ((0, 1, 0), 1, {'right_rotation': [0.7, 0.0, 0.0, -0.7], 'left_rotation': [0.0, 0.7, 0.0, 0.7],
+            EAST: ((0, 1, 0), 1, {'right_rotation': [0.7, 0.0, 0.0, -0.7], 'left_rotation': [0.0, 0.7, 0.0, 0.7],
                                   'translation': [_ADJ, 0.0, 0.0]}),
-            NW: ((0, 1, 0), 1, {'right_rotation': [0.7, 0.0, 0.0, -0.7], 'left_rotation': [0.0, 0.39, 0.0, 1.0],
+            SE: ((0, 1, 0), 1, {'right_rotation': [0.7, 0.0, 0.0, -0.7], 'left_rotation': [0.0, 0.39, 0.0, 1.0],
                                 'translation': [_DIAG_ADJ, 0.0, _DIAG_ADJ]}),
-            NE: ((0, 1, 0), 1, {'right_rotation': [0.7, 0.0, 0.0, -0.7], 'left_rotation': [0.0, -0.39, 0.0, 1.0],
+            SW: ((0, 1, 0), 1, {'right_rotation': [0.7, 0.0, 0.0, -0.7], 'left_rotation': [0.0, -0.39, 0.0, 1.0],
                                 'translation': [-_DIAG_ADJ, 0.0, _DIAG_ADJ]}),
-            SE: ((0, 1, 0), 1, {'right_rotation': [0.7, 0.0, 0.0, -0.7], 'left_rotation': [0.0, 0.9, 0.0, -0.4],
+            NW: ((0, 1, 0), 1, {'right_rotation': [0.7, 0.0, 0.0, -0.7], 'left_rotation': [0.0, 0.9, 0.0, -0.4],
                                 'translation': [-_DIAG_ADJ, 0.0, -_DIAG_ADJ]}),
-            SW: ((0, 1, 0), 1, {'right_rotation': [0.7, 0.0, 0.0, -0.7], 'left_rotation': [0.0, - 0.9, 0.0, -0.4],
+            NE: ((0, 1, 0), 1, {'right_rotation': [0.7, 0.0, 0.0, -0.7], 'left_rotation': [0.0, - 0.9, 0.0, -0.4],
                                 'translation': [_DIAG_ADJ, 0.0, -_DIAG_ADJ]}),
         },
         True: {
@@ -468,12 +467,12 @@ class Room(FunctionSet):
         },
     }
 
-    def label(self, pos: Position, txt: str, looking=EAST, *, vertical=False, bump=0.02, tags=()) -> str:
+    def label(self, pos: Position, txt: str, facing, *, vertical=False, bump=0.02, tags=(), nbt=None) -> str:
         if isinstance(tags, str):
             tags = (tags,)
         t = ['label', self.name]
         t.extend(tags)
-        offset_tmpl, bump_sign, xform = self._transform[vertical][looking]
+        offset_tmpl, bump_sign, xform = self._transform[vertical][facing]
         offset = []
         for v in offset_tmpl:
             if v == 0:
@@ -485,8 +484,10 @@ class Room(FunctionSet):
                     offset.append(bump)
         pos = RelCoord.add(pos, offset)
         scale = 0.45
-        return TextDisplay(txt, nbt={'Tags': t, 'line_width': int(200 * scale), 'transformation': xform,
-                                     'background': 0}).scale(scale).summon(pos)
+        display_nbt = Nbt({'Tags': t, 'line_width': int(200 * scale), 'transformation': xform, 'background': 0})
+        if nbt:
+            display_nbt = display_nbt.merge(nbt)
+        return TextDisplay(txt, nbt=display_nbt).scale(scale).summon(pos)
 
     def particle(self, block: BlockDef, name: str, pos: Position, step: Loop.Step = None, clause=None):
         if not self.particle_func:

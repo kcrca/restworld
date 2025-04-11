@@ -185,7 +185,7 @@ def room():
         Block('Soul Campfire', {'lit': True}),
         Block('soul_campfire', {'lit': False}, name='Soul Campfire|Unlit'),
     ), expandable=False)
-    campfire_init.add(room.label(r(-1, 2, 0), 'Cook', SOUTH))
+    campfire_init.add(room.label(r(-1, 2, 0), 'Cook', NORTH))
     campfire_main.add(
         execute().if_().score(campfire_food).matches(0).run(data().remove(r(0, 3, 0), 'Items')),
         # For some reason the Count is required here
@@ -228,7 +228,7 @@ def room():
     room.loop('creaking_heart', main_clock).loop(creaking_heart_loop, ('awake', 'dormant', 'uprooted'))
     room.function('creaking_heart_init').add(
         WallSign((None, 'Creaking Heart')).place(r(0, 2, 1), SOUTH),
-        room.label(r(1, 2, 0), "With Logs", NORTH),
+        room.label(r(1, 2, 0), "With Logs", SOUTH),
     )
     blocks('deepslate', NORTH, (
         'Deepslate', 'Chiseled|Deepslate', 'Polished|Deepslate', 'Cracked|Deepslate|Bricks', 'Cracked|Deepslate|Tiles',
@@ -261,8 +261,8 @@ def room():
         setblock(r(0, 3, -1), 'structure_void'),
         setblock(r(1, 3, 0), 'structure_void'),
         setblock(r(-1, 3, 0), 'structure_void'),
-        room.label(r(-1, 2, 0), 'Waterlogged', SOUTH, tags='foo'),
-        room.label(r(1, 2, 0), 'Ghastling', SOUTH),
+        room.label(r(-1, 2, 0), 'Waterlogged', SOUTH),
+        room.label(r(1, 2, 0), 'Ghastling', NORTH),
     )
     room.loop('dried_ghast', main_clock).loop(dried_ghast_loop, range(4))
 
@@ -361,7 +361,7 @@ def room():
         execute().at(copper_home).run(function('restworld:blocks/waxed_copper_blocks_cur')),
     )
     room.function('copper_blocks_init').add(
-        room.label(r(-2, 2, -1), 'Waxed', looking=SOUTH),
+        room.label(r(-2, 2, -1), 'Waxed', NORTH),
         function(run_unwaxed)
     )
 
@@ -460,7 +460,7 @@ def room():
 
     room.function('armor_stand_init').add(
         room.mob_placer(r(0, 3, 0), NORTH, adults=True).summon('armor_stand', tags=('pose_stand',)),
-        room.label(r(-1, 2, 0), "Get Small", SOUTH))
+        room.label(r(-1, 2, 0), "Get Small", NORTH))
     room.loop('armor_stand', main_clock).loop(
         armor_stand_loop,
         (None,
@@ -580,7 +580,7 @@ def room():
     blocks('infested', NORTH, infestables)
     two = room.score('two')
     room.function('infested_init', exists_ok=True).add(
-        room.label(r(-1, 2, 0), 'Infested Only', SOUTH),
+        room.label(r(-1, 2, 0), 'Infested Only', NORTH),
         two.set(2))
     i_even = room.score('infested_even')
     infested = room.score('infested')
@@ -620,7 +620,7 @@ def room():
     room.function('lantern_init').add(WallSign((None, None, 'Lantern')).place(r(0, 2, -1, ), NORTH))
     room.loop('lantern', main_clock).loop(lantern_loop, range(0, 4))
 
-    room.function('ore_blocks_init').add(room.label(r(-1, 2, 0), 'Deepslate', SOUTH))
+    room.function('ore_blocks_init').add(room.label(r(-1, 2, 0), 'Deepslate', NORTH))
     basic = ['Coal', 'Iron', 'Copper', 'Gold', 'Lapis', 'Redstone', 'Diamond', 'Emerald']
     odder = ['Nether Quartz', 'Nether Gold']
     ores = list(f'{t} Ore' for t in basic + odder) + ['Ancient Debris', ]
@@ -892,7 +892,7 @@ def room():
     wall_torches_score = room.score('wall_torches')
     room.function('torches_init').add(
         WallSign((None, None, 'Torch')).place(r(0, 2, -1), NORTH),
-        room.label(r(-1, 2, 0), 'Wall-ness', SOUTH),
+        room.label(r(-1, 2, 0), 'Wall-ness', NORTH),
         wall_torches_score.set(0)
     )
     room.loop('torches', main_clock).add(
@@ -910,10 +910,10 @@ def room():
 
 def room_init_functions(room, block_list_score):
     room.functions['blocks_room_init'].add(
-        room.label(r(-16, 2, 3), 'List Blocks', SOUTH), room.label(r(-16, 2, -3), 'List Blocks', NORTH),
-        room.label(r(-46, 2, 3), 'List Blocks', SOUTH), room.label(r(-46, 2, -3), 'List Blocks', NORTH),
-        room.label(r(-34, 2, 1), 'Show Particles', WEST),
-        room.label(r(-34, 2, -1), 'Expand All', WEST),
+        room.label(r(-16, 2, 3), 'List Blocks', NORTH), room.label(r(-16, 2, -3), 'List Blocks', NORTH),
+        room.label(r(-46, 2, 3), 'List Blocks', NORTH), room.label(r(-46, 2, -3), 'List Blocks', NORTH),
+        room.label(r(-34, 2, 1), 'Show Particles', EAST),
+        room.label(r(-34, 2, -1), 'Expand All', EAST),
         kill(e().tag('block_list')))
 
     # Ensure that setting up the expansion work on signs is done after all other things
@@ -1151,14 +1151,14 @@ def color_functions(room):
         WallSign((None, 'Glass')).place(r(-7, 3, 1), SOUTH),
         colored_signs(None, colored_signs_init),
         WallSign([]).place(r(-4, 2, 4, ), SOUTH), kill(e().type('item')),
-        room.label(r(-1, 2, 7), 'Lit Candles', NORTH),
-        room.label(r(-3, 2, 7), 'Enchanted', NORTH),
-        room.label(r(-7, 2, 7), 'Plain', NORTH),
-        room.label(r(-9, 2, 7), 'Ghast Riders', NORTH),
-        room.label(r(-9, 2, 6.85), '0', NORTH, tags='rider_count'),
-        room.label(r(-11, 2, 3), 'Glowing', NORTH),
-        room.label(r(-8, 2, 3), 'Collar', NORTH),
-        room.label(r(0, 2, 3), 'Leggings', NORTH),
+        room.label(r(-1, 2, 7), 'Lit Candles', SOUTH),
+        room.label(r(-3, 2, 7), 'Enchanted', SOUTH),
+        room.label(r(-7, 2, 7), 'Plain', SOUTH),
+        room.label(r(-9, 2, 7), 'Ghast Riders', SOUTH),
+        room.label(r(-9, 2, 6.85), '0', SOUTH, tags='rider_count'),
+        room.label(r(-11, 2, 3), 'Glowing', SOUTH),
+        room.label(r(-8, 2, 3), 'Collar', SOUTH),
+        room.label(r(0, 2, 3), 'Leggings', SOUTH),
     )
     room.loop('colorings', main_clock).add(erase(r(-9, 2, 2), r(-9, 2, 3))).loop(colorings_loop, colors).add(
         colored_signs(None, render_signs_glow))

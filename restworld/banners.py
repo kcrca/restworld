@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from pynecraft.base import Arg, CYAN, EQ, NORTH, SOUTH, as_facing, r
+from pynecraft.base import Arg, CYAN, EQ, SOUTH, as_facing, r
 from pynecraft.commands import Block, COLORS, Entity, Text, WHITE, data, e, execute, fill, function, kill, s, \
     setblock
 from pynecraft.simpler import Shield, Sign, TextDisplay, WallSign
@@ -268,9 +268,9 @@ def room():
             execute().at(e().tag('all_banners_home')).run(function('restworld:banners/all_banners_cur'))
         ), front=None).place(r(x, y, z), SOUTH))
     room.function('banner_controls_init').add(
-        room.label(r(5, 2, 4), 'Banner / Ink', NORTH),
-        room.label(r(3, 2, 4), 'Labels', NORTH),
-        room.label(r(4, 2, 3), 'Controls', NORTH),
+        room.label(r(5, 2, 4), 'Banner / Ink', SOUTH),
+        room.label(r(3, 2, 4), 'Labels', SOUTH),
+        room.label(r(4, 2, 3), 'Controls', SOUTH),
         function('restworld:banners/switch_to_color'),
     )
     room.function('banner_controls_remove', home=False).add(

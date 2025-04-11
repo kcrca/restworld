@@ -100,8 +100,8 @@ def room():
 
     room.function('arrive_biome').add(execute().in_(OVERWORLD).run(weather(CLEAR)))
     room.function('arrive_biome_init').add(
-        room.label(r(0, 3, -2), 'Go Home', NORTH),
-        room.label(r(-1, 3, -2), 'Go Home', NORTH),
+        room.label(r(0, 3, -2), 'Go Home', SOUTH),
+        room.label(r(-1, 3, -2), 'Go Home', SOUTH),
     )
     room.home_func('biome_loading_action')
 
@@ -109,8 +109,8 @@ def room():
     cur_sign_pos = r(1, -1, 6)
     room.function('category_init').add(
         categories(),
-        room.label(r(5, -1, 6), 'Illuminate', SOUTH),
-        room.label(r(-2, -1, 6), 'Night', SOUTH),
+        room.label(r(5, -1, 6), 'Illuminate', NORTH),
+        room.label(r(-2, -1, 6), 'Night', NORTH),
         WallSign((None, 'Current Biome:')).place(r(2, -1, 6), NORTH),
         WallSign().place(cur_sign_pos, NORTH))
     room.function('category_enter').add(

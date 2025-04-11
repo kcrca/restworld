@@ -3,7 +3,7 @@ from __future__ import annotations
 import sys
 from typing import Tuple
 
-from pynecraft.base import Arg, EAST, EQ, GT, LT, Nbt, r, seconds, to_name
+from pynecraft.base import Arg, EAST, EQ, GT, LT, Nbt, WEST, r, seconds, to_name
 from pynecraft.commands import DIV, INFINITE, INT, MINUS, MOD, RANDOM, REPLACE, RESULT, Score, a, data, e, effect, \
     execute, \
     fill, \
@@ -344,7 +344,7 @@ def room():
     room.function('controls_init').add(
         arena_run_loop.score.set(0),
         function('restworld:arena/arena_run_cur'),
-        room.label(r(1, 3, 0), 'Go Home', EAST),
+        room.label(r(1, 3, 0), 'Go Home', WEST),
         tag(e().tag('controls_home')).add('controls_action_home'),
         # These init funcs won't get run otherwise because there is no home
         function('restworld:arena/arena_count_init'),

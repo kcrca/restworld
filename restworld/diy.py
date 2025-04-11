@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from pynecraft.base import EAST, WEST, d, r
+from pynecraft.base import EAST, d, r
 from pynecraft.commands import Entity, FORCE, INFINITE, MOVE, clone, e, effect, execute, fill, function, n, say, \
     setblock, tp
 from pynecraft.simpler import Item
@@ -23,7 +23,7 @@ def room():
 
     room.function('diy_room_init', exists_ok=True).add(
         fill(r(-9, 2, -3), r(-9, 2, 3), 'sand').replace('magenta_glazed_terracotta'),
-        room.label(r(-3, 2, -1), 'Show Particles', WEST),
+        room.label(r(-3, 2, -1), 'Show Particles', EAST),
         function(no_particles)
     )
 
@@ -56,7 +56,9 @@ def room():
         stand.clone().tag('diy_displayer').summon(r(2, -1, -3))
     )
     for i in range(0, 5):
-        tick_init.add(room.label(r(-(3 + i), 2, -7), 'Save', WEST), room.label(r(-(3 + i), 2, 1), 'Restore', WEST))
+        tick_init.add(
+            room.label(r(-(3 + i), 2, -7), 'Save', EAST, nbt={'default_background': True}),
+            room.label(r(-(3 + i), 2, 1), 'Restore', EAST, nbt={'default_background': True}))
 
     custom_reset = room.score('custom_reset')
     room.loop('tick', main_clock).add(

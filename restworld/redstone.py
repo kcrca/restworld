@@ -3,7 +3,7 @@ from __future__ import annotations
 import re
 
 from pynecraft import info
-from pynecraft.base import DOWN, EAST, NOON, NORTH, SOUTH, UP, WEST, r
+from pynecraft.base import DOWN, EAST, NOON, SOUTH, UP, WEST, r
 from pynecraft.commands import BYTE, Block, INT, RESULT, Score, data, e, execute, fill, function, item, kill, \
     random, return_, setblock, summon, tag, time
 from pynecraft.info import instruments, stems
@@ -53,7 +53,7 @@ def room():
         yield data().merge(r(-1, 2, 0), step.elem.sign_nbt())
 
     room.loop('minecarts', main_clock).loop(minecart_loop, minecart_types)
-    room.function('minecarts_init').add(room.label(r(-5, 2, 2), 'Reset Room', NORTH))
+    room.function('minecarts_init').add(room.label(r(-5, 2, 2), 'Reset Room', SOUTH))
 
     def observer_loop(step):
         block = ('observer', {'powered': step.elem, 'facing': WEST})
@@ -320,7 +320,7 @@ def room():
     )
     room.function('repeater_init').add(
         WallSign((None, 'Repeater')).place(r(1, 3, 0), EAST),
-        room.label(r(-5, 2, 1), 'Show Particles', NORTH),
+        room.label(r(-5, 2, 1), 'Show Particles', SOUTH),
         # room.label(r(2, 2, 2), 'Change Daylight', WEST),
     )
 
@@ -442,8 +442,8 @@ def light_detector_funcs(room):
         WallSign(()).place(r(0, 2, 0), EAST),
         execute().at(e().tag('daylight_detector_setup_home')).run(
             function('restworld:redstone/daylight_detector_setup')),
-        room.label(r(2, 2, 2), 'Change Daylight', WEST),
-        room.label(r(2, 2, 0), 'Invert', WEST))
+        room.label(r(2, 2, 2), 'Change Daylight', EAST),
+        room.label(r(2, 2, 0), 'Invert', EAST))
     room.particle('daylight_detector', 'daylight_detector_setup', r(0, 2.75, 1), clause=if_clause(daylight_inv, 0))
     room.particle(('daylight_detector', {'inverted': True}), 'daylight_detector_setup', r(0, 2.5, 1),
                   clause=if_clause(daylight_inv, 1))
@@ -484,8 +484,8 @@ def note_block_funcs(room):
                  execute().at(e().tag('note_home')).run(setblock(r(0, 2, 0), instr.exemplar)),
                  execute().at(e().tag('note_home')).run(function('restworld:redstone/instrument_cur')))
             ).place(loc, SOUTH),
-            room.label(r(1, 2, 2), 'Play Notes', NORTH),
-            room.label(r(-1, 2, 2), 'Instruments', NORTH))
+            room.label(r(1, 2, 2), 'Play Notes', SOUTH),
+            room.label(r(-1, 2, 2), 'Instruments', SOUTH))
 
     notes = (
         'Low F♯/G♭', 'Low G', 'Low G♯/A♭', 'Low A', 'Low A♯/B♭', 'Low B', 'Low C', 'Low C♯/D♭', 'Low D', 'Low D♯/E♭',
@@ -526,7 +526,7 @@ def pressure_plate_funcs(room):
     pressure_plate = room.score('pressure_plate')
     room.function('pressure_plate_add', home=False).add(one_item(), (
         execute().if_().score(plate_heavy).matches((1, None)).run(one_item()) for _ in range(0, 9)))
-    room.function('pressure_plate_init').add(room.label(r(2, 2, 0), 'Heavy', WEST))
+    room.function('pressure_plate_init').add(room.label(r(2, 2, 0), 'Heavy', EAST))
     room.function('pressure_plate_cur').add(kill(e().tag('plate_items')),
                                             (execute().if_().score(pressure_plate).matches((i, None)).run(function(
                                                 'restworld:redstone/pressure_plate_add')) for i in range(1, 16)))
