@@ -1011,6 +1011,7 @@ def color_functions(room):
             yield execute().as_(e().tag('colorings_horse')).run(
                 data().remove(s(), 'equipment.body.components.dyed_color'))
             yield data().remove(e().tag('colorings_llama').limit(1), 'equipment.body')
+            yield data().remove(e().tag('colorings_ghast').limit(1), 'equipment.body')
         else:
             color_name = color.name
             leather_color = {'components': {'dyed_color': color.leather}}
