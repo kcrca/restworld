@@ -997,12 +997,14 @@ def color_functions(room):
             color_name = 'Plain'
             sheep_nbt = {'Sheared': True, 'Color': 0}
             bundle = Item.nbt_for('bundle')
-            yield fill(r(-9, 2, 2), r(-9, 2, 3), 'air')
-            yield volume.replace('air', '#standing_signs')
+            yield erase(r(-9, 2, 2), r(-9, 2, 3))  # remove bed
+            yield erase(volume.start, volume.end, '#standing_signs')
             yield data().remove(e().tag('colorings_item_frame').limit(1), 'Item.components.dyed_color')
-            yield kill_em(e().tag('colorings_dog'))
-            yield kill_em(e().tag('colorings_cat'))
+            yield execute().as_(e().tag('colorings_dog')).run(
+                data().remove(s(), 'equipment.body.components.dyed_color'))
+            yield data().remove(e().tag('colorings_cat').limit(1), 'Owner')
             yield data().remove(e().tag('colorings_llama').limit(1), 'equipment.body')
+            yield data().remove(e().tag('colorings_ghast').limit(1), 'equipment.body')
             for f in armor_equipment.keys():
                 yield data().remove(armor_stand,
                                     f'equipment.{f}.components.dyed_color')
@@ -1010,8 +1012,6 @@ def color_functions(room):
                 data().remove(s(), 'Item.components.dyed_color'))
             yield execute().as_(e().tag('colorings_horse')).run(
                 data().remove(s(), 'equipment.body.components.dyed_color'))
-            yield data().remove(e().tag('colorings_llama').limit(1), 'equipment.body')
-            yield data().remove(e().tag('colorings_ghast').limit(1), 'equipment.body')
         else:
             color_name = color.name
             leather_color = {'components': {'dyed_color': color.leather}}
@@ -1187,24 +1187,23 @@ def color_functions(room):
         execute().if_().data(ghast, 'Passengers[2]').run(show_rider_count(3)),
         execute().if_().data(ghast, 'Passengers[3]').run(show_rider_count(4)),
     )
+    store_start = (coloring_coords[0][0], coloring_coords[0][1].value - coloring_coords[1][1].value + 1,
+                   coloring_coords[0][2])
+    store_end = (coloring_coords[1][0], 0, coloring_coords[1][2])
+    top_start = (coloring_coords[0][0], coloring_coords[0][1], coloring_coords[0][2])
+    top_end = (coloring_coords[1][0], coloring_coords[1][1] - 1, coloring_coords[1][2])
     room.function('colorings_plain_off', home=False).add(
-        execute().unless().score(plain).matches(0).run(
-            clone((coloring_coords[0][0], coloring_coords[0][1].value - coloring_coords[1][1].value + 1,
-                   coloring_coords[0][2]),
-                  (coloring_coords[1][0], 0, coloring_coords[1][2]),
-                  (coloring_coords[1][0], coloring_coords[1][1] - 1, coloring_coords[1][2]))),
+        execute().unless().score(plain).matches(0).run(clone(store_start, store_end, top_end)),
         plain.set(0),
         tag(e().tag('colorings_base_home')).add('colorings_home'),
         execute().at(e().tag('colorings_home')).run(function('restworld:blocks/colorings_init')),
         kill(e().type('item').distance((None, 20))))
     room.function('colorings_plain_on', home=False).add(
-        execute().if_().score(plain).matches(0).run(
-            clone((coloring_coords[0][0], coloring_coords[0][1], coloring_coords[0][2]),
-                  (coloring_coords[1][0], coloring_coords[1][1] - 1, coloring_coords[1][2]),
-                  (coloring_coords[1][0], 0, coloring_coords[1][2]))),
+        execute().if_().score(plain).matches(0).run(clone(top_start, top_end, store_end)),
         plain.set(1),
         tag(e().tag('colorings_base_home')).remove('colorings_home'),
-        item().replace().entity(e().tag('colorings_item_frame'), 'container.0').with_('air'),
+        data().remove(n().tag('colorings_item_frame'), 'Item'),
+        data().remove(n().tag('colorings_frame_harness'), 'Item'),
         colorings(True, Color('Plain', 0x0)), setblock(r(-7, -1, 3), 'redstone_torch'), setblock(r(-7, -1, 3), 'air'),
         kill(e().type('item').distance((None, 20))))
     room.functions['colorings_home'].add(tag(e().tag('colorings_home')).add('colorings_base_home'))
