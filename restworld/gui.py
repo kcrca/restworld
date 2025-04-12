@@ -1,12 +1,13 @@
 from __future__ import annotations
 
 from pynecraft import commands
-from pynecraft.base import EAST, NORTH, Nbt, WEST, r
+from pynecraft.base import EAST, GOLD, NORTH, Nbt, TEXT_COLORS, WEST, r, to_name
 from pynecraft.commands import BOSSBAR_COLORS, BOSSBAR_STYLES, Block, CREATIVE, Entity, LEVELS, REPLACE, SURVIVAL, a, \
-    bossbar, clone, data, e, effect, execute, fill, function, gamemode, item, kill, n, p, return_, schedule, \
-    setblock, \
-    summon, tag
+    bossbar, clone, data, e, effect, execute, fill, function, gamemode, gamerule, item, kill, n, p, return_, s, \
+    schedule, \
+    setblock, summon, tag, waypoint
 from pynecraft.simpler import Item, ItemFrame, Sign, WallSign
+from pynecraft.values import USE_LOCATOR_BAR
 from restworld.rooms import Room, kill_em
 from restworld.world import fast_clock, main_clock, restworld, slow_clock
 
@@ -176,6 +177,7 @@ def room():
             item().replace().block(r(0, 2, 0), 'container.2').with_(water_potion),
         ))
 
+    waypoint_attrs = Nbt(id='minecraft:waypoint_transmit_range', base=10_000)
     placer = room.mob_placer(r(0, 2, 0), NORTH, 2, 0, adults=True,
                              nbt={'ChestedHorse': True, 'Tame': True, 'Variant': 2})
 
@@ -184,7 +186,7 @@ def room():
         yield Sign.change(r(0, 2, -1), (None, None, f'Strength: {step.elem}'))
 
     room.function('carrier_llama_init').add(
-        placer.summon('llama', tags=('carrier_llama',), auto_tag=False),
+        placer.summon('llama', tags=('carrier_llama'), auto_tag=False),
         WallSign((None, 'Llama')).place(r(0, 2, -1), NORTH)
     )
     room.loop('carrier_llama', main_clock).loop(carrier_llama_loop, range(1, 6))
@@ -193,7 +195,7 @@ def room():
         placer = room.mob_placer(
             r(0, 2, 0.3), NORTH, 2, 0, adults=True, nbt={'ChestedHorse': True, 'Tame': True}, tags=('carrier',))
         yield kill_em(e().tag('carrier'))
-        yield placer.summon(step.elem)
+        yield placer.summon(step.elem, tags=('waypointable',))
         yield Sign.change(r(0, 2, -1), (None, None, step.elem.title()))
 
     room.loop('carrier', main_clock).loop(carrier_loop, ('camel', 'donkey'))
@@ -202,7 +204,7 @@ def room():
     placer = room.mob_placer(r(0, 2, 0), NORTH, adults=True, tags=('trades',), auto_tag=False,
                              nbt={'VillagerData': {'profession': 'mason', 'level': 3}, 'CanPickUpLoot': False})
     room.function('trader_init').add(
-        placer.summon('villager'),
+        placer.summon('villager', tags=('waypointable',)),
         WallSign(()).place(r(0, 2, -1), NORTH),
         WallSign(('To see villager', 'GUI mid-trade,', 'offer to', 'buy something')).place(r(1, 2, -1), NORTH),
         function('restworld:gui/trader_cur'))
@@ -312,7 +314,7 @@ def room():
     saver_name = 'blur_saver'
     saver = n().tag(saver_name)
     room.function('pumpkin_blur_init').add(
-        room.mob_placer(r(0, -2, 1), NORTH, adults=True, auto_tag=False).summon(
+        room.mob_placer(r(0, -2, 1), NORTH, kids=True, auto_tag=False).summon(
             Entity('armor_stand', Nbt(NoGravity=True), name=saver_name).tag(saver_name)),
         WallSign((None, 'Pumpkin Blur', '(step on plate)')).place(r(1, 3, 0), NORTH))
     room.function('pumpkin_blur_on', home=False).add(
@@ -320,3 +322,21 @@ def room():
         item().replace().entity(p(), 'armor.head').with_(Item('carved_pumpkin')))
     room.function('pumpkin_blur_off', home=False).add(
         item().replace().entity(p(), 'armor.head').from_().entity(saver, 'armor.head'))
+
+    room.function('waypoints_on').add(
+        gamerule(USE_LOCATOR_BAR, True),
+        tag(e().tag('waypoints_on_home')).add('waypoints_home'),
+        execute().as_(e().tag('waypointable')).run(
+            waypoint().modify(s()).color(GOLD),
+            data().modify(s(), 'attributes').append().value(waypoint_attrs)),
+    )
+    room.function('waypoints_off', home=False).add(
+        gamerule(USE_LOCATOR_BAR, False),
+        tag(e().tag('waypoints_on_home')).remove('waypoints_home')
+    )
+
+    def waypoints_loop(step):
+        yield waypoint().modify(n().tag('hud_horse')).color(step.elem)
+        yield Sign.change(r(1, 2, -1), (f'{to_name(step.elem)}',), start=3)
+
+    room.loop('waypoints', main_clock, home=False).loop(waypoints_loop, TEXT_COLORS)
