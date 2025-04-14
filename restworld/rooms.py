@@ -4,17 +4,19 @@ import copy
 import math
 import re
 from copy import deepcopy
-from typing import Callable, Iterable, Tuple
+from typing import Callable, Iterable, Sequence, Tuple
 
 from pynecraft.base import BLUE, EAST, FacingDef, NE, NORTH, NW, Nbt, ORANGE, ROTATION_180, ROTATION_270, ROTATION_90, \
     RelCoord, SE, SOUTH, SW, WEST, is_arg, r, rotate_facing, to_name
 from pynecraft.commands import Block, BlockDef, CLEAR, Command, Commands, Entity, EntityDef, INT, MINUS, MOVE, Particle, \
-    Position, RESULT, Score, SignMessages, Text, a, as_block, as_entity, as_facing, as_score, clone, comment, data, e, \
+    Position, RESULT, Score, SignMessages, Target, Text, a, as_block, as_entity, as_facing, as_score, clone, comment, \
+    data, e, \
     execute, \
-    fill, function, function, kill, n, p, particle, say, schedule, scoreboard, setblock, summon, tag, tellraw, tp, \
+    fill, function, function, kill, n, p, particle, ride, s, say, schedule, scoreboard, setblock, summon, tag, tellraw, \
+    tp, \
     weather
 from pynecraft.function import DataPack, Function, FunctionSet, LATEST_PACK_VERSION, Loop
-from pynecraft.simpler import TextDisplay, WallSign
+from pynecraft.simpler import Item, TextDisplay, WallSign
 from pynecraft.values import DUMMY
 
 
@@ -270,6 +272,23 @@ class Room(FunctionSet):
         tag_list.append(self.name)
         kwargs['tags'] = tag_list
         return MobPlacer(*args, **kwargs)
+
+    def rider_on(self, mount: Target, tags: str | Sequence[str] = None) -> Commands:
+        helmet = Item.nbt_for('iron_helmet')
+        if tags == None:
+            tags = ()
+        elif isinstance(tags, str):
+            tags = (tags)
+        return execute().as_(mount).at(s()).run(
+            Entity('skeleton', {'NoAI': True, 'equipment': {'head': helmet}}).tag(self.name, 'rider').tag(
+                *tags).summon(r(0, 0, 0)),
+            ride(n().tag(self.name, 'rider')).mount(s()),
+            data().modify(n().tag(self.name, 'rider'), 'Rotation').set().from_(s(), 'Rotation'))
+
+    def rider_off(self):
+        return (
+            execute().as_(e().tag(self.name, 'rider')).run(ride(s()).dismount()),
+            kill_em(e().tag(self.name, 'rider')))
 
     def function(self, name: str, clock: Clock = None, /, home: bool | Command | Commands = True, single_home=True,
                  exists_ok=False) -> Function:

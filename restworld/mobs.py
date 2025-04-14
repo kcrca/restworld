@@ -136,6 +136,7 @@ def friendlies(room):
         p.summon(Entity(x, {'variant': 'temperate'}) for x in climate_mobs),
         kill(e().tag('frog', 'kid')),
         execute().as_(e().tag('chicken')).run(data().merge(s(), {'EggLayTime': 1000000000, 'OnGround': True})),
+        tag(n().tag('pig', 'adult')).add('saddle'),
         room.label(r(-3, 2, 1), 'Flying', WEST),
         room.label(r(-3, 2, 5), 'Saddle', WEST),
     )
@@ -181,6 +182,7 @@ def friendlies(room):
          enumerate(horses)), execute().at(e().tag(to_id(horses[3].tag_name), 'kid')).run(
             WallSign((None, 'Variant:')).place(r(2, 0, 0), EAST)),
         room.label(r(1, 2, 1), 'Lead', EAST),
+        room.label(r(1, 2, -3), 'Riders', EAST),
         room.label(r(1, 2, -7), 'Saddles', EAST),
     )
     horse_variants = ('None', 'White', 'White Field', 'White Dots', 'Black Dots')
@@ -215,9 +217,12 @@ def friendlies(room):
     room.loop('llamas_carpets', main_clock).loop(
         lambda step: execute().as_(e().tag('llama').tag('!kid')).run(
             data().merge(s(), {'equipment': {'body': {'id': step.elem.id + '_carpet', 'Count': 1}}})), colors)
+    room.function('riders_on', home=False).add(room.rider_on(e().tag('saddle', 'adult')))
+    room.function('riders_off', home=False).add(room.rider_off())
 
     room.function('llamas_init').add(
         placer(r(0, 2, 0), WEST, 0, 2).summon('llama', nbt={'Tame': True}),
+        tag(n().tag('llama', 'adult')).add('saddle'),
         placer(r(1, 3.5, -1), WEST, adults=True,
                nbt={'Tags': ['mobs', 'llama', 'llama_spit'], 'TXD': 0, 'TYD': 0, 'TZD': 0, 'Steps': 0,
                     'Motion': [0, 0, 0], 'NoGravity': True}).summon('llama_spit'),
@@ -434,57 +439,61 @@ def villager_funcs(room):
     types_init_funcs('zombie')
     room.loop('zombie_types', main_clock).loop(None, list()).add(function('restworld:mobs/villager_types_main'))
 
-    room.function('which_villagers_init').add(bool_max.set(2), cur_villagers_group.set(0), cur_villagers_zombies.set(0),
-                                              function('restworld:mobs/switch_villagers'),
-                                              WallSign((None, None, 'Villagers')).place(r(-5, 2, 1), WEST),
-                                              room.label(r(-3, 2, 0), 'Profession', WEST),
-                                              room.label(r(-3, 2, 2), 'Level', WEST),
-                                              room.label(r(-3, 2, 4), 'Zombies', WEST))
+    room.function('which_villagers_init').add(
+        bool_max.set(2),
+        cur_villagers_group.set(0),
+        cur_villagers_zombies.set(0),
+        function('restworld:mobs/switch_villagers'),
+        WallSign((None, None, 'Villagers')).place(r(-5, 2, 1), WEST),
+        room.label(r(-3, 2, 0), 'Profession', WEST),
+        room.label(r(-3, 2, 2), 'Level', WEST),
+        room.label(r(-3, 2, 4), 'Zombies', WEST))
 
     # Switch functions
-    room.function('switch_villagers').add(which_villagers.set(0),
-                                          execute().if_().score(cur_villagers_group).matches(1).run(
-                                              which_villagers.add(1)),
-                                          execute().if_().score(cur_villagers_zombies).matches(1).run(
-                                              which_villagers.add(2)),
-                                          which_villagers_needed.operation(EQ, which_villagers),
-                                          execute().unless().score(which_villagers_needed).is_(EQ,
-                                                                                               which_villagers_needed_prev).run(
-                                              (
-                                                  kill_em(e().tag('villager')),
-                                                  init_villagers(0, 'villager_professions'),
-                                                  init_villagers(1, 'villager_types'),
-                                                  init_villagers(2, 'zombie_professions'),
-                                                  init_villagers(3, 'zombie_types'),
-                                                  # If zombies are on, turn off level. Setting the lever off does not cause the piston to move, hence the
-                                                  # redstone block work.
-                                                  execute().if_().score(cur_villagers_zombies).matches(1).at(
-                                                      e().tag('which_villagers_home')).run(
-                                                      setblock(r(-3, 2, 2),
-                                                               Block('lever', state=dict(face='floor', facing='east'))),
-                                                      setblock(r(-3, -1, 2), 'redstone_block'),
-                                                      setblock(r(-3, -1, 2), 'air'),
-                                                  ),
-                                              )), which_villagers_needed_prev.operation(EQ, which_villagers_needed),
-                                          execute().if_().score(cur_villagers_levels).matches(1).run(
-                                              which_villagers.add(4)), kill(e().tag('cur_villagers_home')),
-                                          home_villagers(0, 'villager_professions'),
-                                          home_villagers(1, 'villager_types'), home_villagers(2, 'zombie_professions'),
-                                          home_villagers(3, 'zombie_types'),
-                                          home_villagers((4, None), 'villager_levels'))
-    room.function('switch_villagers_init').add(which_villagers_prev.set(1), function('restworld:mobs/switch_villagers'))
-    room.function('toggle_villager_group').add(cur_villagers_group.add(1), cur_villagers_group.operation(MOD, bool_max),
-                                               function('restworld:mobs/switch_villagers'))
-    room.function('toggle_villager_levels').add(cur_villagers_levels.add(1),
-                                                cur_villagers_levels.operation(MOD, bool_max),
-                                                execute().if_().score(cur_villagers_levels).matches(1).run(
-                                                    cur_villagers_zombies.set(0)),
-                                                function('restworld:mobs/switch_villagers'))
-    room.function('toggle_villager_zombies').add(cur_villagers_zombies.add(1),
-                                                 cur_villagers_zombies.operation(MOD, bool_max),
-                                                 execute().if_().score(cur_villagers_zombies).matches(1).run(
-                                                     cur_villagers_levels.set(0)),
-                                                 function('restworld:mobs/switch_villagers'))
+    room.function('switch_villagers').add(
+        which_villagers.set(0),
+        execute().if_().score(cur_villagers_group).matches(1).run(which_villagers.add(1)),
+        execute().if_().score(cur_villagers_zombies).matches(1).run(which_villagers.add(2)),
+        which_villagers_needed.operation(EQ, which_villagers),
+        execute().unless().score(which_villagers_needed).is_(EQ, which_villagers_needed_prev).run(
+            (
+                kill_em(e().tag('villager')),
+                init_villagers(0, 'villager_professions'),
+                init_villagers(1, 'villager_types'),
+                init_villagers(2, 'zombie_professions'),
+                init_villagers(3, 'zombie_types'),
+                # If zombies are on, turn off level. Setting the lever off does not cause the piston to move, hence the
+                # redstone block work.
+                execute().if_().score(cur_villagers_zombies).matches(1).at(
+                    e().tag('which_villagers_home')).run(
+                    setblock(r(-3, 2, 2),
+                             Block('lever', state=dict(face='floor', facing='east'))),
+                    setblock(r(-3, -1, 2), 'redstone_block'),
+                    setblock(r(-3, -1, 2), 'air'),
+                ),
+            )), which_villagers_needed_prev.operation(EQ, which_villagers_needed),
+        execute().if_().score(cur_villagers_levels).matches(1).run(which_villagers.add(4)),
+        kill(e().tag('cur_villagers_home')),
+        home_villagers(0, 'villager_professions'),
+        home_villagers(1, 'villager_types'), home_villagers(2, 'zombie_professions'),
+        home_villagers(3, 'zombie_types'),
+        home_villagers((4, None), 'villager_levels'))
+    room.function('switch_villagers_init').add(
+        which_villagers_prev.set(1),
+        function('restworld:mobs/switch_villagers'))
+    room.function('toggle_villager_group').add(
+        cur_villagers_group.add(1), cur_villagers_group.operation(MOD, bool_max),
+        function('restworld:mobs/switch_villagers'))
+    room.function('toggle_villager_levels').add(
+        cur_villagers_levels.add(1),
+        cur_villagers_levels.operation(MOD, bool_max),
+        execute().if_().score(cur_villagers_levels).matches(1).run(cur_villagers_zombies.set(0)),
+        function('restworld:mobs/switch_villagers'))
+    room.function('toggle_villager_zombies').add(
+        cur_villagers_zombies.add(1),
+        cur_villagers_zombies.operation(MOD, bool_max),
+        execute().if_().score(cur_villagers_zombies).matches(1).run(cur_villagers_levels.set(0)),
+        function('restworld:mobs/switch_villagers'))
 
     def villager_level_loop(step):
         yield execute().as_(e().tag('villager')).run(data().modify(s(), 'VillagerData.level').set().value(step.i + 1))
@@ -667,7 +676,6 @@ def monsters(room):
     room.loop('zombie', main_clock).add(kill_em(e().tag('zombieish'))).loop(
         zombie_loop, ('Zombie', 'Husk', 'Drowned')).add(function('restworld:mobs/mob_armor_cur'),
                                                         function('restworld:mobs/zombie_jockey_cur'))
-
 
     def enderman_loop(step):
         placer = room.mob_placer(r(0, 2, 0), NORTH, adults=True)

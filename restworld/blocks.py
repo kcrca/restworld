@@ -9,7 +9,7 @@ from pynecraft.base import DOWN, E, EAST, EQ, FacingDef, N, NORTH, Nbt, RelCoord
     rotate_facing, to_id, to_name
 from pynecraft.commands import Block, Commands, Entity, MOD, MOVE, REPLACE, SUCCESS, ScoreName, as_block, \
     as_score, \
-    clone, data, e, execute, fill, function, item, kill, n, p, ride, s, say, schedule, setblock, summon, tag
+    clone, data, e, execute, fill, function, item, kill, n, p, s, say, schedule, setblock, summon, tag
 from pynecraft.function import Function, Loop
 from pynecraft.info import Color, armor_equipment, colors, sherds, stems
 from pynecraft.simpler import Item, ItemFrame, Region, Sign, TextDisplay, WallSign
@@ -1168,15 +1168,11 @@ def color_functions(room):
     )
     room.loop('colorings', main_clock).add(erase(r(-9, 2, 2), r(-9, 2, 3))).loop(colorings_loop, colors).add(
         colored_signs(None, render_signs_glow))
-    rider_on = room.function('colorings_ghasts_rider_on', home=False).add(
-        Entity('husk', nbt={'NoAI': True}).tag('ghast_rider').summon(r(0, -5, -10)),
-        ride(n().tag('ghast_rider')).mount(n().tag('colorings_ghast'))
-    )
-    rider_clear = room.function('colorings_ghasts_rider_clear', home=False).add(
-        execute().as_(e().tag('ghast_rider')).run(ride(s()).dismount()),
-        kill_em(e().tag('ghast_rider')),
-    )
+    room.function('riders_on', home=False).add(room.rider_on(e().tag('saddle', 'adult')))
+    room.function('riders_off', home=False).add(room.rider_off())
     ghast = n().tag('colorings_ghast')
+    rider_on = room.function('colorings_ghasts_rider_on', home=False).add(room.rider_on(ghast))
+    rider_off = room.function('colorings_ghasts_rider_off', home=False).add(room.rider_off())
 
     def show_rider_count(count):
         return data().modify(n().tag(rider_count), 'text').set().value(f'{count}')
@@ -1185,7 +1181,7 @@ def color_functions(room):
     room.function('colorings_ghasts_riders', home=False).add(
         execute().store(SUCCESS).score(ghast_full).run(data().get(n().tag('colorings_ghast'), 'Passengers[3]')),
         execute().if_().score(ghast_full).matches(0).run(function(rider_on)),
-        execute().unless().score(ghast_full).matches(0).run(function(rider_clear)),
+        execute().unless().score(ghast_full).matches(0).run(function(rider_off)),
         show_rider_count(0),
         execute().if_().data(ghast, 'Passengers[0]').run(show_rider_count(1)),
         execute().if_().data(ghast, 'Passengers[1]').run(show_rider_count(2)),
