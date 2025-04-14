@@ -1199,6 +1199,7 @@ def color_functions(room):
     top_end = (coloring_coords[1][0], coloring_coords[1][1] - 1, coloring_coords[1][2])
     room.function('colorings_plain_off', home=False).add(
         execute().unless().score(plain).matches(0).run(
+            # These create particle explosions, and there is no negative "#!wall_signs" filter for clone
             fill(store_start, store_end, 'air').replace('#wall_signs'),
             clone(store_start, store_end, top_end)),
         plain.set(0),
