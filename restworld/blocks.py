@@ -115,7 +115,7 @@ def room():
                             nbt={'Rotation': [180.0, 0.0], 'text_opacity': 25, 'background': 0,
                                  'billboard': 'vertical', 'shadow_radius': 0}).scale(list_scale).tag(
                             'blocks', 'block_list', f'block_list_{name}', block_list_name, block_list_block_name)
-                        names.add(holder.summon(r(x, 4.25 + i * (list_scale / 4), z)))
+                        names.add(holder.summon(r(x, 4.25 + (len(block_list) - i) * (list_scale / 4), z)))
 
                     x += dx
                     x_size += 1
