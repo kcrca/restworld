@@ -38,7 +38,9 @@ def ensure(pos: Position, block: BlockDef, nbt=None) -> str:
     return execute().unless().block(pos, block).run(setblock(pos, to_place))
 
 
-def erase(start: Position, end: Position, filter: str = None) -> str:
+def erase(start: Position, end: Position = None, filter: str = None) -> str:
+    if not end:
+        end = start
     mn = (min(start[0], end[0]), min(start[1], end[1]), min(start[2], end[2]))
     mx = (max(start[0], end[0]), max(start[1], end[1]), max(start[2], end[2]))
     if filter:

@@ -1149,6 +1149,7 @@ def color_functions(room):
         execute().as_(e().tag('colorings_names')).run(
             data().merge(s(), {'CustomNameVisible': True})),
         WallSign((None, 'Terracotta')).place(r(-1, 3, 1), SOUTH),
+        WallSign((None, 'Harness')).place(r(-2, 3, 1), SOUTH),
         WallSign((None, 'Shulker Box')).place(r(-3, 3, 1), SOUTH),
         WallSign((None, 'Dye')).place(r(-4, 3, 1, ), SOUTH),
         WallSign((None, 'Concrete')).place(r(-5, 3, 1), SOUTH),
@@ -1197,7 +1198,9 @@ def color_functions(room):
     top_start = (coloring_coords[0][0], coloring_coords[0][1], coloring_coords[0][2])
     top_end = (coloring_coords[1][0], coloring_coords[1][1] - 1, coloring_coords[1][2])
     room.function('colorings_plain_off', home=False).add(
-        execute().unless().score(plain).matches(0).run(clone(store_start, store_end, top_end)),
+        execute().unless().score(plain).matches(0).run(
+            fill(store_start, store_end, 'air').replace('#wall_signs'),
+            clone(store_start, store_end, top_end)),
         plain.set(0),
         tag(e().tag('colorings_base_home')).add('colorings_home'),
         execute().at(e().tag('colorings_home')).run(function('restworld:blocks/colorings_init')),
