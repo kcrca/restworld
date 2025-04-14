@@ -36,7 +36,10 @@ def room():
             block_lists = list(block_lists)
         # Convert a single list into a list of that one list
         if not isinstance(block_lists[0], Iterable) or isinstance(block_lists[0], str):
-            block_lists = [block_lists, ]
+            block_lists = [block_lists]
+        lengths = set(len(x) for x in block_lists)
+        if len(lengths) != 1:
+            raise ValueError(f'All lists must be the same length, got lenghts {lengths}')
         # Convert all to Block objects, handling '' as a nameless structure_void
         for i, sublist in enumerate(block_lists):
             block_lists[i] = list(
@@ -325,7 +328,7 @@ def room():
     blocks('sponge', SOUTH, ('Sponge', 'Wet Sponge'))
     blocks('sticky', SOUTH, ('Slime Block', 'Honey block'))
 
-    stone_types = ('Basalt', 'Stone', 'Deepslate', 'Andesite', 'Diorite', 'Granite', 'Tuff', 'Blackstone', 'Basalt')
+    stone_types = ('Stone', 'Basalt', 'Deepslate', 'Andesite', 'Diorite', 'Granite', 'Tuff', 'Blackstone')
     polished_types = ('Smooth Basalt', 'Smooth Stone') + tuple(f'Polished|{t}' for t in stone_types[2:])
     blocks('stone', NORTH, (stone_types, polished_types), dz=3)
 
@@ -374,7 +377,7 @@ def room():
     wood[wood.index('Bamboo Wood')] = 'Bamboo Mosaic'
     leaves[leaves.index('Bamboo Leaves')] = ''
     stripped_logs = ['Stripped|' + x for x in logs]
-    stripped_woods = map(lambda x: '' if x == 'Stripped|Bamboo Mosaic' else x, ['Stripped|' + x for x in wood])
+    stripped_woods = list(map(lambda x: '' if x == 'Stripped|Bamboo Mosaic' else x, ['Stripped|' + x for x in wood]))
     blocks('wood_blocks', SOUTH, (tuple(f'{f} Planks' for f in woodlike),
                                   stripped_logs, logs, wood, leaves, stripped_woods), dx=-3, dz=-3, size=2)
 
@@ -910,8 +913,8 @@ def room():
 
 def room_init_functions(room, block_list_score):
     room.functions['blocks_room_init'].add(
-        room.label(r(-16, 2, 3), 'List Blocks', NORTH), room.label(r(-16, 2, -3), 'List Blocks', NORTH),
-        room.label(r(-46, 2, 3), 'List Blocks', NORTH), room.label(r(-46, 2, -3), 'List Blocks', NORTH),
+        room.label(r(-16, 2, 3), 'List Blocks', NORTH), room.label(r(-16, 2, -3), 'List Blocks', SOUTH),
+        room.label(r(-46, 2, 3), 'List Blocks', NORTH), room.label(r(-46, 2, -3), 'List Blocks', SOUTH),
         room.label(r(-34, 2, 1), 'Show Particles', EAST),
         room.label(r(-34, 2, -1), 'Expand All', EAST),
         kill(e().tag('block_list')))
@@ -1124,6 +1127,7 @@ def color_functions(room):
     room.function('wolf_armor_off', home=False).add(
         data().remove(n().tag('colorings_dog'), 'equipment.body'),
         execute().at(e().tag('colorings_home')).run(function('restworld:blocks/colorings_cur')))
+    rider_count = 'rider_count'
     room.function('colorings_init').add(
         kill_em(e().tag('colorings_item')),
         plain.set(0),
@@ -1156,7 +1160,7 @@ def color_functions(room):
         room.label(r(-3, 2, 7), 'Enchanted', SOUTH),
         room.label(r(-7, 2, 7), 'Plain', SOUTH),
         room.label(r(-9, 2, 7), 'Ghast Riders', SOUTH),
-        room.label(r(-9, 2, 6.85), '0', SOUTH, tags='rider_count'),
+        room.label(r(-9, 2, 6.85), '0', SOUTH, tags=rider_count),
         room.label(r(-11, 2, 3), 'Glowing', SOUTH),
         room.label(r(-8, 2, 3), 'Collar', SOUTH),
         room.label(r(0, 2, 3), 'Leggings', SOUTH),
@@ -1174,7 +1178,7 @@ def color_functions(room):
     ghast = n().tag('colorings_ghast')
 
     def show_rider_count(count):
-        return data().modify(n().tag('rider_count'), 'text').set().value(f'{count}')
+        return data().modify(n().tag(rider_count), 'text').set().value(f'{count}')
 
     ghast_full = room.score('ghast_full')
     room.function('colorings_ghasts_riders', home=False).add(
