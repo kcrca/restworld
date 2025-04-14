@@ -218,7 +218,7 @@ def room():
         # Some of these functions leave dropped items behind, this cleans that up
         kill(e().type('item')),
     )
-    
+
     room.function('full_reset').add(
         function('restworld:global/clock_off'),
         execute().positioned(r(0, -3, 0)).run(function('restworld:global/full_reset_home')),
@@ -292,11 +292,11 @@ def room():
         execute().if_().score(clean_time).is_(LT, clean_time_max).run(return_()),
         execute().store(RESULT).score(last_clean).run(time().query(GAMETIME)),
         # Make sure kids don't grow up
-        execute().as_(e().tag('kid')).run(data().merge(s(), {'Age': -2147483648, 'IsBaby': True})),
+        execute().as_(e().tag('kid')).run(data().merge(s(), {'Age': -2_147_483_648, 'IsBaby': True})),
         # Keep chickens from leaving eggs around
-        execute().as_(e().type('chicken')).run(data().merge(s(), {'EggLayTime': 1000000000})),
+        execute().as_(e().type('chicken')).run(data().merge(s(), {'EggLayTime': 1000_000_000})),
         # Make sure the item in the display doesn't vanish
-        execute().as_(e().tag('item_ground')).run(data().merge(s(), {'Age': -32768, 'PickupDelay': 2147483647})),
+        execute().as_(e().tag('item_ground')).run(data().merge(s(), {'Age': -32_768, 'PickupDelay': 2_147_483_647})),
         # Frog spawning seems to just happen without the random ticks, so stop it
         execute().at(e().tag('frog_home')).run(clone(r(1, 2, 0), r(1, 2, 0), r(1, 2, 0)).replace(FORCE)),
         kill_em(e().type('tadpole').tag('!keeper')),
