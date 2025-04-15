@@ -279,6 +279,7 @@ class Room(FunctionSet):
             tags = ()
         elif isinstance(tags, str):
             tags = (tags)
+        # skeletons are used for riders because their hands are at about the same place a player's would be
         return execute().as_(mount).at(s()).run(
             Entity('skeleton', {'NoAI': True, 'equipment': {'head': helmet}}).tag(self.name, 'rider').tag(
                 *tags).summon(r(0, 0, 0)),
