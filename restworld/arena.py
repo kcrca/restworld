@@ -53,6 +53,7 @@ def room():
         'bogged': skeleton_nbts,
         'vindicator': {'Johnny': 'True', 'equipment': {'mainhand': Item.nbt_for('iron_axe')}},
         'wither_skeleton': {'equipment': {'mainhand': Item.nbt_for('stone_sword')}},
+        'warden': {'Brain': {'memories': {"minecraft:dig_cooldown": {'value': {}, 'ttl': Nbt.MAX_LONG}}}},
         'zombie': {'equipment': {'head': Item.nbt_for('iron_helmet')}},
         'zombified_piglin': {'equipment': {'mainhand': Item.nbt_for('golden_sword')}},
     }
@@ -398,12 +399,12 @@ def room():
     show_score = room.function('show_score').add(
         kills.set(actors_kills),
         execute().if_().score(actors_kills).matches((1000, None)).run(kills.set(999)),
-        execute().if_().score(actors_kills).is_(EQ, prev_actors_kills).run(return_()), # can happen for 999
+        execute().if_().score(actors_kills).is_(EQ, prev_actors_kills).run(return_()),  # can happen for 999
         ones.set(kills),
         ones.operation(MOD, ten),
         tens.set(kills),
         tens.operation(DIV, ten),
-        cents.set(tens), # to avoid recalculating this value for cents separately
+        cents.set(tens),  # to avoid recalculating this value for cents separately
         tens.operation(MOD, ten),
         cents.operation(DIV, ten),
         execute().store(RESULT).storage(room.store, 'digits.ones', INT).run(ones.get()),

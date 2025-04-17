@@ -1160,7 +1160,7 @@ def color_functions(room):
         room.label(r(-1, 2, 7), 'Lit Candles', SOUTH),
         room.label(r(-3, 2, 7), 'Enchanted', SOUTH),
         room.label(r(-7, 2, 7), 'Plain', SOUTH),
-        room.label(r(-9, 2, 7), 'Ghast Riders', SOUTH),
+        room.label(r(-9, 2, 7), 'Ghast Ridersna', SOUTH),
         room.label(r(-9, 2, 6.85), '0', SOUTH, tags=rider_count),
         room.label(r(-11, 2, 3), 'Glowing', SOUTH),
         room.label(r(-8, 2, 3), 'Collar', SOUTH),

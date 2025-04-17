@@ -217,7 +217,13 @@ def friendlies(room):
     room.loop('llamas_carpets', main_clock).loop(
         lambda step: execute().as_(e().tag('llama').tag('!kid')).run(
             data().merge(s(), {'equipment': {'body': {'id': step.elem.id + '_carpet', 'Count': 1}}})), colors)
-    room.function('riders_on', home=False).add(room.rider_on(e().tag('saddle', 'adult')))
+    second_riders = room.function('second_riders_on', home=False).add(
+        room.rider_on(e().tag('camel', 'adult')))
+    room.function('riders_on', home=False).add(
+        room.rider_on(e().tag('saddle', 'adult')),
+        # Gets confused if this is done right away
+        schedule().function(second_riders, 1, REPLACE)
+    )
     room.function('riders_off', home=False).add(room.rider_off())
 
     room.function('llamas_init').add(
