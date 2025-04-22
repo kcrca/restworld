@@ -1168,7 +1168,7 @@ def color_functions(room):
     )
     room.loop('colorings', main_clock).add(erase(r(-9, 2, 2), r(-9, 2, 3))).loop(colorings_loop, colors).add(
         colored_signs(None, render_signs_glow))
-    room.function('riders_on', home=False).add(room.rider_on(e().tag('saddle', 'adult')))
+    room.function('riders_on', home=False).add(room.rider_on(e().tag('colorings_ghast')))
     room.function('riders_off', home=False).add(room.rider_off())
     ghast = n().tag('colorings_ghast')
     rider_on = room.function('colorings_ghasts_rider_on', home=False).add(room.rider_on(ghast))
