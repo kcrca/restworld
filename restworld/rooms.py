@@ -586,7 +586,7 @@ class MobPlacer:
         if isinstance(mobs, (Entity, str)):
             mobs = (mobs,)
         if tags and isinstance(tags, str):
-            tags = list(tags)
+            tags = [tags]
         for mob in mobs:
             mob = as_entity(mob)
             tmpl = mob.clone()

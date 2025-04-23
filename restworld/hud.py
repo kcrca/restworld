@@ -1,8 +1,9 @@
 from __future__ import annotations
 
 from pynecraft.base import NORTH, Nbt, r
-from pynecraft.commands import CREATIVE, Entity, LEVELS, POINTS, SUCCESS, SURVIVAL, data, e, effect, execute, function, \
-    gamemode, item, n, p, waypoint, xp
+from pynecraft.commands import CREATIVE, Entity, LEVELS, POINTS, SUCCESS, SURVIVAL, data, e, effect, execute, \
+    function, \
+    gamemode, item, p, xp
 from pynecraft.simpler import WallSign
 from pynecraft.values import ABSORPTION, POISON, REGENERATION, WITHER
 from restworld.rooms import Room, kill_em
@@ -122,15 +123,12 @@ def room():
     health_funcs('', p(), 15, 20)
 
     hud_horse = e().tag('hud_horse').limit(1)
-    horse_nbt = Nbt(Tame=True, Variant=514, attributes={'id': "minecraft:waypoint_transmit_range", 'base': 10_000})
+    horse_nbt = Nbt(Tame=True, Variant=514)
     horse_init = room.function('horse_health_init').add(
         kill_em(hud_horse),
         room.mob_placer(r(0, 2, 0), NORTH, adults=True).summon(
             Entity('horse', name='Climb on', nbt=horse_nbt), auto_tag=False,
             tags=('hud_horse',)),
-        waypoint().modify(n().tag('hud_horse')).color('aqua'),
-        data().modify(n().tag('hud_horse'), 'attributes').append().value(
-            {'id': 'minecraft:waypoint_transmit_range', 'base': 10_000}),
     )
     room.function('horse_health_enter').add(function(horse_init))
     health_funcs('horse_', hud_horse, 45, 53)
