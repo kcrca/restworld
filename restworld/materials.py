@@ -821,11 +821,10 @@ def trim_functions(room):
                 # The path is a.b.c, but we need the last element to be a.b{c:value}, and there is no replace, so...
                 path = self._to_path(t)
                 sign = WallSign().messages((None, 'Keep', f'{self.name.title().replace("s", "")}:', t.title()))
-                yield execute().if_().data(e().tag(overall_tag).limit(1), path).run(
-                    sign.place(r(-1, 2, 0), facing))
+                yield execute().if_().data(e().tag(overall_tag).limit(1), path).run(sign.place(r(-1, 2, 0), facing))
 
         def _to_path(self, t):
-            return ('equipment.feet.' + self.nbt_path)[::-1].replace('.', '{', 1)[::-1] + ':' + t + '}'
+            return ('equipment.feet.' + self.nbt_path)[::-1].replace('.', '{', 1)[::-1] + ':' + f'"minecraft:{t}"' + '}'
 
     class Armors(Trim):
         def __init__(self, name: str, types, pos, armor_gen):
@@ -843,15 +842,15 @@ def trim_functions(room):
             yield from self._trim_frame_sign(step)
 
         def _to_path(self, t):
-            return 'equipment.feet'
+            return f'equipment.feet{{id:"minecraft:{t}_boots"}}'
 
     categories = {
         'patterns': Trim('patterns', trim_patterns, patterns_places,
                          lambda stand, type: armor_for(stand, 'iron', {'components': {'trim': {'pattern': type}}}),
-                         'components.trim.pattern'),
+                         'components.minecraft:trim.pattern'),
         'materials': Trim('materials', trim_materials, material_places,
                           lambda stand, type: armor_for(stand, 'iron', {'components': {'trim': {'material': type}}}),
-                          'components.trim.material'),
+                          'components.minecraft:trim.material'),
         'armors': Armors('armors', info.armors, armors_places,
                          lambda stand, type: armor_for(stand, type))}
 
