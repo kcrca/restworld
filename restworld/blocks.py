@@ -1128,6 +1128,7 @@ def color_functions(room):
         data().remove(n().tag('colorings_dog'), 'equipment.body'),
         execute().at(e().tag('colorings_home')).run(function('restworld:blocks/colorings_cur')))
     rider_count = 'rider_count'
+    ghast_pos = r(-5.5, 5.3, -2.0)
     room.function('colorings_init').add(
         kill_em(e().tag('colorings_item')),
         plain.set(0),
@@ -1144,7 +1145,7 @@ def color_functions(room):
         Entity('armor_stand', stand_nbt).summon(r(-1.1, 2, 3)),
         Entity('llama', llama_nbt).summon(r(-11, 2, 5.8)),
         Entity('sheep', sheep_nbt).summon(r(-9.0, 2, 5.0)),
-        Entity('happy_ghast', ghast_nbt).summon(r(-5.5, 5.3, -2.0)),
+        Entity('happy_ghast', ghast_nbt).summon(ghast_pos),
         (armor_frame(k, v) for k, v in armor_frames.items()),
         execute().as_(e().tag('colorings_names')).run(
             data().merge(s(), {'CustomNameVisible': True})),
@@ -1161,6 +1162,7 @@ def color_functions(room):
         room.label(r(-3, 2, 7), 'Enchanted', SOUTH),
         room.label(r(-7, 2, 7), 'Plain', SOUTH),
         room.label(r(-9, 2, 7), 'Ghast Riders', SOUTH),
+        room.label(r(-10, 2, 7), 'Ghast Boat', SOUTH),
         room.label(r(-9, 2, 6.85), '0', SOUTH, tags=rider_count),
         room.label(r(-11, 2, 3), 'Glowing', SOUTH),
         room.label(r(-8, 2, 3), 'Collar', SOUTH),
@@ -1188,6 +1190,15 @@ def color_functions(room):
         execute().if_().data(ghast, 'Passengers[2]').run(show_rider_count(3)),
         execute().if_().data(ghast, 'Passengers[3]').run(show_rider_count(4)),
     )
+
+    ghast_boat_off = room.function('ghast_boat_off', home=False).add(
+        data().remove(n().tag('colorings_ghast'), 'leash'),
+        kill(e().tag('ghast_boat')))
+    room.function('ghast_boat_on', home=False).add(
+        function(ghast_boat_off),
+        execute().at(n().tag('colorings_ghast')).run(summon(Entity('oak_boat').tag('ghast_boat'), r(0, -2, 0))),
+        data().modify(n().tag('colorings_ghast'), 'leash.UUID').set().from_(n().tag('ghast_boat'), 'UUID'))
+
     store_start = (coloring_coords[0][0], coloring_coords[0][1].value - coloring_coords[1][1].value + 1,
                    coloring_coords[0][2])
     store_end = (coloring_coords[1][0], 0, coloring_coords[1][2])
