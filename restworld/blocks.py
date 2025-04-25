@@ -915,8 +915,8 @@ def room_init_functions(room, block_list_score):
     room.functions['blocks_room_init'].add(
         room.label(r(-16, 2, 3), 'List Blocks', NORTH), room.label(r(-16, 2, -3), 'List Blocks', SOUTH),
         room.label(r(-46, 2, 3), 'List Blocks', NORTH), room.label(r(-46, 2, -3), 'List Blocks', SOUTH),
-        room.label(r(-34, 2, 1), 'Show Particles', EAST),
-        room.label(r(-34, 2, -1), 'Expand All', EAST),
+        room.label(r(-34, 2, 1), 'Show Particles', NORTH),
+        room.label(r(-34, 2, -1), 'Expand All', SOUTH),
         kill(e().tag('block_list')))
 
     # Ensure that setting up the expansion work on signs is done after all other things
