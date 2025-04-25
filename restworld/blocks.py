@@ -9,7 +9,7 @@ from pynecraft.base import DOWN, E, EAST, EQ, FacingDef, N, NORTH, Nbt, RelCoord
     rotate_facing, to_id, to_name
 from pynecraft.commands import Block, Commands, Entity, MOD, MOVE, REPLACE, SUCCESS, ScoreName, as_block, \
     as_score, \
-    clone, data, e, execute, fill, function, item, kill, n, p, s, say, schedule, setblock, summon, tag
+    clone, data, e, execute, fill, function, item, kill, n, p, s, say, schedule, setblock, summon, tag, tp
 from pynecraft.function import Function, Loop
 from pynecraft.info import Color, armor_equipment, colors, sherds, stems
 from pynecraft.simpler import Item, ItemFrame, Region, Sign, TextDisplay, WallSign
@@ -1098,8 +1098,9 @@ def color_functions(room):
     sheep_nbt = Nbt(
         {'Tags': ['colorings_sheep', 'colorings_item'], 'Variant': 1, 'Rotation': [-35, 0], 'Leashed': True}).merge(
         mob_nbt)
+    ghast_rot = [55, 0]
     ghast_nbt = Nbt(
-        {'Tags': ['colorings_ghast', 'colorings_item', 'colorings_enchantable'], 'Rotation': [55, 0],
+        {'Tags': ['colorings_ghast', 'colorings_item', 'colorings_enchantable'], 'Rotation': ghast_rot,
          'equipment': {'body': Item.nbt_for('white_harness')}}).merge(
         mob_nbt)
     stand_nbt = {'Tags': ['colorings_armor_stand', 'colorings_item', 'colorings_enchantable'], 'Rotation': [30, 0],
@@ -1129,6 +1130,7 @@ def color_functions(room):
         execute().at(e().tag('colorings_home')).run(function('restworld:blocks/colorings_cur')))
     rider_count = 'rider_count'
     ghast_pos = r(-5.5, 5.3, -2.0)
+    ghast_high_pos = r(-5.5, 9.3, -2.0)
     room.function('colorings_init').add(
         kill_em(e().tag('colorings_item')),
         plain.set(0),
@@ -1193,10 +1195,13 @@ def color_functions(room):
 
     ghast_boat_off = room.function('ghast_boat_off', home=False).add(
         data().remove(n().tag('colorings_ghast'), 'leash'),
-        kill(e().tag('ghast_boat')))
+        kill(e().tag('ghast_boat')),
+        execute().at(e().tag('colorings_home')).run(tp(n().tag('colorings_ghast'), ghast_pos)))
+    ghast_boat = Entity('oak_boat', {'Rotation': ghast_rot}).tag('ghast_boat')
     room.function('ghast_boat_on', home=False).add(
         function(ghast_boat_off),
-        execute().at(n().tag('colorings_ghast')).run(summon(Entity('oak_boat').tag('ghast_boat'), r(0, -2, 0))),
+        execute().at(e().tag('colorings_home')).run(tp(n().tag('colorings_ghast'), ghast_high_pos)),
+        execute().at(n().tag('colorings_ghast')).run(summon(ghast_boat, r(0, -2, 0))),
         data().modify(n().tag('colorings_ghast'), 'leash.UUID').set().from_(n().tag('ghast_boat'), 'UUID'))
 
     store_start = (coloring_coords[0][0], coloring_coords[0][1].value - coloring_coords[1][1].value + 1,
