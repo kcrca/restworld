@@ -46,9 +46,9 @@ def erase(start: Position, end: Position = None, filter: str = None) -> str:
     mn = (min(start[0], end[0]), min(start[1], end[1]), min(start[2], end[2]))
     mx = (max(start[0], end[0]), max(start[1], end[1]), max(start[2], end[2]))
     if filter:
-        return clone(mx, mn, (15, 80, 15)).filtered(filter, MOVE)
+        return clone(mx, mn, (-15, 80, -15)).filtered(filter, MOVE)
     else:
-        return clone(mx, mn, (15, 80, 15)).replace(MOVE)
+        return clone(mx, mn, (-15, 80, -15)).replace(MOVE)
 
 
 def _to_iterable(tags):
