@@ -5,7 +5,8 @@ import random
 
 from pynecraft.base import Arg, EAST, MIDNIGHT, NOON, NORTH, Nbt, OVERWORLD, SOUTH, WEST, as_facing, d, r, to_id
 from pynecraft.commands import BLOCK_MARKER, Block, CLEAR, DUST_PILLAR, Entity, FALLING_DUST, INFINITE, Particle, RAIN, \
-    REPLACE, Text, a, data, e, effect, execute, fill, fillbiome, function, item, kill, particle, playsound, schedule, \
+    REPLACE, THUNDER, Text, a, data, e, effect, execute, fill, fillbiome, function, item, kill, particle, playsound, \
+    schedule, \
     setblock, summon, time, weather
 from pynecraft.function import BLOCK, ITEM
 from pynecraft.simpler import Book, PLAINS, TextDisplay, VILLAGER_BIOMES, VILLAGER_PROFESSIONS, WallSign
@@ -349,8 +350,7 @@ def room():
         setblock(r(0, 0, 0), 'air'),
         setblock(r(0, 0, 0), 'sniffer_egg')))
     room.function('elder_guardian', home=False).add(main().run(particle(ELDER_GUARDIAN, r(0, 0, 0), (0, 0, 0), 0, 1)))
-    room.function('electric_spark', home=False).add(main().run(summon('lightning_bolt', r(0, 1, 0))))
-    room.function('electric_spark_init', home=False).add(setblock(r(0, 0, 0), 'lightning_rod'))
+    room.function('electric_spark_init', home=False).add(setblock(r(0, 0, 0), 'lightning_rod'), weather(THUNDER))
     room.function('enchant_init', home=False).add(
         fill(r(2, 0, 1), r(-2, 0, -2), 'bookshelf'),
         fill(r(2, 1, -1), r(-2, 1, -2), 'bookshelf'),
