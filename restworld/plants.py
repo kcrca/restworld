@@ -150,7 +150,6 @@ def room():
         if i < len(tilts):
             text = text + (f'Tilt: {tilts[i].title()}',)
         yield WallSign(text).place(r(1, 2, 0), EAST)
-        room.particle(upper[1], 'dripleaf', r(0, 4, 0), step)
 
     room.loop('dripleaf', main_clock).add(
         setblock(r(1, 2, 0), 'air'),
@@ -167,12 +166,10 @@ def room():
             room.particle(block, 'farmland_strip', r(0, 2, -i))
 
     room.loop('farmland_strip', main_clock).loop(farmland_loop, range(0, 1)).add(
-        kill(e().type('item').nbt({'Item': {'id': 'minecraft:pitcher_pod'}}))
-    )
+        kill(e().type('item').nbt({'Item': {'id': 'minecraft:pitcher_pod'}})))
     farmland_init = room.function('farmland_strip_init').add(
         kill(e().tag('farmland_strip_labels')),
-        room.label(r(-3, 2, 0), 'Moisture Values', EAST)
-    )
+        room.label(r(-3, 2, 0), 'Moisture Values', EAST))
 
     farmland_init.add(text_display('Moisture').tag('farmland_strip_labels').summon(r(0, 2.3, 0)))
     for i in range(0, 8):
@@ -429,13 +426,12 @@ def three_funcs(room):
         yield from age(-3, 'sugar_cane')
 
     def switch_to_func(which):
-        room.function(f'three_change_{which}', home=False).add(kill(e().tag('three_runner')),
-                                                               execute().at(e().tag('three_home')).positioned(
-                                                                   r(-1, -0.5, 2)).run(
-                                                                   function(f'restworld:plants/three_{which}_home')),
-                                                               tag(e().tag(f'three_{which}_home')).add('three_runner'),
-                                                               execute().at(e().tag(f'three_{which}_home')).run(
-                                                                   function(f'restworld:plants/three_{which}_cur')))
+        room.function(f'three_change_{which}', home=False).add(
+            kill(e().tag('three_runner')),
+            execute().at(e().tag('three_home')).positioned(r(-1, -0.5, 2)).run(
+                function(f'restworld:plants/three_{which}_home')),
+            tag(e().tag(f'three_{which}_home')).add('three_runner'),
+            execute().at(e().tag(f'three_{which}_home')).run(function(f'restworld:plants/three_{which}_cur')))
 
     room.loop('three_height', main_clock).add(erase(r(0, 3, 0), r(0, 6, -3))).loop(
         three_height_loop, range(3), bounce=True)

@@ -37,11 +37,17 @@ def room():
     room.particle('tripwire', 'lever', r(0, 3, 2))
 
     def lightning_rod_loop(step):
-        yield setblock(r(0, 3, 0), step.elem)
-        yield Sign.change(r(1, 2, 0), (None, None, '(Powered)' if 'powered' in str(step.elem) else ''))
+        if step.elem:
+            yield summon('lightning_bolt', r(0, 3, 0))
+            yield Sign.change(r(1, 2, 0), ('Lightning &', None, '(Powered)'), start=1)
+        else:
+            yield Sign.change(r(1, 2, 0), ('', None, ''), start=1)
+        yield setblock(r(0, 3, 0), Block('lightning_rod', {'powered': step.elem})),
 
-    room.loop('lightning_rod', main_clock).loop(
-        lightning_rod_loop, (Block('Lightning Rod'), Block('Lightning Rod', {'powered': True})))
+    room.loop('lightning_rod', main_clock).loop(lightning_rod_loop, ((True, False)))
+    room.function('lightning_rod_init').add(
+        setblock(r(0, 3, 0), 'lightning_rod'),
+        WallSign((None, 'Lightning &', 'Lightning Rod')).place(r(1, 2, 0), EAST))
     room.particle('lightning_rod', 'lightning_rod', r(0, 4, 0))
 
     minecart_types = list(Block(f'{t}Minecart') for t in

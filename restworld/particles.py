@@ -350,6 +350,7 @@ def room():
         setblock(r(0, 0, 0), 'air'),
         setblock(r(0, 0, 0), 'sniffer_egg')))
     room.function('elder_guardian', home=False).add(main().run(particle(ELDER_GUARDIAN, r(0, 0, 0), (0, 0, 0), 0, 1)))
+    room.function('electric_spark', home=False).add(main().run(summon('lightning_bolt', r(0, 1, 0))))
     room.function('electric_spark_init', home=False).add(setblock(r(0, 0, 0), 'lightning_rod'), weather(THUNDER))
     room.function('enchant_init', home=False).add(
         fill(r(2, 0, 1), r(-2, 0, -2), 'bookshelf'),
