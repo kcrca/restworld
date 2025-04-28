@@ -1,13 +1,16 @@
 from __future__ import annotations
 
+import math
+
 from pynecraft import commands
-from pynecraft.base import EAST, NORTH, Nbt, WEST, r
+from pynecraft.base import EAST, NORTH, Nbt, TEXT_COLORS, WEST, as_facing, r, to_name
 from pynecraft.commands import BOSSBAR_COLORS, BOSSBAR_STYLES, Block, CREATIVE, Entity, LEVELS, REPLACE, SURVIVAL, a, \
-    bossbar, clone, data, e, effect, execute, fill, function, gamemode, item, kill, n, \
+    bossbar, clone, data, e, effect, execute, fill, forceload, function, gamemode, gamerule, item, kill, n, \
     p, return_, \
     schedule, \
-    setblock, summon, tag
+    setblock, summon, tag, waypoint
 from pynecraft.simpler import Item, ItemFrame, Sign, WallSign
+from pynecraft.values import LOCATOR_BAR
 from restworld.rooms import Room, kill_em
 from restworld.world import fast_clock, main_clock, restworld, slow_clock
 
@@ -320,49 +323,47 @@ def room():
     room.function('pumpkin_blur_off', home=False).add(
         item().replace().entity(p(), 'armor.head').from_().entity(saver, 'armor.head'))
 
-    # waypoint_sign_pos = r(-1, 2, 0)
-    # room.function('waypoints_base_init').add(
-    #     WallSign((None, 'Waypoint', 'Style: bowtie')).place(waypoint_sign_pos, WEST),
-    #     room.label(r(1, 2, 0), 'Waypoints', EAST))
-    #
-    # waypoints_init = room.function('waypoints_init')
-    # radiuses = [3, 185, 235, 285]
-    # for i in range(len(TEXT_COLORS)):
-    #     my_tag = f'waypoint_{i}'
-    #     angle = 360 * i / len(TEXT_COLORS)
-    #     angle_rad = math.radians(angle)
-    #     # Can this be made tow work?
-    #     radius = radiuses[i % len(radiuses)]
-    #     x, z = math.cos(angle_rad) * radius, math.sin(angle_rad) * radius
-    #     tx, tz = math.cos(angle_rad) * 3, math.sin(angle_rad) * 3
-    #     color = TEXT_COLORS[i]
-    #     color_name = to_name(color)
-    #     stand = Entity('armor_stand', {'Rotation': [angle + 90, 0], 'PersistenceRequired': True, 'NoGravity': True},
-    #                    name=color_name).custom_name_visible(
-    #         True).tag(room.name, 'waypoint', my_tag)
-    #     print(color, x + 1, z)
-    #     waypoints_init.add(
-    #         forceload().add(r(x + 1, z)),
-    #         stand.summon(r(x + 1, 2, z)),
-    #         attribute(n().tag(my_tag), 'waypoint_transmit_range').base().set(100_000),
-    #         waypoint().modify(n().tag(my_tag)).color(color),
-    #         room.label((tx, 101, tz), f'{color_name}\\n\u21e7', as_facing(angle))
-    #     )
-    # waypoints_init.add(forceload().remove_all())
-    #
-    # def waypoints_loop(step):
-    #     yield execute().as_(e().tag('waypoint')).run(waypoint().modify(s()).style(step.elem))
-    #     yield Sign.change(waypoint_sign_pos, (f'Style: {step.elem}',), start=2),
-    #
-    # room.loop('waypoints', main_clock, home=False).loop(waypoints_loop, ('default',))
-    #
-    # room.function('waypoints_on', home=False).add(
-    #     gamerule(LOCATOR_BAR, True),
-    #     tag(e().tag('waypoints_base_home')).add('waypoints_home'),
-    #     execute().at(e().tag('waypoints_home')).run(function(waypoints_init)),
-    # )
-    # room.function('waypoints_off', home=False).add(
-    #     gamerule(LOCATOR_BAR, False),
-    #     tag(e().tag('waypoints_base_home')).remove('waypoints_home'),
-    #     kill(e().tag('waypoint')),
-    # )
+    room.function('waypoints_base_init').add(room.label(r(1, 2, 0), 'Waypoints', EAST))
+
+    waypoints_init = room.function('waypoints_init')
+    waypoints_cleanup = room.function('waypoints_cleanup', home=False)
+    radii = [(3, 'Here'), (205, 'Near'), (255, 'Far'), (320, 'Very Far')]
+    for i, color in enumerate(TEXT_COLORS):
+        my_tag = f'waypoint_{color}'
+        angle = 360 * i / len(TEXT_COLORS)
+        angle_rad = math.radians(angle)
+        radius, radius_name = radii[i % len(radii)]
+        x, z = math.cos(angle_rad) * radius, math.sin(angle_rad) * radius
+        tx, tz = math.cos(angle_rad) * 3.5, math.sin(angle_rad) * 3.5
+        x += 1
+        tx += 1
+        color_name = to_name(color)
+        stand = Entity('armor_stand', {'Rotation': [angle + 90, 0], 'PersistenceRequired': True, 'NoGravity': True,
+                                       'attributes': [{'id': "minecraft:waypoint_transmit_range", 'base': 100000}]},
+                       name=color_name).custom_name_visible(
+            True).tag(room.name, 'waypoint', my_tag)
+        waypoints_init.add(
+            forceload().add(r(x, z)),
+        )
+        waypoints_cleanup.add(
+            execute().at(e().tag('waypoints_home')).run(
+                stand.summon(r(x, 2, z)),
+                waypoint().modify(n().tag(my_tag)).color(color)),
+        )
+        if radius != radii[0][0]:
+            waypoints_init.add(
+                room.label(r(tx, 2, tz), f'{color_name}\\n({radius_name})\\n\u21e7', as_facing((angle + 90) % 360),
+                           tags=('waypoint',)))
+    waypoints_init.add(schedule().function(waypoints_cleanup, 2, REPLACE))
+
+    room.function('waypoints_on', home=False).add(
+        gamerule(LOCATOR_BAR, True),
+        tag(e().tag('waypoints_base_home')).add('waypoints_home'),
+        execute().at(e().tag('waypoints_home')).run(function(waypoints_init)),
+    )
+    room.function('waypoints_off', home=False).add(
+        forceload().remove_all(),
+        gamerule(LOCATOR_BAR, False),
+        tag(e().tag('waypoints_base_home')).remove('waypoints_home'),
+        kill(e().tag('waypoint')),
+    )
