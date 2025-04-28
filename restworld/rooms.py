@@ -492,24 +492,24 @@ class Room(FunctionSet):
         },
     }
 
-    def label(self, pos: Position, txt: str, facing, *, vertical=False, bump=0.02, tags=(), nbt=None) -> str:
+    def label(self, pos: Position, txt: str, facing: FacingDef, *, vertical=False, bump=0.02, tags=(), nbt=None) -> str:
         if isinstance(tags, str):
             tags = (tags,)
+        facing = as_facing(facing)
         t = ['label', self.name]
         t.extend(tags)
-        offset_tmpl, bump_sign, xform = self._transform[vertical][facing]
-        offset = []
-        for v in offset_tmpl:
-            if v == 0:
-                offset.append(0)
-            else:
-                if vertical:
-                    offset.append(0 if v == 0 else v + bump * bump_sign)
-                else:
-                    offset.append(bump)
+        rotation = list(facing.rotation)
+        if not vertical:
+            rotation[1] = -90
+
+        adj = bump if vertical else Room._ADJ
+        y_off = 0 if vertical else bump
+        x_off = math.cos(math.radians(rotation[0] + 90)) * adj
+        z_off = math.sin(math.radians(rotation[0] + 90)) * adj
+        offset = [x_off, y_off, z_off]
         pos = RelCoord.add(pos, offset)
         scale = 0.45
-        display_nbt = Nbt({'Tags': t, 'line_width': int(200 * scale), 'transformation': xform, 'background': 0})
+        display_nbt = Nbt({'Tags': t, 'line_width': int(200 * scale), 'Rotation': rotation, 'background': 0})
         if nbt:
             display_nbt = display_nbt.merge(nbt)
         return TextDisplay(txt, nbt=display_nbt).scale(scale).summon(pos)

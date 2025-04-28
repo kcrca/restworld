@@ -60,8 +60,8 @@ def room():
                  'Tags': ['time_frame', room.name], 'Fixed': True}),
                r(-10, 8, 4)),
         room.label(r(-2, 7, 4), 'Moon Phases', WEST),
-        room.label(r(-1, 7, 4), 'Reset Room', WEST, vertical=True),
-        room.label(r(-9, 7, 4), 'Reset Room', EAST, vertical=True),
+        room.label(r(0, 7, 4), 'Reset Room', WEST, vertical=True, bump=0.52),
+        room.label(r(-10, 7, 4), 'Reset Room', EAST, vertical=True,  bump=0.52),
     )
 
     slow, norm = 3, 30

@@ -3,9 +3,10 @@ from collections import defaultdict
 
 from pynecraft import info
 from pynecraft.base import Arg, EAST, EQ, as_facing, d, r, to_name
-from pynecraft.commands import Entity, REPLACE, SUCCESS, Text, comment, data, e, execute, fill, function, item, kill, \
+from pynecraft.commands import Entity, REPLACE, SUCCESS, Text, comment, data, e, execute, fill, function, item, \
+    kill, \
     loot, n, p, schedule, setblock, summon, tag
-from pynecraft.info import block_items
+from pynecraft.info import block_items, waterlogged
 from pynecraft.simpler import Item, ItemFrame, Sign, WallSign
 from restworld import global_
 from restworld.rooms import ActionDesc, SignedRoom, Wall, named_frame_item, span
@@ -169,14 +170,14 @@ def room():
         ItemFrame(EAST).item('iron_pickaxe').tag('model_src', 'models').fixed(False).summon(r(2, 2, 2)),
         ItemFrame(EAST, nbt={'Invisible': True}, name='Invisible Frame').tag('model_invis_frame', 'models').fixed(
             False).summon(r(2, 2, -2)),
-        room.label(r(2, 3, 2), 'Put something in this frame to see it in many views', EAST, vertical=True),
+        room.label(r(1.5, 3, 2), 'Put something in this frame to see it in many views', EAST, vertical=True),
 
         (WallSign((), wood='birch').place(pos, EAST) for pos in recent_things_signs),
         setblock(chest_pos, 'chest'),
         needs_restore.set(0),
 
         room.label(r(0, 2, -1), 'On Head', EAST),
-        room.label(r(1, 2.5, 0), 'None', EAST, vertical=True, tags=('current_model',)),
+        room.label(r(0.5, 2.5, 0), 'None', EAST, vertical=True, tags=('current_model',)),
 
         is_empty.set(1),
         schedule().function('restworld:models/model_copy', '1s', REPLACE)
@@ -241,7 +242,9 @@ def room():
 
     at_home = execute().at(model_home).run
 
-    def thing_funcs(which, things, do_setblock=False):
+    def thing_funcs(which, things, do_setblock=False, under=None):
+        if not under:
+            under = {}
         signs = recent_things_signs
 
         def all_loop(step):
@@ -250,6 +253,10 @@ def room():
             yield at_home(Sign.change(signs[-1], (name,)))
             yield data().modify(n().tag('current_model'), 'text').set().value(Text.text(name))
             yield setblock(r(1, 2, 1), step.elem if do_setblock else 'air')
+            if step.elem.name in under:
+                yield setblock(r(1, 1, 1), under[step.elem.name])
+            else:
+                yield execute().unless().block(r(1, 1, 1), 'stone_bricks').run(setblock(r(1, 1, 1), 'stone_bricks'))
 
         all_things = things
         all_things_loop = room.loop(f'all_{which}', fast_clock).add(is_empty.set(1))
@@ -269,9 +276,16 @@ def room():
             execute().positioned(r(-1, -0.5, 0)).run(function(f'restworld:models/all_{which}_home')),
             tag(e().tag(f'all_{which}_home')).add('all_things_home'))
 
+    excluded = (
+        'Cactus',  # Immediately explodes
+    )
     block_list = tuple(
-        filter(lambda block: block.name not in block_items and 'Air' not in block.name, info.blocks.values()))
-    thing_funcs('blocks', block_list, True)
+        map(lambda x: x.merge_nbt({'watterlogged': False}) if x in waterlogged else x,
+            filter(
+                lambda block: block.name not in block_items and block.name not in excluded and 'Air' not in block.name,
+                info.blocks.values())))
+    thing_funcs('blocks', block_list, True, {'Chorus Flower': 'end_stone',
+                                             'Chorus Plant': 'end_stone'})
     thing_funcs('sampler_blocks', sample('blocks', block_list), True)
     item_list = tuple(filter(lambda row: 'Spawn' not in row.name, info.items.values()))
     thing_funcs('items', item_list)
