@@ -48,6 +48,7 @@ def room():
         'piglin_brute': {'equipment': {'mainhand': Item.nbt_for('golden_axe')}, 'IsImmuneToZombification': 'True'},
         'piglin': {'IsImmuneToZombification': 'True', 'equipment': {'mainhand': Item.nbt_for('golden_sword')}},
         'pillager': {'equipment': {'mainhand': Item.nbt_for('crossbow')}},
+        'shulker': {'home_pos': [1026, 101, -1026], 'home_radius': 12},
         'skeleton': skeleton_nbts,
         'stray': skeleton_nbts,
         'bogged': skeleton_nbts,
