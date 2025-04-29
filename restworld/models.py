@@ -3,10 +3,10 @@ from collections import defaultdict
 
 from pynecraft import info
 from pynecraft.base import Arg, EAST, EQ, as_facing, d, r, to_name
-from pynecraft.commands import Entity, REPLACE, SUCCESS, Text, comment, data, e, execute, fill, function, item, \
+from pynecraft.commands import Entity, REPLACE, SUCCESS, Text, clone, comment, data, e, execute, fill, function, item, \
     kill, \
     loot, n, p, schedule, setblock, summon, tag
-from pynecraft.info import block_items, waterlogged
+from pynecraft.info import block_items
 from pynecraft.simpler import Item, ItemFrame, Sign, WallSign
 from restworld import global_
 from restworld.rooms import ActionDesc, SignedRoom, Wall, named_frame_item, span
@@ -112,7 +112,7 @@ def room():
     wall_used = {3: span(1, 5)}
     room = SignedRoom('models', restworld, EAST, (None, 'Models',), mode_sign, modes,
                       (Wall(7, EAST, 1, -1, wall_used),))
-    room.reset_at((-5, 1))
+    room.reset_at((-4, 1))
 
     room.function('model_signs_init').add(function('restworld:models/signs'))
 
@@ -159,6 +159,8 @@ def room():
     chest_pos = r(-1, -2, 0)
     room.function('models_room_init', exists_ok=True).add(
         room.label(r(-2, 2, 0), 'Keep Inventory', EAST))
+    under = {'chorus_flower': 'end_stone', 'chorus_plant': 'end_stone', 'sugar_cane': 'grass_block',
+             'wheat': 'farmland', 'bamboo': 'grass_block'}
     room.function('model_init').add(
         tag(n().tag('model_home')).add('model_head_home'),
         kill(all_src),
@@ -167,6 +169,12 @@ def room():
         placer.summon('armor_stand', tags=('model_holder', 'model_hands')),
         placer_head.summon('armor_stand', tags=('model_holder_head',),
                            nbt=dict(Small=True, NoGravity=True, Invisible=True)),
+        data().modify(room.store, 'under').set().value(
+            [{'id': f'minecraft:{k}', 'under': v} for k, v in under.items()]),
+        setblock(r(1, 2, 1), 'structure_void'),
+        setblock(r(-1, 2, 1), 'structure_void'),
+        setblock(r(0, 2, 2), 'structure_void'),
+        setblock(r(0, -6, 0), 'stone_bricks'),
         ItemFrame(EAST).item('iron_pickaxe').tag('model_src', 'models').fixed(False).summon(r(2, 2, 2)),
         ItemFrame(EAST, nbt={'Invisible': True}, name='Invisible Frame').tag('model_invis_frame', 'models').fixed(
             False).summon(r(2, 2, -2)),
@@ -185,8 +193,22 @@ def room():
     ground_default_nbt = {'Item': Item.nbt_for('iron_pickaxe'), 'Age': -32768, 'PickupDelay': 2147483647,
                           'Tags': ['model_ground']}
     named_frame_data = named_frame_item(name='Invisible Frame').merge({'ItemRotation': 0})
-    set_if_block = room.function('set_if_block').add(execute().at(model_home).run(
-        setblock(r(0, 2, 1), 'air'), setblock(r(0, 2, 1), Arg('block'))))
+    do_set_if_block = room.function('do_set_if_block', home=False).add(
+        setblock(r(0, -6, 0), Arg('under_block')),
+        setblock(r(0, -5, 0), Arg('block')),
+    )
+    # We set the block somewhere and clone it over so we can fliter out doors and beds, which come out weird.
+    set_if_block = room.function('set_if_block', home=False).add(
+        setblock(r(0, -5, 0), 'air'),
+        data().modify(room.store, 'under_block').set().value('stone_bricks'),
+        execute().if_().data(room.store, 'under[{id: "$(block)"}]').run(
+            data().modify(room.store, 'under_block').set().from_(room.store, 'under[{id: "$(block)"}].under')),
+        function(do_set_if_block).with_().storage(room.store),
+        execute().unless().block(r(0, -5, 0), '#restworld:no_model_block').run(
+            clone(r(0, -5, 0), r(0, -6, 0), r(0, 1, 1))))
+
+    at_home = execute().at(model_home).run
+
     model_copy = room.function('model_copy', home=False).add(
         data().merge(model_src, {'ItemRotation': 0}),
         execute().unless().data(model_src, 'Item.id').run(kill(all_ground)),
@@ -197,7 +219,7 @@ def room():
             data().modify(model_ground, 'Item').set().from_(model_src, 'Item'),
             data().merge(model_ground, {'Age': -32768, 'PickupDelay': 2147483647}),
             data().modify(room.store, 'block').set().from_(model_src, 'Item.id'),
-            function(set_if_block).with_().storage(room.store),
+            at_home(function(set_if_block).with_().storage(room.store)),
         ),
         item().replace().entity(model_holder, 'weapon.mainhand').from_().entity(model_src, 'container.0'),
         item().replace().entity(model_holder, 'weapon.offhand').from_().entity(model_src, 'container.0'),
@@ -240,23 +262,17 @@ def room():
             function(model_restore))
     )
 
-    at_home = execute().at(model_home).run
-
-    def thing_funcs(which, things, do_setblock=False, under=None):
-        if not under:
-            under = {}
+    def thing_funcs(which, things):
         signs = recent_things_signs
 
         def all_loop(step):
-            yield item().replace().entity(model_src, 'container.0').with_(step.elem)
-            name = step.elem.name.replace(' [x]', '')
-            yield at_home(Sign.change(signs[-1], (name,)))
+            block = step.elem
+            item_block = block.clone()
+            item_block.state = {}
+            yield item().replace().entity(model_src, 'container.0').with_(item_block)
+            name = block.name.replace(' [x]', '')
+            yield at_home(Sign.change(signs[-1], (name,), front=True))
             yield data().modify(n().tag('current_model'), 'text').set().value(Text.text(name))
-            yield setblock(r(1, 2, 1), step.elem if do_setblock else 'air')
-            if step.elem.name in under:
-                yield setblock(r(1, 1, 1), under[step.elem.name])
-            else:
-                yield execute().unless().block(r(1, 1, 1), 'stone_bricks').run(setblock(r(1, 1, 1), 'stone_bricks'))
 
         all_things = things
         all_things_loop = room.loop(f'all_{which}', fast_clock).add(is_empty.set(1))
@@ -268,7 +284,9 @@ def room():
                 at_home(data().modify(pos, 'front_text.messages[0]').set().from_(signs[i + 1],
                                                                                  'front_text.messages[3]')) if i < len(
                     signs) - 1 else comment('start'))
-        all_things_loop.loop(all_loop, all_things)
+        all_things_loop.add(
+            execute().unless().block(r(1, 1, 1), 'stone_bricks').run(setblock(r(1, 1, 1), 'stone_bricks'))).loop(
+            all_loop, all_things)
         room.function(f'all_{which}_home', exists_ok=True).add(tag(e().tag(f'all_{which}_home')).add('all_things_home'))
 
         room.function(f'start_{which}', home=False).add(
@@ -276,17 +294,18 @@ def room():
             execute().positioned(r(-1, -0.5, 0)).run(function(f'restworld:models/all_{which}_home')),
             tag(e().tag(f'all_{which}_home')).add('all_things_home'))
 
-    excluded = (
-        'Cactus',  # Immediately explodes
-    )
-    block_list = tuple(
-        map(lambda x: x.merge_nbt({'watterlogged': False}) if x in waterlogged else x,
-            filter(
-                lambda block: block.name not in block_items and block.name not in excluded and 'Air' not in block.name,
-                info.blocks.values())))
-    thing_funcs('blocks', block_list, True, {'Chorus Flower': 'end_stone',
-                                             'Chorus Plant': 'end_stone'})
-    thing_funcs('sampler_blocks', sample('blocks', block_list), True)
+    def block_filter(block) -> bool:
+        if block.name in block_items:
+            return False
+        if 'Air' in block.name:
+            return False
+        if 'Hanging' in block.name:
+            return False
+        return True
+
+    block_list = tuple(filter(block_filter, info.blocks.values()))
+    thing_funcs('blocks', block_list)
+    thing_funcs('sampler_blocks', sample('blocks', block_list))
     item_list = tuple(filter(lambda row: 'Spawn' not in row.name, info.items.values()))
     thing_funcs('items', item_list)
     thing_funcs('sampler_items', sample('items', item_list))

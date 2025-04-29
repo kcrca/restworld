@@ -193,6 +193,20 @@ def tags():
             'farmland'
         ]
     }
+    blocks['no_model_block'] = {
+        'values': [
+            '#doors',
+            '#beds',
+            'sugar_cane',       # must be _next to_ water
+            'weeping_vines',    # must be _under_ the right block
+            'cactus',           # Must be on falling block (sand)
+            'sunflower',        # tall flower
+            'peony',            # tall flower
+            'rose_bush',        # tall flower
+            'lilac',            # tall flower
+            'pitcher_plant',    # tall flower
+        ]
+    }
 
     blocks['stepable_planks'] = {
         'values': [
