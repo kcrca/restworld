@@ -257,7 +257,7 @@ def room():
             ('home', OVERWORLD, (0, 101, 0), (0, 101, 10)),
             ('nether', THE_NETHER, (22, 99, -13), (28, 100, -13)),
             ('arena', OVERWORLD, (1040, 106, -1026), (1036, 104, -1026))):
-        goto = room.function('goto_' + place[0], home=False).add(
+        room.function('goto_' + place[0], home=False).add(
             time().set(NOON),
             execute().in_(place[1]).run(teleport(p(), place[2]).facing(place[3])),
             schedule().function(f'restworld:{place[0]}/_enter', 1, REPLACE),

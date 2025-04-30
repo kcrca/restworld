@@ -104,6 +104,7 @@ def room():
 
     def mode_sign(action_desc: ActionDesc, wall):
         dx, _, dz = as_facing(wall.facing).scale(1)
+        # noinspection PyTypeChecker
         return WallSign(action_desc.sign_text(), (
             fill(r(-dx, -2, -5), r(-dx, 2, 5), 'smooth_quartz').replace('emerald_block'),
             setblock(d(-dx, 0, -dz), 'emerald_block'),
@@ -197,7 +198,7 @@ def room():
         setblock(r(0, -6, 0), Arg('under_block')),
         setblock(r(0, -5, 0), Arg('block')),
     )
-    # We set the block somewhere and clone it over so we can fliter out doors and beds, which come out weird.
+    # We set the block somewhere and clone it over so we can filter doors and beds, which come out weird.
     set_if_block = room.function('set_if_block', home=False).add(
         setblock(r(0, -5, 0), 'air'),
         data().modify(room.store, 'under_block').set().value('stone_bricks'),

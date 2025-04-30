@@ -44,7 +44,7 @@ def room():
             yield Sign.change(r(1, 2, 0), ('', None, ''), start=1)
         yield setblock(r(0, 3, 0), Block('lightning_rod', {'powered': step.elem})),
 
-    room.loop('lightning_rod', main_clock).loop(lightning_rod_loop, ((True, False)))
+    room.loop('lightning_rod', main_clock).loop(lightning_rod_loop, (True, False))
     room.function('lightning_rod_init').add(
         setblock(r(0, 3, 0), 'lightning_rod'),
         WallSign((None, 'Lightning &', 'Lightning Rod')).place(r(1, 2, 0), EAST))
@@ -307,7 +307,7 @@ def room():
         yield setblock(r(1, 2, 0), 'redstone_block' if on else 'air')
         if locked:
             yield setblock(r(0, 2, 1), ('repeater', {'powered': True, 'facing': SOUTH}))
-            yield setblock(r(0, 2, 2), ('redstone_block'))
+            yield setblock(r(0, 2, 2), 'redstone_block')
         else:
             yield fill(r(0, 2, 1), r(0, 2, 2), 'air')
         desc = 'Powered' if on else ''

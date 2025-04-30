@@ -65,7 +65,7 @@ def room():
     battles = [
         ('axolotl', 'drowned'),
         ('axolotl', 'guardian'),
-        # ('axolotl', 'elder_guardian'), # medium prioirty: attack for elder guardian is same as guardian
+        # ('axolotl', 'elder_guardian'), # medium priority: attack for elder guardian is same as guardian
         ('blaze', 'snow_golem'),
         ('bogged', 'iron_golem'),
         ('breeze', 'iron_golem'),

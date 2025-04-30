@@ -5,12 +5,12 @@ from restworld.rooms import Room
 from restworld.world import restworld
 
 """
-Functions for helping capture biome samples from a real world, not used in Restworld iteself. But this is a convient
+Functions for helping capture biome samples from a real world, not used in Restworld itself. But this is a convenient
 place to put them.
 
 How to use:
 
-First, find an exmaple of a biome you want to use. Find the corner of the sample area that has the lowest value (x,z)
+First, find an example of a biome you want to use. Find the corner of the sample area that has the lowest value (x,z)
 coordinates. Go underground and place a command block with "function restworld:save/prep {name: plains}".
 Trigger that block with a button. This will place four armor stands at the corners of the four segments of the biome
 sample with structure blocks above them with the right names in them (e.g., "plains_2").
@@ -24,12 +24,12 @@ manually, hence the function that moves you to each in turn.) When you've done t
 in your world's "generated/minecraft/structures" directory. They need to be coped to the restworld structure folder.
 
 Some samples require a two-high space, for a total of eight structure blocks. To get this, set the score "tall save" 
-to 1. Then it will create the eight structure blocks, and "next" will take you to all eight, strating with the 
+to 1. Then it will create the eight structure blocks, and "next" will take you to all eight, starting with the 
 uppermost layer. Saving the lower blocks requires removing the upper ones, so if you need to start over, you'll need 
 to re-"prep" the sample. WHich is probably a good idea anyway.
 
 The function restworld:save/start resets the loop to the beginning, and restworld:save/remove removes the armor stands
-and structure blocks. Both these funcitons are run during "prep", so if you move the command block, you only need to
+and structure blocks. Both these functions are run during "prep", so if you move the command block, you only need to
 invoke it again.
  
 """

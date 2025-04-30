@@ -616,13 +616,12 @@ def wood_functions(room):
         yield from volume.replace_axes(f'stripped_{wood}', '#restworld:stripped_woodlike')
         # doors can't be generically replaced, see below for the manual placement
         yield from volume.replace_trapdoors(f'{id}_trapdoor', '#trapdoors')
-        text_color = 'white' if id == 'dark_oak' else 'black'
+        text_color = 'white' if id in {'mangrove', 'dark_oak', 'crimson'} else 'black'
         yield from volume.replace_facing(
             WallSign((), wood=id).messages((None, root_name, 'Wall Sign')).wax(False).color(text_color), '#wall_signs')
         yield from volume.replace_rotation(
             Sign((), wood=id).messages((None, f'{root_name} Sign')).wax(False).color(text_color), '#signs')
 
-        text_color_nbt = {'front_text': {'color': text_color}, 'back_text': {'color': text_color}}
         yield from volume.replace_facing(
             Block(f'{id}_wall_hanging_sign', nbt=sign_messages(
                 Sign.lines_nbt((root_name, 'Wall', 'Hanging', 'Sign')).merge({'color': text_color}))),

@@ -74,6 +74,7 @@ def room():
         # Find the max length of a sign change so we blank out all lines when a given block has fewer.
         max_lines = 0
         for j, _ in enumerate(block_lists):
+            # noinspection PyTypeChecker
             max_lines = max(max_lines, *(len(signage_for(block, i)) for i, block in enumerate(block_lists[j])))
 
         # show a single block from the list. "step" will be present if in a loop (i.e., not a singleton)
@@ -96,6 +97,7 @@ def room():
 
         if singleton:
             assert len(block_lists) == 1  # Don't have code for a list of singletons
+            # noinspection PyTypeChecker
             block_init.add(one_block(block_lists[0][0], r(0, 3, 0), None))
         else:
             def blocks_loop_body(step):

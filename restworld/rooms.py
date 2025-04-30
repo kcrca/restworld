@@ -6,8 +6,8 @@ import re
 from copy import deepcopy
 from typing import Callable, Iterable, Sequence, Tuple
 
-from pynecraft.base import BLUE, EAST, FacingDef, NE, NORTH, NW, Nbt, ORANGE, ROTATION_180, ROTATION_270, ROTATION_90, \
-    RelCoord, SE, SOUTH, SW, WEST, is_arg, r, rotate_facing, to_name
+from pynecraft.base import BLUE, FacingDef, Nbt, ORANGE, ROTATION_180, ROTATION_270, ROTATION_90, \
+    RelCoord, is_arg, r, rotate_facing, to_name
 from pynecraft.commands import Block, BlockDef, CLEAR, Command, Commands, Entity, EntityDef, INT, MINUS, MOVE, Particle, \
     Position, RESULT, Score, SignMessages, Target, Text, a, as_block, as_entity, as_facing, as_score, clone, comment, \
     data, e, \
@@ -97,32 +97,11 @@ def _to_list(obj):
     return obj
 
 
-class ParticleFunc:
-    def __init__(self, room: Room, name: str, singleton: bool):
-        self.room = room
-        self.name = name
-        self.singleton = singleton
-        self.cmds = []
-
-    def add(self, id, pos: Position, loop: Loop, i: int = None):
-        particle_cmd = particle(Entity('block', nbt={'block_state': id}), pos, (0.25, 0, 0.25), 1, 1)
-        if not self.singleton:
-            self.cmds.append(execute().if_().score(loop.score).matches(i).run(particle_cmd))
-        else:
-            self.cmds.append(particle_cmd)
-
-    def finalize(self):
-        if self.cmds:
-            f = self.room.function(f'{self.name}_particles', home=False).add(self.cmds)
-            self.room.function('particles', home=False, exists_ok=True).add(
-                execute().at(n().tag(f'{self.name}_home')).run(function(f)))
-
-
 class RoomPack(DataPack):
     base_suffixes = ('tick', 'init', 'enter', 'incr', 'decr', 'cur', 'exit', 'finish')
     base_suffixes_re = re.compile(r'(\w+)_(' + '|'.join(base_suffixes) + ')')
 
-    def __init__(self, name: str, suffixes: Iterable[str, ...] = None,
+    def __init__(self, name: str, suffixes: Iterable[str] = None,
                  format_version: int = LATEST_PACK_VERSION, /):
         super().__init__(name, format_version)
         if suffixes is None:
@@ -275,7 +254,7 @@ class Room(FunctionSet):
 
     def rider_on(self, mount: Target, tags: str | Sequence[str] = None) -> Commands:
         helmet = Item.nbt_for('iron_helmet')
-        if tags == None:
+        if tags is None:
             tags = ()
         elif isinstance(tags, str):
             tags = (tags,)
@@ -459,38 +438,6 @@ class Room(FunctionSet):
         return self.pack._home_func_name(base)
 
     _ADJ = 0.45
-    _DIAG_ADJ = _ADJ * math.sin(45)
-
-    _transform = {
-        False: {
-            NORTH: ((0, 1, 0), 1, {'right_rotation': [0.7, 0.0, 0.0, -0.7], 'left_rotation': [0.0, 1.0, 0.0, 0.0],
-                                   'translation': [0.0, 0.0, -_ADJ]}),
-            SOUTH: ((0, 1, 0), 1, {'right_rotation': [0.7, 0.0, 0.0, -0.7], 'left_rotation': [0.0, 0.0, 0.0, 1.0],
-                                   'translation': [0.0, 0.0, _ADJ]}),
-            WEST: ((0, 1, 0), 1, {'right_rotation': [0.7, 0.0, 0.0, -0.7], 'left_rotation': [0.0, 0.7, 0.0, -0.7],
-                                  'translation': [-_ADJ, 0.0, 0.0]}),
-            EAST: ((0, 1, 0), 1, {'right_rotation': [0.7, 0.0, 0.0, -0.7], 'left_rotation': [0.0, 0.7, 0.0, 0.7],
-                                  'translation': [_ADJ, 0.0, 0.0]}),
-            SE: ((0, 1, 0), 1, {'right_rotation': [0.7, 0.0, 0.0, -0.7], 'left_rotation': [0.0, 0.39, 0.0, 1.0],
-                                'translation': [_DIAG_ADJ, 0.0, _DIAG_ADJ]}),
-            SW: ((0, 1, 0), 1, {'right_rotation': [0.7, 0.0, 0.0, -0.7], 'left_rotation': [0.0, -0.39, 0.0, 1.0],
-                                'translation': [-_DIAG_ADJ, 0.0, _DIAG_ADJ]}),
-            NW: ((0, 1, 0), 1, {'right_rotation': [0.7, 0.0, 0.0, -0.7], 'left_rotation': [0.0, 0.9, 0.0, -0.4],
-                                'translation': [-_DIAG_ADJ, 0.0, -_DIAG_ADJ]}),
-            NE: ((0, 1, 0), 1, {'right_rotation': [0.7, 0.0, 0.0, -0.7], 'left_rotation': [0.0, - 0.9, 0.0, -0.4],
-                                'translation': [_DIAG_ADJ, 0.0, -_DIAG_ADJ]}),
-        },
-        True: {
-            NORTH: ((0, 0, 1), 1, {'right_rotation': [0.0, 0.0, 0.0, 1.0], 'left_rotation': [0.0, 0.0, 0.0, 1.0],
-                                   'translation': [0.0, 0.0, 0.0]}),
-            SOUTH: ((0, 0, 0), -1, {'right_rotation': [0.0, 1.0, 0.0, 0.0], 'left_rotation': [0.0, 0.0, 0.0, 1.0],
-                                    'translation': [0.0, 0.0, 0.0]}),
-            WEST: ((-_ADJ, 0, 0), 1, {'right_rotation': [0.0, 0.7, 0.0, 0.7], 'left_rotation': [0.0, 0.0, 0.0, 1.0],
-                                      'translation': [0.0, 0.0, 0.0]}),
-            EAST: ((_ADJ, 0, 0), -1, {'right_rotation': [0.0, 0.7, 0.0, -0.7], 'left_rotation': [0.0, 0.0, 0.0, 1.0],
-                                      'translation': [0.0, 0.0, 0.0]}),
-        },
-    }
 
     def label(self, pos: Position, txt: str, facing: FacingDef, *, vertical=False, bump=0.02, tags=(), nbt=None) -> str:
         if isinstance(tags, str):
@@ -507,7 +454,7 @@ class Room(FunctionSet):
         x_off = math.cos(math.radians(rotation[0] + 90)) * adj
         z_off = math.sin(math.radians(rotation[0] + 90)) * adj
         offset = [x_off, y_off, z_off]
-        pos = RelCoord.add(pos, offset)
+        pos = RelCoord.add(pos, tuple(offset))
         scale = 0.45
         display_nbt = Nbt({'Tags': t, 'line_width': int(200 * scale), 'Rotation': rotation, 'background': 0})
         if nbt:
