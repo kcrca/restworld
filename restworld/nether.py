@@ -85,8 +85,6 @@ def room():
             yield kill_em(e().tag('strider'))
             yield tag(e().tag('strider')).remove('strider')
             yield placer(r(0, 2, 0), lhs_dir, 0, 3).summon('strider'),
-            yield execute().unless().score(saddle).matches(0).run(
-                data().modify(n().tag('strider', 'adult'), 'equipment.saddle').set().value(Item.nbt_for('saddle')))
         else:
             block = 'netherrack'
             yield execute().as_(e().tag('strider', room.name)).run(data().merge(s(), {'NoAI': False}))
@@ -95,7 +93,11 @@ def room():
         yield setblock(r(0, 1, 0), block)
         yield setblock(r(0, 1, -3), block)
 
-    room.loop('strider', main_clock).loop(strider_loop, (True, False))
+    room.loop('strider', main_clock).loop(strider_loop, (True, False)).add(
+        execute().unless().score(saddle).matches(0).run(
+            data().modify(n().tag('strider', 'adult'), 'equipment.saddle').set().value(Item.nbt_for('saddle'))),
+        execute().if_().score(saddle).matches(0).run(
+            data().remove(n().tag('strider', 'adult'), 'equipment.saddle')))
     room.function('strider_init').add(room.label(r(-1, 2, 0), 'Saddle', NORTH))
     room.function('strider_saddle_on', home=False).add(
         saddle.set(1),
