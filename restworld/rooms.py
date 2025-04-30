@@ -278,13 +278,13 @@ class Room(FunctionSet):
         if tags == None:
             tags = ()
         elif isinstance(tags, str):
-            tags = (tags)
+            tags = (tags,)
         # skeletons are used for riders because their hands are at about the same place a player's would be
+        rider = Entity('skeleton', {'NoAI': True, 'equipment': {'head': helmet}}).tag(self.name, 'rider', *tags)
         return execute().as_(mount).at(s()).run(
-            Entity('skeleton', {'NoAI': True, 'equipment': {'head': helmet}}).tag(self.name, 'rider').tag(
-                *tags).summon(r(0, 0, 0)),
-            ride(n().tag(self.name, 'rider')).mount(s()),
-            data().modify(n().tag(self.name, 'rider'), 'Rotation').set().from_(s(), 'Rotation'))
+            rider.summon(r(0, 0, 0)),
+            ride(n().tag(self.name, 'rider', *tags)).mount(s()),
+            data().modify(n().tag(self.name, 'rider', *tags), 'Rotation').set().from_(s(), 'Rotation'))
 
     def rider_off(self):
         return (

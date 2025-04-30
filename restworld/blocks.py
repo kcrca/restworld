@@ -7,7 +7,7 @@ from pynecraft import commands, info
 from pynecraft.base import DOWN, E, EAST, EQ, FacingDef, N, NORTH, Nbt, RelCoord, S, SOUTH, UP, W, WEST, as_facing, \
     r, \
     rotate_facing, to_id, to_name
-from pynecraft.commands import Block, Commands, Entity, MOD, MOVE, REPLACE, SUCCESS, ScoreName, as_block, \
+from pynecraft.commands import Block, Commands, Entity, MOD, MOVE, REPLACE, ScoreName, as_block, \
     as_score, \
     clone, data, e, execute, fill, function, item, kill, n, p, s, say, schedule, setblock, summon, tag, tp
 from pynecraft.function import Function, Loop
@@ -39,7 +39,7 @@ def room():
             block_lists = [block_lists]
         lengths = set(len(x) for x in block_lists)
         if len(lengths) != 1:
-            raise ValueError(f'All lists must be the same length, got lenghts {lengths}')
+            raise ValueError(f'All lists must be the same length, got lengths {lengths}')
         # Convert all to Block objects, handling '' as a nameless structure_void
         for i, sublist in enumerate(block_lists):
             block_lists[i] = list(
@@ -1128,7 +1128,6 @@ def color_functions(room):
     room.function('wolf_armor_off', home=False).add(
         data().remove(n().tag('colorings_dog'), 'equipment.body'),
         execute().at(e().tag('colorings_home')).run(function('restworld:blocks/colorings_cur')))
-    rider_count = 'rider_count'
     ghast_pos = r(-5.5, 5.3, -2.0)
     ghast_high_pos = r(-5.5, 9.3, -2.0)
     room.function('colorings_init').add(
@@ -1164,34 +1163,17 @@ def color_functions(room):
         room.label(r(-3, 2, 7), 'Enchanted', SOUTH),
         room.label(r(-7, 2, 7), 'Plain', SOUTH),
         room.label(r(-9, 2, 7), 'Ghast Riders', SOUTH),
-        room.label(r(-10, 2, 7), 'Ghast Boat', SOUTH),
-        room.label(r(-9, 2, 6.85), '0', SOUTH, tags=rider_count),
+        room.label(r(-11, 2, 7), 'Ghast Boat', SOUTH),
         room.label(r(-11, 2, 3), 'Glowing', SOUTH),
         room.label(r(-8, 2, 3), 'Collar', SOUTH),
         room.label(r(0, 2, 3), 'Leggings', SOUTH),
     )
     room.loop('colorings', main_clock).add(erase(r(-9, 2, 2), r(-9, 2, 3))).loop(colorings_loop, colors).add(
         colored_signs(None, render_signs_glow))
-    room.function('riders_on', home=False).add(room.rider_on(e().tag('colorings_ghast')))
-    room.function('riders_off', home=False).add(room.rider_off())
-    ghast = n().tag('colorings_ghast')
-    rider_on = room.function('colorings_ghasts_rider_on', home=False).add(room.rider_on(ghast))
-    rider_off = room.function('colorings_ghasts_rider_off', home=False).add(room.rider_off())
 
-    def show_rider_count(count):
-        return data().modify(n().tag(rider_count), 'text').set().value(f'{count}')
-
-    ghast_full = room.score('ghast_full')
-    room.function('colorings_ghasts_riders', home=False).add(
-        execute().store(SUCCESS).score(ghast_full).run(data().get(n().tag('colorings_ghast'), 'Passengers[3]')),
-        execute().if_().score(ghast_full).matches(0).run(function(rider_on)),
-        execute().unless().score(ghast_full).matches(0).run(function(rider_off)),
-        show_rider_count(0),
-        execute().if_().data(ghast, 'Passengers[0]').run(show_rider_count(1)),
-        execute().if_().data(ghast, 'Passengers[1]').run(show_rider_count(2)),
-        execute().if_().data(ghast, 'Passengers[2]').run(show_rider_count(3)),
-        execute().if_().data(ghast, 'Passengers[3]').run(show_rider_count(4)),
-    )
+    riders = tuple(room.rider_on(n().tag('colorings_ghast'), tags=f'ghast_rider_{i}') for i in range(4))
+    room.function('ghast_riders_on', home=False).add(riders)
+    room.function('ghast_riders_off', home=False).add((room.rider_off(),) * 4)
 
     ghast_boat_off = room.function('ghast_boat_off', home=False).add(
         data().remove(n().tag('colorings_ghast'), 'leash'),
