@@ -160,7 +160,7 @@ def room():
     recent_things_signs = (r(-2, 4, 1), r(-2, 4, 0), r(-2, 4, -1))[::-1]
     chest_pos = r(-1, -2, 0)
     room.function('models_room_init', exists_ok=True).add(
-        room.label(r(-2, 2, 0), 'Keep Inventory', EAST))
+        room.label(r(-2, 2, 0), 'See in Hands', EAST))
     under = {'chorus_flower': 'end_stone', 'chorus_plant': 'end_stone', 'sugar_cane': 'grass_block',
              'wheat': 'farmland', 'bamboo': 'grass_block'}
     model_init = room.function('model_init').add(
@@ -214,6 +214,7 @@ def room():
 
     at_home = execute().at(model_home).run
 
+    see_in_hands = room.score('see_in_hands')
     model_copy = room.function('model_copy', home=False).add(
         data().merge(model_src, {'ItemRotation': 0}),
         execute().unless().data(model_src, 'Item.id').run(kill(all_ground)),
@@ -233,7 +234,7 @@ def room():
             item().replace().entity(model_holder, 'armor.head').from_().entity(model_src, 'container.0')),
         item().replace().entity(invis_frame, 'container.0').from_().entity(model_src, 'container.0'),
         data().merge(invis_frame, named_frame_data),
-        global_.if_clock_running.at(e().tag('all_things_home')).run(
+        global_.if_clock_running.at(e().tag('all_things_home')).if_().score(see_in_hands).matches(1).run(
             item().replace().entity(p(), 'weapon.mainhand').from_().entity(model_src, 'container.0'),
             item().replace().entity(p(), 'weapon.offhand').from_().entity(model_src, 'container.0'),
             needs_restore.set(1)),
@@ -246,6 +247,8 @@ def room():
         (item().replace().entity(p(), f'hotbar.{i}').from_().block(chest_pos, f'container.{i}') for i in range(0, 9)),
         item().replace().entity(p(), 'weapon.offhand').from_().block(chest_pos, 'container.1'),
         needs_restore.set(0))
+    room.function('see_in_hands_on', home=False).add(at_home(function(model_save)), see_in_hands.set(1))
+    room.function('see_in_hands_off', home=False).add(at_home(function(model_restore)), see_in_hands.set(0))
     room.function('model_run', home=False).add(
         was_empty.operation(EQ, is_empty),
         is_empty.set(1),
@@ -260,11 +263,9 @@ def room():
     room.function('model_enter').add(
         execute().at(model_home).run(function(model_save)),
         setblock(redstone_block_pos, 'redstone_block'))
-    keep_inventory = room.score('keep_inventory')
     room.function('model_exit').add(
         setblock(redstone_block_pos, 'air'),
-        execute().unless().score(keep_inventory).matches(1).if_().score(needs_restore).matches(1).at(model_home).run(
-            function(model_restore))
+        execute().if_().score(needs_restore).matches(1).at(model_home).run(function(model_restore))
     )
 
     def thing_funcs(which, things):
@@ -304,7 +305,7 @@ def room():
             return False
         if 'Air' in block.name:
             return False
-        if 'Hanging' in block.name:
+        if 'Hanging' in block.name and 'Sign' not in block.name:
             return False
         return True
 
@@ -321,6 +322,10 @@ def room():
             state[b] = {'facing': EAST}
         elif b.id.endswith('_sign'):
             state[b] = {'facing': EAST} if b.id.endswith('_wall_sign') else {'rotation': 4}
+        elif re.search(r'_(coral(_fan)?)$|^kelp$|^(tall_)?sea', b.id):
+            state[b] = {'waterlogged': False}
+        elif b.id == 'tripwire_hook':
+            state[b] = {'facing': EAST}
 
     thing_funcs('blocks', block_list)
     thing_funcs('sampler_blocks', sample('blocks', block_list))
