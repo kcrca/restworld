@@ -456,7 +456,7 @@ class Room(FunctionSet):
         offset = [x_off, y_off, z_off]
         pos = RelCoord.add(pos, tuple(offset))
         scale = 0.45
-        display_nbt = Nbt({'Tags': t, 'line_width': int(200 * scale), 'Rotation': rotation, 'background': 0})
+        display_nbt = Nbt({'Tags': t, 'line_width': int(190 * scale), 'Rotation': rotation, 'background': 0})
         if nbt:
             display_nbt = display_nbt.merge(nbt)
         return TextDisplay(txt, nbt=display_nbt).scale(scale).summon(pos)
