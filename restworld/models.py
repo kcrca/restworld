@@ -3,7 +3,8 @@ from collections import defaultdict
 
 from pynecraft import info
 from pynecraft.base import Arg, EAST, EQ, as_facing, d, r, to_name
-from pynecraft.commands import Entity, REPLACE, SUCCESS, Text, clone, comment, data, e, execute, fill, function, item, \
+from pynecraft.commands import Block, Entity, REPLACE, SUCCESS, Text, clone, comment, data, e, execute, fill, function, \
+    item, \
     kill, \
     loot, n, p, schedule, setblock, summon, tag
 from pynecraft.info import block_items
@@ -162,7 +163,7 @@ def room():
         room.label(r(-2, 2, 0), 'Keep Inventory', EAST))
     under = {'chorus_flower': 'end_stone', 'chorus_plant': 'end_stone', 'sugar_cane': 'grass_block',
              'wheat': 'farmland', 'bamboo': 'grass_block'}
-    room.function('model_init').add(
+    model_init = room.function('model_init').add(
         tag(n().tag('model_home')).add('model_head_home'),
         kill(all_src),
         kill(all_ground),
@@ -196,7 +197,7 @@ def room():
     named_frame_data = named_frame_item(name='Invisible Frame').merge({'ItemRotation': 0})
     do_set_if_block = room.function('do_set_if_block', home=False).add(
         setblock(r(0, -6, 0), Arg('under_block')),
-        setblock(r(0, -5, 0), Arg('block')),
+        setblock(r(0, -5, 0), '$(block)$(block_state)'),
     )
     # We set the block somewhere and clone it over so we can filter doors and beds, which come out weird.
     set_if_block = room.function('set_if_block', home=False).add(
@@ -204,6 +205,9 @@ def room():
         data().modify(room.store, 'under_block').set().value('stone_bricks'),
         execute().if_().data(room.store, 'under[{id: "$(block)"}]').run(
             data().modify(room.store, 'under_block').set().from_(room.store, 'under[{id: "$(block)"}].under')),
+        data().modify(room.store, 'block_state').set().value(''),
+        execute().if_().data(room.store, 'states[{id: "$(block)"}]').run(
+            data().modify(room.store, 'block_state').set().from_(room.store, 'states[{id: "$(block)"}].state')),
         function(do_set_if_block).with_().storage(room.store),
         execute().unless().block(r(0, -5, 0), '#restworld:no_model_block').run(
             clone(r(0, -5, 0), r(0, -6, 0), r(0, 1, 1))))
@@ -305,9 +309,26 @@ def room():
         return True
 
     block_list = tuple(filter(block_filter, info.blocks.values()))
+
+    state = {'sculk_vein': {'down': True, 'north': True}, 'grindstone': {'face': 'floor'}}
+    easterly = {'furnace', 'dropper', 'dispenser', 'blast_furnace', 'smoker', 'chest', 'lectern', 'lever', 'observer'}
+    for b in block_list:
+        if re.search(r'_(head|skull)$', b.id):
+            state[b] = {'rotation': 4}
+        elif b.id.endswith('_banner'):
+            state[b] = {'rotation': 12}
+        elif re.search(r'_(button|fence_gate|chest)$', b.id) or b.id in easterly:
+            state[b] = {'facing': EAST}
+        elif b.id.endswith('_sign'):
+            state[b] = {'facing': EAST} if b.id.endswith('_wall_sign') else {'rotation': 4}
+
     thing_funcs('blocks', block_list)
     thing_funcs('sampler_blocks', sample('blocks', block_list))
     item_list = tuple(filter(lambda row: 'Spawn' not in row.name, info.items.values()))
     thing_funcs('items', item_list)
     thing_funcs('sampler_items', sample('items', item_list))
     room.function('start_manual').add(kill(all_things_home))
+
+    model_init.add(
+        data().modify(room.store, 'states').set().value(
+            [{'id': f'minecraft:{k}', 'state': Block.state_str(v)} for k, v in state.items()]))
