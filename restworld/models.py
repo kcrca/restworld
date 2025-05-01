@@ -307,6 +307,8 @@ def room():
             return False
         if 'Hanging' in block.name and 'Sign' not in block.name:
             return False
+        if 'Wheat' in block.name:
+            return False
         return True
 
     block_list = tuple(filter(block_filter, info.blocks.values()))
