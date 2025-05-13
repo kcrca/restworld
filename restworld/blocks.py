@@ -14,7 +14,7 @@ from pynecraft.function import Function, Loop
 from pynecraft.info import Color, armor_equipment, colors, sherds, stems
 from pynecraft.simpler import Item, ItemFrame, Region, Sign, TextDisplay, WallSign
 from restworld.materials import enchant
-from restworld.rooms import Clock, Room, erase, if_clause, kill_em
+from restworld.rooms import Clock, ERASE_HEIGHT, Room, erase, if_clause, kill_em
 from restworld.world import fast_clock, main_clock, restworld
 
 
@@ -1188,9 +1188,9 @@ def color_functions(room):
         execute().at(n().tag('colorings_ghast')).run(summon(ghast_boat, r(0, -2, 0))),
         data().modify(n().tag('colorings_ghast'), 'leash.UUID').set().from_(n().tag('ghast_boat'), 'UUID'))
 
-    store_start = (coloring_coords[0][0], coloring_coords[0][1].value - coloring_coords[1][1].value + 1,
+    store_start = (coloring_coords[0][0], ERASE_HEIGHT + coloring_coords[0][1].value - coloring_coords[1][1].value,
                    coloring_coords[0][2])
-    store_end = (coloring_coords[1][0], 0, coloring_coords[1][2])
+    store_end = (coloring_coords[1][0], ERASE_HEIGHT, coloring_coords[1][2])
     top_start = (coloring_coords[0][0], coloring_coords[0][1], coloring_coords[0][2])
     top_end = (coloring_coords[1][0], coloring_coords[1][1] - 1, coloring_coords[1][2])
     room.function('colorings_plain_off', home=False).add(

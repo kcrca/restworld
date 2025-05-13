@@ -19,6 +19,8 @@ from pynecraft.function import DataPack, Function, FunctionSet, LATEST_PACK_VERS
 from pynecraft.simpler import Item, TextDisplay, WallSign
 from pynecraft.values import DUMMY
 
+ERASE_HEIGHT = 80
+
 
 def named_frame_item(block: BlockDef = None, name=None, damage=None) -> Nbt:
     if not block and not name:
@@ -46,9 +48,9 @@ def erase(start: Position, end: Position = None, filter: str = None) -> str:
     mn = (min(start[0], end[0]), min(start[1], end[1]), min(start[2], end[2]))
     mx = (max(start[0], end[0]), max(start[1], end[1]), max(start[2], end[2]))
     if filter:
-        return clone(mx, mn, (-15, 80, -15)).filtered(filter, MOVE)
+        return clone(mx, mn, (-15, ERASE_HEIGHT, -15)).filtered(filter, MOVE)
     else:
-        return clone(mx, mn, (-15, 80, -15)).replace(MOVE)
+        return clone(mx, mn, (-15, ERASE_HEIGHT, -15)).replace(MOVE)
 
 
 def _to_iterable(tags):
