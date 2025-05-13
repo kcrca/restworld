@@ -4,10 +4,11 @@ import math
 
 from pynecraft import commands
 from pynecraft.base import EAST, NORTH, Nbt, TEXT_COLORS, WEST, as_facing, r, to_name
-from pynecraft.commands import BOSSBAR_COLORS, BOSSBAR_STYLES, Block, CREATIVE, Entity, LEVELS, REPLACE, SURVIVAL, a, \
+from pynecraft.commands import BOSSBAR_COLORS, BOSSBAR_STYLES, Block, CREATIVE, Entity, LEVELS, REPLACE, RESET, \
+    SURVIVAL, a, \
     bossbar, clone, data, e, effect, execute, fill, forceload, function, gamemode, gamerule, item, kill, n, \
     p, return_, \
-    schedule, \
+    s, schedule, \
     setblock, summon, tag, waypoint
 from pynecraft.simpler import Item, ItemFrame, Sign, WallSign
 from pynecraft.values import LOCATOR_BAR
@@ -323,10 +324,14 @@ def room():
     room.function('pumpkin_blur_off', home=False).add(
         item().replace().entity(p(), 'armor.head').from_().entity(saver, 'armor.head'))
 
-    room.function('waypoints_base_init').add(room.label(r(1, 2, 0), 'Waypoints', EAST))
+    room.function('waypoints_base_init')
+    waypoint_sign_pos = r(0, 2, 0)
+    room.function('waypoints_init', home=False).add(
+        room.label(r(1, 2, 0), 'Waypoints', EAST),
+        WallSign((None, 'Waypoint Style:')).place(waypoint_sign_pos, EAST),
+    )
 
-    waypoints_init = room.function('waypoints_init')
-    waypoints_cleanup = room.function('waypoints_cleanup', home=False)
+    waypoints_setup = room.function('waypoints_setup', home=False).add()
     radii = [(3, 'Here'), (205, 'Near'), (255, 'Far'), (320, 'Very Far')]
     for i, color in enumerate(TEXT_COLORS):
         my_tag = f'waypoint_{color}'
@@ -342,24 +347,28 @@ def room():
                                        'attributes': [{'id': "minecraft:waypoint_transmit_range", 'base': 100000}]},
                        name=color_name).custom_name_visible(
             True).tag(room.name, 'waypoint', my_tag)
-        waypoints_init.add(
+        waypoints_setup.add(
             forceload().add(r(x, z)),
-        )
-        waypoints_cleanup.add(
             execute().at(e().tag('waypoints_home')).run(
                 stand.summon(r(x, 2, z)),
                 waypoint().modify(n().tag(my_tag)).color(color)),
         )
         if radius != radii[0][0]:
-            waypoints_init.add(
+            waypoints_setup.add(
                 room.label(r(tx, 2, tz), f'{color_name}\\n({radius_name})\\n\u21e7', as_facing((angle + 90) % 360),
                            tags=('waypoint',)))
-    waypoints_init.add(schedule().function(waypoints_cleanup, 2, REPLACE))
+
+    def waypoints_loop(step):
+        yield execute().as_(e().tag('waypoint')).run(waypoint().modify(s()).style(step.elem))
+        name = 'Default' if step.elem == RESET else step.elem
+        yield Sign.change(waypoint_sign_pos, (name,), start=2)
+
+    room.loop('waypoints', main_clock, home=False).loop(waypoints_loop, (RESET, 'bowtie'))
 
     room.function('waypoints_on', home=False).add(
         gamerule(LOCATOR_BAR, True),
         tag(e().tag('waypoints_base_home')).add('waypoints_home'),
-        execute().at(e().tag('waypoints_home')).run(function(waypoints_init)),
+        execute().at(e().tag('waypoints_home')).run(function(waypoints_setup)),
     )
     room.function('waypoints_off', home=False).add(
         forceload().remove_all(),
