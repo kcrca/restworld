@@ -8,7 +8,7 @@ from pynecraft.info import corals, stems
 from restworld.world import restworld
 
 
-def tags():
+def create():
     colorable = {
         'banner': None,
         'carpet': None,

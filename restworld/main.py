@@ -31,7 +31,8 @@ def main():
             particles, enders, font, mobs, hud, materials, nether, paintings, plants, the_end, time,
             wither, maps):
         m.room()
-    tags.tags()
+    for r in (tags, ):
+        r.create()
     loot_tables.loot_tables()
     dir = f'{Path.home()}/clarity/home/saves/RestWorld_{args.version}'
     print(dir)
