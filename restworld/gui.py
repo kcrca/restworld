@@ -5,15 +5,25 @@ import math
 from pynecraft import commands
 from pynecraft.base import EAST, NORTH, Nbt, TEXT_COLORS, WEST, as_facing, r, to_name
 from pynecraft.commands import BOSSBAR_COLORS, BOSSBAR_STYLES, Block, CREATIVE, Entity, LEVELS, REPLACE, RESET, \
-    SURVIVAL, a, \
+    SURVIVAL, Text, a, \
     bossbar, clone, data, e, effect, execute, fill, forceload, function, gamemode, gamerule, item, kill, n, \
     p, return_, \
     s, schedule, \
     setblock, summon, tag, waypoint
-from pynecraft.simpler import Item, ItemFrame, Sign, WallSign
+from pynecraft.simpler import Book, Item, ItemFrame, Sign, WallSign
 from pynecraft.values import LOCATOR_BAR
-from restworld.rooms import Room, kill_em
+from restworld.rooms import Room, ensure, kill_em
 from restworld.world import fast_clock, main_clock, restworld, slow_clock
+
+
+def dialog_book():
+    book = Book()
+    book.sign_book('Dialog Book', 'ResetWorld', 'Custom Dialogs')
+    book.add(Text.text(r'\nCustom Dialog Types:\n\n'))
+    for d in restworld.registry('dialogs'):
+        link = Text(fr'{to_name(d)}\n').click_event().show_dialog(f'restworld:{d}')
+        book.add(link)
+    return book
 
 
 def room():
@@ -288,8 +298,8 @@ def room():
         clone(r(20, -5, 30), r(-15, -5, 1), r(-15, 1, 1)).filtered('chest'))
 
     room.function('bundle_init').add(
-        ItemFrame(EAST, nbt={'Tags': ['gui', 'bundle']}).item('bundle').summon(r(0, 2, 0)),
-        WallSign((None, None, 'Bundle')).place(r(0, 3, 0), EAST),
+        ItemFrame(EAST, nbt={'Tags': ['gui', 'bundle']}).item('bundle').summon(r(0, 3, 0)),
+        WallSign((None, None, 'Bundle')).place(r(0, 4, 0), EAST),
     )
 
     enchant_chest = {
@@ -376,3 +386,10 @@ def room():
         tag(e().tag('waypoints_base_home')).remove('waypoints_home'),
         kill(e().tag('waypoint')),
     )
+
+    room.function('dialogs_init').add(WallSign((None, 'Custom Dialogs')).place(r(-1, 3, 1), EAST))
+    room.function('dialogs').add(
+        ensure(r(0, 2, 0), Block('lectern', {'facing': EAST, 'has_book': True}),
+               nbt=dialog_book().as_item()))
+    room.function('dialogs_enter').add(setblock(r(0, 0, 1), 'redstone_block'))
+    room.function('dialogs_exit').add(setblock(r(0, 0, 1), 'air'))

@@ -17,8 +17,8 @@ def formatting_book():
     book = Book()
     book.sign_book('Format Book', 'RestWorld', 'Text Formatting')
     book.add('',
-             Text.text('Named text colors\\n').underlined(),
-             Text.text('    (hover for names)\\n\\n'))
+             Text.text(r'Named text colors:\n').underlined(),
+             Text.text(r'    (hover for names)\n\n'))
     for c in TEXT_COLORS[:8]:
         book.add(color_text(c))
     book.next_page()
@@ -27,13 +27,13 @@ def formatting_book():
     book.add(color_text('#cd5c5c'))
     book.next_page()
     book.add('',
-             Text.text('Text Formatting').underlined(),
-             '\\n\\n',
-             Text.text('Bold Text\\n').bold(),
-             Text.text('Italic Text\\n').italic(),
-             Text.text('Underline Text\\n').underlined(),
-             Text.text('Strikethrough Text\\n').strikethrough(),
-             Text.text('Obfuscated Text\\n').obfuscated().hover_event().show_text('Obfuscated'))
+             Text.text(r'Text Formatting\n').underlined(),
+             r'\n',
+             Text.text(r'Bold Text\n').bold(),
+             Text.text(r'Italic Text\n').italic(),
+             Text.text(r'Underline Text\n').underlined(),
+             Text.text(r'Strikethrough Text\n').strikethrough(),
+             Text.text(r'Obfuscated Text\n').obfuscated().hover_event().show_text('Obfuscated'))
     return book
 
 

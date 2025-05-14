@@ -1,10 +1,9 @@
 import re
 
-from pynecraft import info
 from pynecraft.base import to_id
 from pynecraft.commands import COLORS
 from pynecraft.function import BLOCK
-from pynecraft.info import corals, stems
+from pynecraft.info import corals, stems, woods
 from restworld.world import restworld
 
 
@@ -43,7 +42,7 @@ def create():
             'cave_air'
         ]
     }
-    wood_ids = tuple(to_id(x) for x in info.woods)
+    wood_ids = tuple(to_id(x) for x in woods)
     stem_ids = tuple(to_id(x) for x in stems)
     woodlike_ids = wood_ids + stem_ids
     blocks['fencelike'] = {

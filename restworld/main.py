@@ -5,7 +5,8 @@ import random
 from pathlib import Path
 
 from pynecraft.simpler import Sign
-from restworld import arena, banners, biomes, blocks, center, connect, diy, effects, enders, font, global_, gui, hud, \
+from restworld import arena, banners, biomes, blocks, center, connect, dialogs, diy, effects, enders, font, global_, \
+    gui, hud, \
     loot_tables, maps, materials, mobs, models, multimob, nether, paintings, particles, photo, plants, redstone, save, \
     tags, test_blocks, tester, the_end, time, wither
 from restworld.world import restworld
@@ -25,14 +26,14 @@ def main():
     if args.pynecraft_dev:
         tester.room()
     test_blocks.tests()
+    for r in (tags, dialogs):
+        r.create()
     for m in (
             multimob, redstone, connect,
             photo, blocks, save, models, global_, arena, banners, biomes, center, gui, diy, effects,
             particles, enders, font, mobs, hud, materials, nether, paintings, plants, the_end, time,
             wither, maps):
         m.room()
-    for r in (tags, ):
-        r.create()
     loot_tables.loot_tables()
     dir = f'{Path.home()}/clarity/home/saves/RestWorld_{args.version}'
     print(dir)
