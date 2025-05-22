@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pynecraft import info
 from pynecraft.base import EAST, NORTH, SOUTH, TEXT_COLORS, WEST, r
-from pynecraft.commands import Block, Text, clone, data, e, execute, fill, function, kill, s, setblock, tag
+from pynecraft.commands import Block, HoverEvent, Text, clone, data, e, execute, fill, function, kill, s, setblock, tag
 from pynecraft.info import colors, stems
 from pynecraft.simpler import Book, TextDisplay, WallSign
 from restworld.rooms import Room, ensure
@@ -10,7 +10,7 @@ from restworld.world import restworld
 
 
 def color_text(color):
-    return Text.text('Lorem ipsum dolor\\n').color(color).hover_event().show_text(color)
+    return Text.text('Lorem ipsum dolor\\n').color(color).hover_event(HoverEvent.show_text(color))
 
 
 def formatting_book():
@@ -33,7 +33,7 @@ def formatting_book():
              Text.text(r'Italic Text\n').italic(),
              Text.text(r'Underline Text\n').underlined(),
              Text.text(r'Strikethrough Text\n').strikethrough(),
-             Text.text(r'Obfuscated Text\n').obfuscated().hover_event().show_text('Obfuscated'))
+             Text.text(r'Obfuscated Text\n').obfuscated().hover_event(HoverEvent.show_text('Obfuscated')))
     return book
 
 

@@ -4,7 +4,9 @@ import sys
 from datetime import date
 
 from pynecraft.base import DARK_GREEN, DARK_PURPLE, r
-from pynecraft.commands import CREATIVE, Commands, Entity, SIDEBAR, Text, clear, data, e, execute, fill, function, \
+from pynecraft.commands import CREATIVE, ClickEvent, Commands, Entity, HoverEvent, SIDEBAR, Text, clear, data, e, \
+    execute, fill, \
+    function, \
     gamemode, give, kill, p, scoreboard, setblock, tp
 from pynecraft.function import Function, FunctionSet
 from pynecraft.simpler import Book, Sign, TextDisplay
@@ -98,19 +100,19 @@ class RestWorld(RoomPack):
             r'  Visual Design\n  Testing\n  Rubber Duck\n',
             r'\n',
             r'Details on ',
-            Text.text(r'our site').underlined().italic().color(DARK_PURPLE).click_event().open_url(
-                'https://claritypack.com/restworld/'),
+            Text.text(r'our site').underlined().italic().color(DARK_PURPLE).click_event(ClickEvent.open_url(
+                'https://claritypack.com/restworld/')),
             Text.text(r'\n\nTry the ').italic(),
-            Text.text(r'Call Out Pack!').underlined().italic().color(DARK_PURPLE).click_event().open_url(
-                'https://www.planetminecraft.com/texture-pack/call-out-texture-pack-support/')
+            Text.text(r'Call Out Pack!').underlined().italic().color(DARK_PURPLE).click_event(ClickEvent.open_url(
+                'https://www.planetminecraft.com/texture-pack/call-out-texture-pack-support/'))
         )
 
         return Function('control_book').add(give(p(), cb.as_entity()))
 
     @staticmethod
     def _action(txt: str, tooltip: str, act: str) -> Text:
-        return Text.text(txt).color(DARK_GREEN).underlined().click_event().run_command(
-            function('restworld:' + act)).hover_event().show_text(tooltip)
+        return Text.text(txt).color(DARK_GREEN).underlined().click_event(ClickEvent.run_command(
+            function('restworld:' + act))).hover_event(HoverEvent.show_text(tooltip))
 
     def _home_func_name(self, base):
         for f in self._suffixes:

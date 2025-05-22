@@ -4,7 +4,8 @@ import math
 import random
 
 from pynecraft.base import Arg, EAST, MIDNIGHT, NOON, NORTH, Nbt, OVERWORLD, SOUTH, WEST, as_facing, d, r, to_id
-from pynecraft.commands import BLOCK_MARKER, Block, CLEAR, DUST_PILLAR, Entity, FALLING_DUST, INFINITE, Particle, RAIN, \
+from pynecraft.commands import BLOCK_MARKER, Block, CLEAR, DUST_PILLAR, Entity, FALLING_DUST, HoverEvent, INFINITE, \
+    Particle, RAIN, \
     REPLACE, THUNDER, Text, a, data, e, effect, execute, fill, fillbiome, function, item, kill, particle, playsound, \
     schedule, \
     setblock, summon, time, weather
@@ -24,7 +25,8 @@ from pynecraft.values import ABSORPTION, ANGRY_VILLAGER, ASH, BASALT_DELTAS, BLI
     PALE_OAK_LEAVES, PARTICLE_GROUP, POOF, PORTAL, RAID_OMEN, RESISTANCE, REVERSE_PORTAL, SCRAPE, SCULK_CHARGE, \
     SCULK_CHARGE_POP, SCULK_SOUL, SHRIEK, SMALL_FLAME, SMALL_GUST, SMOKE, SNEEZE, SNOWFLAKE, SNOWY_TAIGA, SONIC_BOOM, \
     SOUL, SOUL_FIRE_FLAME, SOUL_SAND_VALLEY, SPEED, SPIT, SPLASH, SPORE_BLOSSOM_AIR, SQUID_INK, STRENGTH, SWEEP_ATTACK, \
-    TOTEM_OF_UNDYING, TRAIL, TRIAL_OMEN, TRIAL_SPAWNER_DETECTION, TRIAL_SPAWNER_DETECTION_OMINOUS, UNDERWATER, \
+    TINTED_LEAVES, TOTEM_OF_UNDYING, TRAIL, TRIAL_OMEN, TRIAL_SPAWNER_DETECTION, TRIAL_SPAWNER_DETECTION_OMINOUS, \
+    UNDERWATER, \
     VAULT_CONNECTION, VIBRATION, WARPED_FOREST, WARPED_SPORE, WAX_OFF, WAX_ON, WHITE_ASH, WHITE_SMOKE, WITCH, \
     as_particle
 from restworld.rooms import ActionDesc, SignedRoom, Wall, ensure, kill_em, span
@@ -109,7 +111,7 @@ elsewhere = {
     'Materials': (
         LAVA, PORTAL, DRIPPING_WATER, FALLING_WATER, DRIPPING_DRIPSTONE_WATER, FALLING_DRIPSTONE_WATER, DRIPPING_LAVA,
         FALLING_LAVA, LANDING_LAVA, DRIPPING_DRIPSTONE_LAVA, FALLING_DRIPSTONE_LAVA),
-    'Plants': (SPORE_BLOSSOM_AIR, FALLING_SPORE_BLOSSOM, CHERRY_LEAVES, PALE_OAK_LEAVES, UNDERWATER),
+    'Plants': (SPORE_BLOSSOM_AIR, FALLING_SPORE_BLOSSOM, CHERRY_LEAVES, PALE_OAK_LEAVES, TINTED_LEAVES, UNDERWATER),
     'Mobs': (FALLING_NECTAR, EGG_CRACK),
     'Arena': (ITEM_SLIME,),
     'GUI': (ENCHANT,),
@@ -601,7 +603,7 @@ def room():
                 first = False
             text = Text(as_particle(p).capitalize().replace('_', ' ')).bold(False)
             if p in hover:
-                text = text.hover_event().show_text(hover[p])
+                text = text.hover_event(HoverEvent.show_text(hover[p]))
             book.add(text)
         book.add(Text('.').bold(False))
     room.function('particle_book', home=False).add(

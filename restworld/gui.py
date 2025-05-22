@@ -4,7 +4,8 @@ import math
 
 from pynecraft import commands
 from pynecraft.base import EAST, NORTH, Nbt, TEXT_COLORS, WEST, as_facing, r, to_name
-from pynecraft.commands import BOSSBAR_COLORS, BOSSBAR_STYLES, Block, CREATIVE, Entity, LEVELS, REPLACE, RESET, \
+from pynecraft.commands import BOSSBAR_COLORS, BOSSBAR_STYLES, Block, CREATIVE, ClickEvent, Entity, LEVELS, REPLACE, \
+    RESET, \
     SURVIVAL, Text, a, \
     bossbar, clone, data, e, effect, execute, fill, forceload, function, gamemode, gamerule, item, kill, n, \
     p, return_, \
@@ -21,7 +22,7 @@ def dialog_book():
     book.sign_book('Dialog Book', 'ResetWorld', 'Custom Dialogs')
     book.add(Text.text(r'\nCustom Dialog Types:\n\n'))
     for d in restworld.registry('dialogs'):
-        link = Text(fr'{to_name(d)}\n').click_event().show_dialog(f'restworld:{d}')
+        link = Text(fr'{to_name(d)}\n').click_event(ClickEvent.show_dialog(f'restworld:{d}'))
         book.add(link)
     return book
 

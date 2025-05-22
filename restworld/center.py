@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 from pynecraft.base import EAST, NE, NORTH, NW, Nbt, SE, SOUTH, SW, WEST, r
-from pynecraft.commands import Entity, Score, Text, clone, e, execute, fill, function, kill, scoreboard, summon, tag
+from pynecraft.commands import ClickEvent, Entity, Score, Text, clone, e, execute, fill, function, kill, scoreboard, \
+    summon, tag
 from pynecraft.info import Horse
 from pynecraft.simpler import ItemFrame, Sign, WallSign
 from restworld.materials import armor_for
@@ -48,7 +49,7 @@ def room():
         WallSign(('The control book', 'lets you change', 'clock speeds', 'and step along.')).place((r(4), 101, r(-1)),
                                                                                                    WEST),
         WallSign(('Also, you might', 'like my "Clarity"', 'pack; a link is in', 'the control book!'),
-                 (lambda txt: Text.text(txt).click_event().open_url('https://claritypack.com'),)).place(
+                 (lambda txt: Text.text(txt).click_event(ClickEvent.open_url('https://claritypack.com')),)).place(
             (r(4), 101, r(1)), WEST),
 
         top_sign.place(r(6, 5, 6), NW),
