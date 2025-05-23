@@ -1,3 +1,4 @@
+from pynecraft.commands import Text
 from pynecraft.simpler import Dialog, Item
 from restworld.world import restworld
 
@@ -40,4 +41,11 @@ def create():
             Dialog.submit_action('Whisper', tooltip='whisper', on_submit=Dialog.custom_form('namespace2'))
         )
     )
-    return
+
+    advice = Dialog.plain_message(
+        Text.text('(The warning icon at the top is a button, you might want to press it if you texture it)').italic())
+    for d in dialogs.values():
+        if 'body' in d:
+            d['body'] += (advice,)
+        else:
+            d['body'] = (advice,)
