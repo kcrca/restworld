@@ -21,7 +21,7 @@ def dialog_book():
     book = Book()
     book.sign_book('Dialog Book', 'ResetWorld', 'Custom Dialogs')
     book.add(Text.text(r'\nCustom Dialog Types:\n\n'))
-    for d in restworld.registry('dialogs'):
+    for d in restworld.registry('dialog'):
         link = Text(fr'{to_name(d)}\n').click_event(ClickEvent.show_dialog(f'restworld:{d}'))
         book.add(link)
     return book
