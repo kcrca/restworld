@@ -25,8 +25,7 @@ def create():
     form = (
         Dialog.text('Text', 'Bugs Bunny'),
         Dialog.boolean("Boolean?"),
-        Dialog.single_option('Single Option',
-                             ('Euphoria', 'Melancholy', {'display': 'Ennui', 'initial': True}, 'Copacetic')),
+        Dialog.single_option('Single Option', ('Euphoria', 'Melancholy', 'Ennui', 'Copacetic'), initial='Ennui'),
         Dialog.number_range('Number Range', 0, 20, initial=1)
     )
     dialogs['simple_input_form'] = Dialog.simple_input_form(
