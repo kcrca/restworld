@@ -7,13 +7,13 @@ from pynecraft.base import EAST, NORTH, Nbt, TEXT_COLORS, WEST, as_facing, r, to
 from pynecraft.commands import BOSSBAR_COLORS, BOSSBAR_STYLES, Block, CREATIVE, ClickEvent, Entity, LEVELS, REPLACE, \
     RESET, \
     SURVIVAL, Text, a, \
-    bossbar, clone, data, e, effect, execute, fill, forceload, function, gamemode, gamerule, item, kill, n, \
+    bossbar, clone, data, dialog, e, effect, execute, fill, forceload, function, gamemode, gamerule, item, kill, n, \
     p, return_, \
     s, schedule, \
     setblock, summon, tag, waypoint
 from pynecraft.simpler import Book, Item, ItemFrame, Sign, WallSign
 from pynecraft.values import LOCATOR_BAR
-from restworld.rooms import Room, ensure, kill_em
+from restworld.rooms import Room, kill_em
 from restworld.world import fast_clock, main_clock, restworld, slow_clock
 
 
@@ -388,9 +388,8 @@ def room():
         kill(e().tag('waypoint')),
     )
 
-    room.function('dialogs_init').add(WallSign((None, 'Custom Dialogs')).place(r(-1, 3, 1), EAST))
-    room.function('dialogs').add(
-        ensure(r(0, 2, 0), Block('lectern', {'facing': EAST, 'has_book': True}),
-               nbt=dialog_book().as_item()))
-    room.function('dialogs_enter').add(setblock(r(0, 0, 1), 'redstone_block'))
-    room.function('dialogs_exit').add(setblock(r(0, 0, 1), 'air'))
+    dialogs_init = room.function('dialogs_init').add(
+        WallSign((None, Text('Custom Dialogs').bold())).place(r(0, 4, 1), EAST))
+    for i, d in enumerate(restworld.registry('dialog')):
+        sign = WallSign((None, to_name(d)), dialog().show(a(), f'restworld:{d}'))
+        dialogs_init.add(sign.place(r(0, 3 - int(i / 3), 2 - i % 3), EAST))
