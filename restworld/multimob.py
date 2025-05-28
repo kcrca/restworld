@@ -5,9 +5,7 @@ import math
 
 from pynecraft import info
 from pynecraft.base import Arg, EAST, NE, NORTH, NW, SE, SOUTH, SW, WEST, as_facing, r, rotate_facing
-from pynecraft.commands import Entity, Text, comment, data, e, execute, fill, function, n, return_, s, \
-    setblock, \
-    summon, \
+from pynecraft.commands import Entity, Text, comment, data, e, execute, fill, function, n, return_, s, setblock, summon, \
     tag
 from pynecraft.simpler import VILLAGER_BIOMES, VILLAGER_PROFESSIONS, WallSign
 from restworld.rooms import Room, kill_em

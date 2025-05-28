@@ -1,8 +1,7 @@
 import collections
 
 from pynecraft.base import NORTH, OVERWORLD, SOUTH, r, to_id
-from pynecraft.commands import Block, CLEAR, DESTROY, data, e, execute, fill, fillbiome, function, kill, say, \
-    setblock, \
+from pynecraft.commands import Block, CLEAR, DESTROY, data, e, execute, fill, fillbiome, function, kill, say, setblock, \
     weather
 from pynecraft.simpler import PLAINS, Sign, WallSign
 from pynecraft.values import BASALT_DELTAS, NETHER_WASTES, SMALL_END_ISLANDS, WARM_OCEAN, as_biome
@@ -123,7 +122,7 @@ def room():
 
     room.function('cleanup_biome').add(kill(e().type('item')))
     clear_previous_mobs = execute().at(e().tag('biome_loading_action_home')).positioned(
-        r(-5, -5, -5)).run(kill_em  (e().type('!player').tag('!homer').volume((74, 42, 74)))),
+        r(-5, -5, -5)).run(kill_em(e().type('!player').tag('!homer').volume((74, 42, 74)))),
 
     room.function('clear_biome').add(
         fill(r(-2, -4, -2), r(-1, 42, 66), 'air').replace('#restworld:liquid'),

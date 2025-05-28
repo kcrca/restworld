@@ -5,9 +5,7 @@ from datetime import date
 
 from pynecraft.base import DARK_GREEN, DARK_PURPLE, r
 from pynecraft.commands import CREATIVE, ClickEvent, Commands, Entity, HoverEvent, SIDEBAR, Text, clear, data, e, \
-    execute, fill, \
-    function, \
-    gamemode, give, kill, p, scoreboard, setblock, tp
+    execute, fill, function, gamemode, give, kill, p, scoreboard, setblock, tp
 from pynecraft.function import Function, FunctionSet
 from pynecraft.simpler import Book, Sign, TextDisplay
 from restworld.rooms import Clock, Room, RoomPack

@@ -4,12 +4,10 @@ import re
 from typing import Iterable, Union
 
 from pynecraft import commands, info
-from pynecraft.base import DOWN, E, EAST, EQ, FacingDef, N, NORTH, Nbt, RelCoord, S, SOUTH, UP, W, WEST, as_facing, \
-    r, \
+from pynecraft.base import DOWN, E, EAST, EQ, FacingDef, N, NORTH, Nbt, RelCoord, S, SOUTH, UP, W, WEST, as_facing, r, \
     rotate_facing, to_id, to_name
-from pynecraft.commands import Block, Commands, Entity, MOD, MOVE, REPLACE, ScoreName, as_block, \
-    as_score, \
-    clone, data, e, execute, fill, function, item, kill, n, p, s, say, schedule, setblock, summon, tag, tp
+from pynecraft.commands import Block, Commands, Entity, MOD, MOVE, REPLACE, ScoreName, as_block, as_score, clone, data, \
+    e, execute, fill, function, item, kill, n, p, s, say, schedule, setblock, summon, tag, tp
 from pynecraft.function import Function, Loop
 from pynecraft.info import Color, armor_equipment, colors, sherds, stems
 from pynecraft.simpler import Item, ItemFrame, Region, Sign, TextDisplay, WallSign

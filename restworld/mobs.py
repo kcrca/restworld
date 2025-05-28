@@ -3,8 +3,7 @@ from __future__ import annotations
 import copy
 
 from pynecraft.base import EAST, EQ, NORTH, Nbt, SOUTH, WEST, r, to_id, to_name
-from pynecraft.commands import Block, COLORS, Entity, FORCE, LONG, MOD, REPLACE, RESULT, Score, as_facing, clone, \
-    data, \
+from pynecraft.commands import Block, COLORS, Entity, FORCE, LONG, MOD, REPLACE, RESULT, Score, as_facing, clone, data, \
     e, execute, fillbiome, function, item, kill, n, p, player, return_, ride, s, schedule, scoreboard, setblock, summon, \
     tag, tp
 from pynecraft.info import axolotls, colors, horses, tropical_fish, wolves

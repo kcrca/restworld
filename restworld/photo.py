@@ -132,10 +132,10 @@ def get_quilt_blocks():
 
 
 def armor(kind):
-    armors =  {}
+    armors = {}
     for place, which in armor_equipment.items():
         armors[place] = Item.nbt_for(f'{kind}_{which}')
-    return Entity('armor_stand', nbt={'equipmenet': armors}).tag('photo')
+    return Entity('armor_stand', nbt={'equipment': armors}).tag('photo')
 
 
 def room():

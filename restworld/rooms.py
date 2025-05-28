@@ -6,15 +6,12 @@ import re
 from copy import deepcopy
 from typing import Callable, Iterable, Sequence, Tuple
 
-from pynecraft.base import BLUE, FacingDef, Nbt, ORANGE, ROTATION_180, ROTATION_270, ROTATION_90, \
-    RelCoord, is_arg, r, rotate_facing, to_name
+from pynecraft.base import BLUE, FacingDef, Nbt, ORANGE, ROTATION_180, ROTATION_270, ROTATION_90, RelCoord, is_arg, r, \
+    rotate_facing, to_name
 from pynecraft.commands import Block, BlockDef, CLEAR, Command, Commands, Entity, EntityDef, INT, MINUS, MOVE, Particle, \
     Position, RESULT, Score, SignMessages, Target, Text, a, as_block, as_entity, as_facing, as_score, clone, comment, \
-    data, e, \
-    execute, \
-    fill, function, function, kill, n, p, particle, ride, s, say, schedule, scoreboard, setblock, summon, tag, tellraw, \
-    tp, \
-    weather
+    data, e, execute, fill, function, function, kill, n, p, particle, ride, s, say, schedule, scoreboard, setblock, \
+    summon, tag, tellraw, tp, weather
 from pynecraft.function import DataPack, Function, FunctionSet, LATEST_PACK_VERSION, Loop
 from pynecraft.simpler import Item, TextDisplay, WallSign
 from pynecraft.values import DUMMY

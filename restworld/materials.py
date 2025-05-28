@@ -4,8 +4,7 @@ import re
 
 from pynecraft import info
 from pynecraft.base import Arg, EAST, EQ, NE, NORTH, NW, Nbt, NbtDef, SOUTH, WEST, as_facing, r, to_id
-from pynecraft.commands import Block, BlockDef, Entity, LONG, MOD, PLUS, RESULT, Score, as_block, data, e, \
-    execute, \
+from pynecraft.commands import Block, BlockDef, Entity, LONG, MOD, PLUS, RESULT, Score, as_block, data, e, execute, \
     fill, fillbiome, function, item, kill, n, random, s, scoreboard, setblock, summon, tag
 from pynecraft.function import BLOCK
 from pynecraft.info import armor_equipment, colors, must_give_items, operator_menu, stems, trim_materials, trim_patterns

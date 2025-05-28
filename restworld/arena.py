@@ -5,12 +5,7 @@ from typing import Tuple
 
 from pynecraft.base import Arg, EAST, EQ, GT, LT, Nbt, WEST, r, seconds, to_name
 from pynecraft.commands import DIV, INFINITE, INT, MINUS, MOD, RANDOM, REPLACE, RESULT, Score, a, data, e, effect, \
-    execute, \
-    fill, \
-    function, \
-    kill, \
-    random, return_, s, schedule, \
-    scoreboard, setblock, summon, tag
+    execute, fill, function, kill, random, return_, s, schedule, scoreboard, setblock, summon, tag
 from pynecraft.function import Function, Loop
 from pynecraft.simpler import Item, Region, Sign, WallSign
 from pynecraft.values import DUMMY, REGENERATION

@@ -4,9 +4,7 @@ from collections import defaultdict
 from pynecraft import info
 from pynecraft.base import Arg, EAST, EQ, as_facing, d, r, to_name
 from pynecraft.commands import Block, Entity, REPLACE, SUCCESS, Text, clone, comment, data, e, execute, fill, function, \
-    item, \
-    kill, \
-    loot, n, p, schedule, setblock, summon, tag
+    item, kill, loot, n, p, schedule, setblock, summon, tag
 from pynecraft.info import block_items
 from pynecraft.simpler import Item, ItemFrame, Sign, WallSign
 from restworld import global_
