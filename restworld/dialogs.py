@@ -1,48 +1,33 @@
 from pynecraft.commands import Text
-from pynecraft.simpler import Dialog, Item
+from pynecraft.dialog import ClickAction, Item, boolean, confirmation, dialog_list, item, multi_action, notice, \
+    number_range, \
+    plain_message, \
+    single_option, \
+    text
 from restworld.world import restworld
 
 
 def create():
     dialogs = restworld.registry('dialog')
 
-    dialogs['notice'] = Dialog.notice('Notice', [Dialog.plain_message('My hovercraft is full of eels.')])
-    dialogs['confirmation'] = Dialog.confirmation(
-        'Confirmation',
-        Dialog.click_action('Yes!'),
-        Dialog.click_action('Nooooo!!!!!!'),
-        body=(
-            Dialog.item(Item.nbt_for('cake'), show_decoration=True, show_tooltip=True),
-            Dialog.plain_message('Is the cake a lie?')
-        ))
-    dialogs['multi_action'] = Dialog.multi_action(
-        'Multi Action',
-        (Dialog.click_action(f'Choice #{i}') for i in range(32)))
-    dialogs['dialog_list'] = Dialog.dialog_list(
-        'Dialog List',
-        (Dialog.notice(f'I said: "{99 - i} BOTTLES OF BEER!!!"', external_title=f'{99 - i} bottles of beer') for i in
-         range(32))
-    )
     form = (
-        Dialog.text('Text', 'Bugs Bunny'),
-        Dialog.boolean("Boolean?"),
-        Dialog.single_option('Single Option', ('Euphoria', 'Melancholy', 'Ennui', 'Copacetic'), initial='Ennui'),
-        Dialog.number_range('Number Range', 0, 20, initial=1)
+        text('Text', 'Bugs Bunny'),
+        boolean("Boolean?"),
+        single_option('Single Option', ('Euphoria', 'Melancholy', 'Ennui', 'Copacetic'), initial='Ennui'),
+        number_range('Number Range', 0, 20, initial=1)
     )
-    dialogs['simple_input_form'] = Dialog.simple_input_form(
-        'Simple Input Form',
-        form,
-        Dialog.submit_action('Shout', Dialog.custom_form('namespace1'))
+    dialogs['notice'] = notice('Notice').body(plain_message('My hovercraft is full of eels.'))
+    dialogs['confirmation'] = confirmation('Confirmation', ClickAction('Yes!'), ClickAction('Nooooo!!!!!!')).body(
+        item(Item.nbt_for('cake'), show_decoration=True, show_tooltip=True),
+        plain_message('Is the cake a lie?')
     )
-    dialogs['multi_action_input_form'] = Dialog.multi_action_input_form(
-        'Multi Action Input Form',
-        form, (
-            Dialog.submit_action('Shout', tooltip='shout out', on_submit=Dialog.custom_form('namespace1')),
-            Dialog.submit_action('Whisper', tooltip='whisper', on_submit=Dialog.custom_form('namespace2'))
-        )
-    )
+    dialogs['multi_action'] = multi_action('Multi Action', (ClickAction(f'Choice #{i}') for i in range(32)))
+    dialogs['dialog_list'] = dialog_list(
+        'Dialog List',
+        (notice(f'I said: "{99 - i} BOTTLES OF BEER!!!"', external_title=f'{99 - i} bottles of beer') for i in
+         range(32)))
 
-    advice = Dialog.plain_message(
+    advice = plain_message(
         Text.text('(The warning icon at the top is a button, you might want to press it if you texture it)').italic())
     for d in dialogs.values():
         if 'body' in d:
