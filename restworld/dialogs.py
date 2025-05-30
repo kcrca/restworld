@@ -10,13 +10,14 @@ from restworld.world import restworld
 def create():
     dialogs = restworld.registry('dialog')
 
-    form = (
+    dialogs['notice'] = notice('Notice').body(
+        plain_message('My hovercraft is full of eels.')
+    ).inputs(
         text('Text', 'Bugs Bunny'),
         boolean("Boolean?"),
         single_option('Single Option', ('Euphoria', 'Melancholy', 'Ennui', 'Copacetic'), initial='Ennui'),
         number_range('Number Range', 0, 20, initial=1)
     )
-    dialogs['notice'] = notice('Notice').body(plain_message('My hovercraft is full of eels.'))
     dialogs['confirmation'] = confirmation('Confirmation', ClickAction('Yes!'), ClickAction('Nooooo!!!!!!')).body(
         item(Item.nbt_for('cake'), show_decoration=True, show_tooltip=True),
         plain_message('Is the cake a lie?')
