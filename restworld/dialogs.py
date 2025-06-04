@@ -13,10 +13,11 @@ def create():
     dialogs['notice'] = notice('Notice').body(
         plain_message('My hovercraft is full of eels.')
     ).inputs(
-        text('Text', 'Four Score…'),
         boolean("Boolean?"),
         single_option('Single Option', ('Euphoria', 'Melancholy', 'Ennui', 'Copacetic'), initial='Ennui'),
-        number_range('Number Range', 0, 20, initial=1)
+        number_range('Number Range', 0, 20, initial=1),
+        text('Text', 'Four Score…'),
+        text('Multiline Text', multiline=50),
     )
     dialogs['confirmation'] = confirmation('Confirmation', ClickAction('Yes!'), ClickAction('Nooooo!!!!!!')).body(
         item(Item.nbt_for('cake'), show_decoration=True, show_tooltip=True),
@@ -29,7 +30,7 @@ def create():
          range(32)))
 
     advice = plain_message(
-        Text.text('(The warning icon at the top is a button, you might want to press it if you texture it)').italic())
+        Text.text('(The warning icon above is a button, you might want to press it if you texture it)').italic())
     for d in dialogs.values():
         if 'body' in d:
             d['body'] += (advice,)
