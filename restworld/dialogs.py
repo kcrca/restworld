@@ -17,7 +17,7 @@ def create():
         single_option('Single Option', ('Euphoria', 'Melancholy', 'Ennui', 'Copacetic'), initial='Ennui'),
         number_range('Number Range', 0, 20, initial=1),
         text('Text', 'Four Score…'),
-        text('Multiline Text', multiline=50),
+        text('Multiline Text', multiline={'max_lines': 5}),
     )
     dialogs['confirmation'] = confirmation('Confirmation', ClickAction('Yes!'), ClickAction('Nooooo!!!!!!')).body(
         item(Item.nbt_for('cake'), show_decoration=True, show_tooltip=True),
