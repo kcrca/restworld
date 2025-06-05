@@ -351,9 +351,10 @@ def room():
                 waypoint().modify(n().tag(my_tag)).color(color)),
         )
         if radius != radii[0][0]:
+            blob = Text.text("█").color(color)
+            text = [f'{color_name}\\n{radius_name}\\n', blob, Text('⇧').bold(), blob]
             waypoints_setup.add(
-                room.label(r(tx, 2, tz), f'{color_name}\\n({radius_name})\\n\u21e7', as_facing((angle + 90) % 360),
-                           tags=('waypoint',)))
+                room.label(r(tx, 2, tz), text, as_facing((angle + 90) % 360), tags=('waypoint',)))
 
     def waypoints_loop(step):
         yield execute().as_(e().tag('waypoint')).run(waypoint().modify(s()).style(step.elem))
@@ -379,6 +380,6 @@ def room():
     for i, d in enumerate(restworld.registry('dialog')):
         sign = WallSign((None, to_name(d)), dialog().show(a(), f'restworld:{d}'))
         z = 2 - i % 3
-        if i >=3:
-            z-=1
+        if i >= 3:
+            z -= 1
         dialogs_init.add(sign.place(r(0, 3 - int(i / 3), z), EAST))
