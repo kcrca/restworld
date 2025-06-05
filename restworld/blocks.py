@@ -6,7 +6,8 @@ from typing import Iterable, Union
 from pynecraft import commands, info
 from pynecraft.base import DOWN, E, EAST, EQ, FacingDef, N, NORTH, Nbt, RelCoord, S, SOUTH, UP, W, WEST, as_facing, r, \
     rotate_facing, to_id, to_name
-from pynecraft.commands import Block, Commands, Entity, MOD, MOVE, REPLACE, ScoreName, as_block, as_score, clone, data, \
+from pynecraft.commands import Block, Commands, Entity, MOD, MOVE, REPLACE, SUCCESS, ScoreName, as_block, as_score, \
+    clone, data, \
     e, execute, fill, function, item, kill, n, p, s, say, schedule, setblock, summon, tag
 from pynecraft.function import Function, Loop
 from pynecraft.info import Color, armor_equipment, colors, sherds, stems
@@ -1178,7 +1179,7 @@ def color_functions(room):
         kill(e().tag('ghast_boat')),
         execute().at(e().tag('colorings_ghast')).run(kill(e().type('item').distance((None, 10)))))
     ghast_boat = Entity('oak_boat', {'Rotation': ghast_rot}).tag('ghast_boat')
-    room.function('ghast_boat_on', home=False).add(
+    ghast_boat_on = room.function('ghast_boat_on', home=False).add(
         function(ghast_boat_off),
         execute().at(n().tag('colorings_ghast')).run(summon(ghast_boat, r(0, -2, 0))),
         data().modify(n().tag('ghast_boat'), 'leash.UUID').set().from_(n().tag('colorings_ghast'), 'UUID'))
@@ -1188,6 +1189,7 @@ def color_functions(room):
     store_end = (coloring_coords[1][0], ERASE_HEIGHT, coloring_coords[1][2])
     top_start = (coloring_coords[0][0], coloring_coords[0][1], coloring_coords[0][2])
     top_end = (coloring_coords[1][0], coloring_coords[1][1] - 1, coloring_coords[1][2])
+    boat_score = room.score('ghast_boat')
     room.function('colorings_plain_off', home=False).add(
         execute().unless().score(plain).matches(0).run(
             # These create particle explosions, and there is no negative "#!wall_signs" filter for clone
@@ -1196,6 +1198,9 @@ def color_functions(room):
         plain.set(0),
         tag(e().tag('colorings_base_home')).add('colorings_home'),
         execute().at(e().tag('colorings_home')).run(function('restworld:blocks/colorings_init')),
+        execute().store(SUCCESS).score(boat_score).run(data().get(n().tag('ghast_boat'))),
+        function(ghast_boat_off),
+        execute().if_().score(boat_score).matches(1).run(function(ghast_boat_on)),
         kill(e().type('item').distance((None, 20))))
     room.function('colorings_plain_on', home=False).add(
         execute().if_().score(plain).matches(0).run(clone(top_start, top_end, store_end)),
