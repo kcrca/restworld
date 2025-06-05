@@ -9,7 +9,8 @@ from typing import Callable, Iterable, Sequence, Tuple
 from pynecraft.base import BLUE, FacingDef, Nbt, ORANGE, ROTATION_180, ROTATION_270, ROTATION_90, RelCoord, is_arg, r, \
     rotate_facing, to_name
 from pynecraft.commands import Block, BlockDef, CLEAR, Command, Commands, Entity, EntityDef, INT, MINUS, MOVE, Particle, \
-    Position, RESULT, Score, SignMessages, Target, Text, a, as_block, as_entity, as_facing, as_score, clone, comment, \
+    Position, RESULT, Score, SignMessages, Target, Text, TextDef, a, as_block, as_entity, as_facing, as_score, clone, \
+    comment, \
     data, e, execute, fill, function, function, kill, n, p, particle, ride, s, say, schedule, scoreboard, setblock, \
     summon, tag, tellraw, tp, weather
 from pynecraft.function import DataPack, Function, FunctionSet, LATEST_PACK_VERSION, Loop
@@ -438,7 +439,8 @@ class Room(FunctionSet):
 
     _ADJ = 0.45
 
-    def label(self, pos: Position, txt: str, facing: FacingDef, *, vertical=False, bump=0.02, tags=(), nbt=None) -> str:
+    def label(self, pos: Position, txt: TextDef, facing: FacingDef, *, vertical=False, bump=0.02, tags=(),
+              nbt=None) -> str:
         if isinstance(tags, str):
             tags = (tags,)
         facing = as_facing(facing)
