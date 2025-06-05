@@ -1198,6 +1198,7 @@ def color_functions(room):
         plain.set(0),
         tag(e().tag('colorings_base_home')).add('colorings_home'),
         execute().at(e().tag('colorings_home')).run(function('restworld:blocks/colorings_init')),
+        # If the ghast boat is on, we need to remove it and then add it back when the harness is on
         execute().store(SUCCESS).score(boat_score).run(data().get(n().tag('ghast_boat'))),
         function(ghast_boat_off),
         execute().if_().score(boat_score).matches(1).run(function(ghast_boat_on)),
