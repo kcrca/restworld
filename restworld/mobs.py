@@ -43,7 +43,7 @@ def friendlies(room):
     stinger_label_pos = r(-2, 2, 1)
     pollen_label_pos = r(-2, 2, -1)
     room.function('bee_init').add(
-        placer(r(0, 3, 0), EAST, 0, 2).summon('bee'), room.label(stinger_label_pos, 'Stinger', WEST),
+        placer(r(0, 3, 0), WEST, 0, 2).summon('bee'), room.label(stinger_label_pos, 'Stinger', WEST),
         room.label(pollen_label_pos, 'Pollen', WEST))
 
     def armadillo_loop(step):

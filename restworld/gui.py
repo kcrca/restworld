@@ -126,7 +126,7 @@ def room():
         execute().at(e().tag('bossbar_run_home')).run(function(bb_style_init)),
         execute().at(e().tag('bossbar_run_home')).run(function(bb_value_init)),
         function(bb_off),
-        WallSign((None, 'Boss Bar')).place(r(0, 3, 0, ), WEST),
+        WallSign((None, 'Boss Bar')).place(r(0, 4, 0, ), WEST),
     )
 
     room.loop('bossbar_run', main_clock).loop(None, range(0, 1)).add(

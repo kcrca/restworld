@@ -67,7 +67,7 @@ mobs = (
     PhotoMob(8.7, +33.5, 'creaking', y=1.5),
     PhotoMob(8.7, +41, 'iron_golem', y=1.5),
 
-    PhotoMob(17.0, 0, 'ghast', y=1.5),
+    PhotoMob(17.0, 0, 'happy_ghast', y=1.5),
 )
 
 
