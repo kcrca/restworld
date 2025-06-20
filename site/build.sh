@@ -6,8 +6,8 @@ for f in src/*/; do
 	for img in "$f"/*.png; do
 	    out="sample_pics/$(basename $img)"
 	    if test "$img" -nt "$out"; then
-		echo magick convert $img -scale $std_size $out
-		magick convert $img -scale $std_size $out
+		echo magick $img -scale $std_size $out
+		magick $img -scale $std_size $out
 	    fi
 	done
     else
@@ -18,9 +18,9 @@ for f in src/*/; do
 		download) size=32x32;;
 		*) size=$std_size
 	    esac
-	    echo - magick convert -delay 200 $name/\*.png -loop 0 -resize $size $out.gif
+	    echo - magick -delay 200 $name/\*.png -loop 0 -resize $size $out.gif
 	    ls $name/*.png
-	    magick convert -delay 200 $name/*.png -loop 0 -scale $size $out.gif
+	    magick -delay 200 $name/*.png -loop 0 -scale $size $out.gif
 	fi
     fi
 done
