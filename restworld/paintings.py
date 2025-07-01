@@ -92,6 +92,8 @@ def room():
         # wall(('Cotán', 'Humble', 5, 'Albanian', 'Changing'), NORTH, 20, 19),
         wall((1, 'The void', 'Skull and Roses', 6, 'Wither', 'The Stage Is Set'), NORTH, 20, 19),
 
+        wall(('The Pool', 'Match', 6, 'Creebet', 'Seaside'), SOUTH, 3, 7),
+        wall(('Bust', 'Baroque', 6, 'Lowmist'), NORTH, 19, 5),
 
         # 1x1's
         wall(('de_aztec', 4, 'Meditative'), NORTH, 14, 12),
@@ -100,9 +102,6 @@ def room():
         wall(('Paradisträd', 4, 'Wasteland'), SOUTH, 8, 14),
         wall(('Albanian',), EAST, 9, 13),
         wall(('Target Successfully Bombed',), WEST, 7, 13),
-
-        wall(('The Pool', 'Match', 6, 'Creebet', 'Seaside'), SOUTH, 3, 7),
-        wall(('Bust', 'Baroque',6, 'Lowmist'), NORTH, 19, 5),
     )
 
     if unused:
