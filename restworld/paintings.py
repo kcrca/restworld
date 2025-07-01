@@ -32,7 +32,6 @@ def room():
     def painting(id, facing, moving, x, z, y=3, note=None):
         img = paintings[id]
         px, pz = (0, 0)
-        label_y = y
         if img.size[1] >= 4:
             y -= 1
         if img.size[0] > 2:
@@ -60,7 +59,14 @@ def room():
         def adj(v, facing_d, moving_d):
             return v + (img.size[0] - 0) * moving_d - facing_d / 2.01
 
-        yield display.summon(r(adj(x, facing.dx, moving.dx), label_y, adj(z, facing.dz, moving.dz)))
+        label_y = y
+        label_x = x
+        label_z = z
+        if img.size == (1, 1):
+            label_y -= 0.7
+            label_x -= moving.dx
+            label_z -= moving.dz
+        yield display.summon(r(adj(label_x, facing.dx, moving.dx), label_y, adj(label_z, facing.dz, moving.dz)))
         try:
             unused.remove(img.value)
         except KeyError:
@@ -70,22 +76,33 @@ def room():
         kill(e().tag('painting')),
         kill(e().type('item')),
 
-        wall(('Fern', 'Orb', 'Kebab med tre pepperoni', 'Skull On Fire', 'Fighters', 'Unpacked'), NORTH, 23, 26),
+        wall(('Fern', 'Orb', 'Skull On Fire', 'Fighters', 'sunset_dense', 'Bouquet'), NORTH, 23, 26),
         wall(('Mortal Coil', 'Kong', 'Bonjour Monsieur Courbet', 'Pond', 'Cavebird', 'Pigscene'), EAST, -2, 25),
-        #
+
         wall(('Tides', 'Pointer', 8, 'Passage', 'Wanderer', 'Prairie Ride'), SOUTH, -1, 0),
-        wall(('Backyard', 'Owlemons', 'The void', 'Skull and Roses', 'Wither', 'The Stage Is Set', 'Graham', 'Endboss'),
-             WEST, 24, 1),
+        # wall(('Backyard', 'Owlemons', 'The void', 'Skull and Roses', 'Wither', 'The Stage Is Set', 'Graham', 'Endboss'), WEST, 24, 1),
+        wall(('Backyard', 'Owlemons', 'Humble', 'Cotán', 'Changing', 'Graham', 'Endboss'), WEST, 24, 1),
+
+        wall(('Finding',), WEST, 19, 11),
+        wall(('Dennis',), EAST, 21, 14),
+        wall(('Unpacked', ), EAST, 3, 15),
+        wall(('Sunflowers',), WEST, 1, 12),
 
         wall(('Earth', 'Wind', 6, 'Water', 'Fire'), SOUTH, 3, 21, note='(unused)'),
-        wall(('Cotán', 'Humble', 5, 'Albanian', 'Changing'), NORTH, 20, 19),
+        # wall(('Cotán', 'Humble', 5, 'Albanian', 'Changing'), NORTH, 20, 19),
+        wall((1, 'The void', 'Skull and Roses', 6, 'Wither', 'The Stage Is Set'), NORTH, 20, 19),
 
-        wall(('Target Successfully Bombed', 'Baroque', 'Paradisträd', 5, 'Sunflowers',
-              'sunset_dense'), SOUTH, 2, 14),
-        wall(('The Pool', 'Bust', 5, 'Meditative', 'Finding'), NORTH, 19, 12),
 
-        wall(('Bouquet', 'Match', 6, 'Creebet', 'Seaside'), SOUTH, 2, 7),
-        wall(('de_aztec', 'de_aztec 2', 'Wasteland', 6, 'Lowmist'), NORTH, 19, 5),
+        # 1x1's
+        wall(('de_aztec', 4, 'Meditative'), NORTH, 14, 12),
+        wall(('de_aztec 2',), EAST, 15, 13),
+        wall(('Kebab med tre pepperoni',), WEST, 13, 13),
+        wall(('Paradisträd', 4, 'Wasteland'), SOUTH, 8, 14),
+        wall(('Albanian',), EAST, 9, 13),
+        wall(('Target Successfully Bombed',), WEST, 7, 13),
+
+        wall(('The Pool', 'Match', 6, 'Creebet', 'Seaside'), SOUTH, 3, 7),
+        wall(('Bust', 'Baroque',6, 'Lowmist'), NORTH, 19, 5),
     )
 
     if unused:
