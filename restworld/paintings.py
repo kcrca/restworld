@@ -76,7 +76,7 @@ def room():
         kill(e().tag('painting')),
         kill(e().type('item')),
 
-        wall(('Fern', 'Orb', 'Skull On Fire', 'Fighters', 'sunset_dense', 'Bouquet'), NORTH, 23, 26),
+        wall(('Fern', 'Orb', 'Skull On Fire', 'Dennis', 'sunset_dense', 'Fighters'), NORTH, 23, 26),
         wall(('Mortal Coil', 'Kong', 'Bonjour Monsieur Courbet', 'Pond', 'Cavebird', 'Pigscene'), EAST, -2, 25),
 
         wall(('Tides', 'Pointer', 8, 'Passage', 'Wanderer', 'Prairie Ride'), SOUTH, -1, 0),
@@ -84,7 +84,7 @@ def room():
         wall(('Backyard', 'Owlemons', 'Humble', 'Cotán', 'Changing', 'Graham', 'Endboss'), WEST, 24, 1),
 
         wall(('Finding',), WEST, 19, 11),
-        wall(('Dennis',), EAST, 21, 14),
+        wall(('Bouquet',), EAST, 21, 14),
         wall(('Unpacked', ), EAST, 3, 15),
         wall(('Sunflowers',), WEST, 1, 12),
 
