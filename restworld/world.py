@@ -1,9 +1,8 @@
 from __future__ import annotations
 
 import sys
-from datetime import date
 
-from pynecraft.base import DARK_GREEN, DARK_PURPLE, r
+from pynecraft.base import DARK_GREEN, r
 from pynecraft.commands import CREATIVE, ClickEvent, Commands, Entity, HoverEvent, SIDEBAR, Text, clear, data, e, \
     execute, fill, function, gamemode, give, kill, p, scoreboard, setblock, tp
 from pynecraft.function import Function, FunctionSet
@@ -36,7 +35,7 @@ class RestWorld(RoomPack):
             clear(p()),
             gamemode(CREATIVE, p()),
             function('restworld:global/control_book'),
-            tp(p(), (0, 101, 0)).facing((0, 100, 5)),
+            tp(p(), (0, 101, 0)).facing((0, 99, 7)),
             scoreboard().objectives().setdisplay(SIDEBAR),
             function('restworld:center/reset_clocks'),
             function('restworld:global/clock_on'),
@@ -85,25 +84,8 @@ class RestWorld(RoomPack):
             if first:
                 first = False
             else:
-                cb.add(', ')
+                cb.add(Text(' ⸫ '))
             cb.add(self._action(r.title, r.title, r.name + '/_goto'))
-
-        cb.next_page()
-        cb.add(
-            Text.text(r'Credits, ' + date.today().strftime('%-d %b %Y') + r'\n'),
-            r'    Minecraft 1.21.8\n\n',
-            Text.text(r'BlueMeanial:\n').bold(),
-            r'  Software Design\n  Programming\n',
-            Text.text(r'JUMBOshrimp277:\n').bold(),
-            r'  Visual Design\n  Testing\n  Rubber Duck\n',
-            r'\n',
-            r'Details on ',
-            Text.text(r'our site').underlined().italic().color(DARK_PURPLE).click_event(ClickEvent.open_url(
-                'https://claritypack.com/restworld/')),
-            Text.text(r'\n\nTry the ').italic(),
-            Text.text(r'Call Out Pack!').underlined().italic().color(DARK_PURPLE).click_event(ClickEvent.open_url(
-                'https://www.planetminecraft.com/texture-pack/call-out-texture-pack-support/'))
-        )
 
         return Function('control_book').add(give(p(), cb.as_entity()))
 
