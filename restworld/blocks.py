@@ -339,7 +339,8 @@ def room():
     blocks('test_instance', SOUTH, ('Test Instance Block',), expandable=True)
 
     copper_blocks = (
-        'Copper Block', 'Cut Copper', 'Chiseled Copper', 'Copper Grate', 'Copper Bulb', 'Copper Trapdoor')
+        'Copper Block', 'Cut Copper', 'Chiseled Copper', 'Copper Grate', 'Copper Bulb', 'Copper Trapdoor',
+        'Copper Chest', 'Copper Golem Statue', 'Lightning Rod')
 
     def coppers(oxidation, waxed=False):
         prefix = 'Waxed ' if waxed else ''
@@ -502,7 +503,9 @@ def room():
         step.elem.merge_state({'facing': NORTH})
         yield setblock(r(0, 3, 0), step.elem)
         room.particle(step.elem, 'chest', r(0, 4, 0), step)
-        txt = [None, 'Trapped' if 'T' in step.elem.name else '',
+        names = step.elem.name.split()
+        txt = [names[0] if len(names) > 2 else None,
+               names[len(names) - 2] if len(names) > 1 else '',
                'Double Chest' if 'type' in step.elem.state else 'Chest']
         if 'Ender' in step.elem.name:
             txt[1] = 'Ender'

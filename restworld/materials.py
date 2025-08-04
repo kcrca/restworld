@@ -317,6 +317,7 @@ def basic_functions(room, enchanted):
     materials = (
         ('wooden', 'leather', True, Block('oak_planks'), 'oak_sign'),
         ('stone', 'chainmail', False, Block('stone'), 'stone'),
+        ('copper', 'copper', True, Block('copper_block'), 'copper'),
         ('iron', 'iron', True, Block('iron_block'), 'iron_ingot'),
         ('golden', 'golden', True, Block('gold_block'), 'gold_ingot'),
         ('diamond', 'diamond', True, Block('diamond_block'), 'diamond'),
@@ -498,6 +499,8 @@ def copper_functions(room):
     copper_tags('cut_copper_slab')
     copper_tags('copper_door')
     copper_tags('copper_trapdoor')
+    copper_tags('copper_chest')
+    copper_tags('copper_golem_statue')
 
     def copper_loop(step):
         type: str = step.elem.lower()
@@ -516,6 +519,13 @@ def copper_functions(room):
         yield from volume.replace_slabs(type + 'cut_copper_slab', '#restworld:cut_copper_slabs')
         # doors can't be generically replaced, see below for the manual placement
         yield from volume.replace_trapdoors(type + 'copper_trapdoor', '#restworld:copper_trapdoors')
+        yield from volume.replace_facing(type + 'copper_chest', '#restworld:copper_chests')
+        yield from volume.replace_facing(type + 'copper_chest', '#restworld:copper_chests')
+        yield from volume.replace_facing(type + 'copper_chest', '#restworld:copper_chests',
+                                         shared_states={'type': 'left'})
+        yield from volume.replace_facing(type + 'copper_chest', '#restworld:copper_chests',
+                                         shared_states={'type': 'right'})
+        yield from volume.replace_facing(type + 'copper_golem_statue', '#restworld:copper_golem_statues')
 
         # The door won't be set unless we manually remove previous one.
         yield erase(r(0, 2, 4), r(0, 3, 4))
@@ -608,6 +618,7 @@ def wood_functions(room):
         yield from volume.replace_stairs(stairs, '#restworld:stepable_stairs')
         yield from volume.replace(f'{id}_fence', '#wooden_fences')
         yield from volume.replace_facing(f'{id}_fence_gate', '#fence_gates')
+        yield from volume.replace_facing(f'{id}_shelf', '#wooden_shelves')
         yield from volume.replace_buttons(f'{id}_button')
         yield from volume.replace(f'{id}_pressure_plate', '#pressure_plates')
         yield from volume.replace_axes(log, '#restworld:loglike')
@@ -746,10 +757,6 @@ def trim_functions(room):
         (r(-3, 2, -5), EAST),
     )
 
-    patterns_places = range(len(trim_patterns))
-    material_places = (4, 5, 6, 7, 8, 9, 10, 13, 14, 15)
-    armors_places = material_places[-6:]
-
     show = room.score('trim_show')
     change = room.score('trim_change')
     adjust_change = room.score('trim_adjust_change')
@@ -774,11 +781,10 @@ def trim_functions(room):
     class Trim:
         _num = 0
 
-        def __init__(self, name: str, types, pos, armor_gen, nbt_path):
+        def __init__(self, name: str, types, armor_gen, nbt_path):
             self.name = name
             self.types = types
             self.tag = f'trim_{name}'
-            self.pos = pos
             self.armor_gen = armor_gen
             self.nbt_path = nbt_path
 
@@ -825,8 +831,8 @@ def trim_functions(room):
             return ('equipment.feet.' + self.nbt_path)[::-1].replace('.', '{', 1)[::-1] + ':' + f'"minecraft:{t}"' + '}'
 
     class Armors(Trim):
-        def __init__(self, name: str, types, pos, armor_gen):
-            super().__init__(name, types, pos, armor_gen, 'id')
+        def __init__(self, name: str, types, armor_gen):
+            super().__init__(name, types, armor_gen, 'id')
 
         def _loop_func(self, step):
             for place, piece in armor_equipment.items():
@@ -843,14 +849,13 @@ def trim_functions(room):
             return f'equipment.feet{{id:"minecraft:{t}_boots"}}'
 
     categories = {
-        'patterns': Trim('patterns', trim_patterns, patterns_places,
+        'patterns': Trim('patterns', trim_patterns,
                          lambda stand, type: armor_for(stand, 'iron', {'components': {'trim': {'pattern': type}}}),
                          'components.minecraft:trim.pattern'),
-        'materials': Trim('materials', trim_materials, material_places,
+        'materials': Trim('materials', trim_materials,
                           lambda stand, type: armor_for(stand, 'iron', {'components': {'trim': {'material': type}}}),
                           'components.minecraft:trim.material'),
-        'armors': Armors('armors', info.armors, armors_places,
-                         lambda stand, type: armor_for(stand, type))}
+        'armors': Armors('armors', info.armors, lambda stand, type: armor_for(stand, type))}
 
     # menu: pop the menu up; call other menu's "cleanup" (for 'show', first ensure 'change' value != 'show' value)
     # cleanup: pull the menu down, using variable to define "current"
