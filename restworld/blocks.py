@@ -1,12 +1,13 @@
 from __future__ import annotations
 
 import re
-from typing import Iterable, Union
+from typing import Callable, Iterable, Union
 
 from pynecraft import commands, info
 from pynecraft.base import DOWN, E, EAST, EQ, FacingDef, N, NORTH, Nbt, RelCoord, S, SOUTH, UP, W, WEST, as_facing, r, \
     rotate_facing, to_id, to_name
-from pynecraft.commands import Block, Commands, Entity, MOD, MOVE, REPLACE, SUCCESS, ScoreName, as_block, as_score, \
+from pynecraft.commands import Block, Command, Commands, Entity, MOD, MOVE, REPLACE, SUCCESS, ScoreName, as_block, \
+    as_score, \
     clone, data, \
     e, execute, fill, function, item, kill, n, p, s, say, schedule, setblock, summon, tag
 from pynecraft.function import Function, Loop
@@ -27,7 +28,9 @@ def room():
     def blocks(name: str, facing: FacingDef,
                block_lists: Iterable[Union[Block, str]] | Iterable[Iterable[Union[Block, str]]],
                dx: float = 0, dz: float = 0, size: int = 0, labels=None, clock: Clock = main_clock,
-               score: ScoreName = None, air: bool = False, expandable=True) -> tuple[Function, Loop]:
+               score: ScoreName = None, air: bool = False, expandable=True,
+               post_block: Callable[[Block, tuple[RelCoord, RelCoord, RelCoord]], Commands] = None) -> tuple[
+        Function, Loop]:
         facing = as_facing(facing)
 
         # Ensure we have a list (so we can modify it)
@@ -92,6 +95,7 @@ def room():
                 room.particle(block, name, (x, y + 1, z))
             # start=1: Preserve the 'expansion' response; blanks=True: Erase longer answers from other blocks
             yield Sign.change(r(x + facing.dx, 2, z + facing.dz), signage, start=1, blanks=True)
+
             return block
 
         if singleton:
@@ -106,6 +110,8 @@ def room():
 
                 for block_list in block_lists:
                     block = yield from one_block(block_list[i], r(x, 3, z), step)
+                    if post_block:
+                        yield post_block(block, r(x, 3, z))
 
                     if show_list:
                         block_list_name = f'block_list_{name}_{x}_{z}'
@@ -339,20 +345,36 @@ def room():
     blocks('test_instance', SOUTH, ('Test Instance Block',), expandable=True)
 
     copper_blocks = (
-        'Copper Block', 'Cut Copper', 'Chiseled Copper', 'Copper Grate', 'Copper Bulb', 'Copper Trapdoor',
-        'Copper Chest', 'Copper Golem Statue', 'Lightning Rod')
+        'Copper Block', 'Cut Copper', 'Chiseled Copper', 'Copper Bulb', 'Copper Grate', 'Copper Golem Statue',
+        'Copper Chest', Block('Copper Chest', {'type': 'right'}), 'Lightning Rod', 'Copper Bars', 'Copper Chain',
+        'Copper Lantern', 'Copper Trapdoor')
 
     def coppers(oxidation, waxed=False):
         prefix = 'Waxed ' if waxed else ''
-        return tuple(f'{prefix}{oxidation}|{f}'.replace(' Block', '') for f in copper_blocks)
+
+        def block_for(b):
+            id = b if isinstance(b, str) else b.id
+            new_id = f'{prefix}{oxidation}|{id}'
+            state = {} if isinstance(b, str) else b.state
+            return Block(new_id, state)
+
+        return tuple(block_for(f) for f in copper_blocks)
+
+    def post_copper_block(block: Block, pos: tuple[RelCoord, RelCoord, RelCoord]) -> Command:
+        if 'type' in block.state:
+            nb = block.clone()
+            nb.state['type'] = 'left'
+        else:
+            nb = Block('air')
+        return setblock(RelCoord.add(pos, r(-1, 0, 0)), nb)
 
     _, copper_loop = blocks('unwaxed_copper_blocks', NORTH,
                             (copper_blocks, coppers('Exposed'), coppers('Weathered'), coppers('Oxidized')),
-                            dx=-3, dz=3, size=2)
+                            expandable=False, dx=-3, dz=3, size=2, post_block=post_copper_block)
     blocks('waxed_copper_blocks', NORTH,
            (list(f'Waxed {b}' for b in copper_blocks), coppers('Waxed Exposed'), coppers('Waxed Weathered'),
             coppers('Waxed Oxidized')),
-           score=copper_loop.score, dx=-3, dz=3, size=2)
+           score=copper_loop.score, expandable=False, dx=-3, dz=3, size=2, post_block=post_copper_block)
 
     copper_home = e().tag('copper_blocks_home')
     run_unwaxed = room.function('unwaxed_copper_blocks_run', home=False).add(
@@ -499,26 +521,30 @@ def room():
     room.loop('cake', main_clock).loop(cake_loop, range(0, 7), bounce=True)
     room.particle('cake', 'cake', r(0, 4, 0))
 
+    double_chest_score = room.score('double_chests')
+
     def chest_loop(step):
+        ender_chest = 'Ender' in step.elem.name
         step.elem.merge_state({'facing': NORTH})
-        yield setblock(r(0, 3, 0), step.elem)
-        room.particle(step.elem, 'chest', r(0, 4, 0), step)
         names = step.elem.name.split()
-        txt = [names[0] if len(names) > 2 else None,
-               names[len(names) - 2] if len(names) > 1 else '',
-               'Double Chest' if 'type' in step.elem.state else 'Chest']
-        if 'Ender' in step.elem.name:
-            txt[1] = 'Ender'
-        yield Sign.change(r(0, 2, -1), txt)
-        if 'type' in step.elem.state:
-            step.elem.state['type'] = 'left'
-            yield setblock(r(-1, 3, 0), step.elem)
-        else:
+        txt = [names[0] if len(names) > 2 else None, names[len(names) - 2] if len(names) > 1 else '', 'Chest']
+        if ender_chest:
+            yield setblock(r(0, 3, 0), step.elem)
             yield setblock(r(-1, 3, 0), 'air')
+            yield Sign.change(r(0, 2, -1), txt)
+        else:
+            yield execute().if_().score(double_chest_score).matches(0).run(
+                setblock(r(0, 3, 0), step.elem), setblock(r(-1, 3, 0), 'air'), Sign.change(r(0, 2, -1), txt))
+            step.elem.merge_state({'type': 'right'})
+            txt[2] = 'Double Chest'
+            yield execute().if_().score(double_chest_score).matches(1).run(
+                setblock(r(0, 3, 0), step.elem), Sign.change(r(0, 2, -1), txt))
+            step.elem.merge_state({'type': 'left'})
+            yield execute().if_().score(double_chest_score).matches(1).run(setblock(r(-1, 3, 0), step.elem))
+        room.particle(step.elem, 'chest', r(0, 4, 0), step)
 
     room.loop('chest', main_clock).loop(chest_loop, (
-        Block('Chest'), Block('Trapped Chest'), Block('Ender Chest'), Block('Chest', state={'type': 'right'}),
-        Block('Trapped Chest', state={'type': 'right'})))
+        Block('Chest'), Block('Trapped Chest'), Block('Copper Chest'), Block('Ender Chest')))
 
     def to_command_block(type, cond):
         type = type.strip()
@@ -610,22 +636,26 @@ def room():
               ItemFrame(NORTH, glowing=True).item('Lapis Lazuli'))
     room.loop('item_frame', main_clock).add(item_frame_init).loop(item_frame_loop, frames)
 
+    lantern_type = ['Lantern', 'Copper Lantern', 'Soul Lantern']
+
     def lantern_loop(step) -> Commands:
-        lantern = Block('Lantern' if step.i < 2 else 'Soul Lantern', {'hanging': False})
-        if step.i in (0, 3):
+        type = lantern_type[int(step.i / 2)]
+        lantern = Block(type, {'hanging': False})
+        chain_type = 'copper_chain' if 'Copper' in lantern.name else 'chain'
+        if step.i % 2 == 0:
             yield setblock(r(0, 3, 0), lantern),
             yield fill(r(0, 4, 0), r(0, 5, 0), 'air'),
             yield Sign.change(r(0, 2, -1), (None, '', lantern.name, ' Chain'))
         else:
             lantern.merge_state({'hanging': True}),
             yield setblock(r(0, 3, 0), lantern),
-            yield setblock(r(0, 4, 0), 'chain'),
+            yield setblock(r(0, 4, 0), chain_type),
             yield Sign.change(r(0, 2, -1), (None, 'Hanging', lantern.name, 'and Chain'))
             room.particle('chain', 'lantern', r(0, 5, 0), step)
         room.particle(lantern, 'lantern', r(0, 4, 0), step)
 
     room.function('lantern_init').add(WallSign((None, None, 'Lantern')).place(r(0, 2, -1, ), NORTH))
-    room.loop('lantern', main_clock).loop(lantern_loop, range(0, 4))
+    room.loop('lantern', main_clock).loop(lantern_loop, range(0, 6))
 
     room.function('ore_blocks_init').add(room.label(r(-1, 2, 0), 'Deepslate', NORTH))
     basic = ['Coal', 'Iron', 'Copper', 'Gold', 'Lapis', 'Redstone', 'Diamond', 'Emerald']
@@ -882,12 +912,14 @@ def room():
     room.loop('tnt', main_clock).add(kill(e().tag('block_tnt'))).loop(tnt_loop, ('stable', 'unstable', 'primed'))
     room.particle('tnt', 'tnt', r(0, 4, 0))
 
-    torches = (Block('Torch'), Block('Soul Torch'), Block('Redstone Torch'), Block('Redstone Torch'))
+    torches = (
+        Block('Torch'), Block('Soul Torch'), Block('Copper Torch'), Block('Redstone Torch'), Block('Redstone Torch'))
     wall_torches = tuple(Block(x.name.replace('Torch', 'Wall Torch')) for x in torches)
 
     def torches_loop(step):
-        text = ((None, '', None, ''), (None, 'Soul', None, ''), (None, 'Redstone', None, '(On)'),
-                (None, 'Redstone', None, '(Off)'))
+        text = (
+            (None, '', None, ''), (None, 'Soul', None, ''), (None, 'Copper', None), (None, 'Redstone', None, '(On)'),
+            (None, 'Redstone', None, '(Off)'))
         yield Sign.change(r(0, 2, -1), text[step.i])
         if step.i == len(torches) - 1:
             yield execute().if_().score(wall_torches_score).matches(0).run(setblock(r(0, 2, 0), 'redstone_block'))

@@ -50,6 +50,7 @@ def create():
             'nether_brick_fence',
             'glass_pane',
             'iron_bars',
+            'copper_bars',
             'brick_wall',
             'cobblestone_wall',
             'mud_brick_wall',
@@ -196,16 +197,22 @@ def create():
         'values': [
             '#doors',
             '#beds',
-            'sugar_cane',       # must be _next to_ water
-            'weeping_vines',    # must be _under_ the right block
-            'cactus',           # Must be on falling block (sand)
-            'sunflower',        # tall flower
-            'peony',            # tall flower
-            'rose_bush',        # tall flower
-            'lilac',            # tall flower
-            'pitcher_plant',    # tall flower
+            'sugar_cane',  # must be _next to_ water
+            'weeping_vines',  # must be _under_ the right block
+            'cactus',  # Must be on falling block (sand)
+            'sunflower',  # tall flower
+            'peony',  # tall flower
+            'rose_bush',  # tall flower
+            'lilac',  # tall flower
+            'pitcher_plant',  # tall flower
         ]
     }
+
+    def coppers(which):
+        return [f'copper_{which}'] + [f'{x}_copper_{which}' for x in ('exposed', 'weathered', 'oxidized')]
+
+    blocks['copper_bars'] = {'values': coppers('bars')}
+    blocks['copper_chains'] = {'values': coppers('chain')}
 
     blocks['stepable_planks'] = {
         'values': [

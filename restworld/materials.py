@@ -462,7 +462,7 @@ def fencelike_functions(room):
 
     room.loop('panes', main_clock).loop(lambda step: fencelike(step.elem),
                                         tuple(f'{x.name}|Stained Glass|Pane' for x in colors) + (
-                                            'Glass Pane', 'Iron Bars'))
+                                            'Glass Pane', 'Iron Bars', 'Copper Bars'))
     switch_to_fencelike('panes')
     room.loop('fences', main_clock).loop(fence_loop,
                                          tuple(f'{x} Fence' for x in info.woods + stems + ('Nether Brick',)))
@@ -515,6 +515,8 @@ def copper_functions(room):
         yield from volume.replace(type + 'copper_grate', '#restworld:copper_grates')
         yield from volume.replace(type + 'copper_bulb', '#restworld:copper_bulbs', {'lit': True})
         yield from volume.replace(type + 'copper_bulb', '#restworld:copper_bulbs', {'lit': False})
+        yield from volume.replace(type + 'copper_bars', '#restworld:copper_bars')
+        yield from volume.replace_axes(type + 'copper_chain', '#restworld:copper_chains')
         yield from volume.replace_stairs(type + 'cut_copper_stairs', '#restworld:cut_copper_stairs')
         yield from volume.replace_slabs(type + 'cut_copper_slab', '#restworld:cut_copper_slabs')
         # doors can't be generically replaced, see below for the manual placement

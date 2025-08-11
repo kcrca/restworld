@@ -102,7 +102,7 @@ class RoomPack(DataPack):
     base_suffixes_re = re.compile(r'(\w+)_(' + '|'.join(base_suffixes) + ')')
 
     def __init__(self, name: str, suffixes: Iterable[str] = None,
-                 format_version: int = LATEST_PACK_VERSION, /):
+                 format_version: str = LATEST_PACK_VERSION, /):
         super().__init__(name, format_version)
         if suffixes is None:
             suffixes = RoomPack.base_suffixes
