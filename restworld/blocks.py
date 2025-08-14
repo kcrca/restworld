@@ -550,6 +550,7 @@ def room():
 
     room.loop('chest', main_clock).loop(chest_loop, (
         Block('Chest'), Block('Trapped Chest'), Block('Copper Chest'), Block('Ender Chest')))
+    room.function('chest_init').add(room.label(r(1, 2, 0), 'Double Chests', NORTH))
 
     def to_command_block(type, cond):
         type = type.strip()
@@ -650,7 +651,7 @@ def room():
         if step.i % 2 == 0:
             yield setblock(r(0, 3, 0), lantern),
             yield fill(r(0, 4, 0), r(0, 5, 0), 'air'),
-            yield Sign.change(r(0, 2, -1), (None, '', lantern.name, ' Chain'))
+            yield Sign.change(r(0, 2, -1), (None, '', lantern.name, ''))
         else:
             lantern.merge_state({'hanging': True}),
             yield setblock(r(0, 3, 0), lantern),
