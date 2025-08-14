@@ -223,6 +223,9 @@ def room():
             data().modify(model_ground, 'Item').set().from_(model_src, 'Item'),
             data().merge(model_ground, {'Age': -32768, 'PickupDelay': 2147483647}),
             data().modify(room.store, 'block').set().from_(model_src, 'Item.id'),
+            data().modify(room.store, 'shelf_slots[0]').set().from_(model_src, 'Item'),
+            data().modify(room.store, 'shelf_slots[0].Slot').set().value(1),
+            data().modify(r(0, 4, -3), 'Items').set().from_(room.store, 'shelf_slots'),
             at_home(function(set_if_block).with_().storage(room.store)),
         ),
         item().replace().entity(model_holder, 'weapon.mainhand').from_().entity(model_src, 'container.0'),
@@ -336,4 +339,7 @@ def room():
 
     model_init.add(
         data().modify(room.store, 'states').set().value(
-            [{'id': f'minecraft:{k}', 'state': Block.state_str(v)} for k, v in state.items()]))
+            [{'id': f'minecraft:{k}', 'state': Block.state_str(v)} for k, v in state.items()]),
+        data().remove(room.store, 'shelf_slots'),
+        data().modify(room.store, 'shelf_slots').set().value([{'Slot': 1}])
+    )
