@@ -2,10 +2,10 @@ import re
 from collections import defaultdict
 
 from pynecraft import info
-from pynecraft.base import Arg, EAST, EQ, as_facing, d, r, to_name
+from pynecraft.base import Arg, EAST, EQ, SOUTH, as_facing, d, r, to_name
 from pynecraft.commands import Block, Entity, REPLACE, SUCCESS, Text, clone, comment, data, e, execute, fill, function, \
     item, kill, loot, n, p, schedule, setblock, summon, tag
-from pynecraft.info import block_items
+from pynecraft.info import block_items, woods
 from pynecraft.simpler import Item, ItemFrame, Sign, WallSign
 from restworld import global_
 from restworld.rooms import ActionDesc, SignedRoom, Wall, named_frame_item, span
@@ -341,5 +341,10 @@ def room():
         data().modify(room.store, 'states').set().value(
             [{'id': f'minecraft:{k}', 'state': Block.state_str(v)} for k, v in state.items()]),
         data().remove(room.store, 'shelf_slots'),
-        data().modify(room.store, 'shelf_slots').set().value([{'Slot': 1}])
+        data().modify(room.store, 'shelf_slots').set().value([{'Slot': 1}]),
+        setblock(r(1, 3, -3), ('oak_shelf', {'facing': SOUTH})),
+        room.label(r(2, 3.1, -3.51), 'Shelf Wood', SOUTH, vertical=True, tags=('foo',)),
+        room.label(r(1, 2, -3.51), 'Powered Shelf', SOUTH, vertical=True, tags=('foo',)),
     )
+
+    room.loop('shelf_loop', home=False).loop(lambda step: setblock(r(-1, 0, 2), (f'{step.elem}_shelf',{'facing': SOUTH})), woods)
