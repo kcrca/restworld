@@ -29,7 +29,7 @@ def room():
                block_lists: Iterable[Union[Block, str]] | Iterable[Iterable[Union[Block, str]]],
                dx: float = 0, dz: float = 0, size: int = 0, labels=None, clock: Clock = main_clock,
                score: ScoreName = None, air: bool = False, expandable=True,
-               post_block: Callable[[Block, tuple[RelCoord, RelCoord, RelCoord]], Commands] = None) -> tuple[
+               post_block: Callable[[Block, tuple[RelCoord, RelCoord, RelCoord]], Command | Commands] = None) -> tuple[
         Function, Loop]:
         facing = as_facing(facing)
 
@@ -355,6 +355,9 @@ def room():
         def block_for(b):
             id = b if isinstance(b, str) else b.id
             new_id = f'{prefix}{oxidation}|{id}'
+            # copper_block becomes exposed_copper, not exposed_copper_block (ugh)
+            if ' Block' in new_id and oxidation:
+                new_id = new_id.replace(' Block', '')
             state = {} if isinstance(b, str) else b.state
             return Block(new_id, state)
 
@@ -364,6 +367,8 @@ def room():
         if 'type' in block.state:
             nb = block.clone()
             nb.state['type'] = 'left'
+        elif 'bars' in block.id:
+            nb = block
         else:
             nb = Block('air')
         return setblock(RelCoord.add(pos, r(-1, 0, 0)), nb)
