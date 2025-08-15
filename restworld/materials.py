@@ -223,11 +223,13 @@ def room():
             yield Sign.change(r(3, 2, 6), (None, None, '/ Netherite'))
         if raw:
             if 'Raw' in raw.name:
-                yield setblock(r(3, 4, 2), '%s_block' % raw.id)
+                yield setblock(r(3, 4, 2), f'{raw.id}_block')
+                yield summon(ItemFrame(SOUTH,
+                                       nbt={'Tags': [raw_frame, room.name, 'nugget_frame'],
+                                            'Item': Item.nbt_for(raw.name[4:] + ' Nugget')}).named(raw.name),
+                             r(3, 5, 3))
             yield summon(ItemFrame(SOUTH, nbt={'Tags': [raw_frame, room.name]}).named(raw.name),
                          r(3, 4, 3))
-        else:
-            yield kill(e().tag(raw_frame))
         yield execute().as_(e().tag(ingot_frame)).run(
             data().merge(s(), {'Item': Item.nbt_for(item.id)}))
 
