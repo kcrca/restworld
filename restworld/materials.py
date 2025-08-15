@@ -319,7 +319,7 @@ def basic_functions(room, enchanted):
     materials = (
         ('wooden', 'leather', True, Block('oak_planks'), 'oak_sign'),
         ('stone', 'chainmail', False, Block('stone'), 'stone'),
-        ('copper', 'copper', True, Block('copper_block'), 'copper'),
+        ('copper', 'copper', True, Block('copper_block'), 'copper_ingot'),
         ('iron', 'iron', True, Block('iron_block'), 'iron_ingot'),
         ('golden', 'golden', True, Block('gold_block'), 'gold_ingot'),
         ('diamond', 'diamond', True, Block('diamond_block'), 'diamond'),
