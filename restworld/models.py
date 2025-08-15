@@ -5,7 +5,7 @@ from pynecraft import info
 from pynecraft.base import Arg, EAST, EQ, SOUTH, as_facing, d, r, to_name
 from pynecraft.commands import Block, Entity, REPLACE, SUCCESS, Text, clone, comment, data, e, execute, fill, function, \
     item, kill, loot, n, p, schedule, setblock, summon, tag
-from pynecraft.info import block_items, woods
+from pynecraft.info import block_items, stems, woods
 from pynecraft.simpler import Item, ItemFrame, Sign, WallSign
 from restworld import global_
 from restworld.rooms import ActionDesc, SignedRoom, Wall, named_frame_item, span
@@ -347,4 +347,4 @@ def room():
         room.label(r(1, 2, -3.51), 'Powered Shelf', SOUTH, vertical=True, tags=('foo',)),
     )
 
-    room.loop('shelf_loop', home=False).loop(lambda step: setblock(r(-1, 0, 2), (f'{step.elem}_shelf',{'facing': SOUTH})), woods)
+    room.loop('shelf_loop', home=False).loop(lambda step: setblock(r(-1, 0, 2), (f'{step.elem}_shelf',{'facing': SOUTH})), woods + stems)

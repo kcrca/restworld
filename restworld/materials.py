@@ -439,7 +439,9 @@ def fencelike_functions(room):
     room.function('fencelike_init').add(
         WallSign(()).place(r(6, 2, 0), NORTH),
         room.label(r(6, 2, -2), 'Height', NORTH), room.label(r(4, 2, -2), 'Glass Panes', NORTH),
-        room.label(r(3, 2, -2), 'Walls', NORTH), room.label(r(2, 2, -2), 'Fences', NORTH))
+        room.label(r(3, 2, -2), 'Walls', NORTH), room.label(r(2, 2, -2), 'Fences', NORTH),
+        room.label(r(1, 2, -2), 'Bars', NORTH)
+    )
 
     def fencelike(block: BlockDef):
         block = as_block(block)
@@ -461,8 +463,7 @@ def fencelike_functions(room):
             yield volume.replace_facing(step.elem + ' Gate', '#fence_gates')
 
     room.loop('panes', main_clock).loop(lambda step: fencelike(step.elem),
-                                        tuple(f'{x.name}|Stained Glass|Pane' for x in colors) + (
-                                            'Glass Pane', 'Iron Bars', 'Copper Bars'))
+                                        tuple(f'{x.name}|Stained Glass|Pane' for x in colors) + ('Glass Pane',))
     switch_to_fencelike('panes')
     room.loop('fences', main_clock).loop(fence_loop,
                                          tuple(f'{x} Fence' for x in info.woods + stems + ('Nether Brick',)))
@@ -474,6 +475,9 @@ def fencelike_functions(room):
         'Deepslate|Brick', 'Deepslate|Tile', 'Cobbled|Deepslate', 'Polished|Deepslate', 'Prismarine'
     )))
     switch_to_fencelike('walls')
+    room.loop('bars', main_clock).loop(lambda step: fencelike(step.elem), (f'{x} Bars' for x in (
+        'Iron', 'Copper', 'Exposed Copper', 'Weathered Copper', 'Oxidized Copper')))
+    switch_to_fencelike('bars')
 
 
 def copper_functions(room):

@@ -48,9 +48,8 @@ def create():
     blocks['fencelike'] = {
         'values': ['%s_stained_glass_pane' % x for x in COLORS] + [f'{x}_fence' for x in woodlike_ids] + [
             'nether_brick_fence',
+            '#bars',
             'glass_pane',
-            'iron_bars',
-            'copper_bars',
             'brick_wall',
             'cobblestone_wall',
             'mud_brick_wall',
