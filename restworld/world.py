@@ -4,9 +4,9 @@ import sys
 
 from pynecraft.base import DARK_GREEN, r
 from pynecraft.commands import CREATIVE, ClickEvent, Commands, Entity, HoverEvent, SIDEBAR, Text, clear, data, e, \
-    execute, fill, function, gamemode, give, kill, p, scoreboard, setblock, tp
-from pynecraft.function import Function, FunctionSet
-from pynecraft.simpler import Book, Sign, TextDisplay
+    execute, fill, function, gamemode, give, kill, p, scoreboard, setblock, tp, trigger
+from pynecraft.function import Function
+from pynecraft.simpler import Book, Sign, TextDisplay, Trigger
 from restworld.rooms import Clock, Room, RoomPack
 
 marker_tmpl = Entity('armor_stand', {'NoGravity': True, 'Small': True, })
@@ -25,10 +25,6 @@ class RestWorld(RoomPack):
 
     def save(self, *args, **kwargs):
         self.finalize()
-        gs = self.function_set.child('global')
-        if gs is None:
-            gs = FunctionSet('global', self.function_set)
-        gs.add(self.control_book_func())
         for f in self.world_funcs():
             self.function_set.add(f)
         self.function_set.add(Function('ready').add(
@@ -53,46 +49,6 @@ class RestWorld(RoomPack):
     def clocks(self):
         return slow_clock, main_clock, fast_clock
 
-    def control_book_func(self) -> Function:
-        cb = Book()
-        cb.sign_book('Control Book', 'RestWorld', 'Useful Commands')
-
-        cb.add(r'Clock State:\n      ',
-               self._action(r'|\u25c0\u25c0', 'Previous', '_decr'), r'  ',
-               self._action(r'||', 'Play/Pause', 'global/clock_toggle').bold(),
-               self._action(r'/\u25b6', 'Play/Pause', 'global/clock_toggle'), '  ',
-               self._action(r'\u25b6\u25b6|', 'Next', '_incr'), r'\n', r'\nClock Speed:\n      ',
-               self._action(r'<<', 'Slower Clock Speed', 'center/slower_clocks'), '   ',
-               self._action(r'\u27f2', 'Reset Clock Speed', 'center/reset_clocks'), '   ',
-               self._action(r'>>', 'Faster Clock Speed', 'center/faster_clocks'), r'\n',
-               r'\nPlaces (click to visit):\n   ',
-               self._action('Home', 'Starting Point', 'global/goto_home'), r'\n   ',
-               self._action('Photo Shoot', 'Scenic View', 'global/goto_photo'), r'\n   ',
-               self._action('Arena', 'Arena', 'global/goto_arena'), r'\n   ',
-               self._action('Biome Sampler', 'Biome Sampler', 'global/goto_biomes'), r'\n   ',
-               self._action('Optifine', 'Optifine Features', 'global/goto_optifine'), r'\n   ',
-               self._action('Nether Home', 'Nether Starting Point', 'global/goto_nether'), r'\n   ',
-               self._action('End Home', 'End Starting Point', 'global/goto_end_home'), r'\n   ',
-               )
-
-        cb.next_page()
-        cb.add(r'Room travel links: \n\n')
-        rooms = filter(lambda x: isinstance(x, Room) and x.title is not None, self.function_set.children)
-        rooms = sorted(rooms, key=lambda x: x.title)
-        first = True
-        for r in rooms:
-            if first:
-                first = False
-            else:
-                cb.add(Text(' ⸫ '))
-            cb.add(self._action(r.title, r.title, r.name + '/_goto'))
-
-        return Function('control_book').add(give(p(), cb.as_entity()))
-
-    @staticmethod
-    def _action(txt: str, tooltip: str, act: str) -> Text:
-        return Text.text(txt).color(DARK_GREEN).underlined().click_event(ClickEvent.run_command(
-            function('restworld:' + act))).hover_event(HoverEvent.show_text(tooltip))
 
     def _home_func_name(self, base):
         for f in self._suffixes:

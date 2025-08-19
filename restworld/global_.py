@@ -1,13 +1,15 @@
 from __future__ import annotations
 
 import copy
+from itertools import count
 
-from pynecraft.base import Arg, DIRECTIONS, EAST, EQ, GAMETIME, LT, NOON, NORTH, OVERWORLD, Position, SOUTH, THE_END, \
-    THE_NETHER, TimeSpec, WEST, r
-from pynecraft.commands import Block, Entity, FORCE, MINUS, MOD, MOVE, REPLACE, RESULT, Score, clone, data, e, execute, \
-    fill, function, gamerule, kill, p, return_, s, schedule, scoreboard, setblock, tag, teleport, time, tp
+from pynecraft.base import Arg, DARK_GREEN, DIRECTIONS, EAST, EQ, GAMETIME, LT, NOON, NORTH, OVERWORLD, Position, SOUTH, \
+    THE_END, THE_NETHER, TimeSpec, WEST, r
+from pynecraft.commands import Block, ClickEvent, Entity, FORCE, HoverEvent, MINUS, MOD, MOVE, REPLACE, RESULT, Score, \
+    Text, clone, data, e, execute, fill, function, gamerule, give, kill, p, return_, s, schedule, scoreboard, setblock, \
+    tag, teleport, time, tp, trigger
 from pynecraft.function import Function
-from pynecraft.simpler import VILLAGER_PROFESSIONS, WallSign
+from pynecraft.simpler import Book, VILLAGER_PROFESSIONS, WallSign
 from pynecraft.values import DUMMY
 from restworld.rooms import Room, kill_em
 from restworld.world import clock, restworld, tick_clock
@@ -280,10 +282,10 @@ def room():
     last_clean = room.score('last_clean_time')
     clean_time = room.score('ensure_clean_time', 600)
     clean_time_max = room.score_max('ensure_clean_time')
-    room.function('ensure_clean_init', home=False).add(
+    ensure_clean_init = room.function('ensure_clean_init', home=False).add(
         clean_time_max.set(600)
     )
-    room.function('ensure_clean_run', home=False).add(
+    room.function('ensure_clean').add(
         execute().store(RESULT).score(clean_time).run(time().query(GAMETIME)),
         clean_time.operation(MINUS, last_clean),
         execute().if_().score(clean_time).is_(LT, clean_time_max).run(return_()),
@@ -306,6 +308,53 @@ def room():
         execute().as_(e().type('tnt')).run(data().merge(s(), {'fuse': 0x7fff})),
     )
 
+    # This is why this room must be last -- it relies on the list of rooms built by creating all of them.
+    book_trigger = room.trigger('control_book_triggers')
+    next_trigger = count(start=1)
+
+    def book_action(txt: str, tooltip: str, act: str) -> Text:
+        num = next(next_trigger)
+        book_trigger.trigger(function('restworld:' + act), num)
+        return Text.text(txt).color(DARK_GREEN).underlined().click_event(ClickEvent.run_command(
+            trigger(book_trigger.name).set(num))).hover_event(HoverEvent.show_text(tooltip))
+
+    cb = Book()
+    cb.sign_book('Control Book', 'RestWorld', 'Useful Commands')
+
+    cb.add(r'Clock State:\n      ',
+           book_action(r'|\u25c0\u25c0', 'Previous', '_decr'), r'  ',
+           book_action(r'||', 'Play/Pause', 'global/clock_toggle').bold(),
+           book_action(r'/\u25b6', 'Play/Pause', 'global/clock_toggle'), '  ',
+           book_action(r'\u25b6\u25b6|', 'Next', '_incr'), r'\n', r'\nClock Speed:\n      ',
+           book_action(r'<<', 'Slower Clock Speed', 'center/slower_clocks'), '   ',
+           book_action(r'\u27f2', 'Reset Clock Speed', 'center/reset_clocks'), '   ',
+           book_action(r'>>', 'Faster Clock Speed', 'center/faster_clocks'), r'\n',
+           r'\nPlaces (click to visit):\n   ',
+           book_action('Home', 'Starting Point', 'global/goto_home'), r'\n   ',
+           book_action('Photo Shoot', 'Scenic View', 'global/goto_photo'), r'\n   ',
+           book_action('Arena', 'Arena', 'global/goto_arena'), r'\n   ',
+           book_action('Biome Sampler', 'Biome Sampler', 'global/goto_biomes'), r'\n   ',
+           book_action('Optifine', 'Optifine Features', 'global/goto_optifine'), r'\n   ',
+           book_action('Nether Home', 'Nether Starting Point', 'global/goto_nether'), r'\n   ',
+           book_action('End Home', 'End Starting Point', 'global/goto_end_home'), r'\n   ',
+           )
+
+    cb.next_page()
+    cb.add(r'Room travel links: \n\n')
+    rooms = filter(lambda x: isinstance(x, Room) and x.title is not None, restworld.function_set.children)
+    rooms = sorted(rooms, key=lambda x: x.title)
+    first = True
+    for rm in rooms:
+        if first:
+            first = False
+        else:
+            cb.add(Text(' ⸫ '))
+        cb.add(book_action(rm.title, rm.title, rm.name + '/_goto'))
+
+    room.function('control_book', home=False).add(give(p(), cb.as_entity()))
+
+    # These functions only exist for my MegaVillage project which does not (yet) have its own code, and it's so small
+    # that it was just easier to plunk it here and copy it.
     census = room.function('census', home=False).add(tag(e().tag('all')).remove('none'))
     middle = e().tag('census_taker')
     prof_scores = {}

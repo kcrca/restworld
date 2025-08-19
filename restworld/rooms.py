@@ -14,7 +14,7 @@ from pynecraft.commands import Block, BlockDef, CLEAR, Command, Commands, Entity
     data, e, execute, fill, function, function, kill, n, p, particle, ride, s, say, schedule, scoreboard, setblock, \
     summon, tag, tellraw, tp, weather
 from pynecraft.function import DataPack, Function, FunctionSet, LATEST_PACK_VERSION, Loop
-from pynecraft.simpler import Item, TextDisplay, WallSign
+from pynecraft.simpler import Item, TextDisplay, Trigger, WallSign
 from pynecraft.values import DUMMY
 
 ERASE_HEIGHT = 80
@@ -120,6 +120,7 @@ class Room(FunctionSet):
         self._clocks = {}
         self._scores = set()
         self._init_values = {}
+        self._triggers: list[Trigger] = []
         self._homes = set()
         self._home_stand = Entity('armor_stand', {
             'Tags': ['homer', '%s_home' % self.name], 'NoGravity': True, 'Small': True})
@@ -281,6 +282,11 @@ class Room(FunctionSet):
                 home = False
         return self._add_func(Function(name, base_name), name, clock, home, single_home)
 
+    def trigger(self, name: str) -> Trigger:
+        trigger = Trigger(name)
+        self._triggers.append(trigger)
+        return trigger
+
     def loop(self, name: str, clock: Clock = None, /, home=True, score=None, exists_ok=False) -> Loop:
         base_name, name = self._base_name(name, clock)
         if exists_ok and name in self.functions:
@@ -333,6 +339,9 @@ class Room(FunctionSet):
         return base_name, name
 
     def finalize(self):
+        for t in self._triggers:
+            self.function(t.name).add(t.commands())
+            self.function(f'{t.name}_init').add(t.init_commands())
         self.add_room_funcs()
 
     def add_room_funcs(self):
