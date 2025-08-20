@@ -5,8 +5,8 @@ import re
 from pynecraft import info
 from pynecraft.base import DOWN, EAST, NOON, SOUTH, UP, WEST, r
 from pynecraft.commands import BYTE, Block, INT, RESULT, Score, data, e, execute, fill, function, item, kill, \
-    random, return_, setblock, summon, tag, time
-from pynecraft.info import instruments, stems
+    n, random, return_, setblock, summon, tag, time
+from pynecraft.info import instruments, stems, woods
 from pynecraft.simpler import Item, Region, Sign, WallSign
 from restworld.rooms import Room, ensure, if_clause, kill_em
 from restworld.world import fast_clock, main_clock, restworld
@@ -47,7 +47,7 @@ def room():
     room.loop('lightning_rod', main_clock).loop(lightning_rod_loop, (True, False))
     room.function('lightning_rod_init').add(
         setblock(r(0, 3, 0), 'lightning_rod'),
-        WallSign((None, 'Lightning &', 'Lightning Rod')).place(r(1, 2, 0), EAST))
+        WallSign((None, 'Lightning &', 'Lightning Rod')).place(r(-1, 2, 0), WEST))
     room.particle('lightning_rod', 'lightning_rod', r(0, 4, 0))
 
     minecart_types = list(Block(f'{t}Minecart') for t in
@@ -59,7 +59,6 @@ def room():
         yield data().merge(r(-1, 2, 0), step.elem.sign_nbt())
 
     room.loop('minecarts', main_clock).loop(minecart_loop, minecart_types)
-    room.function('minecarts_init').add(room.label(r(-5, 2, 2), 'Reset Room', SOUTH))
 
     def observer_loop(step):
         block = ('observer', {'powered': step.elem, 'facing': WEST})
@@ -113,7 +112,9 @@ def room():
         bulbs.extend((bulb,) * 4)
     room.loop('copper_bulb', fast_clock).loop(copper_bulb_loop, bulbs)
 
-    room.function('rail_init').add(WallSign(()).place(r(1, 2, -2), WEST))
+    room.function('rail_init').add(
+        WallSign(()).place(r(1, 2, -2), WEST),
+        room.label(r(-5, 2, 2), 'Reset Room', SOUTH))
     rails = (
         ('Rail', False),
         ('Powered Rail', False), ('Powered Rail', True),
@@ -357,6 +358,28 @@ def room():
 
     room.function('sculk_init').add(WallSign((None, None, 'Sculk Sensor')).place(r(-1, 3, 0), EAST))
     room.loop('sculk', main_clock).loop(sculk_loop, range(4))
+
+    def shelf_type_loop(step):
+        yield fill(r(-1, 2, 0), r(-1, 2, 2), Block(f'{step.elem}_shelf', {'facing': WEST}))
+        yield Sign.change(r(-1, 3, 1), (None, f'{step.elem.title()}'))
+
+    room.loop('shelf_type', main_clock).loop(shelf_type_loop, woods + stems)
+    room.function('shelf_type_start', home=False).add(
+        tag(n().tag('shelf_power_home')).add('shelf_type_home'),
+        execute().at(n().tag('shelf_power_home')).run(function('restworld:redstone/shelf_type_cur')))
+
+    def shelf_power_loop(step):
+        yield fill(r(0, 2, 0), r(0, 2, 2), 'air')
+        res = step.elem if isinstance(step.elem, tuple) else (step.elem,)
+        yield (setblock(r(0, 2, z), 'redstone_block') for z in res)
+
+    room.loop('shelf_power', main_clock).loop(shelf_power_loop, ((), 1, (1, 2), (0, 1, 2), (0, 1), 0))
+    room.function('shelf_power_init').add(
+        WallSign((None, None, 'Shelf')).place(r(-1, 3, 1), WEST),
+        room.label(r(-3, 2, 1), 'Shelf Type', WEST),
+        function('restworld:redstone/shelf_type_cur'))
+
+    room.function('shelf_type_stop', home=False).add(tag(n().tag('shelf_power_home')).remove('shelf_type_home'))
 
     room.function('target_init').add(WallSign((None, 'Target', None, '(vanilla shows 1)')).place(r(1, 3, 0), WEST))
     room.particle('target', 'target', r(0, 3, 0))
