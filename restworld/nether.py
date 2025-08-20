@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 from pynecraft.base import NORTH, SOUTH, WEST, r
-from pynecraft.commands import Entity, REPLACE, data, e, execute, function, n, ride, s, schedule, setblock, tag
-from pynecraft.simpler import Item, WallSign
+from pynecraft.commands import Block, Entity, REPLACE, data, e, execute, function, n, ride, s, schedule, setblock, tag
+from pynecraft.simpler import Item, Sign, WallSign
 from restworld.rooms import Room, kill_em
 from restworld.world import main_clock, restworld
 
@@ -28,11 +28,30 @@ def room():
     ghast_height, ghast_dir = 6, WEST
 
     def ghast_loop(step):
-        yield from room.mob_placer(r(1.5, ghast_height, 0), ghast_dir, adults=True, tags='ghastly').summon(step.elem)
-        if step.elem.startswith('Happy'):
-            yield from room.mob_placer(r(0.5, ghast_height, 4), ghast_dir, kids=True, tags='ghastly').summon(step.elem)
+        yield from room.mob_placer(r(1.5, 6, 0), ghast_dir, adults=True, tags='ghastly').summon(step.elem)
 
     room.loop('ghast', main_clock).add(kill_em(e().tag('ghastly'))).loop(ghast_loop, ('Ghast', 'Happy Ghast'))
+
+    dry_ghast = room.score('dry_ghast')
+
+    def ghastling_loop(step):
+        block = Block('dried_ghast', {'hydration': step.i, 'facing': WEST})
+        pos = r(0, 3, 0)
+        yield execute().unless().score(dry_ghast).matches(0).run(setblock(pos, block))
+        yield execute().if_().score(dry_ghast).matches(0).run(setblock(pos, block.merge_state({'waterlogged': True})))
+        yield Sign.change(r(-1, 2, 0), (None, None, f'Hydration: {step.i}'))
+
+    room.function('ghastling_init').add(
+        room.mob_placer(r(0, 5, 0), WEST, kids=True).summon('Happy Ghast'),
+        WallSign((None, 'Dried Ghast')).place(r(-1, 2, 0), WEST),
+        setblock(r(0, 3, 1), 'structure_void'),
+        setblock(r(0, 3, -1), 'structure_void'),
+        setblock(r(1, 3, 0), 'structure_void'),
+        setblock(r(-1, 3, 0), 'structure_void'),
+        room.label(r(0, 2, 1), 'Waterlogged', WEST),
+    )
+    room.loop('ghastling', main_clock).loop(ghastling_loop, range(4))
+
     room.function('magma_cube_init').add(placer(r(0, 3, 0), SOUTH, adults=True).summon('magma_cube'))
     room.loop('magma_cube', main_clock).loop(
         lambda step: data().modify(e().tag('magma_cube').limit(1), 'Size').set().value(step.elem),

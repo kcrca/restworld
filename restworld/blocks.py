@@ -256,26 +256,6 @@ def room():
     blocks('dirt', SOUTH, ('Dirt', 'Coarse Dirt', 'Rooted Dirt', 'Farmland'))
     blocks('dried_kelp', SOUTH, ('Dried Kelp Block',))
 
-    dry_ghast = room.score('dry_ghast')
-
-    def dried_ghast_loop(step):
-        block = Block('dried_ghast', {'hydration': step.i, 'facing': NORTH})
-        pos = r(0, 3, 0)
-        yield execute().unless().score(dry_ghast).matches(0).run(setblock(pos, block))
-        yield execute().if_().score(dry_ghast).matches(0).run(setblock(pos, block.merge_state({'waterlogged': True})))
-        yield Sign.change(r(0, 2, -1), (None, None, f'Hydration: {step.i}'))
-
-    room.function('dried_ghast_init').add(
-        WallSign((None, 'Dried Ghast')).place(r(0, 2, -1), NORTH),
-        setblock(r(0, 3, 1), 'structure_void'),
-        setblock(r(0, 3, -1), 'structure_void'),
-        setblock(r(1, 3, 0), 'structure_void'),
-        setblock(r(-1, 3, 0), 'structure_void'),
-        room.label(r(-1, 2, 0), 'Waterlogged', NORTH),
-        room.label(r(1, 2, 0), 'Ghastling', NORTH),
-    )
-    room.loop('dried_ghast', main_clock).loop(dried_ghast_loop, range(4))
-
     blocks('end', NORTH, ('End Stone', 'End Stone|Bricks'))
     blocks('frosted_ice', SOUTH,
            [Block('frosted_ice', {'age': i}, name=f'Frosted Ice|Age: {i}') for i in range(0, 4)] + [
