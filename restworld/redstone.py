@@ -114,7 +114,7 @@ def room():
 
     room.function('rail_init').add(
         WallSign(()).place(r(1, 2, -2), WEST),
-        room.label(r(-5, 2, 2), 'Reset Room', SOUTH))
+        room.label(r(-4, 2, 0), 'Reset Room', SOUTH))
     rails = (
         ('Rail', False),
         ('Powered Rail', False), ('Powered Rail', True),
