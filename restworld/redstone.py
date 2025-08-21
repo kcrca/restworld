@@ -372,6 +372,7 @@ def room():
         yield fill(r(0, 2, 0), r(0, 2, 2), 'air')
         res = step.elem if isinstance(step.elem, tuple) else (step.elem,)
         yield (setblock(r(0, 2, z), 'redstone_block') for z in res)
+        yield Sign.change(r(-1, 3, 1), (None, None, None, f'{len(res)} Powered'))
 
     room.loop('shelf_power', main_clock).loop(shelf_power_loop, ((), 1, (1, 2), (0, 1, 2), (0, 1), 0))
     room.function('shelf_power_init').add(
