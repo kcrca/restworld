@@ -436,10 +436,11 @@ def basic_functions(room, enchanted):
 
 
 def fencelike_functions(room):
-    volume = Region(r(8, 3, 6), r(0, 2, 0))
+    volume = Region(r(4, 3, 6), r(0, 2, -1))
 
+    fencelike_sign_pos = r(5, 2, -1)
     room.function('fencelike_init').add(
-        WallSign(()).place(r(6, 2, 0), NORTH),
+        WallSign(()).place(fencelike_sign_pos, NORTH),
         room.label(r(6, 2, -2), 'Height', NORTH), room.label(r(4, 2, -2), 'Glass Panes', NORTH),
         room.label(r(3, 2, -2), 'Walls', NORTH), room.label(r(2, 2, -2), 'Fences', NORTH),
         room.label(r(1, 2, -2), 'Bars', NORTH)
@@ -448,7 +449,7 @@ def fencelike_functions(room):
     def fencelike(block: BlockDef):
         block = as_block(block)
         yield volume.replace(block, '#restworld:fencelike')
-        yield execute().at(e().tag('fencelike_home')).run(data().merge(r(6, 2, 0), block.sign_nbt(front=None)))
+        yield execute().at(e().tag('fencelike_home')).run(data().merge(fencelike_sign_pos, block.sign_nbt(front=None)))
 
     def switch_to_fencelike(which):
         room.function(f'switch_to_{which}', home=False).add(
@@ -485,6 +486,8 @@ def fencelike_functions(room):
 def copper_functions(room):
     tags = restworld.tags(BLOCK)
 
+    copper_sign_pos = r(4, 2, -1)
+
     def copper_tags(type) -> None:
         blocks = list(re.sub('^_', '', f'{v}{type}') for v in ('', 'exposed_', 'weathered_', 'oxidized_'))
         if blocks[0] == 'copper':
@@ -495,7 +498,7 @@ def copper_functions(room):
         blocks.extend(list('waxed_' + b for b in blocks))
         tags[tag_name] = {'values': blocks}
 
-    volume = Region(r(0, 1, 0), r(4, 5, 6))
+    volume = Region(r(0, 1, 0), r(5, 5, 6))
     copper_tags('copper')
     copper_tags('cut_copper')
     copper_tags('chiseled_copper')
@@ -515,30 +518,32 @@ def copper_functions(room):
             basic += '_block'
         if len(type) > 0:
             type += '_'
+        yield Sign.change(copper_sign_pos, (None, type.replace('_', ' ').title()))
         yield from volume.replace(type + basic, '#restworld:coppers')
+        yield from volume.replace(type + 'lightning_rod', '#lightning_rods')
         yield from volume.replace(type + 'cut_copper', '#restworld:cut_coppers')
         yield from volume.replace(type + 'chiseled_copper', '#restworld:chiseled_coppers')
         yield from volume.replace(type + 'copper_grate', '#restworld:copper_grates')
         yield from volume.replace(type + 'copper_bulb', '#restworld:copper_bulbs', {'lit': True})
         yield from volume.replace(type + 'copper_bulb', '#restworld:copper_bulbs', {'lit': False})
-        yield from volume.replace(type + 'copper_bars', '#restworld:copper_bars')
-        yield from volume.replace_axes(type + 'copper_chain', '#restworld:copper_chains')
-        yield from volume.replace_stairs(type + 'cut_copper_stairs', '#restworld:cut_copper_stairs')
+        yield from volume.replace(type + 'copper_bars', '#bars')
+        yield from volume.replace_axes(type + 'copper_chain', '#chains')
+        yield from volume.replace_stairs(type + 'cut_copper_stairs', '#stairs')
         yield from volume.replace_slabs(type + 'cut_copper_slab', '#restworld:cut_copper_slabs')
         # doors can't be generically replaced, see below for the manual placement
         yield from volume.replace_trapdoors(type + 'copper_trapdoor', '#restworld:copper_trapdoors')
-        yield from volume.replace_facing(type + 'copper_chest', '#restworld:copper_chests')
-        yield from volume.replace_facing(type + 'copper_chest', '#restworld:copper_chests')
-        yield from volume.replace_facing(type + 'copper_chest', '#restworld:copper_chests',
-                                         shared_states={'type': 'left'})
-        yield from volume.replace_facing(type + 'copper_chest', '#restworld:copper_chests',
-                                         shared_states={'type': 'right'})
+        yield from volume.replace_facing(type + 'copper_chest', '#copper_chests')
+        # yield from volume.replace_facing(type + 'copper_chest', '#copper_chests', shared_states={'type': 'left'})
+        # yield from volume.replace_facing(type + 'copper_chest', '#copper_chests', shared_states={'type': 'right'})
         yield from volume.replace_facing(type + 'copper_golem_statue', '#restworld:copper_golem_statues')
 
         # The door won't be set unless we manually remove previous one.
         yield erase(r(0, 2, 4), r(0, 3, 4))
-        yield setblock(r(0, 2, 4), (type + 'copper_door', {'facing': NORTH, 'half': 'lower'}))
-        yield setblock(r(0, 3, 4), (type + 'copper_door', {'facing': NORTH, 'half': 'upper'}))
+        yield setblock(r(0, 2, 4), (type + 'copper_door', {'facing': NORTH, 'half': 'lower'})).replace()
+        yield setblock(r(0, 3, 4), (type + 'copper_door', {'facing': NORTH, 'half': 'upper'})).replace()
+        yield fill(r(1, 2, 3), r(0, 2, 3), 'air') # currently needed, or the setblocks are ignored, even with replace
+        yield setblock(r(1, 2, 3), (type + 'copper_chest', {'type': 'right'}))
+        yield setblock(r(0, 2, 3), (type + 'copper_chest', {'type': 'left'}))
 
         yield item().replace().entity(n().tag('copper_door_frame'), 'container.0').with_(Item(type + 'copper_door'))
 
@@ -552,19 +557,19 @@ def copper_functions(room):
     room.loop('waxed_coppers', main_clock, score=copper_score).loop(
         copper_loop, ('waxed', 'waxed_exposed', 'waxed_weathered', 'waxed_oxidized'))
     copper_home = e().tag('coppers_home')
-    run_unwaxed = room.function('unwaxed_coppers_run', home=False).add(tag(copper_home).remove('waxed_coppers_home'),
-                                                                       tag(copper_home).add('unwaxed_coppers_home'),
-                                                                       execute().at(copper_home).run(function(
-                                                                           'restworld:materials/unwaxed_coppers_cur')))
-    room.function('waxed_coppers_run', home=False).add(tag(copper_home).remove('unwaxed_coppers_home'),
-                                                       tag(copper_home).add('waxed_coppers_home'),
-                                                       execute().at(copper_home).run(
-                                                           function('restworld:materials/waxed_coppers_cur')))
+    run_unwaxed = room.function('unwaxed_coppers_run', home=False).add(
+        tag(copper_home).remove('waxed_coppers_home'),
+        tag(copper_home).add('unwaxed_coppers_home'),
+        execute().at(copper_home).run(function('restworld:materials/unwaxed_coppers_cur')))
+    room.function('waxed_coppers_run', home=False).add(
+        tag(copper_home).remove('unwaxed_coppers_home'),
+        tag(copper_home).add('waxed_coppers_home'),
+        execute().at(copper_home).run(function('restworld:materials/waxed_coppers_cur')))
     room.function('coppers_init').add(
-        room.label(r(2, 2, -2), 'Waxed', NORTH),
+        room.label(r(3, 2, -2), 'Waxed', NORTH),
         function(run_unwaxed),
-        ItemFrame(NORTH).tag('materials', 'copper_door_frame').summon(r(0, 4, 4), )
-    )
+        ItemFrame(NORTH).tag('materials', 'copper_door_frame').summon(r(0, 4, 4)),
+        WallSign((None, None, 'Copper')).place(copper_sign_pos, NORTH))
 
 
 def wood_functions(room):
