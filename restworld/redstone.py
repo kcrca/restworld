@@ -360,7 +360,8 @@ def room():
     room.loop('sculk', main_clock).loop(sculk_loop, range(4))
 
     def shelf_type_loop(step):
-        yield fill(r(-1, 2, 0), r(-1, 2, 2), Block(f'{step.elem}_shelf', {'facing': WEST}))
+        items = [Item.nbt_for('diamond').merge({'Slot': i}) for i in range(3)]
+        yield fill(r(-1, 2, 0), r(-1, 2, 2), Block(f'{step.elem}_shelf', {'facing': WEST}, {'Items': items}))
         yield Sign.change(r(-1, 3, 1), (None, f'{step.elem.title()}'))
 
     room.loop('shelf_type', main_clock).loop(shelf_type_loop, woods + stems)
@@ -378,7 +379,8 @@ def room():
     room.function('shelf_power_init').add(
         WallSign((None, None, 'Shelf')).place(r(-1, 3, 1), WEST),
         room.label(r(-3, 2, 1), 'Shelf Type', WEST),
-        function('restworld:redstone/shelf_type_cur'))
+        function('restworld:redstone/shelf_type_cur')
+    )
 
     room.function('shelf_type_stop', home=False).add(tag(n().tag('shelf_power_home')).remove('shelf_type_home'))
 
