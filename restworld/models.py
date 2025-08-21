@@ -2,7 +2,7 @@ import re
 from collections import defaultdict
 
 from pynecraft import info
-from pynecraft.base import Arg, EAST, EQ, SOUTH, as_facing, d, r, to_name
+from pynecraft.base import Arg, EAST, EQ, as_facing, d, r, to_name
 from pynecraft.commands import Block, Entity, REPLACE, SUCCESS, Text, clone, comment, data, e, execute, fill, function, \
     item, kill, loot, n, p, schedule, setblock, summon, tag
 from pynecraft.info import block_items, stems, woods
@@ -112,7 +112,7 @@ def room():
     wall_used = {3: span(1, 5)}
     room = SignedRoom('models', restworld, EAST, (None, 'Models',), mode_sign, modes,
                       (Wall(7, EAST, 1, -1, wall_used),))
-    room.reset_at((-4, 1))
+    room.reset_at((-4, -1))
 
     room.function('model_signs_init').add(function('restworld:models/signs'))
 
@@ -158,7 +158,7 @@ def room():
     recent_things_signs = (r(-2, 4, 1), r(-2, 4, 0), r(-2, 4, -1))[::-1]
     chest_pos = r(-1, -2, 0)
     room.function('models_room_init', exists_ok=True).add(
-        room.label(r(-2, 2, 0), 'See in Hands', EAST))
+        room.label(r(-2, 2, -1), 'See in Hands', EAST))
     under = {'chorus_flower': 'end_stone', 'chorus_plant': 'end_stone', 'sugar_cane': 'grass_block',
              'wheat': 'farmland', 'bamboo': 'grass_block'}
     model_init = room.function('model_init').add(
@@ -223,9 +223,11 @@ def room():
             data().modify(model_ground, 'Item').set().from_(model_src, 'Item'),
             data().merge(model_ground, {'Age': -32768, 'PickupDelay': 2147483647}),
             data().modify(room.store, 'block').set().from_(model_src, 'Item.id'),
-            data().modify(room.store, 'shelf_slots[0]').set().from_(model_src, 'Item'),
-            data().modify(room.store, 'shelf_slots[0].Slot').set().value(1),
-            data().modify(r(0, 4, -3), 'Items').set().from_(room.store, 'shelf_slots'),
+            data().modify(room.store, 'shelf_slots[0].id').set().from_(model_src, 'Item.id'),
+            data().modify(room.store, 'shelf_slots[1].id').set().from_(model_src, 'Item.id'),
+            data().modify(room.store, 'shelf_slots[2].id').set().from_(model_src, 'Item.id'),
+            data().modify(r(0, 3, -1), 'Items').set().from_(room.store, 'shelf_slots'),
+            # setblock(r(0, 3, -1), 'stone'),
             at_home(function(set_if_block).with_().storage(room.store)),
         ),
         item().replace().entity(model_holder, 'weapon.mainhand').from_().entity(model_src, 'container.0'),
@@ -260,7 +262,7 @@ def room():
                 data().modify(n().tag('current_model'), 'text').set().value(Text.text(''))),
         ),
     )
-    redstone_block_pos = r(1, -2, 0)
+    redstone_block_pos = r(1, -2, 1)
     room.function('model_enter').add(
         execute().at(model_home).run(function(model_save)),
         setblock(redstone_block_pos, 'redstone_block'))
@@ -340,11 +342,14 @@ def room():
     model_init.add(
         data().modify(room.store, 'states').set().value(
             [{'id': f'minecraft:{k}', 'state': Block.state_str(v)} for k, v in state.items()]),
-        data().remove(room.store, 'shelf_slots'),
-        data().modify(room.store, 'shelf_slots').set().value([{'Slot': 1}]),
-        setblock(r(1, 3, -3), ('oak_shelf', {'facing': SOUTH})),
-        room.label(r(2, 3.1, -3.51), 'Shelf Wood', SOUTH, vertical=True, tags=('foo',)),
-        room.label(r(1, 2, -3.51), 'Powered Shelf', SOUTH, vertical=True, tags=('foo',)),
-    )
+        data().remove(room.store, 'shelf_tslots'),
+        data().modify(room.store, 'shelf_slots').set().value([{'Slot': 0, 'count': 1}, {'Slot': 1}, {'Slot': 2}]))
 
-    room.loop('shelf_loop', home=False).loop(lambda step: setblock(r(-1, 0, 2), (f'{step.elem}_shelf',{'facing': SOUTH})), woods + stems)
+    def models_shelf_wood_loop(step):
+        yield setblock(r(0, 2, 0), (f'{step.elem}_shelf', {'facing': EAST}))
+        yield setblock(r(-1, 2, 0), (f'{step.elem}_planks'))
+
+    room.loop('models_shelf_wood').loop(models_shelf_wood_loop, woods + stems)
+    room.function('models_shelf_wood_init').add(
+        room.label(r(1, 2, 1), 'Shelf Wood', EAST),
+        room.label(r(3, 2, 1), 'Shelf Powered', EAST))
