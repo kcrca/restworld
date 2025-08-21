@@ -213,6 +213,7 @@ def room():
     at_home = execute().at(model_home).run
 
     see_in_hands = room.score('see_in_hands')
+    fill_slots = data().modify(r(0, 3, -1), 'Items').set().from_(room.store, 'shelf_slots')
     model_copy = room.function('model_copy', home=False).add(
         data().merge(model_src, {'ItemRotation': 0}),
         execute().unless().data(model_src, 'Item.id').run(kill(all_ground)),
@@ -226,8 +227,7 @@ def room():
             data().modify(room.store, 'shelf_slots[0].id').set().from_(model_src, 'Item.id'),
             data().modify(room.store, 'shelf_slots[1].id').set().from_(model_src, 'Item.id'),
             data().modify(room.store, 'shelf_slots[2].id').set().from_(model_src, 'Item.id'),
-            data().modify(r(0, 3, -1), 'Items').set().from_(room.store, 'shelf_slots'),
-            # setblock(r(0, 3, -1), 'stone'),
+            fill_slots,
             at_home(function(set_if_block).with_().storage(room.store)),
         ),
         item().replace().entity(model_holder, 'weapon.mainhand').from_().entity(model_src, 'container.0'),
@@ -342,14 +342,15 @@ def room():
     model_init.add(
         data().modify(room.store, 'states').set().value(
             [{'id': f'minecraft:{k}', 'state': Block.state_str(v)} for k, v in state.items()]),
-        data().remove(room.store, 'shelf_tslots'),
+        data().remove(room.store, 'shelf_slots'),
         data().modify(room.store, 'shelf_slots').set().value([{'Slot': 0, 'count': 1}, {'Slot': 1}, {'Slot': 2}]))
 
     def models_shelf_wood_loop(step):
         yield setblock(r(0, 2, 0), (f'{step.elem}_shelf', {'facing': EAST}))
-        yield setblock(r(-1, 2, 0), (f'{step.elem}_planks'))
+        yield setblock(r(-1, 2, 0), f'{step.elem}_planks')
+        yield is_empty.set(1)
 
-    room.loop('models_shelf_wood').loop(models_shelf_wood_loop, woods + stems)
+    room.loop('models_shelf_wood').loop(models_shelf_wood_loop, woods + stems).add(is_empty.set(1))
     room.function('models_shelf_wood_init').add(
         room.label(r(1, 2, 1), 'Shelf Wood', EAST),
         room.label(r(3, 2, 1), 'Shelf Powered', EAST))
