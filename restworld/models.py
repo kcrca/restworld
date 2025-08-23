@@ -213,7 +213,6 @@ def room():
     at_home = execute().at(model_home).run
 
     see_in_hands = room.score('see_in_hands')
-    fill_slots = data().modify(r(0, 3, -1), 'Items').set().from_(room.store, 'shelf_slots')
     model_copy = room.function('model_copy', home=False).add(
         data().merge(model_src, {'ItemRotation': 0}),
         execute().unless().data(model_src, 'Item.id').run(kill(all_ground)),
@@ -227,7 +226,7 @@ def room():
             data().modify(room.store, 'shelf_slots[0].id').set().from_(model_src, 'Item.id'),
             data().modify(room.store, 'shelf_slots[1].id').set().from_(model_src, 'Item.id'),
             data().modify(room.store, 'shelf_slots[2].id').set().from_(model_src, 'Item.id'),
-            fill_slots,
+            data().modify(r(0, 3, -1), 'Items').set().from_(room.store, 'shelf_slots'),
             at_home(function(set_if_block).with_().storage(room.store)),
         ),
         item().replace().entity(model_holder, 'weapon.mainhand').from_().entity(model_src, 'container.0'),
