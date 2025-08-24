@@ -324,40 +324,40 @@ def room():
            labels=(tuple(('Test Block', f'Mode: {mode.title()}') for mode in test_block_modes)))
     blocks('test_instance', SOUTH, ('Test Instance Block',), expandable=True)
 
-    copper_blocks = (
+    copper_blocks = tuple(map(as_block, (
         'Copper Block', 'Cut Copper', 'Chiseled Copper', 'Copper Bulb', 'Copper Grate', 'Copper Golem Statue',
-        'Copper Chest', Block('Copper Chest', {'type': 'right'}), 'Lightning Rod', 'Copper Bars', 'Copper Chain',
-        'Copper Lantern', 'Copper Trapdoor')
+        'Copper Chest', ('Copper Chest', {'type': 'right'}), 'Lightning Rod', 'Copper Bars', 'Copper Chain',
+        'Copper Lantern', 'Copper Trapdoor')))
 
     def coppers(oxidation, waxed=False):
         prefix = 'Waxed ' if waxed else ''
 
         def block_for(b):
-            id = b if isinstance(b, str) else b.id
-            new_id = f'{prefix}{oxidation}|{id}'
+            new_name = f'{prefix}{oxidation}|{b.name}'
             # copper_block becomes exposed_copper, not exposed_copper_block (ugh)
-            if ' Block' in new_id and oxidation:
-                new_id = new_id.replace(' Block', '')
-            state = {} if isinstance(b, str) else b.state
-            return Block(new_id, state)
+            if ' Block' in new_name and oxidation:
+                new_name = new_name.replace(' Block', '')
+            nb = Block(to_id(new_name), b.state)
+            return nb
 
         return tuple(block_for(f) for f in copper_blocks)
 
     def post_copper_block(block: Block, pos: tuple[RelCoord, RelCoord, RelCoord]) -> Command:
         if 'type' in block.state:
+            print(block)
             nb = block.clone()
             nb.state['type'] = 'left'
         elif 'bars' in block.id:
             nb = block
         else:
-            nb = Block('air')
+            nb = 'air'
         return setblock(RelCoord.add(pos, r(-1, 0, 0)), nb)
 
     _, copper_loop = blocks('unwaxed_copper_blocks', NORTH,
                             (copper_blocks, coppers('Exposed'), coppers('Weathered'), coppers('Oxidized')),
                             expandable=False, dx=-3, dz=3, size=2, post_block=post_copper_block)
     blocks('waxed_copper_blocks', NORTH,
-           (list(f'Waxed {b}' for b in copper_blocks), coppers('Waxed Exposed'), coppers('Waxed Weathered'),
+           (coppers(f'Waxed'), coppers('Waxed Exposed'), coppers('Waxed Weathered'),
             coppers('Waxed Oxidized')),
            score=copper_loop.score, expandable=False, dx=-3, dz=3, size=2, post_block=post_copper_block)
 
