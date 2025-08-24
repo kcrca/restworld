@@ -12,13 +12,11 @@ from pynecraft.commands import Block, Command, Commands, Entity, MOD, MOVE, REPL
     clone, data, \
     e, execute, fill, function, item, kill, n, p, s, say, schedule, setblock, summon, tag
 from pynecraft.function import Function, Loop
-from pynecraft.info import Color, armor_equipment, colors, sherds, stems
+from pynecraft.info import Color, armor_equipment, colors, copper_golem_poses, sherds, stems
 from pynecraft.simpler import Item, ItemFrame, Region, Sign, TextDisplay, WallSign
 from restworld.materials import enchant
 from restworld.rooms import Clock, ERASE_HEIGHT, Room, erase, if_clause, kill_em
 from restworld.world import fast_clock, main_clock, restworld
-
-copper_golem_poses = ('standing', 'sitting', 'running', 'star')
 
 
 def room():
@@ -328,9 +326,9 @@ def room():
     blocks('test_instance', SOUTH, ('Test Instance Block',), expandable=True)
 
     copper_blocks = tuple(map(as_block, (
-        'Copper Block', 'Cut Copper', 'Chiseled Copper', 'Copper Bulb', 'Copper Grate', 'Copper Golem Statue',
-        'Copper Chest', ('Copper Chest', {'type': 'right'}), 'Lightning Rod', 'Copper Bars', 'Copper Chain',
-        'Copper Lantern', 'Copper Trapdoor')))
+        'Copper Block', 'Cut Copper', 'Chiseled Copper', 'Copper Bulb', 'Copper Grate', 'Copper Chest',
+        ('Copper Chest', {'type': 'right'}), 'Lightning Rod', 'Copper Bars', 'Copper Chain', 'Copper Lantern',
+        'Copper Trapdoor')))
 
     def coppers(oxidation, waxed=False):
         prefix = 'Waxed ' if waxed else ''

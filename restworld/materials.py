@@ -7,10 +7,10 @@ from pynecraft.base import Arg, EAST, EQ, NE, NORTH, NW, Nbt, NbtDef, SOUTH, WES
 from pynecraft.commands import Block, BlockDef, Entity, LONG, MOD, PLUS, RESULT, Score, as_block, data, e, execute, \
     fill, fillbiome, function, item, kill, n, random, s, scoreboard, setblock, summon, tag
 from pynecraft.function import BLOCK
-from pynecraft.info import armor_equipment, colors, must_give_items, operator_menu, stems, trim_materials, trim_patterns
+from pynecraft.info import armor_equipment, colors, copper_golem_poses, must_give_items, operator_menu, stems, \
+    trim_materials, trim_patterns
 from pynecraft.simpler import Item, ItemFrame, PLAINS, Region, SWAMP, Sign, WallSign
 from pynecraft.values import COLD_OCEAN, FROZEN_OCEAN, LUKEWARM_OCEAN, MANGROVE_SWAMP, OCEAN, WARM_OCEAN, biomes
-from restworld.blocks import copper_golem_poses
 from restworld.rooms import Room, erase, kill_em
 from restworld.world import fast_clock, main_clock, restworld
 
