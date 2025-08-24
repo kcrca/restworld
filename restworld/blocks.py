@@ -4,7 +4,8 @@ import re
 from typing import Callable, Iterable, Union
 
 from pynecraft import commands, info
-from pynecraft.base import DOWN, E, EAST, EQ, FacingDef, N, NORTH, Nbt, RelCoord, S, SOUTH, UP, W, WEST, as_facing, r, \
+from pynecraft.base import Arg, DOWN, E, EAST, EQ, FacingDef, N, NORTH, Nbt, RelCoord, S, SOUTH, UP, W, WEST, as_facing, \
+    r, \
     rotate_facing, to_id, to_name
 from pynecraft.commands import Block, Command, Commands, Entity, MOD, MOVE, REPLACE, SUCCESS, ScoreName, as_block, \
     as_score, \
@@ -16,6 +17,8 @@ from pynecraft.simpler import Item, ItemFrame, Region, Sign, TextDisplay, WallSi
 from restworld.materials import enchant
 from restworld.rooms import Clock, ERASE_HEIGHT, Room, erase, if_clause, kill_em
 from restworld.world import fast_clock, main_clock, restworld
+
+copper_golem_poses = ('standing', 'sitting', 'running', 'star')
 
 
 def room():
@@ -344,7 +347,6 @@ def room():
 
     def post_copper_block(block: Block, pos: tuple[RelCoord, RelCoord, RelCoord]) -> Command:
         if 'type' in block.state:
-            print(block)
             nb = block.clone()
             nb.state['type'] = 'left'
         elif 'bars' in block.id:
@@ -549,6 +551,35 @@ def room():
         ('Chain Command ', True), ('Chain Command ', False),
         ('Repeating Command ', False),
         ('Repeating Command ', True))))
+
+    copper_golem_statue_mode = room.score('copper_golem_statue_mode')
+
+    cg_pose_loop = room.loop('copper_golem_pose', home=False).loop(
+        lambda step: (data().modify(room.store, 'copper_golem.pose').set().value(step.elem),
+                      data().modify(room.store, 'copper_golem.pose_name').set().value(step.elem.title())),
+        copper_golem_poses)
+    cg_oxy_loop = room.loop('copper_golem_oxy', home=False).loop(
+        lambda step: (data().modify(room.store, 'copper_golem.oxy').set().value(step.elem),
+                      data().modify(room.store, 'copper_golem.oxy_name').set().value(step.elem.title().strip('_'))),
+        ('', 'exposed_', 'weathered_', 'oxidized_'))
+
+    room.function('copper_golem_statue_init').add(
+        data().modify((room.store), 'copper_golem.oxy').set().value(''),
+        data().modify((room.store), 'copper_golem.oxy_name').set().value(''),
+        data().modify((room.store), 'copper_golem.pose').set().value('standing'),
+        data().modify((room.store), 'copper_golem.pose_name').set().value('Standing'),
+        copper_golem_statue_mode.set(0),
+        WallSign((None, None, 'Standing', 'Copper Golem Statue')).place(r(0, 2, -1), NORTH),
+        room.label(r(-1, 2, 0), 'Oxidation', NORTH)
+    )
+    cg_update = room.function('copper_golem_statue_update', home=False).add(
+        setblock(r(0, 3, 0), Block(f'$(oxy)copper_golem_statue', {'copper_golem_pose': Arg('pose')})),
+        Sign.change(r(0, 2, -1), (None, ' ' + str(Arg('oxy_name')) + ' ', Arg('pose_name'))))
+    room.loop('copper_golem_statue', main_clock).add(
+        execute().if_().score(copper_golem_statue_mode).matches(0).run(function(cg_pose_loop)),
+        execute().unless().score(copper_golem_statue_mode).matches(0).run(function(cg_oxy_loop)),
+        function(cg_update).with_().storage(room.store, 'copper_golem'),
+    )
 
     def dripstone_loop(step):
         for j in range(0, step.elem):

@@ -10,6 +10,7 @@ from pynecraft.function import BLOCK
 from pynecraft.info import armor_equipment, colors, must_give_items, operator_menu, stems, trim_materials, trim_patterns
 from pynecraft.simpler import Item, ItemFrame, PLAINS, Region, SWAMP, Sign, WallSign
 from pynecraft.values import COLD_OCEAN, FROZEN_OCEAN, LUKEWARM_OCEAN, MANGROVE_SWAMP, OCEAN, WARM_OCEAN, biomes
+from restworld.blocks import copper_golem_poses
 from restworld.rooms import Room, erase, kill_em
 from restworld.world import fast_clock, main_clock, restworld
 
@@ -535,13 +536,16 @@ def copper_functions(room):
         yield from volume.replace_facing(type + 'copper_chest', '#copper_chests')
         # yield from volume.replace_facing(type + 'copper_chest', '#copper_chests', shared_states={'type': 'left'})
         # yield from volume.replace_facing(type + 'copper_chest', '#copper_chests', shared_states={'type': 'right'})
-        yield from volume.replace_facing(type + 'copper_golem_statue', '#restworld:copper_golem_statues')
+        yield from (
+            volume.replace_facing(type + 'copper_golem_statue', '#restworld:copper_golem_statues',
+                                  shared_states={'copper_golem_pose': x})
+            for x in copper_golem_poses)
 
         # The door won't be set unless we manually remove previous one.
         yield erase(r(0, 2, 4), r(0, 3, 4))
         yield setblock(r(0, 2, 4), (type + 'copper_door', {'facing': NORTH, 'half': 'lower'})).replace()
         yield setblock(r(0, 3, 4), (type + 'copper_door', {'facing': NORTH, 'half': 'upper'})).replace()
-        yield fill(r(1, 2, 3), r(0, 2, 3), 'air') # currently needed, or the setblocks are ignored, even with replace
+        yield fill(r(1, 2, 3), r(0, 2, 3), 'air')  # currently needed, or the setblocks are ignored, even with replace
         yield setblock(r(1, 2, 3), (type + 'copper_chest', {'type': 'right'}))
         yield setblock(r(0, 2, 3), (type + 'copper_chest', {'type': 'left'}))
 
