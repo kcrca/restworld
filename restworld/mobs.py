@@ -208,15 +208,19 @@ def friendlies(room):
     room.loop('iron_golem', main_clock).loop(iron_golem_loop, range(4, 0, -1), bounce=True)
 
     def copper_golem_loop(step):
-        yield data().modify(n().tag('copper_golem'), 'weather_state').set().value(step.elem)
-        yield Sign.change(r(-3, 2, 0), (None, step.elem.replace('unaffected', '').title()))
+        yield data().modify(n().tag('copper_golem'), 'weather_state').set().value(
+            step.elem if step.elem else 'unaffected')
+        # yield setblock(r(1, 2, 0), f'{step.elem}_cut_copper_slab'.strip('_'))
+        yield setblock(r(2, 2, 0), (f'{step.elem}_cut_copper_stairs'.strip('_'), {'facing': EAST}))
+        yield Sign.change(r(-3, 2, 0), (None, step.elem.title()))
 
+    # -2 means waxed. We can't show waxed vs. unwaxed, so this cheaply makes sure the weathering never changes. If
+    # we someday can show waxed vs. unwaxed, we need a different technique.
     room.function('copper_golem_init').add(
-        placer(r(-0.5, 2, 0), WEST, adults=True).summon('copper_golem'),
+        placer(r(-0.5, 2, 0), WEST, adults=True).summon(Entity('copper_golem', {'next_weather_age': -2})),
         WallSign((None, None, 'Copper Golem')).place(r(-3, 2, 0), WEST),
-        room.label(r(-2, 2, -1), 'Flower', WEST)
-    )
-    room.loop('copper_golem', main_clock).loop(copper_golem_loop, ('unaffected', *weatherings[1:]))
+        room.label(r(-2, 2, -1), 'Flower', WEST))
+    room.loop('copper_golem', main_clock).loop(copper_golem_loop, weatherings)
     clean_lead = room.function('clean_lead', home=False).add(
         kill(e().type('item').nbt({'Item': {'id': 'minecraft:lead'}})))
     room.function('lead_off', home=False).add(
