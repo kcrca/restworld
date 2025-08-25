@@ -349,8 +349,7 @@ def room():
             block = 'Sculk Sensor'
             yield Sign.change(r(-1, 3, -0), (None, ''))
         else:
-            # Shows up waterlogged by default; see https://bugs.mojang.com/browse/MC-261388
-            block = Block('Calibrated|Sculk Sensor', {'waterlogged': False, 'facing': WEST})
+            block = Block('Calibrated|Sculk Sensor', {'facing': WEST})
             yield Sign.change(r(-1, 3, -0), (None, 'Calibrated'))
         yield setblock(r(0, 2, 0), block)
         room.particle(block, 'sculk', r(0, 3, 0), step)

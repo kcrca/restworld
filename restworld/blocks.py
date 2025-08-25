@@ -244,15 +244,13 @@ def room():
     blocks('deepslate', NORTH, (
         'Deepslate', 'Chiseled|Deepslate', 'Polished|Deepslate', 'Cracked|Deepslate|Bricks', 'Cracked|Deepslate|Tiles',
         'Deepslate|Bricks', 'Deepslate|Tiles', 'Cobbled|Deepslate', 'Reinforced|Deepslate'))
-    # Have to replace it with air first, so air=True ... https://bugs.mojang.com/browse/MC-260399
-    # Also, the order for sides is weird, https://bugs.mojang.com/browse/MC-260399
     sherd_names = tuple(sherd.replace('_pottery_sherd', '').title() for sherd in sherds)
     usable_sherds = sherds + sherds
     _, pot_loop = blocks(
         'decorated_pot', NORTH, ('decorated_pot',) + tuple(
             Block('decorated_pot',
                   nbt={'sherds': [usable_sherds[i], usable_sherds[i + 1], usable_sherds[i + 2]]},
-                  name=f'Decorated Pot|{sherd_names[i]}') for i in range(len(sherds))), air=True, clock=fast_clock)
+                  name=f'Decorated Pot|{sherd_names[i]}') for i in range(len(sherds))), clock=fast_clock)
 
     blocks('dirt', SOUTH, ('Dirt', 'Coarse Dirt', 'Rooted Dirt', 'Farmland'))
     blocks('dried_kelp', SOUTH, ('Dried Kelp Block',))
@@ -746,8 +744,7 @@ def room():
     blocks('sculk_blocks', NORTH, (
         Block('Sculk Vein', {SOUTH: True, DOWN: True}),
         'Sculk', 'Sculk Sensor',
-        # Shows up waterlogged by default; see https://bugs.mojang.com/browse/MC-261388
-        Block('Calibrated|Sculk Sensor', {'waterlogged': False, 'facing': SOUTH}),
+        Block('Calibrated|Sculk Sensor', {'facing': SOUTH}),
         Block('Sculk Catalyst'),
         Block('sculk_catalyst', {'bloom': True}, name='Sculk Catalyst|Blooming'),
         Block('sculk_shrieker', {'can_summon': True, 'shrieking': False}, name='Sculk Shrieker|Can Summon'),
