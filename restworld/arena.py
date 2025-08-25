@@ -1,12 +1,14 @@
 from __future__ import annotations
 
 import sys
+from random import randint
 from typing import Tuple
 
-from pynecraft.base import Arg, EAST, EQ, GT, LT, Nbt, WEST, r, seconds, to_name
-from pynecraft.commands import DIV, INFINITE, INT, MINUS, MOD, RANDOM, REPLACE, RESULT, Score, a, data, e, effect, \
-    execute, fill, function, kill, random, return_, s, schedule, scoreboard, setblock, summon, tag
+from pynecraft.base import Arg, EAST, EQ, GT, LT, NORTH, Nbt, SOUTH, WEST, r, seconds, to_name
+from pynecraft.commands import Block, DIV, INFINITE, INT, MINUS, MOD, RANDOM, REPLACE, RESULT, Score, a, data, e, \
+    effect, execute, fill, function, kill, random, return_, s, schedule, scoreboard, setblock, summon, tag
 from pynecraft.function import Function, Loop
+from pynecraft.info import colors
 from pynecraft.simpler import Item, Region, Sign, WallSign
 from pynecraft.values import DUMMY, REGENERATION
 from restworld.rooms import Room, kill_em
@@ -17,9 +19,82 @@ COUNT_MAX = 5
 
 NO_VARIANT = 1000
 
+# Lower priority ones can be used as filler
+battles = [
+    ('axolotl', 'drowned'),
+    ('axolotl', 'guardian'),
+    # ('axolotl', 'elder_guardian'), # medium priority: attack for elder guardian is same as guardian
+    ('blaze', 'snow_golem'),
+    ('bogged', 'iron_golem'),
+    ('breeze', 'iron_golem'),
+    ('cat', 'rabbit'),
+    # ('cave_spider', 'snow_golem'),  # medium priority
+    ('copper_golem', None),
+    ('creaking', 'you'),
+    ('ender_dragon', None),
+    ('evoker', 'iron_golem'),
+    ('fox', 'chicken'),
+    # ('frog', 'slime'),  # low priority
+    ('goat', 'sheep'),  # medium priority (slow, but charging goat)
+    ('hoglin', 'vindicator'),
+    ('illusioner', 'snow_golem'),  # medium priority, illusioner isn't used in vanilla, but some folks use it
+    ('llama', 'vindicator'),  # Wolves don't work, they just run away, only rarely getting involved
+    ('magma_cube', 'iron_golem'),
+    # ('ocelot', 'chicken'),  # low priority
+    ('panda', 'vindicator'),
+    ('phantom', None),
+    ('piglin_brute', 'vindicator'),
+    ('pillager', 'snow_golem'),
+    # ('polar_bear', 'vindicator'), # low priority, polar bears hardly agro, don't to anything special when they are
+    ('ravager', 'iron_golem'),
+    ('shulker', 'vindicator'),
+    ('skeleton', 'iron_golem'),
+    ('slime', 'iron_golem'),
+    ('sniffer', None),
+    ('spider', 'snow_golem'),
+    ('stray', 'iron_golem'),
+    ('vindicator', 'iron_golem'),
+    ('warden', 'iron_golem'),
+    ('witch', 'snow_golem'),
+    ('wither_skeleton', 'piglin'),
+    ('wither', 'pillager'),
+    ('wolf', 'sheep'),  # medium priority, the wolf doesn't really do much
+    ('zoglin', 'vindicator'),
+    ('zombie', 'iron_golem'),
+    ('zombified_piglin', 'vindicator'),
+]
+
 
 def is_splitter_mob(mob):
     return mob in ('slime', 'magma_cube')
+
+
+floor_region = Region(r(-12, 2, -12), (12, 2, 12))
+
+
+# Split this out as a separate function because it's pretty complicated and long
+def copper_golem_init_cmds(room):
+    stride = int(len(colors) / 4)
+    block = 'glazed_terracotta'
+    for i in range(4):
+        chest_items = []
+        for n in range(stride):
+            chest_items.append(Item.nbt_for(f'{colors[i * stride + n].name}_{block}').merge({'Slot': n}))
+        copper_chest_items = []
+        for n in range(27):
+            copper_chest_items.append(
+                Item.nbt_for(f'{colors[randint(0, len(colors) - 1)]}_{block}', count=randint(1, 3)).merge(
+                    {'Slot': n}))
+        x = i - 2
+        if i > 1:
+            x += 1
+        yield execute().at(e().tag('monitor_home')).run(
+            setblock(r(x, 2, 3), Block('chest', {'facing': NORTH}, {'Items': chest_items})),
+            setblock(r(x, 2, -3), Block('oxidized_copper_chest', {'facing': SOUTH}, {'Items': copper_chest_items}))
+        )
+    poppy = room.function('copper_golem_poppy', home=False).add(
+        data().modify(e().type('copper_golem').sort(RANDOM).limit(1), 'equipment.head.id').set().value('poppy'))
+    yield schedule().function(poppy, 5, REPLACE)
 
 
 def room():
@@ -54,51 +129,8 @@ def room():
         'zombified_piglin': {'equipment': {'mainhand': Item.nbt_for('golden_sword')}},
     }
 
-    init_battle = ('breeze', 'iron_golem')
+    init_battle = ('copper_golem', None)
 
-    # Lower priority ones can be used as filler
-    battles = [
-        ('axolotl', 'drowned'),
-        ('axolotl', 'guardian'),
-        # ('axolotl', 'elder_guardian'), # medium priority: attack for elder guardian is same as guardian
-        ('blaze', 'snow_golem'),
-        ('bogged', 'iron_golem'),
-        ('breeze', 'iron_golem'),
-        ('cat', 'rabbit'),
-        ('cave_spider', 'snow_golem'),  # medium priority
-        ('creaking', 'you'),
-        ('ender_dragon', None),
-        ('evoker', 'iron_golem'),
-        ('fox', 'chicken'),
-        # ('frog', 'slime'),  # low priority
-        ('goat', 'sheep'),  # medium priority (slow, but charging goat)
-        ('hoglin', 'vindicator'),
-        ('illusioner', 'snow_golem'),  # medium priority, illusioner isn't used in vanilla, but some folks use it
-        ('llama', 'vindicator'),  # Wolves don't work, they just run away, only rarely getting involved
-        ('magma_cube', 'iron_golem'),
-        # ('ocelot', 'chicken'),  # low priority
-        ('panda', 'vindicator'),
-        ('phantom', None),
-        ('piglin_brute', 'vindicator'),
-        ('pillager', 'snow_golem'),
-        # ('polar_bear', 'vindicator'), # low priority, polar bears hardly agro, don't to anything special when they are
-        ('ravager', 'iron_golem'),
-        ('shulker', 'vindicator'),
-        ('skeleton', 'iron_golem'),
-        ('slime', 'iron_golem'),
-        ('sniffer', None),
-        ('spider', 'snow_golem'),
-        ('stray', 'iron_golem'),
-        ('vindicator', 'iron_golem'),
-        ('warden', 'iron_golem'),
-        ('witch', 'snow_golem'),
-        ('wither_skeleton', 'piglin'),
-        ('wither', 'pillager'),
-        ('wolf', 'sheep'),
-        ('zoglin', 'vindicator'),
-        ('zombie', 'iron_golem'),
-        ('zombified_piglin', 'vindicator'),
-    ]
     # With Slime and Magma Cube it _mostly_ works, but not perfectly. These are handled by giving a custom name to
     # the summoned mob, which is inherited by its descendants. We then see, if the count is at least 3, whether there
     # is any mob labelled "3" (say). If not a new top-level "3"" is summoned. This way each mob will only be replaced
@@ -126,7 +158,7 @@ def room():
             f'Battle count ({len(battles):d}) is not a multiple of stride length ({stride_length:d}))\n')
         sys.exit(1)
 
-    battles.sort()
+    battles.sort(key=lambda v: v[0])
 
     monitor_home = e().tag('monitor_home')
     peace = room.score('peace', None)
@@ -200,6 +232,7 @@ def room():
     is_empty = room.score('is_empty')
     # Function invoked to configure one of the participants
     configure_actor = room.function('configure_actor', home=False).add(
+        data().modify(room.store, '$(actor)_prev').set().from_(room.store, '$(actor)'),
         data().remove(room.store, '$(actor)'),
         is_empty.set('$(is_empty)'),
         execute().unless().score(is_empty).matches(0).run(return_()),
@@ -214,14 +247,16 @@ def room():
         actor_is_splitter.set(0),
     )
 
-    # Function invoked by the sign to configure the battle
+    # Commands invoked by the sign to configure the battle
     configure = room.function('configure', home=False).add(
         function(configure_actor,
                  {'actor': 'hunter', 'id': '$(hunter_id)', 'rot': [180.0, 0.0], 'is_empty': False, 'z': '$(z)'}),
         function(configure_actor,
                  {'actor': 'victim', 'id': '$(victim_id)', 'rot': [0.0, 0.0], 'is_empty': False, 'z': 0}),
-        start_battle_type.set('$(battle_type)')
     )
+
+    # Create any per-hunter setup functions
+    room.function('copper_golem_init', home=False).add(copper_golem_init_cmds(room))
 
     # function summon with restworld.arena actor
     max_variant = room.score('max_variant')
@@ -297,9 +332,11 @@ def room():
         var = actor + '_home'
         yield kill(e().tag(var))
         stand = marker_tmpl.clone().merge_nbt({'Tags': [var, 'home', 'arena_home']})
+        center = stand.clone()
+        center.nbt['Tags'].append(f'{var}_center')
         for x in range(-1, 2):
             for z in range(-1, 2):
-                yield stand.summon(r(x, 0.5, z))
+                yield (center if x == 0 and z == 0 else stand).summon(r(x, 0.5, z))
 
     def toggle_peace(step):
         block = 'air' if step.elem else 'redstone_torch'
@@ -462,6 +499,7 @@ def room():
         execute().at(monitor_home).run(tag(e().type('armor_stand').distance((None, 100))).add('immortal')),
         execute().at(monitor_home).run(tag(e().type('text_display').distance((None, 100))).add('immortal')),
         kill_em(e().not_tag('immortal').distance((None, 100))))
+    init_wrapper = room.function('init_wrapper', home=False).add(function('restworld:arena/$(id)_init'))
     start_battle = room.function('start_battle', home=False).add(
         kill(e().type('item').distance((None, 50))),
         was_splitters.set(is_splitters),
@@ -484,6 +522,7 @@ def room():
         scoreboard().players().operation(victims_killed, MINUS, arena_count),
         scoreboard().players().set(prev_victims_killed, -1),
         function(clean_out),
+        function(init_wrapper).with_().storage(room.store, 'hunter'),
     )
 
     room.loop('toggle_peace', home=False).loop(toggle_peace, (True, False)).add(

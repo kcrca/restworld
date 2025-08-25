@@ -36,6 +36,8 @@ def create():
         'water', 'barrier', 'structure_void'
     }
 
+    blocks['chests'] = {'#copper_chests', 'chest'}
+
     blocks['air'] = {
         'values': [
             'air',
