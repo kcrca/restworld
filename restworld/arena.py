@@ -224,8 +224,6 @@ def room():
         }),
         ten.set(10),
         scoreboard().objectives().add(kills_objective, DUMMY, "Killed"),
-        hunters_killed.set(0),
-        victims_killed.set(0),
     )
 
     actor_is_splitter = room.score('$(actor)_is_splitter')
@@ -281,6 +279,7 @@ def room():
 
     left_arrow = '<--'
     right_arrow = '-->'
+    is_alone = room.score('is_alone')
 
     def arena_run_main(loop: Loop):
         def arena_run_loop(step):
@@ -299,6 +298,7 @@ def room():
                 z = max_z - (s % row_length)
                 hunter, victim = step.elem[s]
                 alone = victim is None or victim == 'You'
+                is_alone.set(alone)
                 sign_commands = (
                     function(configure, {'hunter_id': hunter, 'victim_id': victim,
                                          'battle_type': hunter_battle_types.get(hunter, 0), 'z': -4 if alone else 0}),
@@ -515,12 +515,12 @@ def room():
         execute().if_().score(start_battle_type).matches(3).at(monitor_home).run(ground.fill('grass_block')),
         tag(a()).add('arena_safe'),
         # These counteract the "add" that happens when a mob is summoned because that won't be in response to a kill
-        scoreboard().players().set(hunters_killed, 0),
-        scoreboard().players().set(prev_hunters_killed, -1),
-        scoreboard().players().operation(hunters_killed, MINUS, arena_count),
-        scoreboard().players().set(victims_killed, 0),
-        scoreboard().players().operation(victims_killed, MINUS, arena_count),
-        scoreboard().players().set(prev_victims_killed, -1),
+        hunters_killed.set(0),
+        prev_hunters_killed.set(-1000),
+        hunters_killed.operation(MINUS, arena_count),
+        victims_killed.set(0),
+        prev_victims_killed.set(-1000),
+        execute().if_().score(is_alone).matches(0).run(victims_killed.operation(MINUS, arena_count)),
         function(clean_out),
         function(init_wrapper).with_().storage(room.store, 'hunter'),
     )
