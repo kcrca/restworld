@@ -28,12 +28,12 @@ def main():
     for r in (tags, dialogs):
         r.create()
     for m in (
-            multimob, redstone, connect,
+            materials, multimob, redstone, connect,
             photo, blocks, save, models, arena, banners, biomes, center, gui, diy, effects,
-            particles, enders, font, mobs, hud, materials, nether, paintings, plants, the_end, time,
+            particles, enders, font, mobs, hud, nether, paintings, plants, the_end, time,
             wither, maps):
         m.room()
-    global_.room()      # This msut be last
+    global_.room()  # This msut be last
     loot_tables.loot_tables()
     dir = f'{Path.home()}/clarity/home/saves/RestWorld_{args.version}'
     print(dir)

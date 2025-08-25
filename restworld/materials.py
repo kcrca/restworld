@@ -750,8 +750,8 @@ def trim_functions(room):
                         {'ShowArms': True,
                          'Pose': {'LeftArm': [-30, 0, -170], 'RightArm': [-20, 0, 20],
                                   'LeftLeg': [-20, 0, 0], 'RightLeg': [20, 0, 0]}}).tag(room.name, overall_tag)
-
-    places = (
+    places = [None, None]
+    places[0] = [
         (r(2, 2, -5), WEST),
         (r(3, 3, -4), WEST),
         (r(2, 2, -3), WEST),
@@ -772,7 +772,9 @@ def trim_functions(room):
         (r(-3, 2, -3), EAST),
         (r(-4, 3, -4), EAST),
         (r(-3, 2, -5), EAST),
-    )
+    ]
+    mid = int(len(places[0]) / 2)
+    places[1] = places[0][:mid] + [(r(-0.5, 3, 2), NORTH)] + places[0][mid:]
 
     show = room.score('trim_show')
     change = room.score('trim_change')
@@ -813,11 +815,13 @@ def trim_functions(room):
 
         def _init(self):
             yield kill(e().tag(overall_tag))
-            stand_start = int((len(places) - len(self.types)) / 2)
+            which_places = len(self.types) % 2
+            places_used = places[which_places]
+            stand_start = int((len(places_used) - len(self.types)) / 2)
             for i, t in enumerate(self.types):
                 stand = base_stand.clone().tag(self.tag).merge_nbt({'CustomName': t.title()})
                 self.armor_gen(stand, t)
-                loc = places[stand_start + i]
+                loc = places_used[stand_start + i]
                 yield stand.summon(loc[0], {'Rotation': as_facing(loc[1]).rotation})
             yield show.set(self.num)
 
