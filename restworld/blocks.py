@@ -336,7 +336,7 @@ def room():
         def block_for(b):
             new_name = f'{prefix}{oxidation}|{b.name}'
             # copper_block becomes exposed_copper, not exposed_copper_block (ugh)
-            if ' Block' in new_name and oxidation:
+            if ' Block' in new_name and oxidation and oxidation != 'Waxed':
                 new_name = new_name.replace(' Block', '')
             nb = Block(to_id(new_name), b.state)
             return nb
