@@ -327,7 +327,7 @@ def room():
 
     copper_blocks = tuple(map(as_block, (
         'Copper Block', 'Cut Copper', 'Chiseled Copper', 'Copper Bulb', 'Copper Grate', 'Copper Chest',
-        ('Copper Chest', {'type': 'right'}), 'Lightning Rod', 'Copper Bars', 'Copper Chain', 'Copper Lantern',
+        ('Copper Chest', {'type': 'right'}), 'Copper Bars', 'Lightning Rod', 'Copper Chain', 'Copper Lantern',
         'Copper Trapdoor')))
 
     def coppers(oxidation, waxed=False):
