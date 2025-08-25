@@ -6,7 +6,7 @@ from pynecraft.base import EAST, EQ, NORTH, Nbt, SOUTH, WEST, r, to_id, to_name
 from pynecraft.commands import Block, COLORS, Entity, FORCE, LONG, MOD, REPLACE, RESULT, Score, as_facing, clone, data, \
     e, execute, fillbiome, function, item, kill, n, p, player, return_, ride, s, schedule, scoreboard, setblock, summon, \
     tag, tp
-from pynecraft.info import axolotls, colors, horses, tropical_fish, wolves
+from pynecraft.info import axolotls, colors, horses, tropical_fish, weatherings, wolves
 from pynecraft.simpler import Item, PLAINS, Sign, VILLAGER_BIOMES, VILLAGER_PROFESSIONS, Villager, WallSign
 from pynecraft.values import DISC_GROUP, DUMMY, as_disc, discs
 from restworld.materials import water_biomes
@@ -196,8 +196,9 @@ def friendlies(room):
 
     p = placer(r(-1.2, 2, 0), EAST, -2, kid_delta=2.2, tags=('saddle', 'chests'), nbt={'Tame': True})
     room.function('horselike_init').add(p.summon('mule'), p.summon('donkey'), room.label(r(2, 2, -1), 'Chests', EAST))
-    room.function('iron_golem_init').add(placer(r(-0.5, 2, 0), WEST, adults=True).summon('iron_golem'),
-                                         WallSign((None, 'Iron Golem')).place(r(-3, 2, 0), WEST))
+    room.function('iron_golem_init').add(
+        placer(r(-0.5, 2, 0), WEST, adults=True).summon('iron_golem'),
+        WallSign((None, 'Iron Golem')).place(r(-3, 2, 0), WEST))
 
     def iron_golem_loop(step):
         i = step.i
@@ -205,6 +206,17 @@ def friendlies(room):
         yield Sign.change(r(-3, 2, 0), (None, None, f'Damage: {i if i < 4 else 3 - (i - 3)}'))
 
     room.loop('iron_golem', main_clock).loop(iron_golem_loop, range(4, 0, -1), bounce=True)
+
+    def copper_golem_loop(step):
+        yield data().modify(n().tag('copper_golem'), 'weather_state').set().value(step.elem)
+        yield Sign.change(r(-3, 2, 0), (None, step.elem.replace('unaffected', '').title()))
+
+    room.function('copper_golem_init').add(
+        placer(r(-0.5, 2, 0), WEST, adults=True).summon('copper_golem'),
+        WallSign((None, None, 'Copper Golem')).place(r(-3, 2, 0), WEST),
+        room.label(r(-2, 2, -1), 'Flower', WEST)
+    )
+    room.loop('copper_golem', main_clock).loop(copper_golem_loop, ('unaffected', *weatherings[1:]))
     clean_lead = room.function('clean_lead', home=False).add(
         kill(e().type('item').nbt({'Item': {'id': 'minecraft:lead'}})))
     room.function('lead_off', home=False).add(
@@ -320,8 +332,8 @@ def friendlies(room):
         execute().as_(e().tag('llama')).run(data().remove(s(), 'equipment.body')),
         kill(e().tag('llamas_carpets_home')))
 
-    room.function('trader_llama_init').add(placer(r(0, 2, -2), WEST, adults=True).summon('wandering_trader'),
-                                           placer(r(0, 2, 0), WEST, adults=True,
+    room.function('trader_llama_init').add(placer(r(1, 2, -1), WEST, adults=True).summon('wandering_trader'),
+                                           placer(r(-1, 2, 0), WEST, adults=True,
                                                   nbt={'DespawnDelay': 2147483647, 'Leashed': True}).summon(
                                                'trader_llama'))
     room.loop('trader_llama', main_clock).loop(

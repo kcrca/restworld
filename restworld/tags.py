@@ -3,7 +3,7 @@ import re
 from pynecraft.base import to_id
 from pynecraft.commands import COLORS
 from pynecraft.function import BLOCK
-from pynecraft.info import corals, stems, woods
+from pynecraft.info import corals, stems, weatherings, woods
 from restworld.world import restworld
 
 
@@ -262,10 +262,7 @@ def create():
             'polished_deepslate',
             'deepslate_bricks',
             'deepslate_tiles',
-            'cut_copper',
-            'exposed_cut_copper',
-            'weathered_cut_copper',
-            'oxidized_cut_copper'
+            *(f'{x}_cut_copper'.strip('_') for x in weatherings)
         ]
     }
     blocks['planks'] = {

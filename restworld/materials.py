@@ -8,7 +8,7 @@ from pynecraft.commands import Block, BlockDef, Entity, LONG, MOD, PLUS, RESULT,
     fill, fillbiome, function, item, kill, n, random, s, scoreboard, setblock, summon, tag
 from pynecraft.function import BLOCK
 from pynecraft.info import armor_equipment, colors, copper_golem_poses, must_give_items, operator_menu, stems, \
-    trim_materials, trim_patterns
+    trim_materials, trim_patterns, weatherings
 from pynecraft.simpler import Item, ItemFrame, PLAINS, Region, SWAMP, Sign, WallSign
 from pynecraft.values import COLD_OCEAN, FROZEN_OCEAN, LUKEWARM_OCEAN, MANGROVE_SWAMP, OCEAN, WARM_OCEAN, biomes
 from restworld.rooms import Room, erase, kill_em
@@ -480,7 +480,7 @@ def fencelike_functions(room):
     )))
     switch_to_fencelike('walls')
     room.loop('bars', main_clock).loop(lambda step: fencelike(step.elem), (f'{x} Bars' for x in (
-        'Iron', 'Copper', 'Exposed Copper', 'Weathered Copper', 'Oxidized Copper')))
+        'Iron', *(f'{x.title()}|Copper'.strip('|') for x in weatherings))))
     switch_to_fencelike('bars')
 
 
@@ -490,7 +490,7 @@ def copper_functions(room):
     copper_sign_pos = r(4, 2, -1)
 
     def copper_tags(type) -> None:
-        blocks = list(re.sub('^_', '', f'{v}{type}') for v in ('', 'exposed_', 'weathered_', 'oxidized_'))
+        blocks = list(re.sub(r'^_', '', rf'{x}_{type}'.strip('_')) for x in weatherings)
         if blocks[0] == 'copper':
             blocks[0] += '_block'
         tag_name = type
@@ -556,10 +556,9 @@ def copper_functions(room):
 
     # Share a score so we only change 'waxness', not oxidization level
     copper_score = room.score('coppers')
-    room.loop('unwaxed_coppers', main_clock, score=copper_score).loop(
-        copper_loop, ('', 'exposed', 'weathered', 'oxidized'))
+    room.loop('unwaxed_coppers', main_clock, score=copper_score).loop(copper_loop, weatherings)
     room.loop('waxed_coppers', main_clock, score=copper_score).loop(
-        copper_loop, ('waxed', 'waxed_exposed', 'waxed_weathered', 'waxed_oxidized'))
+        copper_loop, (f'waxed_{x}'.strip('_') for x in weatherings))
     copper_home = e().tag('coppers_home')
     run_unwaxed = room.function('unwaxed_coppers_run', home=False).add(
         tag(copper_home).remove('waxed_coppers_home'),

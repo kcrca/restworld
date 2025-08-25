@@ -6,7 +6,7 @@ from pynecraft import info
 from pynecraft.base import DOWN, EAST, NOON, SOUTH, UP, WEST, r
 from pynecraft.commands import BYTE, Block, INT, RESULT, Score, data, e, execute, fill, function, item, kill, \
     n, random, return_, setblock, summon, tag, time
-from pynecraft.info import instruments, stems, woods
+from pynecraft.info import instruments, stems, weatherings, woods
 from pynecraft.simpler import Item, Region, Sign, WallSign
 from restworld.rooms import Room, ensure, if_clause, kill_em
 from restworld.world import fast_clock, main_clock, restworld
@@ -107,7 +107,7 @@ def room():
         yield WallSign(text).place(r(-1, 2, 0), WEST)
 
     bulbs = []
-    for s in ('', 'Exposed', 'Weathered', 'Oxidized'):
+    for s in (x.title() for x in weatherings):
         bulb = re.sub(r'^\|', '', f'{s}|Copper Bulb')
         bulbs.extend((bulb,) * 4)
     room.loop('copper_bulb', fast_clock).loop(copper_bulb_loop, bulbs)

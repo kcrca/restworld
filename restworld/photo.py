@@ -7,7 +7,7 @@ import re
 from pynecraft.base import EAST, NE, NORTH, OVERWORLD, SOUTH, SW, WEST, as_facing, r, to_id
 from pynecraft.commands import Block, CREATIVE, Entity, SURVIVAL, e, execute, fill, function, gamemode, kill, p, \
     setblock, tp
-from pynecraft.info import armor_equipment, colors, corals, stems, woods
+from pynecraft.info import armor_equipment, colors, corals, stems, weatherings, woods
 from pynecraft.simpler import Item, Offset
 from restworld.rooms import MobPlacer, Room
 from restworld.world import restworld
@@ -72,14 +72,14 @@ mobs = (
 
 
 def get_quilt_blocks():
-    modifiers = tuple(c.name for c in colors) + woods + stems + materials + stepables + corals + (
-        'Weathered', 'Oxidized', 'Exposed')
+    modifiers = (tuple(c.name for c in colors) + woods + stems + materials + stepables + corals +
+                 tuple(x.title() for x in weatherings))
     modifiers = tuple(sorted(set(modifiers), key=lambda x: len(x), reverse=True))
     mod_re = re.compile(fr'^(.*? ?)(\b(?:Mossy )?{"|".join(modifiers)}\b)($| (.*))')
     block_re = re.compile(r'Block of (.*)')
     command_re = re.compile(r'(.*)Command Block')
-    with open(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'some_blocks')) as f:
-        lines = f.readlines()
+    with open(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'some_blocks')) as fp:
+        lines = fp.readlines()
     good_blocks = {}
     for block in lines:
         if block[0] == '#':

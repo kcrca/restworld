@@ -12,7 +12,7 @@ from pynecraft.commands import Block, Command, Commands, Entity, MOD, MOVE, REPL
     clone, data, \
     e, execute, fill, function, item, kill, n, p, s, say, schedule, setblock, summon, tag
 from pynecraft.function import Function, Loop
-from pynecraft.info import Color, armor_equipment, colors, copper_golem_poses, sherds, stems
+from pynecraft.info import Color, armor_equipment, colors, copper_golem_poses, sherds, stems, weatherings
 from pynecraft.simpler import Item, ItemFrame, Region, Sign, TextDisplay, WallSign
 from restworld.materials import enchant
 from restworld.rooms import Clock, ERASE_HEIGHT, Room, erase, if_clause, kill_em
@@ -557,7 +557,7 @@ def room():
     cg_oxy_loop = room.loop('copper_golem_oxy', home=False).loop(
         lambda step: (data().modify(room.store, 'copper_golem.oxy').set().value(step.elem),
                       data().modify(room.store, 'copper_golem.oxy_name').set().value(step.elem.title().strip('_'))),
-        ('', 'exposed_', 'weathered_', 'oxidized_'))
+        [re.sub(r'(.)$', '\1_', x) for x in weatherings])
 
     room.function('copper_golem_statue_init').add(
         data().modify((room.store), 'copper_golem.oxy').set().value(''),
@@ -1402,10 +1402,7 @@ def stepable_functions(room):
         'Polished|Deepslate',
         'Deepslate|Bricks',
         'Deepslate|Tiles',
-        'Cut Copper',
-        'Exposed|Cut Copper',
-        'Weathered|Cut Copper',
-        'Oxidized|Cut Copper',
+        *((re.sub(r'(.)$', r'\1|', x.title()) + 'Cut Copper') for x in weatherings),
         'Resin Bricks',
         'Prismarine', 'Prismarine|Bricks', 'Dark|Prismarine',
         'Acacia Planks', 'Birch Planks', 'Cherry Planks', 'Jungle Planks', 'Mangrove Planks',
