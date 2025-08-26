@@ -57,9 +57,9 @@ def room():
     room.function('intro_enter').add(setblock(r(0, -1, -1), 'redstone_block'))
     room.function('intro_exit').add(setblock(r(0, -1, -1), 'air'))
     room.function('intro_init').add(
-        TextDisplay(r'Welcome!\nRead This\nIntroduction',
-                    nbt={'Tags': ['center', 'intro'], 'Rotation': [180, 0], 'background': 0x7f000000}).scale(0.61).summon(
-            r(0, 2.18, -1.4)))
+        TextDisplay(r'Welcome!\nRead This\nIntroduction!',
+                    nbt={'Tags': ['center', 'intro'], 'Rotation': [180, 0], 'background': 0x7f000000}).scale(0.615).summon(
+            r(0.01, 2.18, -1.4)))
 
     room.function('example_painting_init').add(
         kill(e().tag('center_painting')),
