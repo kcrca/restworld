@@ -527,6 +527,7 @@ def copper_functions(room):
         yield from volume.replace(type + 'copper_bulb', '#restworld:copper_bulbs', {'lit': True})
         yield from volume.replace(type + 'copper_bulb', '#restworld:copper_bulbs', {'lit': False})
         yield from volume.replace(type + 'copper_bars', '#bars')
+        yield from volume.replace(type + 'copper_lantern', '#lanterns')
         yield from volume.replace_axes(type + 'copper_chain', '#chains')
         yield from volume.replace_stairs(type + 'cut_copper_stairs', '#stairs')
         yield from volume.replace_slabs(type + 'cut_copper_slab', '#restworld:cut_copper_slabs')
