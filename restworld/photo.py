@@ -7,7 +7,7 @@ import re
 from pynecraft.base import EAST, NE, NORTH, OVERWORLD, SOUTH, SW, WEST, as_facing, r, to_id
 from pynecraft.commands import Block, CREATIVE, Entity, SURVIVAL, e, execute, fill, function, gamemode, kill, p, \
     setblock, tp
-from pynecraft.info import armor_equipment, colors, corals, stems, weatherings, woods
+from pynecraft.info import armor_equipment, colors, corals, stems, weathering_name, weatherings, woods
 from pynecraft.simpler import Item, Offset
 from restworld.rooms import MobPlacer, Room
 from restworld.world import restworld
@@ -73,7 +73,7 @@ mobs = (
 
 def get_quilt_blocks():
     modifiers = (tuple(c.name for c in colors) + woods + stems + materials + stepables + corals +
-                 tuple(x.title() for x in weatherings))
+                 tuple(weathering_name(x, base='') for x in weatherings))
     modifiers = tuple(sorted(set(modifiers), key=lambda x: len(x), reverse=True))
     mod_re = re.compile(fr'^(.*? ?)(\b(?:Mossy )?{"|".join(modifiers)}\b)($| (.*))')
     block_re = re.compile(r'Block of (.*)')

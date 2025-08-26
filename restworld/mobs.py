@@ -6,7 +6,9 @@ from pynecraft.base import EAST, EQ, NORTH, Nbt, SOUTH, WEST, r, to_id, to_name
 from pynecraft.commands import Block, COLORS, Entity, FORCE, LONG, MOD, REPLACE, RESULT, Score, as_facing, clone, data, \
     e, execute, fillbiome, function, item, kill, n, p, player, return_, ride, s, schedule, scoreboard, setblock, summon, \
     tag, tp
-from pynecraft.info import axolotls, colors, horses, tropical_fish, weatherings, wolves
+from pynecraft.info import axolotls, colors, horses, tropical_fish, weathering_id, weathering_name, weathering_property, \
+    weatherings, \
+    wolves
 from pynecraft.simpler import Item, PLAINS, Sign, VILLAGER_BIOMES, VILLAGER_PROFESSIONS, Villager, WallSign
 from pynecraft.values import DISC_GROUP, DUMMY, as_disc, discs
 from restworld.materials import water_biomes
@@ -208,11 +210,9 @@ def friendlies(room):
     room.loop('iron_golem', main_clock).loop(iron_golem_loop, range(4, 0, -1), bounce=True)
 
     def copper_golem_loop(step):
-        yield data().modify(n().tag('copper_golem'), 'weather_state').set().value(
-            step.elem if step.elem else 'unaffected')
-        # yield setblock(r(1, 2, 0), f'{step.elem}_cut_copper_slab'.strip('_'))
-        yield setblock(r(2, 2, 0), (f'{step.elem}_cut_copper_stairs'.strip('_'), {'facing': EAST}))
-        yield Sign.change(r(-3, 2, 0), (None, step.elem.title()))
+        yield data().modify(n().tag('copper_golem'), 'weather_state').set().value(weathering_property(step.elem))
+        yield setblock(r(2, 2, 0), (weathering_id(step.elem, 'cut_copper_stairs'), {'facing': EAST}))
+        yield Sign.change(r(-3, 2, 0), (None, weathering_name(step.elem, base='')))
 
     # -2 means waxed. We can't show waxed vs. unwaxed, so this cheaply makes sure the weathering never changes. If
     # we someday can show waxed vs. unwaxed, we need a different technique.
