@@ -651,12 +651,12 @@ def room():
               ItemFrame(NORTH, glowing=True).item('Lapis Lazuli'))
     room.loop('item_frame', main_clock).add(item_frame_init).loop(item_frame_loop, frames)
 
-    lantern_type = ['Iron Lantern', 'Copper Lantern', 'Soul Lantern']
+    lantern_type = ['Lantern', 'Copper Lantern', 'Soul Lantern']
 
     def lantern_loop(step) -> Commands:
         type = lantern_type[int(step.i / 2)]
         lantern = Block(type, {'hanging': False})
-        chain_type = 'copper_chain' if 'Copper' in lantern.name else 'chain'
+        chain_type = 'copper_chain' if 'Copper' in lantern.name else 'iron_chain'
         if step.i % 2 == 0:
             yield setblock(r(0, 3, 0), lantern),
             yield fill(r(0, 4, 0), r(0, 5, 0), 'air'),
@@ -666,10 +666,10 @@ def room():
             yield setblock(r(0, 3, 0), lantern),
             yield setblock(r(0, 4, 0), chain_type),
             yield Sign.change(r(0, 2, -1), (None, 'Hanging', lantern.name, 'and Chain'))
-            room.particle('chain', 'lantern', r(0, 5, 0), step)
+            room.particle('iron_chain', 'lantern', r(0, 5, 0), step)
         room.particle(lantern, 'lantern', r(0, 4, 0), step)
 
-    room.function('lantern_init').add(WallSign((None, None, 'Iron Lantern')).place(r(0, 2, -1, ), NORTH))
+    room.function('lantern_init').add(WallSign((None, None, 'Lantern')).place(r(0, 2, -1, ), NORTH))
     room.loop('lantern', main_clock).loop(lantern_loop, range(0, 6))
 
     room.function('ore_blocks_init').add(room.label(r(-1, 2, 0), 'Deepslate', NORTH))
