@@ -69,9 +69,6 @@ def is_splitter_mob(mob):
     return mob in ('slime', 'magma_cube')
 
 
-floor_region = Region(r(-12, 2, -12), (12, 2, 12))
-
-
 # Split this out as a separate function because it's pretty complicated and long
 def copper_golem_init_cmds(room):
     stride = int(len(colors) / 4)
@@ -94,13 +91,14 @@ def copper_golem_init_cmds(room):
         )
     poppy = room.function('copper_golem_poppy', home=False).add(
         data().modify(e().type('copper_golem').sort(RANDOM).limit(1), 'equipment.head.id').set().value('poppy'))
-    yield schedule().function(poppy, 5, REPLACE)
+    # We have to wait until there are golems to work with
+    yield schedule().function(poppy, 8, REPLACE)
 
 
 def room():
     room = Room('arena', restworld)
 
-    start_battle_type = Score('battle_type', 'arena')
+    battle_type = Score('battle_type', 'arena')
 
     def protected(armor):
         return {'id': armor, 'components': {'repair_cost': 1, 'enchantments': {'protection': 5}}}
@@ -246,11 +244,14 @@ def room():
     )
 
     # Commands invoked by the sign to configure the battle
+    is_alone = room.score('is_alone')
     configure = room.function('configure', home=False).add(
         function(configure_actor,
                  {'actor': 'hunter', 'id': '$(hunter_id)', 'rot': [180.0, 0.0], 'is_empty': False, 'z': '$(z)'}),
         function(configure_actor,
                  {'actor': 'victim', 'id': '$(victim_id)', 'rot': [0.0, 0.0], 'is_empty': False, 'z': 0}),
+        battle_type.set(Arg('battle_type')),
+        is_alone.set(Arg('is_alone')),
     )
 
     # Create any per-hunter setup functions
@@ -279,7 +280,6 @@ def room():
 
     left_arrow = '<--'
     right_arrow = '-->'
-    is_alone = room.score('is_alone')
 
     def arena_run_main(loop: Loop):
         def arena_run_loop(step):
@@ -298,9 +298,8 @@ def room():
                 z = max_z - (s % row_length)
                 hunter, victim = step.elem[s]
                 alone = victim is None or victim == 'You'
-                is_alone.set(alone)
                 sign_commands = (
-                    function(configure, {'hunter_id': hunter, 'victim_id': victim,
+                    function(configure, {'hunter_id': hunter, 'victim_id': victim, 'is_alone': int(alone),
                                          'battle_type': hunter_battle_types.get(hunter, 0), 'z': -4 if alone else 0}),
                     function('restworld:arena/start_battle', {'hunter_is_splitter': is_splitter_mob(hunter),
                                                               'victim_is_splitter': is_splitter_mob(victim)})
@@ -507,12 +506,12 @@ def room():
         v_is_splitter.set(Arg('victim_is_splitter')),
         is_splitters.set(h_is_splitter + v_is_splitter),
         execute().unless().score(was_splitters).matches(0).if_().score(is_splitters).matches(0).run(kill_splitters),
-        execute().unless().score(start_battle_type).matches((0, None)).run(start_battle_type.set(0)),
-        execute().unless().score(start_battle_type).matches(1).at(monitor_home).run(arena.fill('air')),
-        execute().if_().score(start_battle_type).matches(1).at(monitor_home).run(arena.fill('water')),
-        execute().unless().score(start_battle_type).matches(2).at(monitor_home).run(sky.fill('air')),
-        execute().if_().score(start_battle_type).matches(2).at(monitor_home).run(sky.fill('glowstone')),
-        execute().if_().score(start_battle_type).matches(3).at(monitor_home).run(ground.fill('grass_block')),
+        execute().unless().score(battle_type).matches((0, None)).run(battle_type.set(0)),
+        execute().unless().score(battle_type).matches(1).at(monitor_home).run(arena.fill('air')),
+        execute().if_().score(battle_type).matches(1).at(monitor_home).run(arena.fill('water')),
+        execute().unless().score(battle_type).matches(2).at(monitor_home).run(sky.fill('air')),
+        execute().if_().score(battle_type).matches(2).at(monitor_home).run(sky.fill('glowstone')),
+        execute().if_().score(battle_type).matches(3).at(monitor_home).run(ground.fill('grass_block')),
         tag(a()).add('arena_safe'),
         # These counteract the "add" that happens when a mob is summoned because that won't be in response to a kill
         hunters_killed.set(0),
