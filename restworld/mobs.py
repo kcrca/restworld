@@ -314,10 +314,11 @@ def friendlies(room):
 
     def skins_loop(step):
         name = to_name(step.elem)
-        wide_nbt = Nbt({'profile': {'texture': f'entity/player/wide/{step.elem}'}, 'CustomName': f'{name} (Wide)'})
+        wide_nbt = Nbt({'profile': {'texture': f'entity/player/wide/{step.elem}', 'model': 'wide'},
+                        'CustomName': f'{name} (Wide)'})
         slim_nbt = wide_nbt.clone()
         slim_nbt['profile']['texture'] = slim_nbt['profile']['texture'].replace('wide', 'slim')
-        slim_nbt['profile']['type'] = 'slim'
+        slim_nbt['profile']['model'] = 'slim'
         slim_nbt['CustomName'] = slim_nbt['CustomName'].replace('Wide', 'Slim')
         yield execute().if_().score(slim_skin).matches(0).run(data().merge(n().tag('mannequin'), wide_nbt))
         yield execute().unless().score(slim_skin).matches(0).run(data().merge(n().tag('mannequin'), slim_nbt))
@@ -433,7 +434,8 @@ def villager_funcs(room):
                 p = placer(r(0, 2, -7), WEST, -2, tags=('villager', 'professions',), adults=True)
             # Removing sexist language because I want to.
             name = 'Fisher' if pro == 'Fisherman' else pro
-            professions_init.add(p.summon(Villager(pro, PLAINS, name=to_name(name), zombie=id[0] == 'z'), tags=('villager',)))
+            professions_init.add(
+                p.summon(Villager(pro, PLAINS, name=to_name(name), zombie=id[0] == 'z'), tags=('villager',)))
         professions_init.add(function(f'restworld:mobs/{which}_levels_cur'),
                              function(f'restworld:mobs/{which}_professions_cur'),
                              Sign.change(r(-5, 2, 0), (None, None, kind)))
