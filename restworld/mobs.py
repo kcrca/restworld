@@ -433,7 +433,7 @@ def villager_funcs(room):
                 p = placer(r(0, 2, -7), WEST, -2, tags=('villager', 'professions',), adults=True)
             # Removing sexist language because I want to.
             name = 'Fisher' if pro == 'Fisherman' else pro
-            professions_init.add(p.summon(Villager(pro, PLAINS, name=name, zombie=id[0] == 'z'), tags=('villager',)))
+            professions_init.add(p.summon(Villager(pro, PLAINS, name=to_name(name), zombie=id[0] == 'z'), tags=('villager',)))
         professions_init.add(function(f'restworld:mobs/{which}_levels_cur'),
                              function(f'restworld:mobs/{which}_professions_cur'),
                              Sign.change(r(-5, 2, 0), (None, None, kind)))
@@ -454,7 +454,7 @@ def villager_funcs(room):
         for i, ty in enumerate(VILLAGER_BIOMES):
             if i == 3:
                 p = placer(r(0, 2, -3), WEST, -2, tags=('villager', 'types',), adults=True)
-            types_init.add(p.summon(Entity(id, name=ty, nbt={'VillagerData': {'type': ty.lower()}})))
+            types_init.add(p.summon(Entity(id, name=to_name(ty), nbt={'VillagerData': {'type': ty.lower()}})))
         types_init.add(function(f'restworld:mobs/{which}_levels_cur'), function(f'restworld:mobs/{which}_types_cur'),
                        Sign.change(r(-5, 2, 0), (None, None, kind)))
 
