@@ -314,8 +314,8 @@ def friendlies(room):
 
     def skins_loop(step):
         name = to_name(step.elem)
-        wide_nbt = Nbt({'profile': {'texture': f'entity/player/wide/{step.elem}', 'model': 'wide'},
-                        'CustomName': f'{name} (Wide)'})
+        wide_nbt = Nbt({'profile': {'texture': f'entity/player/wide/{step.elem}'}, 'CustomName': f'{name} (Wide)',
+                        'NoGravity': True})
         slim_nbt = wide_nbt.clone()
         slim_nbt['profile']['texture'] = slim_nbt['profile']['texture'].replace('wide', 'slim')
         slim_nbt['profile']['model'] = 'slim'
@@ -323,7 +323,8 @@ def friendlies(room):
         yield execute().if_().score(slim_skin).matches(0).run(data().merge(n().tag('mannequin'), wide_nbt))
         yield execute().unless().score(slim_skin).matches(0).run(data().merge(n().tag('mannequin'), slim_nbt))
 
-    room.loop('skins', main_clock).loop(skins_loop, default_skins)
+    room.loop('skins', main_clock).add(
+        data().remove(n().tag('mannequin'), 'profile.model')).loop(skins_loop, default_skins)
     room.function('skins_init').add(
         slim_skin.set(0),
         placer(*south_placer, adults=True).summon(
