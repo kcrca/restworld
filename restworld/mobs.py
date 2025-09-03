@@ -4,9 +4,11 @@ import copy
 
 from pynecraft.base import EAST, EQ, NORTH, Nbt, SOUTH, WEST, r, to_id, to_name
 from pynecraft.commands import Block, COLORS, Entity, FORCE, LONG, MOD, REPLACE, RESULT, Score, as_facing, clone, data, \
-    e, execute, fillbiome, function, item, kill, n, p, player, return_, ride, s, schedule, scoreboard, setblock, summon, \
+    e, execute, fillbiome, function, item, kill, n, p, player, return_, ride, s, schedule, scoreboard, setblock, \
+    summon, \
     tag, tp
-from pynecraft.info import axolotls, colors, horses, tropical_fish, weathering_id, weathering_name, weathering_property, \
+from pynecraft.info import axolotls, colors, default_skins, horses, tropical_fish, weathering_id, weathering_name, \
+    weathering_property, \
     weatherings, \
     wolves
 from pynecraft.simpler import Item, PLAINS, Sign, VILLAGER_BIOMES, VILLAGER_PROFESSIONS, Villager, WallSign
@@ -307,6 +309,25 @@ def friendlies(room):
     room.function('sheep_init').add(
         placer(*mid_east_placer, tags='keeper').summon(Entity('sheep'), tags=('sheared', 'colorable',)),
         room.label(r(2, 2, 1), 'Shear Sheep', EAST))
+
+    slim_skin = room.score('slim_skin')
+
+    def skins_loop(step):
+        name = to_name(step.elem)
+        wide_nbt = Nbt({'profile': {'texture': f'entity/player/wide/{step.elem}'}, 'CustomName': name})
+        slim_nbt = wide_nbt.clone()
+        slim_nbt['profile']['texture'] = slim_nbt['profile']['texture'].replace('wide', 'slim')
+        yield execute().if_().score(slim_skin).matches(0).run(data().merge(n().tag('mannequin'), wide_nbt))
+        yield execute().unless().score(slim_skin).matches(0).run(data().merge(n().tag('mannequin'), slim_nbt))
+        yield Sign.change(r(0, 2, 1), (None, None, name))
+
+    room.loop('skins', main_clock).loop(skins_loop, default_skins)
+    room.function('skins_init').add(
+        slim_skin.set(0),
+        placer(*south_placer, adults=True).summon(
+            Entity('Mannequin', {'texture': f'entity/player/wide/{default_skins[0]}'})),
+        WallSign((None, 'Default Skin')).place(r(0, 2, 1), SOUTH),
+        room.label(r(-1, 2, 0), 'Slim', SOUTH))
     room.function('sniffer_init').add(
         placer(r(0, 2, 0.5), EAST, 0, adults=True, tags='keeper').summon('sniffer'),
         WallSign((None, 'Sniffer Egg', None, '(vanilla  shows 3)')).place(r(2, 2, 3), EAST),
