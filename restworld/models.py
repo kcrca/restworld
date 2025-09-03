@@ -3,45 +3,39 @@ from collections import defaultdict
 
 from pynecraft import info
 from pynecraft.base import Arg, EAST, EQ, as_facing, d, r, to_name
-from pynecraft.commands import Block, Entity, REPLACE, SUCCESS, Text, clone, comment, data, e, execute, fill, function, \
-    item, kill, loot, n, p, schedule, setblock, summon, tag
-from pynecraft.info import block_items, stems, woods
+from pynecraft.commands import Block, DIV, Entity, MOD, REPLACE, Text, clone, comment, data, e, execute, fill, function, \
+    item, kill, n, p, schedule, setblock, summon, tag
+from pynecraft.info import block_items, default_skins, stems, woods
 from pynecraft.simpler import Item, ItemFrame, Sign, WallSign
 from restworld import global_
 from restworld.rooms import ActionDesc, SignedRoom, Wall, named_frame_item, span
-from restworld.world import fast_clock, main_clock, restworld
+from restworld.world import fast_clock, restworld
 
 # The item area...
 #
-# See how models work, especially WRT displays. There are two major modes:
-# The user chooses a thing to view, or we loop through some set of things. The
-# first mode is relatively simple: The user puts something in the frame,
-# and it's copied into many places, but not the user's hands. They have full
-# control of when things change, can see first person views themselves.
+# See how models work, especially WRT displays. There are two major modes: The user chooses a thing to view,
+# or we loop through some set of things. The first mode is relatively simple: The user puts something in the frame,
+# and it's copied into many places, but not the user's hands. They have full control of when things change,
+# can see first person views themselves.
 #
-# The second has us putting things into the user's hands, and therefore
-# changing their inventory. This requires planning. So...
+# The second has us putting things into the user's hands, and therefore changing their inventory. This requires
+# planning. So...
 #
-# (*) When the user enters the area, we copy their hotbar and left hand
-# into a chest, and when they leave we replace them. The replacement should
-# probably only happen if we have ever put something in their hands in the
-# first place. Because placing things into their hands when they leave is
-# probably rather unexpected, it's just the least destructive thing we can do.
+# (*) When the user enters the area, we copy their hotbar and left hand into a chest, and when they leave we replace
+# them. The replacement should probably only happen if we have ever put something in their hands in the first place.
+# Because placing things into their hands when they leave is probably rather unexpected, it's just the least
+# destructive thing we can do.
 #
-# (*) The user chooses which list of things to loop. Right now there are two:
-# items and blocks. Which gives three states: Not looping, or looping one of
-# these. Currently, I have a lever for each list, and turning one on forces
-# the other off if needed. This puts the levers next to each other to save
-# room, and it's tricky to get the power issues working right.
+# (*) The user chooses which list of things to loop. Right now there are two: items and blocks. Which gives three
+# states: Not looping, or looping one of these. Currently, I have a lever for each list, and turning one on forces
+# the other off if needed. This puts the levers next to each other to save room, and it's tricky to get the power
+# issues working right.
 #
-# (*) ...But I can imagine others. For example, a compressed version of
-# these could be built by assuming that we can show only one version of
-# things that share a lot of models (stairs, slabs, ...). That might very
-# much reduce the length of the list. But that further complicates choosing
-# which list to use. Maybe signs for each one?
+# (*) ...But I can imagine others. For example, a compressed version of these could be built by assuming that we can
+# show only one version of things that share a lot of models (stairs, slabs, ...). That might very much reduce the
+# length of the list. But that further complicates choosing which list to use. Maybe signs for each one?
 #
-# (*) Some blocks have no item version (e.g., water and lava). We leave
-# them out of the block list.
+# (*) Some blocks have no item version (e.g., water and lava). We leave them out of the block list.
 
 modes = ['sampler_blocks', 'blocks', 'manual', 'items', 'sampler_items']
 
@@ -117,7 +111,6 @@ def room():
     room.function('model_signs_init').add(function('restworld:models/signs'))
 
     placer = room.mob_placer(r(0, 3, 0), EAST, auto_tag=False, adults=True, nbt={'ShowArms': True})
-    placer_head = room.mob_placer(r(0, 3.87, 0), EAST, auto_tag=False, adults=True)
     all_src = e().tag('model_src')
     model_src = all_src.limit(1)
     all_ground = e().tag('model_ground')
@@ -132,29 +125,10 @@ def room():
 
     # This is just so I get to see the player head change. Others see it alternate between themselves and BlueMeanial,
     # but for me that would be no alteration at all, so I picked a random other player to use if the real player is me.
-    is_other = room.score('is_other')
 
-    def model_head_loop(step):
-        if step.i == 0:
-            yield execute().unless().score(is_other).matches(0).run(
-                data().modify(room.store, 'player').set().value('BlueMeanial'))
-            yield execute().if_().score(is_other).matches(0).run(
-                data().modify(room.store, 'player').set().value('Sunny'))
-        else:
-            yield execute().as_(p()).run(
-                loot().replace().entity(n().tag('player_head_holder'), 'armor.head').loot('restworld:player_head'))
-            yield data().modify(room.store, 'player').set().from_(
-                n().tag('player_head_holder'), 'equipment.head.components.profile.name')
-            yield data().modify(room.store, 'cur_player').set().from_(room.store, 'player')
-            yield execute().store(SUCCESS).score(is_other).run(
-                data().modify(room.store, 'cur_player').set().value('BlueMeanial'))
-
-    model_head_set = room.function('model_head_set', home=False).add(
-        item().replace().entity(n().tag('model_holder_head'), 'armor.head').with_(
-            Item('player_head', components={'profile': Arg('player')})))
-    room.loop('model_player_head', main_clock).loop(model_head_loop, range(2)).add(
-        function(model_head_set).with_().storage(room.store))
-
+    num_skins = room.score('num_skins', len(default_skins))
+    skin_every = room.score('skin_every', 4)
+    cur_skin = room.score('cur_skin')
     recent_things_signs = (r(-2, 4, 1), r(-2, 4, 0), r(-2, 4, -1))[::-1]
     chest_pos = r(-1, -2, 0)
     room.function('models_room_init', exists_ok=True).add(
@@ -166,9 +140,7 @@ def room():
         kill(all_src),
         kill(all_ground),
         Entity('armor_stand', nbt={'Small': True}).tag('player_head_holder', 'models_home').summon(r(0, 0, 1)),
-        placer.summon('armor_stand', tags=('model_holder', 'model_hands')),
-        placer_head.summon('armor_stand', tags=('model_holder_head',),
-                           nbt=dict(Small=True, NoGravity=True, Invisible=True)),
+        placer.summon('mannequin', tags=('model_holder', 'model_hands')),
         data().modify(room.store, 'under').set().value(
             [{'id': f'minecraft:{k}', 'under': v} for k, v in under.items()]),
         setblock(r(1, 2, 1), 'structure_void'),
@@ -270,6 +242,12 @@ def room():
         execute().if_().score(needs_restore).matches(1).at(model_home).run(function(model_restore))
     )
 
+    def modeler_loop(step):
+        wide_nbt = {'profile': {'texture': f'entity/player/wide/{step.elem}'}, 'CustomName': f'{to_name(step.elem)}'}
+        yield data().merge(n().tag('model_holder'), wide_nbt)
+
+    change_modeler = room.loop('change_modeler', home=False).loop(modeler_loop, default_skins)
+
     def thing_funcs(which, things):
         signs = recent_things_signs
 
@@ -293,7 +271,12 @@ def room():
                                                                                  'front_text.messages[3]')) if i < len(
                     signs) - 1 else comment('start'))
         all_things_loop.add(
-            execute().unless().block(r(1, 1, 1), 'stone_bricks').run(setblock(r(1, 1, 1), 'stone_bricks'))).loop(
+            execute().unless().block(r(1, 1, 1), 'stone_bricks').run(setblock(r(1, 1, 1), 'stone_bricks')),
+            cur_skin.operation(EQ, all_things_loop.score),
+            cur_skin.operation(DIV, skin_every),
+            cur_skin.operation(MOD, num_skins),
+            execute().unless().score(cur_skin).is_(EQ, change_modeler.score).run(function(change_modeler))
+        ).loop(
             all_loop, all_things)
         room.function(f'all_{which}_home', exists_ok=True).add(tag(e().tag(f'all_{which}_home')).add('all_things_home'))
 
