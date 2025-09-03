@@ -314,19 +314,19 @@ def friendlies(room):
 
     def skins_loop(step):
         name = to_name(step.elem)
-        wide_nbt = Nbt({'profile': {'texture': f'entity/player/wide/{step.elem}'}, 'CustomName': name})
+        wide_nbt = Nbt({'profile': {'texture': f'entity/player/wide/{step.elem}'}, 'CustomName': f'{name} (Wide)'})
         slim_nbt = wide_nbt.clone()
         slim_nbt['profile']['texture'] = slim_nbt['profile']['texture'].replace('wide', 'slim')
+        slim_nbt['profile']['type'] = 'slim'
+        slim_nbt['CustomName'] = slim_nbt['CustomName'].replace('Wide', 'Slim')
         yield execute().if_().score(slim_skin).matches(0).run(data().merge(n().tag('mannequin'), wide_nbt))
         yield execute().unless().score(slim_skin).matches(0).run(data().merge(n().tag('mannequin'), slim_nbt))
-        yield Sign.change(r(0, 2, 1), (None, None, name))
 
     room.loop('skins', main_clock).loop(skins_loop, default_skins)
     room.function('skins_init').add(
         slim_skin.set(0),
         placer(*south_placer, adults=True).summon(
             Entity('Mannequin', {'texture': f'entity/player/wide/{default_skins[0]}'})),
-        WallSign((None, 'Default Skin')).place(r(0, 2, 1), SOUTH),
         room.label(r(-1, 2, 0), 'Slim', SOUTH))
     room.function('sniffer_init').add(
         placer(r(0, 2, 0.5), EAST, 0, adults=True, tags='keeper').summon('sniffer'),
