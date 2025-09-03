@@ -199,7 +199,7 @@ def friendlies(room):
     room.loop('horse', main_clock).loop(horse_loop, horse_variants)
 
     p = placer(r(-1.2, 2, 0), EAST, -2, kid_delta=2.2, tags=('saddle', 'chests'), nbt={'Tame': True})
-    room.function('horselike_init').add(p.summon('mule'), p.summon('donkey'), room.label(r(2, 2, -1), 'Chests', EAST))
+    room.function('horselike_init').add(p.summon('mule'), p.summon('donkey'), room.label(r(1, 2, -1), 'Chests', EAST))
     room.function('iron_golem_init').add(
         placer(r(-0.5, 2, 0), WEST, adults=True).summon('iron_golem'),
         WallSign((None, 'Iron Golem')).place(r(-3, 2, 0), WEST))
