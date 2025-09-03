@@ -394,7 +394,7 @@ class Room(FunctionSet):
             'init': [kill(e().tag(self.name, 'label')),
                      scoreboard().objectives().add(self.name, DUMMY),
                      scoreboard().objectives().add(self.name + '_max', DUMMY),
-                     (x.set(self._init_values.get(str(x.target), 0)) for x in
+                     (x.set(self._init_values.get(x, 0)) for x in
                       sorted(self._init_values, key=lambda x: str(x))),
                      to_incr.set(1)] + [tp(e().tag(self.name), e().tag('death').limit(1)), kill_em(e().tag(self.name))]
         }
