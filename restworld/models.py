@@ -3,7 +3,7 @@ from collections import defaultdict
 
 from pynecraft import info
 from pynecraft.base import Arg, EAST, EQ, as_facing, d, r, to_name
-from pynecraft.commands import Block, DIV, Entity, MOD, REPLACE, Text, clone, comment, data, e, execute, fill, function, \
+from pynecraft.commands import Block, DIV, MOD, REPLACE, Text, clone, comment, data, e, execute, fill, function, \
     item, kill, n, p, schedule, setblock, summon, tag
 from pynecraft.info import block_items, default_skins, stems, woods
 from pynecraft.simpler import Item, ItemFrame, Sign, WallSign
@@ -123,9 +123,6 @@ def room():
     was_empty = room.score('model_was_empty')
     needs_restore = room.score('needs_restore')
 
-    # This is just so I get to see the player head change. Others see it alternate between themselves and BlueMeanial,
-    # but for me that would be no alteration at all, so I picked a random other player to use if the real player is me.
-
     num_skins = room.score('num_skins', len(default_skins))
     skin_every = room.score('skin_every', 4)
     cur_skin = room.score('cur_skin')
@@ -139,7 +136,6 @@ def room():
         tag(n().tag('model_home')).add('model_head_home'),
         kill(all_src),
         kill(all_ground),
-        Entity('armor_stand', nbt={'Small': True}).tag('player_head_holder', 'models_home').summon(r(0, 0, 1)),
         placer.summon('mannequin', tags=('model_holder', 'model_hands')),
         data().modify(room.store, 'under').set().value(
             [{'id': f'minecraft:{k}', 'under': v} for k, v in under.items()]),

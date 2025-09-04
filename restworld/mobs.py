@@ -330,6 +330,8 @@ def friendlies(room):
         placer(*south_placer, adults=True).summon(
             Entity('Mannequin', {'texture': f'entity/player/wide/{default_skins[0]}'})),
         room.label(r(-1, 2, 0), 'Slim', SOUTH))
+    room.function('skins_enter').add(setblock(r(0, -2, 1), 'redstone_block'))
+    room.function('skins_exit').add(setblock(r(0, -2, 1), 'air'))
     room.function('sniffer_init').add(
         placer(r(0, 2, 0.5), EAST, 0, adults=True, tags='keeper').summon('sniffer'),
         WallSign((None, 'Sniffer Egg', None, '(vanilla  shows 3)')).place(r(2, 2, 3), EAST),
