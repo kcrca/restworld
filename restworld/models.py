@@ -123,7 +123,8 @@ def room():
     was_empty = room.score('model_was_empty')
     needs_restore = room.score('needs_restore')
 
-    num_skins = room.score('num_skins', len(default_skins))
+    # +1 because we also copy the player's own skin for a modeler
+    num_skins = room.score('num_skins', len(default_skins) + 1)
     skin_every = room.score('skin_every', 4)
     cur_skin = room.score('cur_skin')
     recent_things_signs = (r(-2, 4, 1), r(-2, 4, 0), r(-2, 4, -1))[::-1]
@@ -237,11 +238,22 @@ def room():
         execute().if_().score(needs_restore).matches(1).at(model_home).run(function(model_restore))
     )
 
-    def modeler_loop(step):
-        wide_nbt = {'profile': {'texture': f'entity/player/wide/{step.elem}'}, 'CustomName': f'{to_name(step.elem)}'}
-        yield data().merge(n().tag('model_holder'), wide_nbt)
+    def change_modeler_loop(step):
+        if step.elem:
+            nbt = {'profile': {'texture': f'entity/player/wide/{step.elem}'}, 'CustomName': f'{to_name(step.elem)}'}
+        else:
+            nbt = {'profile': {'id': [1, 2, 3, 4]}, 'CustomName': 'You'}
+        yield data().merge(model_holder, nbt)
+        if not step.elem:
+            yield data().remove(model_holder, 'profile.texture')
+            yield data().modify(model_holder, 'profile.id').set().from_(p(), 'UUID')
 
-    change_modeler = room.loop('change_modeler', home=False).loop(modeler_loop, default_skins)
+    change_modeler = room.loop('change_modeler', home=False)
+    change_modeler.add(
+        data().remove(model_holder, 'profile.UUID'),
+    ).loop(
+        change_modeler_loop, default_skins + (None,)).add(
+    )
 
     def thing_funcs(which, things):
         signs = recent_things_signs
