@@ -6,7 +6,7 @@ from pathlib import Path
 
 from pynecraft.simpler import Sign
 from restworld import arena, banners, biomes, blocks, center, connect, dialogs, diy, effects, enders, font, global_, \
-    gui, hud, loot_tables, maps, materials, mobs, models, multimob, nether, paintings, particles, photo, plants, \
+    gui, hud, maps, materials, mobs, models, multimob, nether, paintings, particles, photo, plants, \
     redstone, save, tags, test_blocks, tester, the_end, time, wither
 from restworld.world import restworld
 
@@ -34,7 +34,6 @@ def main():
             wither, maps):
         m.room()
     global_.room()  # This msut be last
-    loot_tables.loot_tables()
     dir = f'{Path.home()}/clarity/home/saves/RestWorld_{args.version}'
     print(dir)
     restworld.save(dir)
