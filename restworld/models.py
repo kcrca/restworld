@@ -133,7 +133,6 @@ def room():
     under = {'chorus_flower': 'end_stone', 'chorus_plant': 'end_stone', 'sugar_cane': 'grass_block',
              'wheat': 'farmland', 'bamboo': 'grass_block'}
     model_init = room.function('model_init').add(
-        tag(n().tag('model_home')).add('model_head_home'),
         kill(all_src),
         kill(all_ground),
         placer.summon('mannequin', tags=('model_holder', 'model_hands')),
