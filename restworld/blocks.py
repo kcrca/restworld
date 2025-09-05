@@ -557,8 +557,11 @@ def room():
                       data().modify(room.store, 'copper_golem.pose_name').set().value(step.elem.title())),
         copper_golem_poses)
     cg_oxy_loop = room.loop('copper_golem_oxy', home=False).loop(
-        lambda step: (data().modify(room.store, 'copper_golem.oxy').set().value(weathering_id(step.elem).replace('copper', '')),
-                      data().modify(room.store, 'copper_golem.oxy_name').set().value(weathering_name(step.elem, ''))),
+        lambda step: (
+            data().modify(room.store, 'copper_golem.oxy').set().value(weathering_id(step.elem).replace('copper', '')),
+            data().modify(room.store, 'copper_golem.oxy_name').set().value(weathering_name(step.elem, '')),
+            room.particle(f'{weathering_id(step.elem)}_golem_statue', 'copper_golem_statue', r(0, 4, 0), step),
+        ),
         weatherings)
 
     room.function('copper_golem_statue_init').add(

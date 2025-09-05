@@ -28,12 +28,11 @@ def main():
     for r in (tags, dialogs):
         r.create()
     for m in (
-            materials, multimob, redstone, connect,
-            photo, blocks, save, models, arena, banners, biomes, center, gui, diy, effects,
-            particles, enders, font, mobs, hud, nether, paintings, plants, the_end, time,
-            wither, maps):
+            materials, multimob, redstone, connect, blocks, plants, gui,
+            photo, save, models, arena, banners, biomes, center, diy, effects, particles, enders, font, mobs, hud,
+            nether, paintings, the_end, time, wither, maps,
+            global_):  # global must be LAST
         m.room()
-    global_.room()  # This msut be last
     dir = f'{Path.home()}/clarity/home/saves/RestWorld_{args.version}'
     print(dir)
     restworld.save(dir)
