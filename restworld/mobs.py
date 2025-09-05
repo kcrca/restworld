@@ -329,6 +329,7 @@ def friendlies(room):
         slim_skin.set(0),
         placer(*south_placer, adults=True).summon(
             Entity('Mannequin', {'texture': f'entity/player/wide/{default_skins[0]}'})),
+        WallSign((None, 'Default Player', 'Textures')).place(r(0, 2, 1), NORTH),
         room.label(r(-1, 2, 0), 'Slim', SOUTH))
     room.function('skins_enter').add(setblock(r(0, -2, 1), 'redstone_block'))
     room.function('skins_exit').add(setblock(r(0, -2, 1), 'air'))
