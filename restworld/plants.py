@@ -4,7 +4,7 @@ from typing import Callable
 
 from pynecraft import info
 from pynecraft.base import EAST, NORTH, Nbt, SOUTH, WEST, r, to_id, to_name
-from pynecraft.commands import Block, Text, data, e, execute, fill, fillbiome, function, kill, setblock, tag
+from pynecraft.commands import Block, Text, data, e, execute, fill, function, kill, setblock, tag
 from pynecraft.info import small_flowers, stems, tulips
 from pynecraft.simpler import JUNGLE, PLAINS, Region, SAVANNA, Sign, WallSign
 from pynecraft.values import BIRCH_FOREST, CHERRY_GROVE, DARK_FOREST, MANGROVE_SWAMP, PALE_GARDEN, SNOWY_TAIGA
@@ -356,12 +356,11 @@ def room():
         yield setblock(r(-1, -1, -1), 'redstone_block')
         yield setblock(r(-1, -1, -1), 'air')
         yield WallSign((None, f'{tree} Trees', 'Biome:', to_name(str(biome)))).place(r(1, 2, 7), WEST)
-        plant_room = Region(r(0, -5, -1), r(33, 10, 56))
+        plant_room = Region(r(0, -5, -1), r(31, 30, 58))
         yield execute().unless().score(freeze_biome).matches(1).run(
             execute().at(e().tag('plants_room_beg_home')).run(
                 plant_room.fillbiome(biome),
-                plant_room.fill('air', replace='snow')),
-            fillbiome(r(0, 8, 0), r(18, 30, 17), biome))
+                plant_room.fill('air', replace='snow')))
 
     tree_items = tree_types.items()
     sorted(tree_items)
