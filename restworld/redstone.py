@@ -1,12 +1,13 @@
 from __future__ import annotations
 
+import itertools
 import re
 
 from pynecraft import info
 from pynecraft.base import DOWN, EAST, NOON, SOUTH, UP, WEST, r
 from pynecraft.commands import BYTE, Block, INT, RESULT, Score, data, e, execute, fill, function, item, kill, \
-    n, random, return_, setblock, summon, tag, time
-from pynecraft.info import instruments, stems, weatherings, woods
+    n, random, return_, say, setblock, summon, tag, time
+from pynecraft.info import instruments, stems, weathering_id, weathering_name, weatherings, woods
 from pynecraft.simpler import Item, Region, Sign, WallSign
 from restworld.rooms import Room, ensure, if_clause, kill_em
 from restworld.world import fast_clock, main_clock, restworld
@@ -36,18 +37,31 @@ def room():
     room.loop('lever', main_clock).loop(lever_loop, (False, True))
     room.particle('tripwire', 'lever', r(0, 3, 2))
 
-    def lightning_rod_loop(step):
-        if step.elem:
-            yield summon('lightning_bolt', r(0, 3, 0))
-            yield Sign.change(r(1, 2, 0), ('Lightning &', None, '(Powered)'), start=1)
-        else:
-            yield Sign.change(r(1, 2, 0), ('', None, ''), start=1)
-        yield setblock(r(0, 3, 0), Block('lightning_rod', {'powered': step.elem})),
+    waxed_rod = room.score('waxed_rod')
 
-    room.loop('lightning_rod', main_clock).loop(lightning_rod_loop, (True, False))
+    def lightning_rod_inner_loop(step, waxed):
+        oxy, strike = step.elem
+        if strike:
+            yield summon('lightning_bolt', r(0, 3, 0))
+            yield Sign.change(r(-1, 2, 0), ('Lightning &', f'{("Waxed " if waxed else "") + weathering_name(oxy, "")}'),
+                              start=1)
+        else:
+            yield Sign.change(r(-1, 2, 0), ('', f'{("Waxed " if waxed else "") + weathering_name(oxy, "")}'), start=1)
+        rod_ = ("waxed_" if waxed else "") + weathering_id(oxy, 'lightning_rod')
+        yield setblock(r(0, 3, 0),
+                       Block(rod_, {'powered': strike})),
+        yield say(step.elem, waxed)
+
+    def lightning_rod_loop(step):
+        yield execute().if_().score(waxed_rod).matches(0).run(lightning_rod_inner_loop(step, False))
+        yield execute().unless().score(waxed_rod).matches(0).run(lightning_rod_inner_loop(step, True))
+
+    room.loop('lightning_rod', main_clock).loop(lightning_rod_loop, itertools.product(weatherings, (False, True)))
     room.function('lightning_rod_init').add(
         setblock(r(0, 3, 0), 'lightning_rod'),
-        WallSign((None, 'Lightning &', 'Lightning Rod')).place(r(-1, 2, 0), WEST))
+        WallSign((None, None, None, 'Lightning Rod')).place(r(-1, 2, 0), WEST),
+        room.label(r(0, 2, -1), 'Waxed', WEST)
+    )
     room.particle('lightning_rod', 'lightning_rod', r(0, 4, 0))
 
     minecart_types = list(Block(f'{t}Minecart') for t in
