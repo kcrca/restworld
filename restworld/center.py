@@ -1,6 +1,10 @@
 from __future__ import annotations
 
-from pynecraft.base import DARK_PURPLE, NE, NORTH, NW, Nbt, SE, SOUTH, SW, WEST, r
+from pynecraft.base import DARK_BLUE, DARK_GREEN, DARK_PURPLE, GOLD, LIGHT_PURPLE, NE, NORTH, NW, Nbt, RED, \
+    SE, \
+    SOUTH, SW, \
+    WEST, \
+    r
 from pynecraft.commands import Block, ClickEvent, Entity, Score, Text, clone, e, execute, fill, function, kill, \
     scoreboard, \
     setblock, summon, tag
@@ -14,39 +18,55 @@ from restworld.world import fast_clock, main_clock, restworld, slow_clock
 def intro_book():
     book = Book()
     book.sign_book('Welcome!', 'RestWorld', 'Welcome to RestWorld!')
+    rainbow = (RED, GOLD, DARK_GREEN, DARK_BLUE, LIGHT_PURPLE, DARK_PURPLE)
+    title = 'RestWorld'
+    book.add('',
+             Text.text('Welcome to\n').bold().extra(
+                 *tuple(Text.text(title[x]).color(rainbow[x % len(rainbow)]) for x in range(len(title))), r'!\n\n')),
     book.add(
-        r'This world lets you test how your resource pack looks. Almost everything is here: blocks, mobs, particles, UI, moon phases…\n\n'
-        r'The world loops through variants, which takes less space. You can also compare textures that you may want to make,')
+        r'This world lets you test your resource pack. Almost everything is here: blocks, mobs, particles, UI, moon phases, models…\n\n'
+        r'RestWorld loops through variants, which takes less'),
     book.next_page(),
     book.add(
-        r'look similar.\n\n',
-        r'Levers and buttons control modes, like whether horses have saddles. Buttons on red or green blocks show if clocks are on: A button on a red block will stop the clocks; one on a green block starts them.\n\n', )
+        r'space, and also helps you compare textures that you may want to look similar.\n\n',
+        r'Many levers and buttons control modes, like whether horses have saddles or ore is in deepslate.\n\n'
+        r'This looping is run by clocks. You can start or stop the clocks by'),
     book.next_page()
     book.add(
-        r'You start with a control book. This lets you change clock speeds, step loops one at a time, and teleport to various areas. You can get a replacement book with the button on the purple block nearby.')
+        'pushing a button on a green or red block (red means "stop", etc.).\n\n'
+        r'You start with a control book. Buttons inside it let you change clock speeds, step loops one at a time, and teleport to various areas. You can get a replacement book with the button'),
+    book.next_page()
+    book.add(
+        r'on the magenta block near the start.\n\n',
+        'Start exploring! There\'s a lot to play with, almost every texturable thing is here! ',
+        text_url('Let me know',
+                 'https://www.planetminecraft.com/project/restworld-a-complete-resourcepack-testing-world-for-1-15-2/'),
+        ' what you think, or anything that\'s missing!\n\n',
+        Text.text(r'\n      Have fun!').bold())
     book.next_page()
     book.add(
         r'I also have two texture packs that might interest you:\n\n',
-        Text.text(r'Call Out').underlined().italic().color(DARK_PURPLE).click_event(ClickEvent.open_url(
-            'https://claritypack.com/call_out/')),
+        text_url(r'Call Out', 'https://claritypack.com/call_out/'),
         ', which highlights untextured blocks, helping you make a complete pack.\n\n',
-        Text.text(r'Clarity').underlined().italic().color(DARK_PURPLE).click_event(ClickEvent.open_url(
-            'https://claritypack.com/')),
+        text_url(r'Clarity', 'https://claritypack.com/'),
         ', the pack I originally built RestWorld for.')
     book.next_page()
-    book.add(
-        Text.text(r'Credits:\n\n'),
+    book.add('',
+        Text.text(r'Credits:\n\n').italic(),
         Text.text(r'BlueMeanial:\n').bold(),
         r'  Software Design\n  Programming\n\n',
         Text.text(r'JUMBOshrimp277:\n').bold(),
         r'  Visual Design\n  Testing\n  Rubber Duck\n',
         r'\n',
         r'Details on ',
-        Text.text(r'our site').underlined().italic().color(DARK_PURPLE).click_event(ClickEvent.open_url(
-            'https://claritypack.com/restworld/')),
+        text_url(r'our site', 'https://claritypack.com/restworld/'),
         '.')
 
     return book
+
+
+def text_url(text, url):
+    return Text.text(text).underlined().italic().color(DARK_PURPLE).click_event(ClickEvent.open_url(url))
 
 
 def room():
@@ -58,7 +78,8 @@ def room():
     room.function('intro_exit').add(setblock(r(0, -1, -1), 'air'))
     room.function('intro_init').add(
         TextDisplay(r'Welcome!\nRead This\nIntroduction!',
-                    nbt={'Tags': ['center', 'intro'], 'Rotation': [180, 0], 'background': 0x7f000000}).scale(0.615).summon(
+                    nbt={'Tags': ['center', 'intro'], 'Rotation': [180, 0], 'background': 0x7f000000}).scale(
+            0.615).summon(
             r(0.01, 2.18, -1.4)))
 
     room.function('example_painting_init').add(
