@@ -213,7 +213,9 @@ def friendlies(room):
 
     def copper_golem_loop(step):
         yield data().modify(n().tag('copper_golem'), 'weather_state').set().value(weathering_property(step.elem))
-        yield setblock(r(2, 2, 0), (weathering_id(step.elem, 'cut_copper_stairs'), {'facing': EAST}))
+        # The 'air' check is for if we're levitated
+        yield execute().unless().block(r(0, 1, 0), 'air').at(e().tag('copper_golem_home')).run(
+            setblock(r(2, 2, 0), (weathering_id(step.elem, 'cut_copper_stairs'), {'facing': EAST})))
         yield Sign.change(r(-3, 2, 0), (None, weathering_name(step.elem, base='')))
 
     # -2 means waxed. We can't show waxed vs. unwaxed, so this cheaply makes sure the weathering never changes. If
@@ -331,8 +333,10 @@ def friendlies(room):
             Entity('Mannequin', {'texture': f'entity/player/wide/{default_skins[0]}'})),
         WallSign((None, 'Default Player', 'Textures')).place(r(0, 2, 1), NORTH),
         room.label(r(-1, 2, 0), 'Slim', SOUTH))
+    # The mannequin can be pushed, so a command block constantly teleports it back into position, as best as possible.
     room.function('skins_enter').add(setblock(r(0, -2, 1), 'redstone_block'))
     room.function('skins_exit').add(setblock(r(0, -2, 1), 'air'))
+
     room.function('sniffer_init').add(
         placer(r(0, 2, 0.5), EAST, 0, adults=True, tags='keeper').summon('sniffer'),
         WallSign((None, 'Sniffer Egg', None, '(vanilla  shows 3)')).place(r(2, 2, 3), EAST),
