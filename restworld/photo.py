@@ -50,7 +50,7 @@ mobs = (
 
     PhotoMob(7.0, -42, 'mooshroom'),
     PhotoMob(7.0, -27, 'cow'),
-    PhotoMob(7.0, -13, 'pig'),
+    PhotoMob(7.0, -13, 'copper_golem'),
     PhotoMob(7.0, -1, 'sheep', nbt={'Color': 3}),
     PhotoMob(7.0, +12, 'breeze'),
     PhotoMob(7.0, +29, 'horse', nbt={'Variant': 513}),
