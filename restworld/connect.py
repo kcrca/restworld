@@ -1,11 +1,10 @@
 from __future__ import annotations
 
-from pynecraft.base import Arg, EAST, NORTH, RelCoord, SOUTH, UP, WEST, as_facing, r
-from pynecraft.commands import clone, data, e, execute, fill, function, kill, return_
+from pynecraft.base import Arg, E, EAST, N, NE, NORTH, NW, S, SE, SOUTH, SW, UP, W, WEST, as_facing, r
+from pynecraft.commands import SUCCESS, clone, data, e, execute, fill, function, kill, n, setblock
 from pynecraft.simpler import ItemFrame, WallSign
-from pynecraft.utils import Scores, strcmp, utils_init
 from restworld.rooms import Room
-from restworld.world import fast_clock, restworld
+from restworld.world import restworld
 
 
 # Replacements are done in a multistep process using macros. When a new block is placed in one of the 'fill' spots,
@@ -13,7 +12,7 @@ from restworld.world import fast_clock, restworld
 #
 # (1) clears out the working area below the lower level.
 # (2) copies all the exemplar blocks for that direction into the lower level (and nothing else)
-# (3) Gets the ID of the block in that direction from the middle. (The hack is to do this is commented.)
+# (3) Gets the ID of the block in the frame that's that direction from the middle.
 # (4) Puts that ID, and that of the example block into a storage area
 # (5) Invokes a function with that storage area as the incoming parameters.
 # (6) That function fills the cloned blocks with the replacement block
@@ -36,8 +35,28 @@ def room():
     below1 = ('These blocks are', 'templates for the', 'blocks above')
     below2 = ('Change them, then', 'change a "type"', 'block in the', 'floor above.')
 
-    room.function('connect_mid_init').add(
-        utils_init(),
+    # The pattern block for each direction.
+    block_map = {
+        E: {'orig': 'redstone_ore'},
+        N: {'orig': 'grass_block'},
+        NE: {'orig': 'cobblestone'},
+        NW: {'orig': 'dripstone_block'},
+        S: {'orig': 'diamond_block'},
+        SE: {'orig': 'stone'},
+        SW: {'orig': 'magenta_wool'},
+        W: {'orig': 'diorite'},
+    }
+    for k in block_map:
+        block_map[k]['to'] = block_map[k]['orig']
+
+    init = room.function('copy_connected_init').add(kill(e().tag('connect_frame')))
+    for dir, v in block_map.items():
+        if v['to'].startswith('redstone'):
+            v['to'] = 'glass'
+        frame = ItemFrame(UP).item(v['to']).tag('connect_frame', f'connect_frame_{dir}').fixed(False)
+        init.add(execute().positioned(r(0, 2, 0)).run(frame.summon(r(*as_facing(dir).block_delta))))
+    init.add(
+        data().modify(room.store, 'cur').set().value(block_map),
         WallSign(above).place(r(0, 2, 2), NORTH),
         WallSign(above).place(r(0, 2, -2), SOUTH),
         WallSign(('Connected', 'Textures', '(needs OptiFine)')).place(r(2, 2, 0), WEST),
@@ -56,73 +75,32 @@ def room():
 
         room.label(r(0, 2, 0), 'Go Home', NORTH),
     )
-
-    # The pattern block for each direction.
-    block_map = {
-        'e': 'redstone_ore',
-        'n': 'grass_block',
-        'ne': 'cobblestone',
-        'nw': 'dripstone_block',
-        's': 'diamond_block',
-        'se': 'stone',
-        'sw': 'magenta_wool',
-        'w': 'diorite',
-    }
+    room.function('copy_connected_enter').add(setblock(r(0, -3, 0), 'redstone_block'))
+    room.function('copy_connected_exit').add(setblock(r(0, -3, 0), 'air'))
 
     size = 26
-    redo_one = room.function('redo_one', home=False).add(
-        fill(r(size, -15, size), r(0, -19, 0), Arg('to')).replace(Arg('from')),
-        fill(r(size, 2, size), r(0, 6, 0), 'air').replace(Arg('orig')),
-        clone(r(size, -15, size), r(0, -19, 0), r(0, 2, 0)).filtered(Arg('to')),
-    )
-
-    center = r(13, 1, 13)
-
-    def redo_one_example(dir):
-        yield data().modify('connect', 'redo.to').set().from_(e().tag(f'connect_frame_{dir}').limit(1), 'Item.id')
-        yield data().modify('connect', 'redo.from').set().value(block_map[dir])
-        yield data().modify('connect', 'redo.orig').set().from_('connect', f'redo_memory.{dir}')
-        yield function(redo_one).with_().storage('connect', 'redo')
-        yield data().modify('connect', f'redo_memory.{dir}').set().from_('connect', 'redo.to')
-
-    init = room.function('redo_init').add(kill(e().tag('connect_frame')))
-    for dir, v in block_map.items():
-        if v.startswith('redstone'):
-            v = 'glass'
-        frame = ItemFrame(UP).item(v).tag('connect_frame', f'connect_frame_{dir}').fixed(False)
-        pos = RelCoord.add(r(*as_facing(dir).block_delta), (0, 1, 0))
-        init.add(execute().positioned(center).run(frame.summon(pos)))
-
-    concat = room.function('concat', home=False).add(
-        data().modify('redo', 'concat.all').set().value('"$(all),$(add)"')
-    )
-
-    filled = room.score('filled')
-    redo = room.function('redo', fast_clock).add(
-        filled.set(0),
-        execute().as_(e().tag('connect_frame').nbt({'Item': {}})).run(filled.add(1)),
-        execute().unless().score(filled).matches(8).run(data().modify('redo', 'cur').set().value(''), return_(0)),
-        data().modify('redo', 'prev').set().from_('redo', 'cur'),
-        data().modify('redo', 'concat.all').set().value(''),
-    )
-
-    for dir in block_map:
-        redo.add(
-            data().modify('redo', 'concat.add').set().from_(e().tag(f'connect_frame_{dir}').limit(1), 'Item.id'),
-            function(concat).with_().storage('redo', 'concat'),
-        )
-
-    redo.add(
-        data().modify('redo', 'cur').set().from_('redo', 'concat.all'),
-        strcmp(('redo', 'prev'), ('redo', 'cur')),
-        execute().if_().score(Scores.strcmp).matches(0).run(return_(0)),
-    )
-
     clear_below = fill(r(size, -15, size), r(0, -19, 0), 'air')
+    redo_one = room.function('redo_one', home=False).add(
+        clear_below,
+        setblock(r(0, -20, 0), 'stone'),
+        clone(r(size, -5, size), r(0, -9, 0), r(0, -19, 0)).filtered(Arg('orig')),
+        fill(r(size, -15, size), r(0, -19, 0), Arg('to')).replace(Arg('orig')),
+        fill(r(size, 2, size), r(0, 6, 0), 'air').replace(Arg('from')),
+        clone(r(size, -15, size), r(0, -19, 0), r(0, 2, 0)).filtered(Arg('to')),
+        clear_below,
+    )
+
+    changed = room.score('changed')
+    monitor = room.function('copy_connected').add(
+        data().modify(room.store, 'prev').set().from_(room.store, 'cur'))
     for dir in block_map:
-        redo.add(
-            clear_below,
-            clone(r(size, -5, size), r(0, -9, 0), r(0, -19, 0)).filtered(block_map[dir]),
-            redo_one_example(dir)
+        monitor.add(
+            execute().store(SUCCESS).score(changed).run(
+                data().modify(room.store, f'cur.{dir}.to').set().from_(
+                    n().tag(f'connect_frame_{dir}'), 'Item.id')),
+            execute().if_().score(changed).matches(1).run(
+                data().modify(room.store, f'cur.{dir}.from').set().from_(room.store, f'prev.{dir}.to'),
+                execute().at(e().tag('redo_home')).run(function(redo_one).with_().storage(room.store, f'cur.{dir}'))
+            )
         )
-    redo.add(clear_below)
+
