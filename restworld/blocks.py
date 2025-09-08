@@ -334,11 +334,11 @@ def room():
         prefix = 'Waxed ' if waxed else ''
 
         def block_for(b):
-            new_name = f'{prefix}{oxidation}|{b.name}'
+            new_name = f'{prefix}|{oxidation}|{b.name}'.strip('|')
             # copper_block becomes exposed_copper, not exposed_copper_block (ugh)
             if ' Block' in new_name and oxidation and oxidation != 'Waxed':
                 new_name = new_name.replace(' Block', '')
-            nb = Block(to_id(new_name), b.state)
+            nb = Block(to_id(new_name), b.state, name=new_name)
             return nb
 
         return tuple(block_for(f) for f in copper_blocks)

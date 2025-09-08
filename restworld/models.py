@@ -4,7 +4,7 @@ from collections import defaultdict
 from pynecraft import info
 from pynecraft.base import Arg, EAST, EQ, as_facing, d, r, to_name
 from pynecraft.commands import Block, DIV, MOD, REPLACE, Text, clone, comment, data, e, execute, fill, function, \
-    item, kill, n, p, schedule, setblock, summon, tag
+    item, kill, n, p, say, schedule, setblock, summon, tag
 from pynecraft.info import block_items, default_skins, stems, woods
 from pynecraft.simpler import Item, ItemFrame, Sign, WallSign
 from restworld import global_
@@ -205,6 +205,7 @@ def room():
         item().replace().entity(invis_frame, 'container.0').from_().entity(model_src, 'container.0'),
         data().merge(invis_frame, named_frame_data),
         global_.if_clock_running.at(e().tag('all_things_home')).if_().score(see_in_hands).matches(1).run(
+            say('hi'),
             item().replace().entity(p(), 'weapon.mainhand').from_().entity(model_src, 'container.0'),
             item().replace().entity(p(), 'weapon.offhand').from_().entity(model_src, 'container.0'),
             needs_restore.set(1)),
