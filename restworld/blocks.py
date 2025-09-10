@@ -67,7 +67,9 @@ def room():
         if expandable:
             block_init.add(tag(e().tag(f'{name}_home')).add('expansion'))
         if show_list:
-            block_init.add(execute().if_().score(block_list_score).matches(0).run(kill(e().tag(f'block_list_{name}'))))
+            block_init.add(
+                tag(e().tag(f'{name}_home')).remove('expansion'),
+                execute().if_().score(block_list_score).matches(0).run(kill(e().tag(f'block_list_{name}'))))
             names = room.function(name + '_names', home=False)
             block_init.add(function(names.full_name))
 
