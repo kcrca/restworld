@@ -139,7 +139,6 @@ def friendlies(room):
         p.summon(Entity(x, {'variant': 'temperate'}) for x in climate_mobs),
         kill(e().tag('frog', 'kid')),
         execute().as_(e().tag('chicken')).run(data().merge(s(), {'EggLayTime': 1000000000, 'OnGround': True})),
-        tag(n().tag('pig', 'adult')).add('saddle'),
         room.label(r(-3, 2, 1), 'Flying', WEST),
         room.label(r(-3, 2, 5), 'Saddle', WEST),
     )
