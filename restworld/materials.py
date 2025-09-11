@@ -34,7 +34,7 @@ def enchant(score: Score, tag: str):
 
 def room():
     room = Room('materials', restworld, WEST, ('Materials', '& Tools,', 'Time, GUI,', 'Redstone, Maps'))
-    room.reset_at((6, 0))
+    room.reset_at((18, 0))
 
     enchanted = room.score('enchanted')
 

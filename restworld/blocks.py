@@ -23,6 +23,7 @@ from restworld.world import fast_clock, main_clock, restworld
 
 def room():
     room = Room('blocks', restworld, EAST, ('Blocks,', 'Paintings,', 'Banners,', 'DIY, Models'))
+    room.reset_at((-34, 0))
 
     block_list_score = room.score('block_list')
 
