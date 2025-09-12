@@ -299,15 +299,17 @@ def room():
     def arena_run_main(loop: Loop):
         def arena_run_loop(step):
             i = step.i
+            run_cur = execute().at(e().tag('controls_home')).run(
+                function(f'restworld:arena/{step.loop.score.target}_cur'))
             for which_dir in (-1, 1):
                 to_front = (i + which_dir + num_pages) % num_pages
                 to_back = (i - which_dir + num_pages) % num_pages
                 text, z = (left_arrow, max_z + 1) if which_dir == -1 else (right_arrow, min_z - 1)
                 back_text = left_arrow if text == right_arrow else right_arrow
-                run_cur = execute().at(e().tag('controls_home')).run(
-                    function(f'restworld:arena/{step.loop.score.target}_cur'))
-                yield WallSign().front((None, text), (step.loop.score.set(to_front), run_cur)).back(
-                    (None, back_text), (step.loop.score.set(to_back), run_cur)).glowing(True).place(r(x, 2, z), EAST)
+                yield WallSign().front(
+                    (None, text), (step.loop.score.set(to_front), run_cur)).back(
+                    (None, back_text), (step.loop.score.set(to_back), run_cur)
+                ).glowing(True).place(r(x, 2, z), EAST)
             for s in range(0, stride_length):
                 y = 3 - int(s / row_length)
                 z = max_z - (s % row_length)
@@ -320,7 +322,8 @@ def room():
                                                               'victim_is_splitter': is_splitter_mob(victim)})
                 )
                 if (hunter, victim) == init_battle:
-                    room.function('monitor_init', exists_ok=True).add(sign_commands)
+                    # Copy commands for this battle, and for switching to its page, into the init function
+                    room.function('monitor_init', exists_ok=True).add(sign_commands, step.loop.score.set(i), run_cur)
                 sign = WallSign().messages((None, to_name(hunter), 'vs.', to_name(victim) if victim else 'Nobody'),
                                            sign_commands)
                 yield sign.place(r(-2, y, z), EAST)
