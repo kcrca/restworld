@@ -8,7 +8,7 @@ from pynecraft.base import Arg, EAST, EQ, GT, LT, NORTH, Nbt, SOUTH, WEST, r, se
 from pynecraft.commands import Block, DIV, INFINITE, INT, MINUS, MOD, RANDOM, REPLACE, RESULT, Score, a, data, e, \
     effect, execute, fill, function, kill, random, return_, s, schedule, scoreboard, setblock, summon, tag
 from pynecraft.function import Function, Loop
-from pynecraft.info import colors
+from pynecraft.info import colors, weathering_id, weatherings
 from pynecraft.simpler import Item, Region, Sign, WallSign
 from pynecraft.values import DUMMY, REGENERATION
 from restworld.rooms import Room, kill_em
@@ -87,10 +87,11 @@ def copper_golem_init_cmds(room):
             x += 1
         yield execute().at(e().tag('monitor_home')).run(
             setblock(r(x, 2, 3), Block('chest', {'facing': NORTH}, {'Items': chest_items})),
-            setblock(r(x, 2, -3), Block('oxidized_copper_chest', {'facing': SOUTH}, {'Items': copper_chest_items}))
+            setblock(r(x, 2, -3), Block(weathering_id(weatherings[i], 'copper_chest'), {'facing': SOUTH},
+                                        {'Items': copper_chest_items}))
         )
     poppy = room.function('copper_golem_poppy', home=False).add(
-        data().modify(e().type('copper_golem').sort(RANDOM).limit(1), 'equipment.head.id').set().value('poppy'))
+        data().modify(e().type('copper_golem').sort(RANDOM).limit(1), 'equipment.saddle.id').set().value('poppy'))
     # We have to wait until there are golems to work with
     yield schedule().function(poppy, 8, REPLACE)
 
@@ -173,6 +174,17 @@ def room():
     temps = ['cold', 'temperate', 'warm']
     pandas = ['normal', 'lazy', 'worried', 'playful', 'brown', 'weak', 'aggressive']
 
+    # This is the main part of the system that can randomize values for battlers. This maps entity IDs to a description
+    # of what varies and how. For each ID, `values` is the name of the list of possible values (which can be shared,
+    # such as with 'nums' for numbers); 'variant' is the name of the property to be set, and 'max' is the maximum index
+    # into the named values array (the actual max, not one more than the max as is typical).
+    #
+    # When a battler is generated, a random value is generated from [0..max], and the value at that index in the named
+    # list is the one used for that value.
+    #
+    # The named lists are stored in this room's storage area by the monitor_init function below.
+    #
+    # Currently ,this can only handle one varying property for each battler type.
     fighters_specs = {
         'axolotl': {'values': 'nums', 'variant': 'Variant', 'max': 5},
         'sheep': {'values': 'nums', 'variant': 'Color', 'max': 15},
@@ -187,6 +199,8 @@ def room():
         'llama': {'values': 'nums', 'variant': 'Variant', 'max': 3},
         'panda': {'values': 'pandas', 'variant': 'MainGene', 'max': len(pandas) - 1},
         'parrot': {'values': 'nums', 'variant': 'Variant', 'max': 4},
+        'copper_golem': {'values': 'weatherings', 'variant': 'weather_state', 'max': len(weatherings) - 1},
+        # 'copper_golem': {'values': 'flowers', 'variant': 'equipment', 'max': len(flowers) - 1},
     }
 
     for id in ids:
@@ -219,6 +233,7 @@ def room():
             'splitters': [{'id': 'slime'}, {'id': 'magma_cube'}],
             'hunter_names': [f'hunter_{i}' for i in range(COUNT_MIN, COUNT_MAX + 1)],
             'victim_names': [f'victim_{i}' for i in range(COUNT_MIN, COUNT_MAX + 1)],
+            'weatherings': weatherings,
         }),
         ten.set(10),
         scoreboard().objectives().add(kills_objective, DUMMY, "Killed"),
