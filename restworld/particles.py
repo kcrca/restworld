@@ -104,12 +104,12 @@ elsewhere = {
     'Blocks': (END_ROD, CAMPFIRE_COSY_SMOKE, CAMPFIRE_SIGNAL_SMOKE, COPPER_FIRE_FLAME, REVERSE_PORTAL, SHRIEK,
                DRIPPING_OBSIDIAN_TEAR, FALLING_OBSIDIAN_TEAR, LANDING_OBSIDIAN_TEAR, FLAME, SMALL_FLAME,
                SOUL_FIRE_FLAME, SMOKE, LARGE_SMOKE),
-    'Redstone': (DUST, NOTE, VIBRATION),
     'Materials': (
         LAVA, PORTAL, DRIPPING_WATER, FALLING_WATER, DRIPPING_DRIPSTONE_WATER, FALLING_DRIPSTONE_WATER, DRIPPING_LAVA,
         FALLING_LAVA, LANDING_LAVA, DRIPPING_DRIPSTONE_LAVA, FALLING_DRIPSTONE_LAVA),
     'Plants': (SPORE_BLOSSOM_AIR, FALLING_SPORE_BLOSSOM, CHERRY_LEAVES, PALE_OAK_LEAVES, TINTED_LEAVES, UNDERWATER),
     'Mobs': (FALLING_NECTAR, EGG_CRACK),
+    'Redstone': (DUST, NOTE, VIBRATION),
     'Arena': (ITEM_SLIME,),
     'GUI': (ENCHANT,),
 }
@@ -585,7 +585,7 @@ def room():
     book.add(Text.text('Many particles are shown in the rest of this world. '
                        'This room is focused on those that aren\'t. '
                        'This book lists where those other particles are by room.').plain())
-    page_break = ('Materials', 'Blocks', 'Plants', 'Arena')
+    page_break = ('Materials', 'Blocks', 'Plants', 'Redstone')
     for k, v in elsewhere.items():
         if k in page_break:
             book.next_page()
