@@ -37,7 +37,7 @@ from restworld.world import fast_clock, restworld
 #
 # (*) Some blocks have no item version (e.g., water and lava). We leave them out of the block list.
 
-ranges = {'A-B': None, 'C-G': None, 'H-O': None, 'P-R': None, 'S-Z': None}
+ranges = ('A-B', 'C', 'D-I', 'J-N', 'O-Q', 'R-Z', 'T-Z')
 
 mode_names = ['sampler_blocks', 'blocks', 'manual', 'items', 'sampler_items']
 modes = [ActionDesc(e, to_name(e)) for e in mode_names]
@@ -263,17 +263,20 @@ def room():
         nonlocal thing_ranges
 
         signs = recent_things_signs
-        range_keys = tuple(ranges.keys())
         thing_ranges[which] = {}
-        next_range = range_keys[0]
+        next_range = ranges[0]
+        next_range_pos = 0
 
         def all_loop(step):
-            nonlocal next_range
+            nonlocal next_range, next_range_pos
             block = step.elem
             if block.name[0] == next_range[0]:
+                for i in range(next_range_pos, len(thing_ranges[which])):
+                    thing_ranges[ranges[i]] = thing_ranges[ranges[i - 1]]
                 thing_ranges[which][next_range] = step.i - 1
                 try:
-                    next_range = range_keys[len(thing_ranges[which])]
+                    next_range_pos = len(thing_ranges[which])
+                    next_range = ranges[next_range_pos]
                 except IndexError:
                     next_range = '1'  # This means it was the last range, so set it to something never found
             item_block = block.clone()
@@ -302,6 +305,8 @@ def room():
         ).loop(
             all_loop, all_things)
         room.function(f'all_{which}_home', exists_ok=True).add(tag(e().tag(f'all_{which}_home')).add('all_things_home'))
+        for i in range(len(thing_ranges[which]), len(ranges)):
+            thing_ranges[which][ranges[i]] = -1
 
         room.function(f'start_{which}', home=False).add(
             kill(all_things_home),
@@ -347,7 +352,7 @@ def room():
     for i, rng in enumerate(ranges):
         cmds = tuple(execute().at(e().tag(f'all_{x}_home')).run(
             room.score(f'all_{x}').set(thing_ranges[x][rng])) for x in loop_names)
-        model_init.add(WallSign((None, rng), cmds).place(r(-2, 2, 2 - i), EAST))
+        model_init.add(WallSign((None, rng), cmds).place(r(-2, 2, 3 - i), EAST))
 
     model_init.add(
         data().modify(room.store, 'states').set().value(
