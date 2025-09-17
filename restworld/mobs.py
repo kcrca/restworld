@@ -313,7 +313,7 @@ def friendlies(room):
         room.label(r(2, 2, 1), 'Shear Sheep', EAST))
 
     # The poses are really not working well. There are s few bugs, and there isn't much to see as
-    # things stand. We keep the skings_pose code in case this changes sometime. Need to remove
+    # things stand. We keep the skins_pose code in case this changes sometime. Need to remove
     # 'hide_description' below for it to work.
     slim_skin = room.score('slim_skin')
     skin_mode = room.score('skin_mode')
@@ -350,7 +350,7 @@ def friendlies(room):
                                  'immovable': True, 'description': 'Standing', 'NoGravity': True,
                                  'profile': {'texture': f'entity/player/wide/{default_skins[0]}'}})),
         WallSign((None, 'Default Player', 'Textures')).place(r(0, 2, 1), NORTH),
-        room.label(r(1, 2, 0), 'Slim', SOUTH))
+        room.label(r(-1, 2, 0), 'Slim', SOUTH))
 
     room.function('sniffer_init').add(
         placer(r(0, 2, 0.5), EAST, 0, adults=True, tags='keeper').summon('sniffer'),
