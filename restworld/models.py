@@ -271,7 +271,7 @@ def room():
             nonlocal next_range
             block = step.elem
             if block.name[0] == next_range[0]:
-                thing_ranges[which][next_range] = step.i
+                thing_ranges[which][next_range] = step.i - 1
                 try:
                     next_range = range_keys[len(thing_ranges[which])]
                 except IndexError:
