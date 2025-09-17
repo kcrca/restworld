@@ -131,12 +131,12 @@ def room():
     room.loop('main_lights', main_clock).loop(lambda x: lights_loop(-4, 'diamond_block'), range(0, 1))
     room.loop('slow_lights', slow_clock).loop(lambda x: lights_loop(-5, 'emerald_block'), range(0, 1))
 
-    all = {'Tags': ['center', 'mob_display'], 'PersistenceRequired': True}
-    trim_stand = Entity('armor_stand', all).tag('center_stand')
-    armor_for(trim_stand, 'iron', {'components': {'trim': {'pattern': 'flow', 'material': 'resin'}}})
+    all = Nbt({'Tags': ['center', 'mob_display'], 'PersistenceRequired': True})
+    trim_stand = Entity('armor_stand', all.merge({'ShowArms': True})).tag('center_stand')
+    armor_for(trim_stand, 'copper', {'components': {'trim': {'pattern': 'flow', 'material': 'lapis'}}})
     silent = Nbt({'Silent': True})
     room.function('mobs_display_init').add(
-        summon(Entity('mooshroom', silent).tag('mob_display'), r(-6, 2.5, 0), all),
+        summon(Entity('copper_golem', silent).tag('mob_display'), r(-6, 2.5, 0), all),
         summon(Entity('panda', {'MainGene': 'playful', 'Silent': True}).tag('mob_display'), r(-6, 2.5, 0), all),
         summon(Horse('horse', Horse.Color.CHESTNUT, Horse.Markings.WHITE, silent).tag('mob_display'), r(-6, 2.5, 0),
                all),
@@ -146,7 +146,7 @@ def room():
         summon(Entity('cow', silent.merge({'variant': 'warm'})).tag('mob_display'), r(6, 2.5, 0), all),
         summon(Entity('piglin_brute', silent.merge({'IsImmuneToZombification': True})).tag('mob_display'), r(6, 2.5, 0),
                all),
-        summon(Entity('armadillo', silent).tag('mob_display'), r(6, 2.5, 0), all),
+        summon(Entity('mooshroom', silent).tag('mob_display'), r(6, 2.5, 0), all),
 
         trim_stand.summon(r(10.51, 2, 0), facing=NORTH),
 
