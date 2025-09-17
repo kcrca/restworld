@@ -313,7 +313,8 @@ def friendlies(room):
         room.label(r(2, 2, 1), 'Shear Sheep', EAST))
 
     # The poses are really not working well. There are s few bugs, and there isn't much to see as
-    # things stand. We keep the skings_pose code in case this changes sometime.
+    # things stand. We keep the skings_pose code in case this changes sometime. Need to remove
+    # 'hide_description' below for it to work.
     slim_skin = room.score('slim_skin')
     skin_mode = room.score('skin_mode')
     mannequin = n().tag('mannequin')
@@ -345,13 +346,11 @@ def friendlies(room):
         slim_skin.set(0),
         skin_mode.set(0),
         placer(*south_placer, adults=True).summon(
-            Entity('Mannequin', {'immovable': True, 'description': 'Standing', 'NoGravity': True,
+            Entity('Mannequin', {'hide_description': True,
+                                 'immovable': True, 'description': 'Standing', 'NoGravity': True,
                                  'profile': {'texture': f'entity/player/wide/{default_skins[0]}'}})),
         WallSign((None, 'Default Player', 'Textures')).place(r(0, 2, 1), NORTH),
         room.label(r(1, 2, 0), 'Slim', SOUTH))
-    # The mannequin can be pushed, so a command block constantly teleports it back into position, as best as possible.
-    room.function('skins_enter').add(setblock(r(0, -2, 1), 'redstone_block'))
-    room.function('skins_exit').add(setblock(r(0, -2, 1), 'air'))
 
     room.function('sniffer_init').add(
         placer(r(0, 2, 0.5), EAST, 0, adults=True, tags='keeper').summon('sniffer'),
