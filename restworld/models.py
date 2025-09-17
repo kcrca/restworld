@@ -37,9 +37,10 @@ from restworld.world import fast_clock, restworld
 #
 # (*) Some blocks have no item version (e.g., water and lava). We leave them out of the block list.
 
-modes = ['sampler_blocks', 'blocks', 'manual', 'items', 'sampler_items']
+ranges = {'A-B': None, 'C-G': None, 'H-O': None, 'P-R': None, 'S-Z': None}
 
-modes = [ActionDesc(e, to_name(e)) for e in modes]
+mode_names = ['sampler_blocks', 'blocks', 'manual', 'items', 'sampler_items']
+modes = [ActionDesc(e, to_name(e)) for e in mode_names]
 
 sample_pats = (
     'Stairs', r'Slab', r'Planks', r'Fence$', r'Fence Gate', r'Stripped.* (?:Logs|Stem)', r'(?<!Stripped).* Wood$',
@@ -104,7 +105,7 @@ def room():
             execute().at(model_home).run(function(f'restworld:models/start_{action_desc.which}'))))
 
     wall_used = {3: span(1, 5)}
-    room = SignedRoom('models', restworld, EAST, (None, 'Models',), mode_sign, modes,
+    room = SignedRoom('models', restworld, EAST, (None, None, 'Models'), mode_sign, modes,
                       (Wall(7, EAST, 1, -1, wall_used),))
     room.reset_at((-4, -1))
 
@@ -136,7 +137,8 @@ def room():
     model_init = room.function('model_init').add(
         kill(all_src),
         kill(all_ground),
-        placer.summon('mannequin', tags=('model_holder', 'model_hands')),
+        placer.summon('mannequin', nbt={'immovable': True, 'hide_description': True},
+                      tags=('model_holder', 'model_hands')),
         data().modify(room.store, 'under').set().value(
             [{'id': f'minecraft:{k}', 'under': v} for k, v in under.items()]),
         setblock(r(1, 2, 1), 'structure_void'),
@@ -255,12 +257,25 @@ def room():
     ).loop(
         change_modeler_loop, default_skins + (None,)).add(
     )
+    thing_ranges = {}
 
     def thing_funcs(which, things):
+        nonlocal thing_ranges
+
         signs = recent_things_signs
+        range_keys = tuple(ranges.keys())
+        thing_ranges[which] = {}
+        next_range = range_keys[0]
 
         def all_loop(step):
+            nonlocal next_range
             block = step.elem
+            if block.name[0] == next_range[0]:
+                thing_ranges[which][next_range] = step.i
+                try:
+                    next_range = range_keys[len(thing_ranges[which])]
+                except IndexError:
+                    next_range = '1'  # This means it was the last range, so set it to something never found
             item_block = block.clone()
             item_block.state = {}
             yield item().replace().entity(model_src, 'container.0').with_(item_block)
@@ -328,6 +343,11 @@ def room():
     thing_funcs('items', item_list)
     thing_funcs('sampler_items', sample('items', item_list))
     room.function('start_manual').add(kill(all_things_home))
+    loop_names = tuple(filter(lambda x: x != 'manual', mode_names))
+    for i, rng in enumerate(ranges):
+        cmds = tuple(execute().at(e().tag(f'all_{x}_home')).run(
+            room.score(f'all_{x}').set(thing_ranges[x][rng])) for x in loop_names)
+        model_init.add(WallSign((None, rng), cmds).place(r(-2, 2, 2 - i), EAST))
 
     model_init.add(
         data().modify(room.store, 'states').set().value(
