@@ -7,7 +7,8 @@ from pynecraft.commands import Block, COLORS, Entity, FORCE, LONG, MOD, REPLACE,
     e, execute, fillbiome, function, item, kill, n, p, player, return_, ride, s, schedule, scoreboard, setblock, \
     summon, \
     tag, tp
-from pynecraft.info import axolotls, colors, default_skins, horses, tropical_fish, weathering_id, weathering_name, \
+from pynecraft.info import axolotls, colors, default_skins, horses, mannequin_poses, tropical_fish, weathering_id, \
+    weathering_name, \
     weathering_property, \
     weatherings, \
     wolves
@@ -311,27 +312,42 @@ def friendlies(room):
         placer(*mid_east_placer, tags='keeper').summon(Entity('sheep'), tags=('sheared', 'colorable',)),
         room.label(r(2, 2, 1), 'Shear Sheep', EAST))
 
+    # The poses are really not working well. There are s few bugs, and there isn't much to see as
+    # things stand. We keep the skings_pose code in case this changes sometime.
     slim_skin = room.score('slim_skin')
+    skin_mode = room.score('skin_mode')
+    mannequin = n().tag('mannequin')
 
-    def skins_loop(step):
+    def skins_who_loop(step):
         name = to_name(step.elem)
-        wide_nbt = Nbt({'profile': {'texture': f'entity/player/wide/{step.elem}'}, 'CustomName': f'{name} (Wide)',
-                        'NoGravity': True})
+        wide_nbt = Nbt({'profile': {'texture': f'entity/player/wide/{step.elem}', 'model': 'wide'},
+                        'CustomName': f'{name} (Wide)', 'NoGravity': True})
         slim_nbt = wide_nbt.clone()
         slim_nbt['profile']['texture'] = slim_nbt['profile']['texture'].replace('wide', 'slim')
         slim_nbt['profile']['model'] = 'slim'
         slim_nbt['CustomName'] = slim_nbt['CustomName'].replace('Wide', 'Slim')
-        yield execute().if_().score(slim_skin).matches(0).run(data().merge(n().tag('mannequin'), wide_nbt))
-        yield execute().unless().score(slim_skin).matches(0).run(data().merge(n().tag('mannequin'), slim_nbt))
+        yield execute().if_().score(slim_skin).matches(0).run(data().merge(mannequin, wide_nbt))
+        yield execute().unless().score(slim_skin).matches(0).run(data().merge(mannequin, slim_nbt))
+
+    skins_who_loop = room.loop('skins_who', home=False).add(
+        data().remove(n().tag('mannequin'), 'profile.model')).loop(skins_who_loop, default_skins)
+
+    skins_pose_loop = room.loop('skins_pose', home=False).loop(
+        lambda step: data().merge(mannequin, {'pose': step.elem, 'description': step.elem.title()}),
+        mannequin_poses)
 
     room.loop('skins', main_clock).add(
-        data().remove(n().tag('mannequin'), 'profile.model')).loop(skins_loop, default_skins)
+        execute().if_().score(skin_mode).matches(0).run(function(skins_who_loop)),
+        execute().unless().score(skin_mode).matches(0).run(function(skins_pose_loop))
+    )
+
     room.function('skins_init').add(
         slim_skin.set(0),
+        skin_mode.set(0),
         placer(*south_placer, adults=True).summon(
-            Entity('Mannequin', {'texture': f'entity/player/wide/{default_skins[0]}'})),
+            Entity('Mannequin', {'immovable': True, 'description': 'Standing', 'NoGravity': True, 'profile': {'texture': f'entity/player/wide/{default_skins[0]}'}})),
         WallSign((None, 'Default Player', 'Textures')).place(r(0, 2, 1), NORTH),
-        room.label(r(-1, 2, 0), 'Slim', SOUTH))
+        room.label(r(1, 2, 0), 'Slim', SOUTH))
     # The mannequin can be pushed, so a command block constantly teleports it back into position, as best as possible.
     room.function('skins_enter').add(setblock(r(0, -2, 1), 'redstone_block'))
     room.function('skins_exit').add(setblock(r(0, -2, 1), 'air'))
