@@ -345,7 +345,8 @@ def friendlies(room):
         slim_skin.set(0),
         skin_mode.set(0),
         placer(*south_placer, adults=True).summon(
-            Entity('Mannequin', {'immovable': True, 'description': 'Standing', 'NoGravity': True, 'profile': {'texture': f'entity/player/wide/{default_skins[0]}'}})),
+            Entity('Mannequin', {'immovable': True, 'description': 'Standing', 'NoGravity': True,
+                                 'profile': {'texture': f'entity/player/wide/{default_skins[0]}'}})),
         WallSign((None, 'Default Player', 'Textures')).place(r(0, 2, 1), NORTH),
         room.label(r(1, 2, 0), 'Slim', SOUTH))
     # The mannequin can be pushed, so a command block constantly teleports it back into position, as best as possible.
