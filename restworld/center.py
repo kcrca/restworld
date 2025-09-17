@@ -89,12 +89,12 @@ def room():
     speed_main = Score('SPEED_MAIN', 'clocks')
     speed_slow = Score('SPEED_SLOW', 'clocks')
     room.function('faster_clocks', home=False).add(
-        execute().if_().score(speed_fast).matches((13, None)).run(scoreboard().players().remove(speed_fast, 2)),
-        execute().if_().score(speed_main).matches((13, None)).run(scoreboard().players().remove(speed_main, 6)),
-        execute().if_().score(speed_slow).matches((13, None)).run(scoreboard().players().remove(speed_slow, 10)))
+        execute().if_().score(speed_fast).matches((10, None)).run(scoreboard().players().remove(speed_fast, 2)),
+        execute().if_().score(speed_main).matches((10, None)).run(scoreboard().players().remove(speed_main, 5)),
+        execute().if_().score(speed_slow).matches((10, None)).run(scoreboard().players().remove(speed_slow, 10)))
     room.function('slower_clocks', home=False).add(
         fast_clock.speed.add(2),
-        main_clock.speed.add(6),
+        main_clock.speed.add(5),
         slow_clock.speed.add(10))
     room.function('reset_clocks', home=False).add(
         list(c.speed.set(c.init_speed) for c in restworld.clocks()))

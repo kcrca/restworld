@@ -2,11 +2,11 @@ from __future__ import annotations
 
 import sys
 
-from pynecraft.base import DARK_GREEN, r
-from pynecraft.commands import CREATIVE, ClickEvent, Commands, Entity, HoverEvent, SIDEBAR, Text, clear, data, e, \
-    execute, fill, function, gamemode, give, kill, p, scoreboard, setblock, tp, trigger
+from pynecraft.base import r
+from pynecraft.commands import CREATIVE, Commands, Entity, SIDEBAR, clear, data, e, \
+    execute, fill, function, gamemode, kill, p, scoreboard, setblock, tp
 from pynecraft.function import Function
-from pynecraft.simpler import Book, Sign, TextDisplay, Trigger
+from pynecraft.simpler import Sign, TextDisplay
 from restworld.rooms import Clock, Room, RoomPack
 
 marker_tmpl = Entity('armor_stand', {'NoGravity': True, 'Small': True, })
@@ -79,8 +79,8 @@ class Fencelike:
 
 
 clock = Clock('clock')
-slow_clock = Clock('slow', 90)
-main_clock = Clock('main', 60)
+slow_clock = Clock('slow', 60)
+main_clock = Clock('main', 30)
 fast_clock = Clock('fast', 15)
 tick_clock = Clock('clock')
 restworld = RestWorld()
