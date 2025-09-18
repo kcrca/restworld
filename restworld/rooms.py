@@ -263,8 +263,9 @@ class Room(FunctionSet):
         rider = Entity('skeleton', {'NoAI': True, 'equipment': {'head': helmet}}).tag(self.name, 'rider', *tags)
         return execute().as_(mount).at(s()).run(
             rider.summon(r(0, 0, 0)),
+            data().modify(n().tag(self.name, 'rider', *tags), 'Rotation').set().from_(s(), 'Rotation'),
             ride(n().tag(self.name, 'rider', *tags)).mount(s()),
-            data().modify(n().tag(self.name, 'rider', *tags), 'Rotation').set().from_(s(), 'Rotation'))
+        )
 
     def rider_off(self):
         return (
@@ -709,4 +710,5 @@ def span(start, end):
 
 
 def kill_em(target):
-    return tp(target, n().tag('death'))
+    return (execute().as_(target).on('passengers').as_(s().type('player')).run(ride(s()).dismount()),
+            tp(target, n().tag('death')))
