@@ -400,7 +400,7 @@ def friendlies(room):
         for count in range(4, 0, -1):
             eggs = ('turtle_egg', {'eggs': count, 'hatch': step.elem})
             yield setblock(r(3 - count, 2, 0), eggs)
-            room.particle(eggs, 'turtle_eggs', r(count - 2, 3, 0), step)
+            room.particle(eggs, 'turtle_eggs', r(count - 2, 2.5, 0), step)
         yield Sign.change(egg_sign_pos, (None, None, f'Hatch Age: {step.elem:d}'))
 
     room.loop('turtle_eggs', main_clock).loop(turtle_egg_loop, range(0, 3), bounce=True)
