@@ -196,7 +196,10 @@ def room():
         yield placer.summon(step.elem)
         yield Sign.change(r(0, 2, -1), (None, None, step.elem.title()))
 
-    room.loop('carrier', main_clock).add(kill_em(e().tag('carrier'))).loop(carrier_loop, ('camel', 'donkey'))
+    room.loop('carrier', main_clock).add(
+        kill_em(e().tag('carrier'))
+    ).loop(
+        carrier_loop, ('camel', 'donkey'))
     room.function('carrier_init').add(WallSign((None, 'Saddlable')).place(r(0, 2, -1), NORTH))
 
     placer = room.mob_placer(r(0, 2, 0), NORTH, adults=True, tags=('trades',), auto_tag=False,

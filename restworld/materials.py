@@ -478,7 +478,7 @@ def fencelike_functions(room):
     )))
     switch_to_fencelike('walls')
     waxed_ = tuple(f'{x} Bars' for x in
-              ('Iron', *tuple(w + weathering_name(x, join='|') for x in weatherings for w in ('', 'Waxed|'))))
+                   ('Iron', *tuple(w + weathering_name(x, join='|') for x in weatherings for w in ('', 'Waxed|'))))
     room.loop('bars', main_clock).loop(lambda step: fencelike(step.elem), waxed_)
     switch_to_fencelike('bars')
 
