@@ -66,7 +66,7 @@ def load_biome(renderer, biome, handback=None):
 
 # noinspection PyUnusedLocal
 def clear(biome, prefix, i, x, y, z, handback):
-    yield data().merge(r(x, 1, z), {'name': 'restworld:air', 'mode': 'LOAD'})
+    yield data().merge(r(x, 1, z), {'name': 'restworld:air', 'mode': 'LOAD', 'rotation': 'NONE'})
 
 
 # noinspection PyUnusedLocal
