@@ -6,7 +6,8 @@ from itertools import count
 from pynecraft.base import Arg, DARK_GREEN, DIRECTIONS, EAST, EQ, GAMETIME, LT, NOON, NORTH, OVERWORLD, Position, SOUTH, \
     THE_END, THE_NETHER, TimeSpec, WEST, r
 from pynecraft.commands import Block, ClickEvent, Entity, FORCE, HoverEvent, MINUS, MOD, MOVE, REPLACE, RESULT, Score, \
-    Text, clone, data, e, execute, fill, function, gamerule, give, kill, p, return_, s, schedule, scoreboard, setblock, \
+    Text, clone, data, e, execute, fill, forceload, function, gamerule, give, kill, p, return_, s, schedule, scoreboard, \
+    setblock, \
     tag, teleport, time, tp, trigger
 from pynecraft.function import Function
 from pynecraft.simpler import Book, VILLAGER_PROFESSIONS, WallSign
@@ -317,6 +318,8 @@ def room():
         book_trigger.trigger(function('restworld:' + act), num)
         return Text.text(txt).color(DARK_GREEN).underlined().click_event(ClickEvent.run_command(
             trigger(book_trigger.name).set(num))).hover_event(HoverEvent.show_text(tooltip))
+
+    room.function('control_book_triggers_init').add(forceload().add(r(0, -1)))
 
     cb = Book()
     cb.sign_book('Control Book', 'RestWorld', 'Useful Commands')

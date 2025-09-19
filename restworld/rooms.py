@@ -99,7 +99,6 @@ def _to_list(obj):
 
 class RoomPack(DataPack):
     base_suffixes = ('tick', 'init', 'enter', 'incr', 'decr', 'cur', 'exit', 'finish')
-    base_suffixes_re = re.compile(r'(\w+)_(' + '|'.join(base_suffixes) + ')')
 
     def __init__(self, name: str, suffixes: Iterable[str] = None,
                  format_version: str = LATEST_PACK_VERSION, /):
@@ -342,7 +341,7 @@ class Room(FunctionSet):
     def finalize(self):
         for t in self._triggers:
             self.function(t.name).add(t.commands())
-            self.function(f'{t.name}_init').add(t.init_commands())
+            self.function(f'{t.name}_init', exists_ok=True).add(t.init_commands())
         self.add_room_funcs()
 
     def add_room_funcs(self):
