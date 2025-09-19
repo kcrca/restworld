@@ -212,7 +212,9 @@ def room():
     )
 
     room.function('sampler_init').add(
-        room.mob_placer(r(-4, 2, 0), as_facing(NE), adults=True).summon('creeper'),
-        room.mob_placer(r(-1, 2, 0), as_facing(NE), adults=True).summon('minecart'),
-        room.mob_placer(r(4.5, 2, 0), as_facing(SW), adults=True).summon('oak_chest_boat'),
+        kill(e().tag('example')),
+        kill(e().type('item')),
+        room.mob_placer(r(-4, 2, 0), as_facing(NE), adults=True, tags=('example')).summon('creeper'),
+        room.mob_placer(r(-1, 2, 0), as_facing(NE), adults=True, tags=('example')).summon('minecart'),
+        room.mob_placer(r(4.5, 2, 0), as_facing(SW), adults=True, tags=('example')).summon('oak_chest_boat'),
     )
