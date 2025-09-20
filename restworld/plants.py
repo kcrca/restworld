@@ -9,7 +9,7 @@ from pynecraft.info import small_flowers, stems, tulips
 from pynecraft.simpler import JUNGLE, PLAINS, Region, SAVANNA, Sign, WallSign
 from pynecraft.values import BIRCH_FOREST, CHERRY_GROVE, DARK_FOREST, MANGROVE_SWAMP, PALE_GARDEN, SNOWY_TAIGA
 from restworld.rooms import Room, erase
-from restworld.world import fast_clock, main_clock, restworld, text_display
+from restworld.world import fast_clock, main_clock, restworld, slow_clock, text_display
 
 
 def room():
@@ -364,7 +364,7 @@ def room():
 
     tree_items = tree_types.items()
     sorted(tree_items)
-    room.loop('trees', main_clock).add(kill(e().tag(floor_tag))).loop(trees_loop, tree_items).add(
+    room.loop('trees', slow_clock).add(kill(e().tag(floor_tag))).loop(trees_loop, tree_items).add(
         execute().at(e().tag('plants_room_beg_home')).run(fill(r(0, 1, 0), r(33, 6, 52), 'water').replace('ice')),
         WallSign((None, 'Lily Pad')).place(r(3, 2, 15), WEST))
     room.function('trees_init').add(room.label(r(0, 2, 16), 'Freeze Biome', WEST))
