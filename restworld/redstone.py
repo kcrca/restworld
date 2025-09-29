@@ -6,7 +6,7 @@ import re
 from pynecraft import info
 from pynecraft.base import DOWN, EAST, NOON, SOUTH, UP, WEST, r
 from pynecraft.commands import BYTE, Block, INT, RESULT, Score, data, e, execute, fill, function, item, kill, \
-    n, random, return_, say, setblock, summon, tag, time
+    n, random, return_, setblock, summon, tag, time
 from pynecraft.info import instruments, stems, weathering_id, weathering_name, weatherings, woods
 from pynecraft.simpler import Item, Region, Sign, WallSign
 from restworld.rooms import Room, ensure, if_clause, kill_em
@@ -50,7 +50,6 @@ def room():
         rod_ = ("waxed_" if waxed else "") + weathering_id(oxy, 'lightning_rod')
         yield setblock(r(0, 3, 0),
                        Block(rod_, {'powered': strike})),
-        yield say(step.elem, waxed)
 
     def lightning_rod_loop(step):
         yield execute().if_().score(waxed_rod).matches(0).run(lightning_rod_inner_loop(step, False))
