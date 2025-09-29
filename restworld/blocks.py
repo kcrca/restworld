@@ -68,11 +68,8 @@ def room():
         if expandable:
             block_init.add(tag(e().tag(f'{name}_home')).add('expansion'))
         if show_list:
-            block_init.add(
-                tag(e().tag(f'{name}_home')).remove('expansion'),
-                execute().if_().score(block_list_score).matches(0).run(kill(e().tag(f'block_list_{name}'))))
             names = room.function(name + '_names', home=False)
-            block_init.add(function(names.full_name))
+            block_init.add(kill(e().tag(f'block_list_{name}')), function(names.full_name))
 
         def signage_for(block, i):
             if block.name == 'structure void':
@@ -390,8 +387,8 @@ def room():
     leaves[leaves.index('Bamboo Leaves')] = ''
     stripped_logs = ['Stripped|' + x for x in logs]
     stripped_woods = list(map(lambda x: '' if x == 'Stripped|Bamboo Mosaic' else x, ['Stripped|' + x for x in wood]))
-    blocks('wood_blocks', SOUTH, (tuple(f'{f} Planks' for f in woodlike),
-                                  stripped_logs, logs, wood, leaves, stripped_woods), dx=-3, dz=-3, size=2)
+    wood_loops = (tuple(f'{f} Planks' for f in woodlike), stripped_logs, logs, wood, leaves, stripped_woods)
+    blocks('wood_blocks', SOUTH, wood_loops, dx=-3, dz=-3, size=2, expandable=True)
 
     sites = ('Cauldron', 'Water Cauldron', 'Lava Cauldron', 'Powder Snow|Cauldron')
     stages = {'Water Cauldron': list({'level': t} for t in range(1, 4)),
