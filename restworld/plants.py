@@ -144,6 +144,7 @@ def room():
 
     def dripleaf_loop(step):
         i = step.i
+        yield erase(r(0, 2, 0), r(0, 3, 0))
         yield setblock(r(0, 2, 0), lower[i])
         yield setblock(r(0, 3, 0), upper[i])
         text = (None, upper[i].name)
