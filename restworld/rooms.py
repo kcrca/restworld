@@ -340,8 +340,8 @@ class Room(FunctionSet):
 
     def finalize(self):
         for t in self._triggers:
-            self.function(t.name).add(t.commands())
-            self.function(f'{t.name}_init', exists_ok=True).add(t.init_commands())
+            self.function(t.objective).add(t.commands())
+            self.function(f'{t.objective}_init', exists_ok=True).add(t.init_commands())
         self.add_room_funcs()
 
     def add_room_funcs(self):

@@ -317,7 +317,7 @@ def room():
         num = next(next_trigger)
         book_trigger.trigger(function('restworld:' + act), num)
         return Text.text(txt).color(DARK_GREEN).underlined().click_event(ClickEvent.run_command(
-            trigger(book_trigger.name).set(num))).hover_event(HoverEvent.show_text(tooltip))
+            trigger(book_trigger.objective).set(num))).hover_event(HoverEvent.show_text(tooltip))
 
     room.function('control_book_triggers_init').add(forceload().add(r(0, -1)))
 
