@@ -645,12 +645,23 @@ def monsters(room):
         else:
             yield from room.riders_off('skeleton_horse_rider')
 
-    room.loop('skeleton_horse', main_clock).loop(skeleton_horse_loop, range(0, 2)).add(
-        function('restworld:mobs/undead_saddle_cur'))
-
     room.function('skeleton_horse_init').add(placer(*place).summon('Skeleton Horse'))
-    bow = Item.nbt_for('bow')
+    room.loop('skeleton_horse', main_clock).loop(skeleton_horse_loop, range(0, 2))
+
     helmet = Item.nbt_for('iron_helmet')
+
+    def zombie_horse_loop(step):
+        if step.i == 1:
+            zombie = Entity('Zombie', nbt={'equipment': {'head': helmet, 'mainhand': {'id': 'iron_spear'}}})
+            yield from room.riders_on(n().tag('zombie_horse'), 'zombie_horse_rider', rider=zombie)
+        else:
+            yield from room.riders_off('zombie_horse_rider')
+
+    room.function('zombie_horse_init').add(
+        placer(*east_placer).summon(Entity('zombie_horse', name='Zombie Horse')))
+    room.loop('zombie_horse', main_clock).loop(zombie_horse_loop, range(0, 2))
+
+    bow = Item.nbt_for('bow')
     spider_rider = Entity('Skeleton', nbt={'equipment': {'head': helmet, 'mainhand': bow}}).merge_nbt(
         MobPlacer.base_nbt)
 
@@ -677,9 +688,6 @@ def monsters(room):
     place[0][0] += 0.5
     place[0][2] -= 0.3
     room.function('witch_init').add(placer(*place, adults=True).summon('witch'))
-
-    room.function('zombie_horse_init').add(
-        placer(*east_placer).summon(Entity('zombie_horse', name='Zombie Horse (Unused)')))
 
     def armorable_loop(step):
         if step.i == 0:
