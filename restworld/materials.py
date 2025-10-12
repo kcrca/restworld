@@ -274,10 +274,10 @@ def room():
             'materials', 'saddlable').summon(pos, facing=NORTH)
         yield enchant(enchanted, 'saddlable')
 
-    room.loop('saddles', main_clock).loop(saddles_loop,
-                                          (('horse', 0), ('skeleton_horse', r(0, 0.15, -0.05)), ('mule', 0.23),
-                                           ('donkey', 0.29), ('pig', 0.53), ('strider', -0.32), ('nautilus', 0.3),
-                                           ('camel', -0.56)))
+    room.loop('saddles', main_clock).loop(
+        saddles_loop,
+        (('horse', 0), ('zombie_horse', 0.15), ('skeleton_horse', r(0, 0.15, -0.05)), ('mule', 0.23), ('donkey', 0.29),
+         ('pig', 0.53), ('strider', -0.32), ('nautilus', 0.3), ('camel', -0.56)))
     room.function('saddles_init').add(
         WallSign((None, 'Saddles')).place(r(0, 2, -2), NORTH))
 
