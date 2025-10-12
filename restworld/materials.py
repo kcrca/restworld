@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from pynecraft import info
-from pynecraft.base import Arg, EAST, EQ, NE, NORTH, NW, Nbt, NbtDef, SOUTH, WEST, as_facing, r, to_id
+from pynecraft.base import Arg, EAST, EQ, NE, NORTH, NW, Nbt, NbtDef, RelCoord, SOUTH, WEST, as_facing, r, to_id
 from pynecraft.commands import Block, BlockDef, Entity, LONG, MOD, PLUS, RESULT, Score, as_block, data, e, execute, \
     fill, fillbiome, function, item, kill, n, random, s, scoreboard, setblock, summon, tag
 from pynecraft.function import BLOCK
@@ -263,15 +263,19 @@ def room():
     room.loop('water', main_clock).loop(water_loop, water_biomes)
 
     def saddles_loop(step):
-        mob, y = step.elem
+        mob, pos = step.elem
         yield kill_em(e().tag('saddlable'))
+        if isinstance(pos, (float, int)):
+            pos = r(0, 2 + pos, 0)
+        else:
+            pos = RelCoord.add(pos, r(0, 2, 0))
         yield Entity(mob, nbt={'NoAI': True, 'equipment': {'saddle': Item.nbt_for('saddle')}}).tag(
-            'materials', 'saddlable').summon(r(0, 2 + y, 0), facing=NORTH)
+            'materials', 'saddlable').summon(pos, facing=NORTH)
         yield enchant(enchanted, 'saddlable')
 
     room.loop('saddles', main_clock).loop(saddles_loop,
-                                          (('horse', 0), ('skeleton_horse', 0.15), ('mule', 0.23), ('donkey', 0.29),
-                                           ('pig', 0.53), ('strider', -0.32), ('camel', -0.56)))
+                                          (('horse', 0), ('skeleton_horse', r(0, 0.15, -0.05)), ('mule', 0.23),
+                                           ('donkey', 0.29), ('pig', 0.53), ('strider', -0.32), ('camel', -0.56)))
     room.function('saddles_init').add(
         WallSign((None, 'Saddles')).place(r(0, 2, -2), NORTH))
 
