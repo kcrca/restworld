@@ -632,39 +632,26 @@ def monsters(room):
     silverfish_dir = method_name()
     room.function('silverfish_init').add(placer(r(0, 2, 0), silverfish_dir, adults=True).summon('silverfish'))
 
-    east = as_facing(EAST)
-    east_rot = {'Rotation': east.rotation, 'Facing': east.name}
-
     place = list(copy.deepcopy(east_placer))
     place[0][2] += 0.5
-    undead_horse_tag = 'undead_horse'
 
-    skeleton_horse_rider = 'skeleton_horse_rider'
-    rider_entity = e().tag(skeleton_horse_rider).limit(1)
+    helmet = {'id': 'iron_helmet', 'components': {'repair_cost': 1, 'enchantments': {'unbreaking': 3}}}
 
     def skeleton_horse_loop(step):
         if step.i == 1:
-            helmet = {'id': 'iron_helmet', 'Count': 1,
-                      'components': {'repair_cost': 1, 'enchantments': {'unbreaking': 3}}}
-            bow = {'id': 'bow', 'Count': 1,
-                   'components': {'repair_cost': 1, 'enchantments': {'unbreaking': 3}}}
+            bow = {'id': 'bow', 'components': {'repair_cost': 1, 'enchantments': {'unbreaking': 3}}}
             skel = Entity('Skeleton', nbt={'equipment': {'head': helmet, 'mainhand': bow}})
-            skel.merge_nbt(MobPlacer.base_nbt).merge_nbt(east_rot)
-            skel.tag('mobs', skeleton_horse_rider)
-            yield skel.summon(r(-0.2, 2.42, 0.5))
-            yield ride(rider_entity).mount(e().tag('skeleton_horse', 'adult').limit(1))
+            yield from room.riders_on(n().tag('skeleton_horse'), 'skeleton_horse_rider', rider=skel)
         else:
-            yield ride(rider_entity).dismount()
-            yield kill_em(rider_entity)
+            yield from room.riders_off('skeleton_horse_rider')
 
     room.loop('skeleton_horse', main_clock).loop(skeleton_horse_loop, range(0, 2)).add(
         function('restworld:mobs/undead_saddle_cur'))
 
-    room.function('skeleton_horse_init').add(placer(*place).summon('Skeleton Horse'),
-                                             tag(e().tag('skeleton_horse', 'adult')).add(undead_horse_tag))
+    room.function('skeleton_horse_init').add(placer(*place).summon('Skeleton Horse'))
     bow = Item.nbt_for('bow')
     helmet = Item.nbt_for('iron_helmet')
-    rider = Entity('Skeleton', nbt={'equipment': {'head': helmet, 'mainhand': bow}}).merge_nbt(
+    spider_rider = Entity('Skeleton', nbt={'equipment': {'head': helmet, 'mainhand': bow}}).merge_nbt(
         MobPlacer.base_nbt)
 
     armorable_tag = 'armorable'
@@ -674,28 +661,25 @@ def monsters(room):
         ('Skeleton', 'Stray', 'Bogged'))
     room.function('skeleton_init').add(room.label(r(2, 2, 0), 'Armor', EAST))
 
-    spider_dir = NORTH
-    spider_facing = as_facing(spider_dir)
-    spider_rot = {'Rotation': spider_facing.rotation, 'Facing': spider_facing.name}
-
     def spider_loop(step):
-        p = placer(r(-0.5, 2.5, -0.2), spider_dir, -3, nbt={'Tags': ['spiders']}, adults=True)
-        for s in ('Spider', 'Cave Spider'):
-            spider = Entity(s)
-            if step.i == 1:
-                spider.passenger(rider.merge_nbt(spider_rot).merge_nbt(MobPlacer.base_nbt))
-            yield p.summon(spider)
+        if step.i == 1:
+            yield room.riders_on(e().tag('spiders'), 'spider_riders', rider=spider_rider)
+        else:
+            yield room.riders_off('spider_riders')
 
-    room.loop('spiders', main_clock).add(kill_em(e().tag('spiders'))).loop(spider_loop, range(0, 2))
-    room.function('spiders_init').add(function('restworld:mobs/spiders_cur'))
+    room.loop('spiders', main_clock).loop(spider_loop, range(0, 2))
+    spider_placer = placer(r(-0.5, 2.5, -0.2), NORTH, -3, nbt={'Tags': ['spiders']}, adults=True)
+    room.function('spiders_init').add(
+        spider_placer.summon('Spider'),
+        spider_placer.summon('Cave Spider')
+    )
     place = list(copy.deepcopy(south_placer))
     place[0][0] += 0.5
     place[0][2] -= 0.3
     room.function('witch_init').add(placer(*place, adults=True).summon('witch'))
 
     room.function('zombie_horse_init').add(
-        placer(*east_placer).summon(Entity('zombie_horse', name='Zombie Horse (Unused)')),
-        tag(e().tag('zombie_horse', 'adult')).add(undead_horse_tag))
+        placer(*east_placer).summon(Entity('zombie_horse', name='Zombie Horse (Unused)')))
 
     def armorable_loop(step):
         if step.i == 0:
@@ -820,16 +804,16 @@ def aquatic(room):
     room.function('elder_guardian_init').add(room.mob_placer(r(-0.7, 3, 1), WEST, adults=True).summon('elder_guardian'))
 
     def nautilus_loop(step):
-        nautilus_slector = n().tag('nautilus', 'adult')
+        nautilus_selector = n().tag('nautilus', 'adult')
         if step.elem:
             yield from room.riders_on(e().tag('zombie_nautilus'), tags='nautilus_rider',
                                       rider=Entity('Drowned', {'equipment': {'mainhand': Item.nbt_for('trident')}}))
-            yield data().modify(nautilus_slector, 'Owner').set().from_(p(), 'UUID')
-            yield item().replace().entity(nautilus_slector, 'saddle').with_('saddle')
-            yield from room.riders_on(nautilus_slector, tags='nautilus_rider')
+            yield data().modify(nautilus_selector, 'Owner').set().from_(p(), 'UUID')
+            yield item().replace().entity(nautilus_selector, 'saddle').with_('saddle')
+            yield from room.riders_on(nautilus_selector, tags='nautilus_rider')
         else:
             yield from room.riders_off('nautilus_rider')
-            yield item().replace().entity(nautilus_slector, 'saddle').with_('air')
+            yield item().replace().entity(nautilus_selector, 'saddle').with_('air')
 
     nautilus_placer = room.mob_placer(r(0, 3, 0), SOUTH, kid_delta=2)
     room.function('nautilus_init').add(
