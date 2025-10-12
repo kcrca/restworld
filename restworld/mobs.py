@@ -635,12 +635,12 @@ def monsters(room):
     place = list(copy.deepcopy(east_placer))
     place[0][2] += 0.5
 
-    helmet = {'id': 'iron_helmet', 'components': {'repair_cost': 1, 'enchantments': {'unbreaking': 3}}}
+    ench_helmet = {'id': 'iron_helmet', 'components': {'repair_cost': 1, 'enchantments': {'unbreaking': 3}}}
 
     def skeleton_horse_loop(step):
         if step.i == 1:
             bow = {'id': 'bow', 'components': {'repair_cost': 1, 'enchantments': {'unbreaking': 3}}}
-            skel = Entity('Skeleton', nbt={'equipment': {'head': helmet, 'mainhand': bow}})
+            skel = Entity('Skeleton', nbt={'equipment': {'head': ench_helmet, 'mainhand': bow}})
             yield from room.riders_on(n().tag('skeleton_horse'), 'skeleton_horse_rider', rider=skel)
         else:
             yield from room.riders_off('skeleton_horse_rider')
