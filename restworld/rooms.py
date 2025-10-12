@@ -299,8 +299,8 @@ class Room(FunctionSet):
             yield data().modify(self.store, 'random_rider_id').set().value('mannequin')
             yield data().modify(self.store, 'random_rider.Tags').set().value(tags)
         yield execute().as_(mount).at(s()).run(
+            data().modify(self.store, 'random_rider.Rotation').set().from_(s(), 'Rotation'),
             function(self._random_rider),
-            data().modify(n().tag(self.name, *tags), 'Rotation').set().from_(s(), 'Rotation'),
             ride(n().tag(*tags)).mount(s()))
 
     def riders_off(self, tags: str | Sequence[str] = None):
