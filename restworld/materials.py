@@ -269,7 +269,10 @@ def room():
             pos = r(0, 2 + pos, 0)
         else:
             pos = RelCoord.add(pos, r(0, 2, 0))
-        yield Entity(mob, nbt={'NoAI': True, 'equipment': {'saddle': Item.nbt_for('saddle')}}).tag(
+        nbt = {'NoAI': True, 'equipment': {'saddle': Item.nbt_for('saddle')}}
+        if 'nautilus' in mob:
+            nbt['Invulnerable'] = True
+        yield Entity(mob, nbt).tag(
             'materials', 'saddlable').summon(pos, facing=NORTH)
         yield enchant(enchanted, 'saddlable')
 
