@@ -1222,10 +1222,9 @@ def color_functions(room):
     room.loop('colorings', main_clock).add(erase(r(-9, 2, 2), r(-9, 2, 3))).loop(colorings_loop, colors).add(
         colored_signs(None, render_signs_glow))
 
-    riders = tuple(
-        room.riders_on(n().tag('colorings_ghast'), tags=('ghast_rider', f'ghast_rider_{i}')) for i in range(4))
-    room.function('ghast_riders_on', home=False).add(riders)
-    room.function('ghast_riders_off', home=False).add((room.riders_off('ghast_rider'),) * 4)
+    room.function('ghast_riders_on', home=False).add((
+        room.riders_on(n().tag('colorings_ghast'), tags=('ghast_rider', f'ghast_rider_{i}')) for i in range(4)))
+    room.function('ghast_riders_off', home=False).add(room.riders_off('ghast_rider'))
 
     ghast_boat_off = room.function('ghast_boat_off', home=False).add(
         data().remove(n().tag('colorings_ghast'), 'leash'),

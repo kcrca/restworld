@@ -2,17 +2,19 @@ from __future__ import annotations
 
 import copy
 import math
-import random
 import re
 from copy import deepcopy
 from typing import Callable, Iterable, Sequence, Tuple
 
-from pynecraft.base import BLUE, FacingDef, Nbt, ORANGE, ROTATION_180, ROTATION_270, ROTATION_90, RelCoord, is_arg, r, \
+from pynecraft.base import Arg, BLUE, FacingDef, Nbt, ORANGE, ROTATION_180, ROTATION_270, ROTATION_90, RelCoord, is_arg, \
+    r, \
     rotate_facing, to_name
-from pynecraft.commands import Block, BlockDef, CLEAR, Command, Commands, Entity, EntityDef, INT, MINUS, MOVE, Particle, \
+from pynecraft.commands import BYTE, Block, BlockDef, CLEAR, Command, Commands, Entity, EntityDef, INT, MINUS, MOVE, \
+    Particle, \
     Position, RESULT, Score, SignMessages, Target, Text, TextDef, a, as_block, as_entity, as_facing, as_score, clone, \
     comment, \
-    data, e, execute, fill, function, function, kill, n, p, particle, ride, s, say, schedule, scoreboard, setblock, \
+    data, e, execute, fill, function, function, kill, n, p, particle, random, ride, s, say, schedule, scoreboard, \
+    setblock, \
     summon, tag, tellraw, tp, weather
 from pynecraft.function import DataPack, Function, FunctionSet, LATEST_PACK_VERSION, Loop
 from pynecraft.info import default_skins
@@ -125,6 +127,7 @@ class Room(FunctionSet):
         self._homes = set()
         self._home_stand = Entity('armor_stand', {
             'Tags': ['homer', '%s_home' % self.name], 'NoGravity': True, 'Small': True})
+        self._riders_init_done = False
         self.title = None
         self._player_in_room_setup()
         self.facing = facing
@@ -144,7 +147,7 @@ class Room(FunctionSet):
         self._command_block(xz, 'Change Height', BLUE, 'restworld:global/toggle_raised')
 
     def _command_block(self, xz, label_text, color, command, facing=None):
-        func = self.functions[f'{self.name}_room_init']
+        func = self._room_init_func()
         x = r(xz[0])
         z = r(xz[1])
         if not facing:
@@ -157,6 +160,9 @@ class Room(FunctionSet):
             setblock((x, r(0), z), 'air'),
             setblock((x, r(0), z), Block('command_block', nbt={'Command': f'function {str(command)}'})),
         )
+
+    def _room_init_func(self):
+        return self.functions[f'{self.name}_room_init']
 
     def _player_in_room_setup(self):
         player_home = self.home_func(f'{self.name}_player')
@@ -254,33 +260,61 @@ class Room(FunctionSet):
         kwargs['tags'] = tag_list
         return MobPlacer(*args, **kwargs)
 
+    def _riders_init(self):
+        if self._riders_init_done:
+            return
+        self._riders_init_done = True
+
+        self._room_init_func().add(
+            data().modify(self.store, 'default_players').set().value(
+                [f'entity/player/wide/{x}' for x in default_skins]),
+            data().modify(self.store, 'default_rider').set().value(
+                {'profile': {'texture': f'entity/player/wide/qqq', 'model': 'wide'},
+                 'hide_description': True, 'NoAI': True})
+        )
+        do_summon = self.function('_random_rider_summon', home=False).add(
+            summon(Arg('random_rider_id'), r(0, 0, 0), Arg('random_rider')))
+        _random_rider_choose = self.function('_random_rider_choose', home=False).add(
+            data().modify(
+                self.store, 'random_rider.profile.texture').set().from_(self.store,
+                                                                        'default_players[$(random_rider_num)]'),
+            function(do_summon).with_().storage(self.store)
+        )
+        self._random_rider = self.function('_random_rider', home=False).add(
+            execute().store(RESULT).storage(self.store, 'random_rider_num', BYTE, 1).run(
+                random().value((0, len(default_skins) - 1))),
+            function(_random_rider_choose).with_().storage(self.store)
+        )
+
     def riders_on(self, mount: Target, tags: str | Sequence[str] = None, rider: EntityDef = None) -> Commands:
         tags = self._rider_tags(tags)
         if rider:
             rider = as_entity(rider)
+            rider.tag(*tags).merge_nbt({'NoAI': True})
+            yield data().modify(self.store, 'random_rider').set().value(rider.nbt)
+            yield data().modify(self.store, 'random_rider_id').set().value(rider.id)
         else:
-            who = random.randrange(0, len(default_skins))
-            rider = Entity('mannequin', Nbt({'hide_description': True, 'profile': {
-                'texture': f'entity/player/wide/{default_skins[who]}', 'model': 'wide'}}))
-        rider.tag(self.name, *tags).merge_nbt({'NoAI': True})
-        return execute().as_(mount).at(s()).run(
-            rider.summon(r(0, 0.44, 0)),
+            self._riders_init()
+            yield data().modify(self.store, 'random_rider').set().from_(self.store, 'default_rider')
+            yield data().modify(self.store, 'random_rider_id').set().value('mannequin')
+            yield data().modify(self.store, 'random_rider.Tags').set().value(tags)
+        yield execute().as_(mount).at(s()).run(
+            function(self._random_rider),
             data().modify(n().tag(self.name, *tags), 'Rotation').set().from_(s(), 'Rotation'),
-            ride(n().tag(self.name, *tags)).mount(s()),
-        )
+            ride(n().tag(*tags)).mount(s()))
 
     def riders_off(self, tags: str | Sequence[str] = None):
         tags = self._rider_tags(tags)
         return (
-            execute().as_(e().tag(self.name, *tags)).run(ride(s()).dismount()),
-            kill_em(e().tag(self.name, *tags)))
+            execute().as_(e().tag(*tags)).run(ride(s()).dismount()),
+            kill_em(e().tag(*tags)))
 
     def _rider_tags(self, tags):
         if not tags:
             tags = ('rider',)
         elif isinstance(tags, str):
             tags = (tags,)
-        return tags
+        return tags + (self.name,)
 
     def function(self, name: str, clock: Clock = None, /, home: bool | Command | Commands = True, single_home=True,
                  exists_ok=False) -> Function:
