@@ -822,7 +822,7 @@ def aquatic(room):
     def nautilus_loop(step):
         nautilus_slector = n().tag('nautilus', 'adult')
         if step.elem:
-            yield from room.rider_on(e().tag('zombie_nautilus'), tags='nautilus_rider', rider=Entity('Drowned', {'equipment': {'main_hand': Item.nbt_for('trident')}}))
+            yield from room.rider_on(e().tag('zombie_nautilus'), tags='nautilus_rider', rider=Entity('Drowned', {'equipment': {'mainhand': Item.nbt_for('trident')}}))
             yield data().modify(nautilus_slector, 'Owner').set().from_(p(), 'UUID')
             yield item().replace().entity(nautilus_slector, 'saddle').with_('saddle')
             yield from room.rider_on(nautilus_slector, tags='nautilus_rider')
