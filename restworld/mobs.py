@@ -237,13 +237,13 @@ def friendlies(room):
         lambda step: execute().as_(e().tag('llama').tag('!kid')).run(
             data().merge(s(), {'equipment': {'body': {'id': step.elem.id + '_carpet', 'Count': 1}}})), colors)
     second_riders = room.function('second_riders_on', home=False).add(
-        room.rider_on(e().tag('camel', 'adult')))
+        room.riders_on(e().tag('camel', 'adult')))
     room.function('riders_on', home=False).add(
-        room.rider_on(e().tag('saddle', 'adult')),
+        room.riders_on(e().tag('saddle', 'adult')),
         # Gets confused if this is done right away
         schedule().function(second_riders, 1, REPLACE)
     )
-    room.function('riders_off', home=False).add(room.rider_off())
+    room.function('riders_off', home=False).add(room.riders_off())
 
     room.function('llamas_init').add(
         placer(r(0, 2, 0), WEST, 0, 2).summon('llama', nbt={'Tame': True}),
@@ -822,12 +822,12 @@ def aquatic(room):
     def nautilus_loop(step):
         nautilus_slector = n().tag('nautilus', 'adult')
         if step.elem:
-            yield from room.rider_on(e().tag('zombie_nautilus'), tags='nautilus_rider', rider=Entity('Drowned', {'equipment': {'mainhand': Item.nbt_for('trident')}}))
+            yield from room.riders_on(e().tag('zombie_nautilus'), tags='nautilus_rider', rider=Entity('Drowned', {'equipment': {'mainhand': Item.nbt_for('trident')}}))
             yield data().modify(nautilus_slector, 'Owner').set().from_(p(), 'UUID')
             yield item().replace().entity(nautilus_slector, 'saddle').with_('saddle')
-            yield from room.rider_on(nautilus_slector, tags='nautilus_rider')
+            yield from room.riders_on(nautilus_slector, tags='nautilus_rider')
         else:
-            yield from room.rider_off('nautilus_rider')
+            yield from room.riders_off('nautilus_rider')
             yield item().replace().entity(nautilus_slector, 'saddle').with_('air')
 
     nautilus_placer = room.mob_placer(r(0, 3, 0), SOUTH, kid_delta=2)

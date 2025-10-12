@@ -252,7 +252,7 @@ class Room(FunctionSet):
         kwargs['tags'] = tag_list
         return MobPlacer(*args, **kwargs)
 
-    def rider_on(self, mount: Target, tags: str | Sequence[str] = None, rider: EntityDef = None) -> Commands:
+    def riders_on(self, mount: Target, tags: str | Sequence[str] = None, rider: EntityDef = None) -> Commands:
         tags = self._rider_tags(tags)
         if rider:
             rider = as_entity(rider)
@@ -266,7 +266,7 @@ class Room(FunctionSet):
             ride(n().tag(self.name, *tags)).mount(s()),
         )
 
-    def rider_off(self, tags: str | Sequence[str] = None):
+    def riders_off(self, tags: str | Sequence[str] = None):
         tags = self._rider_tags(tags)
         return (
             execute().as_(e().tag(self.name, *tags)).run(ride(s()).dismount()),
