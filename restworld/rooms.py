@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import copy
 import math
+import random
 import re
 from copy import deepcopy
 from typing import Callable, Iterable, Sequence, Tuple
@@ -14,7 +15,8 @@ from pynecraft.commands import Block, BlockDef, CLEAR, Command, Commands, Entity
     data, e, execute, fill, function, function, kill, n, p, particle, ride, s, say, schedule, scoreboard, setblock, \
     summon, tag, tellraw, tp, weather
 from pynecraft.function import DataPack, Function, FunctionSet, LATEST_PACK_VERSION, Loop
-from pynecraft.simpler import Item, TextDisplay, Trigger, WallSign
+from pynecraft.info import default_skins
+from pynecraft.simpler import TextDisplay, Trigger, WallSign
 from pynecraft.values import DUMMY
 
 ERASE_HEIGHT = 80
@@ -257,8 +259,9 @@ class Room(FunctionSet):
         if rider:
             rider = as_entity(rider)
         else:
-            # skeletons are used for riders because their hands are at about the same place a player's would be
-            rider = Entity('skeleton', {'equipment': {'head': (Item.nbt_for('iron_helmet'))}})
+            who = random.randrange(0, len(default_skins))
+            rider = Entity('mannequin', Nbt({'hide_description': True, 'profile': {
+                'texture': f'entity/player/wide/{default_skins[who]}', 'model': 'wide'}}))
         rider.tag(self.name, *tags).merge_nbt({'NoAI': True})
         return execute().as_(mount).at(s()).run(
             rider.summon(r(0, 0.44, 0)),
