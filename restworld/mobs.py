@@ -816,11 +816,25 @@ def aquatic(room):
     room.loop('axolotl', main_clock).loop(
         lambda step: execute().as_(e().tag('axolotl')).run(data().merge(
             s(), {'Variant': step.i, 'CustomName': step.elem + ' Axolotl'})), axolotls)
-    guardian_pos = elder_guardian_pos = r(1, 3, 0)
-    guardian_rot = elder_guardian_rot = SOUTH
-    room.function('guardian_init').add(room.mob_placer(guardian_pos, guardian_rot, adults=True).summon('guardian'))
-    room.function('elder_guardian_init').add(
-        room.mob_placer(elder_guardian_pos, elder_guardian_rot, adults=True).summon('elder_guardian'))
+    room.function('guardian_init').add(room.mob_placer(r(-1, 3, 0.7), WEST, adults=True).summon('guardian'))
+    room.function('elder_guardian_init').add(room.mob_placer(r(-0.7, 3, 1), WEST, adults=True).summon('elder_guardian'))
+
+    def nautilus_loop(step):
+        nautilus_slector = n().tag('nautilus', 'adult')
+        if step.elem:
+            yield from room.rider_on(e().tag('zombie_nautilus'), tags='nautilus_rider', rider=Entity('Drowned', {'equipment': {'main_hand': Item.nbt_for('trident')}}))
+            yield data().modify(nautilus_slector, 'Owner').set().from_(p(), 'UUID')
+            yield item().replace().entity(nautilus_slector, 'saddle').with_('saddle')
+            yield from room.rider_on(nautilus_slector, tags='nautilus_rider')
+        else:
+            yield from room.rider_off('nautilus_rider')
+            yield item().replace().entity(nautilus_slector, 'saddle').with_('air')
+
+    nautilus_placer = room.mob_placer(r(0, 3, 0), SOUTH, kid_delta=2)
+    room.function('nautilus_init').add(
+        nautilus_placer.summon('nautilus'),
+        nautilus_placer.summon('zombie_nautilus', kids=False))
+    room.loop('nautilus', main_clock).loop(nautilus_loop, (False, True))
 
     def squids_loop(step):
         placer = room.mob_placer(r(2.6, 4, 0.2), WEST, None, kid_delta=1.8, tags=('squidy',), nbt={'NoGravity': True})

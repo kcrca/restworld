@@ -252,24 +252,32 @@ class Room(FunctionSet):
         kwargs['tags'] = tag_list
         return MobPlacer(*args, **kwargs)
 
-    def rider_on(self, mount: Target, tags: str | Sequence[str] = None) -> Commands:
-        helmet = Item.nbt_for('iron_helmet')
-        if tags is None:
-            tags = ()
-        elif isinstance(tags, str):
-            tags = (tags,)
-        # skeletons are used for riders because their hands are at about the same place a player's would be
-        rider = Entity('skeleton', {'NoAI': True, 'equipment': {'head': helmet}}).tag(self.name, 'rider', *tags)
+    def rider_on(self, mount: Target, tags: str | Sequence[str] = None, rider: EntityDef = None) -> Commands:
+        tags = self._rider_tags(tags)
+        if rider:
+            rider = as_entity(rider)
+        else:
+            # skeletons are used for riders because their hands are at about the same place a player's would be
+            rider = Entity('skeleton', {'equipment': {'head': (Item.nbt_for('iron_helmet'))}})
+        rider.tag(self.name, *tags).merge_nbt({'NoAI': True})
         return execute().as_(mount).at(s()).run(
-            rider.summon(r(0, 0, 0)),
-            data().modify(n().tag(self.name, 'rider', *tags), 'Rotation').set().from_(s(), 'Rotation'),
-            ride(n().tag(self.name, 'rider', *tags)).mount(s()),
+            rider.summon(r(0, 0.44, 0)),
+            data().modify(n().tag(self.name, *tags), 'Rotation').set().from_(s(), 'Rotation'),
+            ride(n().tag(self.name, *tags)).mount(s()),
         )
 
-    def rider_off(self):
+    def rider_off(self, tags: str | Sequence[str] = None):
+        tags = self._rider_tags(tags)
         return (
-            execute().as_(e().tag(self.name, 'rider')).run(ride(s()).dismount()),
-            kill_em(e().tag(self.name, 'rider')))
+            execute().as_(e().tag(self.name, *tags)).run(ride(s()).dismount()),
+            kill_em(e().tag(self.name, *tags)))
+
+    def _rider_tags(self, tags):
+        if not tags:
+            tags = ('rider',)
+        elif isinstance(tags, str):
+            tags = (tags,)
+        return tags
 
     def function(self, name: str, clock: Clock = None, /, home: bool | Command | Commands = True, single_home=True,
                  exists_ok=False) -> Function:
@@ -539,7 +547,8 @@ class MobPlacer:
         return copy.deepcopy(self)
 
     def summon(self, mobs: Iterable[EntityDef] | EntityDef, *, on_stand: bool | Callable[[Entity], bool] = False,
-               tags: str | tuple[str] | list[str] = None, nbt=None, auto_tag=None) -> Tuple[Command, ...]:
+               tags: str | tuple[str] | list[str] = None, nbt=None, auto_tag=None, adults=None, kids=None) -> Tuple[
+        Command, ...]:
         if isinstance(mobs, (Entity, str)):
             mobs = (mobs,)
         if tags and isinstance(tags, str):
@@ -564,16 +573,18 @@ class MobPlacer:
             if auto_tag:
                 tmpl.tag(tmpl.id)
 
-            if self.adults:
+            adults = self.adults if adults is None else adults
+            if adults:
                 adult = tmpl.clone()
                 adult.tag('adult')
                 yield self._do_summoning(adult, on_stand, self._cur)
-            if self.kids:
+            kids = self.kids if kids is None else kids
+            if kids:
                 kid = tmpl.clone()
                 kid.tag('kid')
                 kid.merge_nbt({'IsBaby': True, 'Age': -2147483648})
                 pos = self._cur
-                if self.adults:
+                if adults:
                     pos = pos[0] + self.kid_x, pos[1], pos[2] + self.kid_z
                 yield self._do_summoning(kid, on_stand, pos)
 
