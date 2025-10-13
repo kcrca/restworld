@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from collections import namedtuple
+
 from pynecraft import info
 from pynecraft.base import Arg, EAST, EQ, NE, NORTH, NW, Nbt, NbtDef, RelCoord, SOUTH, WEST, as_facing, r, to_id
 from pynecraft.commands import Block, BlockDef, Entity, LONG, MOD, PLUS, RESULT, Score, as_block, data, e, execute, \
@@ -309,33 +311,29 @@ def basic_functions(room, enchanted):
                 nbt={'Tags': ['enchantable', 'material_%d' % (3 - i), 'material_static']}))
 
     basic_init.add(fill(r(-3, 2, 2), r(-3, 5, 2), 'stone'), kill(e().tag('armor_frame')),
-                   summon('item_frame', r(-3, 2, 1),
-                          {'Facing': 2, 'Tags': ['armor_boots', 'enchantable', 'armor_frame']}),
-                   summon('item_frame', r(-3, 3, 1),
-                          {'Facing': 2, 'Tags': ['armor_leggings', 'enchantable', 'armor_frame']}),
-                   summon('item_frame', r(-3, 4, 1),
-                          {'Facing': 2, 'Tags': ['armor_chestplate', 'enchantable', 'armor_frame']}),
-                   summon('item_frame', r(-3, 5, 1),
-                          {'Facing': 2, 'Tags': ['armor_helmet', 'enchantable', 'armor_frame']}),
-                   summon('item_frame', r(3, 2, 1), {'Facing': 2, 'Tags': ['armor_gem', 'armor_frame']}),
-                   summon('item_frame', r(4, 4, 1),
-                          {'Facing': 2, 'Tags': ['armor_horse_frame', 'enchantable', 'armor_frame']}),
+                   ItemFrame(NORTH).tag('armor_boots', 'enchantable', 'armor_frame').summon(r(-3, 2, 1)),
+                   ItemFrame(NORTH).tag('armor_leggings', 'enchantable', 'armor_frame').summon(r(-3, 3, 1)),
+                   ItemFrame(NORTH).tag('armor_chestplate', 'enchantable', 'armor_frame').summon(r(-3, 4, 1)),
+                   ItemFrame(NORTH).tag('armor_helmet', 'enchantable', 'armor_frame').summon(r(-3, 5, 1)),
+                   ItemFrame(NORTH).tag('armor_gem', 'armor_frame').summon(r(3, 2, 3)),
+                   ItemFrame(NORTH).tag('armor_horse_frame', 'enchantable', 'armor_frame').summon(r(4, 4, 1)),
+                   ItemFrame(NORTH).tag('armor_nautilus_frame', 'enchantable', 'armor_frame').summon(r(4, 3, 1)),
                    room.label(r(5, 2, -2), 'Saddle', NORTH),
                    room.label(r(3, 2, -2), 'Enchanted', NORTH),
                    room.label(r(1, 2, -2), 'Turtle Helmet', NORTH),
                    room.label(r(-1, 2, -2), 'Elytra & Leggings', NORTH))
 
+    Material = namedtuple('Material', ('material', 'armor', 'horse_armor', 'nautilus_armor', 'background', 'gem'))
     materials = (
-        ('wooden', 'leather', True, Block('oak_planks'), 'oak_sign'),
-        ('stone', 'chainmail', False, Block('stone'), 'stone'),
-        ('copper', 'copper', True, Block('copper_block'), 'copper_ingot'),
-        ('iron', 'iron', True, Block('iron_block'), 'iron_ingot'),
-        ('golden', 'golden', True, Block('gold_block'), 'gold_ingot'),
-        ('diamond', 'diamond', True, Block('diamond_block'), 'diamond'),
-        ('netherite', 'netherite', False, Block('netherite_block'), 'netherite_ingot'),
+        Material('stone', 'chainmail', False, False, Block('stone'), 'stone'),
+        Material('wooden', 'leather', True, False, Block('oak_planks'), 'oak_sign'),
+        Material('copper', 'copper', True, True, Block('copper_block'), 'copper_ingot'),
+        Material('iron', 'iron', True, True, Block('iron_block'), 'iron_ingot'),
+        Material('golden', 'golden', True, True, Block('gold_block'), 'gold_ingot'),
+        Material('diamond', 'diamond', True, True, Block('diamond_block'), 'diamond'),
+        Material('netherite', 'netherite', False, True, Block('netherite_block'), 'netherite_ingot'),
     )
 
-    horse_saddle = room.score('horse_saddle')
     turtle_helmet = room.score('turtle_helmet')
     elytra = room.score('elytra')
 
@@ -345,7 +343,7 @@ def basic_functions(room, enchanted):
     switch_mannequin = room.loop('switch_mannequin', home=False).loop(mannequin_loop, default_skins)
 
     def basic_loop(step):
-        material, armor, horse_armor, background, gem = step.elem
+        material, armor, horse_armor, nautilus_armor, background, gem = step.elem
 
         if step.i == 0:
             yield function(switch_mannequin)
@@ -357,8 +355,8 @@ def basic_functions(room, enchanted):
                     'chest': Item.nbt_for('%s_chestplate' % armor), 'head': Item.nbt_for('%s_helmet' % armor)}})
 
         yield fill(r(-3, 2, 2), r(-3, 5, 2), background.id)
-        yield setblock(r(3, 2, 2), background.id)
-        yield setblock(r(4, 4, 2), background.id)
+        yield setblock(r(3, 2, 4), background.id)
+        yield fill(r(4, 3, 2), r(4, 4, 2), background.id)
 
         yield data().merge(e().tag('armor_boots').limit(1), {'Item': {'id': '%s_boots' % armor}, 'ItemRotation': 0})
         yield data().merge(e().tag('armor_leggings').limit(1),
@@ -368,23 +366,8 @@ def basic_functions(room, enchanted):
         yield data().merge(e().tag('armor_helmet').limit(1), {'Item': {'id': '%s_helmet' % armor}, 'ItemRotation': 0})
         yield data().merge(e().tag('armor_gem').limit(1), {'Item': {'id': gem, 'Count': 1}, 'ItemRotation': 0})
 
-        if horse_armor:
-            yield execute().unless().entity(e().tag('armor_horse').distance((None, 10))).run(
-                room.mob_placer(r(5, 2, 0.5), NORTH, adults=True).summon(
-                    'horse',
-                    nbt={'Variant': 1, 'Tame': True, 'Tags': ['armor_horse', 'enchantable', 'material_static']}))
-            yield data().merge(n().tag('armor_horse').limit(1),
-                               {'equipment': {'body': Item.nbt_for('%s_horse_armor' % armor)}})
-            yield data().merge(e().tag('armor_horse_frame').limit(1),
-                               {'Item': Item.nbt_for('%s_horse_armor' % armor), 'ItemRotation': 0})
-            yield execute().if_().score(horse_saddle).matches(1).run(
-                item().replace().entity(e().tag('armor_horse'), 'saddle').with_('saddle'))
-            yield execute().if_().score(horse_saddle).matches(0).run(
-                data().remove(e().tag('armor_horse').limit(1), 'equipment.saddle'))
-        else:
-            yield data().remove(e().tag('armor_horse_frame').limit(1), 'Item')
-            yield execute().if_().entity(e().tag('armor_horse').distance((None, 10))).run(
-                kill_em(e().tag('armor_horse')))
+        yield from armored_mob(armor, 'horse', horse_armor, r(5, 2, 0.5), NORTH)
+        yield from armored_mob(armor, 'nautilus', nautilus_armor, r(3, 2, 0.75), EAST)
 
         yield data().merge(e().tag('basic_stand').limit(1),
                            {'equipment': {'mainhand': Item.nbt_for('%s_sword' % material),
@@ -405,13 +388,33 @@ def basic_functions(room, enchanted):
             hands_row[6] = 'clock'
         for j in range(0, 8):
             hand = 'mainhand' if j < 4 else 'offhand'
-            which = e().tag('material_%d' % j).limit(1)
+            who = e().tag('material_%d' % j).limit(1)
             thing = hands_row[j]
             if thing:
-                yield data().merge(which, {'equipment': {hand: Item.nbt_for(thing)}})
+                yield data().merge(who, {'equipment': {hand: Item.nbt_for(thing)}})
             else:
-                yield data().remove(which, f'equipment.{hand}')
+                yield data().remove(who, f'equipment.{hand}')
         yield data().merge(r(-2, 0, 1), {'name': f'restworld:material_{material}', 'mode': 'LOAD'})
+
+    def armored_mob(armor, mob, has_armor, pos, dir):
+        if has_armor:
+            has_saddle = room.score(f'{mob}_saddle')
+            yield execute().unless().entity(e().tag(f'armor_{mob}').distance((None, 10))).run(
+                room.mob_placer(pos, dir, adults=True).summon(
+                    mob,
+                    nbt={'Variant': 1, 'Tame': True, 'Tags': [f'armor_{mob}', 'enchantable', 'material_static']}))
+            yield data().merge(n().tag(f'armor_{mob}').limit(1),
+                               {'equipment': {'body': Item.nbt_for(f'{armor}_{mob}_armor')}})
+            yield data().merge(e().tag(f'armor_{mob}_frame').limit(1),
+                               {'Item': Item.nbt_for(f'{armor}_{mob}_armor'), 'ItemRotation': 0})
+            yield execute().if_().score(has_saddle).matches(1).run(
+                item().replace().entity(e().tag(f'armor_{mob}'), 'saddle').with_('saddle'))
+            yield execute().if_().score(has_saddle).matches(0).run(
+                data().remove(e().tag(f'armor_{mob}').limit(1), 'equipment.saddle'))
+        else:
+            yield data().remove(e().tag(f'armor_{mob}_frame').limit(1), 'Item')
+            yield execute().if_().entity(e().tag(f'armor_{mob}').distance((None, 10))).run(
+                kill_em(e().tag(f'armor_{mob}')))
 
     which_elytra = room.score('which_elytra')
     basic_init.add(which_elytra.set(0))
