@@ -107,6 +107,7 @@ def room():
     skeleton_nbts = {'equipment': {'mainhand': Item.nbt_for('bow'), 'feet': protected('iron_boots'),
                                    'head': protected('iron_helmet')}}
     fighter_nbts = {
+        'copper_golem': {'next_weather_age': -2},
         'drowned': {'equipment': {'mainhand': Item.nbt_for('trident')}},
         'goat': {'IsScreamingGoat': True, 'HasLeftHorn': True, 'HasRightHorn': True},
         'hoglin': {'IsImmuneToZombification': True},
