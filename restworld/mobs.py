@@ -823,7 +823,7 @@ def aquatic(room):
             yield from room.riders_off('nautilus_rider')
             yield item().replace().entity(nautilus_selector, 'saddle').with_('air')
 
-    nautilus_placer = room.mob_placer(r(0, 3, 0), SOUTH, kid_delta=2)
+    nautilus_placer = room.mob_placer(r(0, 3, -0.5), SOUTH, kid_delta=2.2)
     room.function('nautilus_init').add(
         nautilus_placer.summon('nautilus'),
         nautilus_placer.summon('zombie_nautilus', kids=False))

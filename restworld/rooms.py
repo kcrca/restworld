@@ -270,7 +270,7 @@ class Room(FunctionSet):
                 [f'entity/player/wide/{x}' for x in default_skins]),
             data().modify(self.store, 'default_rider').set().value(
                 {'profile': {'texture': f'entity/player/wide/qqq', 'model': 'wide'},
-                 'hide_description': True, 'NoAI': True})
+                 'hide_description': True, 'NoAI': True, 'Invulnerable': True, 'PersistenceRequired': True})
         )
         do_summon = self.function('_random_rider_summon', home=False).add(
             summon(Arg('random_rider_id'), r(0, 0, 0), Arg('random_rider')))
@@ -290,7 +290,7 @@ class Room(FunctionSet):
         tags = self._rider_tags(tags)
         if rider:
             rider = as_entity(rider)
-            rider.tag(*tags).merge_nbt({'NoAI': True})
+            rider.tag(*tags).merge_nbt({'NoAI': True, 'Invulnerable': True, 'PersistenceRequired': True})
             yield data().modify(self.store, 'random_rider').set().value(rider.nbt)
             yield data().modify(self.store, 'random_rider_id').set().value(rider.id)
         else:
