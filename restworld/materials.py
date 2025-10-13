@@ -5,7 +5,8 @@ from pynecraft.base import Arg, EAST, EQ, NE, NORTH, NW, Nbt, NbtDef, RelCoord, 
 from pynecraft.commands import Block, BlockDef, Entity, LONG, MOD, PLUS, RESULT, Score, as_block, data, e, execute, \
     fill, fillbiome, function, item, kill, n, random, s, scoreboard, setblock, summon, tag
 from pynecraft.function import BLOCK
-from pynecraft.info import armor_equipment, colors, copper_golem_poses, must_give_items, operator_menu, stems, \
+from pynecraft.info import armor_equipment, colors, copper_golem_poses, default_skins, must_give_items, operator_menu, \
+    stems, \
     trim_materials, trim_patterns, weathering_id, weathering_name, weatherings
 from pynecraft.simpler import Item, ItemFrame, PLAINS, Region, SWAMP, Sign, WallSign
 from pynecraft.values import COLD_OCEAN, FROZEN_OCEAN, LUKEWARM_OCEAN, MANGROVE_SWAMP, OCEAN, WARM_OCEAN, biomes
@@ -289,12 +290,15 @@ def room():
 
 
 def basic_functions(room, enchanted):
-    stand = Entity('armor_stand',
-                   {'Tags': ['basic_stand', 'material_static', 'enchantable'], 'ShowArms': True, 'NoGravity': True})
-    invis_stand = stand.clone().merge_nbt({'Tags': ['material_static'], 'Invisible': True})
+    invis_stand = Entity('armor_stand',
+                         {'Tags': ['basic_stand', 'material_static', 'enchantable'], 'ShowArms': True,
+                          'NoGravity': True}).clone().merge_nbt({'Tags': ['material_static'], 'Invisible': True})
+    mannequin = Entity('mannequin',
+                       {'Tags': ['basic_stand', 'material_static', 'enchantable'], 'immovable': True,
+                        'hide_description': True})
     basic_init = room.function('basic_init').add(
         kill(e().tag('material_static')),
-        stand.summon(r(0, 2.0, 0), facing=NORTH, nbt={'CustomNameVisible': True}))
+        mannequin.summon(r(0, 2.0, 0), facing=NORTH, nbt={'CustomNameVisible': True}))
     for i in range(0, 5):
         basic_init.add(invis_stand.summon(
             r(-(0.8 + i * 0.7), 2.0, 0), facing=NORTH,
@@ -335,9 +339,16 @@ def basic_functions(room, enchanted):
     turtle_helmet = room.score('turtle_helmet')
     elytra = room.score('elytra')
 
+    def mannequin_loop(step):
+        yield data().modify(n().tag('basic_stand'), 'profile.texture').set().value(f'entity/player/wide/{step.elem}')
+
+    switch_mannequin = room.loop('switch_mannequin', home=False).loop(mannequin_loop, default_skins)
+
     def basic_loop(step):
         material, armor, horse_armor, background, gem = step.elem
 
+        if step.i == 0:
+            yield function(switch_mannequin)
         yield data().merge(
             e().tag('basic_stand').limit(1), {
                 'CustomName': material.capitalize(),
@@ -753,7 +764,7 @@ def trim_functions(room):
     overall_tag = 'trim_stand'
     base_stand = Entity('armor_stand',
                         {'ShowArms': True,
-                         'Pose': {'LeftArm': [-30, 0, -170], 'RightArm': [-20, 0, 20],
+                         'Pose': {'LeftArm': [-20, 0, -140], 'RightArm': [-20, 0, 20],
                                   'LeftLeg': [-20, 0, 0], 'RightLeg': [20, 0, 0]}}).tag(room.name, overall_tag)
     places = [None, None]
     places[0] = [
