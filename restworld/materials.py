@@ -367,7 +367,7 @@ def basic_functions(room, enchanted):
         yield data().merge(e().tag('armor_gem').limit(1), {'Item': {'id': gem, 'Count': 1}, 'ItemRotation': 0})
 
         yield from armored_mob(armor, 'horse', horse_armor, r(5, 2, 0.5), NORTH)
-        yield from armored_mob(armor, 'nautilus', nautilus_armor, r(3, 2, 0.75), EAST)
+        yield from armored_mob(armor, 'nautilus', nautilus_armor, r(2.6, 2.5, 0.5), WEST)
 
         yield data().merge(e().tag('basic_stand').limit(1),
                            {'equipment': {'mainhand': Item.nbt_for('%s_sword' % material),
