@@ -274,7 +274,7 @@ class Room(FunctionSet):
         )
         do_summon = self.function('_random_rider_summon', home=False).add(
             summon(Arg('random_rider_id'), r(0, 0, 0), Arg('random_rider')))
-        _random_rider_choose = self.function('_random_rider_choose', home=False).add(
+        choose = self.function('_random_rider_choose', home=False).add(
             data().modify(
                 self.store, 'random_rider.profile.texture').set().from_(self.store,
                                                                         'default_players[$(random_rider_num)]'),
@@ -283,7 +283,7 @@ class Room(FunctionSet):
         self._random_rider = self.function('_random_rider', home=False).add(
             execute().store(RESULT).storage(self.store, 'random_rider_num', BYTE, 1).run(
                 random().value((0, len(default_skins) - 1))),
-            function(_random_rider_choose).with_().storage(self.store)
+            function(choose).with_().storage(self.store)
         )
 
     def riders_on(self, mount: Target, tags: str | Sequence[str] = None, rider: EntityDef = None) -> Commands:

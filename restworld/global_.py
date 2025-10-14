@@ -184,10 +184,6 @@ def room():
         func(r(3, 0, -1), '_exit', SOUTH),
         setblock(r(-1, -1, -1), 'air'),
         setblock(r(3, 0, 0), 'glowstone'),
-
-        # debug stuff commented out
-        # execute().positioned(r(-1, 0, -1)).run(setblock(r(0, 10, 0), 'stone')),
-        # setblock(r(Arg('dx'), 10, Arg('dz')), 'stone'),
     )
 
     # The death functions
@@ -283,7 +279,7 @@ def room():
     last_clean = room.score('last_clean_time')
     clean_time = room.score('ensure_clean_time', 600)
     clean_time_max = room.score_max('ensure_clean_time')
-    ensure_clean_init = room.function('ensure_clean_init', home=False).add(
+    room.function('ensure_clean_init', home=False).add(
         clean_time_max.set(600)
     )
     room.function('ensure_clean').add(
