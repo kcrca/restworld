@@ -5,7 +5,7 @@ from collections import namedtuple
 from pynecraft import info
 from pynecraft.base import Arg, EAST, EQ, NE, NORTH, NW, Nbt, NbtDef, RelCoord, SOUTH, WEST, as_facing, r, to_id
 from pynecraft.commands import Block, BlockDef, Entity, LONG, MOD, PLUS, RESULT, Score, as_block, data, e, execute, \
-    fill, fillbiome, function, item, kill, n, random, s, scoreboard, setblock, summon, tag
+    fill, fillbiome, function, item, kill, n, p, random, s, scoreboard, setblock, summon, tag
 from pynecraft.function import BLOCK
 from pynecraft.info import armor_equipment, colors, copper_golem_poses, default_skins, must_give_items, operator_menu, \
     stems, \
@@ -371,7 +371,8 @@ def basic_functions(room, enchanted):
         yield data().merge(e().tag('armor_gem').limit(1), {'Item': {'id': gem, 'Count': 1}, 'ItemRotation': 0})
 
         yield from armored_mob(armor, 'horse', horse_armor, r(5, 2, 0.5), NORTH)
-        yield from armored_mob(armor, 'nautilus', nautilus_armor, r(2.6, 2.5, 0.5), WEST)
+        yield from armored_mob(armor, 'nautilus', nautilus_armor, r(2.6, 2.5, 0.5), WEST,
+                               data().modify(n().tag('armor_nautilus'), 'Owner').set().from_(p(), 'UUID'))
 
         yield data().merge(e().tag('basic_stand').limit(1),
                            {'equipment': {'mainhand': Item.nbt_for('%s_sword' % material),
@@ -396,9 +397,10 @@ def basic_functions(room, enchanted):
                 yield data().remove(who, f'equipment.{hand}')
         yield data().merge(r(-2, 0, 1), {'name': f'restworld:material_{material}', 'mode': 'LOAD'})
 
-    def armored_mob(armor, mob, has_armor, pos, dir):
+    has_saddle = room.score(f'materials_saddle')
+
+    def armored_mob(armor, mob, has_armor, pos, dir, cmd=None):
         if has_armor:
-            has_saddle = room.score(f'{mob}_saddle')
             yield execute().unless().entity(e().tag(f'armor_{mob}').distance((None, 10))).run(
                 room.mob_placer(pos, dir, adults=True).summon(
                     mob,
@@ -411,6 +413,8 @@ def basic_functions(room, enchanted):
                 item().replace().entity(e().tag(f'armor_{mob}'), 'saddle').with_('saddle'))
             yield execute().if_().score(has_saddle).matches(0).run(
                 data().remove(e().tag(f'armor_{mob}').limit(1), 'equipment.saddle'))
+            if cmd:
+                yield cmd
         else:
             yield data().remove(e().tag(f'armor_{mob}_frame').limit(1), 'Item')
             yield execute().if_().entity(e().tag(f'armor_{mob}').distance((None, 10))).run(
