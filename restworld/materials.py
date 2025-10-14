@@ -323,10 +323,12 @@ def basic_functions(room, enchanted):
                    room.label(r(1, 2, -2), 'Turtle Helmet', NORTH),
                    room.label(r(-1, 2, -2), 'Elytra & Leggings', NORTH))
 
-    Material = namedtuple('Material', ('material', 'armor', 'horse_armor', 'nautilus_armor', 'background', 'gem'))
+    Material = namedtuple('Material',
+                          ('material', 'armor', 'horse_armor', 'nautilus_armor', 'background', 'gem', 'title'),
+                          defaults=(None,))
     materials = (
         Material('stone', 'chainmail', False, False, Block('stone'), 'stone'),
-        Material('wooden', 'leather', True, False, Block('oak_planks'), 'oak_sign'),
+        Material('wooden', 'leather', True, False, Block('oak_planks'), 'oak_sign', 'Wood/Leather'),
         Material('copper', 'copper', True, True, Block('copper_block'), 'copper_ingot'),
         Material('iron', 'iron', True, True, Block('iron_block'), 'iron_ingot'),
         Material('golden', 'golden', True, True, Block('gold_block'), 'gold_ingot'),
@@ -343,13 +345,15 @@ def basic_functions(room, enchanted):
     switch_mannequin = room.loop('switch_mannequin', home=False).loop(mannequin_loop, default_skins)
 
     def basic_loop(step):
-        material, armor, horse_armor, nautilus_armor, background, gem = step.elem
+        material, armor, horse_armor, nautilus_armor, background, gem, title = step.elem
+        if not title:
+            title = material.title()
 
         if step.i == 0:
             yield function(switch_mannequin)
         yield data().merge(
             e().tag('basic_stand').limit(1), {
-                'CustomName': material.capitalize(),
+                'CustomName': title,
                 'equipment': {
                     'feet': Item.nbt_for('%s_boots' % armor), 'legs': Item.nbt_for('%s_leggings' % armor),
                     'chest': Item.nbt_for('%s_chestplate' % armor), 'head': Item.nbt_for('%s_helmet' % armor)}})
@@ -373,19 +377,15 @@ def basic_functions(room, enchanted):
                            {'equipment': {'mainhand': Item.nbt_for('%s_sword' % material),
                                           'offhand': Item.nbt_for('shield')}})
 
-        hands_row = [None, None, '%s_shovel' % material, '%s_pickaxe' % material, '%s_hoe' % material,
-                     '%s_axe' % material, None, None]
+        hands_row = [None, None, f'{material}_shovel', f'{material}_pickaxe', f'{material}_spear',
+                     f'{material}_axe', f'{material}_hoe', None]
         if material == 'wooden':
             hands_row[0] = 'stick'
             hands_row[1] = 'bow'
-            hands_row[6] = 'fishing_rod'
-            hands_row[7] = 'crossbow'
+            hands_row[7] = 'fishing_rod'
         elif material == 'iron':
             hands_row[1] = 'flint_and_steel'
-            hands_row[6] = 'shears'
-            hands_row[7] = 'compass'
-        elif material == 'golden':
-            hands_row[6] = 'clock'
+            hands_row[7] = 'shears'
         for j in range(0, 8):
             hand = 'mainhand' if j < 4 else 'offhand'
             who = e().tag('material_%d' % j).limit(1)
