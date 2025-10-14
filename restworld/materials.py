@@ -4,7 +4,8 @@ from collections import namedtuple
 
 from pynecraft import info
 from pynecraft.base import Arg, EAST, EQ, NE, NORTH, NW, Nbt, NbtDef, RelCoord, SOUTH, WEST, as_facing, r, to_id
-from pynecraft.commands import Block, BlockDef, Entity, LONG, MOD, PLUS, RESULT, Score, as_block, data, e, execute, \
+from pynecraft.commands import Block, BlockDef, Entity, LONG, MOD, PLUS, RESULT, Score, as_block, data, e, \
+    execute, \
     fill, fillbiome, function, item, kill, n, p, random, s, scoreboard, setblock, summon, tag
 from pynecraft.function import BLOCK
 from pynecraft.info import armor_equipment, colors, copper_golem_poses, default_skins, must_give_items, operator_menu, \
@@ -326,6 +327,7 @@ def basic_functions(room, enchanted):
     Material = namedtuple('Material',
                           ('material', 'armor', 'horse_armor', 'nautilus_armor', 'background', 'gem', 'title'),
                           defaults=(None,))
+    # noinspection PyArgumentList
     materials = (
         Material('stone', 'chainmail', False, False, Block('stone'), 'stone'),
         Material('wooden', 'leather', True, False, Block('oak_planks'), 'oak_sign', 'Wood/Leather'),
@@ -397,22 +399,17 @@ def basic_functions(room, enchanted):
                 yield data().remove(who, f'equipment.{hand}')
         yield data().merge(r(-2, 0, 1), {'name': f'restworld:material_{material}', 'mode': 'LOAD'})
 
-    has_saddle = room.score(f'materials_saddle')
-
     def armored_mob(armor, mob, has_armor, pos, dir, cmd=None):
         if has_armor:
             yield execute().unless().entity(e().tag(f'armor_{mob}').distance((None, 10))).run(
                 room.mob_placer(pos, dir, adults=True).summon(
                     mob,
-                    nbt={'Variant': 1, 'Tame': True, 'Tags': [f'armor_{mob}', 'enchantable', 'material_static']}))
-            yield data().merge(n().tag(f'armor_{mob}').limit(1),
+                    nbt={'Variant': 1, 'Tame': True,
+                         'Tags': [f'armor_{mob}', 'basic_saddle', 'enchantable', 'material_static']}))
+            yield data().merge(n().tag(f'armor_{mob}'),
                                {'equipment': {'body': Item.nbt_for(f'{armor}_{mob}_armor')}})
-            yield data().merge(e().tag(f'armor_{mob}_frame').limit(1),
+            yield data().merge(n().tag(f'armor_{mob}_frame'),
                                {'Item': Item.nbt_for(f'{armor}_{mob}_armor'), 'ItemRotation': 0})
-            yield execute().if_().score(has_saddle).matches(1).run(
-                item().replace().entity(e().tag(f'armor_{mob}'), 'saddle').with_('saddle'))
-            yield execute().if_().score(has_saddle).matches(0).run(
-                data().remove(e().tag(f'armor_{mob}').limit(1), 'equipment.saddle'))
             if cmd:
                 yield cmd
         else:
@@ -423,10 +420,15 @@ def basic_functions(room, enchanted):
     which_elytra = room.score('which_elytra')
     basic_init.add(which_elytra.set(0))
     basic = room.loop('basic', main_clock)
+    has_saddle = room.score(f'materials_saddle')
     basic.add(
         erase(r(2, 2, 2), r(-2, 5, 4)),
         kill_em(e().tag('material_thing'))
     ).loop(basic_loop, materials).add(
+        execute().if_().score(has_saddle).matches(1).run(
+            item().replace().entity(e().tag('basic_saddle'), 'saddle').with_('saddle')),
+        execute().if_().score(has_saddle).matches(0).run(
+            item().replace().entity(e().tag('basic_saddle'), 'saddle').with_('air')),
         execute().if_().score(turtle_helmet).matches(1).run(
             data().modify(n().tag('basic_stand'), 'equipment.head.id').set().value('turtle_helmet'),
             data().modify(n().tag('armor_helmet'), 'Item.id').set().value('turtle_helmet')),
