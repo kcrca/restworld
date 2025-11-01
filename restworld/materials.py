@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from collections import namedtuple
 
+from titlecase import titlecase
+
 from pynecraft import info
 from pynecraft.base import Arg, EAST, EQ, NE, NORTH, NW, Nbt, NbtDef, RelCoord, SOUTH, WEST, as_facing, r, to_id
 from pynecraft.commands import Block, BlockDef, Entity, LONG, MOD, PLUS, RESULT, Score, as_block, data, e, \
@@ -173,7 +175,7 @@ def room():
 
     def sand_loop(step):
         next, prev = [('sand', 'red_sand'), ('red_sand', 'sand')][step.i]
-        name = f'{step.elem} Sand &'.strip().title()
+        name = titlecase(f'{step.elem} Sand &'.strip())
         yield Sign.change(
             sign_pos, (None, name))
         for x in ('sand', 'sandstone', 'smooth_sandstone', 'cut_sandstone', 'sandstone_wall', 'chiseled_sandstone'):
@@ -349,7 +351,7 @@ def basic_functions(room, enchanted):
     def basic_loop(step):
         material, armor, horse_armor, nautilus_armor, background, gem, title = step.elem
         if not title:
-            title = material.title()
+            title = titlecase(material)
 
         if step.i == 0:
             yield function(switch_mannequin)
@@ -544,7 +546,7 @@ def copper_functions(room):
             basic += '_block'
         if len(type) > 0:
             type += '_'
-        yield Sign.change(copper_sign_pos, (None, type.replace('_', ' ').title()))
+        yield Sign.change(copper_sign_pos, (None, titlecase(type.replace('_', ' '))))
         yield from volume.replace(type + basic, '#restworld:coppers')
         yield from volume.replace(type + 'lightning_rod', '#lightning_rods')
         yield from volume.replace(type + 'cut_copper', '#restworld:cut_coppers')
@@ -577,7 +579,7 @@ def copper_functions(room):
 
         yield item().replace().entity(n().tag('copper_door_frame'), 'container.0').with_(Item(type + 'copper_door'))
 
-        sign_text = ['', type.replace('_', ' ').title(), 'Copper', '']
+        sign_text = ['', titlecase(type.replace('_', ' ')), 'Copper', '']
         yield Sign.change(r(2, 2, 0), sign_text)
 
     # Share a score so we only change 'waxness', not oxidization level
@@ -844,7 +846,7 @@ def trim_functions(room):
             places_used = places[which_places]
             stand_start = int((len(places_used) - len(self.types)) / 2)
             for i, t in enumerate(self.types):
-                stand = base_stand.clone().tag(self.tag).merge_nbt({'CustomName': t.title()})
+                stand = base_stand.clone().tag(self.tag).merge_nbt({'CustomName': titlecase(t)})
                 self.armor_gen(stand, t)
                 loc = places_used[stand_start + i]
                 yield stand.summon(loc[0], {'Rotation': as_facing(loc[1]).rotation})
@@ -856,7 +858,7 @@ def trim_functions(room):
                     data().modify(s(), f'equipment.{place}.{self.nbt_path}').set().value(step.elem))
             yield execute().as_(e().tag(frame)).run(data().modify(s(), f'Item.{self.nbt_path}').set().value(step.elem))
             yield execute().at(e().tag('trim_change_home')).run(
-                Sign.change(r(0, 2, 0), (None, None, None, step.elem.title())))
+                Sign.change(r(0, 2, 0), (None, None, None, titlecase(step.elem))))
             yield from self._trim_frame_sign(step)
 
         def _trim_frame_sign(self, step):
@@ -864,13 +866,13 @@ def trim_functions(room):
                 return
             sign_x = 2 if 'material' in self.nbt_path else 1
             yield execute().at(e().tag(f'{frame}_helmet')).run(
-                Sign.change(r(sign_x, 1, 0), (None, None, step.elem.title())))
+                Sign.change(r(sign_x, 1, 0), (None, None, titlecase(step.elem))))
 
         def _detect(self):
             for i, t in enumerate(self.types):
                 # The path is a.b.c, but we need the last element to be a.b{c:value}, and there is no replace, so...
                 path = self._to_path(t)
-                sign = WallSign().messages((None, 'Keep', f'{self.name.title().replace("s", "")}:', t.title()))
+                sign = WallSign().messages((None, 'Keep', f'{titlecase(self.name).replace("s", "")}:', titlecase(t)))
                 yield execute().if_().data(e().tag(overall_tag).limit(1), path).run(sign.place(r(-1, 2, 0), facing))
 
         def _to_path(self, t):
@@ -888,7 +890,7 @@ def trim_functions(room):
                 yield execute().as_(e().tag(f'{frame}_{piece}')).run(
                     data().modify(s(), f'Item.{self.nbt_path}').set().value(which))
             yield execute().at(e().tag('trim_change_home')).run(
-                Sign.change(r(0, 2, 0), (None, None, None, step.elem.title())))
+                Sign.change(r(0, 2, 0), (None, None, None, titlecase(step.elem))))
             yield from self._trim_frame_sign(step)
 
         def _to_path(self, t):
@@ -934,7 +936,7 @@ def trim_functions(room):
                          change.operation(MOD, num_categories),
                          run_change_cleanup))
     for i, cat in enumerate(categories.values()):
-        lines = (None, 'Show All:', cat.name.title())
+        lines = (None, 'Show All:', titlecase(cat.name))
         show_menu.add(WallSign().messages(lines, commands=(show.set(i), run_show_cleanup)).place(r(0, i, 0), facing))
         show_cleanup.add(execute().if_().score(show).matches(i).run(
             WallSign().messages(lines, commands=(function(show_menu),)).place(r(0, 2, 0), facing),
@@ -951,13 +953,13 @@ def trim_functions(room):
         for j, jcat in enumerate(categories.values()):
             if i == j:
                 continue
-            lines = (None, 'Change', jcat.name.title())
+            lines = (None, 'Change', titlecase(jcat.name))
             change_menu.add(execute().if_().score(show).matches(i).run(
                 WallSign().messages(lines, commands=(change.set(j), run_change_cleanup)).place(r(0, sign_num, 0),
                                                                                                facing)))
             sign_num += 1
         change_cleanup.add(execute().if_().score(change).matches(i).at(e().tag('trim_change_home')).run(
-            WallSign().messages((None, 'Change', f'{cat.name.title()}:'),
+            WallSign().messages((None, 'Change', f'{titlecase(cat.name)}:'),
                                 commands=(function(change_menu),)).place(r(0, 2, 0), facing),
             tag(e().tag('trim_loop_home')).add(f'trim_{cat.name}_home')))
 

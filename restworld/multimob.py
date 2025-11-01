@@ -3,6 +3,8 @@ from __future__ import annotations
 import copy
 import math
 
+from titlecase import titlecase
+
 from pynecraft import info
 from pynecraft.base import Arg, EAST, NE, NORTH, NW, SE, SOUTH, SW, WEST, as_facing, r, rotate_facing
 from pynecraft.commands import Entity, Text, comment, data, e, execute, fill, function, n, return_, s, setblock, summon, \
@@ -250,7 +252,7 @@ def room():
             for i, value in enumerate(values):
                 sx, sy, sz = sign_pos(i, x, top_y, z, matrix_row_len)
                 popup.add(
-                    WallSign((None, value.title()), (clear_menus, *func_gen(value)), wood='birch').place(
+                    WallSign((None, titlecase(value)), (clear_menus, *func_gen(value)), wood='birch').place(
                         r(sx, sy, sz), sign_facing))
             return popup
 

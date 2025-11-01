@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import copy
 
+from titlecase import titlecase
+
 from pynecraft.base import EAST, EQ, NE, NORTH, Nbt, SOUTH, WEST, r, to_id, to_name
 from pynecraft.commands import Block, COLORS, Entity, FORCE, LONG, MOD, REPLACE, RESULT, Score, as_facing, clone, data, \
     e, execute, fillbiome, function, item, kill, n, p, player, return_, ride, s, schedule, scoreboard, setblock, \
@@ -130,7 +132,7 @@ def friendlies(room):
 
     def climate_loop(step):
         for mob in climate_mobs:
-            name = f'{step.elem} {mob}'.title()
+            name = titlecase(f'{step.elem} {mob}')
             yield execute().as_(e().tag('climate_mob').type(mob)).run(
                 data().merge(s(), {'variant': step.elem, 'CustomName': name}))
         execute().as_(e().tag('chicken')).run(data().merge(s(), {'EggLayTime': 1000000000}))
@@ -334,7 +336,7 @@ def friendlies(room):
         data().remove(n().tag('mannequin'), 'profile.model')).loop(skins_who_loop, default_skins)
 
     skins_pose_loop = room.loop('skins_pose', home=False).loop(
-        lambda step: data().merge(mannequin, {'pose': step.elem, 'description': step.elem.title()}),
+        lambda step: data().merge(mannequin, {'pose': step.elem, 'description': titlecase(step.elem)}),
         mannequin_poses)
 
     room.loop('skins', main_clock).add(
@@ -443,7 +445,7 @@ def villager_funcs(room):
             id += '_villager'
         else:
             kind = 'villagers'
-        kind = kind.title()
+        kind = titlecase(kind)
         return id, kind
 
     def professions_init_funcs(which):
@@ -468,7 +470,7 @@ def villager_funcs(room):
     def villager_professions_loop(step):
         yield execute().as_(e().tag('villager')).run(
             data().modify(s(), 'VillagerData.type').set().value(step.elem.lower()))
-        yield Sign.change(r(-5, 2, 0), (None, step.elem.title()))
+        yield Sign.change(r(-5, 2, 0), (None, titlecase(step.elem)))
 
     room.loop('villager_professions', main_clock).loop(villager_professions_loop, VILLAGER_BIOMES)
 
@@ -493,7 +495,7 @@ def villager_funcs(room):
             data().modify(s(), 'VillagerData.profession').set().value(step.elem.lower()))
         yield execute().as_(e().tag('villager')).run(
             data().modify(s(), 'Age').set().value(-2147483648 if step.elem == 'Child' else 0))
-        yield Sign.change(r(-5, 2, 0), (None, step.elem.title()))
+        yield Sign.change(r(-5, 2, 0), (None, titlecase(step.elem)))
 
     roles = VILLAGER_PROFESSIONS + ('Child',)
     room.loop('villager_types', main_clock).loop(villager_types_loop, roles).add(
@@ -784,7 +786,7 @@ def method_name():
 def aquatic(room):
     def fish_water_loop(step):
         yield fillbiome(r(0, 1, 0), r(12, 10, 16), step.elem)
-        yield Sign.change(r(6, 2, 1), (None, None, to_name(step.elem).title()))
+        yield Sign.change(r(6, 2, 1), (None, None, to_name(step.elem)))
 
     room.function('fish_water_base')
     room.function('fish_water_base_init').add(

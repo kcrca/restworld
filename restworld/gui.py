@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import math
 
+from titlecase import titlecase
+
 from pynecraft import commands
 from pynecraft.base import EAST, NORTH, Nbt, TEXT_COLORS, WEST, as_facing, r, to_name
 from pynecraft.commands import BOSSBAR_COLORS, BOSSBAR_STYLES, Block, CREATIVE, Entity, LEVELS, REPLACE, \
@@ -102,7 +104,7 @@ def room():
 
     def bossbar_color_loop(step):
         yield bossbar().set('restworld:bossbar').color(step.elem.lower())
-        yield Sign.change(r(0, 2, 0), (f'Color: {step.elem.title()}',))
+        yield Sign.change(r(0, 2, 0), (f'Color: {titlecase(step.elem)}',))
 
     def bossbar_style_loop(step):
         yield bossbar().set('restworld:bossbar').style(step.elem)
@@ -117,8 +119,8 @@ def room():
     bb_value = room.loop('bossbar_value', home=False).loop(bossbar_value_loop, (50, 75, 100, 0, 25))
 
     room.function('bossbar_init').add(
-        WallSign((f'Color: {BOSSBAR_COLORS[0].title()}', 'Style:', BOSSBAR_STYLES[0], 'Value: 50')).place(r(2, 2, 0),
-                                                                                                          EAST),
+        WallSign((f'Color: {titlecase(BOSSBAR_COLORS[0])}', 'Style:', BOSSBAR_STYLES[0], 'Value: 50')).place(r(2, 2, 0),
+                                                                                                             EAST),
         bossbar().add('restworld:bossbar', 'Ornamental Stud'),
         bossbar().set('restworld:bossbar').players(a()),
         function(bb_on),
@@ -194,7 +196,7 @@ def room():
         placer = room.mob_placer(
             r(0, 2, 0.3), NORTH, 2, 0, adults=True, nbt={'ChestedHorse': True, 'Tame': True}, tags=('carrier',))
         yield placer.summon(step.elem)
-        yield Sign.change(r(0, 2, -1), (None, None, step.elem.title()))
+        yield Sign.change(r(0, 2, -1), (None, None, titlecase(step.elem)))
 
     room.loop('carrier', main_clock).add(
         kill_em(e().tag('carrier'))

@@ -3,6 +3,8 @@ from __future__ import annotations
 import itertools
 import re
 
+from titlecase import titlecase
+
 from pynecraft import info
 from pynecraft.base import DOWN, EAST, NOON, SOUTH, UP, WEST, r
 from pynecraft.commands import BYTE, Block, INT, RESULT, Score, data, e, execute, fill, function, item, kill, \
@@ -120,7 +122,7 @@ def room():
         yield WallSign(text).place(r(-1, 2, 0), WEST)
 
     bulbs = []
-    for s in (x.title() for x in weatherings):
+    for s in (titlecase(x) for x in weatherings):
         bulb = re.sub(r'^\|', '', f'{s}|Copper Bulb')
         bulbs.extend((bulb,) * 4)
     room.loop('copper_bulb', fast_clock).loop(copper_bulb_loop, bulbs)
@@ -351,7 +353,7 @@ def room():
         yield setblock(r(0, 2, 0), comparator)
         room.particle(comparator, 'comparator', r(0, 2.5, 0), step)
         yield setblock(r(1, 2, 0), 'redstone_block' if on else 'air')
-        yield Sign.change(r(1, 3, 0), (None, None, f'Mode: {mode.title()}'))
+        yield Sign.change(r(1, 3, 0), (None, None, f'Mode: {titlecase(mode)}'))
 
     room.loop('comparator', main_clock).loop(comparator_loop,
                                              ((True, False), (True, True), (False, True), (False, False)))
@@ -374,7 +376,7 @@ def room():
     def shelf_type_loop(step):
         items = [Item.nbt_for('diamond').merge({'Slot': i}) for i in range(3)]
         yield fill(r(-1, 2, 0), r(-1, 2, 2), Block(f'{step.elem}_shelf', {'facing': WEST}, {'Items': items}))
-        yield Sign.change(r(-1, 3, 1), (None, f'{step.elem.title()}'))
+        yield Sign.change(r(-1, 3, 1), (None, f'{titlecase(step.elem)}'))
 
     room.loop('shelf_type', main_clock).loop(shelf_type_loop, woods + stems)
     room.function('shelf_type_start', home=False).add(

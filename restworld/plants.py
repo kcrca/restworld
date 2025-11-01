@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from typing import Callable
 
+from titlecase import titlecase
+
 from pynecraft import info
 from pynecraft.base import EAST, NORTH, Nbt, SOUTH, WEST, r, to_id, to_name
 from pynecraft.commands import Block, Text, data, e, execute, fill, function, kill, setblock, tag
@@ -28,7 +30,7 @@ def room():
             yield fill(r(x, y, z - s), r(x + 2, y, z - s), block)
             room.particle(block, step.loop.name.replace('_main', ''), r(x + 1, 4, z - s), step)
         yield Sign.change(r(x + 3, 2, z - 1),
-                          (None, None, f'{name.title()}: {stages[(step.i + 1) % len(stages)]} of {step.count - 2}'))
+                          (None, None, f'{titlecase(name)}: {stages[(step.i + 1) % len(stages)]} of {step.count - 2}'))
 
     stages_3 = list(range(0, 3)) + [2, 2]
 
@@ -149,7 +151,7 @@ def room():
         yield setblock(r(0, 3, 0), upper[i])
         text = (None, upper[i].name)
         if i < len(tilts):
-            text = text + (f'Tilt: {tilts[i].title()}',)
+            text = text + (f'Tilt: {titlecase(tilts[i])}',)
         yield WallSign(text).place(r(1, 2, 0), EAST)
 
     room.loop('dripleaf', main_clock).add(
@@ -181,7 +183,7 @@ def room():
     def grass_loop(step):
         grass = ' '.join(('short',) + step.elem + ('grass',))
         yield setblock(r(0, 3, 2), grass)
-        yield Sign.change(r(1, 2, 2), (None, grass.title()))
+        yield Sign.change(r(1, 2, 2), (None, titlecase(grass)))
         room.particle(grass, 'grass', r(0, 3.5, 2), step)
         grass = grass.replace('short', 'tall')
         if 'dry' in grass:
@@ -192,7 +194,7 @@ def room():
             yield setblock(r(0, 3, 0), (grass, {'half': 'lower'}))
             yield setblock(r(0, 4, 0), (grass, {'half': 'upper'}))
             room.particle(grass, 'grass', r(0, 4.5, 0), step)
-        yield Sign.change(r(1, 2, 0), (None, grass.title()))
+        yield Sign.change(r(1, 2, 0), (None, titlecase(grass)))
 
     room.loop('grass', main_clock).loop(grass_loop, ((), ('dry',)))
     room.particle('large_fern', 'grass', r(0, 4.5, 4))
@@ -201,7 +203,7 @@ def room():
     def bushes_loop(step):
         bush = ' '.join(step.elem + ('bush',))
         yield setblock(r(0, 3, 0), bush)
-        yield Sign.change(r(1, 2, 0), (None, bush.title()))
+        yield Sign.change(r(1, 2, 0), (None, titlecase(bush)))
         room.particle(bush, 'bushes', r(0, 4, 0), step)
 
     room.loop('bushes', main_clock).loop(bushes_loop, ((), ('firefly',), ('dead',)))
@@ -390,7 +392,7 @@ def room():
     def eyeblossom_loop(step):
         which = f'{step.elem}_eyeblossom'
         yield setblock(r(0, 3, 0), which)
-        yield Sign.change(r(1, 2, 0), (None, step.elem.title()))
+        yield Sign.change(r(1, 2, 0), (None, titlecase(step.elem)))
         room.particle(which, 'eyeblossom', r(0, 4, 0), step)
 
     room.loop('eyeblossom', main_clock).loop(eyeblossom_loop, ('open', 'closed'))

@@ -3,6 +3,8 @@ from __future__ import annotations
 import re
 from typing import Callable, Iterable, Union
 
+from titlecase import titlecase
+
 from pynecraft import commands, info
 from pynecraft.base import Arg, DOWN, E, EAST, EQ, FacingDef, N, NORTH, Nbt, RelCoord, S, SOUTH, UP, W, WEST, as_facing, \
     r, \
@@ -235,7 +237,7 @@ def room():
         )
         block = Block('creaking_heart', {'creaking_heart_state': step.elem, 'natural': True})
         yield setblock(r(0, 3, 0), block),
-        yield Sign.change(r(0, 2, 1), (None, None, step.elem.title()))
+        yield Sign.change(r(0, 2, 1), (None, None, titlecase(step.elem)))
         room.particle(block, 'creaking_heart', r(0, 4, 0), step)
 
     room.loop('creaking_heart', main_clock).loop(creaking_heart_loop, ('awake', 'dormant', 'uprooted'))
@@ -246,7 +248,7 @@ def room():
     blocks('deepslate', NORTH, (
         'Deepslate', 'Chiseled|Deepslate', 'Polished|Deepslate', 'Cracked|Deepslate|Bricks', 'Cracked|Deepslate|Tiles',
         'Deepslate|Bricks', 'Deepslate|Tiles', 'Cobbled|Deepslate', 'Reinforced|Deepslate'))
-    sherd_names = tuple(sherd.replace('_pottery_sherd', '').title() for sherd in sherds)
+    sherd_names = tuple(titlecase(sherd.replace('_pottery_sherd', '')) for sherd in sherds)
     usable_sherds = sherds + sherds
     _, pot_loop = blocks(
         'decorated_pot', NORTH, ('decorated_pot',) + tuple(
@@ -299,7 +301,7 @@ def room():
         suspicious_data = {'item': {'id': 'emerald'}}
         return (which,) + tuple(
             Block(f'suspicious_{which}', state={'dusted': s}, nbt=suspicious_data,
-                  name=f'Suspicious {which.title()}|Dusted: {s}') for s in range(4))
+                  name=f'Suspicious {titlecase(which)}|Dusted: {s}') for s in range(4))
 
     sands = suspicious('sand')
     gravels = suspicious('gravel')
@@ -322,7 +324,7 @@ def room():
 
     test_block_modes = ('start', 'log', 'accept', 'fail')
     blocks('test', SOUTH, tuple(Block('test_block', {'mode': mode}) for mode in test_block_modes),
-           labels=(tuple(('Test Block', f'Mode: {mode.title()}') for mode in test_block_modes)))
+           labels=(tuple(('Test Block', f'Mode: {titlecase(mode)}') for mode in test_block_modes)))
     blocks('test_instance', SOUTH, ('Test Instance Block',), expandable=True)
 
     copper_blocks = tuple(map(as_block, (
@@ -554,7 +556,7 @@ def room():
 
     cg_pose_loop = room.loop('copper_golem_pose', home=False).loop(
         lambda step: (data().modify(room.store, 'copper_golem.pose').set().value(step.elem),
-                      data().modify(room.store, 'copper_golem.pose_name').set().value(step.elem.title())),
+                      data().modify(room.store, 'copper_golem.pose_name').set().value(titlecase(step.elem))),
         copper_golem_poses)
     cg_oxy_loop = room.loop('copper_golem_oxy', home=False).loop(
         lambda step: (
@@ -924,7 +926,7 @@ def room():
         else:
             yield setblock(r(0, 3, 0), 'air')
             yield summon(('tnt', {'fuse': 0x7fff, 'Tags': ['block_tnt']}), r(0, 3, 0))
-        yield Sign.change(r(0, 2, -1), (None, None, step.elem.title()))
+        yield Sign.change(r(0, 2, -1), (None, None, titlecase(step.elem)))
 
     room.loop('tnt', main_clock).add(kill(e().tag('block_tnt'))).loop(tnt_loop, ('stable', 'unstable', 'primed'))
     room.particle('tnt', 'tnt', r(0, 4, 0))
