@@ -230,20 +230,20 @@ def room():
 
     room.function('gamerules').add(
         (gamerule(*args) for args in (
-            ('announceAdvancements', False),
-            ('commandBlockOutput', False),
-            ('disableRaids', True),
-            ('doDaylightCycle', False),
-            ('doFireTick', False),
-            ('doInsomnia', False),
-            ('doMobSpawning', False),
-            ('doPatrolSpawning', False),
-            ('doTraderSpawning', False),
-            ('doWeatherCycle', False),
-            ('keepInventory', True),
-            ('mobGriefing', False),
-            ('randomTickSpeed', 0),
-            ('spawnRadius', 0),
+            ('advance_time', False),
+            ('advance_weather', False),
+            ('command_block_output', False),
+            ('fire_spread_radius_around_player', 0),
+            ('keep_inventory', True),
+            ('mob_griefing', False),
+            ('raids', False),
+            ('random_tick_speed', 0),
+            ('respawn_radius', 0),
+            ('show_advancement_messages', False),
+            ('spawn_mobs', False),
+            ('spawn_patrols', False),
+            ('spawn_phantoms', False),
+            ('spawn_wandering_traders', False),
         ))
     )
     for place in (
