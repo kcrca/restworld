@@ -842,10 +842,10 @@ def aquatic(room):
             yield item().replace().entity(nautilus_selector, 'saddle').with_('air')
 
     nautilus_placer = room.mob_placer(r(0, 3, -0.5), SOUTH, kid_delta=2.2)
-    room.function('nautilus_init').add(
+    room.function('nautilus_mob_init').add(
         nautilus_placer.summon('nautilus'),
         nautilus_placer.summon('zombie_nautilus', kids=False))
-    room.loop('nautilus', main_clock).loop(nautilus_loop, (False, True))
+    room.loop('nautilus_mob', main_clock).loop(nautilus_loop, (False, True))
 
     def squids_loop(step):
         placer = room.mob_placer(r(2.6, 4, 0.2), WEST, None, kid_delta=1.8, tags=('squidy',), nbt={'NoGravity': True})
