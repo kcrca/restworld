@@ -3,13 +3,14 @@ from __future__ import annotations
 from pynecraft.base import EAST, NORTH, SOUTH, WEST, as_facing, d, r
 from pynecraft.commands import MAX_EFFECT_SECONDS, e, effect, execute, fill, function, p, setblock
 from pynecraft.simpler import WallSign
-from pynecraft.values import BAD_LUCK, EFFECT_GROUP, HERO_OF_THE_VILLAGE, effects
+from pynecraft.values import BAD_LUCK, BREATH_OF_THE_NAUTILUS, EFFECT_GROUP, effects
 from restworld.rooms import ActionDesc, SignedRoom, Wall, span
 from restworld.world import restworld
 
 display_names = {
     BAD_LUCK: 'Bad Luck',
-    HERO_OF_THE_VILLAGE: 'Hero|of the Village',
+    'hero_of_the_village': 'Hero|of the Village',
+    BREATH_OF_THE_NAUTILUS: 'Breath|of the Nautilus',
 }
 
 
@@ -30,7 +31,7 @@ def room():
             effect().give(p(), action_desc.which, MAX_EFFECT_SECONDS)))
 
     ew_wall_used = {4: span(2, 4), 3: span(1, 5), 2: span(1, 5)}
-    s_wall_used = ew_wall_used
+    s_wall_used = {4: (1, 2, 4, 5), 3: span(1, 5), 2: span(1, 5)}
     room = SignedRoom('effects', restworld, SOUTH, (None, 'Mob Effects'), effect_sign, actions, (
         Wall(7, EAST, 1, -1, ew_wall_used),
         Wall(7, SOUTH, 1, -7, s_wall_used),
