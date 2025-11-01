@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import copy
 
-from pynecraft.base import EAST, EQ, NORTH, Nbt, SOUTH, WEST, r, to_id, to_name
+from pynecraft.base import EAST, EQ, NE, NORTH, Nbt, SOUTH, WEST, r, to_id, to_name
 from pynecraft.commands import Block, COLORS, Entity, FORCE, LONG, MOD, REPLACE, RESULT, Score, as_facing, clone, data, \
     e, execute, fillbiome, function, item, kill, n, p, player, return_, ride, s, schedule, scoreboard, setblock, \
     summon, \
@@ -658,10 +658,11 @@ def monsters(room):
             yield from room.riders_off('zombie_horse_rider')
 
     room.function('zombie_horse_init').add(
-        placer(*east_placer).summon(Entity('zombie_horse', name='Zombie Horse')))
+        placer(r(0.7, 2, 0.5), NORTH, kid_delta=2).summon(Entity('zombie_horse', name='Zombie Horse')))
     room.loop('zombie_horse', main_clock).loop(zombie_horse_loop, range(0, 2))
 
     bow = Item.nbt_for('bow')
+    spear = Item.nbt_for('iron_spear')
     spider_rider = Entity('Skeleton', nbt={'equipment': {'head': helmet, 'mainhand': bow}}).merge_nbt(
         MobPlacer.base_nbt)
 
@@ -669,8 +670,23 @@ def monsters(room):
     room.loop('skeleton', main_clock).add(kill_em(e().tag('skeletal'))).loop(
         lambda step: placer(*east_placer, adults=True).summon(
             Entity(step.elem, nbt={'equipment': {'mainhand': bow}}).tag('skeletal', armorable_tag)),
-        ('Skeleton', 'Stray', 'Bogged'))
+        ('Skeleton', 'Stray', 'Bogged', 'Parched'))
     room.function('skeleton_init').add(room.label(r(2, 2, 0), 'Armor', EAST))
+
+    chr2 = room.function('camel_husk_rider2', home=False).add(
+        room.riders_on(n().tag('camel_husk'),
+                       rider=Entity('parched', {'NoAI': True, 'equipment': {'mainhand': bow}}).tag('husk_rider')))
+
+    def camel_husk_loop(step):
+        if step.elem:
+            yield room.riders_on(n().tag('camel_husk'), tags=('husk_rider'),
+                                 rider=Entity('husk', {'NoAI': True, 'equipment': {'mainhand': spear}}))
+            yield schedule().function(chr2, 1, REPLACE)
+        else:
+            yield room.riders_off('husk_rider')
+
+    room.function('camel_husk_init').add(placer(r(0, 2, 0), NE, adults=True).summon('camel_husk'))
+    room.loop('camel_husk', main_clock).loop(camel_husk_loop, (True, False))
 
     def spider_loop(step):
         if step.i == 1:
@@ -679,7 +695,7 @@ def monsters(room):
             yield room.riders_off('spider_riders')
 
     room.loop('spiders', main_clock).loop(spider_loop, range(0, 2))
-    spider_placer = placer(r(-0.5, 2.5, -0.2), NORTH, -3, nbt={'Tags': ['spiders']}, adults=True)
+    spider_placer = placer(r(-0.75, 2.5, -0.2), NORTH, -3, nbt={'Tags': ['spiders']}, adults=True)
     room.function('spiders_init').add(
         spider_placer.summon('Spider'),
         spider_placer.summon('Cave Spider')
