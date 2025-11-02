@@ -647,7 +647,7 @@ def monsters(room):
         else:
             yield from room.riders_off('skeleton_horse_rider')
 
-    room.function('skeleton_horse_init').add(placer(*place).summon('Skeleton Horse'))
+    room.function('skeleton_horse_init').add(placer(*place).summon(Entity('Skeleton Horse').tag('monster_saddle')))
     room.loop('skeleton_horse', main_clock).loop(skeleton_horse_loop, range(0, 2))
 
     helmet = Item.nbt_for('iron_helmet')
@@ -660,7 +660,10 @@ def monsters(room):
             yield from room.riders_off('zombie_horse_rider')
 
     room.function('zombie_horse_init').add(
-        placer(r(0.7, 2, 0.5), NORTH, kid_delta=2).summon(Entity('zombie_horse', name='Zombie Horse')))
+        placer(r(0.7, 2, 0.5), NORTH, kid_delta=2).summon(
+            Entity('zombie_horse', name='Zombie Horse').tag('monster_saddle')),
+        room.label(r(0, 2, -2), 'Saddles', NORTH)
+    )
     room.loop('zombie_horse', main_clock).loop(zombie_horse_loop, range(0, 2))
 
     bow = Item.nbt_for('bow')
@@ -687,7 +690,8 @@ def monsters(room):
         else:
             yield room.riders_off('husk_rider')
 
-    room.function('camel_husk_init').add(placer(r(0, 2, 0), NE, adults=True).summon('camel_husk'))
+    room.function('camel_husk_init').add(
+        placer(r(0, 2, 0), NE, adults=True).summon(Entity('camel_husk').tag('monster_saddle')))
     room.loop('camel_husk', main_clock).loop(camel_husk_loop, (True, False))
 
     def spider_loop(step):
