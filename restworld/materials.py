@@ -10,8 +10,7 @@ from pynecraft.commands import Block, BlockDef, Entity, LONG, MOD, PLUS, RESULT,
     execute, \
     fill, fillbiome, function, item, kill, n, p, random, s, scoreboard, setblock, summon, tag
 from pynecraft.function import BLOCK
-from pynecraft.info import armor_equipment, colors, copper_golem_poses, default_skins, must_give_items, operator_menu, \
-    stems, \
+from pynecraft.info import armor_equipment, colors, copper_golem_poses, default_skins, must_give_items, stems, \
     trim_materials, trim_patterns, weathering_id, weathering_name, weatherings
 from pynecraft.simpler import Item, ItemFrame, PLAINS, Region, SWAMP, Sign, WallSign
 from pynecraft.values import COLD_OCEAN, FROZEN_OCEAN, LUKEWARM_OCEAN, MANGROVE_SWAMP, OCEAN, WARM_OCEAN, biomes
@@ -141,7 +140,7 @@ def room():
     room.loop('experience_orbs', fast_clock).loop(experience_orbs_loop, points)
     room.function('experience_orbs_init').add(WallSign((None, 'Experience Orb')).place(r(1, 2, 0), EAST))
 
-    non_inventory = list(filter(lambda x: x.name not in operator_menu, must_give_items.values()))
+    non_inventory = list(must_give_items.values())
     non_inventory.append(Entity('elytra', name='Damaged Elytra', nbt={'components': {'damage': 450}}))
 
     def only_items_init_func():
