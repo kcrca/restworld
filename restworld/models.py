@@ -37,7 +37,7 @@ from restworld.world import fast_clock, restworld
 #
 # (*) Some blocks have no item version (e.g., water and lava). We leave them out of the block list.
 
-ranges = ('A-B', 'C', 'D-I', 'J-N', 'O-Q', 'R-Z', 'T-Z')
+ranges = ('A-B', 'C', 'D-I', 'J-N', 'O-Q', 'R-S', 'T-Z')
 
 mode_names = ['sampler_blocks', 'blocks', 'manual', 'items', 'sampler_items']
 modes = [ActionDesc(e, to_name(e)) for e in mode_names]
