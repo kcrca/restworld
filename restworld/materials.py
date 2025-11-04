@@ -336,7 +336,7 @@ def basic_functions(room, enchanted):
         Material('iron', 'iron', True, True, Block('iron_block'), 'iron_ingot'),
         Material('golden', 'golden', True, True, Block('gold_block'), 'gold_ingot'),
         Material('diamond', 'diamond', True, True, Block('diamond_block'), 'diamond'),
-        Material('netherite', 'netherite', False, True, Block('netherite_block'), 'netherite_ingot'),
+        Material('netherite', 'netherite', True, True, Block('netherite_block'), 'netherite_ingot'),
     )
 
     turtle_helmet = room.score('turtle_helmet')

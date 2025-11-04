@@ -110,7 +110,7 @@ def room():
         if zn < 0:
             zt = -zt
         name = patterns[as_pattern(pattern)].name
-        desc = patterns[as_pattern(pattern)]
+        desc = patterns[as_pattern(pattern)].desc
         desc = re.sub(r'\.$', '', desc)
         nbt = {'Rotation': [angle, 0], 'Tags': ['banners']}
         yield TextDisplay(name).scale(0.5).tag('banner_name').summon(r(x + xt, text_y, z + zt), nbt)
