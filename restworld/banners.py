@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import re
+
 from pynecraft.base import Arg, CYAN, EQ, SOUTH, as_facing, r
 from pynecraft.commands import Block, COLORS, Entity, Text, WHITE, data, e, execute, fill, function, kill, s, \
     setblock
@@ -108,7 +110,8 @@ def room():
         if zn < 0:
             zt = -zt
         name = patterns[as_pattern(pattern)].name
-        desc = patterns[as_pattern(pattern)].desc[:-1]  # Remove period at end
+        desc = patterns[as_pattern(pattern)]
+        desc = re.sub(r'\.$', '', desc)
         nbt = {'Rotation': [angle, 0], 'Tags': ['banners']}
         yield TextDisplay(name).scale(0.5).tag('banner_name').summon(r(x + xt, text_y, z + zt), nbt)
 
