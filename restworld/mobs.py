@@ -5,7 +5,8 @@ import copy
 from titlecase import titlecase
 
 from pynecraft.base import EAST, EQ, NE, NORTH, Nbt, SOUTH, WEST, r, to_id, to_name
-from pynecraft.commands import Block, COLORS, Entity, FORCE, LONG, MOD, REPLACE, RESULT, Score, as_facing, clone, data, \
+from pynecraft.commands import Block, COLORS, Entity, FORCE, LONG, MOD, REPLACE, RESULT, SUCCESS, Score, as_facing, \
+    clone, data, \
     e, execute, fillbiome, function, item, kill, n, p, player, return_, ride, s, schedule, scoreboard, setblock, \
     summon, \
     tag, tp
@@ -833,23 +834,42 @@ def aquatic(room):
     room.function('guardian_init').add(room.mob_placer(r(-1, 3, 0.7), WEST, adults=True).summon('guardian'))
     room.function('elder_guardian_init').add(room.mob_placer(r(-0.7, 3, 1), WEST, adults=True).summon('elder_guardian'))
 
-    def nautilus_loop(step):
-        nautilus_selector = n().tag('nautilus', 'adult')
-        if step.elem:
-            yield from room.riders_on(e().tag('zombie_nautilus'), tags='nautilus_rider',
-                                      rider=Entity('Drowned', {'equipment': {'mainhand': Item.nbt_for('trident')}}))
-            yield data().modify(nautilus_selector, 'Owner').set().from_(p(), 'UUID')
-            yield item().replace().entity(nautilus_selector, 'saddle').with_('saddle')
-            yield from room.riders_on(nautilus_selector, tags='nautilus_rider')
-        else:
-            yield from room.riders_off('nautilus_rider')
-            yield item().replace().entity(nautilus_selector, 'saddle').with_('air')
+    nautilus_selector = n().tag('nautilus', 'adult')
+    nr_on = room.function('nautilus_riders_on', home=False).add(
+        room.riders_on(e().tag('zombie_nautilus'), tags='nautilus_rider',
+                       rider=Entity('Drowned', {'equipment': {'mainhand': Item.nbt_for('trident')}})),
+        room.riders_on(nautilus_selector, tags='nautilus_rider'),
+    )
+    nr_off = room.function('nautilus_riders_off', home=False).add(room.riders_off('nautilus_rider'))
+    ns_on = room.function('nautilus_saddles_on', home=False).add(
+        data().modify(nautilus_selector, 'Owner').set().from_(p(), 'UUID'),
+        item().replace().entity(nautilus_selector, 'saddle').with_('saddle'))
+    ns_off = room.function('nautilus_saddles_off', home=False).add(
+        item().replace().entity(nautilus_selector, 'saddle').with_('air'))
+    nautilus_placer = room.mob_placer(r(0, 3, -0.5), SOUTH, delta=2, kid_delta=2.2)
 
-    nautilus_placer = room.mob_placer(r(0, 3, -0.5), SOUTH, kid_delta=2.2)
+    def nautilus_loop(step):
+        name = 'Coral Zombie Nautilus' if step.elem == 'warm' else 'Zombie Nautilus'
+        yield data().merge(n().tag('zombie_nautilus'), {'CustomName': name, 'variant': step.elem}),
+
+    nautilus_riders_score = room.score('nautilus_riders')
+    nautilus_saddles_score = room.score('nautilus_saddles')
     room.function('nautilus_mob_init').add(
         nautilus_placer.summon('nautilus'),
-        nautilus_placer.summon('zombie_nautilus', kids=False))
-    room.loop('nautilus_mob', main_clock).loop(nautilus_loop, (False, True))
+        nautilus_placer.summon('zombie_nautilus', kids=False),
+        WallSign((None, 'Nautilus Saddle', 'On / Off'), (
+            execute().store(SUCCESS).score(nautilus_saddles_score).run(
+                tag(e().tag('nautilus').nbt({'equipment': {'saddle': {'id': 'minecraft:saddle'}}})).list()),
+            execute().if_().score(nautilus_saddles_score).matches(0).run(function(ns_on)),
+            execute().unless().score(nautilus_saddles_score).matches(0).run(function(ns_off))
+        )).glowing(True).place(r(-1, 2, 1), NORTH, True),
+        WallSign((None, 'Riders', 'On / Off'), (
+            execute().store(SUCCESS).score(nautilus_riders_score).run(tag(e().tag('nautilus_rider')).list()),
+            execute().if_().score(nautilus_riders_score).matches(0).run(function(nr_on)),
+            execute().unless().score(nautilus_riders_score).matches(0).run(function(nr_off))
+        )).glowing(True).place(r(-2, 2, 1), NORTH, True),
+    )
+    room.loop('nautilus_mob', main_clock).loop(nautilus_loop, ('temperate', 'warm'))
 
     def squids_loop(step):
         placer = room.mob_placer(r(2.6, 4, 0.2), WEST, None, kid_delta=1.8, tags=('squidy',), nbt={'NoGravity': True})
