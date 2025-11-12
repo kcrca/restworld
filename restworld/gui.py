@@ -204,6 +204,12 @@ def room():
         carrier_loop, ('camel', 'donkey'))
     room.function('carrier_init').add(WallSign((None, 'Saddlable')).place(r(0, 2, -1), NORTH))
 
+    room.function('carrier_nautilus_init').add(
+        room.mob_placer(r(0, 2, 0), NORTH, 2, 0, adults=True).summon('nautilus'),
+        WallSign((None, 'Saddleable', 'Nautilus')).place(r(0, 2, -1), NORTH))
+    room.function('carrier_nautilus_enter').add(
+        data().modify(n().tag('gui').type('nautilus'), 'Owner').set().from_(p(), 'UUID'))
+
     placer = room.mob_placer(r(0, 2, 0), NORTH, adults=True, tags=('trades',), auto_tag=False,
                              nbt={'VillagerData': {'profession': 'mason', 'level': 3}, 'CanPickUpLoot': False})
     room.function('trader_init').add(
