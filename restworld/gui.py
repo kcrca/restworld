@@ -194,14 +194,14 @@ def room():
 
     def carrier_loop(step):
         placer = room.mob_placer(
-            r(0, 2, 0.3), NORTH, 2, 0, adults=True, nbt={'ChestedHorse': True, 'Tame': True}, tags=('carrier',))
+            r(0, 2, 0.3), NORTH, 2, 0, adults=True, nbt={'ChestedHorse': True, 'Tame': True, 'Variant': 258}, tags=('carrier',))
         yield placer.summon(step.elem)
         yield Sign.change(r(0, 2, -1), (None, None, titlecase(step.elem)))
 
     room.loop('carrier', main_clock).add(
         kill_em(e().tag('carrier'))
     ).loop(
-        carrier_loop, ('camel', 'donkey'))
+        carrier_loop, ('donkey', 'horse', 'camel'))
     room.function('carrier_init').add(WallSign((None, 'Saddlable')).place(r(0, 2, -1), NORTH))
 
     room.function('carrier_nautilus_init').add(
