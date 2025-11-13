@@ -21,5 +21,6 @@ if [[ $v != 'y' ]] then
     exit 1
 fi
 
+rwback -q
 dst_dir="restworld"
 rsync -c -avz --delete --exclude=src --exclude='.??*' --exclude='*'.sh --exclude='?' --exclude='favicon.p*' . kcrca_claritypack@ssh.nyc1.nearlyfreespeech.net:$dst_dir/
