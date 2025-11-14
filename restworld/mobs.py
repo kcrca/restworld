@@ -834,19 +834,20 @@ def aquatic(room):
     room.function('guardian_init').add(room.mob_placer(r(-1, 3, 0.7), WEST, adults=True).summon('guardian'))
     room.function('elder_guardian_init').add(room.mob_placer(r(-0.7, 3, 1), WEST, adults=True).summon('elder_guardian'))
 
-    nautilus_selector = n().tag('nautilus', 'adult')
+    room.function('nautilus_enter').add(execute().as_(e().tag('saddleable_nautilus')).run(
+        data().modify(s(), 'Owner').set().from_(p(), 'UUID')))
     nr_on = room.function('nautilus_riders_on', home=False).add(
-        room.riders_on(e().tag('zombie_nautilus'), tags='nautilus_rider',
+        room.riders_on(n().tag('zombie_nautilus'), tags='nautilus_rider',
                        rider=Entity('Drowned', {'equipment': {'mainhand': Item.nbt_for('trident')}})),
-        room.riders_on(nautilus_selector, tags='nautilus_rider'),
+        room.riders_on(n().tag('nautilus', 'adult'), tags='nautilus_rider'),
     )
     nr_off = room.function('nautilus_riders_off', home=False).add(room.riders_off('nautilus_rider'))
     ns_on = room.function('nautilus_saddles_on', home=False).add(
-        data().modify(nautilus_selector, 'Owner').set().from_(p(), 'UUID'),
-        item().replace().entity(nautilus_selector, 'saddle').with_('saddle'))
+        execute().as_(e().tag('saddleable_nautilus')).run(item().replace().entity(s(), 'saddle').with_('saddle')))
     ns_off = room.function('nautilus_saddles_off', home=False).add(
-        item().replace().entity(nautilus_selector, 'saddle').with_('air'))
-    nautilus_placer = room.mob_placer(r(0, 3, -0.5), SOUTH, delta=2, kid_delta=2.2)
+        execute().as_(e().tag('saddleable_nautilus')).run(
+            item().replace().entity(s(), 'saddle').with_('air')))
+    nautilus_placer = room.mob_placer(r(0, 3, -0.5), SOUTH, delta=2, kid_delta=2.2, tags='saddleable_nautilus')
 
     def nautilus_loop(step):
         name = 'Coral Zombie Nautilus' if step.elem == 'warm' else 'Zombie Nautilus'
