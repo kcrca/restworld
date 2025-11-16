@@ -61,7 +61,7 @@ def room():
         walls.append('%sstone Wall' % ty)
     assert len(blocks) == 2  # allows us to use 'replace previous type' because there are only two types
 
-    room.function('arrows_init').add(WallSign(()).place(r(1, 2, 0), WEST), room.label(r(0, 2, -1), 'Fire', EAST))
+    room.function('arrows_init').add(WallSign(()).place(r(0, 2, 0), WEST), room.label(r(0, 2, 1), 'Fire', EAST))
 
     fire_arrow = room.score('fire_arrow')
 
@@ -75,7 +75,7 @@ def room():
                 random().value((0, 0xffffff)))
         yield execute().if_().score(fire_arrow).matches((1, None)).as_(e().tag('arrow')).run(
             data().modify(s(), 'HasVisualFire').set().value(True))
-        yield Sign.change(r(1, 2, 0), (None, step.elem.name))
+        yield Sign.change(r(0, 2, 0), (None, step.elem.name))
 
     room.loop('arrows', main_clock).add(
         kill(e().tag('arrow'))
@@ -89,7 +89,7 @@ def room():
         fire_arrow.set(Arg('on')), data().modify(e().tag('arrow').limit(1), 'HasVisualFire').set().value(Arg('on'))
     )
 
-    wolf_sign_pos = r(0, 2, -1)
+    wolf_sign_pos = r(1, 2, 0)
 
     def wolf_armor_color_loop(step):
         color = step.elem
@@ -115,11 +115,11 @@ def room():
     room.loop('wolf_armor_color', main_clock, home=False).loop(wolf_armor_color_loop, colors + (None,))
     room.loop('wolf_armor_damage', main_clock, home=False).loop(wolf_armor_damage_loop, (None, 19, 40, 60), bounce=True)
     room.function('wolf_armor_init').add(
-        room.mob_placer(r(0, 3, 0), NORTH, adults=True).summon(
+        room.mob_placer(r(0, 3, 0), EAST, adults=True).summon(
             Entity('wolf', name='Wolf Armor'), tags=('wolf_armor_damage',),
             nbt={'Owner': 'dummy', 'equipment': {'body': Item.nbt_for('wolf_armor')}}),
-        WallSign((None, 'Wolf Armor', 'Damage: None', 'Color: None')).place(wolf_sign_pos, NORTH),
-        room.label(r(0, 2, -2), 'Color', NORTH))
+        WallSign((None, 'Wolf Armor', 'Damage: None', 'Color: None')).place(wolf_sign_pos, EAST),
+        room.label(r(0, 2, -1), 'Color', EAST))
     room.function('wolf_armor_home', exists_ok=True).add(tag(e().tag('wolf_armor_home')).add('wolf_armor_damage_home'))
     room.function('wolf_damage', home=False).add(
         tag(e().tag('wolf_armor_home')).remove('wolf_armor_color_home'),
@@ -146,7 +146,7 @@ def room():
     def only_items_init_func():
         rows = [(-1, len(non_inventory))]
         delta = 1
-        x = 1
+        x = 0
         items = list(non_inventory)
         yield kill(e().tag('only_item_frame'))
         index = 0
@@ -154,15 +154,15 @@ def room():
             z, end = rows.pop(0)
             for i in range(0, end):
                 t = items.pop(0)
-                frame = ItemFrame(EAST).item(t).named(t.name)
+                frame = ItemFrame(WEST).item(t).named(t.name)
                 frame.tag('materials', 'only_item_frame', f'only_item_frame_{t.id}')
                 if t.id == 'elytra':
                     frame.merge_nbt({'Item': {'components': {'damage': 450}}})
-                yield frame.summon(r(x, 2, z), facing=EAST)
+                yield frame.summon(r(x, 2, z))
                 z += delta
                 index += 1
             x += delta
-        yield WallSign((None, 'Items Not', 'In Creative', 'Inventory')).place(r(0, 3, -1), EAST)
+        yield WallSign((None, 'Items Not', 'In Creative', 'Inventory')).place(r(0, 3, -1), WEST)
 
     room.function('only_items_init').add(
         only_items_init_func())
