@@ -7,8 +7,7 @@ from titlecase import titlecase
 from pynecraft import info
 from pynecraft.base import Arg, EAST, EQ, NE, NORTH, NW, Nbt, NbtDef, RelCoord, SOUTH, WEST, as_facing, r, to_id
 from pynecraft.commands import Block, BlockDef, Entity, LONG, MOD, PLUS, RESULT, Score, as_block, data, e, \
-    execute, \
-    fill, fillbiome, function, item, kill, n, p, random, s, scoreboard, setblock, summon, tag
+    execute, fill, fillbiome, function, item, kill, n, p, random, s, scoreboard, setblock, summon, tag
 from pynecraft.function import BLOCK
 from pynecraft.info import armor_equipment, colors, copper_golem_poses, default_skins, must_give_items, stems, \
     trim_materials, trim_patterns, weathering_id, weathering_name, weatherings
@@ -276,7 +275,7 @@ def room():
             pos = RelCoord.add(pos, r(0, 2, 0))
         nbt = {'NoAI': True, 'equipment': {'saddle': Item.nbt_for('saddle')}}
         yield Entity(mob, nbt).tag(
-            'materials', 'saddlable').summon(pos, facing=NORTH)
+            'materials', 'saddlable').custom_name(titlecase(mob)).summon(pos, facing=NORTH)
         yield enchant(enchanted, 'saddlable')
 
     room.loop('saddles', main_clock).loop(
@@ -406,7 +405,7 @@ def basic_functions(room, enchanted):
                 room.mob_placer(pos, dir, adults=True).summon(
                     mob,
                     nbt={'Variant': 1, 'Tame': True,
-                         'Tags': [f'armor_{mob}', 'basic_saddle', 'enchantable', 'material_static']}))
+                         'Tags': [f'armor_{mob}', 'basic_saddle', 'enchantable']}))
             yield data().merge(n().tag(f'armor_{mob}'),
                                {'equipment': {'body': Item.nbt_for(f'{armor}_{mob}_armor')}})
             yield data().merge(n().tag(f'armor_{mob}_frame'),
@@ -415,8 +414,7 @@ def basic_functions(room, enchanted):
                 yield cmd
         else:
             yield data().remove(e().tag(f'armor_{mob}_frame').limit(1), 'Item')
-            yield execute().if_().entity(e().tag(f'armor_{mob}').distance((None, 10))).run(
-                kill_em(e().tag(f'armor_{mob}')))
+            yield kill_em(e().tag(f'armor_{mob}'))
 
     which_elytra = room.score('which_elytra')
     basic_init.add(which_elytra.set(0))
