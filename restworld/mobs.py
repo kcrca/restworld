@@ -834,7 +834,7 @@ def aquatic(room):
     room.function('guardian_init').add(room.mob_placer(r(-1, 3, 0.7), WEST, adults=True).summon('guardian'))
     room.function('elder_guardian_init').add(room.mob_placer(r(-0.7, 3, 1), WEST, adults=True).summon('elder_guardian'))
 
-    room.function('nautilus_enter').add(execute().as_(e().tag('saddleable_nautilus')).run(
+    room.function('nautilus_mob_enter').add(execute().as_(e().tag('saddleable_nautilus')).run(
         data().modify(s(), 'Owner').set().from_(p(), 'UUID')))
     nr_on = room.function('nautilus_riders_on', home=False).add(
         room.riders_on(n().tag('zombie_nautilus'), tags='nautilus_rider',
