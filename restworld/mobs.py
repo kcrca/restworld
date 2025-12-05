@@ -88,6 +88,16 @@ def friendlies(room):
     )
     room.function('canine_enter').add(
         data().modify(e().tag('wolf', 'collared').limit(1), 'Owner').set().from_(player(), 'UUID'))
+    room.function('angry_wolf_on',home=False).add(
+        execute().as_(e().tag('wolf')).run(
+            data().modify(s(), 'anger_end_time').set().value(1000000),
+            data().modify(s(), 'angry_at').set().from_(player(), 'UUID')))
+    room.function('angry_wolf_off', home=False).add(
+        execute().as_(e().tag('wolf')).run(
+            data().modify(s(), 'anger_end_time').set().value(-1),
+            data().remove(s(), 'angry_at'),
+        )
+    )
 
     def wolf_loop(step):
         yield execute().as_(e().tag('wolf')).run(

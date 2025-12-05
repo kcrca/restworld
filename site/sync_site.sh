@@ -11,6 +11,7 @@ Required:
 
 (*) run function restworld:ready
 (*) switched to default textures and reset the paintings room
+(*) Reset books to page 1
 
 Did you? 
 EOF

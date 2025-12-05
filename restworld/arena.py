@@ -40,6 +40,7 @@ battles = [
     ('illusioner', 'snow_golem'),  # medium priority, illusioner isn't used in vanilla, but some folks use it
     ('llama', 'vindicator'),  # Wolves don't work, they just run away, only rarely getting involved
     ('magma_cube', 'iron_golem'),
+    ('parched', 'iron_golem'),
     # ('ocelot', 'chicken'),  # low priority
     ('panda', 'vindicator'),
     ('phantom', None),
@@ -58,7 +59,7 @@ battles = [
     ('witch', 'snow_golem'),
     ('wither_skeleton', 'piglin'),
     ('wither', 'pillager'),
-    ('wolf', 'sheep'),  # medium priority, the wolf doesn't really do much
+    # ('wolf', 'sheep'),  # medium priority, the wolf doesn't really do much
     ('zoglin', 'vindicator'),
     ('zombie', 'iron_golem'),
     ('zombified_piglin', 'vindicator'),
@@ -122,10 +123,11 @@ def room():
         'skeleton': skeleton_nbts,
         'stray': skeleton_nbts,
         'bogged': skeleton_nbts,
+        'parched': skeleton_nbts,
         'vindicator': {'Johnny': 'True', 'equipment': {'mainhand': Item.nbt_for('iron_axe')}},
         'wither_skeleton': {'equipment': {'mainhand': Item.nbt_for('stone_sword')}},
         'warden': {'Brain': {'memories': {"minecraft:dig_cooldown": {'value': {}, 'ttl': Nbt.MAX_LONG}}}},
-        'zombie': {'equipment': {'head': Item.nbt_for('iron_helmet')}},
+        'zombie': {'equipment': {'head': Item.nbt_for('iron_helmet'), 'mainhand': Item.nbt_for('iron_sword')}},
         'zombified_piglin': {'equipment': {'mainhand': Item.nbt_for('golden_sword')}},
     }
 

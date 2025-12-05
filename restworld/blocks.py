@@ -887,8 +887,8 @@ def room():
             sign_pos = RelCoord.add(pos, sign_offset)
             text = [None, None, to_name(spawner_state if i < 2 else vault_state), '']
             if 'Waiting' in text[2]:
-                text[3] = text[2].replace('Waiting For ', '')
-                text[2] = 'Waiting For'
+                text[3] = text[2].replace('Waiting for ', '')
+                text[2] = 'Waiting for'
             yield Sign.change(sign_pos, text)
 
     def trial_init():
