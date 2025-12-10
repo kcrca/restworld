@@ -49,8 +49,8 @@ mobs = (
     PhotoMob(4.5, +42, 'wolf'),
 
     PhotoMob(7.0, -42, 'mooshroom'),
-    PhotoMob(7.0, -27, 'cow'),
-    PhotoMob(7.0, -13, 'copper_golem'),
+    PhotoMob(7.0, -27, 'nautilus',y=0.2),
+    PhotoMob(7.0, -13, 'copper_golem', nbt={'next_weather_age': -2}),
     PhotoMob(7.0, -1, 'sheep', nbt={'Color': 3}),
     PhotoMob(7.0, +12, 'breeze'),
     PhotoMob(7.0, +29, 'horse', nbt={'Variant': 513}),
@@ -67,7 +67,7 @@ mobs = (
     PhotoMob(8.7, +33.5, 'creaking', y=1.5),
     PhotoMob(8.7, +41, 'iron_golem', y=1.5),
 
-    PhotoMob(17.0, 0, 'happy_ghast', y=1.5),
+    PhotoMob(17.0, -3, 'happy_ghast', y=2.5),
 )
 
 
