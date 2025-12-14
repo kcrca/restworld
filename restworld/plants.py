@@ -5,8 +5,8 @@ from typing import Callable
 from titlecase import titlecase
 
 from pynecraft import info
-from pynecraft.base import EAST, NORTH, Nbt, SOUTH, WEST, r, to_id, to_name
-from pynecraft.commands import Block, Text, data, e, execute, fill, function, kill, setblock, tag
+from pynecraft.base import Arg, EAST, NORTH, Nbt, SOUTH, WEST, r, to_id, to_name
+from pynecraft.commands import Block, Text, data, e, execute, fill, fillbiome, function, kill, say, setblock, tag
 from pynecraft.info import small_flowers, stems, tulips
 from pynecraft.simpler import JUNGLE, PLAINS, Region, SAVANNA, Sign, WallSign
 from pynecraft.values import BIRCH_FOREST, CHERRY_GROVE, DARK_FOREST, MANGROVE_SWAMP, PALE_GARDEN, SNOWY_TAIGA
@@ -291,6 +291,11 @@ def room():
 
     room.function('shrooms_init').add(room.label(r(1, 2, 1), 'Vine Age 25', WEST))
 
+    shrooms_biome = room.function('shrooms_biome', home=False).add(
+        say(Arg('shrooms_biome')),
+        execute().at(e().tag('shrooms_home')).positioned(r(-1, 2, -1)).run(
+            fillbiome(r(0, 0, 0), r(13, 10, 9), Arg('shrooms_biome'))))
+
     def shrooms_loop(step):
         yield data().merge(r(-1, 0, -1), {'mode': 'LOAD', 'name': 'restworld:%s_shroom' % step.elem})
         yield fill(r(-1, 1, -2), r(13, 1, 10), f'{step.elem}_nylium').replace('#nylium')
@@ -301,11 +306,14 @@ def room():
         y_off = 3 if step.elem == 'crimson' else 5
         yield execute().unless().score(shrooms_tops).matches(1).run(setblock(r(1, y_off, 0), (vines, {'age': 0})))
         yield execute().if_().score(shrooms_tops).matches(1).run(setblock(r(1, y_off, 0), (vines, {'age': 25})))
+        yield data().modify(room.store, 'shrooms_biome').set().value(f'{step.elem}_forest')
         room.particle(f'{step.elem} roots', 'shrooms', r(1, 4, 2), step)
         room.particle(f'{step.elem} fungus', 'shrooms', r(1, 4, 4), step)
         room.particle(vines, 'shrooms', r(1, y_off, 0), step)
 
-    room.loop('shrooms', main_clock).loop(shrooms_loop, ('crimson', 'warped'))
+    room.loop('shrooms', main_clock).loop(
+        shrooms_loop, ('crimson', 'warped')).add(
+        function(shrooms_biome).with_().storage(room.store))
     room.particle('nether_sprouts', 'shrooms', r(1, 3.5, 6))
 
     def stems_loop(step):
@@ -363,13 +371,15 @@ def room():
         yield execute().unless().score(freeze_biome).matches(1).run(
             execute().at(e().tag('plants_room_beg_home')).run(
                 plant_room.fillbiome(biome),
-                plant_room.fill('air', replace='snow')))
+                plant_room.fill('air', replace='snow'))
+        )
 
     tree_items = tree_types.items()
     sorted(tree_items)
     room.loop('trees', slow_clock).add(kill(e().tag(floor_tag))).loop(trees_loop, tree_items).add(
         execute().at(e().tag('plants_room_beg_home')).run(fill(r(0, 1, 0), r(33, 6, 52), 'water').replace('ice')),
-        WallSign((None, 'Lily Pad')).place(r(3, 2, 15), WEST))
+        WallSign((None, 'Lily Pad')).place(r(3, 2, 15), WEST),
+        function(shrooms_biome).with_().storage(room.store))
     room.function('trees_init').add(room.label(r(0, 2, 16), 'Freeze Biome', WEST))
 
     def tulips_loop(step):
