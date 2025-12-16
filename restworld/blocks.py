@@ -954,11 +954,14 @@ def room():
         wall_torches_score.set(0)
     )
     room.loop('torches', main_clock).add(
-        execute().if_().score(wall_torches_score).matches(0).run(Sign.change(r(0, 2, -1), (None, None, 'Torch'))),
-        execute().if_().score(wall_torches_score).matches(1).run(Sign.change(r(0, 2, -1), (None, None, 'Wall Torch'))),
         setblock(r(0, 3, 0), 'air'),
-        execute().unless().block(r(0, 3, 1), 'air').run(setblock(r(0, 3, 1), 'air')),
-        execute().unless().block(r(0, 2, 0), 'air').run(setblock(r(0, 2, 0), 'barrier')),
+        execute().if_().score(wall_torches_score).matches(0).run(
+            setblock(r(0, 3, 1), 'air'),
+            Sign.change(r(0, 2, -1), (None, None, 'Torch'))),
+        execute().if_().score(wall_torches_score).matches(1).run(
+            setblock(r(0, 3, 1), 'smooth_quartz'),
+            Sign.change(r(0, 2, -1), (None, None, 'Wall Torch'))),
+        setblock(r(0, 2, 0), 'barrier'),
     ).loop(torches_loop, torches)
 
     color_functions(room)
