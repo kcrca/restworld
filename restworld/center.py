@@ -52,15 +52,15 @@ def intro_book():
         ', the pack I originally built RestWorld for.')
     book.next_page()
     book.add('',
-        Text.text(r'Credits:\n\n').italic(),
-        Text.text(r'BlueMeanial:\n').bold(),
-        r'  Software Design\n  Programming\n\n',
-        Text.text(r'JUMBOshrimp277:\n').bold(),
-        r'  Visual Design\n  Testing\n  Rubber Duck\n',
-        r'\n',
-        r'Details on ',
-        text_url(r'our site', 'https://claritypack.com/restworld/'),
-        '.')
+             Text.text(r'Credits:\n\n').italic(),
+             Text.text(r'BlueMeanial:\n').bold(),
+             r'  Software Design\n  Programming\n\n',
+             Text.text(r'JUMBOshrimp277:\n').bold(),
+             r'  Visual Design\n  Testing\n  Rubber Duck\n',
+             r'\n',
+             r'Details on ',
+             text_url(r'our site', 'https://claritypack.com/restworld/'),
+             '.')
 
     return book
 
@@ -136,7 +136,8 @@ def room():
     armor_for(trim_stand, 'copper', {'components': {'trim': {'pattern': 'flow', 'material': 'lapis'}}})
     silent = Nbt({'Silent': True})
     room.function('mobs_display_init').add(
-        summon(Entity('copper_golem', silent).tag('mob_display'), r(-6, 2.5, 0), all),
+        summon(Entity('copper_golem', silent.clone().merge({'next_weather_age': -2})).tag('mob_display'), r(-6, 2.5, 0),
+               all),
         summon(Entity('panda', {'MainGene': 'playful', 'Silent': True}).tag('mob_display'), r(-6, 2.5, 0), all),
         summon(Horse('horse', Horse.Color.CHESTNUT, Horse.Markings.WHITE, silent).tag('mob_display'), r(-6, 2.5, 0),
                all),
