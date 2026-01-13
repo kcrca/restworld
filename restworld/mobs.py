@@ -386,7 +386,7 @@ def friendlies(room):
     room.function('sniffer_kid_init').add(placer(r(-0.5, 2, 0), EAST, 0, kids=True, tags='keeper').summon('sniffer'))
     room.function('snow_golem_init').add(placer(r(-0.5, 2, 0), WEST, adults=True).summon('snow_golem'))
     room.loop('snow_golem', main_clock).loop(
-        lambda step: execute().as_(e().tag('snow_golem')).run(data().merge(s(), {'Pumpkin': step.elem})), (True, False))
+        lambda step: execute().as_(e().tag('snow_golem')).run(data().merge(s(), {'Pumpkinblo': step.elem})), (True, False))
     room.function('switch_carpets_on').add(execute().at(e().tag('llamas_home')).positioned(r(-2, -0.5, 0)).run(
         function('restworld:mobs/llamas_carpets_home')),
         execute().at(e().tag('llamas_carpets_home')).run(function('restworld:mobs/llamas_carpets_cur')))

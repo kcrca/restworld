@@ -1093,7 +1093,7 @@ def color_functions(room):
             for w in 'horse', 'dog':
                 yield data().merge(e().tag(f'colorings_{w}').limit(1), {'equipment': {'body': leather_color}})
             for w in 'cat', 'dog':
-                yield data().merge(e().tag(f'colorings_{w}').limit(1), {'CollarColor': color.num})
+                yield execute().as_(e().tag(f'colorings_{w}')).run(data().merge(s(),    {'CollarColor': color.num}))
             yield data().modify(e().tag('colorings_llama').limit(1), 'equipment.body').set().value(
                 {'id': color.id + '_carpet'})
             yield data().modify(e().tag('colorings_ghast').limit(1), 'equipment.body').set().value(
@@ -1150,6 +1150,7 @@ def color_functions(room):
     cat_nbt = Nbt(
         {'variant': 'persian', 'Owner': 'dummy', 'Tags': ['colorings_cat', 'colorings_item'], 'ColorColor': 3,
          'Rotation': [110, 0]}).merge(mob_nbt)
+    cat_baby_nbt = cat_nbt.clone().merge({'Age': -2147483648, 'Rotation': [250, 0]})
     llama_nbt = Nbt(
         {'Tags': ['colorings_llama', 'colorings_item', 'colorings_names', 'colorings_enchantable'], 'Variant': 1,
          'Rotation': [20, 0], 'Leashed': True}).merge(mob_nbt)
@@ -1199,6 +1200,7 @@ def color_functions(room):
         Entity('wolf', dog_nbt).summon(r(-7.4, 2, 2)),
         function(wolf_armor_on),
         Entity('cat', cat_nbt).summon(r(-2.7, 2, 2)),
+        Entity('cat', cat_baby_nbt).summon(r(-4.1, 2, 2.2)),
         Entity('armor_stand', stand_nbt).summon(r(-1.1, 2, 3)),
         Entity('llama', llama_nbt).summon(r(-11, 2, 5.8)),
         Entity('sheep', sheep_nbt).summon(r(-9.0, 2, 5.0)),
