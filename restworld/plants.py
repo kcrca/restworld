@@ -475,7 +475,7 @@ def bamboo_funcs(room):
             else:
                 height = max
             age = 0 if step.i <= max else 1
-            yield Sign.change(r(1, 2, 0), (None, None, 'Shoot' if step.i == 0 else f'Age: {age:d} of 2'))
+            yield Sign.change(r(1, 2, 0), (None, None, 'Shoot' if step.i == 0 else f'Age: {age:d}'))
             bamboo = Block('bamboo', {'age': age, 'leaves': 'none'})
             yield fill(r(0, 3, 0), r(0, 3 + height - 1, 0), bamboo)
             if height < max:

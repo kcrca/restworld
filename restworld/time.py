@@ -9,7 +9,7 @@ from restworld.world import main_clock, restworld
 
 
 def room():
-    room = Room('time', restworld, NORTH, (None, 'Time,', 'World', 'Boundary'))
+    room = Room('time', restworld, NORTH, (None, 'Time, Moon,', 'World', 'Boundary'))
 
     reset_moon = (
         fill(r(1, 8, 0), r(1, 8, 8), 'barrier'),
