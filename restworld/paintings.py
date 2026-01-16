@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from pynecraft.base import EAST, NORTH, ROTATION_270, SOUTH, Transform, WEST, as_facing, r
+from pynecraft.base import BLACK, EAST, NORTH, ROTATION_270, SOUTH, Transform, WEST, as_facing, r
 from pynecraft.commands import Text, e, kill, summon
 from pynecraft.simpler import TextDisplay
 from pynecraft.values import PAINTING_GROUP, paintings
@@ -44,17 +44,13 @@ def room():
         title = img.value
         if note:
             title += f' {note}'
-        txt = Text.translate(f'painting.minecraft.{img.name}.title').bold().italic(False)
+        txt = Text.translate(f'painting.minecraft.{img.name}.title').bold().italic(False).color(BLACK)
         if note:
             txt = txt.extra(fr' {note}')
         txt = txt.extra(r'\n')
         txt = txt.extra(Text.translate(
             f'painting.minecraft.{img.name}.author', fallback="[artist unknown]").plain(),
-                        Text.text(fr'\n{img.name} {img.size[0]}×{img.size[1]}\n').plain().italic())
-        display = TextDisplay(txt, nbt={
-            'alignment': 'left', 'line_width': 84, 'background': 0}).tag(
-            'painting').transform(
-            Transform.quaternion(facing, 0.45))
+                        Text.text(fr'\n{img.name}, {img.size[0]}×{img.size[1]}\n').plain().italic())
 
         def adj(v, facing_d, moving_d):
             return v + (img.size[0] - 0) * moving_d - facing_d / 2.01
@@ -66,6 +62,11 @@ def room():
             label_y -= 0.7
             label_x -= moving.dx
             label_z -= moving.dz
+
+        display = TextDisplay(txt, nbt={
+            'alignment': 'left', 'line_width': 84, 'background': 0}).tag(
+            'painting').transform(
+            Transform.quaternion(facing, 0.45))
         yield display.summon(r(adj(label_x, facing.dx, moving.dx), label_y, adj(label_z, facing.dz, moving.dz)))
         try:
             unused.remove(img.value)
@@ -85,7 +86,7 @@ def room():
 
         wall(('Finding',), WEST, 19, 11),
         wall(('Bouquet',), EAST, 21, 14),
-        wall(('Unpacked', ), EAST, 3, 15),
+        wall(('Unpacked',), EAST, 3, 15),
         wall(('Sunflowers',), WEST, 1, 12),
 
         wall(('Earth', 'Wind', 6, 'Water', 'Fire'), SOUTH, 3, 21, note='(unused)'),
