@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from pynecraft.base import DAYTIME, EAST, NOON, NORTH, SOUTH, WEST, as_facing, r
+from pynecraft.base import EAST, NOON, NORTH, SOUTH, WEST, as_facing, r
 from pynecraft.commands import RESULT, data, e, execute, fill, function, kill, setblock, summon, tag, time, worldborder
 from pynecraft.info import moon_phases
 from pynecraft.simpler import Item, WallSign
@@ -73,7 +73,7 @@ def room():
     time_forward = room.score('run_time_forward')
     room.function('run_time').add(
         execute().unless().score(time_forward).matches((0, None)).run(function('restworld:time/time_init')),
-        execute().store(RESULT).score(time_score).run(time().query(DAYTIME)),
+        execute().store(RESULT).score(time_score).run(time().query('day')),
         execute().if_().score(time_score).matches((None, noon)).run(time_score.add(day)),
 
         execute().if_().score(time_score).matches(morn).if_().score(time_forward).matches((1, None)).run(

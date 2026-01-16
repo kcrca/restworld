@@ -3,7 +3,7 @@ from __future__ import annotations
 import copy
 from itertools import count
 
-from pynecraft.base import Arg, DARK_GREEN, DIRECTIONS, EAST, EQ, GAMETIME, LT, NOON, NORTH, OVERWORLD, Position, SOUTH, \
+from pynecraft.base import Arg, DARK_GREEN, DIRECTIONS, EAST, EQ, LT, NOON, NORTH, OVERWORLD, Position, SOUTH, \
     THE_END, THE_NETHER, TimeSpec, WEST, r
 from pynecraft.commands import Block, ClickEvent, Entity, FORCE, HoverEvent, MINUS, MOD, MOVE, REPLACE, RESULT, Score, \
     Text, clone, data, e, execute, fill, forceload, function, gamerule, give, kill, p, return_, s, schedule, scoreboard, \
@@ -283,10 +283,10 @@ def room():
         clean_time_max.set(600)
     )
     room.function('ensure_clean').add(
-        execute().store(RESULT).score(clean_time).run(time().query(GAMETIME)),
+        execute().store(RESULT).score(clean_time).run(time().query('gametime')),
         clean_time.operation(MINUS, last_clean),
         execute().if_().score(clean_time).is_(LT, clean_time_max).run(return_()),
-        execute().store(RESULT).score(last_clean).run(time().query(GAMETIME)),
+        execute().store(RESULT).score(last_clean).run(time().query('gametime')),
         # Make sure kids don't grow up
         execute().as_(e().tag('kid')).run(data().merge(s(), {'Age': -2_147_483_648, 'IsBaby': True})),
         # Keep chickens from leaving eggs around
