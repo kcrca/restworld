@@ -135,10 +135,10 @@ def room():
 
     # With Slime and Magma Cube it _mostly_ works, but not perfectly. These are handled by giving a custom name to
     # the summoned mob, which is inherited by its descendants. We then see, if the count is at least 3, whether there
-    # is any mob labelled "3" (say). If not a new top-level "3"" is summoned. This way each mob will only be replaced
+    # is any mob labeled "3" (say). If not a new top-level "3"" is summoned. This way each mob will only be replaced
     # when all its descendants are gone. But... the problem is there is a gap in time between when "3" is killed and
     # its kids are spawned, during which time there is no "3". So a new one is summoned. Thus, the actual count of
-    # slimes and magma cubes is off a bit. If I figure out a way to fix this, I'll fix it. For now it seems mildly
+    # slimes and magma cubes is off a bit. If I figure out a way to fix this, I'll fix it. For now, it seems mildly
     # annoying, but better than the previous alternative where only the smallest slimes and cubes could be summoned,
     # since that could be handled by the general algorithm.
 
@@ -479,7 +479,7 @@ def room():
             function(do_summon).with_().storage(room.store, 'hunter')),
         execute().if_().score(victim_count).is_(LT, arena_count).run(
             function(do_summon).with_().storage(room.store, 'victim')),
-        ((
+        *((
             execute().if_().score(room.score(f'{actor}_count')).is_(GT, arena_count).run(
                 kill_em(
                     e().tag(actor).sort(RANDOM).limit(1).distance((None, 100)))),

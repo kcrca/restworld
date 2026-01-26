@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 import copy
-import math
 
+import math
 from titlecase import titlecase
 
 from pynecraft import info
@@ -135,7 +135,7 @@ def room():
         sector_home = f'multimob_{sector}_home'
         room.function(sector_home, exists_ok=True).add(tag(e().tag(sector_home)).add('multimob_summoner'))
 
-    summon_mobs = room.function('summon_mobs', home=False).add((
+    summon_mobs = room.function('summon_mobs', home=False).add(*(
         (
             data().modify(room.store, 'mob.nbt.Rotation').set().value(
                 rotate_facing(as_facing(sector), 180).rotation),

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import re
-from typing import Callable, Iterable, Union
+from typing import Callable, Iterable, Union, List, Any
 
 from titlecase import titlecase
 
@@ -85,7 +85,7 @@ def room():
             max_lines = max(max_lines, *(len(signage_for(block, i)) for i, block in enumerate(block_lists[j])))
 
         # show a single block from the list. "step" will be present if in a loop (i.e., not a singleton)
-        def one_block(block: Block, pos, step: Loop.Step | None):
+        def one_block(block: Block | str, pos, step: Loop.Step | None):
             signage = signage_for(block, step.i if step else 0)
             if air:
                 yield setblock(pos, 'air')
@@ -171,7 +171,7 @@ def room():
         bee_nests[0].append(Block('beehive', state=state, name=f'Beehive|Honey Level: {i}'))
         bee_nests[1].append(Block('bee_nest', state=state, name=f'Bee Nest|Honey Level: {i}'))
     blocks('bee_nest', SOUTH, bee_nests, dx=-3)
-    bookshelves = ['Bookshelf']
+    bookshelves: List[str | Block] = ['Bookshelf']
     bookshelves.extend((
         Block('chiseled_bookshelf', {'facing': SOUTH, }, name='Empty|Chiseled|Bookshelf'),
         Block('chiseled_bookshelf',
@@ -536,7 +536,7 @@ def room():
 
     def to_command_block(type, cond):
         type = type.strip()
-        state = {'facing': 'west'}
+        state :dict[str, Any] = {'facing': 'west'}
         name = f'{type}|Block'
         if cond:
             name += '|(Conditional)'
@@ -658,7 +658,7 @@ def room():
 
     lantern_type = ['Lantern', 'Copper Lantern', 'Soul Lantern']
 
-    def lantern_loop(step) -> Commands:
+    def lantern_loop(step):
         type = lantern_type[int(step.i / 2)]
         lantern = Block(type, {'hanging': False})
         chain_type = 'copper_chain' if 'Copper' in lantern.name else 'iron_chain'
@@ -1093,7 +1093,7 @@ def color_functions(room):
             for w in 'horse', 'dog':
                 yield data().merge(e().tag(f'colorings_{w}').limit(1), {'equipment': {'body': leather_color}})
             for w in 'cat', 'dog':
-                yield execute().as_(e().tag(f'colorings_{w}')).run(data().merge(s(),    {'CollarColor': color.num}))
+                yield execute().as_(e().tag(f'colorings_{w}')).run(data().merge(s(), {'CollarColor': color.num}))
             yield data().modify(e().tag('colorings_llama').limit(1), 'equipment.body').set().value(
                 {'id': color.id + '_carpet'})
             yield data().modify(e().tag('colorings_ghast').limit(1), 'equipment.body').set().value(
