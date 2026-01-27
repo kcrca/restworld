@@ -1,10 +1,11 @@
 from __future__ import annotations
 
 import copy
-import math
 import re
 from copy import deepcopy
 from typing import Callable, Iterable, Sequence, Tuple
+
+import math
 
 from pynecraft.base import Arg, BLUE, FacingDef, Nbt, ORANGE, ROTATION_180, ROTATION_270, ROTATION_90, RelCoord, is_arg, \
     r, \
@@ -13,7 +14,7 @@ from pynecraft.commands import BYTE, Block, BlockDef, CLEAR, Command, Commands, 
     Particle, \
     Position, RESULT, Score, SignMessages, Target, Text, TextDef, a, as_block, as_entity, as_facing, as_score, clone, \
     comment, \
-    data, e, execute, fill, function, function, kill, n, p, particle, random, ride, s, say, schedule, scoreboard, \
+    data, e, execute, fill, function, kill, n, p, particle, random, ride, s, say, schedule, scoreboard, \
     setblock, \
     summon, tag, tellraw, tp, weather
 from pynecraft.function import DataPack, Function, FunctionSet, LATEST_PACK_VERSION, Loop
@@ -287,21 +288,27 @@ class Room(FunctionSet):
         )
 
     def riders_on(self, mount: Target, tags: str | Sequence[str] = None, rider: EntityDef = None) -> Commands:
-        tags = self._rider_tags(tags)
+        tags = self._rider_tags(tags) + ('cur_rider',)
+        self._riders_init()
         if rider:
             rider = as_entity(rider)
             rider.tag(*tags).merge_nbt({'NoAI': True, 'Invulnerable': True, 'PersistenceRequired': True})
             yield data().modify(self.store, 'random_rider').set().value(rider.nbt)
             yield data().modify(self.store, 'random_rider_id').set().value(rider.id)
         else:
-            self._riders_init()
             yield data().modify(self.store, 'random_rider').set().from_(self.store, 'default_rider')
             yield data().modify(self.store, 'random_rider_id').set().value('mannequin')
             yield data().modify(self.store, 'random_rider.Tags').set().value(tags)
-        yield execute().as_(mount).at(s()).run(
-            data().modify(self.store, 'random_rider.Rotation').set().from_(s(), 'Rotation'),
-            function(self._random_rider),
-            ride(n().tag(*tags)).mount(s()))
+        try:
+            do_ride = self.functions['do_ride']
+        except KeyError:
+            do_ride = self.function('do_ride', home=False).add(
+                data().modify(self.store, 'random_rider.Rotation').set().from_(s(), 'Rotation'),
+                function(self._random_rider),
+                ride(n().tag('cur_rider')).mount(s()),
+                tag(e().tag('cur_rider')).remove('cur_rider'),
+            )
+        yield execute().as_(mount).at(s()).run(function(do_ride, {'tags': tags}))
 
     def riders_off(self, tags: str | Sequence[str] = None):
         tags = self._rider_tags(tags)
