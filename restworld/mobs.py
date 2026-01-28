@@ -88,16 +88,12 @@ def friendlies(room):
     )
     room.function('canine_enter').add(
         data().modify(e().tag('wolf', 'collared').limit(1), 'Owner').set().from_(player(), 'UUID'))
-    room.function('angry_wolf_on',home=False).add(
-        execute().as_(e().tag('wolf')).run(
-            data().modify(s(), 'anger_end_time').set().value(1000000),
-            data().modify(s(), 'angry_at').set().from_(player(), 'UUID')))
+    room.function('angry_wolf_on', home=False).add(
+        execute().as_(e().tag('wolf')).run(data().modify(s(), 'angry_at').set().from_(s(), 'UUID')))
     room.function('angry_wolf_off', home=False).add(
         execute().as_(e().tag('wolf')).run(
             data().modify(s(), 'anger_end_time').set().value(-1),
-            data().remove(s(), 'angry_at'),
-        )
-    )
+            data().remove(s(), 'angry_at')))
 
     def wolf_loop(step):
         yield execute().as_(e().tag('wolf')).run(
@@ -386,7 +382,8 @@ def friendlies(room):
     room.function('sniffer_kid_init').add(placer(r(-0.5, 2, 0), EAST, 0, kids=True, tags='keeper').summon('sniffer'))
     room.function('snow_golem_init').add(placer(r(-0.5, 2, 0), WEST, adults=True).summon('snow_golem'))
     room.loop('snow_golem', main_clock).loop(
-        lambda step: execute().as_(e().tag('snow_golem')).run(data().merge(s(), {'Pumpkinblo': step.elem})), (True, False))
+        lambda step: execute().as_(e().tag('snow_golem')).run(data().merge(s(), {'Pumpkinblo': step.elem})),
+        (True, False))
     room.function('switch_carpets_on').add(execute().at(e().tag('llamas_home')).positioned(r(-2, -0.5, 0)).run(
         function('restworld:mobs/llamas_carpets_home')),
         execute().at(e().tag('llamas_carpets_home')).run(function('restworld:mobs/llamas_carpets_cur')))
@@ -772,7 +769,7 @@ def monsters(room):
     def enderman_loop(step):
         placer = room.mob_placer(r(0, 2, 0), NORTH, adults=True)
         if step.elem:
-            yield data().modify(n().tag('enderman'), 'AngryAt').set().from_(p(), 'UUID')
+            yield data().modify(n().tag('enderman'), 'angry_at').set().from_(n().tag('enderman'), 'UUID')
             yield data().modify(n().tag('enderman'), 'CustomName').set().value('Angry Enderman')
         else:
             yield kill_em(e().tag('enderman'))
