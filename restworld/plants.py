@@ -158,8 +158,6 @@ def room():
         setblock(r(1, 2, 0), 'air'),
         setblock(r(0, 3, 0), 'air'),
         setblock(r(0, 2, 0), 'air')).loop(dripleaf_loop, upper)
-    room.loop('dripleaf_soil', main_clock).loop(lambda step: setblock(r(0, 1, 1), step.elem),
-                                                ('Clay', 'Moss Block'))
 
     def farmland_loop(_):
         for i in range(0, 8):
@@ -341,8 +339,6 @@ def room():
 
     room.loop('sweet_berry', main_clock).loop(sweet_berry_loop, range(0, 4), bounce=True)
     room.function('sweet_berry_init').add(room.label(r(5, 2, 2), 'Show Particles', SOUTH))
-    room.loop('sweet_berry_soil', main_clock).loop(lambda step: setblock(r(0, 2, 1), step.elem),
-                                                   ('Grass Block', 'Dirt', 'Podzol', 'Coarse Dirt'))
 
     tree_types = {
         'Acacia': SAVANNA, 'Birch': BIRCH_FOREST, 'Oak': PLAINS, 'Cherry': CHERRY_GROVE, 'Jungle': JUNGLE,
@@ -448,10 +444,6 @@ def three_funcs(room):
         room.label(r(-1, 2, 3), 'Cactus Flower', EAST))
     switch_to_func('height')
     switch_to_func('age')
-    room.loop('cactus_soil', main_clock).loop(lambda step: setblock(r(0, 2, 1), step.elem), ('Sand', 'Red Sand'))
-    room.loop('cane_soil', main_clock).loop(lambda step: setblock(r(0, 2, 1), step.elem), (
-        'Grass Block', 'Dirt', 'Coarse Dirt', 'Podzol', 'Red Sand', 'Sand', 'Suspicious Sand', 'Moss Block', 'Mycelium',
-        'Mud'))
     room.function('cane_init').add(function('restworld:plants/three_change_height'),
                                    WallSign((None, 'Sugar Cane')).place(r(-2, 2, 0), EAST),
                                    setblock(r(-1, 2, -1), 'structure_void'), setblock(r(-1, 2, 1), 'structure_void'),
@@ -488,9 +480,6 @@ def bamboo_funcs(room):
         room.particle(bamboo, 'bamboo', r(0, 3 + height, 0), step)
 
     room.loop('bamboo', main_clock).loop(bamboo_loop, range(0, 2 * max + 1))
-    room.loop('bamboo_soil', main_clock).loop(lambda step: setblock(r(0, 2, 1), step.elem), (
-        'Grass Block', 'Dirt', 'Coarse Dirt', 'Rooted Dirt', 'Podzol', 'Sand', 'Gravel', 'Moss Block', 'Mycelium',
-        'Red Sand', 'Mud'))
 
     water_funcs(room)
 
