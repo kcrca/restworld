@@ -450,7 +450,8 @@ def three_funcs(room):
     switch_to_func('age')
     room.loop('cactus_soil', main_clock).loop(lambda step: setblock(r(0, 2, 1), step.elem), ('Sand', 'Red Sand'))
     room.loop('cane_soil', main_clock).loop(lambda step: setblock(r(0, 2, 1), step.elem), (
-        'Grass Block', 'Dirt', 'Coarse Dirt', 'Podzol', 'Sand', 'Red Sand', 'Moss Block', 'Mycelium', 'Mud'))
+        'Grass Block', 'Dirt', 'Coarse Dirt', 'Podzol', 'Red Sand', 'Sand', 'Suspicious Sand', 'Moss Block', 'Mycelium',
+        'Mud'))
     room.function('cane_init').add(function('restworld:plants/three_change_height'),
                                    WallSign((None, 'Sugar Cane')).place(r(-2, 2, 0), EAST),
                                    setblock(r(-1, 2, -1), 'structure_void'), setblock(r(-1, 2, 1), 'structure_void'),
