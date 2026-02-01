@@ -1148,7 +1148,7 @@ def color_functions(room):
          'Rotation': [-65, 0]}).merge(mob_nbt)
     wolf_armor_nbt = Nbt({'equipment': {'body': Item.nbt_for('wolf_armor')}})
     cat_nbt = Nbt(
-        {'variant': 'persian', 'Owner': 'dummy', 'Tags': ['colorings_cat', 'colorings_item'], 'ColorColor': 3,
+        {'variant': 'british_shorthair', 'Owner': 'dummy', 'Tags': ['colorings_cat', 'colorings_item'], 'ColorColor': 3,
          'Rotation': [110, 0]}).merge(mob_nbt)
     cat_baby_nbt = cat_nbt.clone().merge({'Age': -2147483648, 'Rotation': [250, 0]})
     llama_nbt = Nbt(
