@@ -89,7 +89,7 @@ def friendlies(room):
     room.function('canine_enter').add(
         data().modify(e().tag('wolf', 'collared').limit(1), 'Owner').set().from_(player(), 'UUID'))
     room.function('angry_wolf_on', home=False).add(
-        execute().as_(e().tag('wolf')).run(data().modify(s(), 'angry_at').set().from_(s(), 'UUID')))
+        execute().as_(e().tag('wolf', '!collared')).run(data().modify(s(), 'angry_at').set().from_(s(), 'UUID')))
     room.function('angry_wolf_off', home=False).add(
         execute().as_(e().tag('wolf')).run(
             data().modify(s(), 'anger_end_time').set().value(-1),
@@ -384,15 +384,15 @@ def friendlies(room):
     room.loop('snow_golem', main_clock).loop(
         lambda step: execute().as_(e().tag('snow_golem')).run(data().merge(s(), {'Pumpkinblo': step.elem})),
         (True, False))
-    room.function('switch_carpets_on').add(execute().at(e().tag('llamas_home')).positioned(r(-2, -0.5, 0)).run(
+    room.function('switch_carpets_on', home=False).add(execute().at(e().tag('llamas_home')).positioned(r(-2, -0.5, 0)).run(
         function('restworld:mobs/llamas_carpets_home')),
         execute().at(e().tag('llamas_carpets_home')).run(function('restworld:mobs/llamas_carpets_cur')))
-    room.function('switch_carpets_off').add(
+    room.function('switch_carpets_off', home=False).add(
         execute().as_(e().tag('llama')).run(data().remove(s(), 'equipment.body')),
         kill(e().tag('llamas_carpets_home')))
 
     room.function('trader_llama_init').add(placer(r(1, 2, -1), WEST, adults=True).summon('wandering_trader'),
-                                           placer(r(-1, 2, 0), WEST, adults=True,
+                                           placer(r(0, 2, 1), WEST, 0, 2,
                                                   nbt={'DespawnDelay': 2147483647, 'Leashed': True}).summon(
                                                'trader_llama'))
     room.loop('trader_llama', main_clock).loop(
@@ -527,7 +527,7 @@ def villager_funcs(room):
         room.label(r(-3, 2, 4), 'Zombies', WEST))
 
     # Switch functions
-    room.function('switch_villagers').add(
+    room.function('switch_villagers', home=False).add(
         which_villagers.set(0),
         execute().if_().score(cur_villagers_group).matches(1).run(which_villagers.add(1)),
         execute().if_().score(cur_villagers_zombies).matches(1).run(which_villagers.add(2)),
@@ -555,18 +555,18 @@ def villager_funcs(room):
         home_villagers(1, 'villager_types'), home_villagers(2, 'zombie_professions'),
         home_villagers(3, 'zombie_types'),
         home_villagers((4, None), 'villager_levels'))
-    room.function('switch_villagers_init').add(
+    room.function('switch_villagers_init', home=False).add(
         which_villagers_prev.set(1),
         function('restworld:mobs/switch_villagers'))
-    room.function('toggle_villager_group').add(
+    room.function('toggle_villager_group', home=False).add(
         cur_villagers_group.add(1), cur_villagers_group.operation(MOD, bool_max),
         function('restworld:mobs/switch_villagers'))
-    room.function('toggle_villager_levels').add(
+    room.function('toggle_villager_levels', home=False).add(
         cur_villagers_levels.add(1),
         cur_villagers_levels.operation(MOD, bool_max),
         execute().if_().score(cur_villagers_levels).matches(1).run(cur_villagers_zombies.set(0)),
         function('restworld:mobs/switch_villagers'))
-    room.function('toggle_villager_zombies').add(
+    room.function('toggle_villager_zombies', home=False).add(
         cur_villagers_zombies.add(1),
         cur_villagers_zombies.operation(MOD, bool_max),
         execute().if_().score(cur_villagers_zombies).matches(1).run(cur_villagers_levels.set(0)),
