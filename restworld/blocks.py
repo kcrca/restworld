@@ -50,6 +50,7 @@ def room():
             raise ValueError(f'All lists must be the same length, got lengths {lengths}')
         # Convert all to Block objects, handling '' as a nameless structure_void
         for i, sublist in enumerate(block_lists):
+            # noinspection PyTypeChecker
             block_lists[i] = list(
                 map(lambda x: Block(id='structure_void', name='') if x == '' else as_block(x), sublist))
         # If there are names to show, set bool that will show them
@@ -536,7 +537,7 @@ def room():
 
     def to_command_block(type, cond):
         type = type.strip()
-        state :dict[str, Any] = {'facing': 'west'}
+        state: dict[str, Any] = {'facing': 'west'}
         name = f'{type}|Block'
         if cond:
             name += '|(Conditional)'
@@ -567,10 +568,10 @@ def room():
         weatherings)
 
     room.function('copper_golem_statue_init').add(
-        data().modify((room.store), 'copper_golem.oxy').set().value(''),
-        data().modify((room.store), 'copper_golem.oxy_name').set().value(''),
-        data().modify((room.store), 'copper_golem.pose').set().value('standing'),
-        data().modify((room.store), 'copper_golem.pose_name').set().value('Standing'),
+        data().modify(room.store, 'copper_golem.oxy').set().value(''),
+        data().modify(room.store, 'copper_golem.oxy_name').set().value(''),
+        data().modify(room.store, 'copper_golem.pose').set().value('standing'),
+        data().modify(room.store, 'copper_golem.pose_name').set().value('Standing'),
         copper_golem_statue_mode.set(0),
         WallSign((None, None, 'Standing', 'Copper Golem Statue')).place(r(0, 2, -1), NORTH),
         room.label(r(-1, 2, 0), 'Oxidation', NORTH)

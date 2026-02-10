@@ -187,7 +187,7 @@ def room():
 
     init_mobs = ((NW, -2, -2, 'Allay'), (NE, 2, -2, 'Guardian'), (SE, -2, -2, 'Piglin Brute'), (SW, -2, 2, 'Villager'))
     room.function('summon_mobs_init').add(
-        ((
+        *((
             execute().as_(e().tag('summon_cur')).run(tag(s()).remove('summon_cur')),
             tag(n().tag(f'summon_{sector}_home')).add('summon_cur'),
             summon_mob_commands(my_mobs[mob_id])

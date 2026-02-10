@@ -209,9 +209,6 @@ def create():
         ]
     }
 
-    def coppers(which):
-        return [f'copper_{which}'] + [f'{x}_copper_{which}' for x in ('exposed', 'weathered', 'oxidized')]
-
     blocks['stepable_planks'] = {
         'values': [
             'acacia_planks',

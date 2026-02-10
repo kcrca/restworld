@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from collections import namedtuple
+from typing import List, Any
 
 from titlecase import titlecase
 
@@ -139,7 +140,7 @@ def room():
     room.loop('experience_orbs', fast_clock).loop(experience_orbs_loop, points)
     room.function('experience_orbs_init').add(WallSign((None, 'Experience Orb')).place(r(1, 2, 0), EAST))
 
-    non_inventory = list(must_give_items.values())
+    non_inventory: List[Any] = list(must_give_items.values())
     non_inventory.append(Entity('elytra', name='Damaged Elytra', nbt={'components': {'damage': 450}}))
 
     def only_items_init_func():
@@ -686,6 +687,7 @@ def wood_functions(room):
                 shared_states={'attached': attached})
 
         # Add special cases
+        # noinspection PyTypeChecker
         yield from volume.fill('air', 'vine')  # remove any existing vine
         if name in ('Jungle', 'Mangrove'):
             yield fill(r(-4, 2, -2), r(-4, 4, -2), ('vine', {'north': True}))
@@ -774,8 +776,7 @@ def trim_functions(room):
                         {'ShowArms': True,
                          'Pose': {'LeftArm': [-20, 0, -140], 'RightArm': [-20, 0, 20],
                                   'LeftLeg': [-20, 0, 0], 'RightLeg': [20, 0, 0]}}).tag(room.name, overall_tag)
-    places = [None, None]
-    places[0] = [
+    places = [[
         (r(2, 2, -5), WEST),
         (r(3, 3, -4), WEST),
         (r(2, 2, -3), WEST),
@@ -796,9 +797,9 @@ def trim_functions(room):
         (r(-3, 2, -3), EAST),
         (r(-4, 3, -4), EAST),
         (r(-3, 2, -5), EAST),
-    ]
+    ]]
     mid = int(len(places[0]) / 2)
-    places[1] = places[0][:mid] + [(r(-0.5, 3, 2), NORTH)] + places[0][mid:]
+    places.append(places[0][:mid] + [(r(-0.5, 3, 2), NORTH)] + places[0][mid:])
 
     show = room.score('trim_show')
     change = room.score('trim_change')

@@ -1,8 +1,9 @@
 from __future__ import annotations
 
-import math
 import os
 import re
+
+import math
 
 from pynecraft.base import EAST, NE, NORTH, OVERWORLD, SOUTH, SW, WEST, as_facing, r, to_id
 from pynecraft.commands import Block, CREATIVE, Entity, SURVIVAL, e, execute, fill, function, gamemode, kill, p, \
@@ -49,7 +50,7 @@ mobs = (
     PhotoMob(4.5, +42, 'wolf'),
 
     PhotoMob(7.0, -42, 'mooshroom'),
-    PhotoMob(7.0, -27, 'nautilus',y=0.2),
+    PhotoMob(7.0, -27, 'nautilus', y=0.2),
     PhotoMob(7.0, -13, 'copper_golem', nbt={'next_weather_age': -2}),
     PhotoMob(7.0, -1, 'sheep', nbt={'Color': 3}),
     PhotoMob(7.0, +12, 'breeze'),
@@ -214,7 +215,7 @@ def room():
     room.function('sampler_init').add(
         kill(e().tag('example')),
         kill(e().type('item')),
-        room.mob_placer(r(-4, 2, 0), as_facing(NE), adults=True, tags=('example')).summon('creeper'),
-        room.mob_placer(r(-1, 2, 0), as_facing(NE), adults=True, tags=('example')).summon('minecart'),
-        room.mob_placer(r(4.5, 2, 0), as_facing(SW), adults=True, tags=('example')).summon('oak_chest_boat'),
+        room.mob_placer(r(-4, 2, 0), as_facing(NE), adults=True, tags='example').summon('creeper'),
+        room.mob_placer(r(-1, 2, 0), as_facing(NE), adults=True, tags='example').summon('minecart'),
+        room.mob_placer(r(4.5, 2, 0), as_facing(SW), adults=True, tags='example').summon('oak_chest_boat'),
     )

@@ -8,7 +8,7 @@ from pynecraft.base import Arg, DARK_GREEN, DIRECTIONS, EAST, EQ, LT, NOON, NORT
 from pynecraft.commands import Block, ClickEvent, Entity, FORCE, HoverEvent, MINUS, MOD, MOVE, REPLACE, RESULT, Score, \
     Text, clone, data, e, execute, fill, forceload, function, gamerule, give, kill, p, return_, s, schedule, scoreboard, \
     setblock, \
-    tag, teleport, time, tp, trigger
+    tag, teleport, time, tp, trigger, Commands
 from pynecraft.function import Function
 from pynecraft.simpler import Book, VILLAGER_PROFESSIONS, WallSign
 from pynecraft.values import DUMMY
@@ -162,7 +162,7 @@ def room():
     for dir in (NORTH, SOUTH, EAST, WEST):
         clock_sign(dir)
 
-    def func(pos: Position, which: str, dir: str, repeat=False) -> str:
+    def func(pos: Position, which: str, dir: str, repeat=False) -> Commands:
         yield setblock(pos, 'air')
         block = 'Repeating Command Block' if repeat else 'Command Block'
         yield setblock(pos, Block(block, {'facing': dir},

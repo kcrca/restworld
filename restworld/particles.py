@@ -1,7 +1,8 @@
 from __future__ import annotations
 
-import math
 import random
+
+import math
 
 from pynecraft.base import Arg, EAST, MIDNIGHT, NOON, NORTH, Nbt, OVERWORLD, SOUTH, WEST, as_facing, d, r, to_id
 from pynecraft.commands import BLOCK_MARKER, Block, CLEAR, DUST_PILLAR, Entity, FALLING_DUST, HoverEvent, INFINITE, \

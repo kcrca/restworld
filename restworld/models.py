@@ -1,5 +1,6 @@
 import re
 from collections import defaultdict
+from typing import Any
 
 from pynecraft import info
 from pynecraft.base import Arg, EAST, EQ, as_facing, d, r, to_name
@@ -64,6 +65,7 @@ def sample(which, things):
         name = t.name
         if samples_skip_re.search(name):
             seen[samples_skip_re.pattern].append(name)
+            return False
         else:
             m = samples_re.search(name)
             if not m:
@@ -326,7 +328,7 @@ def room():
 
     block_list = tuple(filter(block_filter, info.blocks.values()))
 
-    state = {'sculk_vein': {'down': True, 'north': True}, 'grindstone': {'face': 'floor'}}
+    state: dict[str, Any] = {'sculk_vein': {'down': True, 'north': True}, 'grindstone': {'face': 'floor'}}
     easterly = {'furnace', 'dropper', 'dispenser', 'blast_furnace', 'smoker', 'chest', 'lectern', 'lever', 'observer'}
     for b in block_list:
         if re.search(r'_(head|skull)$', b.id):

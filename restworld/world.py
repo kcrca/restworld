@@ -16,7 +16,7 @@ class RestWorld(RoomPack):
     def __init__(self):
         suffixes = list(RoomPack.base_suffixes)
         suffixes.extend(list(x.name for x in self.clocks()))
-        super().__init__('restworld', suffixes, 4)
+        super().__init__('restworld', suffixes)
 
     def finalize(self):
         for kid in self.function_set.children:

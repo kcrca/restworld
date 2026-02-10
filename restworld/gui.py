@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import math
-
 from titlecase import titlecase
 
 from pynecraft import commands
@@ -364,6 +363,7 @@ def room():
         if radius != radii[0][0]:
             blob = Text.text("█").color(color)
             text = [f'{color_name}\\n{radius_name}\\n', blob, Text('⇧').bold(), blob]
+            # noinspection PyTypeChecker
             waypoints_setup.add(
                 room.label(r(tx, 2, tz), text, as_facing((angle + 90) % 360), tags=('waypoint',)))
 

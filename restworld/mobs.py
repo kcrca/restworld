@@ -372,8 +372,7 @@ def friendlies(room):
     room.function('sniffer_kid_init').add(placer(r(-0.5, 2, 0), EAST, 0, kids=True, tags='keeper').summon('sniffer'))
     room.function('snow_golem_init').add(placer(r(-0.5, 2, 0), WEST, adults=True).summon('snow_golem'))
     room.loop('snow_golem', main_clock).loop(
-        lambda step: execute().as_(e().tag('snow_golem')).run(data().merge(s(), {'Pumpkinblo': step.elem})),
-        (True, False))
+        lambda step: execute().as_(e().tag('snow_golem')).run(data().merge(s(), {'Pumpkin': step.elem})), (True, False))
     room.function('switch_carpets_on', home=False).add(
         execute().at(e().tag('llamas_home')).positioned(r(-2, -0.5, 0)).run(
             function('restworld:mobs/llamas_carpets_home')),
@@ -636,6 +635,7 @@ def monsters(room):
     place = list(copy.deepcopy(east_placer))
     place[0][2] += 0.5
 
+    # noinspection SpellCheckingInspection
     ench_helmet = {'id': 'iron_helmet', 'components': {'repair_cost': 1, 'enchantments': {'unbreaking': 3}}}
 
     def skeleton_horse_loop(step):
@@ -683,7 +683,7 @@ def monsters(room):
 
     def camel_husk_loop(step):
         if step.elem:
-            yield room.riders_on(n().tag('camel_husk'), tags=('husk_rider'),
+            yield room.riders_on(n().tag('camel_husk'), tags='husk_rider',
                                  rider=Entity('husk', {'NoAI': True, 'equipment': {'mainhand': spear}}))
             yield schedule().function(chr2, 1, REPLACE)
         else:
@@ -898,6 +898,7 @@ def aquatic(room):
         # or even how to report it. But I have to work around it. I teleport all the salmon to death but rescue one.
         yield kill_em(e().tag('salmon'))
         yield data().merge(n().tag('salmon'), {'type': step.elem})
+        # noinspection PyTypeChecker
         yield tp(n().tag('salmon'), fish_pos).facing(fish_facing)
 
     room.loop('fishies', main_clock).loop(fishies_loop, ('small', 'medium', 'large'), bounce=True)

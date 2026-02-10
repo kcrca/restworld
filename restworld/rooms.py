@@ -235,7 +235,7 @@ class Room(FunctionSet):
             f = self.functions[marker_tag]
             for c in f.commands():
                 if home_marker_comment in c:
-                    return
+                    return f
         stand = deepcopy(self._home_stand)
         stand.name = self.name
         stand.nbt.get_list('Tags').extend((marker_tag, self.name + '_home', 'homer'))
@@ -591,8 +591,7 @@ class MobPlacer:
         return copy.deepcopy(self)
 
     def summon(self, mobs: Iterable[EntityDef] | EntityDef, *, on_stand: bool | Callable[[Entity], bool] = False,
-               tags: str | tuple[str] | list[str] = None, nbt=None, auto_tag=None, adults=None, kids=None) -> Tuple[
-        Command, ...]:
+               tags: str | tuple[str] | list[str] = None, nbt=None, auto_tag=None, adults=None, kids=None) -> Commands:
         if isinstance(mobs, (Entity, str)):
             mobs = (mobs,)
         if tags and isinstance(tags, str):
@@ -691,7 +690,7 @@ class Wall:
         yield all_signs
 
 
-def _ranges(cur: int, mn: int, mx: int | None) -> [int, int]:
+def _ranges(cur: int, mn: int, mx: int | None) -> Tuple[int, int]:
     if mx is None:
         return cur, cur
     return min(cur, mn), max(cur, mx)
