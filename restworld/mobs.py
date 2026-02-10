@@ -105,19 +105,9 @@ def friendlies(room):
     room.loop('cat', main_clock).loop(
         lambda step: execute().as_(e().tag('cat')).run(
             data().merge(s(), {'variant': step.elem.id, 'CustomName': step.elem.name})),
-        (
-            Entity('tabby', name='Tabby'),
-            Entity('black', name='Tuxedo'),
-            Entity('red', name='Red'),
-            Entity('siamese', name='Siamese'),
-            Entity('british_shorthair', name='British Shorthair'),
-            Entity('calico', name='Calico'),
-            Entity('persian', name='Persian'),
-            Entity('ragdoll', name='Ragdoll'),
-            Entity('white', name='White'),
-            Entity('jellie', name='Jellie'),
-            Entity('all_black', name='Black'),
-        ))
+        (Entity(x, name=to_name(x)) for x in
+         ('tabby', 'black', 'red', 'siamese', 'british_shorthair', 'calico', 'persian', 'ragdoll', 'white', 'jellie',
+          'all_black')))
     room.function('colored_mobs_init').add(room.label(r(0, 2, -1), 'Glow', NORTH))
 
     def colored_mobs_loop(step):
@@ -384,8 +374,9 @@ def friendlies(room):
     room.loop('snow_golem', main_clock).loop(
         lambda step: execute().as_(e().tag('snow_golem')).run(data().merge(s(), {'Pumpkinblo': step.elem})),
         (True, False))
-    room.function('switch_carpets_on', home=False).add(execute().at(e().tag('llamas_home')).positioned(r(-2, -0.5, 0)).run(
-        function('restworld:mobs/llamas_carpets_home')),
+    room.function('switch_carpets_on', home=False).add(
+        execute().at(e().tag('llamas_home')).positioned(r(-2, -0.5, 0)).run(
+            function('restworld:mobs/llamas_carpets_home')),
         execute().at(e().tag('llamas_carpets_home')).run(function('restworld:mobs/llamas_carpets_cur')))
     room.function('switch_carpets_off', home=False).add(
         execute().as_(e().tag('llama')).run(data().remove(s(), 'equipment.body')),
