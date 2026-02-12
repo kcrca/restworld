@@ -4,21 +4,19 @@ import copy
 
 from titlecase import titlecase
 
-from pynecraft.base import EAST, EQ, NE, NORTH, Nbt, SOUTH, WEST, r, to_id, to_name
-from pynecraft.commands import Block, COLORS, Entity, FORCE, LONG, MOD, REPLACE, RESULT, SUCCESS, Score, as_facing, \
-    clone, data, \
-    e, execute, fillbiome, function, item, kill, n, p, player, return_, ride, s, schedule, scoreboard, setblock, \
-    summon, \
-    tag, tp
+from pynecraft.base import EAST, EQ, Nbt, NE, NORTH, r, SOUTH, to_id, to_name, WEST
+from pynecraft.commands import as_facing, Block, clone, COLORS, data, e, Entity, execute, fillbiome, FORCE, function, \
+    item, kill, LONG, MOD, n, p, player, REPLACE, RESULT, return_, ride, s, schedule, Score, scoreboard, setblock, \
+    SUCCESS, summon, tag, tp
 from pynecraft.info import axolotls, colors, default_skins, horses, mannequin_poses, tropical_fish, weathering_id, \
     weathering_name, \
     weathering_property, \
     weatherings, \
     wolves
-from pynecraft.simpler import Item, PLAINS, Sign, VILLAGER_BIOMES, VILLAGER_PROFESSIONS, Villager, WallSign
-from pynecraft.values import DISC_GROUP, DUMMY, as_disc, discs
+from pynecraft.simpler import Item, PLAINS, Sign, Villager, VILLAGER_BIOMES, VILLAGER_PROFESSIONS, WallSign
+from pynecraft.values import as_disc, DISC_GROUP, discs, DUMMY
 from restworld.materials import water_biomes
-from restworld.rooms import MobPlacer, Room, kill_em
+from restworld.rooms import kill_em, MobPlacer, Room
 from restworld.world import fast_clock, main_clock, restworld
 
 
@@ -68,9 +66,11 @@ def friendlies(room):
             e().tag('bee_home')).run(setblock(r(2, 2, 0), (bee_house, {'facing': WEST})))
         on_ground = step.i < 2
         base = 'iron_bars' if on_ground else 'air'
-        yield execute().as_(e().tag('bee')).run(data().merge(
-            s(), {'OnGround': on_ground, 'AngerTime': (step.i % 2) * 100000,
-                  'CustomName': 'Bee' if step.i % 2 == 0 else 'Angry Bee'}))
+        yield execute().as_(e().tag('bee')).run(
+            data().merge(s(), {'OnGround': on_ground, 'anger_end_time': 0 if step.i % 2 == 0 else Nbt.MAX_LONG,
+                               'CustomName': 'Bee' if step.i % 2 == 0 else 'Angry Bee'}),
+            data().modify(s(), 'angry_at').set().from_(s(), 'UUID')
+        )
         yield execute().unless().block(r(0, 1, 0), 'air').run(setblock(r(0, 2, 0), base))
         yield execute().unless().block(r(0, 1, 0), 'air').run(setblock(r(-2, 2, 0), base))
 
