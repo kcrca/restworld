@@ -1,25 +1,21 @@
 from __future__ import annotations
 
 import re
-from typing import Callable, Iterable, Union, List, Any
+from typing import Any, Callable, Iterable, List, Union
 
 from titlecase import titlecase
 
 from pynecraft import commands, info
-from pynecraft.base import Arg, DOWN, E, EAST, EQ, FacingDef, N, NORTH, Nbt, RelCoord, S, SOUTH, UP, W, WEST, as_facing, \
-    r, \
-    rotate_facing, to_id, to_name
-from pynecraft.commands import Block, Command, Commands, Entity, MOD, MOVE, REPLACE, SUCCESS, ScoreName, as_block, \
-    as_score, \
-    clone, data, \
-    e, execute, fill, function, item, kill, n, p, s, say, schedule, setblock, summon, tag
+from pynecraft.base import Arg, as_facing, DOWN, E, EAST, EQ, FacingDef, N, Nbt, NORTH, r, RelCoord, rotate_facing, S, \
+    SOUTH, to_id, to_name, UP, W, WEST
+from pynecraft.commands import as_block, as_score, Block, clone, Command, Commands, data, e, Entity, execute, fill, \
+    function, item, kill, MOD, MOVE, n, p, REPLACE, s, say, schedule, ScoreName, setblock, SUCCESS, summon, tag
 from pynecraft.function import Function, Loop
-from pynecraft.info import Color, armor_equipment, colors, copper_golem_poses, sherds, stems, weathering_id, \
-    weathering_name, \
-    weatherings
+from pynecraft.info import armor_equipment, Color, colors, copper_golem_poses, sherds, stems, weathering_id, \
+    weathering_name, weatherings
 from pynecraft.simpler import Item, ItemFrame, Region, Sign, TextDisplay, WallSign
 from restworld.materials import enchant
-from restworld.rooms import Clock, ERASE_HEIGHT, Room, erase, if_clause, kill_em
+from restworld.rooms import Clock, erase, ERASE_HEIGHT, if_clause, kill_em, Room
 from restworld.world import fast_clock, main_clock, restworld
 
 
@@ -1011,7 +1007,8 @@ def color_functions(room):
     lit_candles = room.score('lit_candles')
     plain = room.score('plain')
 
-    armor_stand = e().tag('colorings_armor_stand').limit(1)
+    armors_tag = 'colorings_armor'
+    armors = e().tag(armors_tag)
 
     def colorings(is_plain, color, step=None):
         fills = {
@@ -1068,8 +1065,7 @@ def color_functions(room):
             yield data().remove(e().tag('colorings_llama').limit(1), 'equipment.body')
             yield data().remove(e().tag('colorings_ghast').limit(1), 'equipment.body')
             for f in armor_equipment.keys():
-                yield data().remove(armor_stand,
-                                    f'equipment.{f}.components.dyed_color')
+                yield execute().as_(armors).run(data().remove(s(), f'equipment.{f}.components.dyed_color'))
             yield execute().as_(e().tag('colorings_frame')).run(
                 data().remove(s(), 'Item.components.dyed_color'))
             yield execute().as_(e().tag('colorings_horse')).run(
@@ -1087,9 +1083,9 @@ def color_functions(room):
             yield data().merge(e().tag('colorings_frame_harness').limit(1),
                                {'Item': Item.nbt_for(f'{color.id}_harness'), 'ItemRotation': 0})
             bundle = Item.nbt_for(f'{color.id}_bundle')
-            yield data().merge(armor_stand, {
+            yield execute().as_(armors).run(data().merge(s(), {
                 'equipment': {'feet': leather_color, 'legs': leather_color, 'chest': leather_color,
-                              'head': leather_color}})
+                              'head': leather_color}}))
             yield execute().as_(e().tag('colorings_frame')).run(data().merge(s(), {'Item': leather_color}))
             for w in 'horse', 'dog':
                 yield data().merge(e().tag(f'colorings_{w}').limit(1), {'equipment': {'body': leather_color}})
@@ -1163,10 +1159,12 @@ def color_functions(room):
         {'Tags': ['colorings_ghast', 'colorings_item', 'colorings_enchantable'], 'Rotation': ghast_rot,
          'equipment': {'body': Item.nbt_for('white_harness')}}).merge(
         mob_nbt)
-    stand_nbt = {'Tags': ['colorings_armor_stand', 'colorings_item', 'colorings_enchantable'], 'Rotation': [30, 0],
-                 'equipment': {}}
+    stand_nbt = Nbt({
+        'Tags': [armors_tag, 'colorings_item', 'colorings_enchantable'], 'Rotation': [30, 0],
+        'equipment': {}})
+    baby_armor_nbt = stand_nbt.copy().merge({'IsBaby': True, 'Age': -2147483648, 'Rotation': [65, 0], 'NoAI': True})
     for place, piece in armor_equipment.items():
-        stand_nbt['equipment'][place] = Item.nbt_for(f'leather_{piece}')
+        stand_nbt['equipment'][place] = baby_armor_nbt['equipment'][place] = Item.nbt_for(f'leather_{piece}')
     armor_frames = {
         'harness': r(-2.5, 4, 0.5),
         'wolf_armor': r(-8, 4, 1),
@@ -1203,6 +1201,7 @@ def color_functions(room):
         Entity('cat', cat_nbt).summon(r(-2.7, 2, 2)),
         Entity('cat', cat_baby_nbt).summon(r(-4.1, 2, 2.2)),
         Entity('armor_stand', stand_nbt).summon(r(-1.1, 2, 3)),
+        Entity('zombie', baby_armor_nbt).summon(r(1, 2.53, 3.2)),
         Entity('llama', llama_nbt).summon(r(-11, 2, 5.8)),
         Entity('sheep', sheep_nbt).summon(r(-9.0, 2, 5.0)),
         Entity('happy_ghast', ghast_nbt).summon(r(-5.5, 5.3, -2.0)),
@@ -1278,12 +1277,14 @@ def color_functions(room):
         execute().as_(e().tag('colorings_names')).run(data().merge(s(), {'CustomNameVisible': False})))
     room.function('colored_beam_enter').add(setblock(r(0, 1, 0), 'iron_block'))
     room.function('colored_beam_exit').add(setblock(r(0, 1, 0), 'white_concrete'))
-    room.function('colored_leggings_start', home=False).add(data().remove(armor_stand, 'equipment.chest'))
+    room.function('colored_leggings_start', home=False).add(
+        execute().as_(armors).run(data().remove(s(), 'equipment.chest')))
     room.function('colored_leggings_stop', home=False).add(
-        data().modify(armor_stand, 'equipment.chest').set().value(
-            Item.nbt_for('leather_chestplate')),
-        data().modify(armor_stand, 'equipment.chest.components').set().from_(
-            e().tag('colorings_armor_stand').limit(1), 'equipment.legs.components')
+        execute().as_(armors).run(
+            data().modify(s(), 'equipment.chest').set().value(Item.nbt_for('leather_chestplate')),
+            data().modify(s(), 'equipment.chest.components').set().from_(
+                e().tag('colorings_armor_stand').limit(1), 'equipment.legs.components')
+        )
     )
 
 

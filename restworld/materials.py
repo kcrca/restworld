@@ -1,20 +1,20 @@
 from __future__ import annotations
 
 from collections import namedtuple
-from typing import List, Any
+from typing import Any, List
 
 from titlecase import titlecase
 
 from pynecraft import info
-from pynecraft.base import Arg, EAST, EQ, NE, NORTH, NW, Nbt, NbtDef, RelCoord, SOUTH, WEST, as_facing, r, to_id
-from pynecraft.commands import Block, BlockDef, Entity, LONG, MOD, PLUS, RESULT, Score, as_block, data, e, \
-    execute, fill, fillbiome, function, item, kill, n, p, random, s, scoreboard, setblock, summon, tag
+from pynecraft.base import Arg, as_facing, EAST, EQ, Nbt, NbtDef, NE, NORTH, NW, r, RelCoord, SOUTH, to_id, WEST
+from pynecraft.commands import as_block, Block, BlockDef, data, e, Entity, execute, fill, fillbiome, function, item, \
+    kill, LONG, MOD, n, p, PLUS, random, RESULT, s, Score, scoreboard, setblock, summon, tag
 from pynecraft.function import BLOCK
 from pynecraft.info import armor_equipment, colors, copper_golem_poses, default_skins, must_give_items, stems, \
     trim_materials, trim_patterns, weathering_id, weathering_name, weatherings
-from pynecraft.simpler import Item, ItemFrame, PLAINS, Region, SWAMP, Sign, WallSign
-from pynecraft.values import COLD_OCEAN, FROZEN_OCEAN, LUKEWARM_OCEAN, MANGROVE_SWAMP, OCEAN, WARM_OCEAN, biomes
-from restworld.rooms import Room, erase, kill_em
+from pynecraft.simpler import Item, ItemFrame, PLAINS, Region, Sign, SWAMP, WallSign
+from pynecraft.values import biomes, COLD_OCEAN, FROZEN_OCEAN, LUKEWARM_OCEAN, MANGROVE_SWAMP, OCEAN, WARM_OCEAN
+from restworld.rooms import erase, kill_em, Room
 from restworld.world import fast_clock, main_clock, restworld
 
 water_biomes = (PLAINS, FROZEN_OCEAN, COLD_OCEAN, OCEAN, LUKEWARM_OCEAN, WARM_OCEAN, SWAMP, MANGROVE_SWAMP)
@@ -312,18 +312,21 @@ def basic_functions(room, enchanted):
                 r(+(0.6 + i * 0.7), 2.0, 0), facing=NORTH,
                 nbt={'Tags': ['enchantable', 'material_%d' % (3 - i), 'material_static']}))
 
-    basic_init.add(fill(r(-3, 2, 2), r(-3, 5, 2), 'stone'), kill(e().tag('armor_frame')),
-                   ItemFrame(NORTH).tag('armor_boots', 'enchantable', 'armor_frame').summon(r(-3, 2, 1)),
-                   ItemFrame(NORTH).tag('armor_leggings', 'enchantable', 'armor_frame').summon(r(-3, 3, 1)),
-                   ItemFrame(NORTH).tag('armor_chestplate', 'enchantable', 'armor_frame').summon(r(-3, 4, 1)),
-                   ItemFrame(NORTH).tag('armor_helmet', 'enchantable', 'armor_frame').summon(r(-3, 5, 1)),
-                   ItemFrame(NORTH).tag('armor_gem', 'armor_frame').summon(r(3, 2, 3)),
-                   ItemFrame(NORTH).tag('armor_horse_frame', 'enchantable', 'armor_frame').summon(r(4, 4, 1)),
-                   ItemFrame(NORTH).tag('armor_nautilus_frame', 'enchantable', 'armor_frame').summon(r(4, 3, 1)),
-                   room.label(r(5, 2, -2), 'Saddle', NORTH),
-                   room.label(r(3, 2, -2), 'Enchanted', NORTH),
-                   room.label(r(1, 2, -2), 'Turtle Helmet', NORTH),
-                   room.label(r(-1, 2, -2), 'Elytra & Leggings', NORTH))
+    basic_init.add(
+        fill(r(-3, 2, 2), r(-3, 5, 2), 'stone'), kill(e().tag('armor_frame')),
+        ItemFrame(NORTH).tag('armor_boots', 'enchantable', 'armor_frame').summon(r(-3, 2, 1)),
+        ItemFrame(NORTH).tag('armor_leggings', 'enchantable', 'armor_frame').summon(r(-3, 3, 1)),
+        ItemFrame(NORTH).tag('armor_chestplate', 'enchantable', 'armor_frame').summon(r(-3, 4, 1)),
+        ItemFrame(NORTH).tag('armor_helmet', 'enchantable', 'armor_frame').summon(r(-3, 5, 1)),
+        ItemFrame(NORTH).tag('armor_gem', 'armor_frame').summon(r(3, 2, 3)),
+        ItemFrame(NORTH).tag('armor_horse_frame', 'enchantable', 'armor_frame').summon(r(4, 4, 1)),
+        ItemFrame(NORTH).tag('armor_nautilus_frame', 'enchantable', 'armor_frame').summon(r(4, 3, 1)),
+        room.label(r(5, 2, -2), 'Saddle', NORTH),
+        room.label(r(3, 2, -2), 'Enchanted', NORTH),
+        room.label(r(1, 2, -2), 'Turtle Helmet', NORTH),
+        room.label(r(-1, 2, -2), 'Elytra & Leggings', NORTH),
+        room.mob_placer(r(-1.5, 3, 2), NORTH, kids=True).summon('zombie', tags='armor_baby'),
+    )
 
     Material = namedtuple('Material',
                           ('material', 'armor', 'horse_armor', 'nautilus_armor', 'background', 'gem', 'title'),
@@ -354,12 +357,13 @@ def basic_functions(room, enchanted):
 
         if step.i == 0:
             yield function(switch_mannequin)
-        yield data().merge(
-            e().tag('basic_stand').limit(1), {
-                'CustomName': title,
-                'equipment': {
-                    'feet': Item.nbt_for('%s_boots' % armor), 'legs': Item.nbt_for('%s_leggings' % armor),
-                    'chest': Item.nbt_for('%s_chestplate' % armor), 'head': Item.nbt_for('%s_helmet' % armor)}})
+        armor_nbt = {
+            'CustomName': title,
+            'equipment': {
+                'feet': Item.nbt_for('%s_boots' % armor), 'legs': Item.nbt_for('%s_leggings' % armor),
+                'chest': Item.nbt_for('%s_chestplate' % armor), 'head': Item.nbt_for('%s_helmet' % armor)}}
+        yield data().merge(e().tag('basic_stand').limit(1), armor_nbt)
+        yield data().merge(e().tag('armor_baby').limit(1), armor_nbt)
 
         yield fill(r(-3, 2, 2), r(-3, 5, 2), background.id)
         yield setblock(r(3, 2, 4), background.id)
@@ -449,7 +453,8 @@ def basic_functions(room, enchanted):
         enchant(enchanted, 'enchantable'),
         fill(r(-2, 2, 2), r(2, 4, 4), 'air'),
         setblock(r(-2, 0, 0), 'redstone_block'),
-        execute().positioned(r(-2, 0, 2)).run(kill(e().type('item').volume((5, 3, 4)))))
+        execute().positioned(r(-2, 0, 2)).run(kill(e().type('item').volume((5, 3, 4)))),
+    )
 
     room.function('basic_update').add(
         execute().at(e().tag('basic_home')).run(function('restworld:materials/basic_cur')),
