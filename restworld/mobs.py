@@ -452,8 +452,9 @@ def villager_funcs(room):
         p = placer(r(-2, 2, -6), WEST, -2, tags=('villager', 'professions',), adults=True)
         for i, pro in enumerate(VILLAGER_PROFESSIONS):
             if i == 7:
-                if which == 'villager':
-                    professions_init.add(p.summon(Entity('villager', name='Child', nbt={'Age': -2147483648})))
+                professions_init.add(p.summon(
+                    Villager(pro, PLAINS, {'Age': -2147483648, 'IsBaby': True}, name='Child', zombie=id[0] == 'z'),
+                    tags=('villager',)))
                 p = placer(r(0, 2, -7), WEST, -2, tags=('villager', 'professions',), adults=True)
             # Removing sexist language because I want to.
             name = 'Fisher' if pro == 'Fisherman' else pro
