@@ -1162,7 +1162,8 @@ def color_functions(room):
     stand_nbt = Nbt({
         'Tags': [armors_tag, 'colorings_item', 'colorings_enchantable'], 'Rotation': [30, 0],
         'equipment': {}})
-    baby_armor_nbt = stand_nbt.copy().merge({'IsBaby': True, 'Age': -2147483648, 'Rotation': [65, 0], 'NoAI': True})
+    baby_armor_nbt = stand_nbt.copy().merge(
+        {'IsBaby': True, 'Age': -2147483648, 'Rotation': [65, 0], 'NoAI': True, 'PersistenceRequired': True})
     for place, piece in armor_equipment.items():
         stand_nbt['equipment'][place] = baby_armor_nbt['equipment'][place] = Item.nbt_for(f'leather_{piece}')
     armor_frames = {
@@ -1206,8 +1207,7 @@ def color_functions(room):
         Entity('sheep', sheep_nbt).summon(r(-9.0, 2, 5.0)),
         Entity('happy_ghast', ghast_nbt).summon(r(-5.5, 5.3, -2.0)),
         (armor_frame(k, v) for k, v in armor_frames.items()),
-        execute().as_(e().tag('colorings_names')).run(
-            data().merge(s(), {'CustomNameVisible': True})),
+        execute().as_(e().tag('colorings_names')).run(data().merge(s(), {'CustomNameVisible': True})),
         WallSign((None, 'Terracotta')).place(r(-1, 3, 1), SOUTH),
         WallSign((None, 'Harness')).place(r(-2, 3, 1), SOUTH),
         WallSign((None, 'Shulker Box')).place(r(-3, 3, 1), SOUTH),
