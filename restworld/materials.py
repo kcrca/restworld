@@ -7,7 +7,8 @@ from titlecase import titlecase
 
 from pynecraft import info
 from pynecraft.base import Arg, as_facing, EAST, EQ, Nbt, NbtDef, NE, NORTH, NW, r, RelCoord, SOUTH, to_id, WEST
-from pynecraft.commands import as_block, Block, BlockDef, data, e, Entity, execute, fill, fillbiome, function, item, \
+from pynecraft.commands import as_block, Block, BlockDef, clone, data, e, Entity, execute, fill, fillbiome, function, \
+    item, \
     kill, LONG, MOD, n, p, PLUS, random, RESULT, s, Score, scoreboard, setblock, summon, tag
 from pynecraft.function import BLOCK
 from pynecraft.info import armor_equipment, colors, copper_golem_poses, default_skins, must_give_items, stems, \
@@ -325,7 +326,7 @@ def basic_functions(room, enchanted):
         room.label(r(3, 2, -2), 'Enchanted', NORTH),
         room.label(r(1, 2, -2), 'Turtle Helmet', NORTH),
         room.label(r(-1, 2, -2), 'Elytra & Leggings', NORTH),
-        room.mob_placer(r(-1.5, 3, 2), NORTH, kids=True).summon('zombie', tags='armor_baby'),
+        room.mob_placer(r(-1, 3.03, 2), NORTH, kids=True).summon('zombie', tags='armor_baby'),
     )
 
     Material = namedtuple('Material',
@@ -453,6 +454,7 @@ def basic_functions(room, enchanted):
         enchant(enchanted, 'enchantable'),
         fill(r(-2, 2, 2), r(2, 4, 4), 'air'),
         setblock(r(-2, 0, 0), 'redstone_block'),
+        clone(r(-3, 2, 2), r(-3, 2, 2), r(-1, 2, 2)),
         execute().positioned(r(-2, 0, 2)).run(kill(e().type('item').volume((5, 3, 4)))),
     )
 
