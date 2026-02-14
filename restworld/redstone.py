@@ -6,12 +6,12 @@ import re
 from titlecase import titlecase
 
 from pynecraft import info
-from pynecraft.base import DOWN, EAST, NOON, SOUTH, UP, WEST, r
-from pynecraft.commands import BYTE, Block, INT, RESULT, Score, data, e, execute, fill, function, item, kill, \
-    n, random, return_, setblock, summon, tag, time
+from pynecraft.base import DOWN, EAST, NOON, r, SOUTH, UP, WEST
+from pynecraft.commands import Block, BYTE, data, e, execute, fill, function, INT, item, kill, n, random, RESULT, \
+    return_, Score, setblock, summon, tag, time
 from pynecraft.info import instruments, stems, weathering_id, weathering_name, weatherings, woods
 from pynecraft.simpler import Item, Region, Sign, WallSign
-from restworld.rooms import Room, ensure, if_clause, kill_em
+from restworld.rooms import ensure, if_clause, kill_em, Room
 from restworld.world import fast_clock, main_clock, restworld
 
 
@@ -513,25 +513,30 @@ def note_block_funcs(room):
         function('restworld:redstone/note_block_cur'),
     )
     sign_locs = []
-    for i, instr in enumerate(instruments):
-        row_len = len(instruments) / 2
-        x = i % row_len
-        if x >= row_len / 2:
-            x += 1
-        x -= row_len / 2
-        x = int(x)
-        y = 3 - int(i / row_len)
-        loc = r(x, y, 1)
-        sign_locs.append(loc)
-        note_block_init.add(
-            WallSign(
-                (None, instr.name, f'({instr.exemplar.name})'),
-                (instrument.set(i),
-                 execute().at(e().tag('note_home')).run(setblock(r(0, 2, 0), instr.exemplar)),
-                 execute().at(e().tag('note_home')).run(function('restworld:redstone/instrument_cur')))
-            ).place(loc, SOUTH),
-            room.label(r(1, 2, 2), 'Play Notes', SOUTH),
-            room.label(r(-1, 2, 2), 'Instruments', SOUTH))
+    skip_locs = {(0, 0), (3, 0), (4, 0), (5, 0), (8, 0), (4, 1), (4, 2)}
+    assert len(instruments) + len(skip_locs) == 3 * 9
+    i = -1
+    for y in range(3):
+        for x in range(9):
+            if (x, y) in skip_locs:
+                continue
+            i += 1
+            instr = instruments[i]
+            loc = r(x - 4, 4 - y, 1)
+            sign_locs.append(loc)
+            sign_text = list(instr.exemplar.sign_text)
+            sign_text[0] = '(' + sign_text[0]
+            sign_text[-1] = sign_text[-1] + ')'
+            note_block_init.add(
+                WallSign(
+                    (None, instr.name, *sign_text),
+                    (instrument.set(i),
+                     # for some reason this has to be two separate commands, should look into that.
+                     execute().at(e().tag('note_home')).run(setblock(r(0, 2, 0), instr.exemplar)),
+                     execute().at(e().tag('note_home')).run(function('restworld:redstone/instrument_cur')))
+                ).place(loc, SOUTH),
+                room.label(r(1, 2, 2), 'Play Notes', SOUTH),
+                room.label(r(-1, 2, 2), 'Instruments', SOUTH))
 
     notes = (
         'Low F♯/G♭', 'Low G', 'Low G♯/A♭', 'Low A', 'Low A♯/B♭', 'Low B', 'Low C', 'Low C♯/D♭', 'Low D', 'Low D♯/E♭',
