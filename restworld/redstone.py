@@ -8,7 +8,7 @@ from titlecase import titlecase
 from pynecraft import info
 from pynecraft.base import DOWN, EAST, NOON, r, SOUTH, UP, WEST
 from pynecraft.commands import Block, BYTE, data, e, execute, fill, function, INT, item, kill, n, random, RESULT, \
-    return_, Score, setblock, summon, tag, time
+    return_, say, Score, setblock, summon, tag, time
 from pynecraft.info import instruments, stems, weathering_id, weathering_name, weatherings, woods
 from pynecraft.simpler import Item, Region, Sign, WallSign
 from restworld.rooms import ensure, if_clause, kill_em, Room
@@ -40,11 +40,12 @@ def room():
     room.particle('tripwire', 'lever', r(0, 3, 2))
 
     waxed_rod = room.score('waxed_rod')
+    do_strike = room.score('do_strike')
 
     def lightning_rod_inner_loop(step, waxed):
         oxy, strike = step.elem
         if strike:
-            yield summon('lightning_bolt', r(0, 3, 0))
+            yield execute().if_().score(do_strike).matches(1).run(say('strike'),summon('lightning_bolt', r(0, 3, 0)))
             yield Sign.change(r(-1, 2, 0), ('Lightning &', f'{("Waxed " if waxed else "") + weathering_name(oxy, "")}'),
                               start=1)
         else:
@@ -61,7 +62,9 @@ def room():
     room.function('lightning_rod_init').add(
         setblock(r(0, 3, 0), 'lightning_rod'),
         WallSign((None, None, None, 'Lightning Rod')).place(r(-1, 2, 0), WEST),
-        room.label(r(0, 2, -1), 'Waxed', WEST)
+        room.label(r(0, 2, -1), 'Waxed', WEST),
+        room.label(r(0, 2, 1), 'Lightning', WEST),
+        do_strike.set(0),
     )
     room.particle('lightning_rod', 'lightning_rod', r(0, 4, 0))
 
@@ -376,7 +379,6 @@ def room():
     def shelf_type_loop(step):
         items = [Item.nbt_for('diamond').merge({'Slot': i}) for i in range(3)]
         yield fill(r(-1, 2, 0), r(-1, 2, 2), Block(f'{step.elem}_shelf', {'facing': WEST}, {'Items': items}))
-        yield Sign.change(r(-1, 3, 1), (None, f'{titlecase(step.elem)}'))
 
     room.loop('shelf_type', main_clock).loop(shelf_type_loop, woods + stems)
     room.function('shelf_type_start', home=False).add(
@@ -387,12 +389,10 @@ def room():
         yield fill(r(0, 2, 0), r(0, 2, 2), 'air')
         res = step.elem if isinstance(step.elem, tuple) else (step.elem,)
         yield (setblock(r(0, 2, z), 'redstone_block') for z in res)
-        yield Sign.change(r(-1, 3, 1), (None, None, None, f'{len(res)} Powered'))
 
     room.loop('shelf_power', main_clock).loop(shelf_power_loop, ((), 1, (1, 2), (0, 1, 2), (0, 1), 0))
     room.function('shelf_power_init').add(
-        WallSign((None, None, 'Shelf')).place(r(-1, 3, 1), WEST),
-        room.label(r(-3, 2, 1), 'Shelf Type', WEST),
+        room.label(r(-3, 2, 2), 'Shelf Type', WEST),
         function('restworld:redstone/shelf_type_cur')
     )
 
