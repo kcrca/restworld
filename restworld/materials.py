@@ -299,11 +299,11 @@ def basic_functions(room, enchanted):
                          {'Tags': ['basic_stand', 'material_static', 'enchantable'], 'ShowArms': True,
                           'NoGravity': True}).clone().merge_nbt({'Tags': ['material_static'], 'Invisible': True})
     mannequin = Entity('mannequin',
-                       {'Tags': ['basic_stand', 'material_static', 'enchantable'], 'immovable': True,
-                        'hide_description': True})
+                       {'Tags': ['basic_stand', 'material_static', 'enchantable', 'helmetable'], 'immovable': True,
+                        'hide_description': True, 'CustomNameVisible': True})
     basic_init = room.function('basic_init').add(
         kill(e().tag('material_static')),
-        mannequin.summon(r(0, 2.0, 0), facing=NORTH, nbt={'CustomNameVisible': True}))
+        mannequin.summon(r(0, 2.0, 0), facing=NORTH))
     for i in range(0, 5):
         basic_init.add(invis_stand.summon(
             r(-(0.8 + i * 0.7), 2.0, 0), facing=NORTH,
@@ -324,9 +324,9 @@ def basic_functions(room, enchanted):
         ItemFrame(NORTH).tag('armor_nautilus_frame', 'enchantable', 'armor_frame').summon(r(4, 3, 1)),
         room.label(r(5, 2, -2), 'Saddle', NORTH),
         room.label(r(3, 2, -2), 'Enchanted', NORTH),
-        room.label(r(1, 2, -2), 'Turtle Helmet', NORTH),
+        room.label(r(1, 2, -2), 'Turtle Scute', NORTH),
         room.label(r(-1, 2, -2), 'Elytra & Leggings', NORTH),
-        room.mob_placer(r(-1, 3.03, 2), NORTH, kids=True).summon('zombie', tags='armor_baby'),
+        room.mob_placer(r(-1, 3.03, 2), NORTH, kids=True).summon('zombie', tags=('armor_baby', 'helmetable')),
     )
 
     Material = namedtuple('Material',
@@ -435,7 +435,8 @@ def basic_functions(room, enchanted):
         execute().if_().score(has_saddle).matches(0).run(
             item().replace().entity(e().tag('basic_saddle'), 'saddle').with_('air')),
         execute().if_().score(turtle_helmet).matches(1).run(
-            data().modify(n().tag('basic_stand'), 'equipment.head.id').set().value('turtle_helmet'),
+            execute().as_(e().tag('helmetable')).run(
+                data().modify(s(), 'equipment.head.id').set().value('turtle_helmet')),
             data().modify(n().tag('armor_helmet'), 'Item.id').set().value('turtle_helmet')),
         execute().if_().score(elytra).matches(1).run(
             data().modify(n().tag('basic_stand'), 'equipment.chest.id').set().value('elytra'),
@@ -928,7 +929,7 @@ def trim_functions(room):
 
     # These labels have to go somewhere...
     change_init.add(
-        room.label(r(-1, 2, -1), 'Leggings', NORTH), room.label(r(1, 2, -1), 'Turtle Helmet', NORTH),
+        room.label(r(-1, 2, -1), 'Leggings', NORTH), room.label(r(1, 2, -1), 'Turtle Scute', NORTH),
         room.label(r(3, 2, -1), 'Labels', NORTH))
 
     show_init.add(show.set(0), run_show_cleanup)
