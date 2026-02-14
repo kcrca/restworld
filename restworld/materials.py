@@ -299,7 +299,7 @@ def basic_functions(room, enchanted):
                          {'Tags': ['basic_stand', 'material_static', 'enchantable'], 'ShowArms': True,
                           'NoGravity': True}).clone().merge_nbt({'Tags': ['material_static'], 'Invisible': True})
     mannequin = Entity('mannequin',
-                       {'Tags': ['basic_stand', 'material_static', 'enchantable', 'helmetable'], 'immovable': True,
+                       {'Tags': ['basic_stand', 'material_static', 'enchantable', 'armor_shower'], 'immovable': True,
                         'hide_description': True, 'CustomNameVisible': True})
     basic_init = room.function('basic_init').add(
         kill(e().tag('material_static')),
@@ -326,7 +326,8 @@ def basic_functions(room, enchanted):
         room.label(r(3, 2, -2), 'Enchanted', NORTH),
         room.label(r(1, 2, -2), 'Turtle Scute', NORTH),
         room.label(r(-1, 2, -2), 'Elytra & Leggings', NORTH),
-        room.mob_placer(r(-1, 3.03, 2), NORTH, kids=True).summon('zombie', tags=('armor_baby', 'helmetable')),
+        room.mob_placer(r(-1, 3.03, 2), NORTH, kids=True).summon('zombie',
+                                                                 tags=('armor_baby', 'armor_shower', 'enchantable')),
     )
 
     Material = namedtuple('Material',
@@ -393,7 +394,6 @@ def basic_functions(room, enchanted):
             hands_row[1] = 'bow'
             hands_row[7] = 'fishing_rod'
         elif material == 'iron':
-            hands_row[1] = 'flint_and_steel'
             hands_row[7] = 'shears'
         for j in range(0, 8):
             hand = 'mainhand' if j < 4 else 'offhand'
@@ -435,20 +435,22 @@ def basic_functions(room, enchanted):
         execute().if_().score(has_saddle).matches(0).run(
             item().replace().entity(e().tag('basic_saddle'), 'saddle').with_('air')),
         execute().if_().score(turtle_helmet).matches(1).run(
-            execute().as_(e().tag('helmetable')).run(
+            execute().as_(e().tag('armor_shower')).run(
                 data().modify(s(), 'equipment.head.id').set().value('turtle_helmet')),
             data().modify(n().tag('armor_helmet'), 'Item.id').set().value('turtle_helmet')),
         execute().if_().score(elytra).matches(1).run(
-            data().modify(n().tag('basic_stand'), 'equipment.chest.id').set().value('elytra'),
+            execute().as_(e().tag('armor_shower')).run(data().modify(s(), 'equipment.chest.id').set().value('elytra')),
             data().modify(n().tag('armor_chestplate'), 'Item.id').set().value('elytra'),
             which_elytra.add(1),
             execute().if_().score(which_elytra).matches((2, None)).run(which_elytra.set(0)),
             execute().if_().score(which_elytra).matches(1).run(
-                data().modify(n().tag('basic_stand'), 'equipment.chest.components.damage').set().value(450),
+                execute().as_(e().tag('armor_shower')).run(
+                    data().modify(s(), 'equipment.chest.components.damage').set().value(450)),
                 data().modify(n().tag('armor_chestplate'), 'Item.components.damage').set().value(450)
             ),
             execute().unless().score(which_elytra).matches(1).run(
-                data().modify(n().tag('basic_stand'), 'equipment.chest.components.damage').set().value(0),
+                execute().as_(e().tag('armor_shower')).run(
+                    data().modify(s(), 'equipment.chest.components.damage').set().value(0)),
                 data().modify(n().tag('armor_chestplate'), 'Item.components.damage').set().value(0)
             )
         ),
