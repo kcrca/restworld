@@ -4,14 +4,14 @@ import sys
 from random import randint
 from typing import Tuple
 
-from pynecraft.base import Arg, EAST, EQ, GT, LT, NORTH, Nbt, SOUTH, WEST, r, seconds, to_name
-from pynecraft.commands import Block, DIV, INFINITE, INT, MINUS, MOD, RANDOM, REPLACE, RESULT, Score, a, data, e, \
-    effect, execute, fill, function, kill, random, return_, s, schedule, scoreboard, setblock, summon, tag
+from pynecraft.base import Arg, EAST, EQ, GT, LT, Nbt, NORTH, r, seconds, SOUTH, to_name, WEST
+from pynecraft.commands import a, Block, data, DIV, e, effect, execute, fill, function, INFINITE, INT, kill, MINUS, MOD, \
+    RANDOM, random, REPLACE, RESULT, return_, s, schedule, Score, scoreboard, setblock, summon, tag
 from pynecraft.function import Function, Loop
 from pynecraft.info import colors, weathering_id, weatherings
 from pynecraft.simpler import Item, Region, Sign, WallSign
 from pynecraft.values import DUMMY, REGENERATION
-from restworld.rooms import Room, kill_em
+from restworld.rooms import kill_em, Room
 from restworld.world import main_clock, marker_tmpl, restworld
 
 COUNT_MIN = 1
@@ -34,7 +34,7 @@ battles = [
     ('ender_dragon', None),
     ('evoker', 'iron_golem'),
     ('fox', 'chicken'),
-    # ('frog', 'slime'),  # low priority
+    ('frog', 'slime'),  # low priority
     ('goat', 'sheep'),  # medium priority (slow, but charging goat)
     ('hoglin', 'vindicator'),
     ('illusioner', 'snow_golem'),  # medium priority, illusioner isn't used in vanilla, but some folks use it
@@ -50,7 +50,7 @@ battles = [
     ('ravager', 'iron_golem'),
     ('shulker', 'vindicator'),
     ('skeleton', 'iron_golem'),
-    ('slime', 'iron_golem'),
+    # ('slime', 'iron_golem'),
     ('sniffer', None),
     ('spider', 'snow_golem'),
     ('stray', 'iron_golem'),
@@ -114,7 +114,7 @@ def room():
         'hoglin': {'IsImmuneToZombification': True},
         'llama': {'Strength': 1, 'Health': 1000},
         'magma_cube': {'Size': 3},
-        'slime': {'Size': 3},
+        'slime': {'Size': 0},
         'phantom': {'AX': 1000, 'AY': 110, 'AZ': -1000},
         'piglin_brute': {'equipment': {'mainhand': Item.nbt_for('golden_axe')}, 'IsImmuneToZombification': 'True'},
         'piglin': {'IsImmuneToZombification': 'True', 'equipment': {'mainhand': Item.nbt_for('golden_sword')}},
