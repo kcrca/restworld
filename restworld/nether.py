@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-from pynecraft.base import NORTH, SOUTH, WEST, r
-from pynecraft.commands import Block, Entity, REPLACE, data, e, execute, function, n, ride, s, schedule, setblock, tag
+from pynecraft.base import NORTH, r, SOUTH, WEST
+from pynecraft.commands import Block, data, e, Entity, execute, function, n, REPLACE, ride, s, schedule, setblock, tag
 from pynecraft.simpler import Item, Sign, WallSign
-from restworld.rooms import Room, kill_em
+from restworld.rooms import kill_em, Room
 from restworld.world import main_clock, restworld
 
 
@@ -42,6 +42,7 @@ def room():
         yield Sign.change(r(-1, 2, 0), (None, None, f'Hydration: {step.i}'))
 
     room.function('ghastling_init').add(
+        execute().as_(e().tag('ghastling_home')).run(tag(s()).add('blockers_home')),
         room.mob_placer(r(0, 5, 0), WEST, kids=True).summon('Happy Ghast'),
         WallSign((None, 'Dried Ghast')).place(r(-1, 2, 0), WEST),
         setblock(r(0, 3, 1), 'structure_void'),
@@ -117,7 +118,10 @@ def room():
             data().modify(n().tag('strider', 'adult'), 'equipment.saddle').set().value(Item.nbt_for('saddle'))),
         execute().if_().score(saddle).matches(0).run(
             data().remove(n().tag('strider', 'adult'), 'equipment.saddle')))
-    room.function('strider_init').add(room.label(r(-1, 2, 0), 'Saddle', NORTH))
+    room.function('strider_init').add(
+        execute().as_(e().tag('strider_home')).run(tag(s()).add('blockers_home')),
+        room.label(r(-1, 2, 0), 'Saddle', NORTH)
+    )
     room.function('strider_saddle_on', home=False).add(
         saddle.set(1),
         data().modify(n().tag('strider', 'adult'), 'equipment.saddle').set().value(Item.nbt_for('saddle')))
@@ -125,6 +129,9 @@ def room():
         saddle.set(1),
         data().remove(n().tag('strider', 'adult'), 'equipment.saddle'))
 
-    room.function('piglin_head_init').add(setblock(r(0, 2, 0), 'nether_bricks'), setblock(r(0, 3, 0), 'piglin_head'))
+    room.function('piglin_head_init').add(
+        execute().as_(e().tag('piglin_head_home')).run(tag(s()).add('blockers_home')),
+        setblock(r(0, 2, 0), 'nether_bricks'),
+        setblock(r(0, 3, 0), 'piglin_head'))
     room.loop('piglin_head', main_clock).loop(
         lambda step: setblock(r(0, 2, 0), 'redstone_block' if step.elem else 'nether_bricks'), (True, False))
