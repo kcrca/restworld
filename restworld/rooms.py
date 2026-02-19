@@ -7,16 +7,12 @@ from typing import Callable, Iterable, Sequence, Tuple
 
 import math
 
-from pynecraft.base import Arg, BLUE, FacingDef, Nbt, ORANGE, ROTATION_180, ROTATION_270, ROTATION_90, RelCoord, is_arg, \
-    r, \
-    rotate_facing, to_name
-from pynecraft.commands import BYTE, Block, BlockDef, CLEAR, Command, Commands, Entity, EntityDef, INT, MINUS, MOVE, \
-    Particle, \
-    Position, RESULT, Score, SignMessages, Target, Text, TextDef, a, as_block, as_entity, as_facing, as_score, clone, \
-    comment, \
-    data, e, execute, fill, function, kill, n, p, particle, random, ride, s, say, schedule, scoreboard, \
-    setblock, \
-    summon, tag, tellraw, tp, weather
+from pynecraft.base import Arg, BLUE, FacingDef, is_arg, Nbt, ORANGE, r, RelCoord, rotate_facing, ROTATION_180, \
+    ROTATION_270, ROTATION_90, to_name
+from pynecraft.commands import a, as_block, as_entity, as_facing, as_score, Block, BlockDef, BYTE, CLEAR, clone, \
+    Command, Commands, comment, data, e, Entity, EntityDef, execute, fill, function, INT, kill, MINUS, MOVE, n, p, \
+    Particle, particle, Position, random, RESULT, ride, s, say, schedule, Score, scoreboard, setblock, SignMessages, \
+    summon, tag, Target, tellraw, Text, TextDef, tp, weather
 from pynecraft.function import DataPack, Function, FunctionSet, LATEST_PACK_VERSION, Loop
 from pynecraft.info import default_skins
 from pynecraft.simpler import TextDisplay, Trigger, WallSign
@@ -549,7 +545,7 @@ def _name_for(mob):
 class MobPlacer:
     _armor_stand_tmpl = Entity('armor_stand').merge_nbt({'Invisible': True, 'Small': True, 'NoGravity': True})
 
-    base_nbt = {'NoAI': True, 'PersistenceRequired': True, 'Silent': True}
+    base_nbt = Nbt({'NoAI': True, 'PersistenceRequired': True, 'Silent': True})
 
     def __init__(self, start: Position, facing: FacingDef | float,
                  delta: float | tuple[float, float] = None, kid_delta: float | tuple[float, float] = None, *,
@@ -599,11 +595,11 @@ class MobPlacer:
         for mob in mobs:
             mob = as_entity(mob)
             tmpl = mob.clone()
+            tmpl.nbt = MobPlacer.base_nbt.merge(tmpl.nbt)
             if self.nbt:
                 tmpl.merge_nbt(self.nbt)
             if nbt:
                 tmpl.merge_nbt(nbt)
-            tmpl.merge_nbt(MobPlacer.base_nbt)
             tmpl.custom_name(True)
             tmpl.merge_nbt({'Rotation': [self.rotation, 0]})
             tmpl.name = _name_for(mob)
