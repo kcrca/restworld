@@ -533,7 +533,8 @@ def note_block_funcs(room):
                     (instrument.set(i),
                      # for some reason this has to be two separate commands, should look into that.
                      execute().at(e().tag('note_home')).run(setblock(r(0, 2, 0), instr.exemplar)),
-                     execute().at(e().tag('note_home')).run(function('restworld:redstone/instrument_cur')))
+                     execute().at(e().tag('note_home')).run(function('restworld:redstone/instrument_cur')),
+                     execute().at(e().tag('fireworks_home')).run(fill(r(6, 2, 0), r(6, 2, 4), instr.exemplar)))
                 ).place(loc, SOUTH),
                 room.label(r(1, 2, 2), 'Play Notes', SOUTH),
                 room.label(r(-1, 2, 2), 'Instruments', SOUTH))
