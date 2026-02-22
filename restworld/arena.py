@@ -249,7 +249,7 @@ def room():
         data().modify(room.store, '$(actor)_prev').set().from_(room.store, '$(actor)'),
         data().remove(room.store, '$(actor)'),
         is_empty.set('$(is_empty)'),
-        execute().unless().score(is_empty).matches(0).run(return_()),
+        execute().unless().score(is_empty).matches(0).run(return_(0)),
         data().merge(room.store, {
             '$(actor)': {'id': '$(id)', 'actor': '$(actor)', 'i': 0, 'y': 2, 'z': '$(z)', 'max': NO_VARIANT,
                          'variant': '', 'values': ''}}),
@@ -452,7 +452,7 @@ def room():
     show_score = room.function('show_score').add(
         kills.set(actors_kills),
         execute().if_().score(actors_kills).matches((1000, None)).run(kills.set(999)),
-        execute().if_().score(actors_kills).is_(EQ, prev_actors_kills).run(return_()),  # can happen for 999
+        execute().if_().score(actors_kills).is_(EQ, prev_actors_kills).run(return_(0)),  # can happen for 999
         ones.set(kills),
         ones.operation(MOD, ten),
         tens.set(kills),
@@ -470,7 +470,7 @@ def room():
     )
 
     room.function('monitor').add(
-        execute().unless().score(peace).matches(0).run(return_()),
+        execute().unless().score(peace).matches(0).run(return_(0)),
         execute().unless().score(arena_count).matches((COUNT_MIN, COUNT_MAX)).run(arena_count.set(1)),
         function(h_counter),
         function(v_counter),

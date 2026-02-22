@@ -610,7 +610,7 @@ def monsters(room):
             yield placer(r(1.5, 3.5, -1.5), illager_dir, adults=True, tags=tags).summon(
                 Entity('vex', nbt={'equipment': {'mainhand': Item.nbt_for('iron_sword')}, 'LifeTicks': 2147483647}))
             fangs.add(
-                execute().unless().score(illager_loop_func.score).matches(0).run(return_()),
+                execute().unless().score(illager_loop_func.score).matches(0).run(return_(0)),
                 execute().at(e().tag('illager_home')).run(
                     placer(r(-1 + 2.5 * 1, 2, 1), illager_dir, adults=True, tags=tags).summon(
                         Entity('Evoker Fangs', nbt={'Warmup': 0}))),

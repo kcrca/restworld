@@ -4,13 +4,13 @@ import math
 from titlecase import titlecase
 
 from pynecraft import commands
-from pynecraft.base import EAST, NORTH, Nbt, TEXT_COLORS, WEST, as_facing, r, to_name
-from pynecraft.commands import BOSSBAR_COLORS, BOSSBAR_STYLES, Block, CREATIVE, Entity, LEVELS, REPLACE, \
-    RESET, SURVIVAL, Text, a, bossbar, clone, data, dialog, e, effect, execute, fill, forceload, function, gamemode, \
-    gamerule, item, kill, n, p, return_, s, schedule, setblock, summon, tag, waypoint
+from pynecraft.base import as_facing, EAST, Nbt, NORTH, r, TEXT_COLORS, to_name, WEST
+from pynecraft.commands import a, Block, bossbar, BOSSBAR_COLORS, BOSSBAR_STYLES, clone, CREATIVE, data, dialog, e, \
+    effect, Entity, execute, fill, forceload, function, gamemode, gamerule, item, kill, LEVELS, n, p, REPLACE, RESET, \
+    return_, s, schedule, setblock, summon, SURVIVAL, tag, Text, waypoint
 from pynecraft.simpler import Item, ItemFrame, Sign, WallSign
 from pynecraft.values import LOCATOR_BAR
-from restworld.rooms import Room, kill_em
+from restworld.rooms import kill_em, Room
 from restworld.world import fast_clock, main_clock, restworld, slow_clock
 
 
@@ -56,7 +56,7 @@ def room():
 
     # Can't use bounce because we need to show two things at full strength.
     room.loop('beacon', slow_clock).add(
-        execute().if_().score(beacon_on).matches(0).run(return_())
+        execute().if_().score(beacon_on).matches(0).run(return_(0))
     ).loop(
         beacon_loop, (0, 1, 2, 3, 4, 4, 3, 2, 1))
     beacon_start = room.function('beacon_start', home=False).add(

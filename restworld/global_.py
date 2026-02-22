@@ -3,16 +3,15 @@ from __future__ import annotations
 import copy
 from itertools import count
 
-from pynecraft.base import Arg, DARK_GREEN, DIRECTIONS, EAST, EQ, LT, NOON, NORTH, OVERWORLD, Position, SOUTH, \
-    THE_END, THE_NETHER, TimeSpec, WEST, r
-from pynecraft.commands import Block, ClickEvent, Entity, FORCE, HoverEvent, MINUS, MOD, MOVE, REPLACE, RESULT, Score, \
-    Text, clone, data, e, execute, fill, forceload, function, gamerule, give, kill, p, return_, s, schedule, scoreboard, \
-    setblock, \
-    tag, teleport, time, tp, trigger, Commands
+from pynecraft.base import Arg, DARK_GREEN, DIRECTIONS, EAST, EQ, LT, NOON, NORTH, OVERWORLD, Position, r, SOUTH, \
+    THE_END, THE_NETHER, TimeSpec, WEST
+from pynecraft.commands import Block, ClickEvent, clone, Commands, data, e, Entity, execute, fill, FORCE, forceload, \
+    function, gamerule, give, HoverEvent, kill, MINUS, MOD, MOVE, p, REPLACE, RESULT, return_, s, schedule, Score, \
+    scoreboard, setblock, tag, teleport, Text, time, tp, trigger
 from pynecraft.function import Function
 from pynecraft.simpler import Book, VILLAGER_PROFESSIONS, WallSign
 from pynecraft.values import DUMMY
-from restworld.rooms import Room, kill_em
+from restworld.rooms import kill_em, Room
 from restworld.world import clock, restworld, tick_clock
 
 # -- Death: How it works:
@@ -285,7 +284,7 @@ def room():
     room.function('ensure_clean').add(
         execute().store(RESULT).score(clean_time).run(time().query('gametime')),
         clean_time.operation(MINUS, last_clean),
-        execute().if_().score(clean_time).is_(LT, clean_time_max).run(return_()),
+        execute().if_().score(clean_time).is_(LT, clean_time_max).run(return_(0)),
         execute().store(RESULT).score(last_clean).run(time().query('gametime')),
         # Make sure kids don't grow up
         execute().as_(e().tag('kid')).run(data().merge(s(), {'Age': -2_147_483_648, 'IsBaby': True})),

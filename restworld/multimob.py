@@ -6,11 +6,11 @@ import math
 from titlecase import titlecase
 
 from pynecraft import info
-from pynecraft.base import Arg, EAST, NE, NORTH, NW, SE, SOUTH, SW, WEST, as_facing, r, rotate_facing
-from pynecraft.commands import Entity, Text, comment, data, e, execute, fill, function, n, return_, s, setblock, summon, \
-    tag
+from pynecraft.base import Arg, as_facing, EAST, NE, NORTH, NW, r, rotate_facing, SE, SOUTH, SW, WEST
+from pynecraft.commands import comment, data, e, Entity, execute, fill, function, n, return_, s, setblock, summon, tag, \
+    Text
 from pynecraft.simpler import VILLAGER_BIOMES, VILLAGER_PROFESSIONS, WallSign
-from restworld.rooms import Room, kill_em
+from restworld.rooms import kill_em, Room
 from restworld.world import restworld
 
 NUM_GROUPS = 12
@@ -218,7 +218,7 @@ def room():
                 fill(r(0, 2, 0), r(4, 4, 4), 'air').replace('water'),
                 fill(r(-1, 2, -1), r(5, 4, 5), 'air').replace('structure_void')),
             fill(r(-1, 200, -1), r(5, 200, 5), 'air'),
-            execute().if_().score(is_none_score).matches(1).run(return_())
+            execute().if_().score(is_none_score).matches(1).run(return_(0))
         )
 
         big_places = ((0, 4), (4, 0)) if sector in (NW, SE) else ((0, 0), (4, 4))

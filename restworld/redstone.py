@@ -275,7 +275,7 @@ def room():
         data().modify(room.store, 'fireworks').set().value({'shapes': f_shapes, 'colors': f_colors}),
     )
     room.loop('fireworks', main_clock).add(
-        execute().if_().items(r(0, 2, 0), 'container.*', 'firework_rocket').run(return_()),
+        execute().if_().items(r(0, 2, 0), 'container.*', 'firework_rocket').run(return_(0)),
         data().remove(room.store, 'new_firework_raw'),
         data().remove(room.store, 'new_firework_val'),
         (raw_odds_value('explosions', 'new_firework_raw')),

@@ -114,6 +114,16 @@ class RoomPack(DataPack):
 
 
 class Room(FunctionSet):
+    """
+    To set up a new room
+
+        1. Put a command block with the command ``function restworld:[room]/[room]_room_beg_home`` at the usual height
+           under the NW corner block of the room (the most negative in both dirs).
+        2. Run the block, creating the armor stand on top of the block.
+        3. Put a command block for ``function restworld:[room]/[room]_room_end_home`` one _beyond_ the SE corner block
+        4. Manually run ``/function restworld:[room]/[room]_beg_init``
+    """
+
     def __init__(self, name: str, dp: RoomPack, facing: str = None, text: SignMessages = None, room_name: str = None):
         super().__init__(name, dp.function_set)
         self.pack = dp
