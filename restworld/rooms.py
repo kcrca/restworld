@@ -631,7 +631,7 @@ class MobPlacer:
             if kids:
                 kid = tmpl.clone()
                 kid.tag('kid')
-                kid.merge_nbt({'IsBaby': True, 'Age': -2147483648})
+                kid.merge_nbt({'AgeLocked': True, 'IsBaby': True, 'Age': -2147483648})
                 pos = self._cur
                 if adults:
                     pos = pos[0] + self.kid_x, pos[1], pos[2] + self.kid_z
