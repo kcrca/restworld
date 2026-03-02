@@ -7,14 +7,16 @@ from titlecase import titlecase
 
 from pynecraft import info
 from pynecraft.base import Arg, as_facing, EAST, EQ, Nbt, NbtDef, NE, NORTH, NW, r, RelCoord, SOUTH, to_id, WEST
-from pynecraft.commands import as_block, Block, BlockDef, clone, data, e, Entity, execute, fill, fillbiome, function, \
-    item, \
-    kill, LONG, MOD, n, p, PLUS, random, RESULT, s, Score, scoreboard, setblock, summon, tag
+from pynecraft.commands import as_block, Block, BlockDef, clone, data, e, effect, Entity, execute, fill, fillbiome, \
+    function, \
+    INFINITE, item, \
+    kill, LONG, MOD, n, p, PLUS, random, REPLACE, RESULT, s, schedule, Score, scoreboard, setblock, summon, tag
 from pynecraft.function import BLOCK
 from pynecraft.info import armor_equipment, colors, copper_golem_poses, default_skins, must_give_items, stems, \
     trim_materials, trim_patterns, weathering_id, weathering_name, weatherings
 from pynecraft.simpler import Item, ItemFrame, PLAINS, Region, Sign, SWAMP, WallSign
-from pynecraft.values import biomes, COLD_OCEAN, FROZEN_OCEAN, LUKEWARM_OCEAN, MANGROVE_SWAMP, OCEAN, WARM_OCEAN
+from pynecraft.values import biomes, COLD_OCEAN, FROZEN_OCEAN, INVISIBILITY, LUKEWARM_OCEAN, MANGROVE_SWAMP, OCEAN, \
+    WARM_OCEAN
 from restworld.rooms import erase, kill_em, Room
 from restworld.world import fast_clock, main_clock, restworld
 
@@ -612,6 +614,7 @@ def copper_functions(room):
 
 
 def wood_functions(room):
+    name_knot = room.function('name_knot', home=False).add(data().merge(n().type('leash_knot'), {'CustomName': 'Knot'}))
     room.function('wood_init').add(
         summon('item_frame', r(2, 3, -3), {
             'Tags': ['wood_boat_frame', room.name], 'Facing': 3, 'Fixed': True, 'Item': {'id': 'stone', 'Count': 1}}),
@@ -622,6 +625,11 @@ def wood_functions(room):
         summon('item_frame', r(3, 4, -3), {
             'Tags': ['wood_hanging_sign_frame', room.name], 'Facing': 3, 'Fixed': True,
             'Item': {'id': 'stone', 'Count': 1}}),
+        room.mob_placer(r(5, 3, 3), SOUTH, adults=True).summon('bee'),
+        # No way to use relative coordinates here
+        data().merge(n().tag('bee', room.name), {'leash': Nbt.TypedArray('I', (26, 101, -4))}),
+        effect().give(n().tag('bee', room.name), INVISIBILITY, INFINITE, hide_particles=True),
+        schedule().function(name_knot, 10, REPLACE),
         room.label(r(-1, 2, 4), 'Chest Boat', SOUTH),
     )
 

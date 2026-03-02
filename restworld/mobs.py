@@ -183,7 +183,6 @@ def friendlies(room):
         (p.summon(Entity('horse', name=horse.name, nbt={'Variant': h}), tags=(horse.tag_name,)) for h, horse in
          enumerate(horses)), execute().at(e().tag(to_id(horses[3].tag_name), 'kid')).run(
             WallSign((None, 'Variant:')).place(r(2, 0, 0), EAST)),
-        room.label(r(1, 2, 1), 'Lead', EAST),
         room.label(r(1, 2, -3), 'Riders', EAST),
         room.label(r(1, 2, -7), 'Saddles', EAST),
     )
@@ -224,14 +223,6 @@ def friendlies(room):
         WallSign((None, None, 'Copper Golem')).place(r(-3, 2, 0), WEST),
         room.label(r(-2, 2, -1), 'Flower', WEST))
     room.loop('copper_golem', main_clock).loop(copper_golem_loop, weatherings)
-    clean_lead = room.function('clean_lead', home=False).add(
-        kill(e().type('item').nbt({'Item': {'id': 'minecraft:lead'}})))
-    room.function('lead_off', home=False).add(
-        kill(e().type('leash_knot')),
-        schedule().function(clean_lead, 1, REPLACE)
-    )
-    room.function('lead_on', home=False).add(execute().as_(e().tag('white_horses').tag('!kid')).run(
-        data().merge(s(), {'leash': Nbt.TypedArray('I', (-12, 101, 35))})))
     room.loop('llamas_carpets', main_clock).loop(
         lambda step: execute().as_(e().tag('llama').tag('!kid')).run(
             data().merge(s(), {'equipment': {'body': {'id': step.elem.id + '_carpet', 'Count': 1}}})), colors)
