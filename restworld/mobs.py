@@ -5,7 +5,8 @@ import copy
 from titlecase import titlecase
 
 from pynecraft.base import EAST, EQ, Nbt, NE, NORTH, r, SOUTH, to_id, to_name, WEST
-from pynecraft.commands import as_facing, Block, clone, COLORS, data, e, Entity, execute, fillbiome, FORCE, function, \
+from pynecraft.commands import as_facing, Block, clone, COLORS, data, e, Entity, execute, fillbiome, FORCE, \
+    function, \
     item, kill, LONG, MOD, n, p, player, REPLACE, RESULT, return_, ride, s, schedule, Score, scoreboard, setblock, \
     SUCCESS, summon, tag, tp
 from pynecraft.info import axolotls, colors, default_skins, horses, mannequin_poses, tropical_fish, weathering_id, \
@@ -238,9 +239,7 @@ def friendlies(room):
     room.function('llamas_init').add(
         placer(r(0, 2, 0), WEST, 0, 2).summon('llama', nbt={'Tame': True}),
         tag(n().tag('llama', 'adult')).add('saddle'),
-        placer(r(1, 3.5, -1), WEST, adults=True,
-               nbt={'Tags': ['mobs', 'llama', 'llama_spit'], 'TXD': 0, 'TYD': 0, 'TZD': 0, 'Steps': 0,
-                    'Motion': [0, 0, 0], 'NoGravity': True}).summon('llama_spit'),
+        placer(r(1, 3.5, -1), WEST, adults=True, nbt={'Motion': [0, 0, 0], 'NoGravity': True}).summon('llama_spit'),
         WallSign((None, 'Llama Spit')).place(r(1, 2, -1), WEST),
         room.label(r(-2, 2, 1), 'Carpet', WEST), room.label(r(-2, 2, -1), 'Chest', WEST))
 
