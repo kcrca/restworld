@@ -371,10 +371,11 @@ def friendlies(room):
         execute().as_(e().tag('llama')).run(data().remove(s(), 'equipment.body')),
         kill(e().tag('llamas_carpets_home')))
 
-    room.function('trader_llama_init').add(placer(r(1, 2, -1), WEST, adults=True).summon('wandering_trader'),
-                                           placer(r(0, 2, 1), WEST, 0, 2,
-                                                  nbt={'DespawnDelay': 2147483647, 'Leashed': True}).summon(
-                                               'trader_llama'))
+    # Leashing trader llama to trader makes it despawn:
+    # https://report.bugs.mojang.com/servicedesk/customer/portal/2/MC-274238
+    room.function('trader_llama_init').add(
+        placer(r(1, 2, -1), WEST, adults=True).summon('wandering_trader'),
+        placer(r(0, 2, 1), WEST, 0, 2, nbt={'DespawnDelay': Nbt.MAX_LONG}).summon('trader_llama'))
     room.loop('trader_llama', main_clock).loop(
         lambda step: execute().as_(e().type('trader_llama')).run(data().modify(s(), 'Variant').set().value(step.i)),
         ('Creamy', 'White', 'Brown', 'Gray'))
