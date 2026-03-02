@@ -302,7 +302,7 @@ def friendlies(room):
         yield execute().as_(e().tag('rabbit')).run(data().merge(s(), {'RabbitType': i, 'CustomName': step.elem}))
 
     room.loop('rabbit', main_clock).loop(rabbit_loop, (
-        'Brown', 'White', 'Black', 'Black & White', 'Gold', 'Salt & Pepper', 'Killer Rabbit (unused)', 'Toast'))
+        'Brown', 'White', 'Black', 'White Splotched', 'Gold', 'Salt', 'Killer Rabbit (unused)', 'Toast'))
     room.function('reset_collars').add(
         kill_em(e().tag('cat')),
         execute().at(e().tag('cat_home')).run(function('restworld:mobs/cat_init')),
@@ -514,8 +514,8 @@ def villager_funcs(room):
         function('restworld:mobs/switch_villagers'),
         WallSign((None, None, 'Villagers')).place(r(-5, 2, 1), WEST),
         room.label(r(-3, 2, 0), 'Profession', WEST),
-        room.label(r(-3, 2, 2), 'Level', WEST),
-        room.label(r(-3, 2, 4), 'Zombies', WEST))
+        room.label(r(-3, 2, 2), 'Trading Level', WEST),
+        room.label(r(-3, 2, 4), 'Zombie Villagers', WEST))
 
     # Switch functions
     room.function('switch_villagers', home=False).add(
