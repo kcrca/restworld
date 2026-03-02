@@ -159,11 +159,11 @@ def room():
                 frame.tag('materials', 'only_item_frame', f'only_item_frame_{t.id}')
                 if t.id == 'elytra':
                     frame.merge_nbt({'Item': {'components': {'damage': 450}}})
-                yield frame.summon(r(x, 2, z))
+                yield frame.summon(r(x, 3, z))
                 z += delta
                 index += 1
             x += delta
-        yield WallSign((None, 'Items Not', 'In Creative', 'Inventory')).place(r(0, 3, -1), WEST)
+        yield WallSign((None, 'Items Not', 'In Creative', 'Inventory')).place(r(0, 2, -1), WEST)
 
     room.function('only_items_init').add(
         only_items_init_func())
