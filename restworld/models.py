@@ -3,13 +3,13 @@ from collections import defaultdict
 from typing import Any
 
 from pynecraft import info
-from pynecraft.base import Arg, EAST, EQ, as_facing, d, r, to_name
-from pynecraft.commands import Block, DIV, MOD, REPLACE, Text, clone, comment, data, e, execute, fill, function, \
-    item, kill, n, p, say, schedule, setblock, summon, tag
+from pynecraft.base import Arg, as_facing, d, EAST, EQ, Nbt, r, to_name
+from pynecraft.commands import Block, clone, comment, data, DIV, e, execute, fill, function, item, kill, MOD, n, p, \
+    REPLACE, say, schedule, setblock, summon, tag, Text
 from pynecraft.info import block_items, default_skins, stems, woods
 from pynecraft.simpler import Item, ItemFrame, Sign, WallSign
 from restworld import global_
-from restworld.rooms import ActionDesc, SignedRoom, Wall, named_frame_item, span
+from restworld.rooms import ActionDesc, named_frame_item, SignedRoom, span, Wall
 from restworld.world import fast_clock, restworld
 
 # The item area...
@@ -162,7 +162,7 @@ def room():
         is_empty.set(1),
         schedule().function('restworld:models/model_copy', '1s', REPLACE)
     )
-    ground_default_nbt = {'Item': Item.nbt_for('iron_pickaxe'), 'Age': -32768, 'PickupDelay': 2147483647,
+    ground_default_nbt = {'Item': Item.nbt_for('iron_pickaxe'), 'Age': Nbt.MIN_INT, 'PickupDelay': Nbt.MAX_LONG,
                           'Tags': ['model_ground']}
     named_frame_data = named_frame_item(name='Invisible Frame').merge({'ItemRotation': 0})
     do_set_if_block = room.function('do_set_if_block', home=False).add(
