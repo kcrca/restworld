@@ -2,14 +2,13 @@ from __future__ import annotations
 
 import re
 
-from pynecraft.base import Arg, CYAN, EQ, SOUTH, as_facing, r
-from pynecraft.commands import Block, COLORS, Entity, Text, WHITE, data, e, execute, fill, function, kill, s, \
-    setblock
+from pynecraft.base import Arg, as_facing, CYAN, EQ, r, SOUTH
+from pynecraft.commands import Block, COLORS, data, e, Entity, execute, fill, function, kill, s, setblock, Text, WHITE
 from pynecraft.simpler import Shield, Sign, TextDisplay, WallSign
-from pynecraft.values import BORDER, BRICKS, CIRCLE, CREEPER, CROSS, CURLY_BORDER, FLOWER, GRADIENT, GRADIENT_UP, \
-    HALF_HORIZONTAL, HALF_HORIZONTAL_BOTTOM, MOJANG, PATTERN_GROUP, RHOMBUS, SMALL_STRIPES, STRAIGHT_CROSS, \
-    STRIPE_BOTTOM, STRIPE_CENTER, STRIPE_MIDDLE, STRIPE_RIGHT, STRIPE_TOP, TRIANGLES_BOTTOM, TRIANGLES_TOP, \
-    TRIANGLE_BOTTOM, TRIANGLE_TOP, as_pattern, patterns
+from pynecraft.values import as_pattern, BORDER, BRICKS, CIRCLE, CREEPER, CROSS, CURLY_BORDER, FLOWER, GRADIENT, \
+    GRADIENT_UP, HALF_HORIZONTAL, HALF_HORIZONTAL_BOTTOM, MOJANG, PATTERN_GROUP, patterns, RHOMBUS, SMALL_STRIPES, \
+    STRAIGHT_CROSS, STRIPE_BOTTOM, STRIPE_CENTER, STRIPE_MIDDLE, STRIPE_RIGHT, STRIPE_TOP, TRIANGLE_BOTTOM, \
+    TRIANGLE_TOP, TRIANGLES_BOTTOM, TRIANGLES_TOP
 from restworld.rooms import Room
 from restworld.world import die, main_clock, restworld
 
@@ -169,7 +168,8 @@ def room():
                                    'Rotation': as_facing(rot).rotation})),
         )
 
-    half = int(len(authored_patterns) / 2)
+    assert len(authored_patterns) % 2 == 0, 'Odd number of authored banner patterns; last will be skipped'
+    half = len(authored_patterns) // 2
 
     def render_authored_banners(step):
         return (
