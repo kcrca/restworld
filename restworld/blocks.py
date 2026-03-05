@@ -1081,9 +1081,9 @@ def color_functions(room):
             yield data().merge(e().tag('colorings_frame_harness').limit(1),
                                {'Item': Item.nbt_for(f'{color.id}_harness'), 'ItemRotation': 0})
             bundle = Item.nbt_for(f'{color.id}_bundle')
-            yield execute().as_(armors).run(data().merge(s(), {
-                'equipment': {'feet': leather_color, 'legs': leather_color, 'chest': leather_color,
-                              'head': leather_color}}))
+            yield execute().as_(armors).run(
+                data().merge(s(), {'equipment': {'feet': leather_color, 'legs': leather_color, 'chest': leather_color,
+                                                 'head': leather_color}}))
             yield execute().as_(e().tag('colorings_frame')).run(data().merge(s(), {'Item': leather_color}))
             for w in 'horse', 'dog':
                 yield data().merge(e().tag(f'colorings_{w}').limit(1), {'equipment': {'body': leather_color}})

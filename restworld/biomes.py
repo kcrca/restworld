@@ -38,8 +38,8 @@ def category_sign(category, x):
     yield WallSign().messages((None, category, text3), (
         None,
         None,
-        execute().at(e().tag('category_home')).run(function(f'restworld:biomes/{to_id(category)}_signs'))),
-                              ).place(r(x, 1, 6), NORTH)
+        execute().at(e().tag('category_home')).run(
+            function(f'restworld:biomes/{to_id(category)}_signs'))), ).place(r(x, 1, 6), NORTH)
 
 
 def type_text(category):
@@ -49,10 +49,10 @@ def type_text(category):
 # noinspection PyUnusedLocal
 def illuminate(biome, prefix, i, x, y, z, handback):
     illuminate_score = handback
-    yield execute().if_().score(illuminate_score).matches(1).run(fill(r(x, y + 1, z), r(x + 31, y + 32, z + 31),
-                                                                      'light').replace('#restworld:air')),
-    yield execute().unless().score(illuminate_score).matches(1).run(fill(r(x, y + 1, z), r(x + 31, y + 32, z + 31),
-                                                                         'air').replace('light')),
+    yield execute().if_().score(illuminate_score).matches(1).run(
+        fill(r(x, y + 1, z), r(x + 31, y + 32, z + 31), 'light').replace('#restworld:air')),
+    yield execute().unless().score(illuminate_score).matches(1).run(
+        fill(r(x, y + 1, z), r(x + 31, y + 32, z + 31), 'air').replace('light')),
 
 
 def load_biome(renderer, biome, handback=None):
