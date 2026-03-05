@@ -10,7 +10,7 @@ from pynecraft.base import Arg, BLUE, FacingDef, is_arg, Nbt, ORANGE, r, RelCoor
 from pynecraft.commands import a, as_block, as_entity, as_facing, as_score, Block, BlockDef, BYTE, CLEAR, clone, \
     Command, Commands, comment, data, e, Entity, EntityDef, execute, fill, function, INT, kill, MINUS, MOVE, n, p, \
     Particle, particle, Position, random, RESULT, ride, s, say, schedule, Score, scoreboard, setblock, SignMessages, \
-    summon, tag, Target, tellraw, Text, TextDef, tp, weather
+    summon, tag, Target, team, tellraw, Text, TextDef, tp, weather
 from pynecraft.function import DataPack, Function, FunctionSet, LATEST_PACK_VERSION, Loop
 from pynecraft.info import default_skins
 from pynecraft.simpler import TextDisplay, Trigger, WallSign
@@ -410,7 +410,9 @@ class Room(FunctionSet):
         for clock, loops in self._clocks.items():
             name = '_%s' % clock.name
             clock_func = self.function(name).add((
-                execute().at(e().tag(x.base_name + '_home')).run(function(x.full_name)) for x in loops))
+                execute().at(e().tag(x.base_name + '_home')).run(function(x.full_name)) for x in loops)).add(
+                team().join('no_collision', e().tag(self.name))
+            )
             tick_func.add(execute().if_().score(clock.time).matches(0).run(function(clock_func.full_name)))
         tick_func.add(function(x.full_name) for x in filter(
             lambda x: self._is_func_type(x, '_tick'), self.functions.values()))
@@ -450,13 +452,14 @@ class Room(FunctionSet):
             'init': [kill(e().tag(self.name, 'label')),
                      scoreboard().objectives().add(self.name, DUMMY),
                      scoreboard().objectives().add(self.name + '_max', DUMMY),
-                     (x.set(self._init_values.get(x, 0)) for x in
-                      sorted(self._init_values, key=lambda x: str(x))),
-                     to_incr.set(1)] + [tp(e().tag(self.name), e().tag('death').limit(1)), kill_em(e().tag(self.name))]
+                     (x.set(self._init_values.get(x, 0)) for x in sorted(self._init_values, key=lambda x: str(x))),
+                     to_incr.set(1),
+                     tp(e().tag(self.name), e().tag('death').limit(1)),
+                     kill_em(e().tag(self.name))]
         }
         after_commands = {
             'enter': [weather(CLEAR)],
-            'init': [function('%s/_cur' % self.full_name)],
+            'init': [function('%s/_cur' % self.full_name), team().join('no_collision', e().tag(self.name))],
         }
         clock_suffixes = set(x.name for x in self._clocks)
         clock_suffixes.add('tick')
