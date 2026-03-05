@@ -1,13 +1,11 @@
-from __future__ import annotations
-
 import os
 import re
 
 import math
 
-from pynecraft.base import EAST, NE, NORTH, OVERWORLD, SOUTH, SW, WEST, as_facing, r, to_id
-from pynecraft.commands import Block, CREATIVE, Entity, SURVIVAL, e, execute, fill, function, gamemode, kill, p, \
-    setblock, tp
+from pynecraft.base import as_facing, EAST, NE, NORTH, OVERWORLD, r, SOUTH, SW, to_id, WEST
+from pynecraft.commands import Block, CREATIVE, e, Entity, execute, fill, function, gamemode, kill, p, setblock, \
+    SURVIVAL, tp
 from pynecraft.info import armor_equipment, colors, corals, stems, weathering_name, weatherings, woods
 from pynecraft.simpler import Item, Offset
 from restworld.rooms import MobPlacer, Room

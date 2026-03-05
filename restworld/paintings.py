@@ -1,7 +1,5 @@
-from __future__ import annotations
-
-from pynecraft.base import BLACK, EAST, NORTH, ROTATION_270, SOUTH, Transform, WEST, as_facing, r
-from pynecraft.commands import Text, e, kill, summon
+from pynecraft.base import as_facing, BLACK, EAST, NORTH, r, ROTATION_270, SOUTH, Transform, WEST
+from pynecraft.commands import e, kill, summon, Text
 from pynecraft.simpler import TextDisplay
 from pynecraft.values import PAINTING_GROUP, paintings
 from restworld.rooms import Room

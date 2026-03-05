@@ -1,6 +1,5 @@
 from pynecraft.base import Arg, r
-from pynecraft.commands import Block, Entity, e, execute, fill, function, kill, n, p, say, setblock, \
-    tp
+from pynecraft.commands import Block, e, Entity, execute, fill, function, kill, n, p, say, setblock, tp
 from restworld.rooms import Room
 from restworld.world import restworld
 

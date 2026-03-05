@@ -1,17 +1,11 @@
-from __future__ import annotations
-
-from pynecraft.base import DARK_BLUE, DARK_GREEN, DARK_PURPLE, GOLD, LIGHT_PURPLE, NE, NORTH, NW, Nbt, RED, \
-    SE, \
-    SOUTH, SW, \
-    WEST, \
-    r
-from pynecraft.commands import Block, ClickEvent, Entity, Score, Text, clone, e, execute, fill, function, kill, \
-    scoreboard, \
-    setblock, summon, tag
+from pynecraft.base import DARK_BLUE, DARK_GREEN, DARK_PURPLE, GOLD, LIGHT_PURPLE, Nbt, NE, NORTH, NW, r, RED, SE, \
+    SOUTH, SW, WEST
+from pynecraft.commands import Block, ClickEvent, clone, e, Entity, execute, fill, function, kill, Score, scoreboard, \
+    setblock, summon, tag, Text
 from pynecraft.info import Horse
 from pynecraft.simpler import Book, ItemFrame, Sign, TextDisplay, WallSign
 from restworld.materials import armor_for
-from restworld.rooms import Room, ensure
+from restworld.rooms import ensure, Room
 from restworld.world import fast_clock, main_clock, restworld, slow_clock
 
 

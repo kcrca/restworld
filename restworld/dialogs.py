@@ -1,9 +1,6 @@
 from pynecraft.commands import Text
-from pynecraft.dialog import ClickAction, Item, boolean, confirmation, dialog_list, item, multi_action, notice, \
-    number_range, \
-    plain_message, \
-    single_option, \
-    text
+from pynecraft.dialog import boolean, ClickAction, confirmation, dialog_list, Item, item, multi_action, notice, \
+    number_range, plain_message, single_option, text
 from restworld.world import restworld
 
 

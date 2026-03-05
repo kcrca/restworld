@@ -1,7 +1,5 @@
-from __future__ import annotations
-
-from pynecraft.base import Arg, E, EAST, N, NE, NORTH, NW, S, SE, SOUTH, SW, UP, W, WEST, as_facing, r
-from pynecraft.commands import SUCCESS, clone, data, e, execute, fill, function, kill, n, setblock
+from pynecraft.base import Arg, as_facing, E, EAST, N, NE, NORTH, NW, r, S, SE, SOUTH, SW, UP, W, WEST
+from pynecraft.commands import clone, data, e, execute, fill, function, kill, n, setblock, SUCCESS
 from pynecraft.simpler import ItemFrame, WallSign
 from restworld.rooms import Room
 from restworld.world import restworld
@@ -103,4 +101,3 @@ def room():
                 execute().at(e().tag('redo_home')).run(function(redo_one).with_().storage(room.store, f'cur.{dir}'))
             )
         )
-

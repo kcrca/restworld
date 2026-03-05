@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import math
 from titlecase import titlecase
 
@@ -193,7 +191,8 @@ def room():
 
     def carrier_loop(step):
         placer = room.mob_placer(
-            r(0, 2, 0.3), NORTH, 2, 0, adults=True, nbt={'ChestedHorse': True, 'Tame': True, 'Variant': 258}, tags=('carrier',))
+            r(0, 2, 0.3), NORTH, 2, 0, adults=True, nbt={'ChestedHorse': True, 'Tame': True, 'Variant': 258},
+            tags=('carrier',))
         yield placer.summon(step.elem)
         yield Sign.change(r(0, 2, -1), (None, None, titlecase(step.elem)))
 

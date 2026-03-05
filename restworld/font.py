@@ -1,11 +1,9 @@
-from __future__ import annotations
-
 from pynecraft import info
-from pynecraft.base import EAST, NORTH, SOUTH, TEXT_COLORS, WEST, r
-from pynecraft.commands import Block, HoverEvent, Text, clone, data, e, execute, fill, function, kill, s, setblock, tag
+from pynecraft.base import EAST, NORTH, r, SOUTH, TEXT_COLORS, WEST
+from pynecraft.commands import Block, clone, data, e, execute, fill, function, HoverEvent, kill, s, setblock, tag, Text
 from pynecraft.info import colors, stems
 from pynecraft.simpler import Book, TextDisplay, WallSign
-from restworld.rooms import Room, ensure
+from restworld.rooms import ensure, Room
 from restworld.world import restworld
 
 

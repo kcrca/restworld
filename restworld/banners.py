@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import re
 
 from pynecraft.base import Arg, as_facing, CYAN, EQ, r, SOUTH

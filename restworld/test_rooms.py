@@ -1,6 +1,4 @@
-from __future__ import annotations
-
-from pynecraft.base import NORTH, d
+from pynecraft.base import d, NORTH
 from pynecraft.commands import item, lines
 from restworld.rooms import *
 

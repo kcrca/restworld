@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import itertools
 import re
 
@@ -45,7 +43,7 @@ def room():
     def lightning_rod_inner_loop(step, waxed):
         oxy, strike = step.elem
         if strike:
-            yield execute().if_().score(do_strike).matches(1).run(say('strike'),summon('lightning_bolt', r(0, 3, 0)))
+            yield execute().if_().score(do_strike).matches(1).run(say('strike'), summon('lightning_bolt', r(0, 3, 0)))
             yield Sign.change(r(-1, 2, 0), ('Lightning &', f'{("Waxed " if waxed else "") + weathering_name(oxy, "")}'),
                               start=1)
         else:

@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import copy
 
 import math
@@ -144,12 +142,13 @@ def room():
                 function(f'restworld:multimob/summon_{sector}').with_().storage(room.store, 'mob'))
         )
         for sector in sectors),
-        # We remove the rotation tag so we can merge data into the nbt to update the mobs later without changing it
-        data().remove(room.store, 'mob.nbt.Rotation'),
-        # This sets the sector tag in the NBT to be the one that was actually sued
-        data().remove(room.store, 'mob.nbt.Tags[2]'),
-        data().modify(room.store, 'mob.nbt.Tags').append().from_(room.store, 'mob.sector_tag'),
-    )
+                                                               # We remove the rotation tag so we can merge data into the nbt to update the mobs later without changing it
+                                                               data().remove(room.store, 'mob.nbt.Rotation'),
+                                                               # This sets the sector tag in the NBT to be the one that was actually sued
+                                                               data().remove(room.store, 'mob.nbt.Tags[2]'),
+                                                               data().modify(room.store, 'mob.nbt.Tags').append().from_(
+                                                                   room.store, 'mob.sector_tag'),
+                                                               )
 
     def summon_mob_commands(mob):
         mob.merge_nbt({

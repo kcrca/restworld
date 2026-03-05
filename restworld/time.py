@@ -1,7 +1,5 @@
-from __future__ import annotations
-
-from pynecraft.base import EAST, NOON, NORTH, SOUTH, WEST, as_facing, r
-from pynecraft.commands import RESULT, data, e, execute, fill, function, kill, setblock, summon, tag, time, worldborder
+from pynecraft.base import as_facing, EAST, NOON, NORTH, r, SOUTH, WEST
+from pynecraft.commands import data, e, execute, fill, function, kill, RESULT, setblock, summon, tag, time, worldborder
 from pynecraft.info import moon_phases
 from pynecraft.simpler import Item, WallSign
 from restworld.rooms import Room
@@ -61,7 +59,7 @@ def room():
                r(-10, 8, 4)),
         room.label(r(-2, 7, 4), 'Moon Phases', WEST),
         room.label(r(0, 7, 4), 'Reset Room', WEST, vertical=True, bump=0.52),
-        room.label(r(-10, 7, 4), 'Reset Room', EAST, vertical=True,  bump=0.52),
+        room.label(r(-10, 7, 4), 'Reset Room', EAST, vertical=True, bump=0.52),
     )
 
     slow, norm = 3, 30

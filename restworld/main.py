@@ -1,13 +1,11 @@
-from __future__ import annotations
-
 import argparse
 import random
 from pathlib import Path
 
 from pynecraft.simpler import Sign
 from restworld import arena, banners, biomes, blocks, center, connect, dialogs, diy, effects, enders, font, global_, \
-    gui, hud, maps, materials, mobs, models, multimob, nether, paintings, particles, photo, plants, \
-    poses, redstone, save, tags, test_blocks, tester, the_end, time, wither
+    gui, hud, maps, materials, mobs, models, multimob, nether, paintings, particles, photo, plants, poses, redstone, \
+    save, tags, test_blocks, tester, the_end, time, wither
 from restworld.world import restworld
 
 

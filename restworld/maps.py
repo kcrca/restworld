@@ -1,11 +1,9 @@
-from __future__ import annotations
-
 import re
 
-from pynecraft.base import NORTH, Nbt, NbtDef, SOUTH, WEST, r
-from pynecraft.commands import Block, Text, clone, data, e, execute, fill, kill, setblock
+from pynecraft.base import Nbt, NbtDef, NORTH, r, SOUTH, WEST
+from pynecraft.commands import Block, clone, data, e, execute, fill, kill, setblock, Text
 from pynecraft.simpler import Book, ItemFrame, TextDisplay, WallSign
-from restworld.rooms import Room, ensure
+from restworld.rooms import ensure, Room
 from restworld.world import restworld
 
 

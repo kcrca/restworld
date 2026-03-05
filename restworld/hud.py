@@ -1,11 +1,9 @@
-from __future__ import annotations
-
-from pynecraft.base import NORTH, Nbt, r
-from pynecraft.commands import CREATIVE, Entity, LEVELS, POINTS, SUCCESS, SURVIVAL, data, e, effect, execute, function, \
-    gamemode, item, p, xp
+from pynecraft.base import Nbt, NORTH, r
+from pynecraft.commands import CREATIVE, data, e, effect, Entity, execute, function, gamemode, item, LEVELS, p, POINTS, \
+    SUCCESS, SURVIVAL, xp
 from pynecraft.simpler import WallSign
 from pynecraft.values import ABSORPTION, POISON, REGENERATION, WITHER
-from restworld.rooms import Room, kill_em
+from restworld.rooms import kill_em, Room
 from restworld.world import main_clock, restworld
 
 

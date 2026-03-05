@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from pynecraft.base import NORTH, r, SOUTH, WEST
 from pynecraft.commands import Block, data, e, Entity, execute, function, n, REPLACE, ride, s, schedule, setblock, tag
 from pynecraft.simpler import Item, Sign, WallSign

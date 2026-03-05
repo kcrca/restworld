@@ -1,10 +1,8 @@
-from __future__ import annotations
-
 import sys
 
 from pynecraft.base import r
-from pynecraft.commands import CREATIVE, Commands, Entity, SIDEBAR, clear, data, e, \
-    execute, fill, function, gamemode, kill, p, scoreboard, setblock, tp
+from pynecraft.commands import clear, Commands, CREATIVE, data, e, Entity, execute, fill, function, gamemode, kill, p, \
+    scoreboard, setblock, SIDEBAR, tp
 from pynecraft.function import Function
 from pynecraft.simpler import Sign, TextDisplay
 from restworld.rooms import Clock, Room, RoomPack
@@ -48,7 +46,6 @@ class RestWorld(RoomPack):
     # noinspection PyMethodMayBeStatic
     def clocks(self):
         return slow_clock, main_clock, fast_clock
-
 
     def _home_func_name(self, base):
         for f in self._suffixes:

@@ -1,19 +1,13 @@
-from __future__ import annotations
-
 import copy
 
 from titlecase import titlecase
 
 from pynecraft.base import EAST, EQ, Nbt, NE, NORTH, r, SOUTH, to_id, to_name, WEST
-from pynecraft.commands import as_facing, Block, clone, COLORS, data, e, Entity, execute, fillbiome, FORCE, \
-    function, \
+from pynecraft.commands import as_facing, Block, clone, COLORS, data, e, Entity, execute, fillbiome, FORCE, function, \
     item, kill, LONG, MOD, n, p, player, REPLACE, RESULT, return_, ride, s, schedule, Score, scoreboard, setblock, \
     SUCCESS, summon, tag, tp
 from pynecraft.info import axolotls, colors, default_skins, horses, mannequin_poses, tropical_fish, weathering_id, \
-    weathering_name, \
-    weathering_property, \
-    weatherings, \
-    wolves
+    weathering_name, weathering_property, weatherings, wolves
 from pynecraft.simpler import Item, PLAINS, Sign, Villager, VILLAGER_BIOMES, VILLAGER_PROFESSIONS, WallSign
 from pynecraft.values import as_disc, DISC_GROUP, discs, DUMMY
 from restworld.materials import water_biomes

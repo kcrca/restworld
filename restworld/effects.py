@@ -1,10 +1,8 @@
-from __future__ import annotations
-
-from pynecraft.base import EAST, NORTH, SOUTH, WEST, as_facing, d, r
-from pynecraft.commands import MAX_EFFECT_SECONDS, e, effect, execute, fill, function, p, setblock
+from pynecraft.base import as_facing, d, EAST, NORTH, r, SOUTH, WEST
+from pynecraft.commands import e, effect, execute, fill, function, MAX_EFFECT_SECONDS, p, setblock
 from pynecraft.simpler import WallSign
 from pynecraft.values import BAD_LUCK, BREATH_OF_THE_NAUTILUS, EFFECT_GROUP, effects
-from restworld.rooms import ActionDesc, SignedRoom, Wall, span
+from restworld.rooms import ActionDesc, SignedRoom, span, Wall
 from restworld.world import restworld
 
 display_names = {

@@ -1,11 +1,11 @@
 import collections
 
-from pynecraft.base import NORTH, OVERWORLD, SOUTH, r, to_id
-from pynecraft.commands import Block, CLEAR, DESTROY, data, e, execute, fill, fillbiome, function, kill, say, setblock, \
+from pynecraft.base import NORTH, OVERWORLD, r, SOUTH, to_id
+from pynecraft.commands import Block, CLEAR, data, DESTROY, e, execute, fill, fillbiome, function, kill, say, setblock, \
     weather
 from pynecraft.simpler import PLAINS, Sign, WallSign
-from pynecraft.values import BASALT_DELTAS, NETHER_WASTES, SMALL_END_ISLANDS, WARM_OCEAN, as_biome
-from restworld.rooms import Room, kill_em
+from pynecraft.values import as_biome, BASALT_DELTAS, NETHER_WASTES, SMALL_END_ISLANDS, WARM_OCEAN
+from restworld.rooms import kill_em, Room
 from restworld.world import restworld
 
 biome_groups = collections.OrderedDict()
