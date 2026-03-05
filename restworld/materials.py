@@ -10,12 +10,14 @@ from pynecraft.base import Arg, as_facing, EAST, EQ, Nbt, NbtDef, NE, NORTH, NW,
 from pynecraft.commands import as_block, Block, BlockDef, clone, data, e, effect, Entity, execute, fill, fillbiome, \
     function, \
     INFINITE, item, \
-    kill, LONG, MOD, n, p, PLUS, random, REPLACE, RESULT, s, schedule, Score, scoreboard, setblock, summon, tag
+    kill, LONG, MOD, n, NEVER, p, PLUS, random, REPLACE, RESULT, s, schedule, Score, scoreboard, setblock, summon, tag, \
+    team
 from pynecraft.function import BLOCK
 from pynecraft.info import armor_equipment, colors, copper_golem_poses, default_skins, must_give_items, stems, \
     trim_materials, trim_patterns, weathering_id, weathering_name, weatherings
 from pynecraft.simpler import Item, ItemFrame, PLAINS, Region, Sign, SWAMP, WallSign
-from pynecraft.values import biomes, COLD_OCEAN, FROZEN_OCEAN, INVISIBILITY, LUKEWARM_OCEAN, MANGROVE_SWAMP, OCEAN, \
+from pynecraft.values import biomes, COLD_OCEAN, COLLISION_RULE, FROZEN_OCEAN, INVISIBILITY, LUKEWARM_OCEAN, \
+    MANGROVE_SWAMP, OCEAN, \
     WARM_OCEAN
 from restworld.rooms import erase, kill_em, Room
 from restworld.world import fast_clock, main_clock, restworld
@@ -629,6 +631,9 @@ def wood_functions(room):
         # No way to use relative coordinates here
         data().merge(n().tag('bee', room.name), {'leash': Nbt.TypedArray('I', (26, 101, -4))}),
         effect().give(n().tag('bee', room.name), INVISIBILITY, INFINITE, hide_particles=True),
+        team().add('no_collision'),
+        team().join('no_collision', e().tag('bee', room.name)),
+        team().modify('no_collision', COLLISION_RULE, NEVER),
         schedule().function(name_knot, 10, REPLACE),
         room.label(r(-1, 2, 4), 'Chest Boat', SOUTH),
     )
