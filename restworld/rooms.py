@@ -769,5 +769,8 @@ def span(start, end):
 
 
 def kill_em(target):
-    return (execute().as_(target).on('passengers').as_(s().type('player')).run(ride(s()).dismount()),
-            tp(target, n().tag('death')))
+    return (
+        execute().as_(target).on('passengers').as_(s().type('player')).run(ride(s()).dismount()),
+        execute().as_(target).run(data().remove(s(), 'Owner')),
+        tp(target, n().tag('death'))
+    )
