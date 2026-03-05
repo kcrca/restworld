@@ -753,8 +753,8 @@ def monsters(room):
             yield data().modify(n().tag('enderman'), 'angry_at').set().from_(n().tag('enderman'), 'UUID')
             yield data().modify(n().tag('enderman'), 'CustomName').set().value('Angry Enderman')
         else:
-            yield kill_em(e().tag('enderman'))
-            yield list(placer.summon('enderman'))[0]
+            yield data().remove(n().tag('enderman'), 'angry_at')
+            yield data().modify(n().tag('enderman'), 'CustomName').set().value('Enderman')
 
     placer = room.mob_placer(r(0, 2, 0), NORTH, adults=True)
     room.function('enderman_init').add(
