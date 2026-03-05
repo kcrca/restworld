@@ -58,7 +58,7 @@ def friendlies(room):
 
     p = placer(*mid_east_placer, tags='keeper')
     room.function('armadillo_init').add(p.summon('Armadillo'))
-    room.loop('armadillo', main_clock).loop(armadillo_loop, ('idle', 'scared'))
+    room.loop('armadillo', main_clock).loop(armadillo_loop, ('unrolling', 'idle', 'rolling', 'scared'))
 
     def bee_loop(step):
         bee_house = 'beehive' if step.i == 0 else 'bee_nest'
@@ -375,7 +375,7 @@ def friendlies(room):
     # https://report.bugs.mojang.com/servicedesk/customer/portal/2/MC-274238
     room.function('trader_llama_init').add(
         placer(r(1, 2, -1), WEST, adults=True).summon('wandering_trader'),
-        placer(r(0, 2, 1), WEST, 0, 2, nbt={'DespawnDelay': Nbt.MAX_LONG}).summon('trader_llama'))
+        placer(r(0, 2, 1), WEST, 0, 2, nbt={'DespawnDelay': Nbt.MAX_INT}).summon('trader_llama'))
     room.loop('trader_llama', main_clock).loop(
         lambda step: execute().as_(e().type('trader_llama')).run(data().modify(s(), 'Variant').set().value(step.i)),
         ('Creamy', 'White', 'Brown', 'Gray'))
@@ -569,10 +569,14 @@ def monsters(room):
     west_placer = list(r(0.2, 2, 0)), WEST, -2, 2.2
     south_placer = list(r(0, 2, -0.2)), SOUTH, -2, 2.2
 
-    room.function('creeper_init').add(placer(*west_placer, adults=True).summon('creeper'))
-    room.loop('creeper', main_clock).loop(
-        lambda step: execute().as_(e().tag('creeper').limit(1)).run(data().merge(s(), {'powered': step.elem})),
-        (True, False))
+    creeper_defaults = Nbt({'Fuse': Nbt.MAX_SHORT, 'powered': False, 'ignited': False})
+
+    def creeper_loop(step):
+        yield placer(*west_placer, adults=True).summon('creeper', nbt=creeper_defaults.copy().merge(step.elem))
+
+    room.loop('creeper', main_clock).add(
+        kill_em(e().tag('creeper', room.name)),
+    ).loop(creeper_loop, ({}, {'ignited': True}, {'powered': True}))
 
     slime_placer = copy.deepcopy(west_placer)
     slime_placer[0][1] = r(3)
@@ -760,7 +764,9 @@ def monsters(room):
 
     placer = room.mob_placer(r(0, 2, 0), NORTH, adults=True)
     room.function('enderman_init').add(
-        execute().unless().entity(e().type('enderman').distance((None, 5))).run(list(placer.summon('enderman'))[0]))
+        execute().unless().entity(e().type('enderman').distance((None, 5))).run(list(placer.summon('enderman'))[0]),
+        room.label(r(-1, 2, -1), 'Carry Block', NORTH)
+    )
     room.loop('enderman', main_clock).loop(enderman_loop, (True, False))
 
     placer = room.mob_placer(r(0, 3, 0.2), NORTH, adults=True)
