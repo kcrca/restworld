@@ -1071,7 +1071,6 @@ def color_functions(room):
         else:
             color_name = color.name
             leather_color = {'components': {'dyed_color': color.leather}}
-            sheep_nbt = {'Color': color.num, 'Sheared': False}
             bed_head = Block(f'{color.id}_bed', {'facing': NORTH, 'part': 'head'})
             yield setblock(r(-9, 2, 2), bed_head)
             yield setblock(r(-9, 2, 3), Block(f'{color.id}_bed', {'facing': NORTH, 'part': 'foot'}))
@@ -1095,7 +1094,7 @@ def color_functions(room):
                 {'id': color.id + '_harness'})
 
         yield data().merge(n().tag('colorings_bundle_frame'), {'Item': bundle, 'ItemRotation': 0})
-        yield data().merge(e().tag('colorings_sheep').limit(1), sheep_nbt)
+        yield data().merge(e().tag('colorings_sheep').limit(1), {'Color': color.num})
 
         yield Sign.change(r(-4, 2, 4), (None, color_name))
         yield Sign.change(r(1, 2, -0), (color_name,))
@@ -1191,6 +1190,8 @@ def color_functions(room):
                         tags=('colorings_ghast',) + colorings_tags).summon('happy_ghast'),
         (armor_frame(k, v) for k, v in armor_frames.items()),
         execute().as_(e().tag('colorings_names')).run(data().merge(s(), {'CustomNameVisible': True})),
+        execute().as_(e().not_tag('colorings_names').tag('colorings_item')).run(
+            data().remove(s(), 'CustomName')),
         WallSign((None, 'Terracotta')).place(r(-1, 3, 1), SOUTH),
         WallSign((None, 'Harness')).place(r(-2, 3, 1), SOUTH),
         WallSign((None, 'Shulker Box')).place(r(-3, 3, 1), SOUTH),
@@ -1199,7 +1200,8 @@ def color_functions(room):
         WallSign((None, 'Bundle')).place(r(-6, 3, 1), SOUTH),
         WallSign((None, 'Glass')).place(r(-7, 3, 1), SOUTH),
         colored_signs(None, colored_signs_init),
-        WallSign([]).place(r(-4, 2, 4, ), SOUTH), kill(e().type('item')),
+        # This label is actually used to hold the CustomName of the color
+        room.label(r(-5.5, 3.5, 4.5), '', SOUTH, tags='colorings_names'),
         room.label(r(-1, 2, 7), 'Lit Candles', SOUTH),
         room.label(r(-3, 2, 7), 'Enchanted', SOUTH),
         room.label(r(-7, 2, 7), 'Plain', SOUTH),

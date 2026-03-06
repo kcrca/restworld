@@ -508,7 +508,7 @@ class Room(FunctionSet):
     _ADJ = 0.45
 
     def label(self, pos: Position, txt: TextDef, facing: FacingDef, *, vertical=False, bump=0.02, tags=(),
-              nbt=None) -> str:
+              nbt=None, scale=0.45) -> str:
         if isinstance(tags, str):
             tags = (tags,)
         facing = as_facing(facing)
@@ -524,7 +524,6 @@ class Room(FunctionSet):
         z_off = math.sin(math.radians(rotation[0] + 90)) * adj
         offset = [x_off, y_off, z_off]
         pos = RelCoord.add(pos, tuple(offset))
-        scale = 0.45
         display_nbt = Nbt({'Tags': t, 'line_width': int(190 * scale), 'Rotation': rotation, 'background': 0})
         if nbt:
             display_nbt = display_nbt.merge(nbt)
