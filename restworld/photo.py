@@ -1,12 +1,13 @@
-import os
 import re
 
 import math
 
-from pynecraft.base import as_facing, EAST, NE, NORTH, OVERWORLD, r, SOUTH, SW, to_id, WEST
+from pynecraft import info
+from pynecraft.base import as_facing, EAST, NE, NORTH, OVERWORLD, r, SOUTH, SW, to_id, to_name, UP, WEST
 from pynecraft.commands import Block, CREATIVE, e, Entity, execute, fill, function, gamemode, kill, p, setblock, \
     SURVIVAL, tp
-from pynecraft.info import armor_equipment, colors, corals, stems, weathering_name, weatherings, woods
+from pynecraft.info import armor_equipment, colors, corals, small_flowers, stems, tall_flowers, weathering_name, \
+    weatherings, woods
 from pynecraft.simpler import Item, Offset
 from restworld.rooms import MobPlacer, Room
 from restworld.world import restworld
@@ -70,6 +71,28 @@ mobs = (
 )
 
 
+def quilt_block_list():
+    non_full = ('button', 'pressure', 'door', 'trapdoor', 'fence', 'sign', 'leaves', 'sapling', 'shelf', 'slab',
+                'stairs', 'rail', 'cluster', 'beacon', 'dripleaf', 'barrier', 'beetroots', 'bell', 'pane', 'bed',
+                'candle', 'carpet', 'banner', 'fan', 'stand', 'wall', 'mushroom', 'bush', 'cactus', 'cake',
+                'sensor', 'campfire', 'carrots', 'cauldron', 'chest', 'anvil', 'flower', 'eyeblossom', 'conduit',
+                'bars', 'statue', 'grate', 'lantern', 'torch', 'head', 'fungus', 'detector', 'pot', 'ghast',
+                'rod', 'farmland', 'dirt path', 'frogspawn', 'lichen', 'grindstone', 'hanging', 'core', 'infested',
+                'ladder', 'bud', 'fern', 'lava', 'water', 'litter', 'lectern', '^light$', 'lily', 'spawner', 'roots',
+                'sprouts', 'tulip', 'petals', 'pointed', 'potatoes', 'powder', 'comparator', 'repeater', 'hopper',
+                'wire', 'clump', 'scaffolding', 'shrieker', 'vein', 'pickle', 'seagrass', 'short', 'tall', 'blossom',
+                'stonecutter', 'void', 'sand', 'gravel', 'cane', 'tripwire', 'vines?', 'bush', 'test', 'powder',
+                'crops?', 'vault', 'azalea', 'shoot', 'ice', 'egg', 'portal', '^fire$', '^kelp$', 'lever', 'propagule',
+                'skull', 'soul fire', 'wildflower', 'potted', 'cocoa', '^nether wart$', 'wildflowers', 'composter',
+                '^snow$', 'enchanting', 'waxed', 'jigsaw', 'cobweb', 'structure') + small_flowers + tall_flowers
+    non_full_pat = r'\b(' + r'|'.join(non_full) + r')\b'
+    non_full_re = re.compile(non_full_pat, re.IGNORECASE)
+    special_re = re.compile(r'coral(?!.*block)|chain(?!.*command)|^bamboo$|^(\w+ )?copper$', re.IGNORECASE)
+    for block in info.blocks.values():
+        if not non_full_re.search(block.name) and not special_re.search(block.name):
+            yield to_name(block.id)
+
+
 def get_quilt_blocks():
     modifiers = (tuple(c.name for c in colors) + woods + stems + materials + stepables + corals +
                  tuple(weathering_name(x, base='') for x in weatherings))
@@ -77,12 +100,9 @@ def get_quilt_blocks():
     mod_re = re.compile(fr'^(.*? ?)(\b(?:Mossy )?{"|".join(modifiers)}\b)($| (.*))')
     block_re = re.compile(r'Block of (.*)')
     command_re = re.compile(r'(.*)Command Block')
-    with open(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'some_blocks')) as fp:
-        lines = fp.readlines()
     good_blocks = {}
-    for block in lines:
-        if block[0] == '#':
-            continue
+    block_list = tuple(quilt_block_list())
+    for block in block_list:
         block = block.strip()
         block = block_re.sub(r'\1 Block', block)  # 'Block of Foo' -> 'Foo Block'
         m = mod_re.match(block)
@@ -121,6 +141,10 @@ def get_quilt_blocks():
             name = 'CGlass ' + name
         elif 'Copper' in block and 'Deepslate' not in block and name not in ('Ore', 'Raw Block'):
             name = 'Copper'
+        elif 'Command Block' in name:
+            name = f'C-{name}'
+        elif 'Moss' in name:
+            name = f'M-{name}'
 
         if name not in good_blocks:
             good_blocks[name] = []
@@ -128,6 +152,8 @@ def get_quilt_blocks():
     for b in sorted(good_blocks):
         for w in sorted(good_blocks[b]):
             yield to_id(w).replace('_lazuli', '').replace('bale', 'block')
+
+    print(len(block_list))
 
 
 def armor(kind):
@@ -145,34 +171,35 @@ def room():
     def quilt():
         coral_stage = 0
         line_length = 25
-        p = Offset(-1020, 118, 1018)
-        yield fill(p.p(0, -1, -2), p.p(line_length, -20, 2), 'air')
+        yield fill(r(0, -1, -2), r(line_length, -20, 2), 'air')
         for i, b in enumerate(get_quilt_blocks()):
             block = Block(b)
-            z = i % line_length
+            x = i % line_length
             y = -(int(i / line_length) + 1)
             dir = y % 2 == 0
             if dir == 0:
-                z = line_length - z - 1
+                x = line_length - x - 1
             if '_log' in b or ('basalt' in b and 'smooth' not in b) or ('stem' in b and 'mush' not in b):
                 block.merge_state({'axis': 'z'})
             elif 'command_block' in b:
                 block.merge_state({'facing': EAST})
             elif b in {'furnace', 'blast_furnace', 'dispenser', 'dropper', 'observer', 'loom', 'barrel', 'smoker',
-                       'beehive', 'bee_nest'}:
+                       'beehive', 'bee_nest', 'chiseled_bookshelf'}:
                 block.merge_state({'facing': SOUTH})
+            elif 'piston' in b:
+                block.merge_state({'facing': UP})
 
-            yield setblock(p.p(z, y, 0), block)
+            yield setblock(r(x, y, 0), block)
             if 'coral' in b and 'dead' not in b:
                 if coral_stage == 0:
-                    yield setblock(p.p(z - 1 if dir == 1 else z + 1, y, -1), 'stone')
+                    yield setblock(r(x - 1 if dir == 1 else x + 1, y, -1), 'stone')
                     coral_stage += 1
-                yield setblock(p.p(z, y, -1), 'water')
-                yield setblock(p.p(z, y, -2), 'stone')
-                yield setblock(p.p(z, y - 1, -1), 'stone')
-                yield setblock(p.p(z, y - 2, -1), Block('stone_slab', {'type': 'top'}))
+                yield setblock(r(x, y, -1), 'water')
+                yield setblock(r(x, y, -2), 'stone')
+                yield setblock(r(x, y - 1, -1), 'stone')
+                yield setblock(r(x, y - 2, -1), Block('stone_slab', {'type': 'top'}))
             elif coral_stage == 1:
-                yield setblock(p.p(z, y, -1), 'stone')
+                yield setblock(r(x, y, -1), 'stone')
                 coral_stage += 1
 
     room.function('quilt_init', home=False).add(quilt())
@@ -197,8 +224,8 @@ def room():
     room.function('photo_sample_view', home=False).add(
         execute().in_(OVERWORLD).run(tp(p(), (-1008.001, 109, 1043)).facing((-1008.001, 105, 1057))),
         function(do_drop))
-    room.function('photo_quilt_view').add(
-        execute().in_(OVERWORLD).run(tp(p(), (-1008, 109.51, 1029.39)).facing((-1008, 109.51, 1000))),
+    room.function('photo_quilt_view', home=False).add(
+        execute().in_(OVERWORLD).run(tp(p(), (-1008, 109.51, 1029.39)).facing((-1008, 109.2, 1000))),
         function(do_drop))
 
     room.function('photo_shoot_init').add(
