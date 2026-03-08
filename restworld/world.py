@@ -1,8 +1,9 @@
 import sys
 
 from pynecraft.base import r
-from pynecraft.commands import clear, Commands, CREATIVE, data, e, Entity, execute, fill, function, gamemode, kill, p, \
-    scoreboard, setblock, SIDEBAR, tp
+from pynecraft.commands import a, clear, Commands, CREATIVE, data, e, Entity, execute, fill, function, gamemode, kill, \
+    p, \
+    scoreboard, setblock, SIDEBAR, spawnpoint, tp
 from pynecraft.function import Function
 from pynecraft.simpler import Sign, TextDisplay
 from restworld.rooms import Clock, Room, RoomPack
@@ -39,6 +40,7 @@ class RestWorld(RoomPack):
             execute().at(e().tag('maps_room_home')).run(setblock(r(8, 2, -2), 'air')),
             execute().at(e().tag('paintings_home')).run(function('restworld:paintings/_init')),
             function('restworld:global/power_off'),
+            spawnpoint(a(), (0, 101, 0)),
             kill(e().type('item')),
         ))
         super().save(*args, **kwargs)
