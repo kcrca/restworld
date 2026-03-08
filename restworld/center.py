@@ -97,17 +97,17 @@ def room():
     top_sign = Sign((None, 'Touch the', 'sign below', 'to go to …'), hanging=True, state={'attached': True})
     room.function('lights_init').add(
         top_sign.place(r(6, 5, 6), NW),
-        Sign(('the', 'Optifine', 'Rooms'), (function('restworld:global/goto_optifine'),), hanging=True).place(
-            r(6, 4, 6), NW),
+        Sign(('the', Text('Optifine').bold(), Text('Rooms').bold()),
+             (function('restworld:global/goto_optifine'),), hanging=True).place(r(6, 4, 6), NW),
         top_sign.place(r(6, 5, -6), SW),
-        Sign(('the', 'Battle', 'Arena'), (function('restworld:global/goto_arena'),), hanging=True).place(r(6, 4, -6),
-                                                                                                         SW),
+        Sign(('the', Text('Battle').bold(), Text('Arena').bold()), (
+            function('restworld:global/goto_arena'),), hanging=True).place(r(6, 4, -6), SW),
         top_sign.place(r(-6, 5, -6), SE),
-        Sign(('the', 'Biome', 'Sampler'), (function('restworld:global/goto_biomes'),), hanging=True).place(r(-6, 4, -6),
-                                                                                                           SE),
+        Sign(('the', Text('Biome').bold(), Text('Sampler').bold()), (
+            function('restworld:global/goto_biomes'),), hanging=True).place(r(-6, 4, -6), SE),
         top_sign.place(r(-6, 5, 6), NE),
-        Sign(('the', 'Photo', 'Area'), (function('restworld:global/goto_photo'),), hanging=True).place(r(-6, 4, 6), NE),
-
+        Sign(('the', Text('Photo').bold(), Text('Area').bold()), (
+            function('restworld:global/goto_photo'),), hanging=True).place(r(-6, 4, 6), NE),
         tag(e().tag('lights_home')).add('fast_lights_home'),
         tag(e().tag('lights_home')).add('main_lights_home'),
         tag(e().tag('lights_home')).add('slow_lights_home'),
