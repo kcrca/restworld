@@ -26,8 +26,9 @@ def main():
     for r in (tags, dialogs):
         r.create()
     for m in (
+            photo,
             poses, materials, multimob, redstone, connect, blocks, plants, gui,
-            photo, save, models, arena, banners, biomes, center, diy, effects, particles, enders, font, mobs, hud,
+            save, models, arena, banners, biomes, center, diy, effects, particles, enders, font, mobs, hud,
             nether, paintings, the_end, time, wither, maps,
             global_):  # global must be LAST
         m.room()
