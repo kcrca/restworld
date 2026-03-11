@@ -430,9 +430,9 @@ def basic_functions(room, enchanted):
         kill_em(e().tag('material_thing'))
     ).loop(basic_loop, materials).add(
         execute().if_().score(has_saddle).matches(1).run(
-            item().replace().entity(e().tag('basic_saddle'), 'saddle').with_('saddle')),
+            item().replace(e().tag('basic_saddle'), 'saddle').with_('saddle')),
         execute().if_().score(has_saddle).matches(0).run(
-            item().replace().entity(e().tag('basic_saddle'), 'saddle').with_('air')),
+            item().replace(e().tag('basic_saddle'), 'saddle').with_('air')),
         execute().if_().score(turtle_helmet).matches(1).run(
             execute().as_(e().tag('armor_shower')).run(
                 data().modify(s(), 'equipment.head.id').set().value('turtle_helmet')),
@@ -584,7 +584,7 @@ def copper_functions(room):
         yield setblock(r(1, 2, 3), (type + 'copper_chest', {'type': 'right'}))
         yield setblock(r(0, 2, 3), (type + 'copper_chest', {'type': 'left'}))
 
-        yield item().replace().entity(n().tag('copper_door_frame'), 'container.0').with_(Item(type + 'copper_door'))
+        yield item().replace(n().tag('copper_door_frame'), 'container.0').with_(Item(type + 'copper_door'))
 
         sign_text = ['', titlecase(type.replace('_', ' ')), 'Copper', '']
         yield Sign.change(r(2, 2, 0), sign_text)
@@ -996,8 +996,8 @@ def trim_functions(room):
     for armor in info.armors:
         chestplate_on.add(
             execute().as_(e().tag(overall_tag).nbt({'equipment': {'legs': {'id': f'minecraft:{armor}_leggings'}}})).run(
-                item().replace().entity(s(), 'armor.feet').with_(f'{armor}_boots'),
-                item().replace().entity(s(), 'armor.chest').with_(f'{armor}_chestplate')))
+                item().replace(s(), 'armor.feet').with_(f'{armor}_boots'),
+                item().replace(s(), 'armor.chest').with_(f'{armor}_chestplate')))
     chestplate_on.add(execute().as_(e().tag(overall_tag)).run(
         data().modify(s(), 'equipment.feet.components.trim').merge().from_(s(),
                                                                            'equipment.legs.components.trim'),

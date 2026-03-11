@@ -411,7 +411,7 @@ def room():
         fill(r(-1, 2, 4), r(1, 2, 4), 'glass'),
         setblock(r(0, 3, 4), 'glass'))
     room.function('gust', home=False).add(
-        main().run(item().replace().block(r(0, 2, -1), 'container.0').with_('wind_charge', 1)),
+        main().run(item().replace(r(0, 2, -1), 'container.0').with_('wind_charge', 1)),
         main().run(setblock(r(0, 3, -1), ('stone_button', {'powered': True, 'face': 'floor'}))),
         main().run(setblock(r(0, 3, -1), 'air')),
     )
@@ -424,7 +424,7 @@ def room():
         fast().run(particle(INSTANT_EFFECT, r(0, 1.5, 0), (0.5, 1, 0.5), 0, 10)))
     room.function('instant_effect_init', home=False).add(function(animal))
     room.function('item_snowball', home=False).add(
-        fast().run(item().replace().block(r(0, 2, -1), 'container.0').with_('snowball', 1)),
+        fast().run(item().replace(r(0, 2, -1), 'container.0').with_('snowball', 1)),
         fast().run(setblock(r(0, 3, -1), ('stone_button', {'powered': True, 'face': 'floor'}))),
         fast().run(setblock(r(0, 3, -1), 'air')),
     )

@@ -255,7 +255,7 @@ def friendlies(room):
     parrot_fence_pos = list(parrot_pos)
     parrot_fence_pos[1] -= 1
     parrot_enter = room.function('parrot_enter').add(
-        (item().replace().block(disc_chest_pos, f'container.{i:d}').with_(discs[as_disc(d)].value) for i, d in
+        (item().replace(disc_chest_pos, f'container.{i:d}').with_(discs[as_disc(d)].value) for i, d in
          enumerate(DISC_GROUP)))
     room.function('parrot_init').add(
         placer(parrot_pos, parrot_dir, adults=True).summon('parrot'),
@@ -833,10 +833,10 @@ def aquatic(room):
     )
     nr_off = room.function('nautilus_riders_off', home=False).add(room.riders_off('nautilus_rider'))
     ns_on = room.function('nautilus_saddles_on', home=False).add(
-        execute().as_(e().tag('saddleable_nautilus')).run(item().replace().entity(s(), 'saddle').with_('saddle')))
+        execute().as_(e().tag('saddleable_nautilus')).run(item().replace(s(), 'saddle').with_('saddle')))
     ns_off = room.function('nautilus_saddles_off', home=False).add(
         execute().as_(e().tag('saddleable_nautilus')).run(
-            item().replace().entity(s(), 'saddle').with_('air')))
+            item().replace(s(), 'saddle').with_('air')))
     nautilus_placer = room.mob_placer(r(0, 3, -0.5), SOUTH, delta=2, kid_delta=2.2, tags='saddleable_nautilus')
 
     def nautilus_loop(step):

@@ -20,21 +20,21 @@ def room():
 
     def armor_loop(step):
         if step.elem == 5:
-            yield item().replace().entity(p(), 'armor.chest').with_('chainmail_chestplate')
+            yield item().replace(p(), 'armor.chest').with_('chainmail_chestplate')
         elif step.elem == 10:
-            yield item().replace().entity(p(), 'armor.chest').with_('chainmail_chestplate')
-            yield item().replace().entity(p(), 'armor.legs').with_('chainmail_leggings')
-            yield item().replace().entity(p(), 'armor.feet').with_('chainmail_boots')
+            yield item().replace(p(), 'armor.chest').with_('chainmail_chestplate')
+            yield item().replace(p(), 'armor.legs').with_('chainmail_leggings')
+            yield item().replace(p(), 'armor.feet').with_('chainmail_boots')
         elif step.elem == 15:
-            yield item().replace().entity(p(), 'armor.head').with_('iron_helmet')
-            yield item().replace().entity(p(), 'armor.chest').with_('iron_chestplate')
-            yield item().replace().entity(p(), 'armor.legs').with_('iron_leggings')
-            yield item().replace().entity(p(), 'armor.feet').with_('iron_boots')
+            yield item().replace(p(), 'armor.head').with_('iron_helmet')
+            yield item().replace(p(), 'armor.chest').with_('iron_chestplate')
+            yield item().replace(p(), 'armor.legs').with_('iron_leggings')
+            yield item().replace(p(), 'armor.feet').with_('iron_boots')
         elif step.elem == 20:
-            yield item().replace().entity(p(), 'armor.head').with_('diamond_helmet')
-            yield item().replace().entity(p(), 'armor.chest').with_('diamond_chestplate')
-            yield item().replace().entity(p(), 'armor.legs').with_('diamond_leggings')
-            yield item().replace().entity(p(), 'armor.feet').with_('diamond_boots')
+            yield item().replace(p(), 'armor.head').with_('diamond_helmet')
+            yield item().replace(p(), 'armor.chest').with_('diamond_chestplate')
+            yield item().replace(p(), 'armor.legs').with_('diamond_leggings')
+            yield item().replace(p(), 'armor.feet').with_('diamond_boots')
 
     armor_places = tuple(f'armor.{x}' for x in ('feet', 'legs', 'chest', 'head'))
     saver_name = 'armor'
@@ -42,14 +42,14 @@ def room():
         room.mob_placer(r(0, -2, 1), NORTH, adults=True, auto_tag=False).summon(
             Entity('armor_stand', Nbt(NoGravity=True), name=saver_name).tag(saver_name)))
     room.loop('armor', main_clock).add(
-        tuple(item().replace().entity(p(), x).with_('air') for x in armor_places)
+        tuple(item().replace(p(), x).with_('air') for x in armor_places)
     ).loop(
         armor_loop, range(0, 21, 5), bounce=True)
     saver = e().tag(saver_name).limit(1)
     room.function('armor_enter', exists_ok=True).add(
-        (item().replace().entity(saver, x).from_().entity(p(), x) for x in armor_places))
+        (item().replace(saver, x).from_(p(), x) for x in armor_places))
     room.function('armor_exit', exists_ok=True).add(
-        (item().replace().entity(p(), x).from_().entity(saver, x) for x in armor_places))
+        (item().replace(p(), x).from_(saver, x) for x in armor_places))
 
     # Use for both the player and the horse. The horse will never have absorption or wither, but it isn't very expensive
     # to check for them, and keeps this code simpler.

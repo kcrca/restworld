@@ -280,7 +280,7 @@ def room():
         (val_odds_value('explosions', 'new_firework', 1, explosions_cnt)),
         function(new_firework_convert),
         function(new_firework_convert).with_().storage('new_firework_raw'),
-        item().replace().block(r(0, 2, 0), 'container.0').with_(Item('firework_rocket')),
+        item().replace(r(0, 2, 0), 'container.0').with_(Item('firework_rocket')),
         data().modify(r(0, 2, 0), 'Items[0].components.fireworks').set().from_(room.store, 'new_firework_val')
     )
 

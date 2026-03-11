@@ -30,7 +30,7 @@ def room():
         if step.i == 0:
             yield setblock(r(0, 2, 1), 'air')
         else:
-            yield item().replace().block(r(0, 2, 2), 'container.4').with_('oak_log')
+            yield item().replace(r(0, 2, 2), 'container.4').with_('oak_log')
             yield setblock(r(0, 2, 1), 'redstone_torch')
             yield schedule().function(crafter_clean, 5, REPLACE)
 
@@ -145,35 +145,35 @@ def room():
                 block = water_potion
             else:
                 block = 'air'
-            yield item().replace().block(r(0, 2, 0), 'container.%d' % j).with_(block)
+            yield item().replace(r(0, 2, 0), 'container.%d' % j).with_(block)
 
     room.function('brewing_init').add(
         function('restworld:gui/switch_brewing_off'),
         room.label(r(-1, 2, -1), 'Brew', WEST))
     bottle_possibilities = ((), (0,), (1,), (2,), (2, 0), (1, 2), (0, 1), (0, 1, 2))
     room.loop('brewing_rotate', main_clock).add(
-        item().replace().block(r(0, 2, 0), 'container.3').with_('air'),
-        item().replace().block(r(0, 2, 0), 'container.4').with_('air'),
+        item().replace(r(0, 2, 0), 'container.3').with_('air'),
+        item().replace(r(0, 2, 0), 'container.4').with_('air'),
         data().merge(r(0, 2, 0), {'BrewTime': 0, 'Fuel': 0})).loop(brewing_loop, bottle_possibilities)
     room.function('brewing_run', fast_clock).add(
         (execute().if_().items(r(0, 2, 0), f'container.{i}',
                                str(Item('potion', components={'potion_contents': 'awkward'}))).run(
-            item().replace().block(r(0, 2, 0), f'container.{i}').with_(water_potion)) for i in range(3)),
-        item().replace().block(r(0, 2, 0), 'container.3').with_('nether_wart'),
-        item().replace().block(r(0, 2, 0), 'container.4').with_('blaze_powder'),
+            item().replace(r(0, 2, 0), f'container.{i}').with_(water_potion)) for i in range(3)),
+        item().replace(r(0, 2, 0), 'container.3').with_('nether_wart'),
+        item().replace(r(0, 2, 0), 'container.4').with_('blaze_powder'),
     )
     room.function('switch_brewing_off', home=False).add(
-        item().replace().block(r(0, 2, 0), 'container.3').with_('air'),
-        item().replace().block(r(0, 2, 0), 'container.4').with_('air'),
+        item().replace(r(0, 2, 0), 'container.3').with_('air'),
+        item().replace(r(0, 2, 0), 'container.4').with_('air'),
         data().merge(r(0, 2, 0), {'Fuel': 0}),
         kill(e().tag('brewing_run_home'))
     )
     room.function('switch_brewing_on', home=False).add(
         execute().at(e().tag('brewing_home')).run(
             summon('armor_stand', r(0, 0, 0), {'Tags': ['homer', 'brewing_run_home'], 'NoGravity': True}),
-            item().replace().block(r(0, 2, 0), 'container.0').with_(water_potion),
-            item().replace().block(r(0, 2, 0), 'container.1').with_('air'),
-            item().replace().block(r(0, 2, 0), 'container.2').with_(water_potion),
+            item().replace(r(0, 2, 0), 'container.0').with_(water_potion),
+            item().replace(r(0, 2, 0), 'container.1').with_('air'),
+            item().replace(r(0, 2, 0), 'container.2').with_(water_potion),
         ))
 
     placer = room.mob_placer(r(0, 2, 0), NORTH, 2, 0, adults=True,
@@ -223,15 +223,15 @@ def room():
         room.label(r(-1, 2, 1), 'Cook', WEST))
 
     room.function('cookers_run', home=False).add(
-        item().replace().block(r(0, 2, 0), 'container.1').with_('stick', 64),
-        item().replace().block(r(0, 2, 0), 'container.0').with_('stone', 64),
-        item().replace().block(r(0, 2, 0), 'container.2').with_('air', 1),
-        item().replace().block(r(3, 2, 0), 'container.1').with_('stick', 64),
-        item().replace().block(r(3, 2, 0), 'container.0').with_('gold_ore', 64),
-        item().replace().block(r(3, 2, 0), 'container.2').with_('air', 1),
-        item().replace().block(r(0, 2, 3), 'container.1').with_('stick', 64),
-        item().replace().block(r(0, 2, 3), 'container.0').with_('beef', 64),
-        item().replace().block(r(0, 2, 3), 'container.2').with_('air', 1),
+        item().replace(r(0, 2, 0), 'container.1').with_('stick', 64),
+        item().replace(r(0, 2, 0), 'container.0').with_('stone', 64),
+        item().replace(r(0, 2, 0), 'container.2').with_('air', 1),
+        item().replace(r(3, 2, 0), 'container.1').with_('stick', 64),
+        item().replace(r(3, 2, 0), 'container.0').with_('gold_ore', 64),
+        item().replace(r(3, 2, 0), 'container.2').with_('air', 1),
+        item().replace(r(0, 2, 3), 'container.1').with_('stick', 64),
+        item().replace(r(0, 2, 3), 'container.0').with_('beef', 64),
+        item().replace(r(0, 2, 3), 'container.2').with_('air', 1),
     )
 
     def trade_nbt(*args):
@@ -287,8 +287,8 @@ def room():
     enchanting = room.function('enchanting_enter')
     for i in range(9):
         enchanting.add(
-            item().replace().block(r(0, 4, 0), f'container.{i}').with_('book', 64),
-            item().replace().block(r(0, 4, 0), f'container.{i + 9}').with_('lapis_lazuli', 64))
+            item().replace(r(0, 4, 0), f'container.{i}').with_('book', 64),
+            item().replace(r(0, 4, 0), f'container.{i + 9}').with_('lapis_lazuli', 64))
 
     room.function('ingredients_enter').add(
         clone(r(20, -5, 30), r(-15, -5, 1), r(-15, 1, 1)).filtered('chest'))
@@ -325,10 +325,10 @@ def room():
             Entity('armor_stand', Nbt(NoGravity=True), name=saver_name).tag(saver_name)),
         WallSign((None, 'Pumpkin Blur', '(step on plate)')).place(r(1, 3, 0), NORTH))
     room.function('pumpkin_blur_on', home=False).add(
-        item().replace().entity(saver, 'armor.head').from_().entity(p(), 'armor.head'),
-        item().replace().entity(p(), 'armor.head').with_(Item('carved_pumpkin')))
+        item().replace(saver, 'armor.head').from_(p(), 'armor.head'),
+        item().replace(p(), 'armor.head').with_(Item('carved_pumpkin')))
     room.function('pumpkin_blur_off', home=False).add(
-        item().replace().entity(p(), 'armor.head').from_().entity(saver, 'armor.head'))
+        item().replace(p(), 'armor.head').from_(saver, 'armor.head'))
 
     room.function('waypoints_base_init')
     waypoint_sign_pos = r(0, 2, 0)

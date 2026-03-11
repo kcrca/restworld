@@ -201,26 +201,26 @@ def room():
             data().modify(r(0, 3, -1), 'Items').set().from_(room.store, 'shelf_slots'),
             at_home(function(set_if_block).with_().storage(room.store)),
         ),
-        item().replace().entity(model_holder, 'weapon.mainhand').from_().entity(model_src, 'container.0'),
-        item().replace().entity(model_holder, 'weapon.offhand').from_().entity(model_src, 'container.0'),
+        item().replace(model_holder, 'weapon.mainhand').from_(model_src, 'container.0'),
+        item().replace(model_holder, 'weapon.offhand').from_(model_src, 'container.0'),
         execute().if_().score(room.score('model_head')).matches(0).run(data().remove(model_holder, 'equipment.head')),
         execute().if_().score(room.score('model_head')).matches(1).run(
-            item().replace().entity(model_holder, 'armor.head').from_().entity(model_src, 'container.0')),
-        item().replace().entity(invis_frame, 'container.0').from_().entity(model_src, 'container.0'),
+            item().replace(model_holder, 'armor.head').from_(model_src, 'container.0')),
+        item().replace(invis_frame, 'container.0').from_(model_src, 'container.0'),
         data().merge(invis_frame, named_frame_data),
         global_.if_clock_running.at(e().tag('all_things_home')).if_().score(see_in_hands).matches(1).run(
             say('hi'),
-            item().replace().entity(p(), 'weapon.mainhand').from_().entity(model_src, 'container.0'),
-            item().replace().entity(p(), 'weapon.offhand').from_().entity(model_src, 'container.0'),
+            item().replace(p(), 'weapon.mainhand').from_(model_src, 'container.0'),
+            item().replace(p(), 'weapon.offhand').from_(model_src, 'container.0'),
             needs_restore.set(1)),
     )
     model_save = room.function('model_save', home=False).add(
-        (item().replace().block(chest_pos, f'container.{i}').from_().entity(p(), f'hotbar.{i}') for i in range(0, 9)),
-        item().replace().block(chest_pos, 'container.1').from_().entity(p(), 'weapon.offhand'),
+        (item().replace(chest_pos, f'container.{i}').from_(p(), f'hotbar.{i}') for i in range(0, 9)),
+        item().replace(chest_pos, 'container.1').from_(p(), 'weapon.offhand'),
         needs_restore.set(0))
     model_restore = room.function('model_restore', home=False).add(
-        (item().replace().entity(p(), f'hotbar.{i}').from_().block(chest_pos, f'container.{i}') for i in range(0, 9)),
-        item().replace().entity(p(), 'weapon.offhand').from_().block(chest_pos, 'container.1'),
+        (item().replace(p(), f'hotbar.{i}').from_(chest_pos, f'container.{i}') for i in range(0, 9)),
+        item().replace(p(), 'weapon.offhand').from_(chest_pos, 'container.1'),
         needs_restore.set(0))
     room.function('see_in_hands_on', home=False).add(at_home(function(model_save)), see_in_hands.set(1))
     room.function('see_in_hands_off', home=False).add(at_home(function(model_restore)), see_in_hands.set(0))
@@ -283,7 +283,7 @@ def room():
                     next_range = '1'  # This means it was the last range, so set it to something never found
             item_block = block.clone()
             item_block.state = {}
-            yield item().replace().entity(model_src, 'container.0').with_(item_block)
+            yield item().replace(model_src, 'container.0').with_(item_block)
             name = block.name.replace(' [x]', '')
             yield at_home(Sign.change(signs[-1], (name,), front=True))
             yield data().modify(n().tag('current_model'), 'text').set().value(Text.text(name))

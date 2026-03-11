@@ -483,14 +483,14 @@ def room():
         for j in range(0, 3):
             if j in step.elem:
                 water_potion = Item('potion', components={'potion_contents': 'water'})
-                yield item().replace().block(r(0, 3, 0), f'container.{j:d}').with_(water_potion, 1)
+                yield item().replace(r(0, 3, 0), f'container.{j:d}').with_(water_potion, 1)
             else:
-                yield item().replace().block(r(0, 3, 0), f'container.{j:d}').with_('air')
+                yield item().replace(r(0, 3, 0), f'container.{j:d}').with_('air')
 
     room.function('brewing_stand_init').add(setblock(r(0, 3, 0), 'brewing_stand'))
     room.loop('brewing_stand', main_clock).add(
-        item().replace().block(r(0, 3, 0), 'container.3').with_('air'),
-        item().replace().block(r(0, 3, 0), 'container.4').with_('air'),
+        item().replace(r(0, 3, 0), 'container.3').with_('air'),
+        item().replace(r(0, 3, 0), 'container.4').with_('air'),
         data().merge(r(0, 3, 0), {'BrewTime': 0, 'Fuel': 0}),
     ).loop(brewing_stand_loop, ((), (0,), (1,), (2,), (2, 0), (1, 2), (0, 1), (0, 1, 2)))
     room.particle('brewing_stand', 'brewing_stand', r(0, 4, 0))
