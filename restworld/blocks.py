@@ -1052,7 +1052,6 @@ def color_functions(room):
 
         if is_plain:
             color_name = 'Plain'
-            sheep_nbt = {'Sheared': True, 'Color': 0}
             bundle = Item.nbt_for('bundle')
             yield erase(r(-9, 2, 2), r(-9, 2, 3))  # remove bed
             yield erase(volume.start, volume.end, '#standing_signs')

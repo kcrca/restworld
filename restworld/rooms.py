@@ -761,7 +761,7 @@ class SignedRoom(Room):
             desc = next(i)
             raise ValueError('Remaining descriptions after all signs are placed: "%s"...' % desc.name)
         except StopIteration:
-            return
+            pass
 
 
 def span(start, end):

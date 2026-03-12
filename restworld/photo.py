@@ -162,7 +162,6 @@ def room():
         }
         for i, name in enumerate(blocks):
             block = Block(name)
-            id = block.id
             x = i % line_length
             y = -(int(i / line_length) + 1)
             dir = y % 2 == 0

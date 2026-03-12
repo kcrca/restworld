@@ -748,7 +748,6 @@ def monsters(room):
                                                         function('restworld:mobs/zombie_jockey_cur'))
 
     def enderman_loop(step):
-        placer = room.mob_placer(r(0, 2, 0), NORTH, adults=True)
         if step.elem:
             yield data().modify(n().tag('enderman'), 'angry_at').set().from_(n().tag('enderman'), 'UUID')
             yield data().modify(n().tag('enderman'), 'CustomName').set().value('Angry Enderman')
