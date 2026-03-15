@@ -139,7 +139,7 @@ def room():
                 rotate_facing(as_facing(sector), 180).rotation),
             data().modify(room.store, 'mob.nbt.Tags').set().value(['multimob', 'adult', tag_for(sector)]),
             execute().at(e().tag(f'summon_{sector}_home', 'summon_cur')).run(
-                function(f'restworld:multimob/summon_{sector}').with_().storage(room.store, 'mob'))
+                function(f'restworld:multimob/summon_{sector}').with_(room.store, 'mob'))
         )
         for sector in sectors),
                                                                # We remove the rotation tag so we can merge data into the nbt to update the mobs later without changing it
@@ -177,12 +177,12 @@ def room():
         age = -2147483648 if pro == 'Child' else 0
         nbt = {'mob': {'nbt': {'VillagerData': {'profession': pro}}, 'Age': age}}
         return (data().merge(room.store, nbt),
-                function(update_mob).with_().storage(room.store, 'mob'),
+                function(update_mob).with_(room.store, 'mob'),
                 at_home.run(function('restworld:multimob/type')))
 
     def set_type(type):
         return (data().modify(room.store, 'mob.type').set().value(type),
-                function(update_type).with_().storage(room.store, 'mob'))
+                function(update_type).with_(room.store, 'mob'))
 
     init_mobs = ((NW, -2, -2, 'Allay'), (NE, 2, -2, 'Guardian'), (SE, -2, -2, 'Piglin Brute'), (SW, -2, 2, 'Villager'))
     room.function('summon_mobs_init').add(

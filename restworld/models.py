@@ -178,7 +178,7 @@ def room():
         data().modify(room.store, 'block_state').set().value(''),
         execute().if_().data(room.store, 'states[{id: "$(block)"}]').run(
             data().modify(room.store, 'block_state').set().from_(room.store, 'states[{id: "$(block)"}].state')),
-        function(do_set_if_block).with_().storage(room.store),
+        function(do_set_if_block).with_(room.store),
         execute().unless().block(r(0, -5, 0), '#restworld:no_model_block').run(
             clone(r(0, -5, 0), r(0, -6, 0), r(0, 1, 1))))
 
@@ -199,7 +199,7 @@ def room():
             data().modify(room.store, 'shelf_slots[1].id').set().from_(model_src, 'Item.id'),
             data().modify(room.store, 'shelf_slots[2].id').set().from_(model_src, 'Item.id'),
             data().modify(r(0, 3, -1), 'Items').set().from_(room.store, 'shelf_slots'),
-            at_home(function(set_if_block).with_().storage(room.store)),
+            at_home(function(set_if_block).with_(room.store)),
         ),
         item().replace(model_holder, 'weapon.mainhand').from_(model_src, 'container.0'),
         item().replace(model_holder, 'weapon.offhand').from_(model_src, 'container.0'),

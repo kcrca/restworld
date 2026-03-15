@@ -576,7 +576,7 @@ def room():
     room.loop('copper_golem_statue', main_clock).add(
         execute().if_().score(copper_golem_statue_mode).matches(0).run(function(cg_pose_loop)),
         execute().unless().score(copper_golem_statue_mode).matches(0).run(function(cg_oxy_loop)),
-        function(cg_update).with_().storage(room.store, 'copper_golem'),
+        function(cg_update).with_(room.store, 'copper_golem'),
     )
 
     def dripstone_loop(step):

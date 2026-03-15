@@ -291,7 +291,7 @@ def room():
         execute().if_().score(actor_is_splitter).matches(1).run(
             data().modify(room.store, '$(actor).nbt.CustomName').set().from_(room.store, '$(actor).avail[0]'),
         ),
-        function(actual_summon).with_().storage(room.store, '$(actor)')
+        function(actual_summon).with_(room.store, '$(actor)')
     )
 
     left_arrow = '<--'
@@ -462,7 +462,7 @@ def room():
         execute().store(RESULT).storage(room.store, 'digits.tens', INT).run(tens.get()),
         execute().store(RESULT).storage(room.store, 'digits.cents', INT).run(cents.get()),
         execute().at(e().tag('$(actor)_show_score_home')).run(
-            function(show_digits).with_().storage(room.store, 'digits'),
+            function(show_digits).with_(room.store, 'digits'),
         ),
         prev_actors_kills.set(actors_kills)
     )
@@ -474,9 +474,9 @@ def room():
         function(v_counter),
         kill(e().type('experience_orb').distance((None, 50))),
         execute().if_().score(hunter_count).is_(LT, arena_count).run(
-            function(do_summon).with_().storage(room.store, 'hunter')),
+            function(do_summon).with_(room.store, 'hunter')),
         execute().if_().score(victim_count).is_(LT, arena_count).run(
-            function(do_summon).with_().storage(room.store, 'victim')),
+            function(do_summon).with_(room.store, 'victim')),
         *((
             execute().if_().score(room.score(f'{actor}_count')).is_(GT, arena_count).run(
                 kill_em(
@@ -540,7 +540,7 @@ def room():
         prev_victims_killed.set(-1000),
         execute().if_().score(is_alone).matches(0).run(victims_killed.operation(MINUS, arena_count)),
         function(clean_out),
-        function(init_wrapper).with_().storage(room.store, 'hunter'),
+        function(init_wrapper).with_(room.store, 'hunter'),
     )
 
     room.loop('toggle_peace', home=False).loop(toggle_peace, (True, False)).add(

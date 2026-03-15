@@ -199,7 +199,7 @@ class Room(FunctionSet):
             execute().store(RESULT).storage(store, 'dz', INT).run(dz.get()),
             data().modify(store, 'room').set().value(f'{self.name}'),
             execute().at(e().tag(f'{self.name}_room_beg_home')).run(
-                function('restworld:global/room_bounds').with_().storage(store)),
+                function('restworld:global/room_bounds').with_(store)),
         )
 
     def _room_setup(self, facing, text, room_name):
@@ -283,12 +283,12 @@ class Room(FunctionSet):
             data().modify(
                 self.store, 'random_rider.profile.texture').set().from_(self.store,
                                                                         'default_players[$(random_rider_num)]'),
-            function(do_summon).with_().storage(self.store)
+            function(do_summon).with_(self.store)
         )
         self._random_rider = self.function('_random_rider', home=False).add(
             execute().store(RESULT).storage(self.store, 'random_rider_num', BYTE, 1).run(
                 random().value((0, len(default_skins) - 1))),
-            function(choose).with_().storage(self.store)
+            function(choose).with_(self.store)
         )
 
     def riders_on(self, mount: Target, tags: str | Sequence[str] = None, rider: EntityDef = None) -> Commands:

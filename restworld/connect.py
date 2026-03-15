@@ -98,6 +98,6 @@ def room():
                     n().tag(f'connect_frame_{dir}'), 'Item.id')),
             execute().if_().score(changed).matches(1).run(
                 data().modify(room.store, f'cur.{dir}.from').set().from_(room.store, f'prev.{dir}.to'),
-                execute().at(e().tag('redo_home')).run(function(redo_one).with_().storage(room.store, f'cur.{dir}'))
+                execute().at(e().tag('redo_home')).run(function(redo_one).with_(room.store, f'cur.{dir}'))
             )
         )

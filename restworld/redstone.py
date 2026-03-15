@@ -239,7 +239,7 @@ def room():
                 cmds = (
                     execute().store(RESULT).storage(room.store, f'{name}_raw.color', INT, 1).run(
                         random().value((0, len(f_colors) - 1))),
-                    function(color_add).with_().storage(room.store, f'{name}_raw')
+                    function(color_add).with_(room.store, f'{name}_raw')
                 )
                 if i > 0:
                     cmds = execute().if_().score(val_cnt).matches((i, None)).run(cmds)
@@ -259,7 +259,7 @@ def room():
         data().remove(room.store, 'explosion_raw'),
         data().remove(room.store, 'explosion_val'),
         function(explosion_raw),
-        function(explosion_convert).with_().storage(room.store, 'explosion_raw'),
+        function(explosion_convert).with_(room.store, 'explosion_raw'),
     )
     new_firework_convert = room.function('new_firework_convert', home=False).add(
         data().modify(room.store, 'new_firework_val.explosions').set().value([]),
@@ -279,7 +279,7 @@ def room():
         (raw_odds_value('explosions', 'new_firework_raw')),
         (val_odds_value('explosions', 'new_firework', 1, explosions_cnt)),
         function(new_firework_convert),
-        function(new_firework_convert).with_().storage('new_firework_raw'),
+        function(new_firework_convert).with_('new_firework_raw'),
         item().replace(r(0, 2, 0), 'container.0').with_(Item('firework_rocket')),
         data().modify(r(0, 2, 0), 'Items[0].components.fireworks').set().from_(room.store, 'new_firework_val')
     )

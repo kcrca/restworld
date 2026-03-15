@@ -226,7 +226,7 @@ def room():
     ).loop(render_authored_banners, range(0, half)).add(
         execute().if_().score(which).matches(0).run(function(color_loop)),
         execute().unless().score(which).matches(0).run(function(ink_loop)),
-        function(update).with_().storage('restworld:banners'),
+        function(update).with_('restworld:banners'),
     )
 
     color_loop.loop(banner_color_loop, COLORS).add(
