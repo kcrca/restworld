@@ -101,7 +101,7 @@ class RoomPack(DataPack):
 
     def __init__(self, name: str, suffixes: Iterable[str] = None,
                  format_version: str = LATEST_PACK_VERSION, /):
-        super().__init__(name, format_version)
+        super().__init__(name)
         if suffixes is None:
             suffixes = RoomPack.base_suffixes
         self._suffixes = suffixes
