@@ -1132,7 +1132,7 @@ def color_functions(room):
         yield from colored_signs(step.elem, render_signs)
         yield from enchant(enchanted, 'colorings_enchantable')
 
-    colorings_tags = ('colorings_item', 'colorings_enchantable')
+    colorings_tags = ('colorings_item',)
     wolf_armor_nbt = Nbt({'equipment': {'body': Item.nbt_for('wolf_armor')}})
     cat_nbt = Nbt({'variant': 'british_shorthair', 'Owner': 'dummy', 'ColorColor': 3})
     cat_baby_nbt = cat_nbt.clone().merge({'Age': Nbt.MIN_INT})
@@ -1165,28 +1165,32 @@ def color_functions(room):
     room.function('colorings_init').add(
         kill_em(e().tag('colorings_item')),
         plain.set(0),
-        ItemFrame(NORTH, nbt={'Fixed': True, 'Tags': colorings_tags}).summon(r(-4.5, 4, 0.5)),
-        ItemFrame(NORTH, nbt={'Fixed': True, 'Tags': colorings_tags}).summon(r(-6.5, 4, 0.5)),
+        ItemFrame(SOUTH, nbt={'Fixed': True, 'Tags': ('colorings_item_frame',) + colorings_tags}).summon(
+            r(-4.5, 4, 0.5)),
+        ItemFrame(SOUTH, nbt={'Tags': ('colorings_bundle_frame',) + colorings_tags}).summon(r(-6.5, 4, 0.5)),
+        data().merge(n().tag('colorings_bundle_frame'), {'Fixed': True}),
         room.mob_placer(r(0.9, 2, 5.3), -25, adults=True,
                         nbt={'Tame': True, 'Variant': 5, 'equipment': {'body': Item.nbt_for('leather_horse_armor')}},
-                        tags=('colorings_horse', 'colorings_names') + colorings_tags).summon('horse'),
-        room.mob_placer(r(-7.4, 2, 2), -65, adults=True, nbt=(Nbt({'Tame': True})),
+                        tags=('colorings_horse', 'colorings_names', 'colorings_enchantable') + colorings_tags).summon(
+            'horse'),
+        room.mob_placer(r(-7.4, 2, 2), -65, adults=True, nbt=(Nbt({'Owner': 'dummy'})),
                         tags=('colorings_dog',) + colorings_tags).summon('wolf'),
         function(wolf_armor_on),
         room.mob_placer(r(-2.7, 2, 2), 110, adults=True, nbt=cat_nbt, tags=('colorings_cat',) + colorings_tags).summon(
             'cat'),
         room.mob_placer(r(-4.1, 2, 2.2), 250, kids=True, nbt=cat_baby_nbt,
                         tags=('colorings_cat',) + colorings_tags).summon('cat'),
-        room.mob_placer(r(-1.1, 2, 3), 30, adults=True, nbt=stand_nbt, tags=(armors_tag,) + colorings_tags).summon(
-            'armor_stand'),
-        room.mob_placer(r(1, 2.53, 3.2), 65, kids=True, nbt=baby_armor_nbt, tags=(armors_tag,) + colorings_tags).summon(
-            'zombie'),
+        room.mob_placer(r(-1.1, 2, 3), 30, adults=True, nbt=stand_nbt,
+                        tags=(armors_tag, 'colorings_enchantable') + colorings_tags).summon('armor_stand'),
+        room.mob_placer(r(1, 2.53, 3.2), 65, kids=True, nbt=baby_armor_nbt,
+                        tags=(armors_tag, 'colorings_enchantable') + colorings_tags).summon('zombie'),
         room.mob_placer(r(-11, 2, 5.8), 20, adults=True, nbt={'Variant': 1},
-                        tags=('colorings_llama', 'colorings_names') + colorings_tags).summon('llama'),
+                        tags=('colorings_llama', 'colorings_names', 'colorings_enchantable') + colorings_tags).summon(
+            'llama'),
         room.mob_placer(r(-9.0, 2, 5.0), -35, adults=True, tags=('colorings_sheep',) + colorings_tags).summon('sheep'),
         room.mob_placer(r(-5.5, 5.3, -2.0), ghast_rot, adults=True,
                         nbt={'equipment': {'body': Item.nbt_for('white_harness')}},
-                        tags=('colorings_ghast',) + colorings_tags).summon('happy_ghast'),
+                        tags=('colorings_ghast', 'colorings_enchantable') + colorings_tags).summon('happy_ghast'),
         (armor_frame(k, v) for k, v in armor_frames.items()),
         execute().as_(e().tag('colorings_names')).run(data().merge(s(), {'CustomNameVisible': True})),
         execute().as_(e().not_tag('colorings_names').tag('colorings_item')).run(
@@ -1224,7 +1228,7 @@ def color_functions(room):
     ghast_boat = Entity('oak_boat', {'Rotation': ghast_rot}).tag('ghast_boat')
     ghast_boat_on = room.function('ghast_boat_on', home=False).add(
         function(ghast_boat_off),
-        execute().at(n().tag('colorings_ghast')).run(summon(ghast_boat, r(0, -2, 0))),
+        execute().at(n().tag('colorings_ghast')).run(summon(ghast_boat, r(0, -2, 0), {'Rotation': [45, 0]})),
         data().modify(n().tag('ghast_boat'), 'leash.UUID').set().from_(n().tag('colorings_ghast'), 'UUID'))
 
     store_start = (coloring_coords[0][0], ERASE_HEIGHT + coloring_coords[0][1].value - coloring_coords[1][1].value,
