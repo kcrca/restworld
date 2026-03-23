@@ -218,8 +218,8 @@ def room():
     hunters_killed = Score('hunters', kills_objective)
     victims_killed = Score('victims', kills_objective)
     ten = Score('ten', 'arena_max')
-    prev_hunters_killed = room.score('prev_hunters_killed')
-    prev_victims_killed = room.score('prev_victims_killed')
+    prev_hunters_kills = room.score('prev_hunters_kills')
+    prev_victims_kills = room.score('prev_victims_kills')
     room.function('monitor_init', home=False).add(
         data().remove(room.store, 'mobs'),
         data().modify(room.store, 'mobs').set().value({
@@ -486,9 +486,9 @@ def room():
                     setblock(r(-3, -1, 0), 'redstone_block'),
                     setblock(r(-3, -1, 0), 'air'))))
             for actor in ('hunter', 'victim')),
-        execute().unless().score(hunters_killed).is_(EQ, prev_hunters_killed).run(
+        execute().unless().score(hunters_killed).is_(EQ, prev_hunters_kills).run(
             function(show_score, {'actor': 'hunter'})),
-        execute().unless().score(victims_killed).is_(EQ, prev_victims_killed).run(
+        execute().unless().score(victims_killed).is_(EQ, prev_victims_kills).run(
             function(show_score, {'actor': 'victim'})),
         execute().as_(e().type('item').tag('!limited')).run(
             data().modify(s(), 'Age').set().value(6000 - 150),
@@ -534,10 +534,10 @@ def room():
         tag(a()).add('arena_safe'),
         # These counteract the "add" that happens when a mob is summoned because that won't be in response to a kill
         hunters_killed.set(0),
-        prev_hunters_killed.set(-1000),
+        prev_hunters_kills.set(-1000),
         hunters_killed.operation(MINUS, arena_count),
         victims_killed.set(0),
-        prev_victims_killed.set(-1000),
+        prev_victims_kills.set(-1000),
         execute().if_().score(is_alone).matches(0).run(victims_killed.operation(MINUS, arena_count)),
         function(clean_out),
         function(init_wrapper).with_(room.store, 'hunter'),
