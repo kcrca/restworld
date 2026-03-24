@@ -5,8 +5,8 @@ from titlecase import titlecase
 
 from pynecraft import info
 from pynecraft.base import DOWN, EAST, NOON, r, SOUTH, UP, WEST
-from pynecraft.commands import Block, BYTE, data, e, execute, fill, function, INT, item, kill, n, random, RESULT, \
-    return_, say, Score, setblock, summon, tag, time
+from pynecraft.commands import a, Block, BYTE, data, e, execute, fill, function, INT, item, kill, n, random, RESULT, \
+    return_, say, Score, setblock, stopsound, summon, tag, time
 from pynecraft.info import instruments, stems, weathering_id, weathering_name, weatherings, woods
 from pynecraft.simpler import Item, Region, Sign, WallSign
 from restworld.rooms import ensure, if_clause, kill_em, Room
@@ -388,7 +388,9 @@ def room():
         res = step.elem if isinstance(step.elem, tuple) else (step.elem,)
         yield (setblock(r(0, 2, z), 'redstone_block') for z in res)
 
-    room.loop('shelf_power', main_clock).loop(shelf_power_loop, ((), 1, (1, 2), (0, 1, 2), (0, 1), 0))
+    room.loop('shelf_power', main_clock).loop(shelf_power_loop, ((), 1, (1, 2), (0, 1, 2), (0, 1), 0)).add(
+        stopsound(a(), '*', 'block.shelf.activate'),
+        stopsound(a(), '*', 'block.shelf.deactivate'))
     room.function('shelf_power_init').add(
         room.label(r(-3, 2, 2), 'Shelf Type', WEST),
         function('restworld:redstone/shelf_type_cur')

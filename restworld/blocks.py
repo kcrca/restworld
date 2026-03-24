@@ -6,8 +6,9 @@ from titlecase import titlecase
 from pynecraft import commands, info
 from pynecraft.base import Arg, as_facing, DOWN, E, EAST, EQ, FacingDef, N, Nbt, NORTH, r, RelCoord, rotate_facing, S, \
     SOUTH, to_id, to_name, UP, W, WEST
-from pynecraft.commands import as_block, as_score, Block, clone, Command, Commands, data, e, Entity, execute, fill, \
-    function, item, kill, MOD, MOVE, n, p, REPLACE, s, say, schedule, ScoreName, setblock, SUCCESS, summon, tag
+from pynecraft.commands import a, as_block, as_score, Block, clone, Command, Commands, data, e, Entity, execute, fill, \
+    function, item, kill, MOD, MOVE, n, p, REPLACE, s, say, schedule, ScoreName, setblock, stopsound, SUCCESS, summon, \
+    tag
 from pynecraft.function import Function, Loop
 from pynecraft.info import armor_equipment, Color, colors, copper_golem_poses, sherds, stems, weathering_id, \
     weathering_name, weatherings
@@ -1055,7 +1056,7 @@ def color_functions(room):
             bundle = Item.nbt_for('bundle')
             yield erase(r(-9, 2, 2), r(-9, 2, 3))  # remove bed
             yield erase(volume.start, volume.end, '#standing_signs')
-            yield data().remove(e().tag('colorings_item_frame').limit(1), 'Item.components.dyed_color')
+            yield data().remove(e().tag('colorings_dye_frame').limit(1), 'Item.components.dyed_color')
             yield execute().as_(e().tag('colorings_dog')).run(
                 data().remove(s(), 'equipment.body.components.dyed_color'))
             yield data().remove(e().tag('colorings_cat').limit(1), 'Owner')
@@ -1074,7 +1075,7 @@ def color_functions(room):
             yield setblock(r(-9, 2, 2), bed_head)
             yield setblock(r(-9, 2, 3), Block(f'{color.id}_bed', {'facing': NORTH, 'part': 'foot'}))
             room.particle(bed_head, 'colorings_base', r(-9, 2.75, 2), step, if_clause(plain, int(is_plain)))
-            yield data().merge(e().tag('colorings_item_frame').limit(1),
+            yield data().merge(e().tag('colorings_dye_frame').limit(1),
                                {'Item': Item.nbt_for(f'{color.id}_dye'), 'ItemRotation': 0})
             yield data().merge(e().tag('colorings_frame_harness').limit(1),
                                {'Item': Item.nbt_for(f'{color.id}_harness'), 'ItemRotation': 0})
@@ -1165,7 +1166,7 @@ def color_functions(room):
     room.function('colorings_init').add(
         kill_em(e().tag('colorings_item')),
         plain.set(0),
-        ItemFrame(SOUTH, nbt={'Fixed': True, 'Tags': ('colorings_item_frame',) + colorings_tags}).summon(
+        ItemFrame(SOUTH, nbt={'Fixed': True, 'Tags': ('colorings_dye_frame',) + colorings_tags}).summon(
             r(-4.5, 4, 0.5)),
         ItemFrame(SOUTH, nbt={'Tags': ('colorings_bundle_frame',) + colorings_tags}).summon(r(-6.5, 4, 0.5)),
         data().merge(n().tag('colorings_bundle_frame'), {'Fixed': True}),
@@ -1215,7 +1216,8 @@ def color_functions(room):
         room.label(r(0, 2, 3), 'Leggings', SOUTH),
     )
     room.loop('colorings', main_clock).add(erase(r(-9, 2, 2), r(-9, 2, 3))).loop(colorings_loop, colors).add(
-        colored_signs(None, render_signs_glow))
+        colored_signs(None, render_signs_glow),
+        stopsound(a(), '*', 'entity.item_frame.add_item'))
 
     room.function('ghast_riders_on', home=False).add((
         room.riders_on(n().tag('colorings_ghast'), tags=('ghast_rider', f'ghast_rider_{i}')) for i in range(4)))
@@ -1254,7 +1256,7 @@ def color_functions(room):
         execute().if_().score(plain).matches(0).run(clone(top_start, top_end, store_end)),
         plain.set(1),
         tag(e().tag('colorings_base_home')).remove('colorings_home'),
-        data().remove(n().tag('colorings_item_frame'), 'Item'),
+        data().remove(n().tag('colorings_dye_frame'), 'Item'),
         data().remove(n().tag('colorings_frame_harness'), 'Item'),
         colorings(True, Color('Plain', 0x0)), setblock(r(-7, -1, 3), 'redstone_torch'), setblock(r(-7, -1, 3), 'air'),
         kill(e().type('item').distance((None, 20))))

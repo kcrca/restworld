@@ -5,9 +5,9 @@ from titlecase import titlecase
 
 from pynecraft import info
 from pynecraft.base import Arg, as_facing, EAST, EQ, Nbt, NbtDef, NE, NORTH, NW, r, RelCoord, SOUTH, to_id, WEST
-from pynecraft.commands import as_block, Block, BlockDef, clone, data, e, effect, Entity, execute, fill, fillbiome, \
+from pynecraft.commands import a, as_block, Block, BlockDef, clone, data, e, effect, Entity, execute, fill, fillbiome, \
     function, INFINITE, item, kill, LONG, MOD, n, p, PLUS, random, REPLACE, RESULT, s, schedule, Score, \
-    scoreboard, setblock, summon, tag
+    scoreboard, setblock, stopsound, summon, tag
 from pynecraft.function import BLOCK
 from pynecraft.info import armor_equipment, colors, copper_golem_poses, default_skins, must_give_items, stems, \
     trim_materials, trim_patterns, weathering_id, weathering_name, weatherings
@@ -768,7 +768,9 @@ def wood_functions(room):
 
     i = info.woods.index('Bamboo') + 1
     woods = info.woods[:i] + ('Bamboo Mosaic',) + info.woods[i:]
-    room.loop('wood', main_clock).add(kill_em(e().tag('wood_boat'))).loop(wood_loop, woods + stems)
+    room.loop('wood', main_clock).add(kill_em(e().tag('wood_boat'))).loop(wood_loop, woods + stems).add(
+        stopsound(a(), '*', 'entity.item_frame.add_item'),
+        stopsound(a(), '*', 'block.shelf.activate'))
 
 
 armor_pieces = ('boots', 'leggings', 'chestplate', 'helmet')
@@ -851,7 +853,8 @@ def trim_functions(room):
             Trim._num += 1
             self.init = room.function(f'trim_{name}_init').add(self._init())
             self.detect = room.function(f'trim_{name}_detect', home=False).add(self._detect())
-            self.loop = room.loop(f'trim_{name}', main_clock).loop(self._loop_func, types)
+            self.loop = room.loop(f'trim_{name}', main_clock).loop(self._loop_func, types).add(
+                stopsound(a(), '*', 'entity.item_frame.add_item'))
 
         def _init(self):
             yield kill(e().tag(overall_tag))
