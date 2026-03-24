@@ -4,7 +4,7 @@ from pathlib import Path
 
 from pynecraft.simpler import Sign
 from restworld import arena, banners, biomes, blocks, center, connect, dialogs, diy, effects, enders, font, global_, \
-    gui, hud, maps, materials, mobs, models, multimob, nether, paintings, particles, photo, plants, poses, redstone, \
+    gui, hud, maps, materials, mobs, models, multimob, nether, paintings, particles, photo, plants, redstone, \
     save, tags, test_blocks, tester, the_end, time, wither
 from restworld.world import restworld
 
@@ -26,10 +26,8 @@ def main():
     for r in (tags, dialogs):
         r.create()
     for m in (
-            photo,
-            poses, materials, multimob, redstone, connect, blocks, plants, gui,
-            save, models, arena, banners, biomes, center, diy, effects, particles, enders, font, mobs, hud,
-            nether, paintings, the_end, time, wither, maps,
+            photo, materials, multimob, redstone, connect, blocks, plants, gui, save, models, arena, banners, biomes,
+            center, diy, effects, particles, enders, font, mobs, hud, nether, paintings, the_end, time, wither, maps,
             global_):  # global must be LAST
         m.room()
     dir = f'{Path.home()}/clarity/home/saves/RestWorld_{args.version}'

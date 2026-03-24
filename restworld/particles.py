@@ -5,7 +5,7 @@ import math
 from pynecraft.base import Arg, as_facing, d, EAST, MIDNIGHT, Nbt, NOON, NORTH, OVERWORLD, r, SOUTH, to_id, WEST
 from pynecraft.commands import a, Block, BLOCK_MARKER, CLEAR, data, DUST_PILLAR, e, effect, Entity, execute, \
     FALLING_DUST, fill, fillbiome, function, HoverEvent, INFINITE, item, kill, Particle, particle, playsound, RAIN, \
-    REPLACE, schedule, setblock, summon, Text, THUNDER, time, weather
+    REPLACE, say, schedule, setblock, summon, Text, THUNDER, time, weather
 from pynecraft.function import BLOCK, ITEM
 from pynecraft.simpler import Book, PLAINS, TextDisplay, VILLAGER_BIOMES, VILLAGER_PROFESSIONS, WallSign
 from pynecraft.values import ABSORPTION, ANGRY_VILLAGER, as_particle, ASH, BASALT_DELTAS, BLINDNESS, BLOCK_CRUMBLE, \
@@ -388,8 +388,9 @@ def room():
         function(falling_dust_change))
     room.function('falling_dust', home=False).add(main().run(function(falling_dust_change)))
     room.function('firefly_init', home=False).add(
-        setblock(r(0, -1, 0), 'grass_block'),
-        setblock(r(0, 0, 0), 'firefly_bush'),
+        say('hi'),
+        fill(r(-1, -1, 1), r(1, -1, 1), 'grass_block'),
+        fill(r(-1, 0, 1), r(1, 0, 1), 'firefly_bush'),
         time().set(MIDNIGHT))
     room.function('firefly_exit', home=False).add(time().set(NOON))
     room.function('firefly_enter', home=False).add(time().set(MIDNIGHT))
