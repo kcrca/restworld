@@ -313,11 +313,12 @@ def room():
         function(ocean),
         exemplar('dolphin', 1.5),
     )
-    room.function('dragon_breath_init', home=False).add(floor('end_stone'))
+    room.function('dragon_breath_init', home=False).add(floor('end_stone'), setblock(r(0, 0, 0), 'barrier'))
     dragon_breath_finish = room.function('dragon_breath_finish', home=False).add(
         data().merge(e().tag('particle_dragonball').limit(1), {'Motion': [0, -0.5, -0.5]}))
     dragon_breath_run = room.function('dragon_breath_run', home=False).add(
         kill(e().tag('particle_dragonball')),
+        kill(e().type('area_effect_cloud')),
         summon('dragon_fireball', r(0, 4, 4),
                {'ExplosionPower': 0, 'Tags': ['particle_dragonball', 'particler']}),
         schedule().function(dragon_breath_finish, 1, REPLACE),
