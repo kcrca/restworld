@@ -40,9 +40,9 @@ def intro_book():
     book.next_page()
     book.add(
         r'I also have two texture packs that might interest you:\n\n',
-        text_url(r'Call Out', 'https://claritypack.com/call_out/'),
+        text_url(r'Call Out', 'https://cleanpack.art/call_out/'),
         ', which highlights untextured blocks, helping you make a complete pack.\n\n',
-        text_url(r'Clarity', 'https://claritypack.com/'),
+        text_url(r'Clean', 'https://cleanpack.art/'),
         ', the pack I originally built RestWorld for.')
     book.next_page()
     book.add('',
@@ -53,7 +53,7 @@ def intro_book():
              r'  Visual Design\n  Testing\n  Rubber Duck\n',
              r'\n',
              r'Details on ',
-             text_url(r'our site', 'https://claritypack.com/restworld/'),
+             text_url(r'our site', 'https://cleanpack.art/restworld/'),
              '.')
 
     return book
