@@ -354,14 +354,9 @@ def friendlies(room):
     # See https://bugs.mojang.com/browse/MC-261250 -- eventually the egg will hatch even without randomTicks, so...
     room.function('sniffer_egg_reset').add(clone(egg_pos, egg_pos, egg_pos).replace(FORCE))
     room.function('sniffer_kid_init').add(placer(r(-0.5, 2, 0), EAST, 0, kids=True, tags='keeper').summon('sniffer'))
-
-    def snow_golem_loop(step):
-        # For some reason, this sometimes vanishes, so we do this to ensure it is always there
-        yield execute().unless().entity(e().tag('snow_golem')).run(
-            placer(r(-0.5, 2, 0), WEST, adults=True).summon('snow_golem'))
-        yield execute().as_(e().tag('snow_golem')).run(data().merge(s(), {'Pumpkin': step.elem}))
-
-    room.loop('snow_golem', main_clock).loop(snow_golem_loop, (True, False))
+    room.function('snow_golem_init').add(placer(r(-0.5, 2, 0), WEST, adults=True).summon('snow_golem'))
+    room.loop('snow_golem', main_clock).loop(
+        lambda step: execute().as_(e().tag('snow_golem')).run(data().merge(s(), {'Pumpkin': step.elem})), (True, False))
     room.function('switch_carpets_on', home=False).add(
         execute().at(e().tag('llamas_home')).positioned(r(-2, -0.5, 0)).run(
             function('restworld:mobs/llamas_carpets_home')),
