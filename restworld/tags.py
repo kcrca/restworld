@@ -236,6 +236,8 @@ def create():
             'purpur_block',
             'sandstone',
             'smooth_sandstone',
+            'sulfur', 'polished_sulfur', 'sulfur_bricks',
+            'cinnabar', 'polished_cinnabar', 'cinnabar_bricks',
             'red_sandstone',
             'smooth_red_sandstone',
             'prismarine',
@@ -271,7 +273,7 @@ def create():
         'values': [
             re.sub(r'blocks*', 'stairs',
                    re.sub(r'planks', 'stairs',
-                          re.sub(r'(copper|stone$|tuff$|marine$|ite$|slate$|_quartz$).*', r'\1_stairs',
+                          re.sub(r'(copper|stone$|tuff$|marine$|ite$|slate$|_quartz$|sulfur$|cinnabar$).*', r'\1_stairs',
                                  re.sub(r'(brick|tile)s*', r'\1_stairs', x))))
             for x in blocks['stepable_planks']['values']]
     }

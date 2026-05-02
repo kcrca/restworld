@@ -160,7 +160,7 @@ def room():
     room.function('anvil_init', exists_ok=True).add(WallSign((None, 'Anvil')).place(r(0, 2, -1), NORTH))
     blocks('anvil', NORTH, list(Block(b, state={'facing': WEST}) for b in ('Anvil', 'Chipped Anvil', 'Damaged Anvil')),
            expandable=False)
-    blocks('bedrock', SOUTH, ('Bedrock',))
+    blocks('bedrock', NORTH, ('Bedrock',))
     bee_nests = [[], []]
     for i in range(0, 6):
         state = {'facing': SOUTH, 'honey_level': i}
@@ -182,13 +182,14 @@ def room():
     blocks('deepslate_bricks', NORTH, (
         'Deepslate|Bricks', 'Cracked|Deepslate|Bricks', 'Deepslate|Tiles', 'Cracked|Deepslate|Tiles'))
     blocks('bricks', NORTH, (
-        'Bricks', 'Quartz Bricks', 'Mud Bricks', 'Prismarine Bricks', 'Tuff Bricks', 'Resin Bricks'))
+        'Bricks', 'Quartz Bricks', 'Mud Bricks', 'Prismarine Bricks', 'Tuff Bricks', 'Resin Bricks', 'Sulfur Bricks',
+        'Cinnabar Bricks'))
     blocks('nether_bricks', NORTH, (
         'Nether Bricks', 'Cracked|Nether Bricks', 'Chiseled|Nether Bricks', 'Red|Nether Bricks'))
     blocks('stone_bricks', NORTH, (
         'Stone Bricks', 'Mossy|Stone Bricks', 'Cracked|Stone Bricks', 'Chiseled|Stone Bricks',
         'Polished|Blackstone Bricks', 'Cracked Polished|Blackstone Bricks'))
-    blocks('calcite', NORTH, ('Calcite',))
+    blocks('calcite', SOUTH, ('Calcite',))
     campfire_food = room.score('campfire_food')
     campfire_init, campfire_main = blocks('campfire', NORTH, (
         Block('Campfire', {'lit': True}),
@@ -211,7 +212,7 @@ def room():
     room.function('campfire_exit').add(setblock(r(0, 3, 0), Block('campfire', {'lit': False})))
     blocks('chiseled', NORTH, (
         'Chiseled|Deepslate', 'Chiseled|Polished|Blackstone', 'Chiseled Tuff|Bricks', 'Chiseled|Quartz Block',
-        'Chiseled|Tuff', 'Chiseled|Resin Bricks'))
+        'Chiseled|Tuff', 'Chiseled|Resin Bricks', 'Chiseled Sulfur', 'Chiseled Cinnabar'))
     blocks('clay', SOUTH, ('Clay', 'Mud', 'Muddy|Mangrove Roots', 'Packed Mud'))
     blocks('cobble', NORTH, ('Cobblestone', 'Mossy|Cobblestone', 'Cobbled|Deepslate'))
     blocks('cobweb', NORTH, ('Cobweb',))
@@ -261,13 +262,19 @@ def room():
                Block('water', name='Water|')], expandable=False)
     room.function('frosted_ice_enter').add(setblock(r(1, 0, 0), 'redstone_block'))
     room.function('frosted_ice_exit').add(setblock(r(1, 0, 0), 'air'))
-    blocks('gilded_blackstone', NORTH, ('Gilded Blackstone',))
+    room.function('frosted_ice_init', exists_ok=True).add(
+        setblock(r(0, 3, +1), 'structure_void'),
+        setblock(r(0, 3, -1), 'structure_void'),
+        setblock(r(+1, 3, 0), 'structure_void'),
+        setblock(r(-1, 3, 0), 'structure_void'),
+    )
+    blocks('gilded_blackstone', SOUTH, ('Gilded Blackstone',))
     blocks('glass', SOUTH, ('Glass', 'Tinted Glass'))
     blocks('hay', SOUTH, ('Hay Block',))
     blocks('heavy_core', NORTH, ('Heavy Core',))
     blocks('honeycomb', SOUTH, ('Honeycomb Block',))
     room.function('ladder_init').add(setblock(r(0, 3, 0), 'ladder'))
-    blocks('jigsaw', SOUTH, (Block('Jigsaw', {'orientation': 'up_east'}),))
+    blocks('jigsaw', NORTH, (Block('Jigsaw', {'orientation': 'up_east'}),))
     blocks('lighting', SOUTH, (
         'Glowstone', 'Sea Lantern', 'Shroomlight', 'Ochre|Froglight', 'Pearlescent|Froglight', 'Verdant|Froglight',
         'End Rod'))
@@ -281,7 +288,7 @@ def room():
               name='Jukebox|Playing')))
     blocks('netherrack', NORTH, ('Netherrack', 'Warped Nylium', 'Crimson Nylium'))
     blocks('obsidian', SOUTH, ('Obsidian', 'Crying Obsidian'))
-    blocks('prismarine', SOUTH, ('Prismarine', 'Prismarine Bricks', 'Dark Prismarine'))
+    blocks('prismarine', NORTH, ('Prismarine', 'Prismarine Bricks', 'Dark Prismarine'))
     blocks('pumpkin', SOUTH, (
         'Pumpkin', Block('Carved Pumpkin', {'facing': SOUTH}), Block('Jack O Lantern', {'facing': SOUTH})))
     blocks('purpur', NORTH, ('Purpur Block', 'Purpur Pillar'))
@@ -289,9 +296,11 @@ def room():
         'Quartz Block', 'Smooth Quartz', 'Quartz Pillar', 'Chiseled Quartz Block', 'Quartz Bricks'))
     blocks('raw_metal', NORTH, ('Raw Iron|Block', 'Raw Copper|Block', 'Raw Gold|Block'))
     blocks('red_sand', SOUTH, ('Red Sand',))
-    blocks('resin', SOUTH, ('Resin Block', 'Resin Bricks', 'Chiseled|Resin Bricks'))
+    blocks('resin', NORTH, ('Resin Block', 'Resin Bricks', 'Chiseled|Resin Bricks'))
     blocks('respawn_anchor', NORTH, (Block('Respawn Anchor', {'charges': x}) for x in range(0, 5)),
            labels=tuple(('Respawn Anchor', f'Charges: {x:d}') for x in range(0, 5)))
+    blocks('sulfur', SOUTH, ('Sulfur', 'Polished Sulfur', 'Sulfur Bricks', 'Chiseled Sulfur', 'Potent Sulfur'))
+    blocks('cinnabar', SOUTH, ('Cinnabar', 'Polished Cinnabar', 'Cinnabar Bricks', 'Chiseled Cinnabar'))
 
     def suspicious(which):
         suspicious_data = {'item': {'id': 'emerald'}}
@@ -314,14 +323,15 @@ def room():
     blocks('sponge', SOUTH, ('Sponge', 'Wet Sponge'))
     blocks('sticky', SOUTH, ('Slime Block', 'Honey block'))
 
-    stone_types = ('Stone', 'Basalt', 'Deepslate', 'Andesite', 'Diorite', 'Granite', 'Tuff', 'Blackstone')
+    stone_types = ('Stone', 'Basalt', 'Deepslate', 'Andesite', 'Diorite', 'Granite', 'Tuff', 'Blackstone', 'Sulfur',
+                   'Cinnabar')
     polished_types = ('Smooth Basalt', 'Smooth Stone') + tuple(f'Polished|{t}' for t in stone_types[2:])
     blocks('stone', NORTH, (stone_types, polished_types), dz=3)
 
     test_block_modes = ('start', 'log', 'accept', 'fail')
-    blocks('test', SOUTH, tuple(Block('test_block', {'mode': mode}) for mode in test_block_modes),
+    blocks('test', NORTH, tuple(Block('test_block', {'mode': mode}) for mode in test_block_modes),
            labels=(tuple(('Test Block', f'Mode: {titlecase(mode)}') for mode in test_block_modes)))
-    blocks('test_instance', SOUTH, ('Test Instance Block',), expandable=True)
+    blocks('test_instance', NORTH, ('Test Instance Block',), expandable=True)
 
     copper_blocks = tuple(map(as_block, (
         'Copper Block', 'Cut Copper', 'Chiseled Copper', 'Copper Bulb', 'Copper Grate', 'Copper Chest',
@@ -371,7 +381,7 @@ def room():
         execute().at(copper_home).run(function('restworld:blocks/waxed_copper_blocks_cur')),
     )
     room.function('copper_blocks_init').add(
-        room.label(r(-2, 2, -1), 'Waxed', NORTH),
+        room.label(r(-1, 2, -1), 'Waxed', NORTH),
         function(run_unwaxed)
     )
 
@@ -540,7 +550,7 @@ def room():
         cb = Block(id=f'{to_id(type)}_block', name=name, state=state)
         return cb
 
-    blocks('command_blocks', SOUTH, (to_command_block(*x) for x in (
+    blocks('command_blocks', NORTH, (to_command_block(*x) for x in (
         ('Command ', True), ('Command ', False), ('Chain Command ', False),
         ('Chain Command ', True), ('Repeating Command ', True),
         ('Repeating Command ', False), ('Command ', False), ('Command ', True),
@@ -581,22 +591,25 @@ def room():
     )
 
     def dripstone_loop(step):
-        for j in range(0, step.elem):
-            yield setblock(r(0, 4 + j, 0), Block('pointed_dripstone', {
-                'thickness': 'tip', 'vertical_direction': 'up'}))
-            yield setblock(r(0, 11 - j, 0), Block('pointed_dripstone', {
-                'thickness': 'tip_merge' if j == step.elem - 1 else 'tip', 'vertical_direction': 'down'}))
-        if step.elem != 4:
-            yield fill(r(0, 4 + step.elem, 0), r(0, 11 - step.elem, 0), 'air')
-            if step.elem == 0:
-                room.particle('dripstone_block', 'dripstone', r(0, 4, 0), step)
-            else:
-                room.particle('pointed_dripstone', 'dripstone', r(0, 4 + step.stage, 0), step)
+        for block, sharp, x_off in (('dripstone_block', 'pointed_dripstone', 0), ('sulfur', 'sulfur_spike', -3)):
+            for j in range(0, step.elem):
+                yield setblock(r(0 + x_off, 4 + j, 0), Block(sharp, {
+                    'thickness': 'tip', 'vertical_direction': 'up'}))
+                yield setblock(r(0 + x_off, 11 - j, 0), Block(sharp, {
+                    'thickness': 'tip_merge' if j == step.elem - 1 else 'tip', 'vertical_direction': 'down'}))
+            if step.elem != 4:
+                yield fill(r(0 + x_off, 4 + step.elem, 0), r(0 + x_off, 11 - step.elem, 0), 'air')
+                if step.elem == 0:
+                    room.particle(block, block, r(0 + x_off, 4, 0), step)
+                else:
+                    room.particle(sharp, block, r(0 + x_off, 4 + step.stage, 0), step)
 
     room.function('dripstone_init').add(
-        setblock(r(0, 3, 0), 'dripstone_block'),
-        setblock(r(0, 12, 0), 'dripstone_block'),
-        WallSign((None, 'Dripstone')).place(r(0, 2, -1), NORTH),
+       *((
+            setblock(r(0 + x_off, 3, 0), block),
+            setblock(r(0 + x_off, 12, 0), block),
+            WallSign((None, to_name(block.replace('_block', '')))).place(r(0 + x_off, 2, -1), NORTH),
+        ) for block, sharp, x_off in (('dripstone_block', 'pointed_dripstone', 0), ('sulfur', 'sulfur_spike', -3)))
     )
     room.loop('dripstone', main_clock).loop(dripstone_loop, range(0, 5), bounce=True)
 
@@ -742,6 +755,7 @@ def room():
             yield setblock(r(0, 4, 0), 'air')
 
     room.loop('scaffolding', main_clock).loop(scaffolding_loop, range(0, 5), bounce=True)
+    room.function('scaffolding_init').add(setblock(r(0, 3, 0), 'scaffolding'))
     room.particle('scaffolding', 'scaffolding', r(0, 4, 0))
 
     blocks('sculk_blocks', NORTH, (
@@ -905,7 +919,7 @@ def room():
         ('inactive', 'waiting_for_players', 'active', 'waiting_for_reward_ejection', 'ejecting_reward', 'cooldown'),
     )
 
-    blocks('structure_blocks', SOUTH, list(
+    blocks('structure_blocks', NORTH, list(
         Block('structure_block', name=f'{x}|Structure Block', state={'mode': x.lower()}) for x in
         ('Data', 'Save', 'Load', 'Corner')), air=True)
 
@@ -967,7 +981,7 @@ def room():
 
 def room_init_functions(room, block_list_score):
     room.functions['blocks_room_init'].add(
-        room.label(r(-16, 2, 3), 'List Blocks', NORTH), room.label(r(-16, 2, -3), 'List Blocks', SOUTH),
+        room.label(r(-14, 2, 2), 'List Blocks', NORTH), room.label(r(-14, 2, -2), 'List Blocks', SOUTH),
         room.label(r(-46, 2, 3), 'List Blocks', NORTH), room.label(r(-46, 2, -3), 'List Blocks', SOUTH),
         room.label(r(-34, 2, 1), 'Show Particles', NORTH),
         room.label(r(-34, 2, -1), 'Expand All', SOUTH),
@@ -1411,6 +1425,8 @@ def stepable_functions(room):
         'Prismarine', 'Prismarine|Bricks', 'Dark|Prismarine',
         'Acacia Planks', 'Birch Planks', 'Cherry Planks', 'Jungle Planks', 'Mangrove Planks',
         'Oak Planks', 'Dark Oak Planks', 'Pale Oak Planks', 'Spruce Planks', 'Bamboo Planks', 'Bamboo Mosaic Block',
+        'Sulfur', 'Polished|Sulfur', 'Sulfur Bricks',
+        'Cinnabar', 'Polished|Cinnabar', 'Cinnabar Bricks',
         'Warped Planks', 'Crimson Planks',
         'Nether Bricks', 'Red|Nether Bricks',
         'Blackstone', 'Polished|Blackstone',
@@ -1419,13 +1435,16 @@ def stepable_functions(room):
     ]
     stairs = tuple(re.sub('(marine|ite)$', r'\1 Stairs', re.sub('[Ss]tone$', 'Stone Stairs',
                                                                 re.sub('[Tt]uff$', 'Tuff Stairs',
-                                                                       f.replace('Planks', 'Stairs')
-                                                                       .replace('Tiles', 'Tile Stairs')
-                                                                       .replace('Copper', 'Copper Stairs')
-                                                                       .replace('Bricks', 'Brick Stairs')
-                                                                       .replace('Block', 'Stairs')
-                                                                       .replace('|Quartz', ' Quartz Stairs')
-                                                                       .replace('|Deepslate', '|Deepslate Stairs'))))
+                                                                       re.sub('(Quartz|Deepslate|Sulfur|Cinnabar)$',
+                                                                              r'\1 Stairs',
+                                                                              f.replace('Planks', 'Stairs')
+                                                                              .replace('Tiles', 'Tile Stairs')
+                                                                              .replace('Copper', 'Copper Stairs')
+                                                                              .replace('Bricks', 'Brick Stairs')
+                                                                              .replace('Block', 'Stairs')
+                                                                              .replace('|Quartz', ' Quartz Stairs')
+                                                                              .replace('|Deepslate',
+                                                                                       '|Deepslate Stairs')))))
                    for f in blocks)
     slabs = tuple(f.replace('Stairs', 'Slab') for f in stairs)
     # The mosaic's "Block" is here so it fits in the patterns, but it actually doesn't exist, so we remove it.
