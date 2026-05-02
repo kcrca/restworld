@@ -330,12 +330,12 @@ def room():
     room.function('pumpkin_blur_off', home=False).add(
         item().replace(p(), 'armor.head').from_(saver, 'armor.head'))
 
-    room.function('waypoints_base_init')
     waypoint_sign_pos = r(0, 2, 0)
-    room.function('waypoints_init', home=False).add(
+    room.function('waypoints_base_init').add(
         room.label(r(1, 2, 0), 'Waypoints', EAST),
         WallSign((None, 'Waypoint Style:')).place(waypoint_sign_pos, EAST),
     )
+    room.function('waypoints_init', home=False)
 
     waypoints_setup = room.function('waypoints_setup', home=False).add()
     radii = [(3, 'Here'), (205, 'Near'), (255, 'Far'), (320, 'Very Far')]
