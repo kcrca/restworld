@@ -27,7 +27,7 @@ def room():
 
 def friendlies(room):
     south_placer = r(0, 2, -0.2), SOUTH, -2, 2.2
-    mid_east_placer = r(-1.2, 2, 0), EAST, 2, 2.2
+    mid_east_placer = r(-1.2, 2, 0), EAST, 2, 2.7
     mid_west_placer = r(0.2, 2, 0), WEST, -2, 2.2
 
     def placer(*args, **kwargs):
@@ -173,7 +173,7 @@ def friendlies(room):
         lambda step: execute().as_(e().tag('goat').tag('adult')).run(
             data().merge(s(), {'HasLeftHorn': step.i & 1, 'HasRightHorn': step.i & 2})), range(0, 4))
 
-    p = placer(r(-1.2, 2, 0), EAST, -2, kid_delta=2.2, tags=('saddle',), nbt={'Tame': True})
+    p = placer(r(-1.2, 2, 0), EAST, -2, kid_delta=2.7, tags=('saddle',), nbt={'Tame': True})
     room.function('horse_init').add(
         (p.summon(Entity('horse', name=horse.name, nbt={'Variant': h}), tags=(horse.tag_name,)) for h, horse in
          enumerate(horses)), execute().at(e().tag(to_id(horses[3].tag_name), 'kid')).run(
@@ -191,7 +191,7 @@ def friendlies(room):
 
     room.loop('horse', main_clock).loop(horse_loop, horse_variants)
 
-    p = placer(r(-1.2, 2, 0), EAST, -2, kid_delta=2.2, tags=('saddle', 'chests'), nbt={'Tame': True})
+    p = placer(r(-1.2, 2, 0), EAST, -2, kid_delta=2.7, tags=('saddle', 'chests'), nbt={'Tame': True})
     room.function('horselike_init').add(p.summon('mule'), p.summon('donkey'), room.label(r(1, 2, -1), 'Chests', EAST))
     room.function('iron_golem_init').add(
         placer(r(-0.5, 2, 0), WEST, adults=True).summon('iron_golem'),
@@ -208,7 +208,7 @@ def friendlies(room):
         yield data().modify(n().tag('copper_golem'), 'weather_state').set().value(weathering_property(step.elem))
         # The 'air' check is for if we're levitated
         yield execute().unless().block(r(0, 1, 0), 'air').at(e().tag('copper_golem_home')).run(
-            setblock(r(2, 2, 0), (weathering_id(step.elem, 'cut_copper_stairs'), {'facing': EAST})))
+            setblock(r(3, 2, 0), (weathering_id(step.elem, 'cut_copper_stairs'), {'facing': EAST})))
         yield Sign.change(r(-3, 2, 0), (None, weathering_name(step.elem, base='')))
 
     # -2 means waxed. We can't show waxed vs. unwaxed, so this cheaply makes sure the weathering never changes. If
@@ -368,7 +368,7 @@ def friendlies(room):
     # Leashing trader llama to trader makes it despawn:
     # https://report.bugs.mojang.com/servicedesk/customer/portal/2/MC-274238
     room.function('trader_llama_init').add(
-        placer(r(1, 2, -1), WEST, adults=True).summon('wandering_trader'),
+        placer(r(0, 2, -1), WEST, adults=True).summon('wandering_trader'),
         placer(r(0, 2, 1), WEST, 0, 2, nbt={'DespawnDelay': Nbt.MAX_INT}).summon('trader_llama'))
     room.loop('trader_llama', main_clock).loop(
         lambda step: execute().as_(e().type('trader_llama')).run(data().modify(s(), 'Variant').set().value(step.i)),
@@ -735,7 +735,7 @@ def monsters(room):
     def zombie_loop(step):
         yield kill_em(e().tag('zombieish'))
         yield kill(e().tag('zombieish'))
-        p = placer(r(0.2, 2, 0), EAST, 0, 1.8, tags=('zombieish',))
+        p = placer(r(-0.5, 2, 0), EAST, 0, 2.8, tags=('zombieish',))
         yield p.summon(Entity(step.elem))
         hand_item = {'Drowned': 'trident', 'Husk': 'iron_sword', 'Zombie': 'iron_shovel'}[step.elem]
         yield execute().as_(e().tag('zombieish').tag('adult')).run(
@@ -813,7 +813,7 @@ def aquatic(room):
     t_fish.add(WallSign().messages(('Naturally', 'Occurring', u'Tropical Fish', u'→ → →')).glowing(True).place(
         r(1, 2, (len(tropical_fish) - 1) % 4), EAST, water=True))
 
-    axolotl_placer = room.mob_placer(r(-0.4, 3, 0), WEST, None, 1.8)
+    axolotl_placer = room.mob_placer(r(-0.4, 3, 0), WEST, None, 2.7)
     room.function('axolotl_init').add(axolotl_placer.summon('axolotl'), execute().at(e().tag('axolotl_dry_home')).run(
         room.mob_placer(r(0, 3, 0), EAST, kid_delta=2).summon('axolotl')))
     room.function('axolotl_dry')
