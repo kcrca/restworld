@@ -47,7 +47,7 @@ def room():
 
     def crops_4_loop(step):
         yield from crop(stages_4, 'beetroots', 0, 3, 0, step)
-        yield from crop(stages_4, 'nether_wart', -5, 3, -15, step)
+        yield from crop(stages_4, 'nether_wart', -6, 3, -15, step)
 
     room.loop('4_crops', main_clock).loop(crops_4_loop, stages_4)
 
@@ -444,7 +444,9 @@ def three_funcs(room):
     switch_to_func('age')
     room.function('cane_init').add(function('restworld:plants/three_change_height'),
                                    WallSign((None, 'Sugar Cane')).place(r(-2, 2, 0), EAST),
-                                   setblock(r(-1, 2, -1), 'structure_void'), setblock(r(-1, 2, 1), 'structure_void'),
+                                   setblock(r(-1, 2, -1), 'structure_void'),
+                                   setblock(r(-1, 2, 1), 'structure_void'),
+                                   setblock(r(-2, 2, 0), 'structure_void'),
                                    setblock(r(-1, 2, 0), 'water'))
 
 

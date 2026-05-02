@@ -8,7 +8,7 @@ from pynecraft.commands import as_facing, Block, clone, COLORS, data, e, Entity,
     SUCCESS, summon, tag, tp
 from pynecraft.info import axolotls, colors, default_skins, horses, mannequin_poses, tropical_fish, weathering_id, \
     weathering_name, weathering_property, weatherings, wolves
-from pynecraft.simpler import Item, PLAINS, Sign, Villager, VILLAGER_BIOMES, VILLAGER_PROFESSIONS, WallSign
+from pynecraft.simpler import Item, ItemFrame, PLAINS, Sign, Villager, VILLAGER_BIOMES, VILLAGER_PROFESSIONS, WallSign
 from pynecraft.values import as_disc, DISC_GROUP, discs, DUMMY
 from restworld.materials import water_biomes
 from restworld.rooms import kill_em, MobPlacer, Room
@@ -364,6 +364,31 @@ def friendlies(room):
     room.function('switch_carpets_off', home=False).add(
         execute().as_(e().tag('llama')).run(data().remove(s(), 'equipment.body')),
         kill(e().tag('llamas_carpets_home')))
+
+    is_empty = room.score('sulfur_cube_is_empty')
+    was_empty = room.score('sulfur_cube_was_empty')
+    innards_frame = n().tag('sulfur_cube_innards')
+    sulfur_cube = n().type('sulfur_cube').tag('adult')
+    room.function('sulfur_cube_init').add(
+        placer(*mid_east_placer).summon('sulfur_cube'),
+        data().merge(n().tag('adult').type('sulfur_cube'), {'Size': 1}),
+        setblock(r(-2, 4, 0), 'smooth_quartz'),
+        ItemFrame(EAST).fixed(False).tag('mobs', 'sulfur_cube_innards').summon(r(-1, 4, 0)),
+        WallSign((None, 'Items in this', 'frame are put in', 'the Sulfur Cube')).place(r(-1, 5, 0), EAST)
+    )
+    room.function('sulfur_cube_enter').add(setblock(r(-2, 0, 0), 'redstone_block'))
+    room.function('sulfur_cube_exit').add(setblock(r(-2, 0, 0), 'air'))
+    room.function('sulfur_cube_run', home=False).add(
+        was_empty.operation(EQ, is_empty),
+        is_empty.set(1),
+        execute().if_().data(innards_frame, 'Item.id').run(is_empty.set(0)),
+        execute().unless().score(was_empty).is_(EQ, is_empty).run(
+            execute().if_().score(was_empty).matches(1).run(
+                data().modify(sulfur_cube, 'equipment.body').set().from_(innards_frame, 'Item')),
+            execute().if_().score(is_empty).matches(1).run(
+                data().modify(sulfur_cube, 'equipment.body').set().value({})),
+        )
+    )
 
     # Leashing trader llama to trader makes it despawn:
     # https://report.bugs.mojang.com/servicedesk/customer/portal/2/MC-274238
