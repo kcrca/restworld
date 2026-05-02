@@ -12,12 +12,14 @@ from pynecraft.function import BLOCK
 from pynecraft.info import armor_equipment, colors, copper_golem_poses, default_skins, must_give_items, stems, \
     trim_materials, trim_patterns, weathering_id, weathering_name, weatherings
 from pynecraft.simpler import Item, ItemFrame, PLAINS, Region, Sign, SWAMP, WallSign
-from pynecraft.values import biomes, COLD_OCEAN, FROZEN_OCEAN, INVISIBILITY, LUKEWARM_OCEAN, \
+from pynecraft.values import BiomeInfo, biomes, COLD_OCEAN, FROZEN_OCEAN, INVISIBILITY, LUKEWARM_OCEAN, \
     MANGROVE_SWAMP, OCEAN, WARM_OCEAN
 from restworld.rooms import erase, kill_em, Room
 from restworld.world import fast_clock, main_clock, restworld
 
-water_biomes = (PLAINS, FROZEN_OCEAN, COLD_OCEAN, OCEAN, LUKEWARM_OCEAN, WARM_OCEAN, SWAMP, MANGROVE_SWAMP)
+print(f'Warning: Adding sulfer caves manually -- remove this when you can')
+biomes['sulfur_caves'] = BiomeInfo("""Sulfur Caves""", "sulfur caves", """Sulfur Caves.""")
+water_biomes = (PLAINS, FROZEN_OCEAN, COLD_OCEAN, OCEAN, LUKEWARM_OCEAN, WARM_OCEAN, 'sulfur_caves', SWAMP, MANGROVE_SWAMP)
 
 
 def enchant(score: Score, tag: str):
