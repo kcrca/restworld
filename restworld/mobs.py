@@ -4,7 +4,7 @@ from titlecase import titlecase
 
 from pynecraft.base import EAST, EQ, Nbt, NE, NORTH, r, SOUTH, to_id, to_name, WEST
 from pynecraft.commands import as_facing, Block, clone, COLORS, data, e, Entity, execute, fillbiome, FORCE, function, \
-    item, kill, LONG, MOD, n, p, player, REPLACE, RESULT, return_, ride, s, schedule, Score, scoreboard, setblock, \
+    item, kill, LONG, MOD, n, p, player, REPLACE, RESULT, return_, ride, s, say, schedule, Score, scoreboard, setblock, \
     SUCCESS, summon, tag, tp
 from pynecraft.info import axolotls, colors, default_skins, horses, mannequin_poses, tropical_fish, weathering_id, \
     weathering_name, weathering_property, weatherings, wolves
@@ -369,6 +369,19 @@ def friendlies(room):
     was_empty = room.score('sulfur_cube_was_empty')
     innards_frame = n().tag('sulfur_cube_innards')
     sulfur_cube = n().type('sulfur_cube').tag('adult')
+    archetypes = (
+        (None, 'air'), ('Bouncy', 'oak_log'), ('Explosive', 'tnt'), ('Fast Flat', 'brain_coral_block'),
+        ('Fast Sliding', 'blue_ice'), ('High Resistance', 'soul_sand'), ('Light', 'blue_wool'),
+        ('Slow Flat', 'copper_ore'), ('Slow Sliding', 'red_mushroom_block'), ('Sticky', 'honeycomb_block'),
+        ('Regular', 'cobblestone')
+    )
+
+    def sulfur_cube_loop(step):
+        say('loop'),
+        yield execute().if_().score(is_empty).matches(1).run(
+            say('boop'),
+            data().modify(sulfur_cube, 'equipment.body').set().value(Item.nbt_for(step.elem[1])))
+
     room.function('sulfur_cube_init').add(
         placer(*mid_east_placer).summon('sulfur_cube'),
         data().merge(n().tag('adult').type('sulfur_cube'), {'Size': 1}),
@@ -376,6 +389,7 @@ def friendlies(room):
         ItemFrame(EAST).fixed(False).tag('mobs', 'sulfur_cube_innards').summon(r(-1, 4, 0)),
         WallSign((None, 'Items in this', 'frame are put in', 'the Sulfur Cube')).place(r(-1, 5, 0), EAST)
     )
+    room.loop('sulfur_cube', main_clock).loop(sulfur_cube_loop, archetypes)
     room.function('sulfur_cube_enter').add(setblock(r(-2, 0, 0), 'redstone_block'))
     room.function('sulfur_cube_exit').add(setblock(r(-2, 0, 0), 'air'))
     room.function('sulfur_cube_run', home=False).add(
@@ -386,7 +400,9 @@ def friendlies(room):
             execute().if_().score(was_empty).matches(1).run(
                 data().modify(sulfur_cube, 'equipment.body').set().from_(innards_frame, 'Item')),
             execute().if_().score(is_empty).matches(1).run(
-                data().modify(sulfur_cube, 'equipment.body').set().value({})),
+                data().modify(sulfur_cube, 'equipment.body').set().value({}),
+                function('sulfur_cube_cur')
+            ),
         )
     )
 
