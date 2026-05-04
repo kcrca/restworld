@@ -15,15 +15,20 @@ from pynecraft.values import ABSORPTION, ANGRY_VILLAGER, as_particle, ASH, BASAL
     DRIPPING_WATER, DUST, DUST_COLOR_TRANSITION, DUST_PLUME, EFFECT, EGG_CRACK, ELDER_GUARDIAN, ELECTRIC_SPARK, ENCHANT, \
     ENCHANTED_HIT, END_ROD, ENTITY_EFFECT, EXPLOSION, EXPLOSION_EMITTER, FALLING_DRIPSTONE_LAVA, \
     FALLING_DRIPSTONE_WATER, FALLING_HONEY, FALLING_LAVA, FALLING_NECTAR, FALLING_OBSIDIAN_TEAR, FALLING_SPORE_BLOSSOM, \
-    FALLING_WATER, FIREFLY, FIREWORK, FISHING, FLAME, FLASH, GLOW, GLOW_SQUID_INK, GUST, GUST_EMITTER_LARGE, \
+    FALLING_WATER, FIREFLY, FIREWORK, FISHING, FLAME, FLASH, GEYSER, GEYSER_BASE, GEYSER_PLUME, GEYSER_POOF, GLOW, \
+    GLOW_SQUID_INK, \
+    GUST, \
+    GUST_EMITTER_LARGE, \
     GUST_EMITTER_SMALL, \
     HAPPY_VILLAGER, \
     HEART, INFESTED, INSTANT_EFFECT, ITEM_COBWEB, ITEM_SLIME, ITEM_SNOWBALL, LANDING_HONEY, LANDING_LAVA, \
-    LANDING_OBSIDIAN_TEAR, LARGE_SMOKE, LAVA, MYCELIUM, NAUTILUS, NOTE, OMINOUS_SPAWNING, PALE_OAK_LEAVES, \
+    LANDING_OBSIDIAN_TEAR, LARGE_SMOKE, LAVA, MYCELIUM, NAUTILUS, NOTE, NOXIOUS_GAS, NOXIOUS_GAS_CLOUD, \
+    OMINOUS_SPAWNING, PALE_OAK_LEAVES, \
     PARTICLE_GROUP, PAUSE_MOB_GROWTH, POOF, PORTAL, RAID_OMEN, RESET_MOB_GROWTH, RESISTANCE, REVERSE_PORTAL, SCRAPE, \
     SCULK_CHARGE, SCULK_CHARGE_POP, SCULK_SOUL, SHRIEK, SMALL_FLAME, SMALL_GUST, SMOKE, SNEEZE, SNOWFLAKE, SNOWY_TAIGA, \
     SONIC_BOOM, SOUL, SOUL_FIRE_FLAME, SOUL_SAND_VALLEY, SPEED, SPIT, SPLASH, SPORE_BLOSSOM_AIR, SQUID_INK, STRENGTH, \
-    SWEEP_ATTACK, TINTED_LEAVES, TOTEM_OF_UNDYING, TRAIL, TRIAL_OMEN, TRIAL_SPAWNER_DETECTION, \
+    SULFUR_BUBBLES, SULFUR_CUBE_GOO, SWEEP_ATTACK, TINTED_LEAVES, TOTEM_OF_UNDYING, TRAIL, TRIAL_OMEN, \
+    TRIAL_SPAWNER_DETECTION, \
     TRIAL_SPAWNER_DETECTION_OMINOUS, UNDERWATER, VAULT_CONNECTION, VIBRATION, WARPED_FOREST, WARPED_SPORE, WAX_OFF, \
     WAX_ON, WHITE_ASH, WHITE_SMOKE, WITCH
 from restworld.rooms import ActionDesc, ensure, kill_em, SignedRoom, span, Wall
@@ -89,6 +94,8 @@ actions = [
     action(SPIT),
     action(SPLASH),
     action(SQUID_INK, note='and Glow Squid', also=(GLOW, GLOW_SQUID_INK)),
+    action(SULFUR_BUBBLES, note='Geysers &|Noxious Gas',
+           also=(GEYSER, GEYSER_BASE, GEYSER_PLUME, GEYSER_POOF, NOXIOUS_GAS, NOXIOUS_GAS_CLOUD)),
     action(SWEEP_ATTACK),
     action(TOTEM_OF_UNDYING),
     action(TRAIL),
@@ -114,7 +121,7 @@ elsewhere = {
     'Plants': (SPORE_BLOSSOM_AIR, FALLING_SPORE_BLOSSOM, CHERRY_LEAVES, PALE_OAK_LEAVES, TINTED_LEAVES, UNDERWATER),
     'Mobs': (FALLING_NECTAR, EGG_CRACK),
     'Redstone': (DUST, NOTE, VIBRATION),
-    'Arena': (ITEM_SLIME,),
+    'Arena': (ITEM_SLIME, SULFUR_CUBE_GOO),
     'GUI': (ENCHANT,),
 }
 
@@ -203,7 +210,7 @@ def room():
             setblock(d(-dx, 0, -dz), 'emerald_block')
         ))
 
-    n_wall_used = {5: (1, 5), 4: (1, 2, 4, 5), 3: span(1, 5), 2: span(1, 5)}
+    n_wall_used = {5: (1, 5), 4: span(1, 5), 3: span(1, 5), 2: span(1, 5)}
     e_wall_used = {5: span(1, 5), 4: span(1, 5), 3: span(1, 5), 2: span(1, 5)}
     w_wall_used = {5: span(1, 5), 4: span(1, 5), 3: span(1, 5), 2: span(1, 5)}
     room = SignedRoom('particles', restworld, SOUTH, (None, 'Particles'), particle_sign, actions, (
@@ -525,6 +532,12 @@ def room():
     room.function('squid_ink', home=False).add(main().run(function(squid_ink_run)))
     room.function('sweep_attack', home=False).add(
         main().run(particle(SWEEP_ATTACK, r(0, 1, 0), (0.3, 0.2, 0.3), 0, 3)))
+    room.function('sulfur_bubbles_init', home=False).add(
+        fill(r(-2, 0, -2), r(2, 1, 2), 'sulfur'),
+        fill(r(-1, -1, -1), r(1, -1, 1), 'magma_block'),
+        fill(r(-1, 0, -1), r(1, 0, 1), 'potent_sulfur'),
+        fill(r(-1, 1, -1), r(1, 1, 1), 'water'),
+    )
     room.function('trial_spawner_detection_init', home=False).add(
         setblock(r(-1, 0, 0), 'trial_spawner'),
         setblock(r(1, 0, 0), ('trial_spawner', {'ominous': True})))
