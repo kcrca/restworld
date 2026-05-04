@@ -6,10 +6,11 @@ from pynecraft.base import EAST, EQ, Nbt, NE, NORTH, r, SOUTH, to_id, to_name, W
 from pynecraft.commands import as_facing, Block, clone, COLORS, data, e, Entity, execute, fillbiome, FORCE, function, \
     item, kill, LONG, MOD, n, p, player, REPLACE, RESULT, return_, ride, s, say, schedule, Score, scoreboard, setblock, \
     SUCCESS, summon, tag, tp
-from pynecraft.info import axolotls, colors, default_skins, horses, mannequin_poses, tropical_fish, weathering_id, \
+from pynecraft.info import axolotls, colors, default_skins, DUMMY, horses, mannequin_poses, tropical_fish, \
+    weathering_id, \
     weathering_name, weathering_property, weatherings, wolves
 from pynecraft.simpler import Item, ItemFrame, PLAINS, Sign, Villager, VILLAGER_BIOMES, VILLAGER_PROFESSIONS, WallSign
-from pynecraft.values import as_disc, DISC_GROUP, discs, DUMMY
+from pynecraft.values import as_disc, DISC_GROUP, discs
 from restworld.materials import water_biomes
 from restworld.rooms import kill_em, MobPlacer, Room
 from restworld.world import fast_clock, main_clock, restworld

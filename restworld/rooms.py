@@ -12,9 +12,8 @@ from pynecraft.commands import a, as_block, as_entity, as_facing, as_score, Bloc
     Particle, particle, Position, random, RESULT, ride, s, say, schedule, Score, scoreboard, setblock, SignMessages, \
     summon, tag, Target, team, tellraw, Text, TextDef, tp, weather
 from pynecraft.function import DataPack, Function, FunctionSet, LATEST_PACK_VERSION, Loop
-from pynecraft.info import default_skins
+from pynecraft.info import default_skins, DUMMY
 from pynecraft.simpler import TextDisplay, Trigger, WallSign
-from pynecraft.values import DUMMY
 
 ERASE_HEIGHT = 80
 

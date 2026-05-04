@@ -7,8 +7,8 @@ from pynecraft.commands import Block, ClickEvent, clone, Commands, data, e, Enti
     function, gamerule, give, HoverEvent, kill, MINUS, MOD, MOVE, p, REPLACE, RESULT, return_, s, schedule, Score, \
     scoreboard, setblock, tag, teleport, Text, time, tp, trigger
 from pynecraft.function import Function
+from pynecraft.info import DUMMY
 from pynecraft.simpler import Book, VILLAGER_PROFESSIONS, WallSign
-from pynecraft.values import DUMMY
 from restworld.rooms import kill_em, Room
 from restworld.world import clock, restworld, tick_clock
 

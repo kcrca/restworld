@@ -1,7 +1,7 @@
 from pynecraft.base import as_facing, d, EAST, NORTH, r, SOUTH, WEST
 from pynecraft.commands import e, effect, execute, fill, function, MAX_EFFECT_SECONDS, p, setblock
 from pynecraft.simpler import WallSign
-from pynecraft.values import BAD_LUCK, BREATH_OF_THE_NAUTILUS, EFFECT_GROUP, effects
+from pynecraft.values import BAD_LUCK, BREATH_OF_THE_NAUTILUS, EFFECT_GROUP
 from restworld.rooms import ActionDesc, SignedRoom, span, Wall
 from restworld.world import restworld
 
@@ -11,13 +11,7 @@ display_names = {
     BREATH_OF_THE_NAUTILUS: 'Breath|of the Nautilus',
 }
 
-
-def _desc_for(effect):
-    pos = effects[effect].positive
-    return 'Positive' if pos else 'Negative' if pos is not None else None
-
-
-actions = [ActionDesc(e, display_names.get(e, None), _desc_for(e)) for e in EFFECT_GROUP]
+actions = [ActionDesc(e, display_names.get(e, None), None) for e in EFFECT_GROUP]
 actions.sort()
 
 

@@ -6,9 +6,9 @@ from pynecraft.base import Arg, EAST, EQ, GT, LT, Nbt, NORTH, r, seconds, SOUTH,
 from pynecraft.commands import a, Block, data, DIV, e, effect, execute, fill, function, INFINITE, INT, kill, MINUS, MOD, \
     RANDOM, random, REPLACE, RESULT, return_, s, schedule, Score, scoreboard, setblock, summon, tag
 from pynecraft.function import Function, Loop
-from pynecraft.info import colors, weathering_id, weatherings
+from pynecraft.info import colors, DUMMY, weathering_id, weatherings
 from pynecraft.simpler import Item, Region, Sign, WallSign
-from pynecraft.values import DUMMY, REGENERATION
+from pynecraft.values import REGENERATION
 from restworld.rooms import kill_em, Room
 from restworld.world import main_clock, marker_tmpl, restworld
 
