@@ -38,7 +38,7 @@ def room():
         if img.size[1] > 3:
             y += 1
         yield summon('painting', r(x + px, y, z + pz),
-                     {'variant': img.name, 'facing': facing.painting_number, 'Tags': ['painting']})
+                     {'variant': img.value, 'facing': facing.painting_number, 'Tags': ['painting']})
         title = img.value
         if note:
             title += f' {note}'
