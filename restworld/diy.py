@@ -2,7 +2,7 @@ from pynecraft.base import d, EAST, r
 from pynecraft.commands import clone, e, effect, Entity, execute, fill, FORCE, function, INFINITE, MOVE, n, say, \
     setblock, tp
 from pynecraft.simpler import Item
-from pynecraft.values import INVISIBILITY
+from pynecraft.info import INVISIBILITY
 from restworld.rooms import kill_em, Room
 from restworld.world import main_clock, restworld
 

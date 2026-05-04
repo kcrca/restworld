@@ -12,7 +12,7 @@ from pynecraft.function import BLOCK
 from pynecraft.info import armor_equipment, colors, copper_golem_poses, default_skins, must_give_items, stems, \
     trim_materials, trim_patterns, weathering_id, weathering_name, weatherings
 from pynecraft.simpler import Item, ItemFrame, PLAINS, Region, Sign, SWAMP, WallSign
-from pynecraft.values import BiomeInfo, biomes, COLD_OCEAN, FROZEN_OCEAN, INVISIBILITY, LUKEWARM_OCEAN, \
+from pynecraft.info import BiomeInfo, biomes, COLD_OCEAN, FROZEN_OCEAN, INVISIBILITY, LUKEWARM_OCEAN, \
     MANGROVE_SWAMP, OCEAN, WARM_OCEAN
 from restworld.rooms import erase, kill_em, Room
 from restworld.world import fast_clock, main_clock, restworld
@@ -472,14 +472,14 @@ def basic_functions(room, enchanted):
 
 
 def fencelike_functions(room):
-    volume = Region(r(4, 3, 6), r(0, 2, -1))
+    volume = Region(r(4, 3, -6), r(0, 2, 1))
 
-    fencelike_sign_pos = r(5, 2, -1)
+    fencelike_sign_pos = r(5, 2, 1)
     room.function('fencelike_init').add(
-        WallSign(()).place(fencelike_sign_pos, NORTH),
-        room.label(r(6, 2, -2), 'Height', NORTH), room.label(r(4, 2, -2), 'Glass Panes', NORTH),
-        room.label(r(3, 2, -2), 'Walls', NORTH), room.label(r(2, 2, -2), 'Fences', NORTH),
-        room.label(r(1, 2, -2), 'Bars', NORTH)
+        WallSign(()).place(fencelike_sign_pos, SOUTH),
+        room.label(r(6, 2, 2), 'Height', SOUTH), room.label(r(4, 2, 2), 'Glass Panes', SOUTH),
+        room.label(r(3, 2, 2), 'Walls', SOUTH), room.label(r(2, 2, 2), 'Fences', SOUTH),
+        room.label(r(1, 2, 2), 'Bars', SOUTH)
     )
 
     def fencelike(block: BlockDef):
@@ -523,7 +523,7 @@ def fencelike_functions(room):
 def copper_functions(room):
     tags = restworld.tags(BLOCK)
 
-    copper_sign_pos = r(4, 2, -1)
+    copper_sign_pos = r(4, 2, 1)
 
     def copper_tags(type) -> None:
         blocks = list(weathering_id(x, base=type) for x in weatherings)
@@ -535,7 +535,7 @@ def copper_functions(room):
         blocks.extend(list('waxed_' + b for b in blocks))
         tags[tag_name] = {'values': blocks}
 
-    volume = Region(r(0, 1, 0), r(5, 5, 6))
+    volume = Region(r(0, 1, 0), r(5, 5, -6))
     copper_tags('copper')
     copper_tags('cut_copper')
     copper_tags('chiseled_copper')
@@ -579,12 +579,12 @@ def copper_functions(room):
             for x in copper_golem_poses)
 
         # The door won't be set unless we manually remove previous one.
-        yield erase(r(0, 2, 4), r(0, 3, 4))
-        yield setblock(r(0, 2, 4), (type + 'copper_door', {'facing': NORTH, 'half': 'lower'})).replace()
-        yield setblock(r(0, 3, 4), (type + 'copper_door', {'facing': NORTH, 'half': 'upper'})).replace()
-        yield fill(r(1, 2, 3), r(0, 2, 3), 'air')  # currently needed, or the setblocks are ignored, even with replace
-        yield setblock(r(1, 2, 3), (type + 'copper_chest', {'type': 'right'}))
-        yield setblock(r(0, 2, 3), (type + 'copper_chest', {'type': 'left'}))
+        yield erase(r(0, 2, -4), r(0, 3, -4))
+        yield setblock(r(0, 2, -4), (type + 'copper_door', {'facing': NORTH, 'half': 'lower'})).replace()
+        yield setblock(r(0, 3, -4), (type + 'copper_door', {'facing': NORTH, 'half': 'upper'})).replace()
+        yield fill(r(1, 2, -3), r(0, 2, -3), 'air')  # currently needed, or the setblocks are ignored, even with replace
+        yield setblock(r(1, 2, -3), (type + 'copper_chest', {'type': 'right'}))
+        yield setblock(r(0, 2, -3), (type + 'copper_chest', {'type': 'left'}))
 
         yield item().replace(n().tag('copper_door_frame'), 'container.0').with_(Item(type + 'copper_door'))
 
@@ -606,10 +606,10 @@ def copper_functions(room):
         tag(copper_home).add('waxed_coppers_home'),
         execute().at(copper_home).run(function('restworld:materials/waxed_coppers_cur')))
     room.function('coppers_init').add(
-        room.label(r(3, 2, -2), 'Waxed', NORTH),
+        room.label(r(3, 2, 2), 'Waxed', SOUTH),
         function(run_unwaxed),
-        ItemFrame(NORTH).tag('materials', 'copper_door_frame').summon(r(0, 4, 4)),
-        WallSign((None, None, 'Copper')).place(copper_sign_pos, NORTH))
+        ItemFrame(NORTH).tag('materials', 'copper_door_frame').summon(r(0, 4, -4)),
+        WallSign((None, None, 'Copper')).place(copper_sign_pos, SOUTH))
 
 
 def wood_functions(room):
@@ -626,7 +626,7 @@ def wood_functions(room):
             'Item': {'id': 'stone', 'Count': 1}}),
         room.mob_placer(r(5, 3, 3), SOUTH, adults=True).summon('bee'),
         # No way to use relative coordinates here
-        data().merge(n().tag('bee', room.name), {'leash': Nbt.TypedArray('I', (26, 101, -4))}),
+        data().merge(n().tag('bee', room.name), {'leash': Nbt.TypedArray('I', (27, 101, -4))}),
         effect().give(n().tag('bee', room.name), INVISIBILITY, INFINITE, hide_particles=True),
         schedule().function(name_knot, 10, REPLACE),
         room.label(r(-1, 2, 4), 'Chest Boat', SOUTH),

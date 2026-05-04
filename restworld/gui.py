@@ -7,7 +7,7 @@ from pynecraft.commands import a, Block, bossbar, BOSSBAR_COLORS, BOSSBAR_STYLES
     effect, Entity, execute, fill, forceload, function, gamemode, gamerule, item, kill, LEVELS, n, p, REPLACE, RESET, \
     return_, s, schedule, setblock, summon, SURVIVAL, tag, Text, waypoint
 from pynecraft.simpler import Item, ItemFrame, Sign, WallSign
-from pynecraft.values import LOCATOR_BAR
+from pynecraft.info import LOCATOR_BAR
 from restworld.rooms import kill_em, Room
 from restworld.world import fast_clock, main_clock, restworld, slow_clock
 

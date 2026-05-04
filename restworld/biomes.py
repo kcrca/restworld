@@ -4,7 +4,7 @@ from pynecraft.base import NORTH, OVERWORLD, r, SOUTH, to_id
 from pynecraft.commands import Block, CLEAR, data, DESTROY, e, execute, fill, fillbiome, function, kill, say, setblock, \
     weather
 from pynecraft.simpler import PLAINS, Sign, WallSign
-from pynecraft.values import as_biome, BASALT_DELTAS, NETHER_WASTES, SMALL_END_ISLANDS, WARM_OCEAN
+from pynecraft.info import as_biome, BASALT_DELTAS, NETHER_WASTES, SMALL_END_ISLANDS, WARM_OCEAN
 from restworld.rooms import kill_em, Room
 from restworld.world import restworld
 

@@ -2,7 +2,7 @@ from pynecraft.base import Nbt, NORTH, r
 from pynecraft.commands import CREATIVE, data, e, effect, Entity, execute, function, gamemode, item, LEVELS, p, POINTS, \
     SUCCESS, SURVIVAL, xp
 from pynecraft.simpler import WallSign
-from pynecraft.values import ABSORPTION, POISON, REGENERATION, WITHER
+from pynecraft.info import ABSORPTION, POISON, REGENERATION, WITHER
 from restworld.rooms import kill_em, Room
 from restworld.world import main_clock, restworld
 

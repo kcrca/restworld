@@ -1,7 +1,7 @@
 from pynecraft.base import as_facing, d, EAST, NORTH, r, SOUTH, WEST
 from pynecraft.commands import e, effect, execute, fill, function, MAX_EFFECT_SECONDS, p, setblock
 from pynecraft.simpler import WallSign
-from pynecraft.values import BAD_LUCK, BREATH_OF_THE_NAUTILUS, EFFECT_GROUP
+from pynecraft.info import BAD_LUCK, BREATH_OF_THE_NAUTILUS, EFFECT_GROUP
 from restworld.rooms import ActionDesc, SignedRoom, span, Wall
 from restworld.world import restworld
 

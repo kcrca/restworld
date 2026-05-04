@@ -7,7 +7,7 @@ from pynecraft.base import EAST, Nbt, NORTH, r, SOUTH, to_id, to_name, WEST
 from pynecraft.commands import Block, data, e, execute, fill, function, kill, setblock, tag, Text
 from pynecraft.info import small_flowers, stems, tulips
 from pynecraft.simpler import JUNGLE, PLAINS, Region, SAVANNA, Sign, WallSign
-from pynecraft.values import BIRCH_FOREST, CHERRY_GROVE, DARK_FOREST, MANGROVE_SWAMP, PALE_GARDEN, SNOWY_TAIGA
+from pynecraft.info import BIRCH_FOREST, CHERRY_GROVE, DARK_FOREST, MANGROVE_SWAMP, PALE_GARDEN, SNOWY_TAIGA
 from restworld.rooms import erase, Room
 from restworld.world import fast_clock, main_clock, restworld, slow_clock, text_display
 

@@ -3,7 +3,7 @@ import re
 from pynecraft.base import Arg, as_facing, CYAN, EQ, r, SOUTH
 from pynecraft.commands import Block, COLORS, data, e, Entity, execute, fill, function, kill, s, setblock, Text, WHITE
 from pynecraft.simpler import Shield, Sign, TextDisplay, WallSign
-from pynecraft.values import as_pattern, BORDER, BRICKS, CIRCLE, CREEPER, CROSS, CURLY_BORDER, FLOWER, GRADIENT, \
+from pynecraft.info import as_pattern, BORDER, BRICKS, CIRCLE, CREEPER, CROSS, CURLY_BORDER, FLOWER, GRADIENT, \
     GRADIENT_UP, HALF_HORIZONTAL, HALF_HORIZONTAL_BOTTOM, MOJANG, PATTERN_GROUP, patterns, RHOMBUS, SMALL_STRIPES, \
     STRAIGHT_CROSS, STRIPE_BOTTOM, STRIPE_CENTER, STRIPE_MIDDLE, STRIPE_RIGHT, STRIPE_TOP, TRIANGLE_BOTTOM, \
     TRIANGLE_TOP, TRIANGLES_BOTTOM, TRIANGLES_TOP

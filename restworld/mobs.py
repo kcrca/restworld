@@ -10,7 +10,7 @@ from pynecraft.info import axolotls, colors, default_skins, DUMMY, horses, manne
     weathering_id, \
     weathering_name, weathering_property, weatherings, wolves
 from pynecraft.simpler import Item, ItemFrame, PLAINS, Sign, Villager, VILLAGER_BIOMES, VILLAGER_PROFESSIONS, WallSign
-from pynecraft.values import as_disc, DISC_GROUP, discs
+from pynecraft.info import as_disc, DISC_GROUP, discs
 from restworld.materials import water_biomes
 from restworld.rooms import kill_em, MobPlacer, Room
 from restworld.world import fast_clock, main_clock, restworld

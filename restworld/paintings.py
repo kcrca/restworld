@@ -1,7 +1,7 @@
 from pynecraft.base import as_facing, BLACK, EAST, NORTH, r, ROTATION_270, SOUTH, Transform, WEST
 from pynecraft.commands import e, kill, summon, Text
 from pynecraft.simpler import TextDisplay
-from pynecraft.values import PAINTING_GROUP, paintings
+from pynecraft.info import PAINTING_GROUP, paintings
 from restworld.rooms import Room
 from restworld.world import restworld
 

@@ -8,7 +8,7 @@ from pynecraft.commands import a, Block, data, DIV, e, effect, execute, fill, fu
 from pynecraft.function import Function, Loop
 from pynecraft.info import colors, DUMMY, weathering_id, weatherings
 from pynecraft.simpler import Item, Region, Sign, WallSign
-from pynecraft.values import REGENERATION
+from pynecraft.info import REGENERATION
 from restworld.rooms import kill_em, Room
 from restworld.world import main_clock, marker_tmpl, restworld
 
