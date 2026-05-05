@@ -4,22 +4,20 @@ from typing import Any, List
 from titlecase import titlecase
 
 from pynecraft import info
+from pynecraft._values import SULFUR_CAVES
 from pynecraft.base import Arg, as_facing, EAST, EQ, Nbt, NbtDef, NE, NORTH, NW, r, RelCoord, SOUTH, to_id, WEST
 from pynecraft.commands import a, as_block, Block, BlockDef, clone, data, e, effect, Entity, execute, fill, fillbiome, \
     function, INFINITE, item, kill, LONG, MOD, n, p, PLUS, random, REPLACE, RESULT, s, schedule, Score, \
     scoreboard, setblock, stopsound, summon, tag
 from pynecraft.function import BLOCK
-from pynecraft.info import armor_equipment, colors, copper_golem_poses, default_skins, must_give_items, stems, \
-    trim_materials, trim_patterns, weathering_id, weathering_name, weatherings
+from pynecraft.info import armor_equipment, biomes, COLD_OCEAN, colors, copper_golem_poses, default_skins, FROZEN_OCEAN, \
+    INVISIBILITY, LUKEWARM_OCEAN, MANGROVE_SWAMP, must_give_items, OCEAN, stems, trim_materials, trim_patterns, \
+    WARM_OCEAN, weathering_id, weathering_name, weatherings
 from pynecraft.simpler import Item, ItemFrame, PLAINS, Region, Sign, SWAMP, WallSign
-from pynecraft.info import BiomeInfo, biomes, COLD_OCEAN, FROZEN_OCEAN, INVISIBILITY, LUKEWARM_OCEAN, \
-    MANGROVE_SWAMP, OCEAN, WARM_OCEAN
 from restworld.rooms import erase, kill_em, Room
 from restworld.world import fast_clock, main_clock, restworld
 
-print(f'Warning: Adding sulfer caves manually -- remove this when you can')
-biomes['sulfur_caves'] = BiomeInfo("""Sulfur Caves""", "sulfur caves", """Sulfur Caves.""")
-water_biomes = (PLAINS, FROZEN_OCEAN, COLD_OCEAN, OCEAN, LUKEWARM_OCEAN, WARM_OCEAN, 'sulfur_caves', SWAMP, MANGROVE_SWAMP)
+water_biomes = (PLAINS, FROZEN_OCEAN, COLD_OCEAN, OCEAN, LUKEWARM_OCEAN, WARM_OCEAN, SULFUR_CAVES, SWAMP, MANGROVE_SWAMP)
 
 
 def enchant(score: Score, tag: str):
