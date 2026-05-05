@@ -6,7 +6,7 @@ from pynecraft import info
 from pynecraft.base import as_facing, EAST, NE, NORTH, OVERWORLD, r, SOUTH, SW, to_name, UP, WEST
 from pynecraft.commands import Block, CREATIVE, e, Entity, execute, fill, function, gamemode, kill, p, setblock, \
     SURVIVAL, tp
-from pynecraft.info import armor_equipment, small_flowers, tall_flowers
+from pynecraft.info import armor_equipment
 from pynecraft.simpler import Item, Offset
 from restworld.rooms import MobPlacer, Room
 from restworld.world import restworld
@@ -63,34 +63,46 @@ mobs = (
 
 
 def quilt_blocks():
-    # Skip blocks where these words occur because they aren't full blocks or solid enough (or anything else). A few of
-    # these are entire block names, e.g., '^bamboo$'.
-    skippers = ('button', 'pressure', 'door', 'trapdoor', 'fence', 'sign', 'sapling', 'shelf', 'slab', 'stairs', 'rail',
-                'cluster', 'beacon', 'dripleaf', 'barrier', 'beetroots', 'bell', 'pane', 'bed', 'candle', 'carpet',
-                'banner', 'fan', 'stand', 'wall', 'bush', 'cactus', 'cake', 'sensor', 'campfire', 'carrots', 'cauldron',
-                'chest', 'anvil', 'flower', 'eyeblossom', 'conduit', 'bars', 'statue', 'grate', 'lantern', 'torch',
-                'head', 'fungus', 'detector', 'pot', 'ghast', '^bamboo$', 'rod', 'farmland', 'dirt path', 'frogspawn',
-                'lichen', 'grindstone', 'core', 'ladder', 'bud', 'fern', 'lava', 'water', 'litter', 'lectern',
-                '^light$', 'lily', 'sprouts', 'tulip', 'petals', 'pointed', 'potatoes', 'comparator', 'repeater',
-                'hopper', 'wire', 'clump', 'shrieker', 'vein', 'pickle', 'seagrass', 'short', 'tall', 'blossom',
-                'stonecutter', 'void', 'cane', 'tripwire', 'vines?', 'bush', 'crops?', 'azalea', 'shoot', 'egg',
-                'portal', '^fire$', '^kelp$', 'lever', 'propagule', 'skull', 'soul fire', 'wildflower', 'potted',
-                'cocoa', '^nether wart$', 'wildflowers', '^snow$', 'enchanting', 'hanging',
-                'cobweb',) + small_flowers + tall_flowers + (
-                   'leaves', 'composter', 'vault', 'spawner', 'roots', 'scaffolding',  # transparent
-                   'mushroom',  # some of these are full, but most aren't, this is a simplicity thing
-                   'infested', 'waxed',  # These all look the same in vanilla®
-                   'powder', 'sand', 'gravel',  # Falling
-                   'ice',  # Melts or is transparent, we could pick out those that don't if we cared to
-                   'test', 'jigsaw', 'structure'  # Too rarely used
+    block_tags = info.tags['block']
+    excluded_ids = set()
+    for tag in (
+        # Structural non-full-cube blocks
+        'buttons', 'pressure_plates', 'doors', 'trapdoors', 'fences', 'fence_gates',
+        'slabs', 'stairs', 'rails', 'walls', 'bars', 'chains',
+        # Decorative non-full-cube blocks
+        'signs', 'banners', 'beds', 'candles', 'lanterns', 'flower_pots',
+        'campfires', 'cauldrons', 'anvil', 'wooden_shelves',
+        # Plants and organic
+        'saplings', 'flowers', 'crops', 'leaves', 'corals', 'wall_corals', 'speleothems',
+        # Environmental
+        'portals', 'fire', 'ice', 'sand',
+        # Falling
+        'concrete_powders',
+        # Misc
+        'wool_carpets', 'copper_golem_statues', 'candle_cakes',
+    ):
+        excluded_ids |= block_tags.get(tag, set())
+    excluded_ids |= {
+        'bamboo', 'bamboo_sapling', 'bamboo_shoot', 'barrier', 'decorated_pot', 'dirt_path',
+        'heavy_core', 'jack_o_lantern', 'kelp', 'light', 'nether_wart',
+        'powder_snow', 'sea_lantern', 'snow', 'soul_sand',  # not in their respective tags
+        'slime_block', 'honey_block', 'tinted_glass',  # translucent
+    }
 
-               )
-    non_full_pat = r'\b(' + r'|'.join(skippers) + r')\b'
-    non_full_re = re.compile(non_full_pat, re.IGNORECASE)
-    # These find blocks we skip but which can't be detected by simple "contains word" checks.
-    special_re = re.compile(r'coral(?!.*block)|chain(?!.*command)|^(\w+ )?copper$', re.IGNORECASE)
+    skip_re = re.compile(
+        r'\b(azalea|beacon|bell|bud|bush|cactus|cake|cane|carpet|chest|clump|cluster|'
+        r'cobweb|cocoa|comparator|composter|conduit|detector|dripleaf|egg|enchanting|'
+        r'farmland|fern|frogspawn|fungus|ghast|grate|gravel|grindstone|hanging|head|'
+        r'hopper|infested|jigsaw|ladder|lava|lectern|lever|lichen|lily|litter|'
+        r'mushroom|pane|pickle|repeater|rod|roots|scaffolding|seagrass|sensor|shrieker|'
+        r'short|skull|spawner|sprouts|stand|stonecutter|structure|tall|test|torch|tripwire|'
+        r'vault|vein|vines?|void|water|waxed|wire)\b'
+        r'|dead.*coral(?!.*block)|^(\w+ )?copper$',
+        re.IGNORECASE,
+    )
+
     for block in info.blocks.values():
-        if not non_full_re.search(block.name) and not special_re.search(block.name):
+        if block.id not in excluded_ids and not skip_re.search(block.name):
             yield to_name(block.id)
 
 
@@ -152,7 +164,7 @@ def room():
         yield fill(r(0, -1, -2), r(line_length, -20, 2), 'air')
         blocks = tuple(sorted_quilt_blocks())
         if len(blocks) % line_length % line_length != 0:
-            print('WARNING: quilt size will not fit in full rows')
+            print(f'WARNING: quilt size ({len(blocks)}) will not fit in full rows ({line_length})')
         # Special states for matching blocks
         states = {
             'Log|Stem|^Basalt|Stripped Bamboo|Bamboo Block': {'axis': 'z'},
