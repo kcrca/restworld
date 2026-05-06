@@ -605,7 +605,7 @@ def room():
                     room.particle(sharp, block, r(0 + x_off, 4 + step.stage, 0), step)
 
     room.function('dripstone_init').add(
-       *((
+        *((
             setblock(r(0 + x_off, 3, 0), block),
             setblock(r(0 + x_off, 12, 0), block),
             WallSign((None, to_name(block.replace('_block', '')))).place(r(0 + x_off, 2, -1), NORTH),
@@ -698,11 +698,11 @@ def room():
     room.function('ore_blocks_init', exists_ok=True).add(
         tag(e().tag('ore_blocks_home')).add('ore_blocks_base'),
         tag(e().tag('deepslate_ore_blocks_home')).add('ore_blocks_base'))
-    room.function('switch_to_ore_blocks').add(
+    room.function('switch_to_ore_blocks', home=False).add(
         tag(e().tag('ore_blocks_base')).add('ore_blocks_home'),
         tag(e().tag('ore_blocks_base')).remove('deepslate_ore_blocks_home'),
         execute().at(e().tag('ore_blocks_base')).run(function('restworld:blocks/ore_blocks_cur')))
-    room.function('switch_to_deepslate_ore_blocks').add(
+    room.function('switch_to_deepslate_ore_blocks', home=False).add(
         tag(e().tag('ore_blocks_base')).remove('ore_blocks_home'),
         tag(e().tag('ore_blocks_base')).add('deepslate_ore_blocks_home'),
         execute().at(e().tag('ore_blocks_base')).run(function('restworld:blocks/deepslate_ore_blocks_cur')))
@@ -1189,7 +1189,7 @@ def color_functions(room):
                         tags=('colorings_horse', 'colorings_names', 'colorings_enchantable') + colorings_tags).summon(
             'horse'),
         room.mob_placer(r(-7.4, 2, 2), -65, adults=True, nbt=(Nbt({'Owner': 'dummy'})),
-                        tags=('colorings_dog',) + colorings_tags).summon('wolf'),
+                        tags=('colorings_dog', 'colorings_enchantable') + colorings_tags, ).summon('wolf'),
         function(wolf_armor_on),
         room.mob_placer(r(-2.7, 2, 2), 110, adults=True, nbt=cat_nbt, tags=('colorings_cat',) + colorings_tags).summon(
             'cat'),
@@ -1234,7 +1234,9 @@ def color_functions(room):
         stopsound(a(), '*', 'entity.item_frame.add_item'))
 
     room.function('ghast_riders_on', home=False).add((
-        room.riders_on(n().tag('colorings_ghast'), tags=('ghast_rider', f'ghast_rider_{i}')) for i in range(4)))
+        room.riders_on(n().tag('colorings_ghast'), tags=('ghast_rider', f'ghast_rider_{i}')) for i in range(4)),
+        data().remove(n().tag(f'ghast_rider_0'), 'profile.texture'),
+        data().modify(n().tag(f'ghast_rider_0'), 'profile.id').set().from_(p(), 'UUID'))
     room.function('ghast_riders_off', home=False).add(room.riders_off('ghast_rider'))
 
     ghast_boat_off = room.function('ghast_boat_off', home=False).add(
