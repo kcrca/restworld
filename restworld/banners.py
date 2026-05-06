@@ -1,12 +1,12 @@
 import re
 
-from pynecraft.base import Arg, as_facing, CYAN, EQ, r, SOUTH
+from pynecraft.base import Arg, as_facing, CYAN, EQ, r, SOUTH, to_name
 from pynecraft.commands import Block, COLORS, data, e, Entity, execute, fill, function, kill, s, setblock, Text, WHITE
-from pynecraft.simpler import Shield, Sign, TextDisplay, WallSign
 from pynecraft.info import as_pattern, BORDER, BRICKS, CIRCLE, CREEPER, CROSS, CURLY_BORDER, FLOWER, GRADIENT, \
     GRADIENT_UP, HALF_HORIZONTAL, HALF_HORIZONTAL_BOTTOM, MOJANG, patterns, patterns_standard_order, RHOMBUS, \
     SMALL_STRIPES, STRAIGHT_CROSS, STRIPE_BOTTOM, STRIPE_CENTER, STRIPE_MIDDLE, STRIPE_RIGHT, STRIPE_TOP, \
     TRIANGLE_BOTTOM, TRIANGLE_TOP, TRIANGLES_BOTTOM, TRIANGLES_TOP
+from pynecraft.simpler import Shield, Sign, TextDisplay, WallSign
 from restworld.rooms import Room
 from restworld.world import die, main_clock, restworld
 
@@ -182,7 +182,7 @@ def room():
 
     def banner_color_loop(step):
         yield data().modify('restworld:banners', 'color').set().value(step.elem)
-        yield Sign.change(color_sign, (None, None, step.elem))
+        yield Sign.change(color_sign, (None, None, to_name(step.elem)))
 
     def switch_banners(to):
         yield which.set(0 if to == 'color' else 1)
@@ -237,7 +237,7 @@ def room():
 
     def banner_ink_loop(step):
         yield data().modify('restworld:banners', 'ink').set().value(step.elem)
-        yield Sign.change(ink_sign, (None, None, step.elem))
+        yield Sign.change(ink_sign, (None, None, to_name(step.elem)))
 
     ink_loop.loop(banner_ink_loop, COLORS).add(
         # make sure the two values are different.
