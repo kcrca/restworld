@@ -1,5 +1,5 @@
 import re
-from typing import Any, Callable, Iterable, List, Union
+from typing import Any, Callable, Iterable, Union
 
 from titlecase import titlecase
 
@@ -167,18 +167,17 @@ def room():
         bee_nests[0].append(Block('beehive', state=state, name=f'Beehive|Honey Level: {i}'))
         bee_nests[1].append(Block('bee_nest', state=state, name=f'Bee Nest|Honey Level: {i}'))
     blocks('bee_nest', SOUTH, bee_nests, dx=-3)
-    bookshelves: List[str | Block] = ['Bookshelf']
-    bookshelves.extend((
-        Block('chiseled_bookshelf', {'facing': SOUTH, }, name='Empty|Chiseled|Bookshelf'),
-        Block('chiseled_bookshelf',
-              {'facing': SOUTH, 'slot_0_occupied': True, 'slot_4_occupied': True, 'slot_5_occupied': True, },
-              name='Partly Filled|Chiseled|Bookshelf'),
-        Block('chiseled_bookshelf',
-              {'facing': SOUTH,
-               'slot_0_occupied': True, 'slot_1_occupied': True, 'slot_2_occupied': True,
-               'slot_3_occupied': True, 'slot_4_occupied': True, 'slot_5_occupied': True, },
-              name='Full|Chiseled|Bookshelf')))
-    blocks('bookshelves', SOUTH, bookshelves)
+    blocks('bookshelf', SOUTH, ('bookshelf',))
+    blocks('chiseled_bookshelves', SOUTH,
+           (Block('chiseled_bookshelf', {'facing': SOUTH, }, name='Empty|Chiseled|Bookshelf'),
+            Block('chiseled_bookshelf',
+                  {'facing': SOUTH, 'slot_0_occupied': True, 'slot_4_occupied': True, 'slot_5_occupied': True, },
+                  name='Partly Filled|Chiseled|Bookshelf'),
+            Block('chiseled_bookshelf',
+                  {'facing': SOUTH,
+                   'slot_0_occupied': True, 'slot_1_occupied': True, 'slot_2_occupied': True,
+                   'slot_3_occupied': True, 'slot_4_occupied': True, 'slot_5_occupied': True, },
+                  name='Full|Chiseled|Bookshelf')))
     blocks('deepslate_bricks', NORTH, (
         'Deepslate|Bricks', 'Cracked|Deepslate|Bricks', 'Deepslate|Tiles', 'Cracked|Deepslate|Tiles'))
     blocks('bricks', NORTH, (
@@ -269,7 +268,7 @@ def room():
         setblock(r(-1, 3, 0), 'structure_void'),
     )
     blocks('gilded_blackstone', SOUTH, ('Gilded Blackstone',))
-    blocks('glass', SOUTH, ('Glass', 'Tinted Glass'))
+    blocks('glass', NORTH, ('Glass', 'Tinted Glass'))
     blocks('hay', SOUTH, ('Hay Block',))
     blocks('heavy_core', NORTH, ('Heavy Core',))
     blocks('honeycomb', SOUTH, ('Honeycomb Block',))
