@@ -4,9 +4,9 @@ from pynecraft.base import Arg, as_facing, CYAN, EQ, r, SOUTH
 from pynecraft.commands import Block, COLORS, data, e, Entity, execute, fill, function, kill, s, setblock, Text, WHITE
 from pynecraft.simpler import Shield, Sign, TextDisplay, WallSign
 from pynecraft.info import as_pattern, BORDER, BRICKS, CIRCLE, CREEPER, CROSS, CURLY_BORDER, FLOWER, GRADIENT, \
-    GRADIENT_UP, HALF_HORIZONTAL, HALF_HORIZONTAL_BOTTOM, MOJANG, PATTERN_GROUP, patterns, RHOMBUS, SMALL_STRIPES, \
-    STRAIGHT_CROSS, STRIPE_BOTTOM, STRIPE_CENTER, STRIPE_MIDDLE, STRIPE_RIGHT, STRIPE_TOP, TRIANGLE_BOTTOM, \
-    TRIANGLE_TOP, TRIANGLES_BOTTOM, TRIANGLES_TOP
+    GRADIENT_UP, HALF_HORIZONTAL, HALF_HORIZONTAL_BOTTOM, MOJANG, patterns, patterns_standard_order, RHOMBUS, \
+    SMALL_STRIPES, STRAIGHT_CROSS, STRIPE_BOTTOM, STRIPE_CENTER, STRIPE_MIDDLE, STRIPE_RIGHT, STRIPE_TOP, \
+    TRIANGLE_BOTTOM, TRIANGLE_TOP, TRIANGLES_BOTTOM, TRIANGLES_TOP
 from restworld.rooms import Room
 from restworld.world import die, main_clock, restworld
 
@@ -115,7 +115,7 @@ def room():
     def render_banners(render):
         # These are in the first adjustment, but python doesn't know that, so this keeps it happy
         x = z = xd = zd = xn = zn = angle = facing = bx = bz = 0
-        for i, pat in enumerate(PATTERN_GROUP):
+        for i, pat in enumerate(patterns_standard_order):
             pattern = patterns[pat]
             try:
                 x, xn, xd, z, zn, zd, angle, facing, bx, bz = adjustments[i]
