@@ -32,7 +32,7 @@ battles = [
     ('evoker', 'iron_golem'),
     ('fox', 'chicken'),
     ('frog', 'slime'),  # medium priority, it isn't magma cubes to get froglights, but it's still the tongue
-    ('goat', 'sheep'),  # medium priority (slow, but charging goat)
+    # ('goat', 'sheep'),  # medium priority (slow, but charging goat)
     ('hoglin', 'vindicator'),
     ('illusioner', 'snow_golem'),  # medium priority, illusioner isn't used in vanilla, but some folks use it
     ('llama', 'vindicator'),  # Wolves don't work, they just run away, only rarely getting involved
@@ -51,6 +51,7 @@ battles = [
     ('sniffer', None),
     ('spider', 'snow_golem'),
     ('stray', 'iron_golem'),
+    ('sulfur_cube', None),
     ('vindicator', 'iron_golem'),
     ('warden', 'iron_golem'),
     ('witch', 'snow_golem'),
@@ -489,7 +490,7 @@ def room():
             function(show_score, {'actor': 'hunter'})),
         execute().unless().score(victims_killed).is_(EQ, prev_victims_kills).run(
             function(show_score, {'actor': 'victim'})),
-        execute().as_(e().type('item').tag('!limited')).run(
+        execute().unless().entity(e().type('sulfur_cube')).as_(e().type('item').tag('!limited')).run(
             data().modify(s(), 'Age').set().value(6000 - 150),
             tag(s()).add('limited')
         ),
