@@ -20,7 +20,7 @@ from restworld.world import fast_clock, main_clock, restworld
 
 def room():
     room = Room('blocks', restworld, EAST, ('Blocks,', 'Paintings,', 'Banners,', 'DIY, Models'))
-    room.reset_at((-34, 0))
+    room.reset_at((-26, 0))
 
     block_list_score = room.score('block_list')
 
@@ -981,10 +981,10 @@ def room():
 
 def room_init_functions(room, block_list_score):
     room.functions['blocks_room_init'].add(
-        room.label(r(-14, 2, 2), 'List Blocks', NORTH), room.label(r(-14, 2, -2), 'List Blocks', SOUTH),
-        room.label(r(-46, 2, 3), 'List Blocks', NORTH), room.label(r(-46, 2, -3), 'List Blocks', SOUTH),
-        room.label(r(-34, 2, 1), 'Show Particles', NORTH),
-        room.label(r(-34, 2, -1), 'Expand All', SOUTH),
+        room.label(r(-13, 2, 2), 'List Blocks', NORTH), room.label(r(-13, 2, -2), 'List Blocks', SOUTH),
+        room.label(r(-45, 2, 2), 'List Blocks', NORTH), room.label(r(-36, 2, -2), 'List Blocks', SOUTH),
+        room.label(r(-26, 2, 1), 'Show Particles', NORTH, tags='howdy'),
+        room.label(r(-26, 2, -1), 'Expand All', SOUTH),
         kill(e().tag('block_list')))
 
     # Ensure that setting up the expansion work on signs is done after all other things
