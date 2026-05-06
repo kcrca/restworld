@@ -490,10 +490,9 @@ def room():
             function(show_score, {'actor': 'hunter'})),
         execute().unless().score(victims_killed).is_(EQ, prev_victims_kills).run(
             function(show_score, {'actor': 'victim'})),
-        execute().unless().entity(e().type('sulfur_cube')).as_(e().type('item').tag('!limited')).run(
+        execute().as_(e().type('item').tag('!limited')).run(
             data().modify(s(), 'Age').set().value(6000 - 150),
-            tag(s()).add('limited')
-        ),
+            tag(s()).add('limited')),
         effect().give(e().type('llama').tag('battler'), REGENERATION, INFINITE, 100, True)
     )
 
