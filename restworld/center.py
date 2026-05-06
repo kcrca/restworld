@@ -1,6 +1,7 @@
 from pynecraft.base import DARK_BLUE, DARK_GREEN, DARK_PURPLE, GOLD, LIGHT_PURPLE, Nbt, NE, NORTH, NW, r, RED, SE, \
     SOUTH, SW, WEST
-from pynecraft.commands import Block, ClickEvent, clone, e, Entity, execute, fill, function, kill, Score, scoreboard, \
+from pynecraft.commands import Block, ClickEvent, clone, e, Entity, execute, fill, forceload, function, kill, Score, \
+    scoreboard, \
     setblock, summon, tag, Text
 from pynecraft.info import Horse
 from pynecraft.simpler import Book, ItemFrame, Sign, TextDisplay, WallSign
@@ -68,7 +69,10 @@ def room():
 
     room.function('intro').add(
         ensure(r(0, 2, 0), Block('lectern', {'facing': NORTH, 'has_book': True}), nbt=intro_book().as_item()))
-    room.function('intro_enter').add(setblock(r(0, -1, -1), 'redstone_block'))
+    room.function('intro_enter').add(
+        setblock(r(0, -1, -1), 'redstone_block'),
+        forceload().add((0, 0))
+    )
     room.function('intro_exit').add(setblock(r(0, -1, -1), 'air'))
     room.function('intro_init').add(
         TextDisplay(r'Welcome!\nRead This\nIntroduction!',
