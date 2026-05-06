@@ -711,7 +711,7 @@ class ActionDesc:
         self.name = to_name(which)
         if name is not None:
             self.name = name
-        self.note = '(%s)' % note if note else None
+        self.note = f'({note})'.split('|') if note else None
         if isinstance(also, Iterable):
             self.also = also
         else:
@@ -734,7 +734,7 @@ class ActionDesc:
         block = Block(self.which, name=self.name)
         sign_text = list(block.sign_text)
         if self.note:
-            sign_text.append(self.note)
+            sign_text.extend(self.note)
         if len(sign_text) < 4:
             sign_text.insert(0, None)
         while len(sign_text) > 4:
