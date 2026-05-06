@@ -454,7 +454,10 @@ class Room(FunctionSet):
                      (x.set(self._init_values.get(x, 0)) for x in sorted(self._init_values, key=lambda x: str(x))),
                      to_incr.set(1),
                      tp(e().tag(self.name), e().tag('death').limit(1)),
-                     kill_em(e().tag(self.name))]
+                     kill_em(e().tag(self.name)),
+                     (execute().at(e().tag(f'clock_toggle_sign_{dir}_home')).run(
+                         function(f'restworld:global/clock_toggle_sign_{dir}_init'))
+                         for dir in ('north', 'east', 'west', 'south'))]
         }
         after_commands = {
             'enter': [weather(CLEAR)],

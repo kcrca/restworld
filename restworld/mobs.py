@@ -40,11 +40,10 @@ def friendlies(room):
                                   placer(hang_bat_pos, bat_dir, 2, adults=True).summon('bat', nbt={'BatFlags': 1},
                                                                                        tags=('sleeping_bat',)))
 
-    stinger_label_pos = r(-2, 2, 1)
-    pollen_label_pos = r(-2, 2, -1)
     room.function('bee_init').add(
-        placer(r(0, 3, 0), WEST, 0, 2).summon('bee'), room.label(stinger_label_pos, 'Stinger', WEST),
-        room.label(pollen_label_pos, 'Pollen', WEST))
+        placer(r(0, 3, 0), WEST, 0, 2).summon('bee'),
+        room.label(r(-3, 2, 1), 'Stinger', WEST),
+        room.label(r(-3, 2, -1), 'Pollen', WEST))
 
     def armadillo_loop(step):
         yield execute().as_(e().tag('armadillo')).run(data().modify(s(), 'state').set().value(step.elem))
@@ -234,7 +233,7 @@ def friendlies(room):
         tag(n().tag('llama', 'adult')).add('saddle'),
         placer(r(1, 3.5, -1), WEST, adults=True, nbt={'Motion': [0, 0, 0], 'NoGravity': True}).summon('llama_spit'),
         WallSign((None, 'Llama Spit')).place(r(1, 2, -1), WEST),
-        room.label(r(-2, 2, 1), 'Carpet', WEST), room.label(r(-2, 2, -1), 'Chest', WEST))
+        room.label(r(-3, 2, 1), 'Carpet', WEST), room.label(r(-3, 2, -1), 'Chest', WEST))
 
     room.loop('llamas', main_clock).loop(
         lambda step: execute().as_(e().tag('llama')).run(
@@ -250,7 +249,7 @@ def friendlies(room):
                                                                             'HiddenGene': step.elem.lower()})),
         ('Aggressive', 'Lazy', 'Weak', 'Worried', 'Playful', 'Normal', 'Brown'))
     parrot_dir, parrot_pos = WEST, r(0, 3, 0)
-    disc_chest_pos = r(1, 1, 1)
+    disc_chest_pos = r(2, 1, 1)
     parrot_fence_pos = list(parrot_pos)
     parrot_fence_pos[1] -= 1
     parrot_enter = room.function('parrot_enter').add(
@@ -259,7 +258,7 @@ def friendlies(room):
     room.function('parrot_init').add(
         placer(parrot_pos, parrot_dir, adults=True).summon('parrot'),
         function(parrot_enter),
-        room.label(r(0, 2, -1), 'Dance', WEST)
+        room.label(r(-1, 2, -1), 'Dance', WEST)
     )
 
     parrots = ('Red', 'Blue', 'Green', 'Cyan', 'Gray')
@@ -337,7 +336,7 @@ def friendlies(room):
     room.function('sniffer_init').add(
         placer(r(0, 2, 0.5), EAST, 0, adults=True, tags='keeper').summon('sniffer'),
         WallSign((None, 'Sniffer Egg', None, '(vanilla  shows 3)')).place(r(2, 2, 3), EAST),
-        room.label(r(3, 2, 0), 'Show Particles', EAST)
+        room.label(r(4, 2, 0), 'Show Particles', EAST)
     )
     setblock(r(-1, 2, 2), 'Sniffer Egg'),
 
@@ -411,13 +410,11 @@ def friendlies(room):
     room.loop('trader_llama', main_clock).loop(
         lambda step: execute().as_(e().type('trader_llama')).run(data().modify(s(), 'Variant').set().value(step.i)),
         ('Creamy', 'White', 'Brown', 'Gray'))
-    switch_label_pos = r(3, 2, 0)
     egg_sign_pos = r(-2, 2, 0, )
-    egg_sign_dir = EAST
     room.function('turtle_eggs_init').add(
         tag(e().tag('turtle_eggs_home')).add('blockers_home'),
-        WallSign((None, 'Turtle Eggs')).place(egg_sign_pos, egg_sign_dir),
-        room.label(switch_label_pos, 'Egg Crack', EAST))
+        WallSign((None, 'Turtle Eggs')).place(egg_sign_pos, EAST),
+        room.label(r(4, 2, 0), 'Egg Crack', EAST))
 
     def turtle_egg_loop(step):
         for count in range(4, 0, -1):
@@ -703,7 +700,7 @@ def monsters(room):
         lambda step: placer(*east_placer, adults=True).summon(
             Entity(step.elem, nbt={'equipment': {'mainhand': bow}}).tag('skeletal', armorable_tag)),
         ('Skeleton', 'Stray', 'Bogged', 'Parched'))
-    room.function('skeleton_init').add(room.label(r(2, 2, 0), 'Armor', EAST))
+    room.function('skeleton_init').add(room.label(r(3, 2, 0), 'Armor', EAST))
 
     chr2 = room.function('camel_husk_rider2', home=False).add(
         room.riders_on(n().tag('camel_husk'),
@@ -768,12 +765,12 @@ def monsters(room):
             yield ride(zombie_kid.limit(1)).mount(zombie_jockey_chicken)
 
     room.loop('zombie_jockey', home=False).loop(zombie_jockey_loop, range(2))
-    room.function('zombie_init').add(room.label(r(2, 2, 1), 'Jockey', EAST))
+    room.function('zombie_init').add(room.label(r(3, 2, 1), 'Jockey', EAST))
 
     def zombie_loop(step):
         yield kill_em(e().tag('zombieish'))
         yield kill(e().tag('zombieish'))
-        p = placer(r(-0.5, 2, 0), EAST, 0, 2.8, tags=('zombieish',))
+        p = placer(r(-0.5, 2, 0), EAST, 0, 2.5, tags=('zombieish',))
         yield p.summon(Entity(step.elem))
         hand_item = {'Drowned': 'trident', 'Husk': 'iron_sword', 'Zombie': 'iron_shovel'}[step.elem]
         yield execute().as_(e().tag('zombieish').tag('adult')).run(
