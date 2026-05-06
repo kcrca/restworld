@@ -4,13 +4,11 @@ from titlecase import titlecase
 
 from pynecraft.base import EAST, EQ, Nbt, NE, NORTH, r, SOUTH, to_id, to_name, WEST
 from pynecraft.commands import as_facing, Block, clone, COLORS, data, e, Entity, execute, fillbiome, FORCE, function, \
-    item, kill, LONG, MOD, n, p, player, REPLACE, RESULT, return_, ride, s, say, schedule, Score, scoreboard, setblock, \
+    item, kill, LONG, MOD, n, p, player, REPLACE, RESULT, return_, ride, s, schedule, Score, scoreboard, setblock, \
     SUCCESS, summon, tag, tp
-from pynecraft.info import axolotls, colors, default_skins, DUMMY, horses, mannequin_poses, tropical_fish, \
-    weathering_id, \
-    weathering_name, weathering_property, weatherings, wolves
+from pynecraft.info import as_disc, axolotls, colors, default_skins, DISC_GROUP, discs, DUMMY, horses, mannequin_poses, \
+    tropical_fish, weathering_id, weathering_name, weathering_property, weatherings, wolves
 from pynecraft.simpler import Item, ItemFrame, PLAINS, Sign, Villager, VILLAGER_BIOMES, VILLAGER_PROFESSIONS, WallSign
-from pynecraft.info import as_disc, DISC_GROUP, discs
 from restworld.materials import water_biomes
 from restworld.rooms import kill_em, MobPlacer, Room
 from restworld.world import fast_clock, main_clock, restworld
@@ -371,16 +369,14 @@ def friendlies(room):
     innards_frame = n().tag('sulfur_cube_innards')
     sulfur_cube = n().type('sulfur_cube').tag('adult')
     archetypes = (
-        (None, 'air'), ('Bouncy', 'oak_log'), ('Explosive', 'tnt'), ('Fast Flat', 'brain_coral_block'),
-        ('Fast Sliding', 'blue_ice'), ('High Resistance', 'soul_sand'), ('Light', 'blue_wool'),
-        ('Slow Flat', 'copper_ore'), ('Slow Sliding', 'red_mushroom_block'), ('Sticky', 'honeycomb_block'),
-        ('Regular', 'cobblestone')
+        (None, 'air'), ('Bouncy', 'oak_log'), ('Slow Bouncy', 'bricks'), ('Explosive', 'tnt'),
+        ('Fast Flat', 'brain_coral_block'), ('Fast Sliding', 'blue_ice'), ('High Resistance', 'soul_sand'),
+        ('Light', 'blue_wool'), ('Slow Flat', 'copper_ore'), ('Slow Sliding', 'red_mushroom_block'),
+        ('Sticky', 'honeycomb_block'), ('Regular', 'cobblestone'), ('Hot', 'magma_cube')
     )
 
     def sulfur_cube_loop(step):
-        say('loop'),
         yield execute().if_().score(is_empty).matches(1).run(
-            say('boop'),
             data().modify(sulfur_cube, 'equipment.body').set().value(Item.nbt_for(step.elem[1])))
 
     room.function('sulfur_cube_init').add(
