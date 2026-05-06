@@ -3,8 +3,8 @@ import collections
 from pynecraft.base import NORTH, OVERWORLD, r, SOUTH, to_id
 from pynecraft.commands import Block, CLEAR, data, DESTROY, e, execute, fill, fillbiome, function, kill, say, setblock, \
     weather
-from pynecraft.simpler import PLAINS, Sign, WallSign
 from pynecraft.info import as_biome, BASALT_DELTAS, NETHER_WASTES, SMALL_END_ISLANDS, WARM_OCEAN
+from pynecraft.simpler import PLAINS, Sign, WallSign
 from restworld.rooms import kill_em, Room
 from restworld.world import restworld
 
@@ -17,7 +17,7 @@ biome_groups['Warm'] = ('Desert', 'Savanna', 'Badlands')
 biome_groups['Cold'] = ('Taiga', 'Stony Shore')
 biome_groups['Snowy'] = ('Snowy Taiga', 'Snowy Plains', 'Ice Spikes')
 biome_groups['Ocean'] = ('Warm Ocean', 'Ocean', 'Frozen Ocean')
-biome_groups['Cave'] = ('Lush Caves', 'Dripstone Caves', 'Deep Dark')
+biome_groups['Cave'] = ('Lush Caves', 'Dripstone Caves', 'Deep Dark', 'Sulfur Caves')
 biome_groups['Nether'] = ('Nether Wastes', 'Soul Sand Valley', 'Crimson Forest', 'Warped Forest', 'Basalt Deltas')
 biome_groups['End'] = ('The End', 'End City', 'End Island')
 biome_groups['Structures'] = ('Mineshaft', 'Monument', 'Stronghold', 'Trial Chambers', 'Bastion Remnant', 'Fortress')
