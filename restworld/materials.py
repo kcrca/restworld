@@ -606,7 +606,7 @@ def copper_functions(room):
     room.function('coppers_init').add(
         room.label(r(3, 2, 2), 'Waxed', SOUTH),
         function(run_unwaxed),
-        ItemFrame(NORTH).tag('materials', 'copper_door_frame').summon(r(0, 4, -4)),
+        ItemFrame(SOUTH).tag('materials', 'copper_door_frame').summon(r(0, 4, -4)),
         WallSign((None, None, 'Copper')).place(copper_sign_pos, SOUTH))
 
 
