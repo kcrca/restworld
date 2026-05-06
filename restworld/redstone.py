@@ -302,17 +302,18 @@ def room():
     room.function('redstone_lamp_init').add(WallSign((None, 'Redstone Lamp')).place(r(-1, 3, 0), EAST))
     room.loop('redstone_lamp', main_clock).loop(lambda step: setblock(r(0, 0, 0), step.elem),
                                                 ('Redstone Torch', 'Air'))
-    room.function('redstone_wire_init').add(WallSign((None, 'Redstone Wire')).place(r(0, 2, 0), WEST))
+    wire_sign_pos = r(0, 2, 0)
+    room.function('redstone_wire_init').add(WallSign((None, 'Redstone Wire')).place(wire_sign_pos, WEST))
     room.particle('redstone_wire', 'redstone_wire', r(4, 3, 2))
 
     def redstone_wire_loop(step):
         volume = Region(r(0, 0, 0), r(7, 0, 7))
         if step.i == 0:
             yield volume.replace('redstone_torch', 'glass')
-            yield Sign.change(r(0, 2, 0), (None, None, '(Powered)'))
+            yield Sign.change(wire_sign_pos, (None, None, '(Powered)'))
         else:
             yield volume.replace('glass', 'redstone_torch')
-            yield Sign.change(r(0, 2, 0), (None, None, ''))
+            yield Sign.change(wire_sign_pos, (None, None, ''))
 
     room.loop('redstone_wire', main_clock).loop(redstone_wire_loop, range(0, 2))
 
