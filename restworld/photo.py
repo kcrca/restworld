@@ -68,7 +68,7 @@ def quilt_blocks():
     for tag in (
         # Structural non-full-cube blocks
         'buttons', 'pressure_plates', 'doors', 'trapdoors', 'fences', 'fence_gates',
-        'slabs', 'stairs', 'rails', 'walls', 'bars', 'chains',
+        'slabs', 'stairs', 'rails', 'walls', 'bars', 'chains','frame',
         # Decorative non-full-cube blocks
         'signs', 'banners', 'beds', 'candles', 'lanterns', 'flower_pots',
         'campfires', 'cauldrons', 'anvil', 'wooden_shelves',
@@ -96,7 +96,7 @@ def quilt_blocks():
         r'hopper|infested|jigsaw|ladder|lava|lectern|lever|lichen|lily|litter|'
         r'mushroom|pane|pickle|repeater|rod|roots|scaffolding|seagrass|sensor|shrieker|'
         r'short|skull|spawner|sprouts|stand|stonecutter|structure|tall|test|torch|tripwire|'
-        r'vault|vein|vines?|void|water|waxed|wire)\b'
+        r'vault|vein|vines?|void|water|waxed|wire|frame|respawn|raw |reinforced|bone)\b'
         r'|dead.*coral(?!.*block)|^(\w+ )?copper$',
         re.IGNORECASE,
     )
@@ -117,10 +117,10 @@ def sorted_quilt_blocks():
             'Pumpkin|Jack|Melon', 'Raw', 'Log|Stem', 'Stripped', 'Bricks', 'Bookshelf', 'Sandstone', 'Piston',
             'Polished', 'Terracotta',
             '(Coal|Iron|Emerald|Lapis|Redstone|Gold|Diamond) Block',
-            'Table|Barrel|Furnace|Loom|Smoker|Crafter|Dispenser|Dropper|Observer',
+            'Table|Barrel|Furnace|Loom|Smoker|Crafter|Dispenser|Dropper|Observer','Glass',
         ),
         (
-            'Glass', 'Coral', 'Wood|Hyphae', 'Planks', 'Terracotta',
+            'Coral', 'Wood|Hyphae', 'Planks', 'Terracotta', 'Sulfur'
         ),
         (
             'Log|Stripped|Planks',
