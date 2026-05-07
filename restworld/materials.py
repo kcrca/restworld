@@ -17,7 +17,8 @@ from pynecraft.simpler import Item, ItemFrame, PLAINS, Region, Sign, SWAMP, Wall
 from restworld.rooms import erase, kill_em, Room
 from restworld.world import fast_clock, main_clock, restworld
 
-water_biomes = (PLAINS, FROZEN_OCEAN, COLD_OCEAN, OCEAN, LUKEWARM_OCEAN, WARM_OCEAN, SULFUR_CAVES, SWAMP, MANGROVE_SWAMP)
+water_biomes = (PLAINS, FROZEN_OCEAN, COLD_OCEAN, OCEAN, LUKEWARM_OCEAN, WARM_OCEAN, SULFUR_CAVES, SWAMP,
+                MANGROVE_SWAMP)
 
 
 def enchant(score: Score, tag: str):
@@ -944,7 +945,7 @@ def trim_functions(room):
 
     show_init.add(show.set(0), run_show_cleanup)
     show_menu.add(
-        execute().at(e().tag('trim_change_home')).if_().block(r(0, 3, 0), 'oak_wall_sign').run(run_change_cleanup))
+        execute().at(e().tag('trim_change_home')).if_().block(r(0, 3, 0), '#wall_signs').run(run_change_cleanup))
     show_cleanup.add(fill(r(0, 3, 0), r(0, 4, 0), 'air'),
                      execute().store(RESULT).score(adjust_change).if_().score(show).is_(EQ, change),
                      execute().if_().score(adjust_change).matches(True).run(
@@ -960,7 +961,7 @@ def trim_functions(room):
 
     change_init.add(change.set(1), run_change_cleanup)
     change_menu.add(
-        execute().at(e().tag('trim_show_home')).if_().block(r(0, 3, 0), 'oak_wall_sign').run(run_show_cleanup))
+        execute().at(e().tag('trim_show_home')).if_().block(r(0, 3, 0), '#wall_signs').run(run_show_cleanup))
     change_cleanup.add(fill(r(0, 3, 0), r(0, 4, 0), 'air'), kill(e().tag('trim_loop_home')),
                        execute().at(e().tag('trim_change_home')).positioned(r(-1, -0.5, 0)).run(
                            function('restworld:materials/trim_loop_home')))

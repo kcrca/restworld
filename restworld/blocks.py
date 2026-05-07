@@ -287,7 +287,7 @@ def room():
               name='Jukebox|Playing')))
     blocks('netherrack', NORTH, ('Netherrack', 'Warped Nylium', 'Crimson Nylium'))
     blocks('obsidian', SOUTH, ('Obsidian', 'Crying Obsidian'))
-    blocks('prismarine', SOUTH, ('Prismarine', 'Prismarine Bricks', 'Dark Prismarine'))
+    blocks('prismarine', NORTH, ('Prismarine', 'Prismarine Bricks', 'Dark Prismarine'))
     blocks('pumpkin', SOUTH, (
         'Pumpkin', Block('Carved Pumpkin', {'facing': SOUTH}), Block('Jack O Lantern', {'facing': SOUTH})))
     blocks('purpur', NORTH, ('Purpur Block', 'Purpur Pillar'))
@@ -296,7 +296,7 @@ def room():
     blocks('raw_metal', NORTH, ('Raw Iron|Block', 'Raw Copper|Block', 'Raw Gold|Block'))
     blocks('red_sand', SOUTH, ('Red Sand',))
     blocks('resin', NORTH, ('Resin Block', 'Resin Bricks', 'Chiseled|Resin Bricks'))
-    blocks('respawn_anchor', NORTH, (Block('Respawn Anchor', {'charges': x}) for x in range(0, 5)),
+    blocks('respawn_anchor', SOUTH, (Block('Respawn Anchor', {'charges': x}) for x in range(0, 5)),
            labels=tuple(('Respawn Anchor', f'Charges: {x:d}') for x in range(0, 5)))
     blocks('sulfur', SOUTH, ('Sulfur', 'Polished Sulfur', 'Sulfur Bricks', 'Chiseled Sulfur', 'Potent Sulfur'))
     blocks('cinnabar', SOUTH, ('Cinnabar', 'Polished Cinnabar', 'Cinnabar Bricks', 'Chiseled Cinnabar'))

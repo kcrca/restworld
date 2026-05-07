@@ -409,7 +409,7 @@ def room():
     room.loop('target', fast_clock).loop(target_loop, range(0, 16))
     room.function('wire_strength_init').add(
         fill(r(1, 2, -1), r(1, 2, -16),
-             ('oak_wall_sign', {'facing': WEST}, {'front_text': Sign.lines_nbt((None, None, 'Powered'))})))
+             (WallSign().id, {'facing': WEST}, {'front_text': Sign.lines_nbt((None, None, 'Powered'))})))
 
     def wire_strength_loop(step):
         block = 'redstone_block' if step.i == 0 else 'air'
