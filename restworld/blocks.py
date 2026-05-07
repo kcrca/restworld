@@ -724,6 +724,7 @@ def room():
             offset = r(*delta)
             yield setblock(offset, ('resin_clump', {o.name: True}))
 
+    room.function('resin_clumps_init', exists_ok=True).add(Sign.change(r(0, 2, -1), (None, 'Resin Clumps')))
     room.loop('resin_clumps', main_clock).loop(resin_clumps_loop, (
         'Pale Oak Log', 'Pale Oak Wood', 'Stripped|Pale Oak Log', 'Stripped|Pale Oak Wood'))
     room.particle('resin_clump', 'resin_clumps', r(0, 5.1, 0))
