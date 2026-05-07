@@ -61,8 +61,7 @@ def room():
 
         block_init = room.function(name + '_init', exists_ok=True).add(
             WallSign(()).place(r(facing.dx, 2, facing.dz), facing),
-            tag(e().tag(f'{name}_home')).add('particulate')
-        )
+            tag(e().tag(f'{name}_home')).add('particulate'))
         if expandable:
             block_init.add(tag(e().tag(f'{name}_home')).add('expansion'))
         if show_list:
@@ -287,7 +286,7 @@ def room():
               name='Jukebox|Playing')))
     blocks('netherrack', NORTH, ('Netherrack', 'Warped Nylium', 'Crimson Nylium'))
     blocks('obsidian', SOUTH, ('Obsidian', 'Crying Obsidian'))
-    blocks('prismarine', NORTH, ('Prismarine', 'Prismarine Bricks', 'Dark Prismarine'))
+    blocks('prismarine', SOUTH, ('Prismarine', 'Prismarine Bricks', 'Dark Prismarine'))
     blocks('pumpkin', SOUTH, (
         'Pumpkin', Block('Carved Pumpkin', {'facing': SOUTH}), Block('Jack O Lantern', {'facing': SOUTH})))
     blocks('purpur', NORTH, ('Purpur Block', 'Purpur Pillar'))
