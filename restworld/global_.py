@@ -60,7 +60,7 @@ def room():
     room = Room('global', restworld)
 
     def all_fill(y, filler, filter, destroy=False):
-        cmd = fill((r(0), y, r(0)), (73, y, 99), filler).replace(filter)
+        cmd = fill((r(0), y, r(0)), (74, y, 100), filler).replace(filter)
         if destroy:
             cmd = cmd.destroy()
         return execute().at(e().tag('full_reset_home')).run(cmd)
