@@ -6,8 +6,8 @@ from pynecraft.base import as_facing, EAST, Nbt, NORTH, r, TEXT_COLORS, to_name,
 from pynecraft.commands import a, Block, bossbar, BOSSBAR_COLORS, BOSSBAR_STYLES, clone, CREATIVE, data, dialog, e, \
     effect, Entity, execute, fill, forceload, function, gamemode, gamerule, item, kill, LEVELS, n, p, REPLACE, RESET, \
     return_, s, schedule, setblock, summon, SURVIVAL, tag, Text, waypoint
-from pynecraft.simpler import Item, ItemFrame, Sign, WallSign
 from pynecraft.info import LOCATOR_BAR
+from pynecraft.simpler import Item, ItemFrame, Sign, WallSign
 from restworld.rooms import kill_em, Room
 from restworld.world import fast_clock, main_clock, restworld, slow_clock
 
@@ -330,9 +330,9 @@ def room():
     room.function('pumpkin_blur_off', home=False).add(
         item().replace(p(), 'armor.head').from_(saver, 'armor.head'))
 
-    waypoint_sign_pos = r(0, 2, 0)
+    waypoint_sign_pos = r(-1, 2, 0)
     room.function('waypoints_base_init').add(
-        room.label(r(1, 2, 0), 'Waypoints', EAST),
+        room.label(r(0, 2, 0), 'Waypoints', EAST),
         WallSign((None, 'Waypoint Style:')).place(waypoint_sign_pos, EAST),
     )
     room.function('waypoints_init', home=False)
@@ -346,8 +346,6 @@ def room():
         radius, radius_name = radii[i % len(radii)]
         x, z = math.cos(angle_rad) * radius, math.sin(angle_rad) * radius
         tx, tz = math.cos(angle_rad) * 3.5, math.sin(angle_rad) * 3.5
-        x += 1
-        tx += 1
         color_name = to_name(color)
         stand = Entity('armor_stand', {'Rotation': [angle + 90, 0], 'PersistenceRequired': True, 'NoGravity': True,
                                        'attributes': [{'id': "minecraft:waypoint_transmit_range", 'base': 100000}]},
