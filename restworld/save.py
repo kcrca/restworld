@@ -1,4 +1,4 @@
-from pynecraft.base import Arg, r
+from pynecraft.base import Arg, MATCHES, r
 from pynecraft.commands import Block, e, Entity, execute, fill, function, kill, n, p, say, setblock, tp
 from restworld.rooms import Room
 from restworld.world import restworld
@@ -127,7 +127,7 @@ def room():
                 tp(p(), r(1, 0, 0)).facing(r(-2, 2, 0)))
 
     next = room.loop('next', home=False)
-    next.add(execute().if_().score(tall).matches(0).if_().score(next.score).matches((0, count - 1)).run(
+    next.add(execute().if_().score(tall, MATCHES, 0).if_().score(next.score, MATCHES, (0, count - 1)).run(
         function(next))).loop(next_loop, range(count * 2))
 
     prep_each = room.function('prep_each', home=False).add(
@@ -136,7 +136,7 @@ def room():
         setblock(r(0, 2, 0), Block('structure_block',
                                    nbt={'mode': 'SAVE', 'ignoreEntities': False, 'name': '$(name)_$(num)', 'sizeX': 32,
                                         'sizeY': 32, 'sizeZ': 32})),
-        execute().if_().score(tall).matches(1).run(
+        execute().if_().score(tall, MATCHES, 1).run(
             setblock(r(0, 34, 0), Block('structure_block',
                                         nbt={'mode': 'SAVE', 'ignoreEntities': False, 'name': '$(name)_$(tall_num)',
                                              'sizeX': 32,

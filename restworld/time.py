@@ -1,4 +1,4 @@
-from pynecraft.base import as_facing, EAST, NOON, NORTH, r, SOUTH, WEST
+from pynecraft.base import as_facing, EAST, MATCHES, NOON, NORTH, r, SOUTH, WEST
 from pynecraft.commands import data, e, execute, fill, function, kill, RESULT, setblock, summon, tag, time, worldborder
 from pynecraft.info import moon_phases
 from pynecraft.simpler import Item, WallSign
@@ -70,24 +70,24 @@ def room():
     time_score = room.score('time')
     time_forward = room.score('run_time_forward')
     room.function('run_time').add(
-        execute().unless().score(time_forward).matches((0, None)).run(function('restworld:time/time_init')),
+        execute().unless().score(time_forward, MATCHES, (0, None)).run(function('restworld:time/time_init')),
         execute().store(RESULT).score(time_score).run(time().query('day')),
-        execute().if_().score(time_score).matches((None, noon)).run(time_score.add(day)),
+        execute().if_().score(time_score, MATCHES, (None, noon)).run(time_score.add(day)),
 
-        execute().if_().score(time_score).matches(morn).if_().score(time_forward).matches((1, None)).run(
+        execute().if_().score(time_score, MATCHES, morn).if_().score(time_forward, MATCHES, (1, None)).run(
             time().add(slow)),
-        execute().if_().score(time_score).matches(even).if_().score(time_forward).matches((1, None)).run(
+        execute().if_().score(time_score, MATCHES, even).if_().score(time_forward, MATCHES, (1, None)).run(
             time().add(slow)),
-        execute().unless().score(time_score).matches(even).unless().score(time_score).matches(morn).if_().score(
-            time_forward).matches((1, None)).run(time().add(norm)),
+        execute().unless().score(time_score, MATCHES, even).unless().score(time_score, MATCHES, morn).if_().score(
+            time_forward, MATCHES, (1, None)).run(time().add(norm)),
 
         # New moon phase each day, so to preserve the moon phase we have to go back nearly 8 days, not nearly 1.
-        execute().if_().score(time_score).matches(morn).unless().score(time_forward).matches((1, None)).run(
+        execute().if_().score(time_score, MATCHES, morn).unless().score(time_forward, MATCHES, (1, None)).run(
             time().add(8 * day - slow)),
-        execute().if_().score(time_score).matches(even).unless().score(time_forward).matches((1, None)).run(
+        execute().if_().score(time_score, MATCHES, even).unless().score(time_forward, MATCHES, (1, None)).run(
             time().add(8 * day - slow)),
-        execute().unless().score(time_score).matches(even).unless().score(time_score).matches(morn).unless().score(
-            time_forward).matches((1, None)).run(time().add(8 * day - norm)),
+        execute().unless().score(time_score, MATCHES, even).unless().score(time_score, MATCHES, morn).unless().score(
+            time_forward, MATCHES, (1, None)).run(time().add(8 * day - norm)),
     )
 
     room.function('run_time_init').add(

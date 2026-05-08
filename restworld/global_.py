@@ -1,7 +1,8 @@
 import copy
 from itertools import count
 
-from pynecraft.base import Arg, DARK_GREEN, DIRECTIONS, EAST, EQ, LT, NOON, NORTH, OVERWORLD, Position, r, SOUTH, \
+from pynecraft.base import Arg, DARK_GREEN, DIRECTIONS, EAST, EQ, LT, MATCHES, NOON, NORTH, OVERWORLD, Position, r, \
+    SOUTH, \
     THE_END, THE_NETHER, TimeSpec, WEST
 from pynecraft.commands import Block, ClickEvent, clone, Commands, data, e, Entity, execute, fill, FORCE, forceload, \
     function, gamerule, give, HoverEvent, kill, MINUS, MOD, MOVE, p, REPLACE, RESULT, return_, s, schedule, Score, \
@@ -76,7 +77,7 @@ def room():
     def kill_if_time():
         ex = execute()
         for c in restworld.clocks():
-            ex = ex.unless().score(c.time).matches((0, 1))
+            ex = ex.unless().score(c.time, MATCHES, (0, 1))
         return ex.run(function('restworld:global/kill_em'))
 
     room.function('power_off').add(
@@ -145,8 +146,8 @@ def room():
     room.add(Function('clock_toggle').add(
         clock_toggle.set(0),
         if_clock_running.run(clock_toggle.set(1)),
-        execute().if_().score(clock_toggle).matches(0).run(function('restworld:global/clock_on')),
-        execute().if_().score(clock_toggle).matches(1).run(function('restworld:global/clock_off'))))
+        execute().if_().score(clock_toggle, MATCHES, 0).run(function('restworld:global/clock_on')),
+        execute().if_().score(clock_toggle, MATCHES, 1).run(function('restworld:global/clock_off'))))
 
     def clock_sign(dir):
         name = f'clock_toggle_sign_{dir}_init'
@@ -266,11 +267,11 @@ def room():
     room.function('toggle_raised', home=False).add(
         execute().store(RESULT).score(mobs_up).at(e().tag('turtle_eggs_home')).if_().entity(
             e().type('turtle').distance((None, 3))),
-        execute().if_().score(mobs_up).matches(0).run(function(lower_mobs)),
-        execute().unless().score(mobs_up).matches(0).run(function(raise_mobs)),
+        execute().if_().score(mobs_up, MATCHES, 0).run(function(lower_mobs)),
+        execute().unless().score(mobs_up, MATCHES, 0).run(function(raise_mobs)),
     )
     room.function('reset_raised', home=False).add(
-        execute().unless().score(mobs_up).matches(0).run(function(lower_mobs)),
+        execute().unless().score(mobs_up, MATCHES, 0).run(function(lower_mobs)),
         mobs_up.set(0))
 
     last_clean = room.score('last_clean_time')
@@ -282,7 +283,7 @@ def room():
     room.function('ensure_clean').add(
         execute().store(RESULT).score(clean_time).run(time().query('gametime')),
         clean_time.operation(MINUS, last_clean),
-        execute().if_().score(clean_time).is_(LT, clean_time_max).run(return_(0)),
+        execute().if_().score(clean_time, LT, clean_time_max).run(return_(0)),
         execute().store(RESULT).score(last_clean).run(time().query('gametime')),
         # Make sure kids don't grow up
         execute().as_(e().tag('kid')).run(data().merge(s(), {'Age': -2_147_483_648, 'IsBaby': True})),

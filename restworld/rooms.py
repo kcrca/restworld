@@ -5,7 +5,7 @@ from typing import Callable, Iterable, Sequence, Tuple
 
 import math
 
-from pynecraft.base import Arg, BLUE, FacingDef, is_arg, Nbt, ORANGE, r, RelCoord, rotate_facing, ROTATION_180, \
+from pynecraft.base import Arg, BLUE, FacingDef, is_arg, MATCHES, Nbt, ORANGE, r, RelCoord, rotate_facing, ROTATION_180, \
     ROTATION_270, ROTATION_90, to_name
 from pynecraft.commands import a, as_block, as_entity, as_facing, as_score, Block, BlockDef, BYTE, CLEAR, clone, \
     Command, Commands, comment, data, e, Entity, EntityDef, execute, fill, function, INT, kill, MINUS, MOVE, n, p, \
@@ -412,11 +412,11 @@ class Room(FunctionSet):
                 execute().at(e().tag(x.base_name + '_home')).run(function(x.full_name)) for x in loops)).add(
                 team().join('no_collision', e().tag(self.name))
             )
-            tick_func.add(execute().if_().score(clock.time).matches(0).run(function(clock_func.full_name)))
+            tick_func.add(execute().if_().score(clock.time, MATCHES, 0).run(function(clock_func.full_name)))
         tick_func.add(function(x.full_name) for x in filter(
             lambda x: self._is_func_type(x, '_tick'), self.functions.values()))
         if self.particle_func:
-            tick_func.add(execute().if_().score(self.show_particles).matches(1).run(function(self.particle_func)))
+            tick_func.add(execute().if_().score(self.show_particles, MATCHES, 1).run(function(self.particle_func)))
 
         finish_funcs = {}
         clock_re = str('(' + '|'.join(x.name for x in self._clocks.keys()) + ')')
@@ -538,14 +538,14 @@ class Room(FunctionSet):
         if clause:
             cmd = clause(cmd)
         if step:
-            cmd = cmd.if_().score(step.loop.score).matches(step.i)
+            cmd = cmd.if_().score(step.loop.score, MATCHES, step.i)
         block = as_block(block)
         cmd = cmd.run(particle(Particle.block(block.id, state=block.state), pos, (0.25, 0, 0.25), 1, 1))
         self.particle_func.add(cmd)
 
 
 def if_clause(score, value):
-    return lambda cmd: cmd.if_().score(score).matches(value)
+    return lambda cmd: cmd.if_().score(score, MATCHES, value)
 
 
 def _name_for(mob):

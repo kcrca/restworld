@@ -3,11 +3,11 @@ from typing import Callable
 from titlecase import titlecase
 
 from pynecraft import info
-from pynecraft.base import EAST, Nbt, NORTH, r, SOUTH, to_id, to_name, WEST
+from pynecraft.base import EAST, MATCHES, Nbt, NORTH, r, SOUTH, to_id, to_name, WEST
 from pynecraft.commands import Block, data, e, execute, fill, function, kill, setblock, tag, Text
-from pynecraft.info import small_flowers, stems, tulips
+from pynecraft.info import BIRCH_FOREST, CHERRY_GROVE, DARK_FOREST, MANGROVE_SWAMP, PALE_GARDEN, small_flowers, \
+    SNOWY_TAIGA, stems, tulips
 from pynecraft.simpler import JUNGLE, PLAINS, Region, SAVANNA, Sign, WallSign
-from pynecraft.info import BIRCH_FOREST, CHERRY_GROVE, DARK_FOREST, MANGROVE_SWAMP, PALE_GARDEN, SNOWY_TAIGA
 from restworld.rooms import erase, Room
 from restworld.world import fast_clock, main_clock, restworld, slow_clock, text_display
 
@@ -93,9 +93,9 @@ def room():
 
     def cave_vines_loop(step):
         yield setblock(r(0, 3, 0), Block('cave_vines_plant', {'berries': step.elem[1]}))
-        yield execute().unless().score(cave_vines_tops).matches(1).run(
+        yield execute().unless().score(cave_vines_tops, MATCHES, 1).run(
             setblock(r(0, 2, 0), Block('cave_vines', {'berries': step.elem[0]})))
-        yield execute().if_().score(cave_vines_tops).matches(1).run(
+        yield execute().if_().score(cave_vines_tops, MATCHES, 1).run(
             setblock(r(0, 2, 0), Block('cave_vines', {'berries': step.elem[0], 'age': 25})))
 
     room.loop('cave_vines', main_clock).loop(cave_vines_loop,
@@ -295,8 +295,8 @@ def room():
         shrooms_tops = room.score('shrooms_tops')
         vines = 'weeping_vines' if step.elem == 'crimson' else 'twisting_vines'
         y_off = 3 if step.elem == 'crimson' else 5
-        yield execute().unless().score(shrooms_tops).matches(1).run(setblock(r(1, y_off, 0), (vines, {'age': 0})))
-        yield execute().if_().score(shrooms_tops).matches(1).run(setblock(r(1, y_off, 0), (vines, {'age': 25})))
+        yield execute().unless().score(shrooms_tops, MATCHES, 1).run(setblock(r(1, y_off, 0), (vines, {'age': 0})))
+        yield execute().if_().score(shrooms_tops, MATCHES, 1).run(setblock(r(1, y_off, 0), (vines, {'age': 25})))
         room.particle(f'{step.elem} roots', 'shrooms', r(1, 4, 2), step)
         room.particle(f'{step.elem} fungus', 'shrooms', r(1, 4, 4), step)
         room.particle(vines, 'shrooms', r(1, y_off, 0), step)
@@ -354,7 +354,7 @@ def room():
         yield setblock(r(-1, -1, -1), 'air')
         yield WallSign((None, f'{tree} Trees', 'Biome:', to_name(str(biome)))).place(r(1, 2, 7), WEST)
         plant_room = Region(r(0, -5, -1), r(31, 30, 58))
-        yield execute().unless().score(freeze_biome).matches(1).run(
+        yield execute().unless().score(freeze_biome, MATCHES, 1).run(
             execute().at(e().tag('plants_room_beg_home')).run(
                 plant_room.fillbiome(biome),
                 plant_room.fill('air', replace='snow')))
@@ -403,7 +403,7 @@ def three_funcs(room):
             yield data().merge(r(1, 2, z), {'front_text': Sign.lines_nbt(('', to_name(which), '', ''))})
             room.particle(which, 'three_height', r(0, 4 + count, z), step)
             if which == 'cactus':
-                yield execute().unless().score(flower).matches(0).run(setblock(r(0, 4 + count, z), 'cactus_flower'))
+                yield execute().unless().score(flower, MATCHES, 0).run(setblock(r(0, 4 + count, z), 'cactus_flower'))
 
         yield from height(0, 'cactus')
         yield from height(-3, 'sugar_cane')
@@ -436,7 +436,7 @@ def three_funcs(room):
         setblock(r(0, 3, 0), 'cactus'),
         setblock(r(0, 3, -3), 'sugar_cane'),
     ).loop(three_age_loop, range(16)).add(
-        execute().unless().score(flower).matches(0).run(setblock(r(0, 5, 0), 'cactus_flower')))
+        execute().unless().score(flower, MATCHES, 0).run(setblock(r(0, 5, 0), 'cactus_flower')))
     room.function('three_init').add(
         room.label(r(-1, 2, 0), 'Change Age', EAST),
         room.label(r(-1, 2, 3), 'Cactus Flower', EAST))

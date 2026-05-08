@@ -2,7 +2,7 @@ import math
 from titlecase import titlecase
 
 from pynecraft import commands
-from pynecraft.base import as_facing, EAST, Nbt, NORTH, r, TEXT_COLORS, to_name, WEST
+from pynecraft.base import as_facing, EAST, MATCHES, Nbt, NORTH, r, TEXT_COLORS, to_name, WEST
 from pynecraft.commands import a, Block, bossbar, BOSSBAR_COLORS, BOSSBAR_STYLES, clone, CREATIVE, data, dialog, e, \
     effect, Entity, execute, fill, forceload, function, gamemode, gamerule, item, kill, LEVELS, n, p, REPLACE, RESET, \
     return_, s, schedule, setblock, summon, SURVIVAL, tag, Text, waypoint
@@ -54,7 +54,7 @@ def room():
 
     # Can't use bounce because we need to show two things at full strength.
     room.loop('beacon', slow_clock).add(
-        execute().if_().score(beacon_on).matches(0).run(return_(0))
+        execute().if_().score(beacon_on, MATCHES, 0).run(return_(0))
     ).loop(
         beacon_loop, (0, 1, 2, 3, 4, 4, 3, 2, 1))
     beacon_start = room.function('beacon_start', home=False).add(
@@ -91,8 +91,8 @@ def room():
     room.function('toggle_bossbar', home=False).add(
         toggle_bossbar.set(1),
         execute().at(e().tag('bossbar_run_home')).run(toggle_bossbar.set(0)),
-        execute().if_().score(toggle_bossbar).matches(1).run(function(bb_on)),
-        execute().if_().score(toggle_bossbar).matches(0).run(function(bb_off)),
+        execute().if_().score(toggle_bossbar, MATCHES, 1).run(function(bb_on)),
+        execute().if_().score(toggle_bossbar, MATCHES, 0).run(function(bb_off)),
     )
 
     bb_color_init = room.function('bossbar_color_init', home=False).add(room.label(r(1, 2, 1), 'Color', EAST))
@@ -129,12 +129,12 @@ def room():
     )
 
     room.loop('bossbar_run', main_clock).loop(None, range(0, 1)).add(
-        execute().if_().score(bossbar_which).matches(0).run(function(bb_color)),
-        execute().if_().score(bossbar_which).matches(1).run(function(bb_style)),
-        execute().if_().score(bossbar_which).matches(2).run(function(bb_value)),
-        execute().unless().score(bossbar_which).matches(0).run(function(bb_color.full_name + '_cur')),
-        execute().unless().score(bossbar_which).matches(1).run(function(bb_style.full_name + '_cur')),
-        execute().unless().score(bossbar_which).matches(2).run(function(bb_value.full_name + '_cur')),
+        execute().if_().score(bossbar_which, MATCHES, 0).run(function(bb_color)),
+        execute().if_().score(bossbar_which, MATCHES, 1).run(function(bb_style)),
+        execute().if_().score(bossbar_which, MATCHES, 2).run(function(bb_value)),
+        execute().unless().score(bossbar_which, MATCHES, 0).run(function(bb_color.full_name + '_cur')),
+        execute().unless().score(bossbar_which, MATCHES, 1).run(function(bb_style.full_name + '_cur')),
+        execute().unless().score(bossbar_which, MATCHES, 2).run(function(bb_value.full_name + '_cur')),
     )
 
     water_potion = Item('potion', components={'potion_contents': {'potion': 'water'}})

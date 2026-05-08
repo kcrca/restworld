@@ -1,4 +1,4 @@
-from pynecraft.base import NORTH, r, SOUTH, WEST
+from pynecraft.base import MATCHES, NORTH, r, SOUTH, WEST
 from pynecraft.commands import Block, data, e, Entity, execute, function, n, REPLACE, ride, s, schedule, setblock, tag
 from pynecraft.simpler import Item, Sign, WallSign
 from restworld.rooms import kill_em, Room
@@ -35,8 +35,8 @@ def room():
     def ghastling_loop(step):
         block = Block('dried_ghast', {'hydration': step.i, 'facing': WEST})
         pos = r(0, 3, 0)
-        yield execute().unless().score(dry_ghast).matches(0).run(setblock(pos, block))
-        yield execute().if_().score(dry_ghast).matches(0).run(setblock(pos, block.merge_state({'waterlogged': True})))
+        yield execute().unless().score(dry_ghast, MATCHES, 0).run(setblock(pos, block))
+        yield execute().if_().score(dry_ghast, MATCHES, 0).run(setblock(pos, block.merge_state({'waterlogged': True})))
         yield Sign.change(r(-1, 2, 0), (None, None, f'Hydration: {step.i}'))
 
     room.function('ghastling_init').add(
@@ -87,7 +87,7 @@ def room():
         p = placer(r(0, 2, 0), lhs_dir, 3, 3, tags=('piglin',))
         yield p.summon(hoglins[step.i])
         if step.i == 0:
-            yield execute().if_().score(hoglin_riders).matches(1).run(function(riders)),
+            yield execute().if_().score(hoglin_riders, MATCHES, 1).run(function(riders)),
         yield p.summon(step.elem)
 
     room.loop('piglin', main_clock).add(kill_em(e().tag('piglin'))).loop(piglin_loop, piglins)
@@ -112,9 +112,9 @@ def room():
         yield setblock(r(0, 1, -3), block)
 
     room.loop('strider', main_clock).loop(strider_loop, (True, False)).add(
-        execute().unless().score(saddle).matches(0).run(
+        execute().unless().score(saddle, MATCHES, 0).run(
             data().modify(n().tag('strider', 'adult'), 'equipment.saddle').set().value(Item.nbt_for('saddle'))),
-        execute().if_().score(saddle).matches(0).run(
+        execute().if_().score(saddle, MATCHES, 0).run(
             data().remove(n().tag('strider', 'adult'), 'equipment.saddle')))
     room.function('strider_init').add(
         execute().as_(e().tag('strider_home')).run(tag(s()).add('blockers_home')),

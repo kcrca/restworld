@@ -1,8 +1,8 @@
-from pynecraft.base import d, EAST, r
+from pynecraft.base import d, EAST, MATCHES, r
 from pynecraft.commands import clone, e, effect, Entity, execute, fill, FORCE, function, INFINITE, MOVE, n, say, \
     setblock, tp
-from pynecraft.simpler import Item
 from pynecraft.info import INVISIBILITY
+from pynecraft.simpler import Item
 from restworld.rooms import kill_em, Room
 from restworld.world import main_clock, restworld
 
@@ -64,9 +64,9 @@ def room():
         custom_reset.set(0),
         execute().at(e().tag('diy_cloner')).unless().block(r(0, 0, -1), 'air').run(custom_reset.set(1)),
         execute().at(e().tag('diy_cloner')).if_().block(r(0, 4, -1), 'air').run(custom_reset.set(1)),
-        execute().if_().score(custom_reset).matches(1).at(e().tag('diy_starter')
+        execute().if_().score(custom_reset, MATCHES, 1).at(e().tag('diy_starter')
                                                           ).run(tp(e().tag('diy_cloner'), r(0, 2, 0))),
-        execute().if_().score(custom_reset).matches(0).as_(e().tag('diy_cloner')).at(
+        execute().if_().score(custom_reset, MATCHES, 0).as_(e().tag('diy_cloner')).at(
             e().tag('diy_cloner')).run(tp(e().tag('diy_cloner'), d(0, 0, 1))),
         execute().at(e().tag('diy_cloner')).unless().block(r(0, 4, 0), 'air').run(
             setblock(r(0, 3, 0), 'magenta_glazed_terracotta')),

@@ -1,4 +1,4 @@
-from pynecraft.base import Arg, as_facing, E, EAST, N, NE, NORTH, NW, r, S, SE, SOUTH, SW, UP, W, WEST
+from pynecraft.base import Arg, as_facing, E, EAST, MATCHES, N, NE, NORTH, NW, r, S, SE, SOUTH, SW, UP, W, WEST
 from pynecraft.commands import clone, data, e, execute, fill, function, kill, n, setblock, SUCCESS
 from pynecraft.simpler import ItemFrame, WallSign
 from restworld.rooms import Room
@@ -96,7 +96,7 @@ def room():
             execute().store(SUCCESS).score(changed).run(
                 data().modify(room.store, f'cur.{dir}.to').set().from_(
                     n().tag(f'connect_frame_{dir}'), 'Item.id')),
-            execute().if_().score(changed).matches(1).run(
+            execute().if_().score(changed, MATCHES, 1).run(
                 data().modify(room.store, f'cur.{dir}.from').set().from_(room.store, f'prev.{dir}.to'),
                 execute().at(e().tag('redo_home')).run(function(redo_one).with_(room.store, f'cur.{dir}'))
             )

@@ -1,6 +1,6 @@
 import re
 
-from pynecraft.base import Arg, as_facing, CYAN, EQ, r, SOUTH, to_name
+from pynecraft.base import Arg, as_facing, CYAN, EQ, MATCHES, r, SOUTH, to_name
 from pynecraft.commands import Block, COLORS, data, e, Entity, execute, fill, function, kill, s, setblock, Text, WHITE
 from pynecraft.info import as_pattern, BORDER, BRICKS, CIRCLE, CREEPER, CROSS, CURLY_BORDER, FLOWER, GRADIENT, \
     GRADIENT_UP, HALF_HORIZONTAL, HALF_HORIZONTAL_BOTTOM, MOJANG, patterns, patterns_standard_order, RHOMBUS, \
@@ -224,14 +224,14 @@ def room():
         setblock(r(0, 3, 0), 'air'),
         setblock(r(11, 3, 11), 'air'),
     ).loop(render_authored_banners, range(0, half)).add(
-        execute().if_().score(which).matches(0).run(function(color_loop)),
-        execute().unless().score(which).matches(0).run(function(ink_loop)),
+        execute().if_().score(which, MATCHES, 0).run(function(color_loop)),
+        execute().unless().score(which, MATCHES, 0).run(function(ink_loop)),
         function(update).with_('restworld:banners'),
     )
 
     color_loop.loop(banner_color_loop, COLORS).add(
         # make sure the two values are different.
-        execute().if_().score(banner_ink).is_(EQ, banner_color).unless().score(('_to_incr', 'banners')).matches(0).run(
+        execute().if_().score(banner_ink, EQ, banner_color).unless().score(('_to_incr', 'banners'), MATCHES, 0).run(
             function(color_loop))
     )
 
@@ -241,7 +241,7 @@ def room():
 
     ink_loop.loop(banner_ink_loop, COLORS).add(
         # make sure the two values are different.
-        execute().if_().score(banner_ink).is_(EQ, banner_color).unless().score(('_to_incr', 'banners')).matches(0).run(
+        execute().if_().score(banner_ink, EQ, banner_color).unless().score(('_to_incr', 'banners'), MATCHES, 0).run(
             function(ink_loop)))
 
     room.function('switch_to_color', home=False).add(switch_banners('color'))
@@ -264,8 +264,8 @@ def room():
         y = 3 if row == 0 else 2
         z = 1 if row == 0 else 2
         banner_controls.add(WallSign((None, c), (
-            execute().if_().score(which).matches(0).run(banner_color.set(i)),
-            execute().unless().score(which).matches(0).run(banner_ink.set(i)),
+            execute().if_().score(which, MATCHES, 0).run(banner_color.set(i)),
+            execute().unless().score(which, MATCHES, 0).run(banner_ink.set(i)),
             execute().at(e().tag('all_banners_home')).run(function('restworld:banners/all_banners_cur'))
         ), front=None).place(r(x, y, z), SOUTH))
     room.function('banner_controls_init').add(

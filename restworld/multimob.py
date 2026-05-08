@@ -4,7 +4,7 @@ import math
 from titlecase import titlecase
 
 from pynecraft import info
-from pynecraft.base import Arg, as_facing, EAST, NE, NORTH, NW, r, rotate_facing, SE, SOUTH, SW, WEST
+from pynecraft.base import Arg, as_facing, EAST, MATCHES, NE, NORTH, NW, r, rotate_facing, SE, SOUTH, SW, WEST
 from pynecraft.commands import comment, data, e, Entity, execute, fill, function, n, return_, s, setblock, summon, tag, \
     Text
 from pynecraft.simpler import VILLAGER_BIOMES, VILLAGER_PROFESSIONS, WallSign
@@ -210,14 +210,14 @@ def room():
             is_none_score.set(Arg('is_none')),
             big_score.set(Arg('big')),
             undead_score.set(Arg('undead')),
-            execute().if_().score(water_score).matches(1).run(
+            execute().if_().score(water_score, MATCHES, 1).run(
                 fill(r(-1, 2, -1), r(5, 4, 5), 'structure_void').replace('air'),
                 fill(r(0, 2, 0), r(4, 4, 4), 'water').replace('structure_void')),
-            execute().unless().score(water_score).matches(1).run(
+            execute().unless().score(water_score, MATCHES, 1).run(
                 fill(r(0, 2, 0), r(4, 4, 4), 'air').replace('water'),
                 fill(r(-1, 2, -1), r(5, 4, 5), 'air').replace('structure_void')),
             fill(r(-1, 200, -1), r(5, 200, 5), 'air'),
-            execute().if_().score(is_none_score).matches(1).run(return_(0))
+            execute().if_().score(is_none_score, MATCHES, 1).run(return_(0))
         )
 
         big_places = ((0, 4), (4, 0)) if sector in (NW, SE) else ((0, 0), (4, 4))
@@ -225,10 +225,10 @@ def room():
             for mz in range(0, 6, 2):
                 cmd = summon(Arg('id'), (r(mx), '~$(y)', r(mz)), Arg('nbt'))
                 if (mx, mz) not in big_places:
-                    cmd = execute().unless().score(big_score).matches(1).run(cmd)
+                    cmd = execute().unless().score(big_score, MATCHES, 1).run(cmd)
                 f.add(cmd)
         f.add(
-            execute().if_().score(undead_score).matches(1).at(e().tag(sector_tag)).run(
+            execute().if_().score(undead_score, MATCHES, 1).at(e().tag(sector_tag)).run(
                 setblock(r(0, 200, 0), 'smooth_quartz')))
 
     for i in range(NUM_GROUPS):

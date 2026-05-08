@@ -1,4 +1,5 @@
-from pynecraft.base import DARK_BLUE, DARK_GREEN, DARK_PURPLE, GOLD, LIGHT_PURPLE, Nbt, NE, NORTH, NW, r, RED, SE, \
+from pynecraft.base import DARK_BLUE, DARK_GREEN, DARK_PURPLE, GOLD, LIGHT_PURPLE, MATCHES, Nbt, NE, NORTH, NW, r, RED, \
+    SE, \
     SOUTH, SW, WEST
 from pynecraft.commands import Block, ClickEvent, clone, e, Entity, execute, fill, forceload, function, kill, Score, \
     scoreboard, \
@@ -87,9 +88,9 @@ def room():
     speed_main = Score('SPEED_MAIN', 'clocks')
     speed_slow = Score('SPEED_SLOW', 'clocks')
     room.function('faster_clocks', home=False).add(
-        execute().if_().score(speed_fast).matches((10, None)).run(scoreboard().players().remove(speed_fast, 2)),
-        execute().if_().score(speed_main).matches((10, None)).run(scoreboard().players().remove(speed_main, 5)),
-        execute().if_().score(speed_slow).matches((10, None)).run(scoreboard().players().remove(speed_slow, 10)))
+        execute().if_().score(speed_fast, MATCHES, (10, None)).run(scoreboard().players().remove(speed_fast, 2)),
+        execute().if_().score(speed_main, MATCHES, (10, None)).run(scoreboard().players().remove(speed_main, 5)),
+        execute().if_().score(speed_slow, MATCHES, (10, None)).run(scoreboard().players().remove(speed_slow, 10)))
     room.function('slower_clocks', home=False).add(
         fast_clock.speed.add(2),
         main_clock.speed.add(5),

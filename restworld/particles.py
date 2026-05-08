@@ -2,12 +2,12 @@ import random
 
 import math
 
-from pynecraft.base import Arg, as_facing, d, EAST, MIDNIGHT, Nbt, NOON, NORTH, OVERWORLD, r, SOUTH, to_id, WEST
+from pynecraft.base import Arg, as_facing, d, EAST, MATCHES, MIDNIGHT, Nbt, NOON, NORTH, OVERWORLD, r, SOUTH, to_id, \
+    WEST
 from pynecraft.commands import a, Block, BLOCK_MARKER, CLEAR, data, DUST_PILLAR, e, effect, Entity, execute, \
     FALLING_DUST, fill, fillbiome, function, HoverEvent, INFINITE, item, kill, Particle, particle, playsound, RAIN, \
     REPLACE, say, schedule, setblock, summon, Text, THUNDER, time, weather
 from pynecraft.function import BLOCK, ITEM
-from pynecraft.simpler import Book, PLAINS, TextDisplay, VILLAGER_BIOMES, VILLAGER_PROFESSIONS, WallSign
 from pynecraft.info import ABSORPTION, ANGRY_VILLAGER, as_particle, ASH, BASALT_DELTAS, BLINDNESS, BLOCK_CRUMBLE, \
     BUBBLE, BUBBLE_COLUMN_UP, BUBBLE_POP, CAMPFIRE_COSY_SMOKE, CAMPFIRE_SIGNAL_SMOKE, CHERRY_LEAVES, CLOUD, COMPOSTER, \
     COPPER_FIRE_FLAME, CRIMSON_FOREST, CRIMSON_SPORE, CRIT, CURRENT_DOWN, DAMAGE_INDICATOR, DOLPHIN, DRAGON_BREATH, \
@@ -31,6 +31,7 @@ from pynecraft.info import ABSORPTION, ANGRY_VILLAGER, as_particle, ASH, BASALT_
     TRIAL_SPAWNER_DETECTION, \
     TRIAL_SPAWNER_DETECTION_OMINOUS, UNDERWATER, VAULT_CONNECTION, VIBRATION, WARPED_FOREST, WARPED_SPORE, WAX_OFF, \
     WAX_ON, WHITE_ASH, WHITE_SMOKE, WITCH
+from pynecraft.simpler import Book, PLAINS, TextDisplay, VILLAGER_BIOMES, VILLAGER_PROFESSIONS, WallSign
 from restworld.rooms import ActionDesc, ensure, kill_em, SignedRoom, span, Wall
 from restworld.world import fast_clock, main_clock, restworld, slow_clock
 
@@ -168,7 +169,7 @@ def at_center():
 
 
 def clock(which, delay=0):
-    return execute().if_().score(which.time).matches(delay).at(e().tag('particles_action_home')).positioned(
+    return execute().if_().score(which.time, MATCHES, delay).at(e().tag('particles_action_home')).positioned(
         r(0, 2, 0))
 
 
@@ -460,9 +461,9 @@ def room():
     growth = room.score('growth')
     room.function('pause_mob_growth', home=False).add(main().run(
         growth.add(1),
-        execute().if_().score(growth).matches((2, None)).run(growth.set(0)),
-        execute().if_().score(growth).matches(0).run(particle(PAUSE_MOB_GROWTH, r(0, 0.5, 0), (0.2, 0, 0.2), 0, 10)),
-        execute().if_().score(growth).matches(1).run(particle(RESET_MOB_GROWTH, r(0, 0.5, 0), (0.2, 0, 0.2), 0, 10)),
+        execute().if_().score(growth, MATCHES, (2, None)).run(growth.set(0)),
+        execute().if_().score(growth, MATCHES, 0).run(particle(PAUSE_MOB_GROWTH, r(0, 0.5, 0), (0.2, 0, 0.2), 0, 10)),
+        execute().if_().score(growth, MATCHES, 1).run(particle(RESET_MOB_GROWTH, r(0, 0.5, 0), (0.2, 0, 0.2), 0, 10)),
     ))
     room.function('poof', home=False).add(
         main().run(function(animal), kill(particler), kill(e().type('item').distance((None, 10)))),

@@ -5,7 +5,8 @@ from titlecase import titlecase
 
 from pynecraft import info
 from pynecraft._values import SULFUR_CAVES
-from pynecraft.base import Arg, as_facing, EAST, EQ, Nbt, NbtDef, NE, NORTH, NW, r, RelCoord, SOUTH, to_id, WEST
+from pynecraft.base import Arg, as_facing, EAST, EQ, MATCHES, Nbt, NbtDef, NE, NORTH, NW, r, RelCoord, SOUTH, to_id, \
+    WEST
 from pynecraft.commands import a, as_block, Block, BlockDef, clone, data, e, effect, Entity, execute, fill, fillbiome, \
     function, INFINITE, item, kill, LONG, MOD, n, p, PLUS, random, REPLACE, RESULT, s, schedule, Score, \
     scoreboard, setblock, stopsound, summon, tag
@@ -35,7 +36,7 @@ def enchant(score: Score, tag: str):
             for place in places:
                 commands.append(data().remove(s(), f'equipment.{place}.components.enchantments'))
         value = int(on)
-        yield execute().if_().score(score).matches(value).as_(e().tag(tag)).run(commands)
+        yield execute().if_().score(score, MATCHES, value).as_(e().tag(tag)).run(commands)
 
 
 def room():
@@ -74,7 +75,7 @@ def room():
             yield execute().store(RESULT).entity(e().tag('arrow').limit(1),
                                                  'item.components.potion_contents.custom_color', LONG).run(
                 random().value((0, 0xffffff)))
-        yield execute().if_().score(fire_arrow).matches((1, None)).as_(e().tag('arrow')).run(
+        yield execute().if_().score(fire_arrow, MATCHES, (1, None)).as_(e().tag('arrow')).run(
             data().modify(s(), 'HasVisualFire').set().value(True))
         yield Sign.change(r(0, 2, 0), (None, step.elem.name))
 
@@ -211,13 +212,13 @@ def room():
             yield volume.replace('blackstone', 'diorite')
             yield volume.replace('basalt', 'granite')
         else:
-            yield execute().if_().score(deepslate_materials).matches(0).run(
+            yield execute().if_().score(deepslate_materials, MATCHES, 0).run(
                 volume.replace(ore.id, '#restworld:ores'))
-            yield execute().if_().score(deepslate_materials).matches(0).run(
+            yield execute().if_().score(deepslate_materials, MATCHES, 0).run(
                 volume.replace('stone', '#restworld:ore_background'))
-            yield execute().if_().score(deepslate_materials).matches(1).run(
+            yield execute().if_().score(deepslate_materials, MATCHES, 1).run(
                 volume.replace('deepslate_%s' % ore.id, '#restworld:ores'))
-            yield execute().if_().score(deepslate_materials).matches(1).run(
+            yield execute().if_().score(deepslate_materials, MATCHES, 1).run(
                 volume.replace('deepslate', '#restworld:ore_background'))
             yield volume.replace('dirt', 'soul_sand')
             yield volume.replace('andesite', 'soul_soil')
@@ -430,25 +431,25 @@ def basic_functions(room, enchanted):
         erase(r(2, 2, 2), r(-2, 5, 4)),
         kill_em(e().tag('material_thing'))
     ).loop(basic_loop, materials).add(
-        execute().if_().score(has_saddle).matches(1).run(
+        execute().if_().score(has_saddle, MATCHES, 1).run(
             item().replace(e().tag('basic_saddle'), 'saddle').with_('saddle')),
-        execute().if_().score(has_saddle).matches(0).run(
+        execute().if_().score(has_saddle, MATCHES, 0).run(
             item().replace(e().tag('basic_saddle'), 'saddle').with_('air')),
-        execute().if_().score(turtle_helmet).matches(1).run(
+        execute().if_().score(turtle_helmet, MATCHES, 1).run(
             execute().as_(e().tag('armor_shower')).run(
                 data().modify(s(), 'equipment.head.id').set().value('turtle_helmet')),
             data().modify(n().tag('armor_helmet'), 'Item.id').set().value('turtle_helmet')),
-        execute().if_().score(elytra).matches(1).run(
+        execute().if_().score(elytra, MATCHES, 1).run(
             execute().as_(e().tag('armor_shower')).run(data().modify(s(), 'equipment.chest.id').set().value('elytra')),
             data().modify(n().tag('armor_chestplate'), 'Item.id').set().value('elytra'),
             which_elytra.add(1),
-            execute().if_().score(which_elytra).matches((2, None)).run(which_elytra.set(0)),
-            execute().if_().score(which_elytra).matches(1).run(
+            execute().if_().score(which_elytra, MATCHES, (2, None)).run(which_elytra.set(0)),
+            execute().if_().score(which_elytra, MATCHES, 1).run(
                 execute().as_(e().tag('armor_shower')).run(
                     data().modify(s(), 'equipment.chest.components.damage').set().value(450)),
                 data().modify(n().tag('armor_chestplate'), 'Item.components.damage').set().value(450)
             ),
-            execute().unless().score(which_elytra).matches(1).run(
+            execute().unless().score(which_elytra, MATCHES, 1).run(
                 execute().as_(e().tag('armor_shower')).run(
                     data().modify(s(), 'equipment.chest.components.damage').set().value(0)),
                 data().modify(n().tag('armor_chestplate'), 'Item.components.damage').set().value(0)
@@ -752,12 +753,12 @@ def wood_functions(room):
                 chest_boat_item = 'bamboo_chest_raft'
             boat = Entity(boat_item, boat_state)
             chest_boat = Entity(chest_boat_item, boat_state)
-            yield execute().if_().score(wood_boat_chest).matches(0).run(summon(boat, location))
-            yield execute().if_().score(wood_boat_chest).matches(1).run(summon(chest_boat, location))
-            yield execute().if_().score(wood_boat_chest).matches(0).as_(
+            yield execute().if_().score(wood_boat_chest, MATCHES, 0).run(summon(boat, location))
+            yield execute().if_().score(wood_boat_chest, MATCHES, 1).run(summon(chest_boat, location))
+            yield execute().if_().score(wood_boat_chest, MATCHES, 0).as_(
                 e().tag('wood_boat_frame')).run(
                 data().merge(s(), ItemFrame(SOUTH).item(boat_item).named(f'{root_name} Boat').nbt))
-            yield execute().if_().score(wood_boat_chest).matches(1).as_(
+            yield execute().if_().score(wood_boat_chest, MATCHES, 1).as_(
                 e().tag('wood_boat_frame')).run(
                 data().merge(s(), ItemFrame(SOUTH).item(chest_boat_item).named(f'{root_name} Chest Boat').nbt))
         else:
@@ -947,15 +948,15 @@ def trim_functions(room):
     show_menu.add(
         execute().at(e().tag('trim_change_home')).if_().block(r(0, 3, 0), '#wall_signs').run(run_change_cleanup))
     show_cleanup.add(fill(r(0, 3, 0), r(0, 4, 0), 'air'),
-                     execute().store(RESULT).score(adjust_change).if_().score(show).is_(EQ, change),
-                     execute().if_().score(adjust_change).matches(True).run(
+                     execute().store(RESULT).score(adjust_change).if_().score(show, EQ, change),
+                     execute().if_().score(adjust_change, MATCHES, True).run(
                          change.add(1),
                          change.operation(MOD, num_categories),
                          run_change_cleanup))
     for i, cat in enumerate(categories.values()):
         lines = (None, 'Show All:', titlecase(cat.name))
         show_menu.add(WallSign().messages(lines, commands=(show.set(i), run_show_cleanup)).place(r(0, i, 0), facing))
-        show_cleanup.add(execute().if_().score(show).matches(i).run(
+        show_cleanup.add(execute().if_().score(show, MATCHES, i).run(
             WallSign().messages(lines, commands=(function(show_menu),)).place(r(0, 2, 0), facing),
             execute().at(e().tag('trim_home')).run(function(cat.init))))
 
@@ -971,11 +972,11 @@ def trim_functions(room):
             if i == j:
                 continue
             lines = (None, 'Change', titlecase(jcat.name))
-            change_menu.add(execute().if_().score(show).matches(i).run(
+            change_menu.add(execute().if_().score(show, MATCHES, i).run(
                 WallSign().messages(lines, commands=(change.set(j), run_change_cleanup)).place(r(0, sign_num, 0),
                                                                                                facing)))
             sign_num += 1
-        change_cleanup.add(execute().if_().score(change).matches(i).at(e().tag('trim_change_home')).run(
+        change_cleanup.add(execute().if_().score(change, MATCHES, i).at(e().tag('trim_change_home')).run(
             WallSign().messages((None, 'Change', f'{titlecase(cat.name)}:'),
                                 commands=(function(change_menu),)).place(r(0, 2, 0), facing),
             tag(e().tag('trim_loop_home')).add(f'trim_{cat.name}_home')))
@@ -983,11 +984,11 @@ def trim_functions(room):
     trim_sum = room.score('trim_sum')
     keep_detect = room.function('trim_keep_detect', home=False).add(
         scoreboard().players().operation(trim_sum, EQ, show), scoreboard().players().operation(trim_sum, PLUS, change),
-        execute().if_().score(trim_sum).matches(1).at(e().tag('trim_change_home')).run(
+        execute().if_().score(trim_sum, MATCHES, 1).at(e().tag('trim_change_home')).run(
             function(categories['armors'].detect)),
-        execute().if_().score(trim_sum).matches(2).at(e().tag('trim_change_home')).run(
+        execute().if_().score(trim_sum, MATCHES, 2).at(e().tag('trim_change_home')).run(
             function(categories['materials'].detect)),
-        execute().if_().score(trim_sum).matches(3).at(e().tag('trim_change_home')).run(
+        execute().if_().score(trim_sum, MATCHES, 3).at(e().tag('trim_change_home')).run(
             function(categories['patterns'].detect)))
     show_cleanup.add(function(keep_detect))
     change_cleanup.add(function(keep_detect))

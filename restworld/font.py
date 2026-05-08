@@ -1,5 +1,5 @@
 from pynecraft import info
-from pynecraft.base import EAST, NORTH, r, SOUTH, TEXT_COLORS, WEST
+from pynecraft.base import EAST, MATCHES, NORTH, r, SOUTH, TEXT_COLORS, WEST
 from pynecraft.commands import Block, clone, data, e, execute, fill, function, HoverEvent, kill, s, setblock, tag, Text
 from pynecraft.info import colors, stems
 from pynecraft.simpler import Book, TextDisplay, WallSign
@@ -112,10 +112,10 @@ def room():
     for x in range(0, 30):
         for y in range(0, 4):
             maybe_glow.add(
-                execute().if_().score(font_glow).matches(0).at(e().tag('font_run_home')).run(
+                execute().if_().score(font_glow, MATCHES, 0).at(e().tag('font_run_home')).run(
                     data().merge(r(x - 3, y + 2, 0), {'front_text': {'has_glowing_text': False}}),
                     data().merge(r(x - 3, y + 2, 0), {'back_text': {'has_glowing_text': False}})),
-                execute().if_().score(font_glow).matches(1).at(e().tag('font_run_home')).run(
+                execute().if_().score(font_glow, MATCHES, 1).at(e().tag('font_run_home')).run(
                     data().merge(r(x - 3, y + 2, 0), {'front_text': {'has_glowing_text': True}}),
                     data().merge(r(x - 3, y + 2, 0), {'back_text': {'has_glowing_text': True}}))
             )

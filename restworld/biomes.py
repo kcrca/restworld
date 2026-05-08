@@ -1,8 +1,11 @@
 import collections
 
-from pynecraft.base import NORTH, OVERWORLD, r, SOUTH, to_id
-from pynecraft.commands import Block, CLEAR, data, DESTROY, e, execute, fill, fillbiome, function, kill, say, setblock, \
-    weather
+from pynecraft.base import GE, MATCHES, NORTH, OVERWORLD, r, SOUTH, to_id
+from pynecraft.commands import a, Block, CLEAR, data, DESTROY, e, Entity, execute, fill, fillbiome, function, kill, n, \
+    RESULT, \
+    s, say, \
+    setblock, \
+    tellraw, tp, weather
 from pynecraft.info import as_biome, BASALT_DELTAS, NETHER_WASTES, SMALL_END_ISLANDS, WARM_OCEAN
 from pynecraft.simpler import PLAINS, Sign, WallSign
 from restworld.rooms import kill_em, Room
@@ -49,9 +52,9 @@ def type_text(category):
 # noinspection PyUnusedLocal
 def illuminate(biome, prefix, i, x, y, z, handback):
     illuminate_score = handback
-    yield execute().if_().score(illuminate_score).matches(1).run(
+    yield execute().if_().score(illuminate_score, MATCHES, 1).run(
         fill(r(x, y + 1, z), r(x + 31, y + 32, z + 31), 'light').replace('#restworld:air')),
-    yield execute().unless().score(illuminate_score).matches(1).run(
+    yield execute().unless().score(illuminate_score, MATCHES, 1).run(
         fill(r(x, y + 1, z), r(x + 31, y + 32, z + 31), 'air').replace('light')),
 
 
@@ -168,3 +171,36 @@ def room():
         load_biome(illuminate, 'illuminate', handback=room.score('illuminate'))
     )
     room.home_func('reaper')
+
+    end_x, end_y, end_z = room.score('end_x'), room.score('end_y'), room.score('end_z')
+    cur_x, cur_y, cur_z = room.score('cur_x'), room.score('cur_y'), room.score('cur_z')
+    tst = room.function('clear_it', home=False)
+    tst.add(
+        execute().if_().block(r(0, -1, 0), 'water').if_().block(r(0, 0, 0), 'light').run(
+            # setblock(r(0, 0, 0), 'air'),
+            tellraw(a(), cur_x, cur_y, cur_z)
+        ),
+        execute().store(RESULT).score(cur_x).run(data().get(s())),
+        execute().store(RESULT).score(cur_y).run(data().get(s(), 'Pos[1]')),
+        execute().store(RESULT).score(cur_z).run(data().get(s(), 'Pos[2]')),
+        tp(r(1, 0, 0)),
+        execute().if_().score(cur_x, GE, end_x).run(
+            tp(r(-32, 0, 1)),
+            execute().if_().score(cur_z, GE, end_z).run(
+                tp(r(0, 1, -32)),
+                execute().unless().score(cur_y, GE, end_y).run(
+                    function(tst)
+                )
+            )
+        )
+    )
+    room.function('skim_light', home=False).add(
+        Entity('marker', {'Tags': ['endpoint']}).summon(r(23, 21, 23)),
+        execute().store(RESULT).score(end_x).run(data().get(n().tag('endpoint'), 'Pos[0]')),
+        execute().store(RESULT).score(end_y).run(data().get(n().tag('endpoint'), 'Pos[1]')),
+        execute().store(RESULT).score(end_z).run(data().get(n().tag('endpoint'), 'Pos[2]')),
+        kill(e().tag('endpoint')),
+        execute().at(e().tag('skimmer')).run(function(tst)),
+        Entity('marker', {'Tags': ['skimmer']}).summon(r(18, 16, 18)),
+        # Entity('marker', {'Tags': ['skimmer']}).summon(r(0, 2, 0)),
+    )

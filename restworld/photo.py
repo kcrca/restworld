@@ -3,7 +3,7 @@ import re
 import math
 
 from pynecraft import info
-from pynecraft.base import as_facing, EAST, NE, NORTH, OVERWORLD, r, SOUTH, SW, to_name, UP, WEST
+from pynecraft.base import as_facing, EAST, MATCHES, NE, NORTH, OVERWORLD, r, SOUTH, SW, to_name, UP, WEST
 from pynecraft.commands import Block, CREATIVE, e, Entity, execute, fill, function, gamemode, kill, p, setblock, \
     SURVIVAL, tp
 from pynecraft.info import armor_equipment
@@ -211,7 +211,7 @@ def room():
         drop.set(0),
         execute().as_(p().gamemode(CREATIVE)).run(drop.set(1)),
         # Using 'as server' means that it won't report the changes to the player
-        execute().if_().score(drop).matches(1).run(gamemode(SURVIVAL, p()), gamemode(CREATIVE, p())))
+        execute().if_().score(drop, MATCHES, 1).run(gamemode(SURVIVAL, p()), gamemode(CREATIVE, p())))
     room.function('photo_mobs_view', home=False).add(
         execute().in_(OVERWORLD).run(tp(p(), (-1006.5, 109, 1036.5)).facing((-955.5, 88, 1036.5))),
         function(do_drop),

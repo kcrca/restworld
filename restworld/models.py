@@ -3,7 +3,7 @@ from collections import defaultdict
 from typing import Any
 
 from pynecraft import info
-from pynecraft.base import Arg, as_facing, d, EAST, EQ, Nbt, r, to_name
+from pynecraft.base import Arg, as_facing, d, EAST, EQ, MATCHES, Nbt, r, to_name
 from pynecraft.commands import Block, clone, comment, data, DIV, e, execute, fill, function, item, kill, MOD, n, p, \
     REPLACE, say, schedule, setblock, summon, tag, Text
 from pynecraft.info import block_items, default_skins, stems, woods
@@ -203,12 +203,12 @@ def room():
         ),
         item().replace(model_holder, 'weapon.mainhand').from_(model_src, 'container.0'),
         item().replace(model_holder, 'weapon.offhand').from_(model_src, 'container.0'),
-        execute().if_().score(room.score('model_head')).matches(0).run(data().remove(model_holder, 'equipment.head')),
-        execute().if_().score(room.score('model_head')).matches(1).run(
+        execute().if_().score(room.score('model_head'), MATCHES, 0).run(data().remove(model_holder, 'equipment.head')),
+        execute().if_().score(room.score('model_head'), MATCHES, 1).run(
             item().replace(model_holder, 'armor.head').from_(model_src, 'container.0')),
         item().replace(invis_frame, 'container.0').from_(model_src, 'container.0'),
         data().merge(invis_frame, named_frame_data),
-        global_.if_clock_running.at(e().tag('all_things_home')).if_().score(see_in_hands).matches(1).run(
+        global_.if_clock_running.at(e().tag('all_things_home')).if_().score(see_in_hands, MATCHES, 1).run(
             say('hi'),
             item().replace(p(), 'weapon.mainhand').from_(model_src, 'container.0'),
             item().replace(p(), 'weapon.offhand').from_(model_src, 'container.0'),
@@ -228,9 +228,9 @@ def room():
         was_empty.operation(EQ, is_empty),
         is_empty.set(1),
         execute().if_().data(model_src, 'Item.id').run(is_empty.set(0)),
-        execute().unless().score(was_empty).is_(EQ, is_empty).run(
+        execute().unless().score(was_empty, EQ, is_empty).run(
             function(model_copy),
-            execute().if_().score(is_empty).matches(True).run(
+            execute().if_().score(is_empty, MATCHES, True).run(
                 data().modify(n().tag('current_model'), 'text').set().value(Text.text(''))),
         ),
     )
@@ -240,7 +240,7 @@ def room():
         setblock(redstone_block_pos, 'redstone_block'))
     room.function('model_exit').add(
         setblock(redstone_block_pos, 'air'),
-        execute().if_().score(needs_restore).matches(1).at(model_home).run(function(model_restore))
+        execute().if_().score(needs_restore, MATCHES, 1).at(model_home).run(function(model_restore))
     )
 
     def change_modeler_loop(step):
@@ -303,7 +303,7 @@ def room():
             cur_skin.operation(EQ, all_things_loop.score),
             cur_skin.operation(DIV, skin_every),
             cur_skin.operation(MOD, num_skins),
-            execute().unless().score(cur_skin).is_(EQ, change_modeler.score).run(function(change_modeler))
+            execute().unless().score(cur_skin, EQ, change_modeler.score).run(function(change_modeler))
         ).loop(
             all_loop, all_things)
         room.function(f'all_{which}_home', exists_ok=True).add(tag(e().tag(f'all_{which}_home')).add('all_things_home'))

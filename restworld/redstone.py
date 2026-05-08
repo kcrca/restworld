@@ -4,7 +4,7 @@ import re
 from titlecase import titlecase
 
 from pynecraft import info
-from pynecraft.base import DOWN, EAST, NOON, r, SOUTH, UP, WEST
+from pynecraft.base import DOWN, EAST, MATCHES, NOON, r, SOUTH, UP, WEST
 from pynecraft.commands import a, Block, BYTE, data, e, execute, fill, function, INT, item, kill, n, random, RESULT, \
     return_, say, Score, setblock, stopsound, summon, tag, time
 from pynecraft.info import instruments, stems, weathering_id, weathering_name, weatherings, woods
@@ -43,7 +43,7 @@ def room():
     def lightning_rod_inner_loop(step, waxed):
         oxy, strike = step.elem
         if strike:
-            yield execute().if_().score(do_strike).matches(1).run(say('strike'), summon('lightning_bolt', r(0, 3, 0)))
+            yield execute().if_().score(do_strike, MATCHES, 1).run(say('strike'), summon('lightning_bolt', r(0, 3, 0)))
             yield Sign.change(r(-1, 2, 0), ('Lightning &', f'{("Waxed " if waxed else "") + weathering_name(oxy, "")}'),
                               start=1)
         else:
@@ -53,8 +53,8 @@ def room():
                        Block(rod_, {'powered': strike})),
 
     def lightning_rod_loop(step):
-        yield execute().if_().score(waxed_rod).matches(0).run(lightning_rod_inner_loop(step, False))
-        yield execute().unless().score(waxed_rod).matches(0).run(lightning_rod_inner_loop(step, True))
+        yield execute().if_().score(waxed_rod, MATCHES, 0).run(lightning_rod_inner_loop(step, False))
+        yield execute().unless().score(waxed_rod, MATCHES, 0).run(lightning_rod_inner_loop(step, True))
 
     room.loop('lightning_rod', main_clock).loop(lightning_rod_loop, itertools.product(weatherings, (False, True)))
     room.function('lightning_rod_init').add(
@@ -202,7 +202,7 @@ def room():
                 end = None
             set_value = data().modify(room.store, nbt_path).set().value(i + min)
             if i > 0:
-                set_value = execute().if_().score(holder).matches((prev, end)).run(set_value)
+                set_value = execute().if_().score(holder, MATCHES, (prev, end)).run(set_value)
             yield set_value
             prev = v
         if score:
@@ -214,7 +214,7 @@ def room():
             cmds = (function(func),
                     data().modify(room.store, f'{nbt_path}.{name}').append().from_(room.store, f'{singular}_val'))
             if i > 0:
-                cmds = execute().if_().score(score).matches((i + 1, None)).run(cmds)
+                cmds = execute().if_().score(score, MATCHES, (i + 1, None)).run(cmds)
             yield cmds
 
     explosion_raw = room.function('explosion_raw', home=False).add(
@@ -224,7 +224,7 @@ def room():
         raw_odds_value('has_twinkle', 'explosion_raw'),
         raw_odds_value('colors', 'explosion_raw'),
         execute().store(RESULT).score(fade).run(random().value((0, 4))),
-        execute().if_().score(fade).matches(0).run(raw_odds_value('fade_colors', 'explosion_raw')),
+        execute().if_().score(fade, MATCHES, 0).run(raw_odds_value('fade_colors', 'explosion_raw')),
     )
     color_add = room.function('color_add', home=False).add(
         data().modify(room.store, 'explosion_val.$(which)').append().from_(room.store, 'fireworks.colors[$(color)]'))
@@ -242,9 +242,9 @@ def room():
                     function(color_add).with_(room.store, f'{name}_raw')
                 )
                 if i > 0:
-                    cmds = execute().if_().score(val_cnt).matches((i, None)).run(cmds)
+                    cmds = execute().if_().score(val_cnt, MATCHES, (i, None)).run(cmds)
                 if name == 'fade_colors':
-                    cmds = execute().if_().score(fade).matches(0).run(cmds)
+                    cmds = execute().if_().score(fade, MATCHES, 0).run(cmds)
                 yield cmds
 
     explosion_convert = room.function('explosion_convert', home=False).add(
@@ -252,7 +252,7 @@ def room():
         val_odds_value('has_trail', 'explosion'),
         val_odds_value('has_twinkle', 'explosion'),
         val_odds_value('colors', 'explosion', 1, val_cnt),
-        execute().if_().score(fade).matches(0).run(val_odds_value('fade_colors', 'explosion', 1, val_cnt)),
+        execute().if_().score(fade, MATCHES, 0).run(val_odds_value('fade_colors', 'explosion', 1, val_cnt)),
         colors_add(),
     )
     explosion_add = room.function('explosion_add', home=False).add(
@@ -464,12 +464,12 @@ def light_detector_funcs(room):
     def daylight_detector_loop(step):
         i = step.i
         inv = inv_times[i]
-        yield execute().if_().score(daylight_inv).matches(0).run(time().set(day_times[i]))
+        yield execute().if_().score(daylight_inv, MATCHES, 0).run(time().set(day_times[i]))
         if inv > 1000:
-            yield execute().if_().score(daylight_inv).matches(1).run(time().set(inv))
+            yield execute().if_().score(daylight_inv, MATCHES, 1).run(time().set(inv))
         else:
-            yield execute().if_().score(daylight_inv).matches(1).run(time().set(22300))
-            yield execute().if_().score(daylight_inv).matches(1).run(
+            yield execute().if_().score(daylight_inv, MATCHES, 1).run(time().set(22300))
+            yield execute().if_().score(daylight_inv, MATCHES, 1).run(
                 fill(r(inv, height, inv), r(-inv, height, -inv), 'stone'))
 
     room.loop('daylight_detector', main_clock).add(
@@ -482,8 +482,8 @@ def light_detector_funcs(room):
     room.function('daylight_detector_setup').add(
         daylight_inv.set(0),
         execute().if_().block(r(0, 2, 1), ('daylight_detector', {'inverted': True})).run(daylight_inv.set(1)),
-        execute().if_().score(daylight_inv).matches(0).run(Sign.change(r(0, 2, 0), (None, 'Daylight Detector', ''))),
-        execute().if_().score(daylight_inv).matches(1).run(
+        execute().if_().score(daylight_inv, MATCHES, 0).run(Sign.change(r(0, 2, 0), (None, 'Daylight Detector', ''))),
+        execute().if_().score(daylight_inv, MATCHES, 1).run(
             Sign.change(r(0, 2, 0), (None, 'Inverted', 'Daylight Detector'))))
     room.function('daylight_detector_setup_init').add(
         WallSign(()).place(r(0, 2, 0), EAST),
@@ -564,7 +564,7 @@ def note_block_funcs(room):
         execute().at(e().tag('note_block_home')).run(function(note_block_func)),
         execute().at(e().tag('instrument_home')).run(function(instrument_func)),
         setblock(r(0, 3, -1), 'air'),
-        execute().if_().score(note_powered).matches(1).run(
+        execute().if_().score(note_powered, MATCHES, 1).run(
             setblock(r(0, 3, -1), ('redstone_wall_torch', {'facing': 'south'}))),
     )
     room.particle('note_block', 'note', r(0, 4, 0))
@@ -578,15 +578,15 @@ def pressure_plate_funcs(room):
     plate_heavy = room.score('plate_heavy')
     pressure_plate = room.score('pressure_plate')
     room.function('pressure_plate_add', home=False).add(one_item(), (
-        execute().if_().score(plate_heavy).matches((1, None)).run(one_item()) for _ in range(0, 9)))
+        execute().if_().score(plate_heavy, MATCHES, (1, None)).run(one_item()) for _ in range(0, 9)))
     room.function('pressure_plate_init').add(room.label(r(2, 2, 0), 'Heavy', EAST))
     room.function('pressure_plate_cur').add(kill(e().tag('plate_items')),
-                                            (execute().if_().score(pressure_plate).matches((i, None)).run(function(
+                                            (execute().if_().score(pressure_plate, MATCHES, (i, None)).run(function(
                                                 'restworld:redstone/pressure_plate_add')) for i in range(1, 16)))
 
     room.loop('pressure_plate', main_clock).add(
-        execute().if_().score(pressure_plate).matches(0).run(kill(e().tag('plate_items'))),
-        execute().unless().score(pressure_plate).matches(0).run(
+        execute().if_().score(pressure_plate, MATCHES, 0).run(kill(e().tag('plate_items'))),
+        execute().unless().score(pressure_plate, MATCHES, 0).run(
             function('restworld:redstone/pressure_plate_add'))).loop(None, range(0, 16))
 
     plate_heavy = room.score('plate_heavy')

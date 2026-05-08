@@ -2,7 +2,7 @@ import copy
 
 from titlecase import titlecase
 
-from pynecraft.base import EAST, EQ, Nbt, NE, NORTH, r, SOUTH, to_id, to_name, WEST
+from pynecraft.base import EAST, EQ, MATCHES, Nbt, NE, NORTH, r, SOUTH, to_id, to_name, WEST
 from pynecraft.commands import as_facing, Block, clone, COLORS, data, e, Entity, execute, fillbiome, FORCE, function, \
     item, kill, LONG, MOD, n, p, player, REPLACE, RESULT, return_, ride, s, schedule, Score, scoreboard, setblock, \
     SUCCESS, summon, tag, tp
@@ -308,8 +308,8 @@ def friendlies(room):
         slim_nbt['profile']['texture'] = slim_nbt['profile']['texture'].replace('wide', 'slim')
         slim_nbt['profile']['model'] = 'slim'
         slim_nbt['CustomName'] = slim_nbt['CustomName'].replace('Wide', 'Slim')
-        yield execute().if_().score(slim_skin).matches(0).run(data().merge(mannequin, wide_nbt))
-        yield execute().unless().score(slim_skin).matches(0).run(data().merge(mannequin, slim_nbt))
+        yield execute().if_().score(slim_skin, MATCHES, 0).run(data().merge(mannequin, wide_nbt))
+        yield execute().unless().score(slim_skin, MATCHES, 0).run(data().merge(mannequin, slim_nbt))
 
     skins_who_loop = room.loop('skins_who', home=False).add(
         data().remove(n().tag('mannequin'), 'profile.model')).loop(skins_who_loop, default_skins)
@@ -319,8 +319,8 @@ def friendlies(room):
         mannequin_poses)
 
     room.loop('skins', main_clock).add(
-        execute().if_().score(skin_mode).matches(0).run(function(skins_who_loop)),
-        execute().unless().score(skin_mode).matches(0).run(function(skins_pose_loop))
+        execute().if_().score(skin_mode, MATCHES, 0).run(function(skins_who_loop)),
+        execute().unless().score(skin_mode, MATCHES, 0).run(function(skins_pose_loop))
     )
 
     room.function('skins_init').add(
@@ -375,7 +375,7 @@ def friendlies(room):
     )
 
     def sulfur_cube_loop(step):
-        yield execute().if_().score(is_empty).matches(1).run(
+        yield execute().if_().score(is_empty, MATCHES, 1).run(
             data().modify(sulfur_cube, 'equipment.body').set().value(Item.nbt_for(step.elem[1])))
 
     room.function('sulfur_cube_init').add(
@@ -392,10 +392,10 @@ def friendlies(room):
         was_empty.operation(EQ, is_empty),
         is_empty.set(1),
         execute().if_().data(innards_frame, 'Item.id').run(is_empty.set(0)),
-        execute().unless().score(was_empty).is_(EQ, is_empty).run(
-            execute().if_().score(was_empty).matches(1).run(
+        execute().unless().score(was_empty, EQ, is_empty).run(
+            execute().if_().score(was_empty, MATCHES, 1).run(
                 data().modify(sulfur_cube, 'equipment.body').set().from_(innards_frame, 'Item')),
-            execute().if_().score(is_empty).matches(1).run(
+            execute().if_().score(is_empty, MATCHES, 1).run(
                 data().modify(sulfur_cube, 'equipment.body').set().value({}),
                 function('sulfur_cube_cur')
             ),
@@ -445,11 +445,11 @@ def villager_funcs(room):
     villager_types_cur = room.score('villager_types')
 
     def init_villagers(num, which):
-        return execute().if_().score(which_villagers).matches(num).at(
+        return execute().if_().score(which_villagers, MATCHES, num).at(
             e().tag('cur_villagers_home')).run(function(f'restworld:mobs/{which}_init'))
 
     def home_villagers(num, which):
-        return execute().if_().score(which_villagers).matches(num).at(e().tag('which_villagers_home').limit(1)).run(
+        return execute().if_().score(which_villagers, MATCHES, num).at(e().tag('which_villagers_home').limit(1)).run(
             summon('armor_stand', r(0, 0, 1),
                    {'Tags': [f'{which}_home', 'cur_villagers_home'],
                     'Small': True, 'NoGravity': True}))
@@ -540,10 +540,10 @@ def villager_funcs(room):
     # Switch functions
     room.function('switch_villagers', home=False).add(
         which_villagers.set(0),
-        execute().if_().score(cur_villagers_group).matches(1).run(which_villagers.add(1)),
-        execute().if_().score(cur_villagers_zombies).matches(1).run(which_villagers.add(2)),
+        execute().if_().score(cur_villagers_group, MATCHES, 1).run(which_villagers.add(1)),
+        execute().if_().score(cur_villagers_zombies, MATCHES, 1).run(which_villagers.add(2)),
         which_villagers_needed.operation(EQ, which_villagers),
-        execute().unless().score(which_villagers_needed).is_(EQ, which_villagers_needed_prev).run(
+        execute().unless().score(which_villagers_needed, EQ, which_villagers_needed_prev).run(
             (
                 kill_em(e().tag('villager')),
                 init_villagers(0, 'villager_professions'),
@@ -552,7 +552,7 @@ def villager_funcs(room):
                 init_villagers(3, 'zombie_types'),
                 # If zombies are on, turn off level. Setting the lever off does not cause the piston to move, hence the
                 # redstone block work.
-                execute().if_().score(cur_villagers_zombies).matches(1).at(
+                execute().if_().score(cur_villagers_zombies, MATCHES, 1).at(
                     e().tag('which_villagers_home')).run(
                     setblock(r(-3, 2, 2),
                              Block('lever', state=dict(face='floor', facing='east'))),
@@ -560,7 +560,7 @@ def villager_funcs(room):
                     setblock(r(-3, -1, 2), 'air'),
                 ),
             )), which_villagers_needed_prev.operation(EQ, which_villagers_needed),
-        execute().if_().score(cur_villagers_levels).matches(1).run(which_villagers.add(4)),
+        execute().if_().score(cur_villagers_levels, MATCHES, 1).run(which_villagers.add(4)),
         kill(e().tag('cur_villagers_home')),
         home_villagers(0, 'villager_professions'),
         home_villagers(1, 'villager_types'), home_villagers(2, 'zombie_professions'),
@@ -575,12 +575,12 @@ def villager_funcs(room):
     room.function('toggle_villager_levels', home=False).add(
         cur_villagers_levels.add(1),
         cur_villagers_levels.operation(MOD, bool_max),
-        execute().if_().score(cur_villagers_levels).matches(1).run(cur_villagers_zombies.set(0)),
+        execute().if_().score(cur_villagers_levels, MATCHES, 1).run(cur_villagers_zombies.set(0)),
         function('restworld:mobs/switch_villagers'))
     room.function('toggle_villager_zombies', home=False).add(
         cur_villagers_zombies.add(1),
         cur_villagers_zombies.operation(MOD, bool_max),
-        execute().if_().score(cur_villagers_zombies).matches(1).run(cur_villagers_levels.set(0)),
+        execute().if_().score(cur_villagers_zombies, MATCHES, 1).run(cur_villagers_levels.set(0)),
         function('restworld:mobs/switch_villagers'))
 
     def villager_level_loop(step):
@@ -634,7 +634,7 @@ def monsters(room):
             yield placer(r(1.5, 3.5, -1.5), illager_dir, adults=True, tags=tags).summon(
                 Entity('vex', nbt={'equipment': {'mainhand': Item.nbt_for('iron_sword')}, 'LifeTicks': 2147483647}))
             fangs.add(
-                execute().unless().score(illager_loop_func.score).matches(0).run(return_(0)),
+                execute().unless().score(illager_loop_func.score, MATCHES, 0).run(return_(0)),
                 execute().at(e().tag('illager_home')).run(
                     placer(r(-1 + 2.5 * 1, 2, 1), illager_dir, adults=True, tags=tags).summon(
                         Entity('Evoker Fangs', nbt={'Warmup': 0}))),
@@ -885,13 +885,13 @@ def aquatic(room):
         WallSign((None, 'Nautilus Saddle', 'On / Off'), (
             execute().store(SUCCESS).score(nautilus_saddles_score).run(
                 tag(e().tag('nautilus').nbt({'equipment': {'saddle': {'id': 'minecraft:saddle'}}})).list()),
-            execute().if_().score(nautilus_saddles_score).matches(0).run(function(ns_on)),
-            execute().unless().score(nautilus_saddles_score).matches(0).run(function(ns_off))
+            execute().if_().score(nautilus_saddles_score, MATCHES, 0).run(function(ns_on)),
+            execute().unless().score(nautilus_saddles_score, MATCHES, 0).run(function(ns_off))
         )).glowing(True).place(r(-1, 2, 1), NORTH, True),
         WallSign((None, 'Riders', 'On / Off'), (
             execute().store(SUCCESS).score(nautilus_riders_score).run(tag(e().tag('nautilus_rider')).list()),
-            execute().if_().score(nautilus_riders_score).matches(0).run(function(nr_on)),
-            execute().unless().score(nautilus_riders_score).matches(0).run(function(nr_off))
+            execute().if_().score(nautilus_riders_score, MATCHES, 0).run(function(nr_on)),
+            execute().unless().score(nautilus_riders_score, MATCHES, 0).run(function(nr_off))
         )).glowing(True).place(r(-2, 2, 1), NORTH, True),
     )
     room.loop('nautilus_mob', main_clock).loop(nautilus_loop, ('temperate', 'warm'))

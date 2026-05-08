@@ -4,7 +4,8 @@ from typing import Any, Callable, Iterable, Union
 from titlecase import titlecase
 
 from pynecraft import commands, info
-from pynecraft.base import Arg, as_facing, DOWN, E, EAST, EQ, FacingDef, N, Nbt, NORTH, r, RelCoord, rotate_facing, S, \
+from pynecraft.base import Arg, as_facing, DOWN, E, EAST, EQ, FacingDef, MATCHES, N, Nbt, NORTH, r, RelCoord, \
+    rotate_facing, S, \
     SOUTH, to_id, to_name, UP, W, WEST
 from pynecraft.commands import a, as_block, as_score, Block, clone, Command, Commands, data, e, Entity, execute, fill, \
     function, item, kill, MOD, MOVE, n, p, REPLACE, s, say, schedule, ScoreName, setblock, stopsound, SUCCESS, summon, \
@@ -198,9 +199,9 @@ def room():
     ), expandable=False)
     campfire_init.add(room.label(r(-1, 2, 0), 'Cook', NORTH))
     campfire_main.add(
-        execute().if_().score(campfire_food).matches(0).run(data().remove(r(0, 3, 0), 'Items')),
+        execute().if_().score(campfire_food, MATCHES, 0).run(data().remove(r(0, 3, 0), 'Items')),
         # For some reason the Count is required here
-        execute().if_().score(campfire_food).matches(1).run(data().merge(
+        execute().if_().score(campfire_food, MATCHES, 1).run(data().merge(
             r(0, 3, 0),
             {'Items':
                  [Item.nbt_for('porkchop', {'Slot': 0, 'Count': 1}), Item.nbt_for('beef', {'Slot': 1, 'Count': 1}),
@@ -223,11 +224,11 @@ def room():
     natural_heart = room.score('natural_heart')
 
     def creaking_heart_loop(step):
-        yield execute().if_().score(natural_heart).matches(0).run(
+        yield execute().if_().score(natural_heart, MATCHES, 0).run(
             setblock(r(0, 4, 0), 'air'),
             setblock(r(0, 2, 0), 'barrier'),
         )
-        yield execute().unless().score(natural_heart).matches(0).run(
+        yield execute().unless().score(natural_heart, MATCHES, 0).run(
             setblock(r(0, 4, 0), 'air' if step.elem == 'disabled' else 'pale_oak_log'),
             setblock(r(0, 2, 0), 'pale_oak_log'),
         )
@@ -525,14 +526,14 @@ def room():
             yield setblock(r(-1, 3, 0), 'air')
             yield Sign.change(r(0, 2, -1), txt)
         else:
-            yield execute().if_().score(double_chest_score).matches(0).run(
+            yield execute().if_().score(double_chest_score, MATCHES, 0).run(
                 setblock(r(0, 3, 0), step.elem), setblock(r(-1, 3, 0), 'air'), Sign.change(r(0, 2, -1), txt))
             step.elem.merge_state({'type': 'right'})
             txt[2] = 'Double Chest'
-            yield execute().if_().score(double_chest_score).matches(1).run(
+            yield execute().if_().score(double_chest_score, MATCHES, 1).run(
                 setblock(r(0, 3, 0), step.elem), Sign.change(r(0, 2, -1), txt))
             step.elem.merge_state({'type': 'left'})
-            yield execute().if_().score(double_chest_score).matches(1).run(setblock(r(-1, 3, 0), step.elem))
+            yield execute().if_().score(double_chest_score, MATCHES, 1).run(setblock(r(-1, 3, 0), step.elem))
         room.particle(step.elem, 'chest', r(0, 4, 0), step)
 
     room.loop('chest', main_clock).loop(chest_loop, (
@@ -584,8 +585,8 @@ def room():
         setblock(r(0, 3, 0), Block(f'$(oxy)copper_golem_statue', {'copper_golem_pose': Arg('pose')})),
         Sign.change(r(0, 2, -1), (None, ' ' + str(Arg('oxy_name')) + ' ', Arg('pose_name'))))
     room.loop('copper_golem_statue', main_clock).add(
-        execute().if_().score(copper_golem_statue_mode).matches(0).run(function(cg_pose_loop)),
-        execute().unless().score(copper_golem_statue_mode).matches(0).run(function(cg_oxy_loop)),
+        execute().if_().score(copper_golem_statue_mode, MATCHES, 0).run(function(cg_pose_loop)),
+        execute().unless().score(copper_golem_statue_mode, MATCHES, 0).run(function(cg_oxy_loop)),
         function(cg_update).with_(room.store, 'copper_golem'),
     )
 
@@ -648,7 +649,7 @@ def room():
     room.loop('infested_main', main_clock, exists_ok=True).before.extend((
         i_even.operation(EQ, infested),
         i_even.operation(MOD, two),
-        execute().if_().score(i_even).matches(0).if_().score(room.score('infested_only')).matches(1).run(
+        execute().if_().score(i_even, MATCHES, 0).if_().score(room.score('infested_only'), MATCHES, 1).run(
             infested.add(1))))
 
     def item_frame_loop(step):
@@ -774,9 +775,9 @@ def room():
     skulk_loop = room.functions['sculk_blocks_main']
     assert isinstance(skulk_loop, Loop)
     skulk_loop.add(
-        execute().if_().score(skulk_loop.score).matches(7).positioned(r(0, 3, 0)).run(
+        execute().if_().score(skulk_loop.score, MATCHES, 7).positioned(r(0, 3, 0)).run(
             function('restworld:particles/shriek_particles')),
-        execute().if_().score(skulk_loop.score).matches(9).positioned(r(0, 3, 0)).run(
+        execute().if_().score(skulk_loop.score, MATCHES, 9).positioned(r(0, 3, 0)).run(
             function('restworld:particles/shriek_particles')),
     )
 
@@ -951,10 +952,10 @@ def room():
             (None, 'Redstone', None, '(Off)'))
         yield Sign.change(r(0, 2, -1), text[step.i])
         if step.i == len(torches) - 1:
-            yield execute().if_().score(wall_torches_score).matches(0).run(setblock(r(0, 2, 0), 'redstone_block'))
-            yield execute().if_().score(wall_torches_score).matches(1).run(setblock(r(0, 3, 1), 'redstone_block'))
-        yield execute().if_().score(wall_torches_score).matches(0).run(setblock(r(0, 3, 0), step.elem))
-        yield execute().if_().score(wall_torches_score).matches(1).run(setblock(r(0, 3, 0), wall_torches[step.i]))
+            yield execute().if_().score(wall_torches_score, MATCHES, 0).run(setblock(r(0, 2, 0), 'redstone_block'))
+            yield execute().if_().score(wall_torches_score, MATCHES, 1).run(setblock(r(0, 3, 1), 'redstone_block'))
+        yield execute().if_().score(wall_torches_score, MATCHES, 0).run(setblock(r(0, 3, 0), step.elem))
+        yield execute().if_().score(wall_torches_score, MATCHES, 1).run(setblock(r(0, 3, 0), wall_torches[step.i]))
         room.particle(step.elem, 'torches', r(0, 4, 0), step)
 
     wall_torches_score = room.score('wall_torches')
@@ -965,10 +966,10 @@ def room():
     )
     room.loop('torches', main_clock).add(
         setblock(r(0, 3, 0), 'air'),
-        execute().if_().score(wall_torches_score).matches(0).run(
+        execute().if_().score(wall_torches_score, MATCHES, 0).run(
             setblock(r(0, 3, 1), 'air'),
             Sign.change(r(0, 2, -1), (None, None, 'Torch'))),
-        execute().if_().score(wall_torches_score).matches(1).run(
+        execute().if_().score(wall_torches_score, MATCHES, 1).run(
             setblock(r(0, 3, 1), 'smooth_quartz'),
             Sign.change(r(0, 2, -1), (None, None, 'Wall Torch'))),
         setblock(r(0, 2, 0), 'barrier'),
@@ -1056,9 +1057,9 @@ def color_functions(room):
                 filter = '#restworld:candle_cake'
                 room.particle(candle, 'colorings_base', r(-2, 3, 5), step, if_clause(plain, int(is_plain)))
             candle.merge_state({'lit': False})
-            yield execute().if_().score(lit_candles).matches(0).run(volume.replace(candle, filter))
+            yield execute().if_().score(lit_candles, MATCHES, 0).run(volume.replace(candle, filter))
             candle.merge_state({'lit': True})
-            yield execute().unless().score(lit_candles).matches(0).run(volume.replace(candle, filter))
+            yield execute().unless().score(lit_candles, MATCHES, 0).run(volume.replace(candle, filter))
 
         yield commands.place().template(f'restworld:{color.id}_terra', r(-7, 1, 3))
         yield data().merge(r(-7, 0, 3), {'name': f'restworld:{color.id}_terra', 'showboundingbox': False})
@@ -1129,10 +1130,10 @@ def color_functions(room):
 
     def render_signs_glow(x, y, z, _, _2):
         lit_signs = room.score('lit_signs')
-        yield execute().if_().score(lit_signs).matches(0).run(
+        yield execute().if_().score(lit_signs, MATCHES, 0).run(
             data().merge(r(x, y, z),
                          {'front_text': {'has_glowing_text': False}, 'back_text': {'has_glowing_text': False}}))
-        yield execute().if_().score(lit_signs).matches(1).run(
+        yield execute().if_().score(lit_signs, MATCHES, 1).run(
             data().merge(r(x, y, z),
                          {'front_text': {'has_glowing_text': True}, 'back_text': {'has_glowing_text': True}}))
 
@@ -1256,7 +1257,7 @@ def color_functions(room):
     top_end = (coloring_coords[1][0], coloring_coords[1][1] - 1, coloring_coords[1][2])
     boat_score = room.score('ghast_boat')
     room.function('colorings_plain_off', home=False).add(
-        execute().unless().score(plain).matches(0).run(
+        execute().unless().score(plain, MATCHES, 0).run(
             # These create particle explosions, and there is no negative "#!wall_signs" filter for clone
             fill(store_start, store_end, 'air').replace('#wall_signs'),
             clone(store_start, store_end, top_end)),
@@ -1266,10 +1267,10 @@ def color_functions(room):
         # If the ghast boat is on, we need to remove it and then add it back when the harness is on
         execute().store(SUCCESS).score(boat_score).run(data().get(n().tag('ghast_boat'))),
         function(ghast_boat_off),
-        execute().if_().score(boat_score).matches(1).run(function(ghast_boat_on)),
+        execute().if_().score(boat_score, MATCHES, 1).run(function(ghast_boat_on)),
         kill(e().type('item').distance((None, 20))))
     room.function('colorings_plain_on', home=False).add(
-        execute().if_().score(plain).matches(0).run(clone(top_start, top_end, store_end)),
+        execute().if_().score(plain, MATCHES, 0).run(clone(top_start, top_end, store_end)),
         plain.set(1),
         tag(e().tag('colorings_base_home')).remove('colorings_home'),
         data().remove(n().tag('colorings_dye_frame'), 'Item'),
@@ -1345,16 +1346,16 @@ def expansion_functions(room):
                                                       clone(r(1, 12, 0), r(-1, 3, 0), r(-1, 3, 1)))
     fire_score = room.score('fire')
     room.function('expand_fire', home=False).add(
-        execute().unless().score(fire_score).matches(1).run(fill(r(-2, 4, 1), r(-2, 4, -1), 'air')),
-        execute().unless().score(fire_score).matches(1).run(fill(r(2, 4, 1), r(2, 4, -1), 'air')),
-        execute().unless().score(fire_score).matches(1).run(fill(r(1, 4, -2), r(-1, 4, -2), 'air')),
-        execute().unless().score(fire_score).matches(1).run(fill(r(1, 4, 2), r(-1, 4, 2), 'air')),
+        execute().unless().score(fire_score, MATCHES, 1).run(fill(r(-2, 4, 1), r(-2, 4, -1), 'air')),
+        execute().unless().score(fire_score, MATCHES, 1).run(fill(r(2, 4, 1), r(2, 4, -1), 'air')),
+        execute().unless().score(fire_score, MATCHES, 1).run(fill(r(1, 4, -2), r(-1, 4, -2), 'air')),
+        execute().unless().score(fire_score, MATCHES, 1).run(fill(r(1, 4, 2), r(-1, 4, 2), 'air')),
         clone(r(0, 5, 0), r(0, 3, 0), r(1, 3, 0)), clone(r(0, 5, 0), r(0, 3, 0), r(-1, 3, 0)),
         clone(r(1, 5, 0), r(-1, 3, 0), r(-1, 3, 1)), clone(r(1, 5, 0), r(-1, 3, 0), r(-1, 3, -1)),
-        execute().if_().score(fire_score).matches(1).run(fill(r(-2, 4, 1), r(-2, 4, -1), 'fire[west=true]')),
-        execute().if_().score(fire_score).matches(1).run(fill(r(2, 4, 1), r(2, 4, -1), 'fire[east=true]')),
-        execute().if_().score(fire_score).matches(1).run(fill(r(1, 4, -2), r(-1, 4, -2), 'fire[north=true]')),
-        execute().if_().score(fire_score).matches(1).run(fill(r(1, 4, 2), r(-1, 4, 2), 'fire[south=true]')))
+        execute().if_().score(fire_score, MATCHES, 1).run(fill(r(-2, 4, 1), r(-2, 4, -1), 'fire[west=true]')),
+        execute().if_().score(fire_score, MATCHES, 1).run(fill(r(2, 4, 1), r(2, 4, -1), 'fire[east=true]')),
+        execute().if_().score(fire_score, MATCHES, 1).run(fill(r(1, 4, -2), r(-1, 4, -2), 'fire[north=true]')),
+        execute().if_().score(fire_score, MATCHES, 1).run(fill(r(1, 4, 2), r(-1, 4, 2), 'fire[south=true]')))
     room.function('expand_generic', home=False).add(
         execute().if_().block(r(0, 3, 0), '#restworld:falling').run(
             fill(r(-1, 2, -1), r(1, 2, 1), 'barrier').replace('air')),
