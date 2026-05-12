@@ -2,6 +2,7 @@ import random
 
 import math
 
+from pynecraft._values import SULFUR_CAVES
 from pynecraft.base import Arg, as_facing, d, EAST, MATCHES, MIDNIGHT, Nbt, NOON, NORTH, OVERWORLD, r, SOUTH, to_id, \
     WEST
 from pynecraft.commands import a, Block, BLOCK_MARKER, CLEAR, data, DUST_PILLAR, e, effect, Entity, execute, \
@@ -535,9 +536,16 @@ def room():
         main().run(particle(SWEEP_ATTACK, r(0, 1, 0), (0.3, 0.2, 0.3), 0, 3)))
     room.function('sulfur_bubbles_init', home=False).add(
         fill(r(-2, 0, -2), r(2, 1, 2), 'sulfur'),
-        fill(r(-1, -1, -1), r(1, -1, 1), 'magma_block'),
+        setblock(r(-1, -1, -1), 'magma_block'),
+        setblock(r(-1, -1, +1), 'magma_block'),
+        setblock(r(+1, -1, -1), 'magma_block'),
+        setblock(r(+1, -1, +1), 'magma_block'),
         fill(r(-1, 0, -1), r(1, 0, 1), 'potent_sulfur'),
         fill(r(-1, 1, -1), r(1, 1, 1), 'water'),
+        setblock(r(0, 1, 0), 'potent_sulfur'),
+        setblock(r(0, 0, 0), 'lava'),
+        setblock(r(0, 2, 0), 'water'),
+        set_biome(SULFUR_CAVES)
     )
     room.function('trial_spawner_detection_init', home=False).add(
         setblock(r(-1, 0, 0), 'trial_spawner'),
