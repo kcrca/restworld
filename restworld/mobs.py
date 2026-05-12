@@ -4,7 +4,7 @@ from titlecase import titlecase
 
 from pynecraft.base import EAST, EQ, MATCHES, Nbt, NE, NORTH, r, SOUTH, to_id, to_name, WEST
 from pynecraft.commands import as_facing, Block, clone, COLORS, data, e, Entity, execute, fillbiome, FORCE, function, \
-    item, kill, LONG, MOD, n, p, player, REPLACE, RESULT, return_, ride, s, schedule, Score, scoreboard, setblock, \
+    item, kill, LONG, MOD, n, p, player, REPLACE, RESULT, return_, ride, s, say, schedule, Score, scoreboard, setblock, \
     SUCCESS, summon, tag, tp
 from pynecraft.info import as_disc, axolotls, colors, default_skins, DISC_GROUP, discs, DUMMY, horses, mannequin_poses, \
     tropical_fish, weathering_id, weathering_name, weathering_property, weatherings, wolves
@@ -249,10 +249,13 @@ def friendlies(room):
                                                                             'HiddenGene': step.elem.lower()})),
         ('Aggressive', 'Lazy', 'Weak', 'Worried', 'Playful', 'Normal', 'Brown'))
     parrot_dir, parrot_pos = WEST, r(0, 3, 0)
-    disc_chest_pos = r(2, 1, 1)
+    disc_chest_pos = r(0, 1, 1)
     parrot_fence_pos = list(parrot_pos)
     parrot_fence_pos[1] -= 1
     parrot_enter = room.function('parrot_enter').add(
+        # Flag problem during development
+        execute().positioned(disc_chest_pos).unless().block(r(0, 0, 0), 'chest').run(
+            say('WARNING: no disc chest'), setblock(r(0, 10, 0), 'stone')),
         (item().replace(disc_chest_pos, f'container.{i:d}').with_(discs[as_disc(d)].value) for i, d in
          enumerate(DISC_GROUP)))
     room.function('parrot_init').add(
