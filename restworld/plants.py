@@ -353,7 +353,7 @@ def room():
         yield setblock(r(-1, -1, -1), 'redstone_block')
         yield setblock(r(-1, -1, -1), 'air')
         yield WallSign((None, f'{tree} Trees', 'Biome:', to_name(str(biome)))).place(r(1, 2, 7), WEST)
-        plant_room = Region(r(0, -5, -1), r(31, 30, 58))
+        plant_room = Region(r(-1, -5, 0), r(31, 30, 54))
         yield execute().unless().score(freeze_biome, MATCHES, 1).run(
             execute().at(e().tag('plants_room_beg_home')).run(
                 plant_room.fillbiome(biome),
