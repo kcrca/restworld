@@ -192,7 +192,7 @@ def friendlies(room):
     p = placer(r(-1.2, 2, 0), EAST, -2, kid_delta=2.7, tags=('saddle', 'chests'), nbt={'Tame': True})
     room.function('horselike_init').add(p.summon('mule'), p.summon('donkey'), room.label(r(1, 2, -1), 'Chests', EAST))
     room.function('iron_golem_init').add(
-        placer(r(-0.5, 2, 0), WEST, adults=True).summon('iron_golem'),
+        placer(r(0, 2, 0), WEST, adults=True).summon('iron_golem'),
         WallSign((None, 'Iron Golem')).place(r(-3, 2, 0), WEST))
 
     def iron_golem_loop(step):
@@ -212,7 +212,7 @@ def friendlies(room):
     # -2 means waxed. We can't show waxed vs. unwaxed, so this cheaply makes sure the weathering never changes. If
     # we someday can show waxed vs. unwaxed, we need a different technique.
     room.function('copper_golem_init').add(
-        placer(r(-0.5, 2, 0), WEST, adults=True).summon(Entity('copper_golem', {'next_weather_age': -2})),
+        placer(r(0, 2, 0), WEST, adults=True).summon(Entity('copper_golem', {'next_weather_age': -2})),
         WallSign((None, None, 'Copper Golem')).place(r(-3, 2, 0), WEST),
         room.label(r(-2, 2, -1), 'Flower', WEST))
     room.loop('copper_golem', main_clock).loop(copper_golem_loop, weatherings)
@@ -355,7 +355,7 @@ def friendlies(room):
     # See https://bugs.mojang.com/browse/MC-261250 -- eventually the egg will hatch even without randomTicks, so...
     room.function('sniffer_egg_reset').add(clone(egg_pos, egg_pos, egg_pos).replace(FORCE))
     room.function('sniffer_kid_init').add(placer(r(-0.5, 2, 0), EAST, 0, kids=True, tags='keeper').summon('sniffer'))
-    room.function('snow_golem_init').add(placer(r(-0.5, 2, 0), WEST, adults=True).summon('snow_golem'))
+    room.function('snow_golem_init').add(placer(r(-0, 2, 0), WEST, adults=True).summon('snow_golem'))
     room.loop('snow_golem', main_clock).loop(
         lambda step: execute().as_(e().tag('snow_golem')).run(data().merge(s(), {'Pumpkin': step.elem})), (True, False))
     room.function('switch_carpets_on', home=False).add(

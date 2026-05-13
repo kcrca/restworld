@@ -78,7 +78,7 @@ def room():
 
         setblock(r(8, 2, 2), 'cartography_table'),
 
-        execute().at(e().tag(banner_frame_tag)).run(banner_label.summon(r(-0.04, -0.23, -0.13), facing=WEST)),
+        execute().at(e().tag(banner_frame_tag)).run(banner_label.summon(r(-0.04, -0.25, -0.05), facing=WEST)),
     )
     for i, (k, v) in enumerate(decorations.items()):
         label = TextDisplay(v['type'],
