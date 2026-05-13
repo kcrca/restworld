@@ -48,7 +48,7 @@ def room():
                               start=1)
         else:
             yield Sign.change(r(-1, 2, 0), ('', f'{("Waxed " if waxed else "") + weathering_name(oxy, "")}'), start=1)
-        rod_ = ("waxed_" if waxed else "") + weathering_id(oxy, 'lightning_rod')
+        rod_ = ('waxed_' if waxed else '') + weathering_id(oxy, 'lightning_rod')
         yield setblock(r(0, 3, 0),
                        Block(rod_, {'powered': strike})),
 

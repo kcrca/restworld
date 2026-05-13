@@ -1,7 +1,7 @@
 from pynecraft.base import as_facing, BLACK, EAST, NORTH, r, ROTATION_270, SOUTH, Transform, WEST
 from pynecraft.commands import e, kill, summon, Text
-from pynecraft.simpler import TextDisplay
 from pynecraft.info import PAINTING_GROUP, paintings
+from pynecraft.simpler import TextDisplay
 from restworld.rooms import Room
 from restworld.world import restworld
 
@@ -9,7 +9,7 @@ from restworld.world import restworld
 # noinspection SpellCheckingInspection
 def room():
     room = Room('paintings', restworld, NORTH, (None, 'Paintings'))
-    room.reset_at((0, 3), note="and Labels")
+    room.reset_at((0, 3), note='and Labels')
     unused = set(PAINTING_GROUP)
 
     def wall(ids, facing, x, z, y=3, note=None):
@@ -47,7 +47,7 @@ def room():
             txt = txt.extra(fr' {note}')
         txt = txt.extra(r'\n')
         txt = txt.extra(Text.translate(
-            f'painting.minecraft.{img.name}.author', fallback="[artist unknown]").plain(),
+            f'painting.minecraft.{img.name}.author', fallback='[artist unknown]').plain(),
                         Text.text(fr'\n{img.name}, {img.size[0]}×{img.size[1]}\n').plain().italic())
 
         def adj(v, facing_d, moving_d):

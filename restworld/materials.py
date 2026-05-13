@@ -888,7 +888,7 @@ def trim_functions(room):
             for i, t in enumerate(self.types):
                 # The path is a.b.c, but we need the last element to be a.b{c:value}, and there is no replace, so...
                 path = self._to_path(t)
-                sign = WallSign().messages((None, 'Keep', f'{titlecase(self.name).replace("s", "")}:', titlecase(t)))
+                sign = WallSign().messages((None, 'Keep', f'{titlecase(self.name).replace('s', '')}:', titlecase(t)))
                 yield execute().if_().data(e().tag(overall_tag).limit(1), path).run(sign.place(r(-1, 2, 0), facing))
 
         def _to_path(self, t):

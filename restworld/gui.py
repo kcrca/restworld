@@ -348,7 +348,7 @@ def room():
         tx, tz = math.cos(angle_rad) * 3.5, math.sin(angle_rad) * 3.5
         color_name = to_name(color)
         stand = Entity('armor_stand', {'Rotation': [angle + 90, 0], 'PersistenceRequired': True, 'NoGravity': True,
-                                       'attributes': [{'id': "minecraft:waypoint_transmit_range", 'base': 100000}]},
+                                       'attributes': [{'id': 'minecraft:waypoint_transmit_range', 'base': 100000}]},
                        name=color_name).custom_name_visible(
             True).tag(room.name, 'waypoint', my_tag)
         waypoints_setup.add(
@@ -358,7 +358,7 @@ def room():
                 waypoint().modify(n().tag(my_tag)).color(color)),
         )
         if radius != radii[0][0]:
-            blob = Text.text("█").color(color)
+            blob = Text.text('█').color(color)
             text = [f'{color_name}\\n{radius_name}\\n', blob, Text('⇧').bold(), blob]
             # noinspection PyTypeChecker
             waypoints_setup.add(

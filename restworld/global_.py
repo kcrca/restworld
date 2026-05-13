@@ -164,7 +164,7 @@ def room():
         yield setblock(pos, 'air')
         block = 'Repeating Command Block' if repeat else 'Command Block'
         yield setblock(pos, Block(block, {'facing': dir},
-                                  {'Command': f'function restworld:{Arg("room")}/{which}'}))
+                                  {'Command': f'function restworld:{Arg('room')}/{which}'}))
 
     room.function('room_bounds', home=False).add(
         func(r(-1, 0, 0), '_init', EAST),
@@ -369,4 +369,4 @@ def room():
     employed = Score('employed', 'census')
     census.add(employed.operation(EQ, prof_scores['all']), employed.operation(MINUS, prof_scores['none']),
                prof_scores['none'].operation(MINUS, prof_scores['kid']), tag(e().tag('kid')).remove('none'),
-               schedule().function("minecraft:census", TimeSpec('15s'), REPLACE))
+               schedule().function('minecraft:census', TimeSpec('15s'), REPLACE))

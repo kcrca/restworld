@@ -10,7 +10,7 @@ def create():
     dialogs['notice'] = notice('Notice').body(
         plain_message('My hovercraft is full of eels.')
     ).inputs(
-        boolean("Boolean?"),
+        boolean('Boolean?'),
         single_option('Single Option', ('Euphoria', 'Melancholy', 'Ennui', 'Copacetic'), initial='Ennui'),
         number_range('Number Range', 0, 20, initial=1),
         text('Text', 'Four Score…'),

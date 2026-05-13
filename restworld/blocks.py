@@ -240,7 +240,7 @@ def room():
     room.loop('creaking_heart', main_clock).loop(creaking_heart_loop, ('awake', 'dormant', 'uprooted'))
     room.function('creaking_heart_init').add(
         WallSign((None, 'Creaking Heart')).place(r(0, 2, 1), SOUTH),
-        room.label(r(1, 2, 0), "With Logs", SOUTH),
+        room.label(r(1, 2, 0), 'With Logs', SOUTH),
     )
     blocks('deepslate', NORTH, (
         'Deepslate', 'Chiseled|Deepslate', 'Polished|Deepslate', 'Cracked|Deepslate|Bricks', 'Cracked|Deepslate|Tiles',
@@ -480,7 +480,7 @@ def room():
 
     room.function('armor_stand_init').add(
         room.mob_placer(r(0, 3, 0), NORTH, adults=True).summon('armor_stand', tags=('pose_stand',)),
-        room.label(r(-1, 2, 0), "Get Small", NORTH))
+        room.label(r(-1, 2, 0), 'Get Small', NORTH))
     room.loop('armor_stand', main_clock).loop(
         armor_stand_loop,
         (None,
@@ -830,8 +830,8 @@ def room():
         'simultaneous_mobs': 0.0,
         'simultaneous_mobs_added_per_player': 2.0,
         'ticks_between_spawn': 0x7fff_ffff,
-        'spawn_potentials': [{'data': {'entity': {'id': "minecraft:stray"}}, 'weight': 1}],
-        'loot_tables_to_eject': [{'data': "minecraft:spawners/ominous/trial_chamber/key", 'weight': 1}]}
+        'spawn_potentials': [{'data': {'entity': {'id': 'minecraft:stray'}}, 'weight': 1}],
+        'loot_tables_to_eject': [{'data': 'minecraft:spawners/ominous/trial_chamber/key', 'weight': 1}]}
     base_trial_spawner_nbt = Nbt({
         'required_player_range': 100,
         'target_cooldown_length': 0xfff_ffff,
@@ -841,7 +841,7 @@ def room():
         'normal_config': spawner_config,
         'ominous_config': spawner_config,
         'spawn_potentials': [{'data': {'entity': {'id': 'minecraft:stray'}}, 'weight': 1}],
-        'spawn_data': {'entity': {'id': "minecraft:stray"}},
+        'spawn_data': {'entity': {'id': 'minecraft:stray'}},
     }
     trial_spawner_nbts = {
         'inactive': base_trial_spawner_nbt.merge({'required_player_range': 1}),
@@ -849,10 +849,10 @@ def room():
         'active': base_trial_spawner_nbt.merge(trial_spawner_spawns),
         'waiting_for_reward_ejection': base_trial_spawner_nbt.merge(trial_spawner_spawns).merge({
             'total_ejections_needed': 6,
-            'ejecting_loot_table': "minecraft:spawners/ominous/trial_chamber/key"}),
+            'ejecting_loot_table': 'minecraft:spawners/ominous/trial_chamber/key'}),
         'ejecting_reward': base_trial_spawner_nbt.merge({
             'total_ejections_needed': 6, 'total_mobs_spawned': 1000,
-            'ejecting_loot_table': "minecraft:spawners/ominous/trial_chamber/key"}),
+            'ejecting_loot_table': 'minecraft:spawners/ominous/trial_chamber/key'}),
         'cooldown': base_trial_spawner_nbt.merge({
             'required_player_range': 1, 'cooldown_ends_at': 0x7fff_ffff_ffff_ffff}),
     }
@@ -1114,7 +1114,7 @@ def color_functions(room):
         yield Sign.change(r(-4, 2, 4), (None, color_name))
         yield Sign.change(r(1, 2, -0), (color_name,))
         yield execute().as_(e().tag('colorings_names')).run(data().merge(s(), {'CustomName': color_name}))
-        yield data().merge(r(0, 0, -1), {'name': f'restworld:{"plain" if is_plain else color.id}_terra'})
+        yield data().merge(r(0, 0, -1), {'name': f'restworld:{'plain' if is_plain else color.id}_terra'})
 
     def colored_signs(color, render):
         signables = info.woods + stems
@@ -1423,7 +1423,7 @@ def stepable_functions(room):
         'Polished|Deepslate',
         'Deepslate|Bricks',
         'Deepslate|Tiles',
-        *(weathering_name(x, "Cut Copper", join='|') for x in weatherings),
+        *(weathering_name(x, 'Cut Copper', join='|') for x in weatherings),
         'Resin Bricks',
         'Prismarine', 'Prismarine|Bricks', 'Dark|Prismarine',
         'Acacia Planks', 'Birch Planks', 'Cherry Planks', 'Jungle Planks', 'Mangrove Planks',

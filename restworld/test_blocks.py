@@ -14,8 +14,8 @@ def tests():
         'max_ticks': 10,
     }
     tst.test_environment()['default'] = {
-        "type": "minecraft:all_of",
-        "definitions": [],
+        'type': 'minecraft:all_of',
+        'definitions': [],
     }
     dir = f'{Path.home()}/clarity/home/saves/New World'
     if Path(dir).exists():

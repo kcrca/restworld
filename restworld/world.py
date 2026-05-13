@@ -34,7 +34,7 @@ class RestWorld(RoomPack):
             scoreboard().objectives().setdisplay(SIDEBAR),
             function('restworld:center/reset_clocks'),
             function('restworld:global/clock_on'),
-            function("restworld:_exit"),  # Leave any room we were in by leaving them all
+            function('restworld:_exit'),  # Leave any room we were in by leaving them all
             execute().at(e().tag('particles_action_home')).run(setblock(r(0, 2, -3), 'air')),
             execute().at(e().tag('font_run_home')).run(fill(r(-3, 2, 2), r(3, 2, 2), 'air')),
             execute().at(e().tag('maps_room_home')).run(setblock(r(8, 2, -2), 'air')),

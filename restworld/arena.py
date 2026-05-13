@@ -124,7 +124,7 @@ def room():
         'parched': skeleton_nbts,
         'vindicator': {'Johnny': 'True', 'equipment': {'mainhand': Item.nbt_for('iron_axe')}},
         'wither_skeleton': {'equipment': {'mainhand': Item.nbt_for('stone_sword')}},
-        'warden': {'Brain': {'memories': {"minecraft:dig_cooldown": {'value': {}, 'ttl': Nbt.MAX_LONG}}}},
+        'warden': {'Brain': {'memories': {'minecraft:dig_cooldown': {'value': {}, 'ttl': Nbt.MAX_LONG}}}},
         'zombie': {'equipment': {'head': Item.nbt_for('iron_helmet'), 'mainhand': Item.nbt_for('iron_sword')}},
         'zombified_piglin': {'equipment': {'mainhand': Item.nbt_for('golden_sword')}},
     }
@@ -237,7 +237,7 @@ def room():
             'weatherings': weatherings,
         }),
         ten.set(10),
-        scoreboard().objectives().add(kills_objective, DUMMY, "Killed"),
+        scoreboard().objectives().add(kills_objective, DUMMY, 'Killed'),
     )
 
     actor_is_splitter = room.score('$(actor)_is_splitter')
@@ -363,7 +363,7 @@ def room():
         if step.elem:
             yield function(clean_out),
         yield execute().at(e().tag('controls_home')).run(
-            setblock(r(-1, 2, 0), f'{"lime" if step.elem else "red"}_concrete'))
+            setblock(r(-1, 2, 0), f'{'lime' if step.elem else 'red'}_concrete'))
 
     arena_count = room.score('arena_count', 5)
 
