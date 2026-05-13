@@ -1178,7 +1178,7 @@ def color_functions(room):
     room.function('wolf_armor_off', home=False).add(
         data().remove(n().tag('colorings_dog'), 'equipment.body'),
         execute().at(e().tag('colorings_home')).run(function('restworld:blocks/colorings_cur')))
-    room.function('colorings_init').add(
+    colorings_init = room.function('colorings_init').add(
         kill_em(e().tag('colorings_item')),
         plain.set(0),
         ItemFrame(SOUTH, nbt={'Fixed': True, 'Tags': ('colorings_dye_frame',) + colorings_tags}).summon(
@@ -1263,7 +1263,7 @@ def color_functions(room):
             clone(store_start, store_end, top_end)),
         plain.set(0),
         tag(e().tag('colorings_base_home')).add('colorings_home'),
-        execute().at(e().tag('colorings_home')).run(function('restworld:blocks/colorings_init')),
+        execute().at(e().tag('colorings_home')).run(function(colorings_init)),
         # If the ghast boat is on, we need to remove it and then add it back when the harness is on
         execute().store(SUCCESS).score(boat_score).run(data().get(n().tag('ghast_boat'))),
         function(ghast_boat_off),
