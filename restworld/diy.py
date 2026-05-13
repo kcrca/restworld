@@ -64,8 +64,8 @@ def room():
         custom_reset.set(0),
         execute().at(e().tag('diy_cloner')).unless().block(r(0, 0, -1), 'air').run(custom_reset.set(1)),
         execute().at(e().tag('diy_cloner')).if_().block(r(0, 4, -1), 'air').run(custom_reset.set(1)),
-        execute().if_().score(custom_reset, MATCHES, 1).at(e().tag('diy_starter')
-                                                          ).run(tp(e().tag('diy_cloner'), r(0, 2, 0))),
+        execute().if_().score(custom_reset, MATCHES, 1).at(e().tag('diy_starter')).run(
+            tp(e().tag('diy_cloner'), r(0, 2, 0))),
         execute().if_().score(custom_reset, MATCHES, 0).as_(e().tag('diy_cloner')).at(
             e().tag('diy_cloner')).run(tp(e().tag('diy_cloner'), d(0, 0, 1))),
         execute().at(e().tag('diy_cloner')).unless().block(r(0, 4, 0), 'air').run(

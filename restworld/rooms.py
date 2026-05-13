@@ -11,7 +11,7 @@ from pynecraft.commands import a, as_block, as_entity, as_facing, as_score, Bloc
     Command, Commands, comment, data, e, Entity, EntityDef, execute, fill, function, INT, kill, MINUS, MOVE, n, p, \
     Particle, particle, Position, random, RESULT, ride, s, say, schedule, Score, scoreboard, setblock, SignMessages, \
     summon, tag, Target, team, tellraw, Text, TextDef, tp, weather
-from pynecraft.function import DataPack, Function, FunctionSet, LATEST_PACK_VERSION, Loop
+from pynecraft.function import DataPack, Function, FunctionSet, Loop
 from pynecraft.info import default_skins, DUMMY
 from pynecraft.simpler import TextDisplay, Trigger, WallSign
 
@@ -98,8 +98,7 @@ def _to_list(obj):
 class RoomPack(DataPack):
     base_suffixes = ('tick', 'init', 'enter', 'incr', 'decr', 'cur', 'exit', 'finish')
 
-    def __init__(self, name: str, suffixes: Iterable[str] = None,
-                 format_version: str = LATEST_PACK_VERSION, /):
+    def __init__(self, name: str, suffixes: Iterable[str] = None):
         super().__init__(name)
         if suffixes is None:
             suffixes = RoomPack.base_suffixes

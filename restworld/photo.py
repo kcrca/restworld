@@ -68,7 +68,7 @@ def quilt_blocks():
     for tag in (
         # Structural non-full-cube blocks
         'buttons', 'pressure_plates', 'doors', 'trapdoors', 'fences', 'fence_gates',
-        'slabs', 'stairs', 'rails', 'walls', 'bars', 'chains','frame',
+        'slabs', 'stairs', 'rails', 'walls', 'bars', 'chains', 'frame',
         # Decorative non-full-cube blocks
         'signs', 'banners', 'beds', 'candles', 'lanterns', 'flower_pots',
         'campfires', 'cauldrons', 'anvil', 'wooden_shelves',
@@ -117,7 +117,7 @@ def sorted_quilt_blocks():
             'Pumpkin|Jack|Melon', 'Raw', 'Log|Stem', 'Stripped', 'Bricks', 'Bookshelf', 'Sandstone', 'Piston',
             'Polished', 'Terracotta',
             '(Coal|Iron|Emerald|Lapis|Redstone|Gold|Diamond) Block',
-            'Table|Barrel|Furnace|Loom|Smoker|Crafter|Dispenser|Dropper|Observer','Glass',
+            'Table|Barrel|Furnace|Loom|Smoker|Crafter|Dispenser|Dropper|Observer', 'Glass',
         ),
         (
             'Coral', 'Wood|Hyphae', 'Planks', 'Terracotta', 'Sulfur'
