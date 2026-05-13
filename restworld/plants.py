@@ -132,7 +132,7 @@ def room():
         yield from pod(r(-1, 4, 0), EAST, 0)
         yield from pod(r(0, 4, 1), NORTH, 1)
         yield from pod(r(0, 4, -1), SOUTH, 2)
-        yield Sign.change(r(1, 2, 0), (None, None, 'Stage: %d of 3' % step.stage))
+        yield Sign.change(r(1, 2, 0), (None, None, f'Stage: {step.stage:d} of 3'))
 
     room.loop('cocoa', main_clock).loop(cocoa_loop, range(0, 3), bounce=True)
 
@@ -250,7 +250,7 @@ def room():
             sign_nbt['front_text']['messages'][0] = Text.text('Potted ' + base_text)
         if len(sign_nbt['front_text']['messages'][3]['text']) == 0:
             sign_nbt['front_text']['messages'] = (Text.text(''),) + tuple(sign_nbt['front_text']['messages'][:-1])
-        elem_id = 'potted_%s' % step.elem.id
+        elem_id = f'potted_{step.elem.id}'
         yield setblock(r(0, 3, 0), elem_id)
         room.particle(elem_id, 'pottable', r(0, 4, 0), step)
         yield data().merge(r(1, 2, 0), sign_nbt)
@@ -265,9 +265,9 @@ def room():
         Block('Azalea Bush'), Block('Flowering Azalea Bush'),
         Block('Mangrove Propagule'),
     ]
-    pottables = [None] + [Block('Mangrove|Propagule' if w == 'Mangrove' else '%s Sapling' % w) for w in saplings] + [
-        Block('%s Tulip' % t) for t in tulips] + list(small_flowers) + misc + [Block('%s Roots' % x) for x in stems] + [
-                    Block('%s Fungus' % x) for x in stems] + [
+    pottables = [None] + [Block('Mangrove|Propagule' if w == 'Mangrove' else f'{w} Sapling') for w in saplings] + [
+        Block(f'{t} Tulip') for t in tulips] + list(small_flowers) + misc + [Block(f'{x} Roots') for x in stems] + [
+                    Block(f'{x} Fungus') for x in stems] + [
                     Block('Torchflower'), Block('Wither Rose'), Block('Closed|Eyeblossom'), Block('Open|Eyeblossom')]
     try:
         pottables[pottables.index(Block('Bamboo Sapling'))] = Block('Bamboo')
@@ -281,14 +281,14 @@ def room():
     def propagule_loop(step):
         yield setblock(r(0, 4, 0), ('mangrove_propagule', {'hanging': True, 'age': step.stage}))
         yield setblock(r(0, 3, 0), ('mangrove_propagule', {'hanging': False, 'age': step.stage}))
-        yield Sign.change(r(1, 2, 0), (None, None, 'Stage: %d of 4' % step.stage))
+        yield Sign.change(r(1, 2, 0), (None, None, f'Stage: {step.stage:d} of 4'))
 
     room.loop('propagule', main_clock).loop(propagule_loop, range(4))
 
     room.function('shrooms_init').add(room.label(r(1, 2, 1), 'Vine Age 25', WEST))
 
     def shrooms_loop(step):
-        yield data().merge(r(-1, 0, -1), {'mode': 'LOAD', 'name': 'restworld:%s_shroom' % step.elem})
+        yield data().merge(r(-1, 0, -1), {'mode': 'LOAD', 'name': f'restworld:{step.elem}_shroom'})
         yield fill(r(-1, 1, -2), r(13, 1, 10), f'{step.elem}_nylium').replace('#nylium')
         yield setblock(r(-1, -1, -1), 'redstone_block')
         yield setblock(r(-1, -1, -1), 'air')

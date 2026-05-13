@@ -24,7 +24,7 @@ def create():
     blocks = restworld.tags(BLOCK)
     for thing, added in colorable.items():
         blocks[thing] = {
-            'values': ['%s_%s' % (c, thing) for c in COLORS]
+            'values': [f'{c}_{thing}' for c in COLORS]
         }
         if isinstance(added, tuple):
             blocks[thing]['values'].extend(added)
@@ -48,7 +48,7 @@ def create():
     stem_ids = tuple(to_id(x) for x in stems)
     woodlike_ids = wood_ids + stem_ids
     blocks['fencelike'] = {
-        'values': ['%s_stained_glass_pane' % x for x in COLORS] + [f'{x}_fence' for x in woodlike_ids] + [
+        'values': [f'{x}_stained_glass_pane' for x in COLORS] + [f'{x}_fence' for x in woodlike_ids] + [
             'nether_brick_fence',
             '#bars',
             'glass_pane',
@@ -79,7 +79,7 @@ def create():
     }
     blocks['gatelike'] = {'values': [f'{x}_fence_gate' for x in woodlike_ids]}
     blocks['leaflike'] = {
-        'values': ['%s_leaves' % x for x in wood_ids] + [
+        'values': [f'{x}_leaves' for x in wood_ids] + [
             'nether_wart_block',
             'warped_wart_block',
         ]

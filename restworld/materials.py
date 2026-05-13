@@ -54,13 +54,13 @@ def room():
     for thing in ('', 'Red '):
         ty = thing + 'Sand'
         subtypes = (
-            '%sstone' % ty,
-            'Smooth %sstone' % ty,
-            'Cut %sstone' % ty)
-        blocks.append((ty, 'Chiseled %sstone' % ty) + subtypes)
-        slabs.append((None, None) + tuple('%s Slab' % b for b in subtypes))
-        stairs.append((None, None) + tuple(('%s Stairs' % b if 'Cut' not in b else None) for b in subtypes))
-        walls.append('%sstone Wall' % ty)
+            f'{ty}stone',
+            f'Smooth {ty}stone',
+            f'Cut {ty}stone')
+        blocks.append((ty, f'Chiseled {ty}stone') + subtypes)
+        slabs.append((None, None) + tuple(f'{b} Slab' for b in subtypes))
+        stairs.append((None, None) + tuple((f'{b} Stairs' if 'Cut' not in b else None) for b in subtypes))
+        walls.append(f'{ty}stone Wall')
     assert len(blocks) == 2  # allows us to use 'replace previous type' because there are only two types
 
     room.function('arrows_init').add(WallSign(()).place(r(0, 2, 0), WEST), room.label(r(0, 2, 1), 'Fire', EAST))
@@ -217,7 +217,7 @@ def room():
             yield execute().if_().score(deepslate_materials, MATCHES, 0).run(
                 volume.replace('stone', '#restworld:ore_background'))
             yield execute().if_().score(deepslate_materials, MATCHES, 1).run(
-                volume.replace('deepslate_%s' % ore.id, '#restworld:ores'))
+                volume.replace(f'deepslate_{ore.id}', '#restworld:ores'))
             yield execute().if_().score(deepslate_materials, MATCHES, 1).run(
                 volume.replace('deepslate', '#restworld:ore_background'))
             yield volume.replace('dirt', 'soul_sand')
@@ -308,11 +308,11 @@ def basic_functions(room, enchanted):
     for i in range(0, 5):
         basic_init.add(invis_stand.summon(
             r(-(0.8 + i * 0.7), 2.0, 0), facing=NORTH,
-            nbt={'LeftHanded': True, 'Tags': ['enchantable', 'material_%d' % (4 + i), 'material_static']}))
+            nbt={'LeftHanded': True, 'Tags': ['enchantable', f'material_{4 + i:d}', 'material_static']}))
         if i < 4:
             basic_init.add(invis_stand.summon(
                 r(+(0.6 + i * 0.7), 2.0, 0), facing=NORTH,
-                nbt={'Tags': ['enchantable', 'material_%d' % (3 - i), 'material_static']}))
+                nbt={'Tags': ['enchantable', f'material_{3 - i:d}', 'material_static']}))
 
     basic_init.add(
         fill(r(-3, 2, 2), r(-3, 5, 2), 'stone'), kill(e().tag('armor_frame')),
@@ -363,8 +363,8 @@ def basic_functions(room, enchanted):
         armor_nbt = {
             'CustomName': title,
             'equipment': {
-                'feet': Item.nbt_for('%s_boots' % armor), 'legs': Item.nbt_for('%s_leggings' % armor),
-                'chest': Item.nbt_for('%s_chestplate' % armor), 'head': Item.nbt_for('%s_helmet' % armor)}}
+                'feet': Item.nbt_for(f'{armor}_boots'), 'legs': Item.nbt_for(f'{armor}_leggings'),
+                'chest': Item.nbt_for(f'{armor}_chestplate'), 'head': Item.nbt_for(f'{armor}_helmet')}}
         yield data().merge(e().tag('basic_stand').limit(1), armor_nbt)
         yield data().merge(e().tag('armor_baby').limit(1), armor_nbt)
 
@@ -372,12 +372,11 @@ def basic_functions(room, enchanted):
         yield setblock(r(3, 2, 4), background.id)
         yield fill(r(4, 3, 2), r(4, 4, 2), background.id)
 
-        yield data().merge(e().tag('armor_boots').limit(1), {'Item': {'id': '%s_boots' % armor}, 'ItemRotation': 0})
-        yield data().merge(e().tag('armor_leggings').limit(1),
-                           {'Item': {'id': '%s_leggings' % armor}, 'ItemRotation': 0})
+        yield data().merge(e().tag('armor_boots').limit(1), {'Item': {'id': f'{armor}_boots'}, 'ItemRotation': 0})
+        yield data().merge(e().tag('armor_leggings').limit(1),                           {'Item': {'id': f'{armor}_leggings'}, 'ItemRotation': 0})
         yield data().merge(e().tag('armor_chestplate').limit(1),
-                           {'Item': {'id': '%s_chestplate' % armor}, 'ItemRotation': 0})
-        yield data().merge(e().tag('armor_helmet').limit(1), {'Item': {'id': '%s_helmet' % armor}, 'ItemRotation': 0})
+                           {'Item': {'id': f'{armor}_chestplate'}, 'ItemRotation': 0})
+        yield data().merge(e().tag('armor_helmet').limit(1), {'Item': {'id': f'{armor}_helmet'}, 'ItemRotation': 0})
         yield data().merge(e().tag('armor_gem').limit(1), {'Item': {'id': gem, 'Count': 1}, 'ItemRotation': 0})
 
         yield from armored_mob(armor, 'horse', horse_armor, r(5, 2, 0.5), NORTH)
@@ -385,8 +384,7 @@ def basic_functions(room, enchanted):
                                data().modify(n().tag('armor_nautilus'), 'Owner').set().from_(p(), 'UUID'))
 
         yield data().merge(e().tag('basic_stand').limit(1),
-                           {'equipment': {'mainhand': Item.nbt_for('%s_sword' % material),
-                                          'offhand': Item.nbt_for('shield')}})
+                           {'equipment': {'mainhand': Item.nbt_for(f'{material}_sword'),                                          'offhand': Item.nbt_for('shield')}})
 
         hands_row = [None, None, f'{material}_shovel', f'{material}_pickaxe', f'{material}_spear',
                      f'{material}_axe', f'{material}_hoe', None]
@@ -398,7 +396,7 @@ def basic_functions(room, enchanted):
             hands_row[7] = 'shears'
         for j in range(0, 8):
             hand = 'mainhand' if j < 4 else 'offhand'
-            who = e().tag('material_%d' % j).limit(1)
+            who = e().tag(f'material_{j:d}').limit(1)
             thing = hands_row[j]
             if thing:
                 yield data().merge(who, {'equipment': {hand: Item.nbt_for(thing)}})
@@ -491,10 +489,10 @@ def fencelike_functions(room):
         room.function(f'switch_to_{which}', home=False).add(
             kill(e().tag('which_fencelike_home')),
             execute().at(e().tag('fencelike_home')).positioned(r(1, -0.5, 0)).run(
-                function('restworld:materials/%s_home' % which)),
-            tag(e().tag('%s_home' % which)).add('which_fencelike_home'),
-            execute().at(e().tag('%s_home' % which)).run(
-                function('restworld:materials/%s_cur' % which)))
+                function(f'restworld:materials/{which}_home')),
+            tag(e().tag(f'{which}_home')).add('which_fencelike_home'),
+            execute().at(e().tag(f'{which}_home')).run(
+                function(f'restworld:materials/{which}_cur')))
 
     def fence_loop(step):
         yield from fencelike(step.elem)

@@ -130,7 +130,7 @@ class Room(FunctionSet):
         self._triggers: list[Trigger] = []
         self._homes = set()
         self._home_stand = Entity('armor_stand', {
-            'Tags': ['homer', '%s_home' % self.name], 'NoGravity': True, 'Small': True})
+            'Tags': ['homer', f'{self.name}_home'], 'NoGravity': True, 'Small': True})
         self._riders_init_done = False
         self.title = None
         self._player_in_room_setup()
@@ -208,10 +208,10 @@ class Room(FunctionSet):
         sign = WallSign(text)
         facing = as_facing(facing)
         x, z, rot = facing.dx, facing.dz, facing.yaw
-        anchor = '%s_anchor' % self.name
+        anchor = f'{self.name}_anchor'
         anchor_rot = rotate_facing(facing.name, ROTATION_180)
         marker = Entity('marker', {'Rotation': anchor_rot.rotation, 'shadow_radius': 0}).tag(anchor, 'anchor')
-        self.add(Function('%s_room_init' % self.name).add(
+        self.add(Function(f'{self.name}_room_init').add(
             sign.place(r(x, 6, z), facing),
             kill_em(e().tag(anchor)),
             summon(marker, r(0, 2, 0))
@@ -233,7 +233,7 @@ class Room(FunctionSet):
 
     def home_func(self, name, home=None, single_home=True):
         home_marker_comment = 'Default home function'
-        marker_tag = '%s_home' % name
+        marker_tag = f'{name}_home'
         if marker_tag in self.functions:
             f = self.functions[marker_tag]
             for c in f.commands():
@@ -407,7 +407,7 @@ class Room(FunctionSet):
     def _add_clock_funcs(self):
         tick_func = self.function('_tick')
         for clock, loops in self._clocks.items():
-            name = '_%s' % clock.name
+            name = f'_{clock.name}'
             clock_func = self.function(name).add((
                 execute().at(e().tag(x.base_name + '_home')).run(function(x.full_name)) for x in loops)).add(
                 team().join('no_collision', e().tag(self.name))
@@ -420,7 +420,7 @@ class Room(FunctionSet):
 
         finish_funcs = {}
         clock_re = str('(' + '|'.join(x.name for x in self._clocks.keys()) + ')')
-        finish_funcs_re = re.compile('(.*)_finish_%s$' % clock_re)
+        finish_funcs_re = re.compile(f'(.*)_finish_{clock_re}$')
         for f in self.functions.values():
             m = finish_funcs_re.match(f.name)
             if m:
@@ -461,7 +461,7 @@ class Room(FunctionSet):
         }
         after_commands = {
             'enter': [weather(CLEAR)],
-            'init': [function('%s/_cur' % self.full_name), team().join('no_collision', e().tag(self.name))],
+            'init': [function(f'{self.full_name}/_cur'), team().join('no_collision', e().tag(self.name))],
         }
         clock_suffixes = set(x.name for x in self._clocks)
         clock_suffixes.add('tick')
@@ -500,7 +500,7 @@ class Room(FunctionSet):
         return score
 
     def score_max(self, name):
-        score = Score(name, '%s_max' % self.name)
+        score = Score(name, f'{self.name}_max')
         return score
 
     def _home_func_name(self, base):
@@ -586,7 +586,7 @@ class MobPlacer:
                 self.kid_x, _, self.kid_z = facing.scale(kid_delta)
                 self.rotation = facing.yaw
             except KeyError:
-                raise ValueError('%s: Unknown "facing" with no "rotation"' % facing.name)
+                raise ValueError(f'{facing.name}: Unknown "facing" with no "rotation"')
         else:
             delta = delta if delta else (0, 0)
             kid_delta = kid_delta if kid_delta else (0, 0)
@@ -739,7 +739,7 @@ class ActionDesc:
             sign_text.insert(0, None)
         while len(sign_text) > 4:
             if sign_text[0]:
-                raise ValueError('%s: Too much sign text for action' % sign_text)
+                raise ValueError(f'{sign_text}: Too much sign text for action')
             sign_text = sign_text[1:]
         return sign_text
 
@@ -761,7 +761,7 @@ class SignedRoom(Room):
             return None
         try:
             desc = next(i)
-            raise ValueError('Remaining descriptions after all signs are placed: "%s"...' % desc.name)
+            raise ValueError(f'Remaining descriptions after all signs are placed: "{desc.name}"...')
         except StopIteration:
             pass
 

@@ -145,7 +145,7 @@ def room():
                 block = water_potion
             else:
                 block = 'air'
-            yield item().replace(r(0, 2, 0), 'container.%d' % j).with_(block)
+            yield item().replace(r(0, 2, 0), f'container.{j}').with_(block)
 
     room.function('brewing_init').add(
         function('restworld:gui/switch_brewing_off'),
