@@ -500,20 +500,21 @@ def fencelike_functions(room):
         if step.elem[:-len(' Fence')] in info.woods + stems:
             yield volume.replace_facing(step.elem + ' Gate', '#fence_gates')
 
-    room.loop('panes', main_clock).loop(lambda step: fencelike(step.elem),
-                                        tuple(f'{x.name}|Stained Glass|Pane' for x in colors) + ('Glass Pane',))
+    clock = fast_clock
+    room.loop('panes', clock).loop(lambda step: fencelike(step.elem),
+                                   tuple(f'{x.name}|Stained Glass|Pane' for x in colors) + ('Glass Pane',))
     switch_to_fencelike('panes')
-    room.loop('fences', main_clock).loop(fence_loop,
-                                         tuple(f'{x} Fence' for x in info.woods + stems + ('Nether Brick',)))
+    room.loop('fences', clock).loop(fence_loop,
+                                    tuple(f'{x} Fence' for x in info.woods + stems + ('Nether Brick',)))
     switch_to_fencelike('fences')
-    room.loop('walls', main_clock).loop(
+    room.loop('walls', clock).loop(
         lambda step: fencelike(step.elem),
         sorted(re.sub('(Polished|Cobbled|Mossy) ', r'\1|', to_name(t).replace(' Brick', '|Brick')) for t in
          tags['block']['walls']))
     switch_to_fencelike('walls')
     waxed_ = tuple(f'{x} Bars' for x in
                    ('Iron', *tuple(w + weathering_name(x, join='|') for x in weatherings for w in ('', 'Waxed|'))))
-    room.loop('bars', main_clock).loop(lambda step: fencelike(step.elem), waxed_)
+    room.loop('bars', clock).loop(lambda step: fencelike(step.elem), waxed_)
     switch_to_fencelike('bars')
 
 
@@ -704,7 +705,7 @@ def wood_functions(room):
         # noinspection PyTypeChecker
         yield from volume.fill('air', 'vine')  # remove any existing vine
         if name in ('Jungle', 'Mangrove'):
-            yield fill(r(-4, 2, -2), r(-4, 4, -2), ('vine', {'north': True}))
+            yield fill(r(-4, 2, -2), r(-4, 5, -2), ('vine', {'north': True}))
 
         yield setblock(r(-2, 2, -1), saplings[0])
         yield setblock(r(0, 2, -1), saplings[1])
