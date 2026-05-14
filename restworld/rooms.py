@@ -1,7 +1,7 @@
 import copy
 import re
 from copy import deepcopy
-from typing import Callable, Iterable, Sequence, Tuple
+from typing import Callable, Iterable, Sequence
 
 import math
 
@@ -139,14 +139,14 @@ class Room(FunctionSet):
         if facing:
             self._room_setup(facing, text, room_name)
 
-    def reset_at(self, xz: Tuple[int, int], facing=None, note=None) -> None:
+    def reset_at(self, xz: tuple[int, int], facing=None, note=None) -> None:
         self.function('_init').add(function('restworld:global/reset_raised'))
         text = 'Reset Room'
         if note:
             text += fr'\n{note}'
         self._command_block(xz, text, ORANGE, f'restworld:{self.name}/_init', facing=facing)
 
-    def change_height_at(self, xz: Tuple[int, int]) -> None:
+    def change_height_at(self, xz: tuple[int, int]) -> None:
         self._command_block(xz, 'Change Height', BLUE, 'restworld:global/toggle_raised')
 
     def _command_block(self, xz, label_text, color, command, facing=None):
@@ -560,7 +560,7 @@ class MobPlacer:
 
     def __init__(self, start: Position, facing: FacingDef | float,
                  delta: float | tuple[float, float] = None, kid_delta: float | tuple[float, float] = None, *,
-                 tags: str | Tuple[str, ...] = None,
+                 tags: str | tuple[str, ...] = None,
                  nbt=None, kids=None, adults=None, auto_tag=True):
         self.start = start
         self.nbt = nbt if nbt else Nbt()
@@ -697,7 +697,7 @@ class Wall:
         yield all_signs
 
 
-def _ranges(cur: int, mn: int, mx: int | None) -> Tuple[int, int]:
+def _ranges(cur: int, mn: int, mx: int | None) -> tuple[int, int]:
     if mx is None:
         return cur, cur
     return min(cur, mn), max(cur, mx)

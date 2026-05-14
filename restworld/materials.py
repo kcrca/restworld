@@ -1,6 +1,6 @@
 import re
 from collections import namedtuple
-from typing import Any, List
+from typing import Any
 
 from titlecase import titlecase
 
@@ -143,7 +143,7 @@ def room():
     room.loop('experience_orbs', fast_clock).loop(experience_orbs_loop, points)
     room.function('experience_orbs_init').add(WallSign((None, 'Experience Orb')).place(r(1, 2, 0), EAST))
 
-    non_inventory: List[Any] = list(must_give_items.values())
+    non_inventory: list[Any] = list(must_give_items.values())
     non_inventory.append(Entity('elytra', name='Damaged Elytra', nbt={'components': {'damage': 450}}))
 
     def only_items_init_func():

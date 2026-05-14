@@ -1,6 +1,5 @@
 import sys
 from random import randint
-from typing import Tuple
 
 from pynecraft.base import Arg, EAST, EQ, GT, LT, MATCHES, Nbt, NORTH, r, seconds, SOUTH, to_name, WEST
 from pynecraft.commands import a, Block, data, DIV, e, effect, execute, fill, function, INFINITE, INT, kill, MINUS, MOD, \
@@ -405,7 +404,7 @@ def room():
     room.function('hunter_home').add(random_stand('hunter'))
     room.function('victim_home').add(random_stand('victim'))
 
-    def count_func(actor: str, splitter: Score) -> Tuple[Function, Score]:
+    def count_func(actor: str, splitter: Score) -> tuple[Function, Score]:
         count = room.score(f'{actor}_count')
         func = room.function(f'count_{actor}', home=False).add(
             count.set(0),

@@ -1,5 +1,5 @@
 import re
-from typing import Any, Callable, Iterable, Union
+from typing import Any, Callable, Iterable
 
 from titlecase import titlecase
 
@@ -28,7 +28,7 @@ def room():
     list_scale = 0.6
 
     def blocks(name: str, facing: FacingDef,
-               block_lists: Iterable[Union[Block, str]] | Iterable[Iterable[Union[Block, str]]],
+               block_lists: Iterable[Block | str] | Iterable[Iterable[Block | str]],
                dx: float = 0, dz: float = 0, size: int = 0, labels=None, clock: Clock = main_clock,
                score: ScoreName = None, air: bool = False, expandable=True,
                post_block: Callable[[Block, tuple[RelCoord, RelCoord, RelCoord]], Command | Commands] = None) -> tuple[
