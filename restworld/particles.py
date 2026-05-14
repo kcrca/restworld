@@ -536,6 +536,7 @@ def room():
         main().run(particle(SWEEP_ATTACK, r(0, 1, 0), (0.3, 0.2, 0.3), 0, 3)))
     room.function('sulfur_bubbles_init', home=False).add(
         fill(r(-2, 0, -2), r(2, 1, 2), 'sulfur'),
+        fill(r(-2, 0, 3), r(2, 0, 3), 'sulfur_stairs'),
         setblock(r(-1, -1, -1), 'magma_block'),
         setblock(r(-1, -1, +1), 'magma_block'),
         setblock(r(+1, -1, -1), 'magma_block'),
