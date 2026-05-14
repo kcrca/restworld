@@ -32,6 +32,7 @@ mobs = (
     PhotoMob(3, +29, 'ocelot'),
     PhotoMob(3.2, +47, 'fox'),
 
+    PhotoMob(5.8, -55, 'sulfur_cube'),
     PhotoMob(4.9, -45, 'rabbit', nbt={'RabbitType': 3}),
     PhotoMob(4.3, -32, 'bee'),
     PhotoMob(4.5, -14, 'armadillo'),
