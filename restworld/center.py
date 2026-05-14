@@ -155,4 +155,4 @@ def room():
     messages = (None, Text.text('F u cn rd ths').obfuscated(True),
                 Text.text('u cd b hm by nw').obfuscated(True).extra(Text.text('‽').obfuscated(False)))
     room.function('plants_display_init').add(WallSign(messages).place(r(5, 3, -5), SOUTH))
-    room.function('materials_display_init').add(ItemFrame(WEST).item('clock').tag('mob_display').summon(r(4, 4, 5)))
+    room.function('materials_display_init').add(ItemFrame(WEST).item('clock').tag('mob_display', 'center').summon(r(5, 4, 5)))
