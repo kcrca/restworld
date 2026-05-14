@@ -1,4 +1,5 @@
 import copy
+import re
 
 from titlecase import titlecase
 
@@ -7,7 +8,7 @@ from pynecraft.commands import as_facing, Block, clone, COLORS, data, e, Entity,
     item, kill, LONG, MOD, n, p, player, REPLACE, RESULT, return_, ride, s, say, schedule, Score, scoreboard, setblock, \
     SUCCESS, summon, tag, tp
 from pynecraft.info import as_disc, axolotls, colors, default_skins, DISC_GROUP, discs, DUMMY, horses, mannequin_poses, \
-    tropical_fish, weathering_id, weathering_name, weathering_property, weatherings, wolves
+    tags, tropical_fish, weathering_id, weathering_name, weathering_property, weatherings, wolves
 from pynecraft.simpler import Item, ItemFrame, PLAINS, Sign, Villager, VILLAGER_BIOMES, VILLAGER_PROFESSIONS, WallSign
 from restworld.materials import water_biomes
 from restworld.rooms import kill_em, MobPlacer, Room
@@ -374,16 +375,18 @@ def friendlies(room):
         (None, 'air'), ('Bouncy', 'oak_log'), ('Slow Bouncy', 'bricks'), ('Explosive', 'tnt'),
         ('Fast Flat', 'brain_coral_block'), ('Fast Sliding', 'blue_ice'), ('High Resistance', 'soul_sand'),
         ('Light', 'blue_wool'), ('Slow Flat', 'copper_ore'), ('Slow Sliding', 'red_mushroom_block'),
-        ('Sticky', 'honeycomb_block'), ('Regular', 'cobblestone'), ('Hot', 'magma_cube')
+        ('Sticky', 'honeycomb_block'), ('Regular', 'cobblestone'), ('Hot', 'magma_block')
     )
 
     def sulfur_cube_loop(step):
         yield execute().if_().score(is_empty, MATCHES, 1).run(
+            data().modify(n().tag('archetype'), 'text').set().value(step.elem[0]),
             data().modify(sulfur_cube, 'equipment.body').set().value(Item.nbt_for(step.elem[1])))
 
     room.function('sulfur_cube_init').add(
         placer(*mid_east_placer).summon('sulfur_cube'),
         data().merge(n().tag('adult').type('sulfur_cube'), {'Size': 1}),
+        room.label(r(-1.5, 3.85, 0), '', EAST, vertical=True, tags='archetype'),
         setblock(r(-2, 4, 0), 'smooth_quartz'),
         ItemFrame(EAST).fixed(False).tag('mobs', 'sulfur_cube_innards').summon(r(-1, 4, 0)),
         WallSign((None, 'Items in this', 'frame are put in', 'the Sulfur Cube')).place(r(-1, 5, 0), EAST)
@@ -394,13 +397,19 @@ def friendlies(room):
     room.function('sulfur_cube_run', home=False).add(
         was_empty.operation(EQ, is_empty),
         is_empty.set(1),
-        execute().if_().data(innards_frame, 'Item.id').run(is_empty.set(0)),
+        execute().if_().items(innards_frame, 'container.0', '#minecraft:sulfur_cube_swallowable').run(is_empty.set(0)),
         execute().unless().score(was_empty, EQ, is_empty).run(
+            data().modify(n().tag('archetype'), 'text').set().value(''),
             execute().if_().score(was_empty, MATCHES, 1).run(
-                data().modify(sulfur_cube, 'equipment.body').set().from_(innards_frame, 'Item')),
+                data().modify(n().tag('archetype'), 'text').set().value(''),
+                data().modify(sulfur_cube, 'equipment.body').set().from_(innards_frame, 'Item'),
+                (execute().if_().items(innards_frame, 'contents', f'#{t}').run(
+                    data().modify(n().tag('archetype'), 'text').set().value(to_name(re.sub(r'.*/', '', t)))
+                ) for t in filter(lambda v: 'archetype' in v, tags['item']))
+            ),
             execute().if_().score(is_empty, MATCHES, 1).run(
                 data().modify(sulfur_cube, 'equipment.body').set().value({}),
-                function('sulfur_cube_cur')
+                function('restworld:mobs/sulfur_cube_cur')
             ),
         )
     )
