@@ -52,29 +52,7 @@ def create():
             'nether_brick_fence',
             '#bars',
             'glass_pane',
-            'brick_wall',
-            'cobblestone_wall',
-            'mud_brick_wall',
-            'mossy_cobblestone_wall',
-            'resin_brick_wall',
-            'stone_brick_wall',
-            'mossy_stone_brick_wall',
-            'end_stone_brick_wall',
-            'sandstone_wall',
-            'red_sandstone_wall',
-            'nether_brick_wall',
-            'red_nether_brick_wall',
-            'andesite_wall',
-            'granite_wall',
-            'diorite_wall',
-            'prismarine_wall',
-            'blackstone_wall',
-            'polished_blackstone_wall',
-            'polished_blackstone_brick_wall',
-            'cobbled_deepslate_wall',
-            'polished_deepslate_wall',
-            'deepslate_brick_wall',
-            'deepslate_tile_wall'
+            '#walls'
         ]
     }
     blocks['gatelike'] = {'values': [f'{x}_fence_gate' for x in woodlike_ids]}

@@ -1,3 +1,4 @@
+import re
 from collections import namedtuple
 from typing import Any, List
 
@@ -6,13 +7,13 @@ from titlecase import titlecase
 from pynecraft import info
 from pynecraft._values import SULFUR_CAVES
 from pynecraft.base import Arg, as_facing, EAST, EQ, MATCHES, Nbt, NbtDef, NE, NORTH, NW, r, RelCoord, SOUTH, to_id, \
-    WEST
+    to_name, WEST
 from pynecraft.commands import a, as_block, Block, BlockDef, clone, data, e, effect, Entity, execute, fill, fillbiome, \
     function, INFINITE, item, kill, LONG, MOD, n, p, PLUS, random, REPLACE, RESULT, s, schedule, Score, \
     scoreboard, setblock, stopsound, summon, tag
 from pynecraft.function import BLOCK
 from pynecraft.info import armor_equipment, biomes, COLD_OCEAN, colors, copper_golem_poses, default_skins, FROZEN_OCEAN, \
-    INVISIBILITY, LUKEWARM_OCEAN, MANGROVE_SWAMP, must_give_items, OCEAN, stems, trim_materials, trim_patterns, \
+    INVISIBILITY, LUKEWARM_OCEAN, MANGROVE_SWAMP, must_give_items, OCEAN, stems, tags, trim_materials, trim_patterns, \
     WARM_OCEAN, weathering_id, weathering_name, weatherings
 from pynecraft.simpler import Item, ItemFrame, PLAINS, Region, Sign, SWAMP, WallSign
 from restworld.rooms import erase, kill_em, Room
@@ -505,12 +506,10 @@ def fencelike_functions(room):
     room.loop('fences', main_clock).loop(fence_loop,
                                          tuple(f'{x} Fence' for x in info.woods + stems + ('Nether Brick',)))
     switch_to_fencelike('fences')
-    room.loop('walls', main_clock).loop(lambda step: fencelike(step.elem), (x + ' Wall' for x in (
-        'Cobblestone', 'Mossy|Cobblestone', 'Sandstone', 'Red|Sandstone', 'Brick', 'Mud|Brick', 'Stone|Brick',
-        'Mossy Stone|Brick', 'Resin Brick', 'Nether|Brick', 'Red Nether|Brick', 'End Stone|Brick',
-        'Polished|Blackstone|Brick', 'Polished|Blackstone', 'Blackstone', 'Andesite', 'Granite', 'Diorite',
-        'Deepslate|Brick', 'Deepslate|Tile', 'Cobbled|Deepslate', 'Polished|Deepslate', 'Prismarine'
-    )))
+    room.loop('walls', main_clock).loop(
+        lambda step: fencelike(step.elem),
+        sorted(re.sub('(Polished|Cobbled|Mossy) ', r'\1|', to_name(t).replace(' Brick', '|Brick')) for t in
+         tags['block']['walls']))
     switch_to_fencelike('walls')
     waxed_ = tuple(f'{x} Bars' for x in
                    ('Iron', *tuple(w + weathering_name(x, join='|') for x in weatherings for w in ('', 'Waxed|'))))
