@@ -390,7 +390,7 @@ def friendlies(room):
         room.label(r(-1.5, 3.85, 0), '', EAST, vertical=True, tags='archetype'),
         setblock(r(-2, 4, 0), 'smooth_quartz'),
         ItemFrame(EAST).fixed(False).tag('mobs', 'sulfur_cube_innards').summon(r(-1, 4, 0)),
-        WallSign((None, 'Items in this', 'frame are put in', 'the Sulfur Cube')).place(r(-1, 5, 0), EAST)
+        WallSign((None, 'Items in this', 'frame are put in', 'the Sulfur Cube')).place(r(-2, 5, 0), WEST)
     )
     room.loop('sulfur_cube', main_clock).loop(sulfur_cube_loop, archetypes)
     room.function('sulfur_cube_enter').add(setblock(r(-2, 0, 0), 'redstone_block'))
