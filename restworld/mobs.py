@@ -258,7 +258,7 @@ def friendlies(room):
         # Flag problem during development
         execute().positioned(disc_chest_pos).unless().block(r(0, 0, 0), 'chest').run(
             say('WARNING: no disc chest'), setblock(r(0, 10, 0), 'stone')),
-        (item().replace(disc_chest_pos, f'container.{i:d}').with_(discs[as_disc(d)].value) for i, d in
+        (item().replace(disc_chest_pos, f'container.{i:d}').with_(discs[as_disc(d)].id) for i, d in
          enumerate(DISC_GROUP)))
     room.function('parrot_init').add(
         placer(parrot_pos, parrot_dir, adults=True).summon('parrot'),

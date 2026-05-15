@@ -554,7 +554,7 @@ def copper_functions(room):
             basic += '_block'
         if len(type) > 0:
             type += '_'
-        yield Sign.change(copper_sign_pos, (None, titlecase(type.replace('_', ' '))))
+        yield Sign.change(copper_sign_pos, (None, to_name(type)))
         yield from volume.replace(type + basic, '#restworld:coppers')
         yield from volume.replace(type + 'lightning_rod', '#lightning_rods')
         yield from volume.replace(type + 'cut_copper', '#restworld:cut_coppers')
@@ -587,7 +587,7 @@ def copper_functions(room):
 
         yield item().replace(n().tag('copper_door_frame'), 'container.0').with_(Item(type + 'copper_door'))
 
-        sign_text = ['', titlecase(type.replace('_', ' ')), 'Copper', '']
+        sign_text = ['', to_name(type), 'Copper', '']
         yield Sign.change(r(2, 2, 0), sign_text)
 
     # Share a score so we only change 'waxness', not oxidization level

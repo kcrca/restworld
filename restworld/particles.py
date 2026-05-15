@@ -4,7 +4,7 @@ import math
 
 from pynecraft._values import SULFUR_CAVES
 from pynecraft.base import Arg, as_facing, d, EAST, MATCHES, MIDNIGHT, Nbt, NOON, NORTH, OVERWORLD, r, SOUTH, to_id, \
-    WEST
+    to_name, WEST
 from pynecraft.commands import a, Block, BLOCK_MARKER, CLEAR, data, DUST_PILLAR, e, effect, Entity, execute, \
     FALLING_DUST, fill, fillbiome, function, HoverEvent, INFINITE, item, kill, Particle, particle, playsound, RAIN, \
     REPLACE, say, schedule, setblock, summon, Text, THUNDER, time, weather
@@ -637,7 +637,7 @@ def room():
                 book.add(Text(', ').bold(False))
             else:
                 first = False
-            text = Text(as_particle(p).capitalize().replace('_', ' ')).bold(False)
+            text = Text(to_name(as_particle(p))).bold(False)
             if p in hover:
                 text = text.hover_event(HoverEvent.show_text(hover[p]))
             book.add(text)

@@ -38,16 +38,16 @@ def room():
         if img.size[1] > 3:
             y += 1
         yield summon('painting', r(x + px, y, z + pz),
-                     {'variant': img.value, 'facing': facing.painting_number, 'Tags': ['painting']})
-        title = img.value
+                     {'variant': img.id, 'facing': facing.painting_number, 'Tags': ['painting']})
+        title = img.id
         if note:
             title += f' {note}'
-        txt = Text.translate(f'painting.minecraft.{img.name}.title').bold().italic(False).color(BLACK)
+        txt = Text.translate(f'painting.minecraft.{img.id}.title').bold().italic(False).color(BLACK)
         if note:
             txt = txt.extra(fr' {note}')
         txt = txt.extra(r'\n')
         txt = txt.extra(Text.translate(
-            f'painting.minecraft.{img.name}.author', fallback='[artist unknown]').plain(),
+            f'painting.minecraft.{img.id}.author', fallback='[artist unknown]').plain(),
                         Text.text(fr'\n{img.name}, {img.size[0]}×{img.size[1]}\n').plain().italic())
 
         def adj(v, facing_d, moving_d):
@@ -67,15 +67,15 @@ def room():
             Transform.quaternion(facing, 0.45))
         yield display.summon(r(adj(label_x, facing.dx, moving.dx), label_y, adj(label_z, facing.dz, moving.dz)))
         try:
-            unused.remove(img.value)
+            unused.remove(img.id)
         except KeyError:
-            print(f'Duplicate: {img.value}')
+            print(f'Duplicate: {img.id}')
 
     f = room.function('all_paintings_init').add(
         kill(e().tag('painting')),
         kill(e().type('item')),
 
-        wall(('Fern', 'Orb', 'Skull On Fire', 'Dennis', 'sunset_dense', 'Fighters'), NORTH, 23, 26),
+        wall(('Fern', 'Orb', 'Skull On Fire', 'Dennis', 'Sunset', 'Fighters'), NORTH, 23, 26),
         wall(('Mortal Coil', 'Kong', 'Bonjour Monsieur Courbet', 'Pond', 'Cavebird', 'Pigscene'), EAST, -2, 25),
 
         wall(('Tides', 'Pointer', 8, 'Passage', 'Wanderer', 'Prairie Ride'), SOUTH, -1, 0),
@@ -95,8 +95,8 @@ def room():
         wall(('Bust', 'Baroque', 6, 'Lowmist'), NORTH, 19, 5),
 
         # 1x1's
-        wall(('de_aztec', 4, 'Meditative'), NORTH, 14, 12),
-        wall(('de_aztec 2',), EAST, 15, 13),
+        wall(('Aztec', 4, 'Meditative'), NORTH, 14, 12),
+        wall(('Aztec2',), EAST, 15, 13),
         wall(('Kebab med tre pepperoni',), WEST, 13, 13),
         wall(('Paradisträd', 4, 'Wasteland'), SOUTH, 8, 14),
         wall(('Albanian',), EAST, 9, 13),

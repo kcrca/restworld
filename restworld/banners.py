@@ -125,7 +125,7 @@ def room():
             if facing == 'north' and i == 27:
                 x += xd
                 z += zd
-            yield render(x, xn, z, zn, angle, facing, bx, bz, 3.65, 3.65, pattern.value)
+            yield render(x, xn, z, zn, angle, facing, bx, bz, 3.65, 3.65, pattern.id)
 
     # noinspection PyUnusedLocal
     def update_a_stand(x, xn, z, zn, angle, facing, bx, bz, y_banner, y_shield, pattern):
