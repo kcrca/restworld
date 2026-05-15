@@ -374,7 +374,7 @@ def basic_functions(room, enchanted):
         yield fill(r(4, 3, 2), r(4, 4, 2), background.id)
 
         yield data().merge(e().tag('armor_boots').limit(1), {'Item': {'id': f'{armor}_boots'}, 'ItemRotation': 0})
-        yield data().merge(e().tag('armor_leggings').limit(1),                           {'Item': {'id': f'{armor}_leggings'}, 'ItemRotation': 0})
+        yield data().merge(e().tag('armor_leggings').limit(1), {'Item': {'id': f'{armor}_leggings'}, 'ItemRotation': 0})
         yield data().merge(e().tag('armor_chestplate').limit(1),
                            {'Item': {'id': f'{armor}_chestplate'}, 'ItemRotation': 0})
         yield data().merge(e().tag('armor_helmet').limit(1), {'Item': {'id': f'{armor}_helmet'}, 'ItemRotation': 0})
@@ -385,7 +385,8 @@ def basic_functions(room, enchanted):
                                data().modify(n().tag('armor_nautilus'), 'Owner').set().from_(p(), 'UUID'))
 
         yield data().merge(e().tag('basic_stand').limit(1),
-                           {'equipment': {'mainhand': Item.nbt_for(f'{material}_sword'),                                          'offhand': Item.nbt_for('shield')}})
+                           {'equipment': {'mainhand': Item.nbt_for(f'{material}_sword'),
+                                          'offhand': Item.nbt_for('shield')}})
 
         hands_row = [None, None, f'{material}_shovel', f'{material}_pickaxe', f'{material}_spear',
                      f'{material}_axe', f'{material}_hoe', None]
@@ -473,7 +474,7 @@ def basic_functions(room, enchanted):
 def fencelike_functions(room):
     volume = Region(r(4, 3, -6), r(0, 2, 1))
 
-    fencelike_sign_pos = r(5, 2, 1)
+    fencelike_sign_pos = r(4, 2, 1)
     room.function('fencelike_init').add(
         WallSign(()).place(fencelike_sign_pos, SOUTH),
         room.label(r(6, 2, 2), 'Height', SOUTH), room.label(r(4, 2, 2), 'Glass Panes', SOUTH),
@@ -510,7 +511,7 @@ def fencelike_functions(room):
     room.loop('walls', clock).loop(
         lambda step: fencelike(step.elem),
         sorted(re.sub('(Polished|Cobbled|Mossy) ', r'\1|', to_name(t).replace(' Brick', '|Brick')) for t in
-         tags['block']['walls']))
+               tags['block']['walls']))
     switch_to_fencelike('walls')
     waxed_ = tuple(f'{x} Bars' for x in
                    ('Iron', *tuple(w + weathering_name(x, join='|') for x in weatherings for w in ('', 'Waxed|'))))
