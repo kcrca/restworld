@@ -392,7 +392,9 @@ def friendlies(room):
         ItemFrame(EAST).fixed(False).tag('mobs', 'sulfur_cube_innards').summon(r(-1, 4, 0)),
         WallSign((None, 'Items in this', 'frame are put in', 'the Sulfur Cube')).place(r(-2, 5, 0), WEST)
     )
-    room.loop('sulfur_cube', main_clock).loop(sulfur_cube_loop, archetypes)
+    sulfur_cube_func = room.loop('sulfur_cube', main_clock)
+    sulfur_cube_func.pre.append(execute().if_().score(is_empty, MATCHES, 0).run(return_(0)))
+    sulfur_cube_func.loop(sulfur_cube_loop, archetypes)
     room.function('sulfur_cube_enter').add(setblock(r(-2, 0, 0), 'redstone_block'))
     room.function('sulfur_cube_exit').add(setblock(r(-2, 0, 0), 'air'))
     room.function('sulfur_cube_run', home=False).add(
