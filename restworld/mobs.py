@@ -418,7 +418,10 @@ def friendlies(room):
     # https://report.bugs.mojang.com/servicedesk/customer/portal/2/MC-274238
     room.function('trader_llama_init').add(
         placer(r(0, 2, -1), WEST, adults=True).summon('wandering_trader'),
-        placer(r(0, 2, 1), WEST, 0, 2, nbt={'DespawnDelay': Nbt.MAX_INT}).summon('trader_llama'))
+        placer(r(0, 2, 1), WEST, 0, 2, nbt={'DespawnDelay': Nbt.MAX_INT}).summon('trader_llama'),
+        # /data modify entity 6ed9c9e2-a8a2-44a2-8da4-a00a8bbcf66a leash.UUID set from entity @n[type=minecraft:wandering_trader] UUID
+        data().modify(n().tag('trader_llama'), 'leash.UUID').set().from_(n().tag('wandering_trader'), 'UUID')
+    )
     room.loop('trader_llama', main_clock).loop(
         lambda step: execute().as_(e().type('trader_llama')).run(data().modify(s(), 'Variant').set().value(step.i)),
         ('Creamy', 'White', 'Brown', 'Gray'))
