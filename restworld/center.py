@@ -83,7 +83,7 @@ def room():
 
     room.function('example_painting_init').add(
         kill(e().tag('center_painting')),
-        summon(Entity('painting', {'variant': 'prairie_ride', 'facing': 3, 'Tags': ['center_painting']}), r(0, 4, 0)))
+        summon(Entity('painting', {'variant': 'fire', 'facing': 3, 'Tags': ['center_painting']}), r(-1, 4, -1)))
     speed_fast = Score('SPEED_FAST', 'clocks')
     speed_main = Score('SPEED_MAIN', 'clocks')
     speed_slow = Score('SPEED_SLOW', 'clocks')
