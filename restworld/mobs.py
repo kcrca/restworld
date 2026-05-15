@@ -5,7 +5,8 @@ from titlecase import titlecase
 
 from pynecraft.base import EAST, EQ, MATCHES, Nbt, NE, NORTH, r, SOUTH, to_id, to_name, WEST
 from pynecraft.commands import as_facing, Block, clone, COLORS, data, e, Entity, execute, fillbiome, FORCE, function, \
-    item, kill, LONG, MOD, n, p, player, REPLACE, RESULT, return_, ride, s, say, schedule, Score, scoreboard, setblock, \
+    item, kill, LONG, MOD, n, p, player, REPLACE, RESULT, return_, ride, s, say, schedule, Score, scoreboard, \
+    setblock, \
     SUCCESS, summon, tag, tp
 from pynecraft.info import as_disc, axolotls, colors, default_skins, DISC_GROUP, discs, DUMMY, horses, mannequin_poses, \
     tags, tropical_fish, weathering_id, weathering_name, weathering_property, weatherings, wolves
@@ -398,20 +399,19 @@ def friendlies(room):
         was_empty.operation(EQ, is_empty),
         is_empty.set(1),
         execute().if_().items(innards_frame, 'container.0', '#minecraft:sulfur_cube_swallowable').run(is_empty.set(0)),
-        execute().unless().score(was_empty, EQ, is_empty).run(
+        execute().if_().score(was_empty, EQ, is_empty).run(return_(0)),
+        data().modify(n().tag('archetype'), 'text').set().value(''),
+        execute().if_().score(was_empty, MATCHES, 1).run(
             data().modify(n().tag('archetype'), 'text').set().value(''),
-            execute().if_().score(was_empty, MATCHES, 1).run(
-                data().modify(n().tag('archetype'), 'text').set().value(''),
-                data().modify(sulfur_cube, 'equipment.body').set().from_(innards_frame, 'Item'),
-                (execute().if_().items(innards_frame, 'contents', f'#{t}').run(
-                    data().modify(n().tag('archetype'), 'text').set().value(to_name(re.sub(r'.*/', '', t)))
-                ) for t in filter(lambda v: 'archetype' in v, tags['item']))
-            ),
-            execute().if_().score(is_empty, MATCHES, 1).run(
-                data().modify(sulfur_cube, 'equipment.body').set().value({}),
-                function('restworld:mobs/sulfur_cube_cur')
-            ),
-        )
+            data().modify(sulfur_cube, 'equipment.body').set().from_(innards_frame, 'Item'),
+            (execute().if_().items(innards_frame, 'contents', f'#{t}').run(
+                data().modify(n().tag('archetype'), 'text').set().value(to_name(re.sub(r'.*/', '', t)))
+            ) for t in filter(lambda v: 'archetype' in v, tags['item']))
+        ),
+        execute().if_().score(is_empty, MATCHES, 1).run(
+            data().remove(sulfur_cube, 'equipment.body'),
+            function('restworld:mobs/sulfur_cube_cur')
+        ),
     )
 
     # Leashing trader llama to trader makes it despawn:
