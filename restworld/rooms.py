@@ -111,7 +111,7 @@ class RoomPack(DataPack):
 
 class Room(FunctionSet):
     """
-    To set up a new room
+    To set up a new room:
 
         1. Put a command block with the command ``function restworld:[room]/[room]_room_beg_home`` at the usual height
            under the NW corner block of the room (the most negative in both dirs).
