@@ -171,9 +171,10 @@ def room():
         setblock(r(-1, -1, 0), 'pumpkin'),
         setblock(r(-1, -2, -1), 'glowstone'),
         setblock(r(-1, 0, -1), 'air'),
+        # The area checked includes the room walls, a player on the boundary between two rooms sees both running
         setblock(r(-1, 0, -1), ('repeating_command_block', {'facing': EAST}, {'auto': True, 'Command': str(
-            execute().positioned(r(0, -2, 0)).as_(p().volume((Arg('dx'), 15, Arg('dz'))).limit(1)).run(return_(0)))[1:]}
-                                )),
+            execute().positioned(
+                r(-1, -2, -1)).as_(p().volume((Arg('dx'), 15, Arg('dz'))).limit(1)).run(return_(0)))[1:]})),
         setblock(r(0, -1, -1), ('red_sandstone_slab', {'type': 'top'})),
         setblock(r(0, 0, -1), ('comparator', {'facing': WEST})),
         func(r(1, 0, -1), '_enter', SOUTH),

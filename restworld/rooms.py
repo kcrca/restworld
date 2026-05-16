@@ -193,6 +193,8 @@ class Room(FunctionSet):
             dz_beg.set(data().get(beg_tag, 'Pos[2]')),
             dx.operation(MINUS, dx_beg),
             dz.operation(MINUS, dz_beg),
+            dx.add(3),
+            dz.add(3),
             execute().store(RESULT).storage(store, 'dx', INT).run(dx.get()),
             execute().store(RESULT).storage(store, 'dz', INT).run(dz.get()),
             data().modify(store, 'room').set().value(f'{self.name}'),
