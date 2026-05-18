@@ -142,17 +142,17 @@ def room():
         if stages is None:
             stages = {}
         all = []
-        for b in sites:
-            if b in stages:
-                id = Block(b).id
-                for s in stages[b]:
-                    n = b
-                    for i, (k, v) in enumerate(s.items()):
+        for block in sites:
+            if block in stages:
+                id = Block(block).id
+                for stages in stages[block]:
+                    n = block
+                    for i, (k, v) in enumerate(stages.items()):
                         if k != 'facing':
                             n += f'|{to_name(k)}: {to_name(str(v))}'
-                    all.append(Block(id, s, name=n))
+                    all.append(Block(id, stages, name=n))
             else:
-                all.append(Block(b))
+                all.append(Block(block))
         blocks(name, facing, all, expandable=expandable)
 
     room_init_functions(room, block_list_score)
