@@ -924,13 +924,6 @@ def room():
         Block('structure_block', name=f'{x}|Structure Block', state={'mode': x.lower()}) for x in
         ('Data', 'Save', 'Load', 'Corner')), air=True)
 
-    # def structure_blocks_loop(step):
-    #     yield Sign.change(r(0, 2, 1), (None, step.elem))
-    #     yield data().merge(r(0, 3, 0), {'mode': step.elem.upper()})
-    #
-    # room.function('structure_blocks_init').add(WallSign((None, None, 'Structure Block')).place(r(0, 2, 1), SOUTH))
-    # room.loop('structure_blocks', main_clock).loop(structure_blocks_loop, ('Data', 'Save', 'Load', 'Corner'))
-
     def tnt_loop(step):
         if step.i < 2:
             yield setblock(r(0, 3, 0), Block('tnt', {'unstable': step.elem == 'unstable'}))

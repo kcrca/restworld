@@ -469,7 +469,6 @@ def room():
     room.function('poof', home=False).add(
         main().run(function(animal), kill(particler), kill(e().type('item').distance((None, 10)))),
     )
-    # room.function('poof', home=False).add(main().run(particle(POOF, r(0, 1, 0), (0.25, 0.25, 0.25), 0, 15)))
     room.function('portal_init', home=False).add(
         fill(r(-2, 0, -1), r(2, 4, -1), 'obsidian'),
         fill(r(-1, 1, -1), r(1, 3, -1), 'nether_portal'))
