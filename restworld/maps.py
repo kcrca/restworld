@@ -62,6 +62,7 @@ def room():
         WallSign((None, 'Battle', 'Arena'), SOUTH).place(r(7, 3, -3), SOUTH),
 
         kill(e().tag('map_label')),
+        kill(e().tag(icon_frame_tag)),
         room.mob_placer(r(8, 5, 0), WEST, adults=True).summon(ItemFrame(WEST).item(map(18, name_nbt('Main (top)')))),
         p_mid.summon(ItemFrame(WEST).item(map(124, name_nbt('Main (left)'))).tag(banner_frame_tag)),
         p_mid.summon(ItemFrame(WEST).item(map(14, name_nbt('Main (center)')))),
