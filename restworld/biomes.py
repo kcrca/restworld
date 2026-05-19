@@ -24,6 +24,8 @@ biome_groups['Cave'] = ('Lush Caves', 'Dripstone Caves', 'Deep Dark', 'Sulfur Ca
 biome_groups['Nether'] = ('Nether Wastes', 'Soul Sand Valley', 'Crimson Forest', 'Warped Forest', 'Basalt Deltas')
 biome_groups['End'] = ('The End', 'End City', 'End Island')
 biome_groups['Structures'] = ('Mineshaft', 'Monument', 'Stronghold', 'Trial Chambers', 'Bastion Remnant', 'Fortress')
+for b in biome_groups:
+    biome_groups[b] = sorted(biome_groups[b])
 biomes = [item for sublist in list(biome_groups.values()) for item in sublist]
 
 biome_ids = {'End City': SMALL_END_ISLANDS, 'Monument': WARM_OCEAN, 'Bastion Remnant': BASALT_DELTAS,
