@@ -109,7 +109,7 @@ def room():
     wall_used = {3: span(1, 5)}
     room = SignedRoom('models', restworld, EAST, (None, None, 'Models'), mode_sign, modes,
                       (Wall(7, EAST, 1, -1, wall_used),))
-    room.reset_at((-4, -1))
+    room.reset_at((-1, 0))
 
     room.function('model_signs_init').add(function('restworld:models/signs'))
 
@@ -156,7 +156,7 @@ def room():
         setblock(chest_pos, 'chest'),
         needs_restore.set(0),
 
-        room.label(r(0, 2, -1), 'On Head', EAST),
+        room.label(r(2, 2, -1), 'On Head', EAST),
         room.label(r(0.5, 2.5, 0), 'None', EAST, vertical=True, tags=('current_model',)),
 
         is_empty.set(1),
