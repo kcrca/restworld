@@ -1,7 +1,7 @@
 from pynecraft.base import as_facing, d, EAST, NORTH, r, SOUTH, WEST
 from pynecraft.commands import e, effect, execute, fill, function, MAX_EFFECT_SECONDS, p, setblock
-from pynecraft.simpler import WallSign
 from pynecraft.info import BAD_LUCK, BREATH_OF_THE_NAUTILUS, EFFECT_GROUP
+from pynecraft.simpler import WallSign
 from restworld.rooms import ActionDesc, SignedRoom, span, Wall
 from restworld.world import restworld
 
@@ -22,12 +22,13 @@ def room():
             setblock(d(-dx, 0, -dz), 'emerald_block'),
             effect().give(p(), action_desc.which, MAX_EFFECT_SECONDS)))
 
-    ew_wall_used = {4: span(2, 4), 3: span(1, 5), 2: span(1, 5)}
-    s_wall_used = {4: (1, 2, 4, 5), 3: span(1, 5), 2: span(1, 5)}
+    e_wall_used = {4: span(2, 4), 3: span(0, 5), 2: span(0, 5)}
+    w_wall_used = {4: span(2, 4), 3: span(1, 6), 2: span(1, 6)}
+    s_wall_used = {3: span(1, 5), 2: span(1, 5)}
     room = SignedRoom('effects', restworld, SOUTH, (None, 'Mob Effects'), effect_sign, actions, (
-        Wall(7, EAST, 1, -1, ew_wall_used),
+        Wall(7, EAST, 1, -1, e_wall_used),
         Wall(7, SOUTH, 1, -7, s_wall_used),
-        Wall(7, WEST, 7, -7, ew_wall_used),
+        Wall(7, WEST, 7, -7, w_wall_used),
     ))
     room.reset_at((0, -6))
 
@@ -50,9 +51,9 @@ def room():
     all_effects = WallSign((None, 'All Effects'), (None, function('restworld:effects/effects_all')))
     no_effects = WallSign((None, 'No Effects'), (None, function('restworld:effects/effects_none')))
     room.function('effects_global_init').add(
-        all_effects.place(r(0, 6, -1), SOUTH),
+        all_effects.place(r(0, 5, -1), SOUTH),
         all_effects.place(r(0, 2, -1), SOUTH),
-        no_effects.place(r(2, 6, -1), SOUTH),
+        no_effects.place(r(2, 5, -1), SOUTH),
         no_effects.place(r(2, 2, -1), SOUTH),
     )
     room.function('effects_signs_init').add(

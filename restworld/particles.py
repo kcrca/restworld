@@ -213,8 +213,8 @@ def room():
         ))
 
     n_wall_used = {5: (1, 5), 4: span(1, 5), 3: span(1, 5), 2: span(1, 5)}
-    e_wall_used = {5: span(1, 5), 4: span(1, 5), 3: span(1, 5), 2: span(1, 5)}
-    w_wall_used = {5: span(1, 5), 4: span(1, 5), 3: span(1, 5), 2: span(1, 5)}
+    e_wall_used = {5: span(2, 3), 4: span(0, 5), 3: span(0, 5), 2: span(0, 5)}
+    w_wall_used = {5: span(3, 4), 4: span(1, 6), 3: span(1, 6), 2: span(1, 6)}
     room = SignedRoom('particles', restworld, SOUTH, (None, 'Particles'), particle_sign, actions, (
         Wall(7, EAST, 1, -1, e_wall_used),
         Wall(7, SOUTH, 1, -7, n_wall_used),
