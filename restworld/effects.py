@@ -1,5 +1,5 @@
 from pynecraft.base import as_facing, d, EAST, NORTH, r, SOUTH, WEST
-from pynecraft.commands import e, effect, execute, fill, function, MAX_EFFECT_SECONDS, p, setblock
+from pynecraft.commands import e, effect, execute, fill, function, MAX_EFFECT_SECONDS, p, setblock, Text
 from pynecraft.info import BAD_LUCK, BREATH_OF_THE_NAUTILUS, EFFECT_GROUP
 from pynecraft.simpler import WallSign
 from restworld.rooms import ActionDesc, SignedRoom, span, Wall
@@ -48,8 +48,10 @@ def room():
     room.function('effects_none_exit').add(function(effects_none.full_name))
     room.function('effects_none_init').add(room.label(r(0, 2, 1), 'Effects Leave Room', NORTH))
 
-    all_effects = WallSign((None, 'All Effects'), (None, function('restworld:effects/effects_all')))
-    no_effects = WallSign((None, 'No Effects'), (None, function('restworld:effects/effects_none')))
+    all_effects = WallSign((None, Text('All Effects').bold().italic().underlined()),
+                           (None, function('restworld:effects/effects_all')))
+    no_effects = WallSign((None, Text('No Effects').bold().italic().underlined()),
+                          (None, function('restworld:effects/effects_none')))
     room.function('effects_global_init').add(
         all_effects.place(r(0, 5, -1), SOUTH),
         all_effects.place(r(0, 2, -1), SOUTH),
