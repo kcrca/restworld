@@ -387,10 +387,10 @@ def friendlies(room):
     room.function('sulfur_cube_init').add(
         placer(*mid_east_placer).summon('sulfur_cube'),
         data().merge(n().tag('adult').type('sulfur_cube'), {'Size': 1}),
-        room.label(r(-1.5, 3.85, 0), '', EAST, vertical=True, tags='archetype'),
-        setblock(r(-2, 4, 0), 'smooth_quartz'),
-        ItemFrame(EAST).fixed(False).tag('mobs', 'sulfur_cube_innards').summon(r(-1, 4, 0)),
-        WallSign((None, 'Items in this', 'frame are put in', 'the Sulfur Cube')).place(r(-2, 5, 0), WEST)
+        room.label(r(-2.5, 3.85, 0), '', EAST, vertical=True, tags='archetype'),
+        setblock(r(-3, 4, 0), 'smooth_quartz'),
+        ItemFrame(EAST).fixed(False).tag('mobs', 'sulfur_cube_innards').summon(r(-2, 4, 0)),
+        WallSign((None, 'Items in this', 'frame are put in', 'the Sulfur Cube')).place(r(-3, 5, 0), WEST)
     )
     sulfur_cube_func = room.loop('sulfur_cube', main_clock)
     sulfur_cube_func.pre.append(execute().if_().score(is_empty, MATCHES, 0).run(return_(0)))

@@ -93,6 +93,8 @@ def room():
             clone(r(2, 2, 0), r(-1, 2, 0), r(-1, 4, 0)).replace(MOVE)),
         yield execute().at(e().tag('sniffer_home')).run(
             clone(r(0, 2, 3), r(0, 2, 3), r(0, 4, 3)).replace(MOVE)),
+        yield execute().at(e().tag('sulfur_cube_home')).run(
+            clone(r(-3, 4, 0), r(-3, 4, 0), r(-3, 6, 0)).replace(MOVE)),
         for mob_room in mob_rooms:
             room_home = mob_room + '_home'
             yield execute().as_(e().tag(room_home)).run(data().merge(s(), {'Invisible': True}))
@@ -106,6 +108,8 @@ def room():
             clone(r(2, 4, 0), r(-1, 4, 0), r(-1, 2, 0)).replace(MOVE)),
         yield execute().at(e().tag('sniffer_home')).run(
             clone(r(0, 4, 3), r(0, 4, 3), r(0, 2, 3)).replace(MOVE)),
+        yield execute().at(e().tag('sulfur_cube_home')).run(
+            clone(r(-3, 4, 0), r(-3, 4, 0), r(-3, 2, 0)).replace(MOVE)),
         for mob_room in mob_rooms:
             room_home = mob_room + '_home'
             yield execute().as_(e().tag(room_home)).run(data().merge(s(), {'Invisible': False}))
