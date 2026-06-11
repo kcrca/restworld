@@ -1,5 +1,6 @@
 import collections
 
+from pynecraft._values import DARK_FOREST
 from pynecraft.base import GE, MATCHES, NORTH, OVERWORLD, r, SOUTH, to_id
 from pynecraft.commands import a, Block, CLEAR, data, DESTROY, e, Entity, execute, fill, fillbiome, function, kill, n, \
     RESULT, \
@@ -23,13 +24,13 @@ biome_groups['Ocean'] = ('Warm Ocean', 'Ocean', 'Frozen Ocean')
 biome_groups['Cave'] = ('Lush Caves', 'Dripstone Caves', 'Deep Dark', 'Sulfur Caves')
 biome_groups['Nether'] = ('Nether Wastes', 'Soul Sand Valley', 'Crimson Forest', 'Warped Forest', 'Basalt Deltas')
 biome_groups['End'] = ('The End', 'End City', 'End Island')
-biome_groups['Structures'] = ('Mineshaft', 'Monument', 'Stronghold', 'Trial Chambers', 'Bastion Remnant', 'Fortress')
+biome_groups['Structures'] = ('Mansion', 'Mineshaft', 'Monument', 'Stronghold', 'Trial Chambers', 'Bastion Remnant', 'Fortress')
 for b in biome_groups:
     biome_groups[b] = sorted(biome_groups[b])
 biomes = [item for sublist in list(biome_groups.values()) for item in sublist]
 
 biome_ids = {'End City': SMALL_END_ISLANDS, 'Monument': WARM_OCEAN, 'Bastion Remnant': BASALT_DELTAS,
-             'Fortress': NETHER_WASTES}
+             'Fortress': NETHER_WASTES, 'Mansion': DARK_FOREST}
 
 
 def categories():
