@@ -1,0 +1,52 @@
+# puppy.yaml — configuration for Restworld.
+
+type: world
+name: 'RestWorld : A complete texture pack test world for 26.1!'
+handle: restworld
+
+# One-line project summary shown in site listings.
+summary: Compact and complete resource pack test world
+
+# Current version. Used by publish if --version is not passed on the CLI.
+version: "26.1"
+
+# Neutral metadata — expanded to site-specific fields automatically.
+progress: 100
+license: CC-BY-4.0
+links:
+  home: "https://cleanpack.art"
+  source: "https://github.com/kcrca/clean"
+  issues: "https://github.com/kcrca/restworld/issues"
+  wiki:             # wiki/docs URL
+  patreon:          # donation URL
+  kofi:             # donation URL
+  github_sponsors:  # GitHub Sponsors URL
+socials:
+  discord:          # Discord server URL
+
+# Platform IDs and slugs. Required for pull, create, and push.
+# Set id to null if the project does not yet exist on that platform.
+curseforge:
+  id: 678372
+  slug: restworld
+  category: Creation
+
+planetminecraft:
+  id: 4487215
+  slug: restworld
+  category: "Environment & Landscaping"
+  tags:
+  - air-structure
+  - redstone
+  - testing
+  - command
+  - texturepack
+  - test
+  - function
+  - commands
+  - textures
+  - resourcepack
+  - redstonedevice
+  - functions
+  - commandblock
+  - restworld

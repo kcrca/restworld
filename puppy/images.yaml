@@ -1,0 +1,29 @@
+source: '{{top}}/site/sample_pics'
+
+images:
+  - file: plants
+    description: 'See all the plants in all their phases!'
+  - file: villagers
+    description: 'All the villagers in all the biomes!'
+  - file: blocks
+    description: 'All the blocks!'
+  - file: particles
+    description: 'See the block particles from mining!'
+  - file: materials
+    description: 'All the materials, including trims!'
+  - file: clarity
+    description: "Here's my custom pack, clean!"
+  - file: font
+    description: 'Text in all the places! Changes the exmaple text! Make it glow!'
+  - file: moon
+    description: 'Oh, wow! Look at the moon!'
+  - file: effects
+    description: 'All the effects, in any combination!'
+  - file: particles
+    description: 'You can see every particle in the game!'
+  - file: arena
+    description: 'Battle Arena! See the mobs in action!'
+  - file: biomes
+    description: 'Biome Sampler! Quickly see how things look everywhere!'
+  - file: photo
+    description: "Of course there's the overview photo shoot! Plus some other views!"
