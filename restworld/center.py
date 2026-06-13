@@ -18,45 +18,53 @@ def intro_book():
     title = 'RestWorld'
     book.add('',
              Text.text('Welcome to\n').bold().extra(
-                 *tuple(Text.text(title[x]).color(rainbow[x % len(rainbow)]) for x in range(len(title))), r'!\n\n')),
-    book.add(
-        r'This world lets you test your resource pack. Almost everything is here: blocks, mobs, particles, UI, moon phases, models…\n\n'
-        r'RestWorld loops through variants, which takes less'),
-    book.next_page(),
-    book.add(
-        r'space, and also helps you compare textures that you may want to look similar.\n\n',
-        r'Many levers and buttons control modes, like whether horses have saddles or ore is in deepslate.\n\n'
-        r'This looping is run by clocks. You can start or stop the clocks by'),
+                 *tuple(Text.text(title[x]).color(rainbow[x % len(rainbow)]) for x in range(len(title))), '!\n\n')),
+    book.wrap(*Text.from_html(
+        """
+            This world helps you test your resource pack.
+            Almost everything is here: blocks, mobs, particles, UI, moon phases, models…
+            <p>
+            RestWorld loops through variants, which takes less space,
+            and also helps you compare textures that you may want to look similar.
+            <p>
+            Many levers and buttons control modes, like whether horses have saddles, or ore is in deepslate.
+            <p>
+            This looping is run by clocks. You can start or stop the clocks by
+            pushing a button on a green or red block (red means "stop", etc.).
+            <p>
+            You start with a control book.
+            Buttons inside it let you change clock speeds, step loops one at a time, and teleport to various areas.
+            You can get a replacement book with the button on the magenta block near the start.
+            <p>
+            Start exploring! There's a lot to play with, almost every texturable thing is here!
+            <p>
+            <a href="https://www.planetminecraft.com/project/restworld-a-complete-resourcepack-testing-world-for-1-15-2/">Let me know</a>
+            what you think, or anything that's missing!
+            <p>
+            <b>Have fun!</b>
+        """
+    ))
     book.next_page()
-    book.add(
-        'pushing a button on a green or red block (red means "stop", etc.).\n\n'
-        r'You start with a control book. Buttons inside it let you change clock speeds, step loops one at a time, and teleport to various areas. You can get a replacement book with the button'),
+    book.wrap(*Text.from_html(
+        """
+            I also have two texture packs that might interest you:
+            <p>
+            <a href="https://cleanpack.art/call_out/"><b>Call Out</b></a>, which highlights untextured blocks, helping you make a complete pack.
+            <p>
+            <a href="https://cleanpack.art/"><b>Clean</b></a> the pack I originally built RestWorld for.
+        """
+    ))
     book.next_page()
-    book.add(
-        r'on the magenta block near the start.\n\n',
-        'Start exploring! There\'s a lot to play with, almost every texturable thing is here! ',
-        text_url('Let me know',
-                 'https://www.planetminecraft.com/project/restworld-a-complete-resourcepack-testing-world-for-1-15-2/'),
-        ' what you think, or anything that\'s missing!\n\n',
-        Text.text(r'\n      Have fun!').bold())
-    book.next_page()
-    book.add(
-        r'I also have two texture packs that might interest you:\n\n',
-        text_url(r'Call Out', 'https://cleanpack.art/call_out/'),
-        ', which highlights untextured blocks, helping you make a complete pack.\n\n',
-        text_url(r'Clean', 'https://cleanpack.art/'),
-        ', the pack I originally built RestWorld for.')
-    book.next_page()
-    book.add('',
-             Text.text(r'Credits:\n\n').italic(),
-             Text.text(r'BlueMeanial:\n').bold(),
-             r'  Software Design\n  Programming\n\n',
-             Text.text(r'JUMBOshrimp277:\n').bold(),
-             r'  Visual Design\n  Testing\n  Rubber Duck\n',
-             r'\n',
-             r'Details on ',
-             text_url(r'our site', 'https://cleanpack.art/restworld/'),
-             '.')
+    book.wrap(*Text.from_html(
+        """
+            <i>Credits:</i><br>
+            <p>
+            <b>BlueMeanial</b>: Software Design, Programming<br>
+            <p>
+            <b>JUMBOshrimp277</b>: Visual Design, Testing, Rubber Duck<br>
+            Details on <a href="https://cleanpack.art/restworld/">Restworld's site</a>.
+          """
+    ))
 
     return book
 
