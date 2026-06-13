@@ -123,8 +123,8 @@ elsewhere = {
     'Plants': (SPORE_BLOSSOM_AIR, FALLING_SPORE_BLOSSOM, CHERRY_LEAVES, PALE_OAK_LEAVES, TINTED_LEAVES, UNDERWATER),
     'Mobs': (FALLING_NECTAR, EGG_CRACK),
     'Redstone': (DUST, NOTE, VIBRATION),
-    'Arena': (ITEM_SLIME, SULFUR_CUBE_GOO),
     'GUI': (ENCHANT,),
+    'Arena': (ITEM_SLIME, SULFUR_CUBE_GOO),
 }
 
 hover = {
@@ -619,17 +619,23 @@ def room():
 
     book = Book()
     book.sign_book('Particle Book', 'RestWorld', 'Particles in the world')
-    book.add(Text.text('\\n\\nParticles in the World\\n\\n').italic())
-    book.add(Text.text('Many particles are shown in the rest of this world. '
-                       'This room is focused on those that aren\'t. '
-                       'This book lists where those other particles are by room.').plain())
-    page_break = ('Materials', 'Blocks', 'Plants', 'Redstone')
+    book.wrap(*Text.from_html(
+        """
+            <b>Where Are <br> All the Particles?</b>
+            <p>
+            Many particles are shown naturally in the rest of this world.
+            This room is focused on those that aren't.
+            This book lists the room for the naturally occurring particles.
+        """
+    ))
+    page_break = ('Materials', 'Blocks', 'Plants', 'Arena')
     for k, v in elsewhere.items():
         if k in page_break:
             book.next_page()
         else:
-            book.add(r'\n\n')
-        book.add(Text.text(f'{k} Room:\\n').plain().bold())
+            book.add('\n\n')
+        title = 'Battle Arena' if k == 'Arena' else f'{k} Room'
+        book.add(Text.text(f'{title}:\\n').plain().bold())
         first = True
         for p in sorted(v):
             if not first:

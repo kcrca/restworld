@@ -32,7 +32,7 @@ Last Updated: 18th June 2021
 {raw:"
 
 Unicode Font List\n
-By\n
+by\n
 JimStoneCraft\n
 \n
 P2, 3 ascii.png\n

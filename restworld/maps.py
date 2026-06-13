@@ -119,14 +119,18 @@ def apologia():
     book = Book()
     book.sign_book('On Maps', 'RestWorld', 'A Map Apologia')
 
-    book.add(r'       ', Text.text('On Maps').bold(), r'\n\n')
-    book.add(simplify("""Here you can see general map textures, and most map icons. Yet there are some icons, 
-    such as for players, that can't be shown without real players in the actual game. If you hold a map you can see 
-    the icon for you, but to see other players'"""))
-    book.next_page()
-    # noinspection GrazieInspection
-    book.add(simplify(""" icons, you will need to recruit friends to join the world. \\n\\nAlso, treasure maps show sketched versions of areas you
-    haven't visited, but there no normal looking areas in this world for that to work with, so we can't show that."""))
+    book.add(r'       ', Text.text('On Maps').bold(), '\n\n')
+    book.wrap(*Text.from_html(
+        """
+            Here you can see general map textures, and most map icons. Yet there are some icons, 
+            such as for players, that can't be shown without real players in the actual game.
+            If you hold a map you can see the icon for you,
+            but to see other players' icons, you will need to recruit friends to join the world.
+            <p>
+            Also, treasure maps show sketched versions of areas you haven't visited, but there are no normal 
+            looking areas in this world for that to work with, so we can't show that.
+        """
+    ))
 
     return book
 
