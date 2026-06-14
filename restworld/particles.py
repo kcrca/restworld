@@ -628,13 +628,13 @@ def room():
             This book lists the room for the naturally occurring particles.
         """
     ))
-    page_break = ('Materials', 'Blocks', 'Plants', 'Arena')
+    page_break = ('Materials', 'Blocks', 'Plants', 'Battle Arena')
     for k, v in elsewhere.items():
         if k in page_break:
             book.next_page()
         else:
             book.add('\n\n')
-        title = 'Battle Arena' if k == 'Arena' else f'{k} Room'
+        title = k if 'Arena' in k else f'{k} Room'
         book.add(Text.text(f'{title}:\\n').plain().bold())
         first = True
         for p in sorted(v):
