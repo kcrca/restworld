@@ -1,14 +1,16 @@
 # puppy.yaml — configuration for Restworld.
 
 type: world
-name: 'RestWorld : A complete texture pack test world for 26.1!'
+name: 'RestWorld : A complete texture pack test world for 26.2!'
 handle: restworld
+file: ../site/RestWorld_26.2.zip
 
 # One-line project summary shown in site listings.
 summary: Compact and complete resource pack test world
 
 # Current version. Used by publish if --version is not passed on the CLI.
-version: "26.1"
+minecraft: "26.2"
+version: "{{minecraft}}"
 
 # Neutral metadata — expanded to site-specific fields automatically.
 progress: 100
@@ -34,7 +36,9 @@ curseforge:
 planetminecraft:
   id: 4487215
   slug: restworld
-  category: "Environment & Landscaping"
+  category: "Environment / Landscaping"
+  download: curseforge
+  alt_download_2: "https://cleanpack.art/restworld/RestWorld_{{version}}.zip"
   tags:
   - air-structure
   - redstone

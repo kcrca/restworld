@@ -1,4 +1,4 @@
-**Latest Updates: Now serving: Version 26.1!**
+**Latest Updates: Now serving: Version {{version}}!**
 
 As Minecraft has evolved, the number of blocks has become larger and larger.
 There used to be a few downloadable test worlds for looking at a pack, but over time these are much more unwieldy.
