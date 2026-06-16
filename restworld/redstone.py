@@ -393,7 +393,7 @@ def room():
         stopsound(a(), '*', 'block.shelf.activate'),
         stopsound(a(), '*', 'block.shelf.deactivate'))
     room.function('shelf_power_init').add(
-        room.label(r(-3, 2, 2), 'Shelf Type', WEST),
+        room.label(r(-3, 2, 1), 'Shelf Type', WEST),
         function('restworld:redstone/shelf_type_cur')
     )
 

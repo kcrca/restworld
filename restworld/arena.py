@@ -128,7 +128,7 @@ def room():
         'zombified_piglin': {'equipment': {'mainhand': Item.nbt_for('golden_sword')}},
     }
 
-    init_battle = ('copper_golem', None)
+    init_battle = ('sulfur_cube', None)
 
     # With Slime and Magma Cube it _mostly_ works, but not perfectly. These are handled by giving a custom name to
     # the summoned mob, which is inherited by its descendants. We then see, if the count is at least 3, whether there

@@ -110,7 +110,7 @@ def room():
         desc = patterns[as_pattern(pattern)].desc
         desc = re.sub(r'\.$', '', desc)
         nbt = {'Rotation': [angle, 0], 'Tags': ['banners']}
-        yield TextDisplay(name).scale(0.5).tag('banner_name').summon(r(x + xt, text_y, z + zt), nbt)
+        yield TextDisplay(name).scale(0.7).tag('banner_name').summon(r(x + xt, text_y, z + zt), nbt)
 
     def render_banners(render):
         # These are in the first adjustment, but python doesn't know that, so this keeps it happy
@@ -269,7 +269,7 @@ def room():
         ), front=None).place(r(x, y, z), SOUTH))
     room.function('banner_controls_init').add(
         room.label(r(5, 2, 4), 'Banner / Ink', SOUTH),
-        room.label(r(3, 2, 4), 'Labels', SOUTH),
+        room.label(r(3, 2, 4), 'Names', SOUTH),
         room.label(r(4, 2, 3), 'Controls', SOUTH),
         function('restworld:banners/switch_to_color'),
     )
