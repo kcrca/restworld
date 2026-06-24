@@ -38,7 +38,7 @@ planetminecraft:
   slug: restworld
   category: "Environment / Landscaping"
   download: curseforge
-  alt_download_2: "https://cleanpack.art/restworld/RestWorld_{{version}}.zip"
+  alt_download: "https://cleanpack.art/restworld/RestWorld_{{version}}.zip"
   tags:
   - air-structure
   - redstone
