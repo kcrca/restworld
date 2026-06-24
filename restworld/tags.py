@@ -1,9 +1,10 @@
 import re
+from itertools import chain
 
 from pynecraft.base import to_id
 from pynecraft.commands import COLORS
 from pynecraft.function import BLOCK
-from pynecraft.info import corals, stems, weatherings, woods
+from pynecraft.info import corals, leaves_for, stems, weatherings, woods
 from restworld.world import restworld
 
 
@@ -56,15 +57,13 @@ def create():
         ]
     }
     blocks['gatelike'] = {'values': [f'{x}_fence_gate' for x in woodlike_ids]}
-    blocks['leaflike'] = {
-        'values': [f'{x}_leaves' for x in wood_ids] + [
-            'nether_wart_block',
-            'warped_wart_block',
-        ]
-    }
+    blocks['leaflike'] = [
+        *chain.from_iterable(leaves_for(wood) for wood in wood_ids),
+        'nether_wart_block',
+        'warped_wart_block',
+    ]
     blocks['woodlike'] = {'values': [f'{x}_wood' for x in wood_ids] + [f'{x}_hyphae' for x in stem_ids]}
     blocks['loglike'] = {'values': [f'{x}_log' for x in wood_ids] + [f'{x}_stem' for x in stem_ids]}
-    blocks['leaflike']['values'] = list(filter(lambda x: x != 'bamboo_leaves', blocks['leaflike']['values']))
     blocks['woodlike']['values'] = list(filter(lambda x: x != 'bamboo_wood', blocks['woodlike']['values']))
     sp = blocks['loglike']['values']
     sp[sp.index('bamboo_log')] = 'bamboo_block'

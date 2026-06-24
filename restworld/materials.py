@@ -654,7 +654,7 @@ def wood_functions(room):
                 planks = 'bamboo_mosaic'
             log = f'{id}_log'
             wood = f'{id}_wood'
-            leaves = f'{id}_leaves'
+            leaves = f'{id}_leaves' if id != 'poplar' else 'red_poplar_leaves'
             if 'Bamboo' in name:
                 log = 'bamboo_block'
                 wood = 'jungle_wood'
@@ -707,6 +707,8 @@ def wood_functions(room):
         yield from volume.fill('air', 'vine')  # remove any existing vine
         if name in ('Jungle', 'Mangrove'):
             yield fill(r(-4, 2, -2), r(-4, 5, -2), ('vine', {'north': True}))
+        elif name == 'Poplar':
+            yield setblock(r(-3, 5, -3), 'orange_poplar_leaves'), setblock(r(-4, 5, -3), 'yellow_poplar_leaves')
 
         yield setblock(r(-2, 2, -1), saplings[0])
         yield setblock(r(0, 2, -1), saplings[1])

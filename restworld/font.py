@@ -50,10 +50,13 @@ def room():
         execute().if_().block(src_pos, '#wall_signs').run(clone(src_pos, src_pos, save_pos)))
     at = execute().at(e().tag('font_action_home'))
     room.function('check_sign', home=False).add(at.run(function(copy_sign)))
-    row_lengths = [3, 3, 3, 3]
-    row, x, y = 0, 0, 5
+    row_lengths = [1, 3, 3, 3, 3]
+    row, x, y = 0, 0, 6
     font_run_init.add(kill(e().tag('font_sign_label')))
     for i, thing in enumerate(materials):
+        if i == 0:
+            # The first row is only one long, starts in the middle
+            x += 1
         pos = r(x - 1, y, 0)
         TextDisplay(thing.name,
                     {'background': 0, 'line_width': 100, 'shadow_radius': 0}).tag('font_sign_label').scale(0.5)

@@ -11,7 +11,7 @@ from pynecraft.commands import a, as_block, as_score, Block, clone, Command, Com
     function, item, kill, MOD, MOVE, n, p, REPLACE, s, say, schedule, ScoreName, setblock, stopsound, SUCCESS, summon, \
     tag
 from pynecraft.function import Function, Loop
-from pynecraft.info import armor_equipment, Color, colors, copper_golem_poses, sherds, stems, weathering_id, \
+from pynecraft.info import armor_equipment, Color, colors, copper_golem_poses, leaves_for, sherds, stems, weathering_id, \
     weathering_name, weatherings
 from pynecraft.simpler import Item, ItemFrame, Region, Sign, TextDisplay, WallSign
 from restworld.materials import enchant
@@ -387,12 +387,11 @@ def room():
 
     woods = info.woods  # Read the current state of info.woods, which the version can change
     woodlike = woods + stems
-    leaves = [f'{x} Leaves' for x in woods] + ['Warped Wart Block', 'Nether Wart Block']
+    leaves = [to_name(leaves_for(to_id(x), '')[0]) for x in woods] + ['Warped Wart Block', 'Nether Wart Block']
     logs = [f'{x} Log' for x in woods] + [f'{x} Stem' for x in stems]
     wood = [f'{x} Wood' for x in woods] + [f'{x} Hyphae' for x in stems]
     logs[logs.index('Bamboo Log')] = 'Bamboo Block'
     wood[wood.index('Bamboo Wood')] = 'Bamboo Mosaic'
-    leaves[leaves.index('Bamboo Leaves')] = ''
     stripped_logs = ['Stripped|' + x for x in logs]
     stripped_woods = list(map(lambda x: '' if x == 'Stripped|Bamboo Mosaic' else x, ['Stripped|' + x for x in wood]))
     wood_loops = (tuple(f'{f} Planks' for f in woodlike), stripped_logs, logs, wood, leaves, stripped_woods)
