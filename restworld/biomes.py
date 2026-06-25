@@ -18,7 +18,7 @@ biome_groups['Temperate'] = (
     'Mangrove Swamp',
     'Jungle', 'Mushroom Fields')
 biome_groups['Warm'] = ('Desert', 'Savanna', 'Badlands')
-biome_groups['Cold'] = ('Taiga', 'Stony Shore')
+biome_groups['Cold'] = ('Taiga', 'Stony Shore', 'Dappled Forest')
 biome_groups['Snowy'] = ('Snowy Taiga', 'Snowy Plains', 'Ice Spikes')
 biome_groups['Ocean'] = ('Warm Ocean', 'Ocean', 'Frozen Ocean')
 biome_groups['Cave'] = ('Lush Caves', 'Dripstone Caves', 'Deep Dark', 'Sulfur Caves')
