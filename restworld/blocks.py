@@ -1018,11 +1018,12 @@ def color_functions(room):
 
     def colorings(is_plain, color, step=None):
         fills = {
-            'stained_glass': r(-7, 5, 0), 'stained_glass_pane': r(-7, 3, 1), 'wool': r(-1, 3, 1), 'banner': r(1, 5, 2),
-            'shulker_box': r(-3, 5, 0), 'carpet': r(-3, 2.1, 1), 'concrete': r(-5, 3, 1),
-            'concrete_powder': r(-5, 5, 0), 'terracotta': r(-1, 5, 0)}
+            'stained_glass': r(-7, 5, 0), 'stained_glass_pane': r(-7, 3, 1), 'wool': r(-1, 3, 1),
+            'wool_slab': r(-1, 3, 1), 'wool_stairs': r(-1, 3, 1), 'banner': r(1, 5, 2), 'shulker_box': r(-3, 5, 0),
+            'carpet': r(-3, 2.1, 1), 'concrete': r(-5, 3, 1), 'concrete_powder': r(-5, 5, 0), 'terracotta': r(-1, 5, 0)}
         plain_fills = tuple(
-            Block(x) for x in ('glass', 'glass_pane', 'air', 'air', 'shulker_box', 'air', 'air', 'air', 'terracotta'))
+            Block(x) for x in
+            ('glass', 'glass_pane', 'air', 'air', 'air', 'air', 'shulker_box', 'air', 'air', 'air', 'terracotta'))
         candles = [Block('candle' if is_plain else color.name + '_candle', {'candles': x, 'lit': True}) for x in
                    range(1, 5)]
         candles.append(Block('candle_cake', {'lit': True}))
@@ -1416,6 +1417,7 @@ def stepable_functions(room):
         'Deepslate|Bricks',
         'Deepslate|Tiles',
         *(weathering_name(x, 'Cut Copper', join='|') for x in weatherings),
+        *(f'{c} Wool' for c in colors),
         'Resin Bricks',
         'Prismarine', 'Prismarine|Bricks', 'Dark|Prismarine',
         'Acacia Planks', 'Birch Planks', 'Cherry Planks', 'Jungle Planks', 'Mangrove Planks',
@@ -1428,7 +1430,7 @@ def stepable_functions(room):
         'Polished|Blackstone Bricks', 'Quartz Block', 'Smooth|Quartz',
         'End Stone Bricks', 'Purpur Block',
     ]
-    stairs = tuple(re.sub('(marine|ite)$', r'\1 Stairs', re.sub('[Ss]tone$', 'Stone Stairs',
+    stairs = tuple(re.sub('(marine|ite|ool)$', r'\1 Stairs', re.sub('[Ss]tone$', 'Stone Stairs',
                                                                 re.sub('[Tt]uff$', 'Tuff Stairs',
                                                                        re.sub('(Quartz|Deepslate|Sulfur|Cinnabar)$',
                                                                               r'\1 Stairs',

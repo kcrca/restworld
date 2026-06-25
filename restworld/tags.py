@@ -4,7 +4,7 @@ from itertools import chain
 from pynecraft.base import to_id
 from pynecraft.commands import COLORS
 from pynecraft.function import BLOCK
-from pynecraft.info import corals, leaves_for, stems, weatherings, woods
+from pynecraft.info import colors, corals, leaves_for, stems, weatherings, woods
 from restworld.world import restworld
 
 
@@ -15,6 +15,8 @@ def create():
         'concrete': None,
         'concrete_powder': None,
         'wool': None,
+        'wool_slab': None,
+        'wool_stairs': None,
         'candle': 'candle',
         'candle_cake': ('candle_cake', 'cake'),
         'shulker_box': 'shulker_box',
@@ -240,7 +242,8 @@ def create():
             'polished_deepslate',
             'deepslate_bricks',
             'deepslate_tiles',
-            *(f'{x}_cut_copper'.strip('_') for x in weatherings)
+            *(f'{x}_cut_copper'.strip('_') for x in weatherings),
+            *(to_id(f'{x}_wool') for x in colors)
         ]
     }
     blocks['planks'] = {
@@ -250,7 +253,7 @@ def create():
         'values': [
             re.sub(r'blocks*', 'stairs',
                    re.sub(r'planks', 'stairs',
-                          re.sub(r'(copper|stone$|tuff$|marine$|ite$|slate$|_quartz$|sulfur$|cinnabar$).*', r'\1_stairs',
+                          re.sub(r'(copper|stone$|tuff$|marine$|ite$|slate$|_quartz$|sulfur$|cinnabar$|wool$).*', r'\1_stairs',
                                  re.sub(r'(brick|tile)s*', r'\1_stairs', x))))
             for x in blocks['stepable_planks']['values']]
     }
