@@ -250,7 +250,8 @@ def room():
     _, pot_loop = blocks(
         'decorated_pot', NORTH, ('decorated_pot',) + tuple(
             Block('decorated_pot',
-                  nbt={'sherds': [usable_sherds[i], usable_sherds[i + 1], usable_sherds[i + 2]]},
+                  nbt={'sherds': {'left': {'id': usable_sherds[i]}, 'back': {'id': usable_sherds[i + 1]},
+                                  'right': {'id': usable_sherds[i + 2]}}},
                   name=f'Decorated Pot|{sherd_names[i]}') for i in range(len(sherds))), clock=fast_clock)
 
     blocks('dirt', SOUTH, ('Dirt', 'Coarse Dirt', 'Rooted Dirt', 'Farmland'))
