@@ -708,7 +708,7 @@ def wood_functions(room):
         if name in ('Jungle', 'Mangrove'):
             yield fill(r(-4, 2, -2), r(-4, 5, -2), ('vine', {'north': True}))
         elif name == 'Poplar':
-            yield setblock(r(-3, 5, -3), 'orange_poplar_leaves'), setblock(r(-4, 5, -3), 'yellow_poplar_leaves')
+            yield setblock(r(-2, 5, -3), 'red_poplar_leaves'), setblock(r(-4, 5, -3), 'yellow_poplar_leaves')
 
         yield setblock(r(-2, 2, -1), saplings[0])
         yield setblock(r(0, 2, -1), saplings[1])
