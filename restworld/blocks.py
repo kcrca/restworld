@@ -7,7 +7,8 @@ from pynecraft import commands, info
 from pynecraft.base import Arg, as_facing, DOWN, E, EAST, EQ, FacingDef, MATCHES, N, Nbt, NORTH, r, RelCoord, \
     rotate_facing, S, \
     SOUTH, to_id, to_name, UP, W, WEST
-from pynecraft.commands import a, as_block, as_score, Block, clone, Command, Commands, data, e, Entity, execute, fill, \
+from pynecraft.commands import a, as_block, as_score, Block, BLOCK, clone, Command, Commands, data, e, Entity, execute, \
+    fill, \
     function, item, kill, MOD, MOVE, n, p, REPLACE, s, say, schedule, ScoreName, setblock, stopsound, SUCCESS, summon, \
     tag
 from pynecraft.function import Function, Loop
@@ -1398,55 +1399,16 @@ def stepable_functions(room):
     def stepable_loop(step):
         volume = Region(r(0, 2, 0), r(3, 6, 6))
         i = step.i
-        yield volume.replace(step.elem, '#restworld:stepable_planks')
+        yield volume.replace(step.elem, '#restworld:stepable_blocks')
         yield volume.replace_slabs(slabs[i], '#restworld:stepable_slabs')
         yield volume.replace_stairs(stairs[i], '#restworld:stepable_stairs')
         sign_text = Sign.lines_nbt(Block(step.elem).full_text)
         yield data().merge(r(1, 2, -1), {'front_text': sign_text})
         room.particle(step.elem, 'stepable', r(0, 4, 0), step)
 
-    blocks = [
-        'Stone', 'Cobblestone', 'Mossy|Cobblestone',
-        'Bricks', 'Stone Bricks', 'Mossy|Stone Bricks', 'Mud Bricks',
-        'Sandstone', 'Smooth|Sandstone', 'Red|Sandstone', 'Smooth Red|Sandstone',
-        'Andesite', 'Polished|Andesite',
-        'Diorite', 'Polished|Diorite',
-        'Granite', 'Polished|Granite',
-        'Tuff', 'Polished|Tuff', 'Tuff Bricks',
-        'Cobbled|Deepslate',
-        'Polished|Deepslate',
-        'Deepslate|Bricks',
-        'Deepslate|Tiles',
-        *(weathering_name(x, 'Cut Copper', join='|') for x in weatherings),
-        *(f'{c} Wool' for c in colors),
-        'Resin Bricks',
-        'Prismarine', 'Prismarine|Bricks', 'Dark|Prismarine',
-        'Acacia Planks', 'Birch Planks', 'Cherry Planks', 'Jungle Planks', 'Mangrove Planks',
-        'Oak Planks', 'Dark Oak Planks', 'Pale Oak Planks', 'Spruce Planks', 'Bamboo Planks', 'Bamboo Mosaic Block',
-        'Sulfur', 'Polished|Sulfur', 'Sulfur Bricks',
-        'Cinnabar', 'Polished|Cinnabar', 'Cinnabar Bricks',
-        'Warped Planks', 'Crimson Planks',
-        'Nether Bricks', 'Red|Nether Bricks',
-        'Blackstone', 'Polished|Blackstone',
-        'Polished|Blackstone Bricks', 'Quartz Block', 'Smooth|Quartz',
-        'End Stone Bricks', 'Purpur Block',
-    ]
-    stairs = tuple(re.sub('(marine|ite|ool)$', r'\1 Stairs', re.sub('[Ss]tone$', 'Stone Stairs',
-                                                                re.sub('[Tt]uff$', 'Tuff Stairs',
-                                                                       re.sub('(Quartz|Deepslate|Sulfur|Cinnabar)$',
-                                                                              r'\1 Stairs',
-                                                                              f.replace('Planks', 'Stairs')
-                                                                              .replace('Tiles', 'Tile Stairs')
-                                                                              .replace('Copper', 'Copper Stairs')
-                                                                              .replace('Bricks', 'Brick Stairs')
-                                                                              .replace('Block', 'Stairs')
-                                                                              .replace('|Quartz', ' Quartz Stairs')
-                                                                              .replace('|Deepslate',
-                                                                                       '|Deepslate Stairs')))))
-                   for f in blocks)
-    slabs = tuple(f.replace('Stairs', 'Slab') for f in stairs)
-    # The mosaic's "Block" is here so it fits in the patterns, but it actually doesn't exist, so we remove it.
-    blocks[blocks.index('Bamboo Mosaic Block')] = 'Bamboo Mosaic'
+    blocks = restworld.tags(BLOCK)['stepable_blocks']['values']
+    stairs = restworld.tags(BLOCK)['stepable_stairs']['values']
+    slabs = restworld.tags(BLOCK)['stepable_slabs']['values']
 
     room.function('stepable_init').add(WallSign((None, 'Block')).place(r(3, 4, 5, ), NORTH),
                                        WallSign((None, 'Double slab')).place(r(3, 5, 5, ), NORTH),

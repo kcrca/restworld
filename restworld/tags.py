@@ -1,10 +1,9 @@
-import re
 from itertools import chain
 
 from pynecraft.base import to_id
 from pynecraft.commands import COLORS
 from pynecraft.function import BLOCK
-from pynecraft.info import colors, corals, leaves_for, stems, weatherings, woods
+from pynecraft.info import corals, leaves_for, stems, steppable, woods
 from restworld.world import restworld
 
 
@@ -188,77 +187,12 @@ def create():
         ]
     }
 
-    blocks['stepable_planks'] = {
-        'values': [
-            'acacia_planks',
-            'bamboo_planks',
-            'bamboo_mosaic_block',
-            'birch_planks',
-            'cherry_planks',
-            'jungle_planks',
-            'mangrove_planks',
-            'oak_planks',
-            'dark_oak_planks',
-            'pale_oak_planks',
-            'spruce_planks',
-            'stone',
-            'cobblestone',
-            'mossy_cobblestone',
-            'bricks',
-            'stone_bricks',
-            'mud_bricks',
-            'mossy_stone_bricks',
-            'resin_bricks',
-            'nether_bricks',
-            'red_nether_bricks',
-            'end_stone_bricks',
-            'purpur_block',
-            'sandstone',
-            'smooth_sandstone',
-            'sulfur', 'polished_sulfur', 'sulfur_bricks',
-            'cinnabar', 'polished_cinnabar', 'cinnabar_bricks',
-            'red_sandstone',
-            'smooth_red_sandstone',
-            'prismarine',
-            'prismarine_bricks',
-            'dark_prismarine',
-            'andesite',
-            'polished_andesite',
-            'diorite',
-            'polished_diorite',
-            'granite',
-            'polished_granite',
-            'tuff',
-            'tuff_bricks',
-            'polished_tuff',
-            'blackstone',
-            'polished_blackstone',
-            'polished_blackstone_bricks',
-            'quartz_block',
-            'smooth_quartz',
-            'warped_planks',
-            'crimson_planks',
-            'cobbled_deepslate',
-            'polished_deepslate',
-            'deepslate_bricks',
-            'deepslate_tiles',
-            *(f'{x}_cut_copper'.strip('_') for x in weatherings),
-            *(to_id(f'{x}_wool') for x in colors)
-        ]
-    }
+    # base/stairs/slab derived from pynecraft.steppable; waxed copper excluded (cosmetically
+    # identical to unwaxed). The three stay index-aligned since they share one filtered source.
+    no_waxing = [s for s in steppable if not s.block.startswith('waxed_')]
+    blocks['stepable_blocks'] = {'values': [s.block for s in no_waxing]}
+    blocks['stepable_stairs'] = {'values': [s.stairs for s in no_waxing]}
+    blocks['stepable_slabs'] = {'values': [s.slab for s in no_waxing]}
     blocks['planks'] = {
         'values': ['#planks', 'bamboo_mosaic']
     }
-    blocks['stepable_stairs'] = {
-        'values': [
-            re.sub(r'blocks*', 'stairs',
-                   re.sub(r'planks', 'stairs',
-                          re.sub(r'(copper|stone$|tuff$|marine$|ite$|slate$|_quartz$|sulfur$|cinnabar$|wool$).*', r'\1_stairs',
-                                 re.sub(r'(brick|tile)s*', r'\1_stairs', x))))
-            for x in blocks['stepable_planks']['values']]
-    }
-    blocks['stepable_slabs'] = {
-        'values': [x.replace('stairs', 'slab') for x in blocks['stepable_stairs']['values']]
-    }
-    sp = blocks['stepable_planks']['values']
-    sp[sp.index('bamboo_mosaic_block')] = 'bamboo_mosaic'
