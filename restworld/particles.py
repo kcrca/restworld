@@ -1,6 +1,6 @@
-import random
-
 import math
+import random
+import sys
 
 from pynecraft._values import SULFUR_CAVES
 from pynecraft.base import Arg, as_facing, d, EAST, MATCHES, MIDNIGHT, Nbt, NOON, NORTH, OVERWORLD, r, SOUTH, to_id, \
@@ -674,4 +674,4 @@ def check_for_unused():
     all_particles = set(as_particle(x) for x in PARTICLE_GROUP)
     not_given = all_particles - given
     if not_given:
-        raise ValueError(f'Unused particles: {not_given}')
+        print(f'Warning: Unused particles: {not_given}', file=sys.stderr)

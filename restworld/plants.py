@@ -3,6 +3,7 @@ from typing import Callable
 from titlecase import titlecase
 
 from pynecraft import info
+from pynecraft._values import DAPPLED_FOREST
 from pynecraft.base import EAST, MATCHES, Nbt, NORTH, r, SOUTH, to_id, to_name, WEST
 from pynecraft.commands import Block, data, e, execute, fill, function, kill, setblock, tag, Text
 from pynecraft.info import BIRCH_FOREST, CHERRY_GROVE, DARK_FOREST, MANGROVE_SWAMP, PALE_GARDEN, small_flowers, \
@@ -339,8 +340,9 @@ def room():
     room.function('sweet_berry_init').add(room.label(r(5, 2, 2), 'Show Particles', SOUTH))
 
     tree_types = {
-        'Acacia': SAVANNA, 'Birch': BIRCH_FOREST, 'Oak': PLAINS, 'Cherry': CHERRY_GROVE, 'Jungle': JUNGLE,
-        'Mangrove': MANGROVE_SWAMP, 'Dark Oak': DARK_FOREST, 'Pale Oak': PALE_GARDEN, 'Spruce': SNOWY_TAIGA
+        'Acacia': SAVANNA, 'Birch': BIRCH_FOREST, 'Poplar': DAPPLED_FOREST, 'Oak': PLAINS, 'Cherry': CHERRY_GROVE,
+        'Jungle': JUNGLE, 'Mangrove': MANGROVE_SWAMP, 'Dark Oak': DARK_FOREST, 'Pale Oak': PALE_GARDEN,
+        'Spruce': SNOWY_TAIGA
     }
 
     freeze_biome = room.score('freeze_biome')

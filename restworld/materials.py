@@ -654,7 +654,7 @@ def wood_functions(room):
                 planks = 'bamboo_mosaic'
             log = f'{id}_log'
             wood = f'{id}_wood'
-            leaves = f'{id}_leaves' if id != 'poplar' else 'red_poplar_leaves'
+            leaves = f'{id}_leaves' if id != 'poplar' else 'orange_poplar_leaves'
             if 'Bamboo' in name:
                 log = 'bamboo_block'
                 wood = 'jungle_wood'
