@@ -8,8 +8,8 @@ from pynecraft.commands import as_facing, Block, clone, COLORS, data, e, Entity,
     item, kill, LONG, MOD, n, p, player, REPLACE, RESULT, return_, ride, s, say, schedule, Score, scoreboard, \
     setblock, \
     SUCCESS, summon, tag, tp
-from pynecraft.info import as_disc, axolotls, colors, default_skins, DISC_GROUP, discs, DUMMY, horses, mannequin_poses, \
-    tags, tropical_fish, weathering_id, weathering_name, weathering_property, weatherings, wolves
+from pynecraft.info import as_disc, axolotls, cats, climates, colors, default_skins, DISC_GROUP, discs, DUMMY, horses, \
+    mannequin_poses, tags, tropical_fish, weathering_id, weathering_name, weathering_property, weatherings, wolves
 from pynecraft.simpler import Item, ItemFrame, PLAINS, Sign, Villager, VILLAGER_BIOMES, VILLAGER_PROFESSIONS, WallSign
 from restworld.materials import water_biomes
 from restworld.rooms import kill_em, MobPlacer, Room
@@ -100,9 +100,7 @@ def friendlies(room):
     room.loop('cat', main_clock).loop(
         lambda step: execute().as_(e().tag('cat')).run(
             data().merge(s(), {'variant': step.elem.id, 'CustomName': step.elem.name})),
-        (Entity(x, name=to_name(x)) for x in
-         ('tabby', 'black', 'red', 'siamese', 'british_shorthair', 'calico', 'persian', 'ragdoll', 'white', 'jellie',
-          'all_black')))
+        (Entity(x, name=to_name(x)) for x in cats))
     room.function('colored_mobs_init').add(room.label(r(0, 2, -1), 'Glow', NORTH))
 
     def colored_mobs_loop(step):
@@ -120,7 +118,6 @@ def friendlies(room):
         Entity('mooshroom'), Entity('mooshroom', {'Type': 'brown'})))
 
     climate_mobs = ('frog', 'chicken', 'pig', 'cow')
-    climates = ('temperate', 'warm', 'cold')
 
     def climate_loop(step):
         for mob in climate_mobs:

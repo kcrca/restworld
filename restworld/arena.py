@@ -5,7 +5,7 @@ from pynecraft.base import Arg, EAST, EQ, GT, LT, MATCHES, Nbt, NORTH, r, second
 from pynecraft.commands import a, Block, data, DIV, e, effect, execute, fill, function, INFINITE, INT, kill, MINUS, MOD, \
     RANDOM, random, REPLACE, RESULT, return_, s, schedule, Score, scoreboard, setblock, summon, tag
 from pynecraft.function import Function, Loop
-from pynecraft.info import colors, DUMMY, REGENERATION, weathering_id, weatherings
+from pynecraft.info import cats, climates, colors, DUMMY, REGENERATION, weathering_id, weatherings, wolves
 from pynecraft.simpler import Item, Region, Sign, WallSign
 from restworld.rooms import kill_em, Room
 from restworld.world import main_clock, marker_tmpl, restworld
@@ -167,11 +167,8 @@ def room():
         ids.add(b[0])
         ids.add(b[1])
 
-    cats = ['white', 'black', 'red', 'siamese', 'british_shorthair', 'calico', 'persian', 'ragdoll', 'tabby',
-            'all_black', 'jellie']
-    wolves = ['pale', 'ashen', 'black', 'chestnut', 'rusty', 'snowy', 'spotted', 'striped', 'woods']
     foxes = ['red', 'snow']
-    temps = ['cold', 'temperate', 'warm']
+    temps = climates
     pandas = ['normal', 'lazy', 'worried', 'playful', 'brown', 'weak', 'aggressive']
 
     # This is the main part of the system that can randomize values for battlers. This maps entity IDs to a description
