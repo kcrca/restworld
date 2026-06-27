@@ -6,8 +6,8 @@ from pynecraft import info
 from pynecraft._values import DAPPLED_FOREST
 from pynecraft.base import EAST, MATCHES, Nbt, NORTH, r, SOUTH, to_id, to_name, WEST
 from pynecraft.commands import Block, data, e, execute, fill, function, kill, setblock, tag, Text
-from pynecraft.info import BIRCH_FOREST, CHERRY_GROVE, DARK_FOREST, MANGROVE_SWAMP, PALE_GARDEN, small_flowers, \
-    SNOWY_TAIGA, stems, tulips
+from pynecraft.info import BIRCH_FOREST, CHERRY_GROVE, DARK_FOREST, MANGROVE_SWAMP, PALE_GARDEN, SNOWY_TAIGA, tags, \
+    tulips
 from pynecraft.simpler import JUNGLE, PLAINS, Region, SAVANNA, Sign, WallSign
 from restworld.rooms import erase, Room
 from restworld.world import fast_clock, main_clock, restworld, slow_clock, text_display
@@ -251,9 +251,8 @@ def room():
             sign_nbt['front_text']['messages'][0] = Text.text('Potted ' + base_text)
         if len(sign_nbt['front_text']['messages'][3]['text']) == 0:
             sign_nbt['front_text']['messages'] = (Text.text(''),) + tuple(sign_nbt['front_text']['messages'][:-1])
-        elem_id = f'potted_{step.elem.id}'
-        yield setblock(r(0, 3, 0), elem_id)
-        room.particle(elem_id, 'pottable', r(0, 4, 0), step)
+        yield setblock(r(0, 3, 0), step.elem.id)
+        room.particle(step.elem.id, 'pottable', r(0, 4, 0), step)
         yield data().merge(r(1, 2, 0), sign_nbt)
 
     saplings = list(info.woods)
@@ -266,10 +265,7 @@ def room():
         Block('Azalea Bush'), Block('Flowering Azalea Bush'),
         Block('Mangrove Propagule'),
     ]
-    pottables = [None] + [Block('Mangrove|Propagule' if w == 'Mangrove' else f'{w} Sapling') for w in saplings] + [
-        Block(f'{t} Tulip') for t in tulips] + list(small_flowers) + misc + [Block(f'{x} Roots') for x in stems] + [
-                    Block(f'{x} Fungus') for x in stems] + [
-                    Block('Torchflower'), Block('Wither Rose'), Block('Closed|Eyeblossom'), Block('Open|Eyeblossom')]
+    pottables = [None] + list(Block(x) for x in tags['block']['flower_pots'])
     try:
         pottables[pottables.index(Block('Bamboo Sapling'))] = Block('Bamboo')
     except ValueError:
