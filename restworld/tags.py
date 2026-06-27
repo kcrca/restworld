@@ -38,8 +38,6 @@ def create():
         'water', 'barrier', 'structure_void'
     }
 
-    blocks['chests'] = {'#copper_chests', 'chest'}
-
     blocks['air'] = {
         'values': [
             'air',
@@ -57,7 +55,6 @@ def create():
             '#walls'
         ]
     }
-    blocks['gatelike'] = {'values': [f'{x}_fence_gate' for x in woodlike_ids]}
     blocks['leaflike'] = [
         *chain.from_iterable(leaves_for(wood) for wood in wood_ids),
         'nether_wart_block',
@@ -71,25 +68,6 @@ def create():
     blocks['stripped_loglike'] = {'values': [f'stripped_{x}' for x in blocks['loglike']['values']]}
     blocks['stripped_woodlike'] = {'values': [f'stripped_{x}' for x in blocks['woodlike']['values']]}
 
-    blocks['saplinglike'] = {
-        'values': [
-            'acacia_sapling',
-            'bamboo_sapling',
-            'bamboo',
-            'birch_sapling',
-            'cherry_sapling',
-            'jungle_sapling',
-            'mangrove_propagule',
-            'oak_sapling',
-            'dark_oak_sapling',
-            'pale_oak_sapling',
-            'spruce_sapling',
-            'warped_roots',
-            'warped_fungus',
-            'crimson_roots',
-            'crimson_fungus'
-        ]
-    }
     coral_ids = tuple(x.lower() for x in corals)
     blocks['coral_fans'] = {'values': [f'{x}_coral_fan' for x in coral_ids]}
     blocks['dead_coral_plants'] = {'values': [f'dead_{x}_coral' for x in coral_ids]}
