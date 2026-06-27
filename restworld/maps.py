@@ -1,7 +1,9 @@
 import re
+import sys
 
 from pynecraft.base import Nbt, NbtDef, NORTH, r, SOUTH, WEST
 from pynecraft.commands import Block, clone, data, e, execute, fill, kill, setblock, Text
+from pynecraft.info import map_decorations
 from pynecraft.simpler import Book, ItemFrame, TextDisplay, WallSign
 from restworld.rooms import ensure, Room
 from restworld.world import restworld
@@ -25,6 +27,13 @@ def room():
     icons = (
         'target_x', 'target_point', 'red_x', 'village_desert', 'village_plains', 'village_savanna', 'village_snowy',
         'village_taiga', 'trial_chambers', 'monument', 'mansion', 'jungle_temple', 'swamp_hut',)
+    # Deliberately not shown: banner color markers and the dynamic/player markers.
+    # The assert flags any new map_decoration_type so we decide to show or exclude it.
+    excluded = {'blue_marker', 'red_marker', 'frame', 'player', 'player_off_limits', 'player_off_map'}
+    excluded |= {d for d in map_decorations if d.startswith('banner_')}
+    unhandled = set(map_decorations) - set(icons) - excluded
+    if unhandled:
+        print(f'Warning: unhandled map decorations: {sorted(unhandled)}', file=sys.stderr)
     map_dim = 128
     x_base = 64
     z_base = -64
