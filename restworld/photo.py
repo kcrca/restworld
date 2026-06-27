@@ -1,6 +1,5 @@
-import re
-
 import math
+import re
 
 from pynecraft import info
 from pynecraft.base import as_facing, EAST, MATCHES, NE, NORTH, OVERWORLD, r, SOUTH, SW, to_name, UP, WEST
@@ -86,6 +85,7 @@ def quilt_blocks():
     excluded_ids |= {
         'bamboo', 'bamboo_sapling', 'bamboo_shoot', 'barrier', 'decorated_pot', 'dirt_path',
         'heavy_core', 'jack_o_lantern', 'kelp', 'light', 'nether_wart',
+        'poplar_leaves', # doesn't actually exist
         'powder_snow', 'sea_lantern', 'snow', 'soul_sand',  # not in their respective tags
         'slime_block', 'honey_block', 'tinted_glass',  # translucent
     }
