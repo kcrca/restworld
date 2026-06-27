@@ -2,10 +2,9 @@ from typing import Callable
 
 from titlecase import titlecase
 
-from pynecraft import info
 from pynecraft._values import DAPPLED_FOREST
 from pynecraft.base import EAST, MATCHES, Nbt, NORTH, r, SOUTH, to_id, to_name, WEST
-from pynecraft.commands import Block, data, e, execute, fill, function, kill, setblock, tag, Text
+from pynecraft.commands import Block, data, e, execute, fill, function, kill, setblock, tag
 from pynecraft.info import BIRCH_FOREST, CHERRY_GROVE, DARK_FOREST, MANGROVE_SWAMP, PALE_GARDEN, SNOWY_TAIGA, tags, \
     tulips
 from pynecraft.simpler import JUNGLE, PLAINS, Region, SAVANNA, Sign, WallSign
@@ -236,36 +235,19 @@ def room():
     room.loop('mushrooms', main_clock).loop(mushroom_loop, ('red', 'brown'))
 
     def pottable_loop(step):
-        if not step.elem:
+        if step.i == 0:
             yield setblock(r(0, 3, 0), 'flower_pot')
             yield Sign.change(r(1, 2, 0), ('', 'Flower Pot', '', ''))
             return
         if isinstance(step.elem, str):
             step.elem = Block(step.elem)
-        sign_nbt = step.elem.sign_nbt()
-
-        base_text = sign_nbt['front_text']['messages'][0]['text']
-        if base_text == '':
-            sign_nbt['front_text']['messages'][0] = Text.text('Potted')
-        else:
-            sign_nbt['front_text']['messages'][0] = Text.text('Potted ' + base_text)
-        if len(sign_nbt['front_text']['messages'][3]['text']) == 0:
-            sign_nbt['front_text']['messages'] = (Text.text(''),) + tuple(sign_nbt['front_text']['messages'][:-1])
         yield setblock(r(0, 3, 0), step.elem.id)
+        sign_name = Sign.wrap(step.elem.name[len('Potted '):])[0].nbt['front_text']['messages']
+        msgs = ['', 'Potted'] + sign_name[0:2]
+        yield data().merge(r(1, 2, 0), {'front_text': {'messages': msgs}, 'back_text': {'messages': msgs}})
         room.particle(step.elem.id, 'pottable', r(0, 4, 0), step)
-        yield data().merge(r(1, 2, 0), sign_nbt)
 
-    saplings = list(info.woods)
-    misc = [
-        Block('Brown Mushroom'),
-        Block('Red Mushroom'),
-        Block('Cactus'),
-        Block('Dead Bush'),
-        Block('Fern'),
-        Block('Azalea Bush'), Block('Flowering Azalea Bush'),
-        Block('Mangrove Propagule'),
-    ]
-    pottables = [None] + list(Block(x) for x in tags['block']['flower_pots'])
+    pottables = list(Block(x) for x in sorted(tags['block']['flower_pots'], key=lambda x: ' ' if x == 'flower_pot' else x))
     try:
         pottables[pottables.index(Block('Bamboo Sapling'))] = Block('Bamboo')
     except ValueError:
