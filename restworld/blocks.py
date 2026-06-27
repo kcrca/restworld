@@ -909,7 +909,7 @@ def room():
             yield setblock(pos, trial_blocks[i])
             text = list(trial_blocks[i].full_text)
             if i % 2 == 1:
-                text[1] = f'Ominous {text[1]}'
+                text[0] = 'Ominous'
             yield WallSign(text).place(RelCoord.add(pos, sign_offset), NORTH)
 
     room.function('trial_init').add(trial_init())
@@ -985,11 +985,15 @@ def room_init_functions(room, block_list_score):
     # Ensure that setting up the expansion work on signs is done after all other things
     dbsi = room.function('do_blocks_sign_init', home=False).add(
         execute().at(e().tag('blocks_home', 'expansion')).run(
-            Sign.change(r(0, 2, -1), (), ('function restworld:blocks/toggle_expand',)),
-            Sign.change(r(0, 2, 1), (), ('function restworld:blocks/toggle_expand',))),
+            function('restworld:add_click',
+                     {'x': r(0), 'y': r(2), 'z': r(-1), 'cmd': 'function restworld:blocks/toggle_expand'}),
+            function('restworld:add_click',
+                     {'x': r(0), 'y': r(2), 'z': r(1), 'cmd': 'function restworld:blocks/toggle_expand'})),
         execute().at(e().tag('blocks_home', '!expansion')).run(
-            Sign.change(r(0, 2, -1), (), (say('Sorry, cannot expand this block'),)),
-            Sign.change(r(0, 2, 1), (), (say('Sorry, cannot expand this block'),)))
+            function('restworld:add_click',
+                     {'x': r(0), 'y': r(2), 'z': r(-1), 'cmd': say('Sorry, cannot expand this block')}),
+            function('restworld:add_click',
+                     {'x': r(0), 'y': r(2), 'z': r(1), 'cmd': say('Sorry, cannot expand this block')}))
     )
     room.function('blocks_sign_init').add(
         schedule().function(dbsi, 1, REPLACE)
@@ -1402,8 +1406,8 @@ def stepable_functions(room):
         yield volume.replace(step.elem, '#restworld:stepable_blocks')
         yield volume.replace_slabs(slabs[i], '#restworld:stepable_slabs')
         yield volume.replace_stairs(stairs[i], '#restworld:stepable_stairs')
-        sign_text = Sign.lines_nbt(Block(step.elem).full_text)
-        yield data().merge(r(1, 2, -1), {'front_text': sign_text})
+        sign = Sign.wrap(Block(step.elem).name)[0]
+        yield data().merge(r(1, 2, -1), {'front_text': sign.nbt['front_text'], 'back_text': sign.nbt['back_text']})
         room.particle(step.elem, 'stepable', r(0, 4, 0), step)
 
     blocks = restworld.tags(BLOCK)['stepable_blocks']['values']

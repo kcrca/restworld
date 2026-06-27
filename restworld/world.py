@@ -1,9 +1,10 @@
 import sys
 
-from pynecraft.base import r
-from pynecraft.commands import a, clear, Commands, CREATIVE, data, e, Entity, execute, fill, function, gamemode, kill, \
+from pynecraft.base import Arg, Nbt, r
+from pynecraft.commands import a, clear, ClickEvent, Commands, CREATIVE, data, e, Entity, execute, fill, function, \
+    gamemode, kill, \
     p, \
-    scoreboard, setblock, SIDEBAR, spawnpoint, tp
+    scoreboard, setblock, SIDEBAR, spawnpoint, storage, tp
 from pynecraft.function import Function
 from pynecraft.simpler import Sign, TextDisplay
 from restworld.rooms import Clock, Room, RoomPack
@@ -43,6 +44,21 @@ class RestWorld(RoomPack):
             spawnpoint(a(), (0, 101, 0)),
             kill(e().type('item')),
         ))
+        """Macro commands that attach a run_command click_event to the front line 0 of a
+        sign while preserving its existing text.
+
+        Macro args: x, y, z (sign block coords) and cmd (command WITHOUT a leading slash —
+        ClickEvent.run_command adds it). The current line is moved into `extra`, so a plain
+        string or a formatted component is preserved exactly.
+        """
+        pos = (Arg('x'), Arg('y'), Arg('z'))
+        store = storage('restworld:add_click')
+        wrapper = Nbt(text='', extra=[], click_event=ClickEvent.run_command(Arg('cmd')))
+        self.function_set.add(Function('add_click')).add(
+            data().modify(store, 'comp').set().value(wrapper),
+            data().modify(store, 'comp.extra').append().from_(pos, 'front_text.messages[0]'),
+            data().modify(pos, 'front_text.messages[0]').set().from_(store, 'comp'),
+        )
         super().save(*args, **kwargs)
 
     # noinspection PyMethodMayBeStatic
