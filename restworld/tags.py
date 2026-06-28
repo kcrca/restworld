@@ -143,9 +143,9 @@ def create():
     # base/stairs/slab derived from pynecraft.steppable; waxed copper excluded (cosmetically
     # identical to unwaxed). The three stay index-aligned since they share one filtered source.
     no_waxing = [s for s in steppable if not s.block.startswith('waxed_')]
-    blocks['stepable_blocks'] = {'values': [s.block for s in no_waxing]}
-    blocks['stepable_stairs'] = {'values': [s.stairs for s in no_waxing]}
-    blocks['stepable_slabs'] = {'values': [s.slab for s in no_waxing]}
+    blocks['steppable_blocks'] = {'values': [s.block for s in no_waxing]}
+    blocks['steppable_stairs'] = {'values': [s.stairs for s in no_waxing]}
+    blocks['steppable_slabs'] = {'values': [s.slab for s in no_waxing]}
     blocks['planks'] = {
         'values': ['#planks', 'bamboo_mosaic']
     }

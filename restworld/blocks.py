@@ -971,7 +971,7 @@ def room():
 
     color_functions(room)
     expansion_functions(room)
-    stepable_functions(room)
+    steppable_functions(room)
 
 
 def room_init_functions(room, block_list_score):
@@ -1399,17 +1399,17 @@ def expansion_functions(room):
                {'Tags': ['dont_expand_home', 'homer', 'blocks_home'], 'NoGravity': True, 'Small': True}))
 
 
-def stepable_functions(room):
+def steppable_functions(room):
     volume = Region(r(0, 2, 0), r(3, 6, 6))
 
     def body(step):
         s = step.elem
-        yield volume.replace(s.block, '#restworld:stepable_blocks')
-        yield volume.replace_slabs(s.slab, '#restworld:stepable_slabs')
-        yield volume.replace_stairs(s.stairs, '#restworld:stepable_stairs')
+        yield volume.replace(s.block, '#restworld:steppable_blocks')
+        yield volume.replace_slabs(s.slab, '#restworld:steppable_slabs')
+        yield volume.replace_stairs(s.stairs, '#restworld:steppable_stairs')
         sign = Sign.wrap(Block(s.block).name)[0]
         yield data().merge(r(1, 2, -1), {'front_text': sign.nbt['front_text'], 'back_text': sign.nbt['back_text']})
-        room.particle(s.block, 'stepable', r(0, 4, 0), step)
+        room.particle(s.block, 'steppable', r(0, 4, 0), step)
 
     def category(b):
         if b.endswith('_wool'):
@@ -1426,7 +1426,7 @@ def stepable_functions(room):
             groups[category(s.block)].append(s)
 
     # TODO: set real start/facing/color for the choice buttons (placeholders for now).
-    init = room.category_loops('stepable', clock=fast_clock, color='purple', start=(0, -2), facing=NORTH,
+    init = room.category_loops('steppable', clock=fast_clock, color='purple', start=(0, -2), facing=NORTH,
                                categories={name: (items, body) for name, items in groups.items()})
     init.add(WallSign((None, 'Block')).place(r(3, 4, 5, ), NORTH),
              WallSign((None, 'Double slab')).place(r(3, 5, 5, ), NORTH),
