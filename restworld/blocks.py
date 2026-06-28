@@ -1407,7 +1407,7 @@ def steppable_functions(room):
         yield volume.replace(s.block, '#restworld:steppable_blocks')
         yield volume.replace_slabs(s.slab, '#restworld:steppable_slabs')
         yield volume.replace_stairs(s.stairs, '#restworld:steppable_stairs')
-        sign = Sign.wrap(Block(s.block).name)[0]
+        sign = Sign.wrap(Block(s.block).name, start=1)[0]
         yield data().merge(r(1, 2, -1), {'front_text': sign.nbt['front_text'], 'back_text': sign.nbt['back_text']})
         room.particle(s.block, 'steppable', r(0, 4, 0), step)
 
