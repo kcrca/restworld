@@ -1,29 +1,29 @@
 from pynecraft.commands import Text
-from pynecraft.dialog import boolean, ClickAction, confirmation, dialog_list, Item, item, multi_action, notice, \
-    number_range, plain_message, single_option, text
+from pynecraft.dialog import ClickAction, Dialog, Input, Item, item, plain_message
 from restworld.world import restworld
 
 
 def create():
     dialogs = restworld.registry('dialog')
 
-    dialogs['notice'] = notice('Notice').body(
+    dialogs['notice'] = Dialog.notice('Notice').body(
         plain_message('My hovercraft is full of eels.')
     ).inputs(
-        boolean('Boolean?'),
-        single_option('Single Option', ('Euphoria', 'Melancholy', 'Ennui', 'Copacetic'), initial='Ennui'),
-        number_range('Number Range', 0, 20, initial=1),
-        text('Text', 'Four Score…'),
-        text('Multiline Text', multiline={'max_lines': 5}),
+        Input.boolean('Boolean?'),
+        Input.single_option('Single Option', ('Euphoria', 'Melancholy', 'Ennui', 'Copacetic'), initial='Ennui'),
+        Input.number_range('Number Range', 0, 20, initial=1),
+        Input.text('Text', 'Four Score…'),
+        Input.text('Multiline Text', multiline={'max_lines': 5}),
     )
-    dialogs['confirmation'] = confirmation('Confirmation', ClickAction('Yes!'), ClickAction('Nooooo!!!!!!')).body(
+    dialogs['confirmation'] = Dialog.confirmation('Confirmation', ClickAction('Yes!'),
+                                                  ClickAction('Nooooo!!!!!!')).body(
         item(Item.nbt_for('cake'), show_decoration=True, show_tooltip=True),
         plain_message('Is the cake a lie?')
     )
-    dialogs['multi_action'] = multi_action('Multi Action', (ClickAction(f'Choice #{i}') for i in range(32)))
-    dialogs['dialog_list'] = dialog_list(
+    dialogs['multi_action'] = Dialog.multi_action('Multi Action', (ClickAction(f'Choice #{i}') for i in range(32)))
+    dialogs['dialog_list'] = Dialog.dialog_list(
         'Dialog List',
-        (notice(f'I said: "{99 - i} BOTTLES OF BEER!!!"', external_title=f'{99 - i} bottles of beer') for i in
+        (Dialog.notice(f'I said: "{99 - i} BOTTLES OF BEER!!!"', external_title=f'{99 - i} bottles of beer') for i in
          range(32)))
 
     advice = plain_message(

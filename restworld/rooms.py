@@ -1,9 +1,8 @@
 import copy
+import math
 import re
 from copy import deepcopy
 from typing import Callable, Iterable, Sequence
-
-import math
 
 from pynecraft.base import Arg, BLUE, FacingDef, is_arg, MATCHES, Nbt, ORANGE, r, RelCoord, rotate_facing, ROTATION_180, \
     ROTATION_270, ROTATION_90, to_name
@@ -354,10 +353,55 @@ class Room(FunctionSet):
             score = Score(base_name, self.name)
         loop = self._add_func(Loop(score, name=name, base_name=base_name), name, clock, home)
         if not base_name + '_cur' in self.functions:
-            self.function(base_name + '_cur', home=home).add(loop.cur())
+            self.function(base_name + '_cur', home=home).add(loop._cur_cmds())
         self._scores.add(loop.score)
         self._scores.add(loop.to_incr)
         return loop
+
+    def category_loops(self, base: str, clock: Clock, color: str,
+                       start: tuple[int, int], facing: FacingDef,
+                       categories: dict[str, tuple[Iterable, Callable]]) -> Function:
+        """Several short loops sharing one display anchor, with a row of choice buttons.
+
+        The anchor is one armor stand tagged ``<base>_home``, placed manually in the world
+        save at the display position. Only the selected category animates: each loop runs
+        ``at @e[tag=<name>_home]``, so ``switch_to_<name>`` simply moves that activation tag
+        onto the anchor stand (removing the other categories' tags) and runs ``<name>_cur``.
+        No per-choice armor stands are summoned.
+
+        Generates the whole selector into ``<base>_init``: for each category, a label +
+        stone button over a colored-concrete + command block running ``switch_to_<name>``.
+        The choices march from ``start`` (an xz pair) along ``facing`` turned 90°, and each
+        choice/label faces ``facing``. The first category is activated as the default.
+
+        ``categories`` maps name -> (items, body), where ``body(step)`` yields the commands
+        to display one item in the shared volume. Returns the ``<base>_init`` Function so the
+        caller can add room-specific extras (display signs, a non-category label, etc.).
+        """
+        facing = as_facing(facing)
+        step = rotate_facing(facing, ROTATION_90)
+        init = self.function(f'{base}_init')
+        names = list(categories)
+        first = None
+        for i, (name, (items, body)) in enumerate(categories.items()):
+            self.loop(name, clock, home=False).loop(body, items)
+            switch = self.function(f'switch_to_{name}', home=False).add(
+                *(tag(e().tag(f'{base}_home')).remove(f'{other}_home') for other in names),
+                tag(e().tag(f'{base}_home')).add(f'{name}_home'),
+                execute().at(e().tag(f'{name}_home')).run(function(f'{self.full_name}/{name}_cur')))
+            if not first:
+                first = switch
+            x = r(start[0] + i * step.dx)
+            z = r(start[1] + i * step.dz)
+            init.add(
+                self.label((x, r(2), z), name.title(), facing.name),
+                setblock((x, r(2), z), ('stone_button', {'facing': facing, 'face': 'floor'})),
+                setblock((x, r(1), z), f'{color}_concrete'),
+                setblock((x, r(0), z), 'air'),
+                setblock((x, r(0), z), Block('command_block', nbt={'Command': function(switch)})),
+            )
+        init.add(function(first))
+        return init
 
     def _add_func(self, func, name, clock, home=None, single_home=True):
         base_name, name = self._base_name(name, clock)

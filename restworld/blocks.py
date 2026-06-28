@@ -7,13 +7,13 @@ from pynecraft import commands, info
 from pynecraft.base import Arg, as_facing, DOWN, E, EAST, EQ, FacingDef, MATCHES, N, Nbt, NORTH, r, RelCoord, \
     rotate_facing, S, \
     SOUTH, to_id, to_name, UP, W, WEST
-from pynecraft.commands import a, as_block, as_score, Block, BLOCK, clone, Command, Commands, data, e, Entity, execute, \
+from pynecraft.commands import a, as_block, as_score, Block, clone, Command, Commands, data, e, Entity, execute, \
     fill, \
     function, item, kill, MOD, MOVE, n, p, REPLACE, s, say, schedule, ScoreName, setblock, stopsound, SUCCESS, summon, \
     tag
 from pynecraft.function import Function, Loop
-from pynecraft.info import armor_equipment, Color, colors, copper_golem_poses, leaves_for, sherds, stems, weathering_id, \
-    weathering_name, weatherings
+from pynecraft.info import armor_equipment, Color, colors, copper_golem_poses, leaves_for, sherds, stems, steppable, \
+    weathering_id, weathering_name, weatherings
 from pynecraft.simpler import Item, ItemFrame, Region, Sign, TextDisplay, WallSign
 from restworld.materials import enchant
 from restworld.rooms import Clock, erase, ERASE_HEIGHT, if_clause, kill_em, Room
@@ -1400,21 +1400,34 @@ def expansion_functions(room):
 
 
 def stepable_functions(room):
-    def stepable_loop(step):
-        volume = Region(r(0, 2, 0), r(3, 6, 6))
-        i = step.i
-        yield volume.replace(step.elem, '#restworld:stepable_blocks')
-        yield volume.replace_slabs(slabs[i], '#restworld:stepable_slabs')
-        yield volume.replace_stairs(stairs[i], '#restworld:stepable_stairs')
-        sign = Sign.wrap(Block(step.elem).name)[0]
+    volume = Region(r(0, 2, 0), r(3, 6, 6))
+
+    def body(step):
+        s = step.elem
+        yield volume.replace(s.block, '#restworld:stepable_blocks')
+        yield volume.replace_slabs(s.slab, '#restworld:stepable_slabs')
+        yield volume.replace_stairs(s.stairs, '#restworld:stepable_stairs')
+        sign = Sign.wrap(Block(s.block).name)[0]
         yield data().merge(r(1, 2, -1), {'front_text': sign.nbt['front_text'], 'back_text': sign.nbt['back_text']})
-        room.particle(step.elem, 'stepable', r(0, 4, 0), step)
+        room.particle(s.block, 'stepable', r(0, 4, 0), step)
 
-    blocks = restworld.tags(BLOCK)['stepable_blocks']['values']
-    stairs = restworld.tags(BLOCK)['stepable_stairs']['values']
-    slabs = restworld.tags(BLOCK)['stepable_slabs']['values']
+    def category(b):
+        if b.endswith('_wool'):
+            return 'wool'
+        if b.endswith('_planks') or b == 'bamboo_mosaic':
+            return 'wood'
+        if any(x in b for x in ('brick', 'tile', 'polished', 'smooth', 'chiseled', 'cut')):
+            return 'decorative'
+        return 'basic'
 
-    room.function('stepable_init').add(WallSign((None, 'Block')).place(r(3, 4, 5, ), NORTH),
-                                       WallSign((None, 'Double slab')).place(r(3, 5, 5, ), NORTH),
-                                       WallSign((None, 'Slabs & Stairs')).place(r(1, 2, -1, ), NORTH))
-    room.loop('stepable', fast_clock).loop(stepable_loop, blocks)
+    groups = {'wood': [], 'wool': [], 'basic': [], 'decorative': []}
+    for s in steppable:
+        if not s.block.startswith('waxed_'):
+            groups[category(s.block)].append(s)
+
+    # TODO: set real start/facing/color for the choice buttons (placeholders for now).
+    init = room.category_loops('stepable', clock=fast_clock, color='purple', start=(0, -2), facing=NORTH,
+                               categories={name: (items, body) for name, items in groups.items()})
+    init.add(WallSign((None, 'Block')).place(r(3, 4, 5, ), NORTH),
+             WallSign((None, 'Double slab')).place(r(3, 5, 5, ), NORTH),
+             WallSign((None, 'Slabs & Stairs')).place(r(1, 2, -1, ), NORTH))

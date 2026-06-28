@@ -472,51 +472,34 @@ def basic_functions(room, enchanted):
 
 
 def fencelike_functions(room):
-    volume = Region(r(4, 3, -6), r(0, 2, 1))
+    volume = Region(r(5, 3, -6), r(1, 2, 1))
 
     fencelike_sign_pos = r(4, 2, 1)
-    room.function('fencelike_init').add(
-        WallSign(()).place(fencelike_sign_pos, SOUTH),
-        room.label(r(6, 2, 2), 'Height', SOUTH), room.label(r(4, 2, 2), 'Glass Panes', SOUTH),
-        room.label(r(3, 2, 2), 'Walls', SOUTH), room.label(r(2, 2, 2), 'Fences', SOUTH),
-        room.label(r(1, 2, 2), 'Bars', SOUTH)
-    )
 
     def fencelike(block: BlockDef):
         block = as_block(block)
         yield volume.replace(block, '#restworld:fencelike')
         yield execute().at(e().tag('fencelike_home')).run(data().merge(fencelike_sign_pos, block.sign_nbt(front=None)))
 
-    def switch_to_fencelike(which):
-        room.function(f'switch_to_{which}', home=False).add(
-            kill(e().tag('which_fencelike_home')),
-            execute().at(e().tag('fencelike_home')).positioned(r(1, -0.5, 0)).run(
-                function(f'restworld:materials/{which}_home')),
-            tag(e().tag(f'{which}_home')).add('which_fencelike_home'),
-            execute().at(e().tag(f'{which}_home')).run(
-                function(f'restworld:materials/{which}_cur')))
-
     def fence_loop(step):
         yield from fencelike(step.elem)
         if step.elem[:-len(' Fence')] in info.woods + stems:
             yield volume.replace_facing(step.elem + ' Gate', '#fence_gates')
 
-    clock = fast_clock
-    room.loop('panes', clock).loop(lambda step: fencelike(step.elem),
-                                   tuple(f'{x.name}|Stained Glass|Pane' for x in colors) + ('Glass Pane',))
-    switch_to_fencelike('panes')
-    room.loop('fences', clock).loop(fence_loop,
-                                    tuple(f'{x} Fence' for x in info.woods + stems + ('Nether Brick',)))
-    switch_to_fencelike('fences')
-    room.loop('walls', clock).loop(
-        lambda step: fencelike(step.elem),
-        sorted(re.sub('(Polished|Cobbled|Mossy) ', r'\1|', to_name(t).replace(' Brick', '|Brick')) for t in
-               tags['block']['walls']))
-    switch_to_fencelike('walls')
-    waxed_ = tuple(f'{x} Bars' for x in
-                   ('Iron', *tuple(w + weathering_name(x, join='|') for x in weatherings for w in ('', 'Waxed|'))))
-    room.loop('bars', clock).loop(lambda step: fencelike(step.elem), waxed_)
-    switch_to_fencelike('bars')
+    panes = tuple(f'{x.name}|Stained Glass|Pane' for x in colors) + ('Glass Pane',)
+    fences = tuple(f'{x} Fence' for x in info.woods + stems + ('Nether Brick',))
+    walls = sorted(re.sub('(Polished|Cobbled|Mossy) ', r'\1|', to_name(t).replace(' Brick', '|Brick')) for t in
+                   tags['block']['walls'])
+    bars = tuple(f'{x} Bars' for x in
+                 ('Iron', *tuple(w + weathering_name(x, join='|') for x in weatherings for w in ('', 'Waxed|'))))
+    body = lambda step: fencelike(step.elem)
+    init = room.category_loops('fencelike', fast_clock, 'yellow', (4, 2), SOUTH, {
+        'panes': (panes, body),
+        'walls': (walls, body),
+        'fences': (fences, fence_loop),
+        'bars': (bars, body),
+    })
+    init.add(WallSign(()).place(fencelike_sign_pos, SOUTH), room.label(r(6, 2, 2), 'Height', SOUTH))
 
 
 def copper_functions(room):
