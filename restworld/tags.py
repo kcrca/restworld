@@ -125,6 +125,9 @@ def create():
             'farmland'
         ]
     }
+    blocks['tall_flower'] = {
+        'values': ['sunflower', 'peony', 'rose_bush', 'lilac', 'pitcher_plant']
+    }
     blocks['no_model_block'] = {
         'values': [
             '#doors',
@@ -132,20 +135,16 @@ def create():
             'sugar_cane',  # must be _next to_ water
             'weeping_vines',  # must be _under_ the right block
             'cactus',  # Must be on falling block (sand)
-            'sunflower',  # tall flower
-            'peony',  # tall flower
-            'rose_bush',  # tall flower
-            'lilac',  # tall flower
-            'pitcher_plant',  # tall flower
+            '#restworld:tall_flower',
         ]
     }
 
     # base/stairs/slab derived from pynecraft.steppable; waxed copper excluded (cosmetically
     # identical to unwaxed). The three stay index-aligned since they share one filtered source.
-    no_waxing = [s for s in steppable if not s.block.startswith('waxed_')]
-    blocks['steppable_blocks'] = {'values': [s.block for s in no_waxing]}
-    blocks['steppable_stairs'] = {'values': [s.stairs for s in no_waxing]}
-    blocks['steppable_slabs'] = {'values': [s.slab for s in no_waxing]}
+    unwaxed = [s for s in steppable if not s.block.startswith('waxed_')]
+    blocks['steppable_blocks'] = {'values': [s.block for s in unwaxed]}
+    blocks['steppable_stairs'] = {'values': [s.stairs for s in unwaxed]}
+    blocks['steppable_slabs'] = {'values': [s.slab for s in unwaxed]}
     blocks['planks'] = {
         'values': ['#planks', 'bamboo_mosaic']
     }
