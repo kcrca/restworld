@@ -1118,11 +1118,12 @@ def color_functions(room):
     def colored_signs(color, render):
         signables = info.woods + stems
         for w, wood in enumerate(signables):
-            row_len = 4
-            x = w % row_len - 13
-            y = int(w / 4) + 2
+            row_len = 5
+            row = int(w / row_len)
+            x = w % row_len - 14
+            y = row + 2
             z = -(w % row_len) + 4
-            if row_len < 4:
+            if row > 1:
                 x += 1
                 z -= 1
             yield from render(x, y, z, color, Block(wood))

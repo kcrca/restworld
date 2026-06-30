@@ -132,10 +132,10 @@ def create():
         'values': [
             '#doors',
             '#beds',
+            '#restworld:tall_flower',
             'sugar_cane',  # must be _next to_ water
             'weeping_vines',  # must be _under_ the right block
             'cactus',  # Must be on falling block (sand)
-            '#restworld:tall_flower',
         ]
     }
 
