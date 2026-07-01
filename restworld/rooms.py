@@ -384,10 +384,10 @@ class Room(FunctionSet):
         names = list(categories)
         first = None
         for i, (name, (items, body)) in enumerate(categories.items()):
-            self.loop(name, clock, home=False).loop(body, items)
+            self.loop(f'{self.name}_{name}', clock, home=False).loop(body, items)
             switch = self.function(f'switch_to_{name}', home=False).add(
-                *(tag(e().tag(f'{base}_home')).remove(f'{other}_home') for other in names),
-                tag(e().tag(f'{base}_home')).add(f'{name}_home'),
+                *(tag(e().tag(f'{base}_home')).remove(f'{self.name}_{other}_home') for other in names),
+                tag(e().tag(f'{base}_home')).add(f'{self.name}_{name}_home'),
                 execute().at(e().tag(f'{name}_home')).run(function(f'{self.full_name}/{name}_cur')))
             if not first:
                 first = switch
