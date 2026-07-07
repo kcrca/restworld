@@ -3,7 +3,7 @@ from itertools import chain
 from pynecraft.base import to_id
 from pynecraft.commands import COLORS
 from pynecraft.function import BLOCK
-from pynecraft.info import corals, leaves_for, stems, steppable, woods
+from pynecraft.info import amethyst_buds, corals, leaves_for, stems, steppable, woods
 from restworld.world import restworld
 
 
@@ -138,6 +138,7 @@ def create():
             'cactus',  # Must be on falling block (sand)
         ]
     }
+    blocks['amethyst_buds'] = {'values': list(amethyst_buds)}
 
     # base/stairs/slab derived from pynecraft.steppable; waxed copper excluded (cosmetically
     # identical to unwaxed). The three stay index-aligned since they share one filtered source.

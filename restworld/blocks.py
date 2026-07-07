@@ -439,7 +439,7 @@ def room():
         yield data().merge(r(0, 2, -1), sign_nbt)
 
     room.loop('amethyst', main_clock).add(
-        fill(r(-1, 3, -1), r(1, 5, 1), 'air')
+        erase(r(-1, 3, -1), r(1, 5, 1), '#restworld:amethyst_buds')
     ).loop(
         amethyst_loop, amethyst_phases, bounce=True
     ).add(kill(e().type('item').nbt({'Item': {'id': 'minecraft:amethyst_shard'}})))
