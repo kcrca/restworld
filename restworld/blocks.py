@@ -12,7 +12,8 @@ from pynecraft.commands import a, as_block, as_score, Block, clone, Command, Com
     function, item, kill, MOD, MOVE, n, p, REPLACE, s, say, schedule, ScoreName, setblock, stopsound, SUCCESS, summon, \
     tag
 from pynecraft.function import Function, Loop
-from pynecraft.info import armor_equipment, Color, colors, copper_golem_poses, leaves_for, sherds, stems, steppable, \
+from pynecraft.info import amethyst_buds, armor_equipment, Color, colors, copper_golem_poses, leaves_for, sherds, stems, \
+    steppable, \
     weathering_id, weathering_name, weatherings
 from pynecraft.simpler import Item, ItemFrame, Region, Sign, TextDisplay, WallSign
 from restworld.materials import enchant
@@ -414,9 +415,7 @@ def room():
                'Barrel': ({'facing': NORTH, 'open': True}, {'facing': NORTH, 'open': False}),
                'Lectern': ({'has_book': False}, {'has_book': True})})
 
-    amethyst_phases = (
-        'Amethyst Block', 'Budding Amethyst', 'Small Amethyst|Bud', 'Medium Amethyst|Bud', 'Large Amethyst|Bud',
-        'Amethyst Cluster')
+    amethyst_phases = ('Amethyst Block', 'Budding Amethyst') + amethyst_buds
 
     def amethyst_loop(step):
         block = as_block(step.elem)
@@ -436,7 +435,7 @@ def room():
 
         sign_nbt = block.sign_nbt()
         sign_nbt['back_text'] = sign_nbt['front_text']
-        yield data().merge(r(0, 2, -1), sign_nbt)
+        yield data().merge(r(0, 2, 1), sign_nbt)
 
     room.loop('amethyst', main_clock).add(
         erase(r(-1, 3, -1), r(1, 5, 1), '#restworld:amethyst_buds')
