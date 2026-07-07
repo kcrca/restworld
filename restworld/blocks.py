@@ -1022,6 +1022,28 @@ def color_functions(room):
     armors_tag = 'colorings_armor'
     armors = e().tag(armors_tag)
 
+    colorings_tags = ('colorings_item',)
+    cushion_tag = 'colorings_cushion'
+    wolf_armor_nbt = Nbt({'equipment': {'body': Item.nbt_for('wolf_armor')}})
+    cat_nbt = Nbt({'variant': 'british_shorthair', 'Owner': 'dummy', 'ColorColor': 3})
+    cat_baby_nbt = cat_nbt.clone().merge({'Age': Nbt.MIN_INT})
+    ghast_rot = 55
+    stand_nbt = Nbt({'equipment': {}})
+    baby_armor_nbt = stand_nbt.copy().merge({'IsBaby': True, 'Age': Nbt.MIN_INT})
+    for place, piece in armor_equipment.items():
+        stand_nbt['equipment'][place] = baby_armor_nbt['equipment'][place] = Item.nbt_for(f'leather_{piece}')
+    armor_frames = {
+        'harness': r(-2.5, 4, 0.5),
+        'wolf_armor': r(-8, 4, 1),
+        'leather_boots': r(0, 2, 1),
+        'leather_leggings': r(0, 3, 1),
+        'leather_chestplate': r(0, 4, 1),
+        'leather_helmet': r(0, 5, 1),
+        'leather_horse_armor': r(1, 5, 1),
+    }
+
+    # This method is used both for the coloring loop and when setting things to "plain". These actions share a lot of
+    # data.
     def colorings(is_plain, color, step=None):
         fills = {
             'stained_glass': r(-7, 5, 0), 'stained_glass_pane': r(-7, 3, 1), 'wool': r(-1, 3, 1),
@@ -1082,6 +1104,7 @@ def color_functions(room):
                 data().remove(s(), 'Item.components.dyed_color'))
             yield execute().as_(e().tag('colorings_horse')).run(
                 data().remove(s(), 'equipment.body.components.dyed_color'))
+            yield kill_em(e().tag(cushion_tag))
         else:
             color_name = color.name
             leather_color = {'components': {'dyed_color': color.leather}}
@@ -1102,10 +1125,18 @@ def color_functions(room):
                 yield data().merge(e().tag(f'colorings_{w}').limit(1), {'equipment': {'body': leather_color}})
             for w in 'cat', 'dog':
                 yield execute().as_(e().tag(f'colorings_{w}')).run(data().merge(s(), {'CollarColor': color.num}))
-            yield data().modify(e().tag('colorings_llama').limit(1), 'equipment.body').set().value(
-                {'id': color.id + '_carpet'})
-            yield data().modify(e().tag('colorings_ghast').limit(1), 'equipment.body').set().value(
-                {'id': color.id + '_harness'})
+            yield data().modify(n().tag(cushion_tag), 'color').set().value(color.id)
+            yield data().modify(n().tag('colorings_llama'), 'equipment.body').set().value({'id': color.id + '_carpet'})
+            yield data().modify(n().tag('colorings_ghast'), 'equipment.body').set().value({'id': color.id + '_harness'})
+
+        # This isn't in _init because for some unknown reason the zombie will sometimes go away.
+        yield execute().unless().entity(e().type('zombie').distance((None, 10))).run(
+            room.mob_placer(r(1, 2.53, 3.2), 65, kids=True, nbt=baby_armor_nbt,
+                            tags=(armors_tag, 'colorings_enchantable') + colorings_tags).summon('zombie'))
+        # This isn't in _init because going plain requires killing it.
+        yield execute().unless().entity(e().tag(cushion_tag)).run(
+            room.mob_placer(r(-5.5, 2, 2), -35, adults=True, tags=(cushion_tag,) + colorings_tags).summon(
+                'cushion'))
 
         yield data().merge(n().tag('colorings_bundle_frame'), {'Item': bundle, 'ItemRotation': 0})
         yield data().merge(e().tag('colorings_sheep').limit(1), {'Color': color.num})
@@ -1148,25 +1179,6 @@ def color_functions(room):
         yield from colored_signs(step.elem, render_signs)
         yield from enchant(enchanted, 'colorings_enchantable')
 
-    colorings_tags = ('colorings_item',)
-    wolf_armor_nbt = Nbt({'equipment': {'body': Item.nbt_for('wolf_armor')}})
-    cat_nbt = Nbt({'variant': 'british_shorthair', 'Owner': 'dummy', 'ColorColor': 3})
-    cat_baby_nbt = cat_nbt.clone().merge({'Age': Nbt.MIN_INT})
-    ghast_rot = 55
-    stand_nbt = Nbt({'equipment': {}})
-    baby_armor_nbt = stand_nbt.copy().merge({'IsBaby': True, 'Age': Nbt.MIN_INT})
-    for place, piece in armor_equipment.items():
-        stand_nbt['equipment'][place] = baby_armor_nbt['equipment'][place] = Item.nbt_for(f'leather_{piece}')
-    armor_frames = {
-        'harness': r(-2.5, 4, 0.5),
-        'wolf_armor': r(-8, 4, 1),
-        'leather_boots': r(0, 2, 1),
-        'leather_leggings': r(0, 3, 1),
-        'leather_chestplate': r(0, 4, 1),
-        'leather_helmet': r(0, 5, 1),
-        'leather_horse_armor': r(1, 5, 1),
-    }
-
     def colored_signs_init(x, y, z, _, wood):
         sign = Sign((wood.name, 'Sign With', 'Default', 'Text'), wood=wood.id, front=None)
         room.particle(sign, 'colorings_base', r(x, y + 1, z), clause=if_clause(plain, 0))
@@ -1192,14 +1204,12 @@ def color_functions(room):
         room.mob_placer(r(-7.4, 2, 2), -65, adults=True, nbt=(Nbt({'Owner': 'dummy'})),
                         tags=('colorings_dog', 'colorings_enchantable') + colorings_tags, ).summon('wolf'),
         function(wolf_armor_on),
-        room.mob_placer(r(-2.7, 2, 2), 110, adults=True, nbt=cat_nbt, tags=('colorings_cat',) + colorings_tags).summon(
+        room.mob_placer(r(-2.7, 2, 3), 110, adults=True, nbt=cat_nbt, tags=('colorings_cat',) + colorings_tags).summon(
             'cat'),
         room.mob_placer(r(-4.1, 2, 2.2), 250, kids=True, nbt=cat_baby_nbt,
                         tags=('colorings_cat',) + colorings_tags).summon('cat'),
         room.mob_placer(r(-1.1, 2, 3), 30, adults=True, nbt=stand_nbt,
                         tags=(armors_tag, 'colorings_enchantable') + colorings_tags).summon('armor_stand'),
-        room.mob_placer(r(1, 2.53, 3.2), 65, kids=True, nbt=baby_armor_nbt,
-                        tags=(armors_tag, 'colorings_enchantable') + colorings_tags).summon('zombie'),
         room.mob_placer(r(-11, 2, 5.8), 20, adults=True, nbt={'Variant': 1},
                         tags=('colorings_llama', 'colorings_names', 'colorings_enchantable') + colorings_tags).summon(
             'llama'),
@@ -1209,8 +1219,7 @@ def color_functions(room):
                         tags=('colorings_ghast', 'colorings_enchantable') + colorings_tags).summon('happy_ghast'),
         (armor_frame(k, v) for k, v in armor_frames.items()),
         execute().as_(e().tag('colorings_names')).run(data().merge(s(), {'CustomNameVisible': True})),
-        execute().as_(e().not_tag('colorings_names').tag('colorings_item')).run(
-            data().remove(s(), 'CustomName')),
+        execute().as_(e().not_tag('colorings_names').tag('colorings_item')).run(data().remove(s(), 'CustomName')),
         WallSign((None, 'Terracotta')).place(r(-1, 3, 1), SOUTH),
         WallSign((None, 'Harness')).place(r(-2, 3, 1), SOUTH),
         WallSign((None, 'Shulker Box')).place(r(-3, 3, 1), SOUTH),
