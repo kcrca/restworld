@@ -1258,7 +1258,7 @@ def color_functions(room):
         execute().at(n().tag('colorings_ghast')).run(summon(ghast_boat, r(0, -2, 0), {'Rotation': [45, 0]})),
         data().modify(n().tag('ghast_boat'), 'leash.UUID').set().from_(n().tag('colorings_ghast'), 'UUID'))
 
-    store_start = (coloring_coords[0][0], ERASE_HEIGHT + coloring_coords[0][1].value - coloring_coords[1][1].value,
+    store_start = (coloring_coords[0][0], ERASE_HEIGHT + coloring_coords[0][1].value - coloring_coords[1][1].value + 1,
                    coloring_coords[0][2])
     store_end = (coloring_coords[1][0], ERASE_HEIGHT, coloring_coords[1][2])
     top_start = (coloring_coords[0][0], coloring_coords[0][1], coloring_coords[0][2])
