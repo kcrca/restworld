@@ -582,7 +582,7 @@ def room():
         main(delay=15).run(
             setblock(r(0, 1, 0), 'air'),
             particle(Particle(BLOCK_CRUMBLE, {
-                'block_state': {'Name': 'creaking_heart', 'Properties': {'creaking_heart_state': 'awake'}}}),
+                'block_state': {'id': 'creaking_heart', 'properties': {'creaking_heart_state': 'awake'}}}),
                      r(0, 1.75, 0), (0.25, 0.25, 0.25), 0, 20))
     )
     room.function('vault_connection_init', home=False).add(
