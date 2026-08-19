@@ -20,6 +20,7 @@ def main():
     args = cmdline.parse_args()
     Sign.waxed = True
     Sign.default_wood = 'pale_oak'
+    Sign.always_allow_op_features = True
     if args.pynecraft_dev:
         tester.room()
     test_blocks.tests()
