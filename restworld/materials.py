@@ -165,7 +165,7 @@ def room():
                 z += delta
                 index += 1
             x += delta
-        yield WallSign((None, 'Items Not', 'In Creative', 'Inventory')).place(r(0, 2, -1), WEST)
+        yield WallSign(('Items Not', 'In Creative', 'Inventory', '(except maps)')).place(r(0, 2, -1), WEST)
 
     room.function('only_items_init').add(
         only_items_init_func())
