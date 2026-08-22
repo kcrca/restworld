@@ -1429,13 +1429,15 @@ def steppable_functions(room):
     def category(b):
         if b.endswith('_wool'):
             return 'wool'
+        if '_concrete' in b:
+            return 'concrete'
         if b.endswith('_planks') or b == 'bamboo_mosaic':
             return 'wood'
         if any(x in b for x in ('brick', 'tile', 'polished', 'smooth', 'chiseled', 'cut')):
             return 'decorative'
         return 'basic'
 
-    groups = {'wood': [], 'wool': [], 'basic': [], 'decorative': []}
+    groups = {'basic': [], 'wood': [], 'wool': [], 'concrete': [], 'decorative': []}
     for s in steppable:
         if not s.block.startswith('waxed_'):
             groups[category(s.block)].append(s)
