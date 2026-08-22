@@ -58,6 +58,7 @@ class RestWorld(RoomPack):
             data().modify(store, 'comp').set().value(wrapper),
             data().modify(store, 'comp.extra').append().from_(pos, 'front_text.messages[0]'),
             data().modify(pos, 'front_text.messages[0]').set().from_(store, 'comp'),
+            data().merge(pos, {'allow_op_features': True}),
         )
         super().save(*args, **kwargs)
 

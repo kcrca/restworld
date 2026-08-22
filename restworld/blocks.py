@@ -480,6 +480,7 @@ def room():
 
     room.function('armor_stand_init').add(
         room.mob_placer(r(0, 3, 0), NORTH, adults=True).summon('armor_stand', tags=('pose_stand',)),
+        WallSign((None, 'Armor Stand')).place(r(0, 2, -1), NORTH),
         room.label(r(-1, 2, 0), 'Get Small', NORTH))
     room.loop('armor_stand', main_clock).loop(
         armor_stand_loop,
@@ -498,7 +499,9 @@ def room():
             else:
                 yield item().replace(r(0, 3, 0), f'container.{j:d}').with_('air')
 
-    room.function('brewing_stand_init').add(setblock(r(0, 3, 0), 'brewing_stand'))
+    room.function('brewing_stand_init').add(
+        setblock(r(0, 3, 0), 'brewing_stand'),
+        WallSign((None, 'Brewing Stand')).place(r(0, 2, -1), NORTH))
     room.loop('brewing_stand', main_clock).add(
         item().replace(r(0, 3, 0), 'container.3').with_('air'),
         item().replace(r(0, 3, 0), 'container.4').with_('air'),
@@ -756,7 +759,9 @@ def room():
             yield setblock(r(0, 4, 0), 'air')
 
     room.loop('scaffolding', main_clock).loop(scaffolding_loop, range(0, 5), bounce=True)
-    room.function('scaffolding_init').add(setblock(r(0, 3, 0), 'scaffolding'))
+    room.function('scaffolding_init').add(
+        setblock(r(0, 3, 0), 'scaffolding'),
+        WallSign((None, 'Scaffolding')).place(r(0, 2, -1), NORTH))
     room.particle('scaffolding', 'scaffolding', r(0, 4, 0))
 
     blocks('sculk_blocks', NORTH, (
