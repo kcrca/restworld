@@ -332,9 +332,15 @@ def room():
     blocks('stone', NORTH, (stone_types, polished_types), dz=3)
 
     test_block_modes = ('start', 'log', 'accept', 'fail')
-    blocks('test', NORTH, tuple(Block('test_block', {'mode': mode}) for mode in test_block_modes),
-           labels=(tuple(('Test Block', f'Mode: {titlecase(mode)}') for mode in test_block_modes)))
-    blocks('test_instance', NORTH, ('Test Instance Block',), expandable=True)
+    labels = tuple(('Test Block', f'Mode: {titlecase(mode)}') for mode in test_block_modes) + (('Test Instance',),)
+    blocks('test', NORTH, tuple(Block('test_block', {'mode': mode}) for mode in test_block_modes) + ('test_instance_block',),
+           labels=labels)
+
+    room.function('straw_bed_init').add(
+        setblock(r(0, 3, 0), ('straw_bed', {'part': 'foot', 'facing': SOUTH})),
+        setblock(r(0, 3, 1), ('straw_bed', {'part': 'head', 'facing': SOUTH})),
+        WallSign((None, 'Straw Bed')).place(r(0, 2, -1), NORTH)
+    )
 
     copper_blocks = tuple(map(as_block, (
         'Copper Block', 'Cut Copper', 'Chiseled Copper', 'Copper Bulb', 'Copper Grate', 'Copper Chest',
