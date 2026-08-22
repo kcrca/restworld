@@ -1064,6 +1064,12 @@ def color_functions(room):
             if filler.id != 'air':
                 room.particle(filler, 'colorings_base', fills[which], step, if_clause(plain, int(is_plain)))
             yield volume.replace(filler, '#restworld:' + which)
+        if is_plain:
+            yield volume.replace('air', '#concrete_stairs')
+            yield volume.replace('air', '#concrete_slabs')
+        else:
+            yield volume.replace_stairs(f'{color.id}_concrete_stairs', '#concrete_stairs')
+            yield volume.replace_slabs(f'{color.id}_concrete_slab', '#concrete_slabs')
 
         candle = Block('candle' if is_plain else color.name + '_candle', {'lit': True})
         for count in range(1, 6):

@@ -12,6 +12,8 @@ def create():
         'banner': None,
         'carpet': None,
         'concrete': None,
+        'concrete_slabs': None,
+        'concrete_stairs': None,
         'concrete_powder': None,
         'wool': None,
         'wool_slab': None,
