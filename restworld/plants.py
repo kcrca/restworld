@@ -197,12 +197,12 @@ def room():
     room.particle('fern', 'grass', r(0, 3.5, 6))
 
     def bushes_loop(step):
-        bush = ' '.join(step.elem + ('bush',))
+        bush = step.elem
         yield setblock(r(0, 3, 0), bush)
-        yield Sign.change(r(1, 2, 0), (None, titlecase(bush)))
+        yield Sign.change(r(1, 2, 0), (None, to_name(bush)))
         room.particle(bush, 'bushes', r(0, 4, 0), step)
 
-    room.loop('bushes', main_clock).loop(bushes_loop, ((), ('firefly',), ('dead',)))
+    room.loop('bushes', main_clock).loop(bushes_loop, ('bush', 'firefly_bush', 'dead_bush', 'red_shrub'))
 
     ground_covers = {'leaf_litter': 'segment_amount', 'wildflowers': 'flower_amount', 'pink_petals': 'flower_amount'}
 
@@ -282,6 +282,13 @@ def room():
 
     room.loop('shrooms', main_clock).loop(shrooms_loop, ('crimson', 'warped'))
     room.particle('nether_sprouts', 'shrooms', r(1, 3.5, 6))
+
+    def shelf_shroom_loop(step):
+        yield setblock(r(0, 3, 1), ('shelf_mushroom', {'age': step.elem, 'facing': SOUTH}))
+        yield Sign.change(r(1, 2, 0), (None, None, f'Age: {step.elem}'))
+
+    room.loop('shelf_shroom', main_clock).loop(shelf_shroom_loop, (0, 1))
+    room.function('shelf_shroom_init').add(WallSign((None, 'Shelf Mushroom')).place(r(1, 2, 0), EAST))
 
     def stems_loop(step):
         yield setblock(r(0, 3, -2), 'air')
