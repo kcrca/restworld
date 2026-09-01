@@ -84,7 +84,7 @@ def quilt_blocks():
         excluded_ids |= block_tags.get(tag, set())
     excluded_ids |= {
         'bamboo', 'bamboo_sapling', 'bamboo_shoot', 'barrier', 'decorated_pot', 'dirt_path',
-        'heavy_core', 'jack_o_lantern', 'kelp', 'light', 'nether_wart',
+        'heavy_core', 'jack_o_lantern', 'kelp', 'light', 'nether_wart', 'straw_bed', 'red_shrub',
         'poplar_leaves',  # doesn't actually exist
         'powder_snow', 'sea_lantern', 'snow', 'soul_sand',  # not in their respective tags
         'slime_block', 'honey_block', 'tinted_glass',  # translucent
@@ -92,7 +92,7 @@ def quilt_blocks():
 
     skip_re = re.compile(
         r'\b(azalea|beacon|bell|bud|bush|cactus|cake|cane|carpet|chest|clump|cluster|'
-        r'cobweb|cocoa|comparator|composter|conduit|detector|dripleaf|egg|enchanting|'
+        r'cobweb|cocoa|comparator|composter|conduit|dead|detector|dripleaf|egg|enchanting|'
         r'farmland|fern|frogspawn|fungus|ghast|grate|gravel|grindstone|hanging|head|'
         r'hopper|infested|jigsaw|ladder|lava|lectern|lever|lichen|lily|litter|'
         r'mushroom|pane|pickle|repeater|rod|roots|scaffolding|seagrass|sensor|shrieker|'
