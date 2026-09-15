@@ -1,5 +1,5 @@
 #!/bin/sh
-std_size=750x483
+std_size=760x427
 cd $(dirname $0)
 for f in src/*/; do
     if test "$(basename $f)" = "sample_pics"; then
