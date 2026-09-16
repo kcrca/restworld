@@ -7,8 +7,6 @@ images:
     description: 'All the villagers in all the biomes!'
   - file: blocks
     description: 'All the blocks!'
-  - file: particles
-    description: 'See the block particles from mining!'
   - file: materials
     description: 'All the materials, including trims!'
   - file: clarity
