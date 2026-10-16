@@ -4,12 +4,14 @@ from typing import Any, Callable, Iterable
 from titlecase import titlecase
 
 from pynecraft import commands, info
-from pynecraft.base import Arg, as_facing, DOWN, E, EAST, EQ, FacingDef, MATCHES, N, Nbt, NORTH, r, RelCoord, \
+from pynecraft.base import ALL_DIRECTIONS, Arg, as_facing, DOWN, E, EAST, EQ, FacingDef, MATCHES, N, Nbt, NORTH, r, \
+    RelCoord, \
     rotate_facing, S, \
     SOUTH, to_id, to_name, UP, W, WEST
 from pynecraft.commands import a, as_block, as_score, Block, clone, Command, Commands, data, e, Entity, execute, \
     fill, \
-    function, item, kill, MOD, MOVE, n, p, REPLACE, s, say, schedule, ScoreName, setblock, stopsound, SUCCESS, summon, \
+    function, item, kill, MOD, MOVE, n, p, REPLACE, s, say, schedule, ScoreName, setblock, stopsound, SUCCESS, \
+    summon, \
     tag
 from pynecraft.function import Function, Loop
 from pynecraft.info import amethyst_buds, armor_equipment, Color, colors, copper_golem_poses, leaves_for, sherds, stems, \
@@ -261,8 +263,11 @@ def room():
 
     blocks('end', NORTH, ('End Stone', 'End Stone|Bricks'))
     blocks('frosted_ice', SOUTH,
-           [Block('frosted_ice', {'age': i}, name=f'Frosted Ice|Age: {i}') for i in range(0, 4)] + [
-               Block('water', name='Water|')], expandable=False)
+           ([Block('frosted_ice', {'age': i}, name=f'Frosted Ice|Age: {i}') for i in range(0, 4)] + [
+               Block('water', name='Water|')],
+            [Block('brittle_ice', {'age': i}, name=f'Brittle Ice|Age: {i}') for i in range(0, 4)] + [
+                Block('air', name='Air|')]
+            ), expandable=False, dx=-3)
     room.function('frosted_ice_enter').add(setblock(r(1, 0, 0), 'redstone_block'))
     room.function('frosted_ice_exit').add(setblock(r(1, 0, 0), 'air'))
     room.function('frosted_ice_init', exists_ok=True).add(
@@ -599,8 +604,11 @@ def room():
         function(cg_update).with_(room.store, 'copper_golem'),
     )
 
+    hanging_types = (('dripstone_block', 'pointed_dripstone', 0), ('sulfur', 'sulfur_spike', -3),
+                     ('packed_ice', 'icicle', -6))
+
     def dripstone_loop(step):
-        for block, sharp, x_off in (('dripstone_block', 'pointed_dripstone', 0), ('sulfur', 'sulfur_spike', -3)):
+        for block, sharp, x_off in (hanging_types):
             for j in range(0, step.elem):
                 yield setblock(r(0 + x_off, 4 + j, 0), Block(sharp, {
                     'thickness': 'tip', 'vertical_direction': 'up'}))
@@ -618,7 +626,7 @@ def room():
             setblock(r(0 + x_off, 3, 0), block),
             setblock(r(0 + x_off, 12, 0), block),
             WallSign((None, to_name(block.replace('_block', '')))).place(r(0 + x_off, 2, -1), NORTH),
-        ) for block, sharp, x_off in (('dripstone_block', 'pointed_dripstone', 0), ('sulfur', 'sulfur_spike', -3)))
+        ) for block, sharp, x_off in hanging_types)
     )
     room.loop('dripstone', main_clock).loop(dripstone_loop, range(0, 5), bounce=True)
 
@@ -643,6 +651,15 @@ def room():
     room.loop('fire', main_clock).add(fill(r(0, 3, 0), r(0, 5, 0), 'air')).loop(fire_loop, (
         'oak_log', 'oak_log', 'oak_log', 'soul_soil'))
     blocks('ice', SOUTH, ('Ice', 'Packed Ice', 'Blue Ice'))
+
+    ice_crystal = room.function('ice_crystal_init').add(
+        setblock(r(0, 2, 0), 'barrier'),
+        WallSign((None, 'Ice Crystal')).place(r(0, 2, 1), SOUTH),
+        setblock(r(0, 4, 0), 'packed_ice'))
+    for dir in ALL_DIRECTIONS:
+        f = as_facing(dir)
+        pos = RelCoord.add(r(0, 4, 0), f.delta)
+        ice_crystal.add(setblock(pos, ('ice_crystal', {'facing': dir})))
 
     infestables = []
     for b in ('Cobblestone', 'Deepslate', 'Stone', 'Stone Bricks', 'Chiseled|Stone Bricks', 'Cracked|Stone Bricks',
@@ -1236,13 +1253,6 @@ def color_functions(room):
         (armor_frame(k, v) for k, v in armor_frames.items()),
         execute().as_(e().tag('colorings_names')).run(data().merge(s(), {'CustomNameVisible': True})),
         execute().as_(e().not_tag('colorings_names').tag('colorings_item')).run(data().remove(s(), 'CustomName')),
-        WallSign((None, 'Terracotta')).place(r(-1, 3, 1), SOUTH),
-        WallSign((None, 'Harness')).place(r(-2, 3, 1), SOUTH),
-        WallSign((None, 'Shulker Box')).place(r(-3, 3, 1), SOUTH),
-        WallSign((None, 'Dye')).place(r(-4, 3, 1, ), SOUTH),
-        WallSign((None, 'Concrete')).place(r(-5, 3, 1), SOUTH),
-        WallSign((None, 'Bundle')).place(r(-6, 3, 1), SOUTH),
-        WallSign((None, 'Glass')).place(r(-7, 3, 1), SOUTH),
         colored_signs(None, colored_signs_init),
         # This label is actually used to hold the CustomName of the color
         room.label(r(-5.5, 3.5, 4.5), '', SOUTH, tags='colorings_names'),
