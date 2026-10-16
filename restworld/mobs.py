@@ -783,15 +783,19 @@ def monsters(room):
         yield kill(e().tag('zombieish'))
         p = placer(r(-0.5, 2, 0), EAST, 0, 2.5, tags=('zombieish',))
         yield p.summon(Entity(step.elem))
-        hand_item = {'Drowned': 'trident', 'Husk': 'iron_sword', 'Zombie': 'iron_shovel'}[step.elem]
+        hand_item = {'Drowned': 'trident', 'Husk': 'iron_sword', 'Zombie': 'iron_shovel', 'Frostbite': 'ice_ball'}[
+            step.elem]
         yield execute().as_(e().tag('zombieish').tag('adult')).run(
             tag(s()).add(armorable_tag),
             data().merge(s(),
-                         {'LeftHanded': step.elem == 'Zombie', 'equipment': {'mainhand': Item.nbt_for(hand_item)}}))
+                         {'LeftHanded': step.elem == 'Zombie', 'equipment': {'mainhand': Item.nbt_for(hand_item)}})
+        )
 
     room.loop('zombie', main_clock).add(kill_em(e().tag('zombieish'))).loop(
-        zombie_loop, ('Zombie', 'Husk', 'Drowned')).add(function('restworld:mobs/mob_armor_cur'),
-                                                        function('restworld:mobs/zombie_jockey_cur'))
+        zombie_loop, ('Zombie', 'Husk', 'Drowned', 'Frostbite')
+    ).add(
+        function('restworld:mobs/mob_armor_cur'),
+        function('restworld:mobs/zombie_jockey_cur'))
 
     def enderman_loop(step):
         if step.elem:
