@@ -127,7 +127,7 @@ def room():
         'warden': {'Brain': {'memories': {'minecraft:dig_cooldown': {'value': {}, 'ttl': Nbt.MAX_LONG}}}},
         'zombie': {'equipment': {'head': Item.nbt_for('iron_helmet'), 'mainhand': Item.nbt_for('iron_sword')}},
         'frostbite': {'equipment': {'head': Item.nbt_for('iron_helmet'), 'mainhand': Item.nbt_for('ice_ball')},
-                      'Inventory': [Item.nbt_for('ice_ball').merge({'count': 1})]},
+                      'Inventory': [Item.nbt_for('ice_ball').merge({'count': 64})] * 5},
         'zombified_piglin': {'equipment': {'mainhand': Item.nbt_for('golden_sword')}},
     }
 
