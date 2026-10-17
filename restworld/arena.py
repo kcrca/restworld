@@ -29,7 +29,8 @@ battles = [
     ('creaking', 'you'),
     ('ender_dragon', None),
     ('evoker', 'iron_golem'),
-    ('fox', 'chicken'),
+    # ('fox', 'chicken'), # medium priority, mildly interesting
+    ('frostbite', 'snow_golem'),
     ('frog', 'slime'),  # medium priority, it isn't magma cubes to get froglights, but it's still the tongue
     # ('goat', 'sheep'),  # medium priority (slow, but charging goat)
     ('hoglin', 'vindicator'),
@@ -125,10 +126,12 @@ def room():
         'wither_skeleton': {'equipment': {'mainhand': Item.nbt_for('stone_sword')}},
         'warden': {'Brain': {'memories': {'minecraft:dig_cooldown': {'value': {}, 'ttl': Nbt.MAX_LONG}}}},
         'zombie': {'equipment': {'head': Item.nbt_for('iron_helmet'), 'mainhand': Item.nbt_for('iron_sword')}},
+        'frostbite': {'equipment': {'head': Item.nbt_for('iron_helmet'), 'mainhand': Item.nbt_for('ice_ball')},
+                      'Inventory': [Item.nbt_for('ice_ball').merge({'count': 1})]},
         'zombified_piglin': {'equipment': {'mainhand': Item.nbt_for('golden_sword')}},
     }
 
-    init_battle = ('sulfur_cube', None)
+    init_battle = ('frostbite', 'snow_golem')
 
     # With Slime and Magma Cube it _mostly_ works, but not perfectly. These are handled by giving a custom name to
     # the summoned mob, which is inherited by its descendants. We then see, if the count is at least 3, whether there
