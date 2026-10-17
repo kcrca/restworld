@@ -610,9 +610,9 @@ def room():
     def dripstone_loop(step):
         for block, sharp, x_off in (hanging_types):
             for j in range(0, step.elem):
-                up = {
+                up: dict[str, Any] = {
                     'thickness': 'tip', 'vertical_direction': 'up'}
-                down = {
+                down: dict[str, Any] = {
                     'thickness': 'tip_merge' if j == step.elem - 1 else 'tip', 'vertical_direction': 'down'}
                 if sharp == 'icicle' and j in (0, 6):
                     up['attached'] = True
