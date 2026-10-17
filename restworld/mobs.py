@@ -714,13 +714,13 @@ def monsters(room):
     room.function('skeleton_init').add(room.label(r(3, 2, 0), 'Armor', EAST))
 
     chr2 = room.function('camel_husk_rider2', home=False).add(
-        room.riders_on(n().tag('camel_husk'),
-                       rider=Entity('parched', {'NoAI': True, 'equipment': {'mainhand': bow}}).tag('husk_rider')))
+        room.riders_on(n().tag('camel_husk'), tags='husk_rider',
+                       rider=Entity('husk', {'NoAI': True, 'equipment': {'mainhand': spear}})))
 
     def camel_husk_loop(step):
         if step.elem:
             yield room.riders_on(n().tag('camel_husk'), tags='husk_rider',
-                                 rider=Entity('husk', {'NoAI': True, 'equipment': {'mainhand': spear}}))
+                                 rider=Entity('parched', {'NoAI': True, 'equipment': {'mainhand': bow}}))
             yield schedule().function(chr2, 1, REPLACE)
         else:
             yield room.riders_off('husk_rider')
