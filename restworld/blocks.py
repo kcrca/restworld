@@ -610,10 +610,15 @@ def room():
     def dripstone_loop(step):
         for block, sharp, x_off in (hanging_types):
             for j in range(0, step.elem):
-                yield setblock(r(0 + x_off, 4 + j, 0), Block(sharp, {
-                    'thickness': 'tip', 'vertical_direction': 'up'}))
-                yield setblock(r(0 + x_off, 11 - j, 0), Block(sharp, {
-                    'thickness': 'tip_merge' if j == step.elem - 1 else 'tip', 'vertical_direction': 'down'}))
+                up = {
+                    'thickness': 'tip', 'vertical_direction': 'up'}
+                down = {
+                    'thickness': 'tip_merge' if j == step.elem - 1 else 'tip', 'vertical_direction': 'down'}
+                if sharp == 'icicle' and j in (0, 6):
+                    up['attached'] = True
+                    down['attached'] = True
+                yield setblock(r(0 + x_off, 4 + j, 0), Block(sharp, up))
+                yield setblock(r(0 + x_off, 11 - j, 0), Block(sharp, down))
             if step.elem != 4:
                 yield fill(r(0 + x_off, 4 + step.elem, 0), r(0 + x_off, 11 - step.elem, 0), 'air')
                 if step.elem == 0:
@@ -628,7 +633,7 @@ def room():
             WallSign((None, to_name(block.replace('_block', '')))).place(r(0 + x_off, 2, -1), NORTH),
         ) for block, sharp, x_off in hanging_types)
     )
-    room.loop('dripstone', main_clock).loop(dripstone_loop, range(0, 5), bounce=True)
+    room.loop('dripstone', main_clock).loop(dripstone_loop, range(1, 5), bounce=True)
 
     def fire_loop(step):
         dirs = ({'up': False}, {'north': True}, {'up': True})
