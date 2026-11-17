@@ -187,13 +187,13 @@ def room():
         'Deepslate|Bricks', 'Cracked|Deepslate|Bricks', 'Deepslate|Tiles', 'Cracked|Deepslate|Tiles'))
     blocks('bricks', NORTH, (
         'Bricks', 'Quartz Bricks', 'Mud Bricks', 'Prismarine Bricks', 'Tuff Bricks', 'Resin Bricks', 'Sulfur Bricks',
-        'Cinnabar Bricks'))
+        'Cinnabar Bricks', 'Packed Ice Bricks', 'Snow Bricks'))
     blocks('nether_bricks', NORTH, (
         'Nether Bricks', 'Cracked|Nether Bricks', 'Chiseled|Nether Bricks', 'Red|Nether Bricks'))
     blocks('stone_bricks', NORTH, (
         'Stone Bricks', 'Mossy|Stone Bricks', 'Cracked|Stone Bricks', 'Chiseled|Stone Bricks',
         'Polished|Blackstone Bricks', 'Cracked Polished|Blackstone Bricks'))
-    blocks('calcite', SOUTH, ('Calcite',))
+    blocks('calcite', SOUTH, ('Calcite','Polished Calcite|Bricks', 'Polished Calcite', 'Calcite Pillar'))
     campfire_food = room.score('campfire_food')
     campfire_init, campfire_main = blocks('campfire', NORTH, (
         Block('Campfire', {'lit': True}),
