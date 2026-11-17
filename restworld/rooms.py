@@ -806,7 +806,7 @@ class SignedRoom(Room):
             return None
         try:
             desc = next(i)
-            raise ValueError(f'Remaining descriptions after all signs are placed: "{desc.name}"...')
+            raise ValueError(f'Remaining descriptions after all signs are placed: {self.name}: "{desc.name}"...')
         except StopIteration:
             pass
 
