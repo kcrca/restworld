@@ -2,7 +2,7 @@ import math
 import random
 import sys
 
-from pynecraft._values import ORANGE_POPLAR_LEAVES, RED_POPLAR_LEAVES, SULFUR_CAVES, YELLOW_POPLAR_LEAVES
+from pynecraft._values import FREEZING, ORANGE_POPLAR_LEAVES, RED_POPLAR_LEAVES, SULFUR_CAVES, YELLOW_POPLAR_LEAVES
 from pynecraft.base import Arg, as_facing, d, EAST, MATCHES, MIDNIGHT, Nbt, NOON, NORTH, OVERWORLD, r, SOUTH, to_id, \
     to_name, WEST
 from pynecraft.commands import a, Block, BLOCK_MARKER, CLEAR, data, DUST_PILLAR, e, effect, Entity, execute, \
@@ -22,7 +22,7 @@ from pynecraft.info import ABSORPTION, ANGRY_VILLAGER, as_particle, ASH, BASALT_
     GUST_EMITTER_LARGE, \
     GUST_EMITTER_SMALL, \
     HAPPY_VILLAGER, \
-    HEART, INFESTED, INSTANT_EFFECT, ITEM_COBWEB, ITEM_SLIME, ITEM_SNOWBALL, LANDING_HONEY, LANDING_LAVA, \
+    HEART, INFESTED, INSTANT_EFFECT, ITEM_COBWEB, ITEM_SLIME, LANDING_HONEY, LANDING_LAVA, \
     LANDING_OBSIDIAN_TEAR, LARGE_SMOKE, LAVA, MYCELIUM, NAUTILUS, NOTE, NOXIOUS_GAS, NOXIOUS_GAS_CLOUD, \
     OMINOUS_SPAWNING, PALE_OAK_LEAVES, \
     PARTICLE_GROUP, PAUSE_MOB_GROWTH, POOF, PORTAL, RAID_OMEN, RESET_MOB_GROWTH, RESISTANCE, REVERSE_PORTAL, SCRAPE, \
@@ -80,7 +80,6 @@ actions = [
     action(INFESTED),
     action(INSTANT_EFFECT),
     action(ITEM_COBWEB, note='Weaving Effect'),
-    action(ITEM_SNOWBALL),
     action(MYCELIUM),
     action(NAUTILUS, note='with Conduit'),
     action(PAUSE_MOB_GROWTH, name='Pause / Reset|Mob Growth', also=RESET_MOB_GROWTH),
@@ -124,7 +123,7 @@ elsewhere = {
                RED_POPLAR_LEAVES, ORANGE_POPLAR_LEAVES, YELLOW_POPLAR_LEAVES, UNDERWATER),
     'Mobs': (FALLING_NECTAR, EGG_CRACK),
     'Redstone': (DUST, NOTE, VIBRATION),
-    'GUI': (ENCHANT,),
+    'GUI': (ENCHANT, FREEZING),
     'Arena': (ITEM_SLIME, SULFUR_CUBE_GOO),
 }
 
@@ -213,7 +212,7 @@ def room():
             setblock(d(-dx, 0, -dz), 'emerald_block')
         ))
 
-    n_wall_used = {5: (1, 5), 4: span(1, 5), 3: span(1, 5), 2: span(1, 5)}
+    n_wall_used = {5: (1, 5), 4: (1, 2, 4, 5), 3: span(1, 5), 2: span(1, 5)}
     e_wall_used = {5: span(2, 3), 4: span(0, 5), 3: span(0, 5), 2: span(0, 5)}
     w_wall_used = {5: span(3, 4), 4: span(1, 6), 3: span(1, 6), 2: span(1, 6)}
     room = SignedRoom('particles', restworld, SOUTH, (None, 'Particles'), particle_sign, actions, (
