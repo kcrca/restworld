@@ -1,6 +1,5 @@
 from pynecraft.base import d, EAST, MATCHES, r
-from pynecraft.commands import clone, e, effect, Entity, execute, fill, FORCE, function, INFINITE, MOVE, n, say, \
-    setblock, tp
+from pynecraft.commands import clone, e, effect, Entity, execute, fill, function, INFINITE, kill, MOVE, n, setblock, tp
 from pynecraft.info import INVISIBILITY
 from pynecraft.simpler import Item
 from restworld.rooms import kill_em, Room
@@ -25,15 +24,6 @@ def room():
         function(no_particles)
     )
 
-    def grow_loop(step):
-        if step.i != 3:
-            yield clone(r(6, 2, 13), r(0, -8, -1), r(-5, -8, -1)).replace(FORCE)
-            yield fill(r(1, -1, 9), r(-3, -1, 3), 'air')
-        else:
-            yield say('Memory at maximum size')
-            yield room.score('grow').set(2)
-
-    room.loop('grow').loop(grow_loop, range(0, 4))
     room.function('reset').add(
         function('restworld:global/clock_off'),
         execute().at(e().tag('diy_starter')).run(fill(r(0, 5, 0), r(0, 5, -6), 'sand')),
@@ -47,19 +37,20 @@ def room():
         clone((-100, 3, 6), (-100, 3, 0), r(0, 2, 0)).replace(MOVE))
     stand = Entity('armor_stand').tag('customizer', 'diy').merge_nbt(
         {'NoGravity': True, 'Small': True, 'equipment': {'head': Item.nbt_for('turtle_helmet')}, 'Rotation': [180, 0]})
-    tick_init = room.function('tick_init').add(
-        stand.clone().tag('diy_starter').summon(r(-1, -3, 0, )),
-        stand.clone().tag('diy_ender').summon(r(-1, -3, -6, )),
-        stand.clone().tag('diy_cloner').summon(r(-1, -1, 0, )),
-        stand.clone().tag('diy_displayer').summon(r(2, -1, -3))
+    clone_init = room.function('clone_init').add(
+        kill(e().tag('diy_worker')),
+        stand.clone().tag('diy_starter', 'diy_worker').summon(r(-1, -3, 0, )),
+        stand.clone().tag('diy_ender', 'diy_worker').summon(r(-1, -3, -6, )),
+        stand.clone().tag('diy_cloner', 'diy_worker').summon(r(-1, -1, 0, )),
+        stand.clone().tag('diy_displayer', 'diy_worker').summon(r(2, -1, -3))
     )
     for i in range(0, 5):
-        tick_init.add(
+        clone_init.add(
             room.label(r(-(3 + i), 2, -7), 'Save', EAST, nbt={'default_background': True}),
             room.label(r(-(3 + i), 2, 1), 'Restore', EAST, nbt={'default_background': True}))
 
     custom_reset = room.score('custom_reset')
-    room.loop('tick', main_clock).add(
+    room.loop('clone', main_clock).add(
         execute().at(e().tag('diy_cloner')).run(setblock(r(0, 3, 0), 'sand')),
         custom_reset.set(0),
         execute().at(e().tag('diy_cloner')).unless().block(r(0, 0, -1), 'air').run(custom_reset.set(1)),
