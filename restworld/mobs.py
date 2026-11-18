@@ -1,5 +1,6 @@
 import copy
 import re
+from typing import Any
 
 from titlecase import titlecase
 
@@ -9,7 +10,8 @@ from pynecraft.commands import as_facing, Block, clone, COLORS, data, e, Entity,
     setblock, \
     SUCCESS, summon, tag, tp
 from pynecraft.info import as_disc, axolotls, cats, climates, colors, default_skins, DISC_GROUP, discs, DUMMY, horses, \
-    mannequin_poses, tags, tropical_fish, weathering_id, weathering_name, weathering_property, weatherings, wolves
+    mannequin_poses, sulfur_cube_archetypes, tags, tropical_fish, weathering_id, weathering_name, weathering_property, \
+    weatherings, wolves
 from pynecraft.simpler import Item, ItemFrame, PLAINS, Sign, Villager, VILLAGER_BIOMES, VILLAGER_PROFESSIONS, WallSign
 from restworld.materials import water_biomes
 from restworld.rooms import kill_em, MobPlacer, Room
@@ -369,17 +371,19 @@ def friendlies(room):
     was_empty = room.score('sulfur_cube_was_empty')
     innards_frame = n().tag('sulfur_cube_innards')
     sulfur_cube = n().type('sulfur_cube').tag('adult')
-    archetypes = (
-        (None, 'air'), ('Bouncy', 'oak_log'), ('Slow Bouncy', 'bricks'), ('Explosive', 'tnt'),
-        ('Fast Flat', 'brain_coral_block'), ('Fast Sliding', 'blue_ice'), ('High Resistance', 'soul_sand'),
-        ('Light', 'blue_wool'), ('Slow Flat', 'copper_ore'), ('Slow Sliding', 'red_mushroom_block'),
-        ('Sticky', 'honeycomb_block'), ('Regular', 'cobblestone'), ('Hot', 'magma_block')
-    )
+    archetypes = {
+        None: 'air', 'Bouncy': 'oak_log', 'Slow Bouncy': 'bricks', 'Explosive': 'tnt',
+        'Fast Flat': 'brain_coral_block', 'Fast Sliding': 'packed_ice', 'High Resistance': 'soul_sand',
+        'Light': 'blue_wool', 'Slow Flat': 'copper_ore', 'Slow Sliding': 'red_mushroom_block',
+        'Sticky': 'honeycomb_block', 'Regular': 'clay', 'Hot': 'magma_block', 'Cold': 'blue_ice'
+    }
+    validate_archetypes(archetypes)
 
     def sulfur_cube_loop(step):
+        archetype, block = step.elem
         yield execute().if_().score(is_empty, MATCHES, 1).run(
-            data().modify(n().tag('archetype'), 'text').set().value(step.elem[0]),
-            data().modify(sulfur_cube, 'equipment.body').set().value(Item.nbt_for(step.elem[1])))
+            data().modify(n().tag('archetype'), 'text').set().value(archetype),
+            data().modify(sulfur_cube, 'equipment.body').set().value(Item.nbt_for(block)))
 
     room.function('sulfur_cube_init').add(
         placer(*mid_east_placer).summon('sulfur_cube'),
@@ -391,7 +395,7 @@ def friendlies(room):
     )
     sulfur_cube_func = room.loop('sulfur_cube', main_clock)
     sulfur_cube_func.pre.append(execute().if_().score(is_empty, MATCHES, 0).run(return_(0)))
-    sulfur_cube_func.loop(sulfur_cube_loop, archetypes)
+    sulfur_cube_func.loop(sulfur_cube_loop, archetypes.items())
     room.function('sulfur_cube_enter').add(setblock(r(-2, 0, 0), 'redstone_block'))
     room.function('sulfur_cube_exit').add(setblock(r(-2, 0, 0), 'air'))
     room.function('sulfur_cube_run', home=False).add(
@@ -439,6 +443,21 @@ def friendlies(room):
     room.function('turtle_init').add(placer(r(0, 2, 0), turtle_dir, 2, 2).summon('turtle'))
 
     villager_funcs(room)
+
+
+def validate_archetypes(archetypes: dict[str | None | Any, str | Any]):
+    my_keys = set(to_id(x) for x in filter(None, archetypes.keys()))
+    mc_keys = set(sulfur_cube_archetypes.keys())
+    if my_keys != mc_keys:
+        missing = mc_keys - my_keys
+        added = my_keys - mc_keys
+        if missing:
+            print('Warning: Missing archetypes:', missing)
+        if added:
+            print('Warning: Added archetypes:', added)
+    for k, v in archetypes.items():
+        if k and v not in sulfur_cube_archetypes[to_id(k)]:
+            print(f'Warning: Mismatch: {v} not in archetype {k}')
 
 
 def villager_funcs(room):
