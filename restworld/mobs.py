@@ -767,7 +767,7 @@ def monsters(room):
 
     def armorable_loop(step):
         if step.i == 0:
-            cmd = data().remove(s(), 'equipment')
+            cmd = item().fill(s(), 'armor.*').with_('air')
         else:
             cmd = data().merge(s(),
                                {'equipment': {'feet': Item.nbt_for('iron_boots'), 'legs': Item.nbt_for('iron_leggings'),
