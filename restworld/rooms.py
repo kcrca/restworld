@@ -454,7 +454,7 @@ class Room(FunctionSet):
         for clock, loops in self._clocks.items():
             name = f'_{clock.name}'
             clock_func = self.function(name).add((
-                execute().at(e().tag(x.base_name + '_home')).run(function(x.full_name)) for x in loops)).add(
+                execute().as_(e().tag(x.base_name + '_home')).at(s()).run(function(x.full_name)) for x in loops)).add(
                 team().join('no_collision', e().tag(self.name))
             )
             tick_func.add(execute().if_().score(clock.time, MATCHES, 0).run(function(clock_func.full_name)))
@@ -521,7 +521,7 @@ class Room(FunctionSet):
             commands = []
             commands.extend(before_commands.setdefault(f, []))
             commands.extend(
-                (execute().at(e().tag(self._home_func_name(x.name))).run(function(x.full_name)) for x in
+                (execute().as_(e().tag(self._home_func_name(x.name))).at(s()).run(function(x.full_name)) for x in
                  relevant))
             commands.extend(after_commands.setdefault(f, []))
             if len(commands) > 0:
