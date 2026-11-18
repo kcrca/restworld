@@ -4,7 +4,7 @@ from typing import Any, Callable, Iterable
 from titlecase import titlecase
 
 from pynecraft import commands, info
-from pynecraft.base import ALL_DIRECTIONS, Arg, as_facing, DOWN, E, EAST, EQ, FacingDef, MATCHES, N, Nbt, NORTH, r, \
+from pynecraft.base import ALL_DIRECTIONS, Arg, as_facing, DOWN, E, EAST, EQ, MATCHES, N, Nbt, NORTH, r, \
     RelCoord, \
     rotate_facing, S, \
     SOUTH, to_id, to_name, UP, W, WEST
@@ -31,13 +31,11 @@ def room():
 
     list_scale = 0.6
 
-    def blocks(name: str, facing: FacingDef,
-               block_lists: Iterable[Block | str] | Iterable[Iterable[Block | str]],
+    def blocks(name: str, block_lists: Iterable[Block | str] | Iterable[Iterable[Block | str]],
                dx: float = 0, dz: float = 0, size: int = 0, labels=None, clock: Clock = main_clock,
                score: ScoreName = None, air: bool = False, expandable=True,
                post_block: Callable[[Block, tuple[RelCoord, RelCoord, RelCoord]], Command | Commands] = None) -> tuple[
         Function, Loop]:
-        facing = as_facing(facing)
 
         # Ensure we have a list (so we can modify it)
         if not isinstance(block_lists, list):
@@ -65,7 +63,8 @@ def room():
             block_loop = None
 
         block_init = room.function(name + '_init', exists_ok=True).add(
-            WallSign(()).place(r(facing.dx, 2, facing.dz), facing),
+            execute().if_().entity(s().z(-100).dz(100)).run(WallSign(()).place(r(0, 2, 1), SOUTH)),
+            execute().unless().entity(s().z(-100).dz(100)).run(WallSign(()).place(r(0, 2, -1), NORTH)),
             tag(e().tag(f'{name}_home')).add('particulate'))
         if expandable:
             block_init.add(tag(e().tag(f'{name}_home')).add('expansion'))
@@ -99,7 +98,8 @@ def room():
             else:
                 room.particle(block, name, (x, y + 1, z))
             # start=1: Preserve the 'expansion' response; blanks=True: Erase longer answers from other blocks
-            yield Sign.change(r(x + facing.dx, 2, z + facing.dz), signage, start=1, blanks=True)
+            yield Sign.change(r(x, 2, z - 1), signage, start=1, blanks=True)
+            yield Sign.change(r(x, 2, z + 1), signage, start=1, blanks=True)
 
             return block
 
@@ -157,20 +157,20 @@ def room():
                     all.append(Block(id, stages, name=n))
             else:
                 all.append(Block(block))
-        blocks(name, facing, all, expandable=expandable)
+        blocks(name, all, expandable=expandable)
 
     room_init_functions(room, block_list_score)
 
     room.function('anvil_init', exists_ok=True).add(WallSign((None, 'Anvil')).place(r(0, 2, -1), NORTH))
-    blocks('anvil', NORTH, list(Block(b, state={'facing': WEST}) for b in ('Anvil', 'Chipped Anvil', 'Damaged Anvil')),
+    blocks('anvil', list(Block(b, state={'facing': WEST}) for b in ('Anvil', 'Chipped Anvil', 'Damaged Anvil')),
            expandable=False)
-    blocks('bedrock', NORTH, ('Bedrock',))
+    blocks('bedrock', ('Bedrock',))
     bee_nests = [[], []]
     for i in range(0, 6):
         state = {'facing': SOUTH, 'honey_level': i}
         bee_nests[0].append(Block('beehive', state=state, name=f'Beehive|Honey Level: {i}'))
         bee_nests[1].append(Block('bee_nest', state=state, name=f'Bee Nest|Honey Level: {i}'))
-    blocks('bee_nest', SOUTH, bee_nests, dx=-3)
+    blocks('bee_nest', bee_nests, dx=-3)
     bookshelves: list[str | Block] = ['Bookshelf']
     bookshelves.extend((
         Block('chiseled_bookshelf', {'facing': SOUTH, }, name='Empty|Chiseled|Bookshelf'),
@@ -182,20 +182,20 @@ def room():
                'slot_0_occupied': True, 'slot_1_occupied': True, 'slot_2_occupied': True,
                'slot_3_occupied': True, 'slot_4_occupied': True, 'slot_5_occupied': True, },
               name='Full|Chiseled|Bookshelf')))
-    blocks('bookshelves', SOUTH, bookshelves)
-    blocks('deepslate_bricks', NORTH, (
+    blocks('bookshelves', bookshelves)
+    blocks('deepslate_bricks', (
         'Deepslate|Bricks', 'Cracked|Deepslate|Bricks', 'Deepslate|Tiles', 'Cracked|Deepslate|Tiles'))
-    blocks('bricks', NORTH, (
+    blocks('bricks', (
         'Bricks', 'Quartz Bricks', 'Mud Bricks', 'Prismarine Bricks', 'Tuff Bricks', 'Resin Bricks', 'Sulfur Bricks',
         'Cinnabar Bricks', 'Packed Ice Bricks', 'Snow Bricks'))
-    blocks('nether_bricks', NORTH, (
+    blocks('nether_bricks', (
         'Nether Bricks', 'Cracked|Nether Bricks', 'Chiseled|Nether Bricks', 'Red|Nether Bricks'))
-    blocks('stone_bricks', NORTH, (
+    blocks('stone_bricks', (
         'Stone Bricks', 'Mossy|Stone Bricks', 'Cracked|Stone Bricks', 'Chiseled|Stone Bricks',
         'Polished|Blackstone Bricks', 'Cracked Polished|Blackstone Bricks'))
-    blocks('calcite', SOUTH, ('Calcite','Polished Calcite|Bricks', 'Polished Calcite', 'Calcite Pillar'))
+    blocks('calcite', ('Calcite', 'Polished Calcite|Bricks', 'Polished Calcite', 'Calcite Pillar'))
     campfire_food = room.score('campfire_food')
-    campfire_init, campfire_main = blocks('campfire', NORTH, (
+    campfire_init, campfire_main = blocks('campfire', (
         Block('Campfire', {'lit': True}),
         Block('campfire', {'lit': False}, name='Campfire|Unlit'),
         Block('Soul Campfire', {'lit': True}),
@@ -214,15 +214,15 @@ def room():
     )
     room.function('campfire_enter').add(function('restworld:/blocks/campfire_cur'))
     room.function('campfire_exit').add(setblock(r(0, 3, 0), Block('campfire', {'lit': False})))
-    blocks('chiseled', NORTH, (
+    blocks('chiseled', (
         'Chiseled|Deepslate', 'Chiseled|Polished|Blackstone', 'Chiseled Tuff|Bricks', 'Chiseled|Quartz Block',
         'Chiseled|Tuff', 'Chiseled|Resin Bricks', 'Chiseled Sulfur', 'Chiseled Cinnabar'))
-    blocks('clay', SOUTH, ('Clay', 'Mud', 'Muddy|Mangrove Roots', 'Packed Mud'))
-    blocks('cobble', NORTH, ('Cobblestone', 'Mossy|Cobblestone', 'Cobbled|Deepslate'))
-    blocks('cobweb', SOUTH, ('Cobweb',))
+    blocks('clay', ('Clay', 'Mud', 'Muddy|Mangrove Roots', 'Packed Mud'))
+    blocks('cobble', ('Cobblestone', 'Mossy|Cobblestone', 'Cobbled|Deepslate'))
+    blocks('cobweb', ('Cobweb',))
 
     crafter_states = ({}, {'triggered': True}, {'crafting': True})
-    blocks('crafter', NORTH, (Block('crafter', state) for state in crafter_states),
+    blocks('crafter', (Block('crafter', state) for state in crafter_states),
            labels=tuple(('Crafter', x) for x in ('', 'Triggered', 'Crafting')))
 
     natural_heart = room.score('natural_heart')
@@ -246,28 +246,27 @@ def room():
         WallSign((None, 'Creaking Heart')).place(r(0, 2, 1), SOUTH),
         room.label(r(1, 2, 0), 'With Logs', SOUTH),
     )
-    blocks('deepslate', NORTH, (
+    blocks('deepslate', (
         'Deepslate', 'Chiseled|Deepslate', 'Polished|Deepslate', 'Cracked|Deepslate|Bricks', 'Cracked|Deepslate|Tiles',
         'Deepslate|Bricks', 'Deepslate|Tiles', 'Cobbled|Deepslate', 'Reinforced|Deepslate'))
     sherd_names = tuple(titlecase(sherd.replace('_pottery_sherd', '')) for sherd in sherds)
     usable_sherds = sherds + sherds
     _, pot_loop = blocks(
-        'decorated_pot', NORTH, ('decorated_pot',) + tuple(
+        'decorated_pot', ('decorated_pot',) + tuple(
             Block('decorated_pot',
                   nbt={'sherds': {'left': {'id': usable_sherds[i]}, 'back': {'id': usable_sherds[i + 1]},
                                   'right': {'id': usable_sherds[i + 2]}}},
                   name=f'Decorated Pot|{sherd_names[i]}') for i in range(len(sherds))), clock=fast_clock)
 
-    blocks('dirt', SOUTH, ('Dirt', 'Coarse Dirt', 'Rooted Dirt', 'Farmland'))
-    blocks('dried_kelp', SOUTH, ('Dried Kelp Block',))
+    blocks('dirt', ('Dirt', 'Coarse Dirt', 'Rooted Dirt', 'Farmland'))
+    blocks('dried_kelp', ('Dried Kelp Block',))
 
-    blocks('end', NORTH, ('End Stone', 'End Stone|Bricks'))
-    blocks('frosted_ice', SOUTH,
-           ([Block('frosted_ice', {'age': i}, name=f'Frosted Ice|Age: {i}') for i in range(0, 4)] + [
+    blocks('end', ('End Stone', 'End Stone|Bricks'))
+    blocks('frosted_ice', ([Block('frosted_ice', {'age': i}, name=f'Frosted Ice|Age: {i}') for i in range(0, 4)] + [
                Block('water', name='Water|')],
-            [Block('brittle_ice', {'age': i}, name=f'Brittle Ice|Age: {i}') for i in range(0, 4)] + [
+                           [Block('brittle_ice', {'age': i}, name=f'Brittle Ice|Age: {i}') for i in range(0, 4)] + [
                 Block('air', name='Air|')]
-            ), expandable=False, dx=-3)
+                           ), expandable=False, dx=-3)
     room.function('frosted_ice_enter').add(setblock(r(1, 0, 0), 'redstone_block'))
     room.function('frosted_ice_exit').add(setblock(r(1, 0, 0), 'air'))
     room.function('frosted_ice_init', exists_ok=True).add(
@@ -276,39 +275,39 @@ def room():
         setblock(r(+1, 3, 0), 'structure_void'),
         setblock(r(-1, 3, 0), 'structure_void'),
     )
-    blocks('gilded_blackstone', SOUTH, ('Gilded Blackstone',))
-    blocks('glass', SOUTH, ('Glass', 'Tinted Glass'))
-    blocks('hay', SOUTH, ('Hay Block',))
-    blocks('heavy_core', NORTH, ('Heavy Core',))
-    blocks('honeycomb', SOUTH, ('Honeycomb Block',))
+    blocks('gilded_blackstone', ('Gilded Blackstone',))
+    blocks('glass', ('Glass', 'Tinted Glass'))
+    blocks('hay', ('Hay Block',))
+    blocks('heavy_core', ('Heavy Core',))
+    blocks('honeycomb', ('Honeycomb Block',))
     room.function('ladder_init').add(setblock(r(0, 3, 0), 'ladder'))
-    blocks('jigsaw', NORTH, (Block('Jigsaw', {'orientation': 'up_east'}),))
-    blocks('lighting', SOUTH, (
+    blocks('jigsaw', (Block('Jigsaw', {'orientation': 'up_east'}),))
+    blocks('lighting', (
         'Glowstone', 'Sea Lantern', 'Shroomlight', 'Ochre|Froglight', 'Pearlescent|Froglight', 'Verdant|Froglight',
         'End Rod'))
-    blocks('ladder', NORTH, ('Ladder',), expandable=False)
-    blocks('lodestone', SOUTH, ('Lodestone',))
-    blocks('magma_block', SOUTH, ('Magma Block',))
-    blocks('moss', SOUTH, (('Moss Block', 'Pale Moss Block'), ('Moss Carpet', 'Pale Moss Carpet')), dz=3)
-    blocks('music', SOUTH, (
+    blocks('ladder', ('Ladder',), expandable=False)
+    blocks('lodestone', ('Lodestone',))
+    blocks('magma_block', ('Magma Block',))
+    blocks('moss', (('Moss Block', 'Pale Moss Block'), ('Moss Carpet', 'Pale Moss Carpet')), dz=3)
+    blocks('music', (
         Block('Note Block'), Block('Jukebox'),
         Block('jukebox', {'has_record': True}, {'IsPlaying': True, 'RecordItem': {'id': 'music_disc_pigstep'}},
               name='Jukebox|Playing')))
-    blocks('netherrack', NORTH, ('Netherrack', 'Warped Nylium', 'Crimson Nylium'))
-    blocks('obsidian', SOUTH, ('Obsidian', 'Crying Obsidian'))
-    blocks('prismarine', NORTH, ('Prismarine', 'Prismarine Bricks', 'Dark Prismarine'))
-    blocks('pumpkin', SOUTH, (
+    blocks('netherrack', ('Netherrack', 'Warped Nylium', 'Crimson Nylium'))
+    blocks('obsidian', ('Obsidian', 'Crying Obsidian'))
+    blocks('prismarine', ('Prismarine', 'Prismarine Bricks', 'Dark Prismarine'))
+    blocks('pumpkin', (
         'Pumpkin', Block('Carved Pumpkin', {'facing': SOUTH}), Block('Jack O Lantern', {'facing': SOUTH})))
-    blocks('purpur', NORTH, ('Purpur Block', 'Purpur Pillar'))
-    blocks('quartz', NORTH, (
+    blocks('purpur', ('Purpur Block', 'Purpur Pillar'))
+    blocks('quartz', (
         'Quartz Block', 'Smooth Quartz', 'Quartz Pillar', 'Chiseled Quartz Block', 'Quartz Bricks'))
-    blocks('raw_metal', NORTH, ('Raw Iron|Block', 'Raw Copper|Block', 'Raw Gold|Block'))
-    blocks('red_sand', SOUTH, ('Red Sand',))
-    blocks('resin', NORTH, ('Resin Block', 'Resin Bricks', 'Chiseled|Resin Bricks'))
-    blocks('respawn_anchor', SOUTH, (Block('Respawn Anchor', {'charges': x}) for x in range(0, 5)),
+    blocks('raw_metal', ('Raw Iron|Block', 'Raw Copper|Block', 'Raw Gold|Block'))
+    blocks('red_sand', ('Red Sand',))
+    blocks('resin', ('Resin Block', 'Resin Bricks', 'Chiseled|Resin Bricks'))
+    blocks('respawn_anchor', (Block('Respawn Anchor', {'charges': x}) for x in range(0, 5)),
            labels=tuple(('Respawn Anchor', f'Charges: {x:d}') for x in range(0, 5)))
-    blocks('sulfur', SOUTH, ('Sulfur', 'Polished Sulfur', 'Sulfur Bricks', 'Chiseled Sulfur', 'Potent Sulfur'))
-    blocks('cinnabar', SOUTH, ('Cinnabar', 'Polished Cinnabar', 'Cinnabar Bricks', 'Chiseled Cinnabar'))
+    blocks('sulfur', ('Sulfur', 'Polished Sulfur', 'Sulfur Bricks', 'Chiseled Sulfur', 'Potent Sulfur'))
+    blocks('cinnabar', ('Cinnabar', 'Polished Cinnabar', 'Cinnabar Bricks', 'Chiseled Cinnabar'))
 
     def suspicious(which):
         suspicious_data = {'item': {'id': 'emerald'}}
@@ -318,27 +317,27 @@ def room():
 
     sands = suspicious('sand')
     gravels = suspicious('gravel')
-    blocks('suspicious', SOUTH, (sands, gravels), dx=3, size=2)
+    blocks('suspicious', (sands, gravels), dx=3, size=2)
 
     red_sandstone = ('Red Sandstone', 'Smooth|Red Sandstone', 'Cut|Red Sandstone', 'Chiseled|Red Sandstone')
-    blocks('sandstone', SOUTH, (red_sandstone, tuple(re.sub(' *Red *', '', f) for f in red_sandstone)), dx=3)
-    blocks('slabs', NORTH, ('Smooth Stone|Slab', 'Petrified Oak|Slab'))
-    blocks('snow_blocks', SOUTH, ('Powder Snow', 'Snow Block'))
-    _, loop = blocks('soil', SOUTH, ('Grass Block', 'Podzol', 'Mycelium', 'Dirt Path'))
+    blocks('sandstone', (red_sandstone, tuple(re.sub(' *Red *', '', f) for f in red_sandstone)), dx=3)
+    blocks('slabs', ('Smooth Stone|Slab', 'Petrified Oak|Slab'))
+    blocks('snow_blocks', ('Powder Snow', 'Snow Block'))
+    _, loop = blocks('soil', ('Grass Block', 'Podzol', 'Mycelium', 'Dirt Path'))
     # Make sure the block above is air so it doesn't turn dirt path to dirt instantly.
     loop.add(setblock(r(0, 4, 0), 'air'))
-    blocks('soul_stuff', NORTH, ('Soul Sand', 'Soul Soil'))
-    blocks('sponge', SOUTH, ('Sponge', 'Wet Sponge'))
-    blocks('sticky', SOUTH, ('Slime Block', 'Honey block'))
+    blocks('soul_stuff', ('Soul Sand', 'Soul Soil'))
+    blocks('sponge', ('Sponge', 'Wet Sponge'))
+    blocks('sticky', ('Slime Block', 'Honey block'))
 
     stone_types = ('Stone', 'Basalt', 'Deepslate', 'Andesite', 'Diorite', 'Granite', 'Tuff', 'Blackstone', 'Sulfur',
                    'Cinnabar')
     polished_types = ('Smooth Basalt', 'Smooth Stone') + tuple(f'Polished|{t}' for t in stone_types[2:])
-    blocks('stone', NORTH, (stone_types, polished_types), dz=3)
+    blocks('stone', (stone_types, polished_types), dz=3)
 
     test_block_modes = ('start', 'log', 'accept', 'fail')
     labels = tuple(('Test Block', f'Mode: {titlecase(mode)}') for mode in test_block_modes) + (('Test Instance',),)
-    blocks('test', NORTH, tuple(Block('test_block', {'mode': mode}) for mode in test_block_modes) + ('test_instance_block',),
+    blocks('test', tuple(Block('test_block', {'mode': mode}) for mode in test_block_modes) + ('test_instance_block',),
            labels=labels)
 
     room.function('straw_bed_init').add(
@@ -375,12 +374,11 @@ def room():
             nb = 'air'
         return setblock(RelCoord.add(pos, r(-1, 0, 0)), nb)
 
-    _, copper_loop = blocks('unwaxed_copper_blocks', NORTH,
+    _, copper_loop = blocks('unwaxed_copper_blocks',
                             (copper_blocks, coppers('Exposed'), coppers('Weathered'), coppers('Oxidized')),
                             expandable=False, dx=-3, dz=3, size=2, post_block=post_copper_block)
-    blocks('waxed_copper_blocks', NORTH,
-           (coppers(f'Waxed'), coppers('Waxed Exposed'), coppers('Waxed Weathered'),
-            coppers('Waxed Oxidized')),
+    blocks('waxed_copper_blocks', (coppers(f'Waxed'), coppers('Waxed Exposed'), coppers('Waxed Weathered'),
+                                   coppers('Waxed Oxidized')),
            score=copper_loop.score, expandable=False, dx=-3, dz=3, size=2, post_block=post_copper_block)
 
     copper_home = e().tag('copper_blocks_home')
@@ -409,7 +407,7 @@ def room():
     stripped_logs = ['Stripped|' + x for x in logs]
     stripped_woods = list(map(lambda x: '' if x == 'Stripped|Bamboo Mosaic' else x, ['Stripped|' + x for x in wood]))
     wood_loops = (tuple(f'{f} Planks' for f in woodlike), stripped_logs, logs, wood, leaves, stripped_woods)
-    blocks('wood_blocks', SOUTH, wood_loops, dx=-3, dz=-3, size=2, expandable=True)
+    blocks('wood_blocks', wood_loops, dx=-3, dz=-3, size=2, expandable=True)
 
     sites = ('Cauldron', 'Water Cauldron', 'Lava Cauldron', 'Powder Snow|Cauldron')
     stages = {'Water Cauldron': list({'level': t} for t in range(1, 4)),
@@ -564,7 +562,7 @@ def room():
         cb = Block(id=f'{to_id(type)}_block', name=name, state=state)
         return cb
 
-    blocks('command_blocks', NORTH, (to_command_block(*x) for x in (
+    blocks('command_blocks', (to_command_block(*x) for x in (
         ('Command ', True), ('Command ', False), ('Chain Command ', False),
         ('Chain Command ', True), ('Repeating Command ', True),
         ('Repeating Command ', False), ('Command ', False), ('Command ', True),
@@ -655,7 +653,7 @@ def room():
     room.function('fire_init').add(WallSign((None, 'Fire')).place(r(0, 2, -1), NORTH))
     room.loop('fire', main_clock).add(fill(r(0, 3, 0), r(0, 5, 0), 'air')).loop(fire_loop, (
         'oak_log', 'oak_log', 'oak_log', 'soul_soil'))
-    blocks('ice', SOUTH, ('Ice', 'Packed Ice', 'Blue Ice'))
+    blocks('ice', ('Ice', 'Packed Ice', 'Blue Ice'))
 
     ice_crystal = room.function('ice_crystal_init').add(
         setblock(r(0, 2, 0), 'barrier'),
@@ -670,7 +668,7 @@ def room():
     for b in ('Cobblestone', 'Deepslate', 'Stone', 'Stone Bricks', 'Chiseled|Stone Bricks', 'Cracked|Stone Bricks',
               'Mossy|Stone Bricks'):
         infestables.extend((b, f'Infested|{b}'))
-    blocks('infested', NORTH, infestables)
+    blocks('infested', infestables)
     two = room.score('two')
     room.function('infested_init', exists_ok=True).add(
         room.label(r(-1, 2, 0), 'Infested Only', NORTH),
@@ -724,8 +722,8 @@ def room():
     slate_ores = list(f'Deepslate|{t} Ore' for t in basic)
     slate_ores.extend(ores[len(slate_ores):])
     ore_blocks = [f'{x} Block' for x in basic + ['Quartz', 'Gold']] + ['Netherite Block', ]
-    blocks('ore_blocks', NORTH, (ores, ore_blocks), dz=3)
-    blocks('deepslate_ore_blocks', NORTH, (slate_ores, ore_blocks), dz=3, score=room.score('ore_blocks'))
+    blocks('ore_blocks', (ores, ore_blocks), dz=3)
+    blocks('deepslate_ore_blocks', (slate_ores, ore_blocks), dz=3, score=room.score('ore_blocks'))
     room.function('ore_blocks_init', exists_ok=True).add(
         tag(e().tag('ore_blocks_home')).add('ore_blocks_base'),
         tag(e().tag('deepslate_ore_blocks_home')).add('ore_blocks_base'))
@@ -792,7 +790,7 @@ def room():
         WallSign((None, 'Scaffolding')).place(r(0, 2, -1), NORTH))
     room.particle('scaffolding', 'scaffolding', r(0, 4, 0))
 
-    blocks('sculk_blocks', NORTH, (
+    blocks('sculk_blocks', (
         Block('Sculk Vein', {SOUTH: True, DOWN: True}),
         'Sculk', 'Sculk Sensor',
         Block('Calibrated|Sculk Sensor', {'facing': SOUTH}),
@@ -953,7 +951,7 @@ def room():
         ('inactive', 'waiting_for_players', 'active', 'waiting_for_reward_ejection', 'ejecting_reward', 'cooldown'),
     )
 
-    blocks('structure_blocks', NORTH, list(
+    blocks('structure_blocks', list(
         Block('structure_block', name=f'{x}|Structure Block', state={'mode': x.lower()}) for x in
         ('Data', 'Save', 'Load', 'Corner')), air=True)
 
@@ -964,6 +962,7 @@ def room():
             yield setblock(r(0, 3, 0), 'air')
             yield summon(('tnt', {'fuse': 0x7fff, 'Tags': ['block_tnt']}), r(0, 3, 0))
         yield Sign.change(r(0, 2, -1), (None, None, titlecase(step.elem)))
+        yield Sign.change(r(0, 2, 1), (None, None, titlecase(step.elem)))
 
     room.loop('tnt', main_clock).add(kill(e().tag('block_tnt'))).loop(tnt_loop, ('stable', 'unstable', 'primed'))
     room.particle('tnt', 'tnt', r(0, 4, 0))
