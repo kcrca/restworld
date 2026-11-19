@@ -1045,7 +1045,7 @@ def armor_frame(which, where):
 
 
 def color_functions(room):
-    coloring_coords = (r(1, 4, 6), r(-13, 2, -1))
+    coloring_coords = (r(1, 4, 6), r(-14, 2, -1))
     volume = Region(*coloring_coords)
     lit_candles = room.score('lit_candles')
     plain = room.score('plain')
