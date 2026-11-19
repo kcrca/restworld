@@ -68,7 +68,7 @@ def quilt_blocks():
     for tag in (
         # Structural non-full-cube blocks
         'buttons', 'pressure_plates', 'doors', 'trapdoors', 'fences', 'fence_gates',
-        'slabs', 'stairs', 'rails', 'walls', 'bars', 'chains', 'frame',
+        'slabs', 'stairs', 'rails', 'walls', 'bars', 'chains', 'frame', 'ice_crystal',
         # Decorative non-full-cube blocks
         'signs', 'banners', 'beds', 'candles', 'lanterns', 'flower_pots',
         'campfires', 'cauldrons', 'anvil', 'wooden_shelves',
@@ -87,11 +87,13 @@ def quilt_blocks():
         'heavy_core', 'jack_o_lantern', 'kelp', 'light', 'nether_wart', 'straw_bed', 'red_shrub',
         'poplar_leaves',  # doesn't actually exist
         'powder_snow', 'sea_lantern', 'snow', 'soul_sand',  # not in their respective tags
-        'slime_block', 'honey_block', 'tinted_glass',  # translucent
+
+        'crying_obsidian', 'gilded_blackstone', 'honey_block', 'slime_block', 'chiseled_bookshelf',
+        # Just low priority, could add back in
     }
 
     skip_re = re.compile(
-        r'\b(azalea|beacon|bell|bud|bush|cactus|cake|cane|carpet|chest|clump|cluster|'
+        r'\b(azalea|beacon|bell|bud|bush|cactus|cake|cane|carpet|chest|clump|cluster|command|crystal|'
         r'cobweb|cocoa|comparator|composter|conduit|dead|detector|dripleaf|egg|enchanting|'
         r'farmland|fern|frogspawn|fungus|ghast|grate|gravel|grindstone|hanging|head|'
         r'hopper|infested|jigsaw|ladder|lava|lectern|lever|lichen|lily|litter|'
@@ -113,7 +115,7 @@ def sorted_quilt_blocks():
     # all dead vs. non-dead ones are grouped.
     ranks = [
         (
-            'Moss Block', 'Command Block', 'Stained Glass', 'Dead.*Coral', 'Coral', 'Resin', 'Azalea', 'Amethyst',
+            'Moss Block', 'Command Block', 'Glass', 'Dead.*Coral', 'Coral', 'Resin', 'Azalea', 'Amethyst',
             'Froglight', 'Sponge', 'Ore', 'Copper(?!.Ore|Raw)', 'Wool', 'Glazed', 'Shulker', 'Concrete', 'Brick', 'Bee',
             'Pumpkin|Jack|Melon', 'Raw', 'Log|Stem', 'Stripped', 'Bricks', 'Bookshelf', 'Sandstone', 'Piston',
             'Polished', 'Terracotta',
